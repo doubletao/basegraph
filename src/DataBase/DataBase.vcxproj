@@ -116,6 +116,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\ExportDataBase.h" />
     <ClInclude Include="DataBase.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />

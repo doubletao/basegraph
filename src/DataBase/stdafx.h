@@ -36,4 +36,11 @@
 #include <afxcmn.h>                     // MFC 对 Windows 公共控件的支持
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+#define BASEGRAPH_AUTO_LOAD
 
+#define BASEGRAPH_DATABASE_EXPORTS
+#ifdef BASEGRAPH_DATABASE_EXPORTS
+#define BASEGRAPH_DATABASE_API __declspec(dllexport)
+#else
+#define BASEGRAPH_DATABASE_API __declspec(dllimport)
+#endif // BASEGRAPH_DATABASE_EXPORTS
