@@ -9,6 +9,13 @@ DataBaseManager::DataBaseManager()
 
 DataBaseManager::~DataBaseManager()
 {
+	for (size_t i = 0; i < m_vecObject.size(); i++)
+	{
+		BaseObject *& pObj = m_vecObject[i];
+		delete pObj;
+		pObj = nullptr;
+	}
+	m_vecObject.clear();
 }
 
 DataBaseManager & DataBaseManager::Instance()
