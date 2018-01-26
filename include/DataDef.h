@@ -2,6 +2,13 @@
 
 namespace BaseGraph_Common
 {
+	struct ValueAbleInterface
+	{
+		virtual int GetSerializeSize() const = 0;
+		virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const = 0;
+		virtual bool RecoverFromBuf(byte * pBuf, int nBufSize) = 0;
+	};
+
 	enum ValueType
 	{
 		ValueType_ERR = 0,
@@ -13,6 +20,7 @@ namespace BaseGraph_Common
 		ValueType_ANGLE,
 		ValueType_TIME,
 		ValueType_TEXT,
+		ValueType_STRUCT,
 	};
 
 	class BASEGRAPH_COMMON_API Value
@@ -34,13 +42,15 @@ namespace BaseGraph_Common
 		bool SetValue(int nValue, ValueType emType);//对于枚举，角度，BOOL，时间等类型，内部其实都是int，但需要指定
 		bool SetValue(float fValue);
 		bool SetValue(CString strValue);
+		bool SetValue(const ValueAbleInterface & stuValue);
 
 		int ToInt();
 		DWORD ToDWORD();
 		BOOL ToBOOL();
 		float ToFloat();
 		CString ToCString();
+		bool ToStruct(ValueAbleInterface & stuValue);
 
-		bool Serilize(CArchive & archive);
+		bool Serialize(CArchive & archive);
 	};
 };

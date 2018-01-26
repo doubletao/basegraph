@@ -17,7 +17,7 @@ namespace BaseGraph_DataBase
 		virtual ~BaseObject() = 0;
 		virtual void InitialObjectParam();
 	public:
-		bool Serilize(CArchive & archive);
+		bool Serialize(CArchive & archive);
 		BaseGraph_DataBase::ObjectType GetObjectType();
 	};
 };

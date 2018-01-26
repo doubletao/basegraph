@@ -22,7 +22,7 @@ void BaseGraph_DataBase::BaseObject::InitialObjectParam()
 	}
 }
 
-bool BaseGraph_DataBase::BaseObject::Serilize(CArchive & archive)
+bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 {
 	if (archive.IsStoring())
 	{
@@ -33,7 +33,7 @@ bool BaseGraph_DataBase::BaseObject::Serilize(CArchive & archive)
 		{
 			nTmp = it->first;
 			archive << nTmp;
-			it->second.Serilize(archive);
+			it->second.Serialize(archive);
 		}
 		nTmp = (int)m_vecChildObj.size();
 		archive << nTmp;
@@ -42,7 +42,7 @@ bool BaseGraph_DataBase::BaseObject::Serilize(CArchive & archive)
 			BaseObject * pObj = m_vecChildObj[i];
 			nTmp = pObj->GetObjectType();
 			archive << nTmp;
-			pObj->Serilize(archive);
+			pObj->Serialize(archive);
 		}
 	}
 	else
@@ -55,7 +55,7 @@ bool BaseGraph_DataBase::BaseObject::Serilize(CArchive & archive)
 			archive >> nTmp;
 			ParamValueDef emParamValueDef = (ParamValueDef)nTmp;
 			Value valueTmp;
-			valueTmp.Serilize(archive);
+			valueTmp.Serialize(archive);
 			m_mapParam.insert(std::make_pair(emParamValueDef, valueTmp));
 		}
 		archive >> nSize;
@@ -65,7 +65,7 @@ bool BaseGraph_DataBase::BaseObject::Serilize(CArchive & archive)
 			archive >> nTmp;
 			BaseGraph_DataBase::ObjectType emObjType = (BaseGraph_DataBase::ObjectType)nTmp;
 			BaseObject * pObject = ObjectFactory::CreateObject(emObjType);
-			pObject->Serilize(archive);
+			pObject->Serialize(archive);
 			pObject->m_pParent = this;
 			m_vecChildObj.push_back(pObject);
 		}

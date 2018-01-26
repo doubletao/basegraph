@@ -174,6 +174,16 @@ bool BaseGraph_Common::Value::SetValue(CString strValue)
 	return true;
 }
 
+bool BaseGraph_Common::Value::SetValue(const ValueAbleInterface & stuValue)
+{
+	Reset();
+	m_emType = ValueType_STRUCT;
+	m_nSize = stuValue.GetSerializeSize();
+	m_pBuf = new byte[m_nSize];
+	stuValue.GetSerializeBuf(m_pBuf, (int)m_nSize);
+	return true;
+}
+
 int BaseGraph_Common::Value::ToInt()
 {
 	int nTmp = -1;
@@ -257,7 +267,40 @@ CString BaseGraph_Common::Value::ToCString()
 	return strTmp;
 }
 
-bool BaseGraph_Common::Value::Serilize(CArchive & archive)
+bool BaseGraph_Common::Value::ToStruct(ValueAbleInterface & stuValue)
 {
-	return false;
+	if (m_emType == ValueType_STRUCT)
+	{
+		stuValue.RecoverFromBuf(m_pBuf, (int)m_nSize);
+	}
+	else
+	{
+		//不匹配的类型转换，可能出问题
+		assert(false);
+		return false;
+	}
+	return true;
+}
+
+bool BaseGraph_Common::Value::Serialize(CArchive & archive)
+{
+	if (archive.IsStoring())
+	{
+		int nTmp = m_emType;
+		archive << nTmp;
+		nTmp = (int)m_nSize;
+		archive << nTmp;
+		archive.Write(m_pBuf, (UINT)m_nSize);
+	}
+	else
+	{
+		int nTmp = 0;
+		archive >> nTmp;
+		m_emType = (ValueType)nTmp;
+		archive >> nTmp;
+		m_nSize = nTmp;
+		m_pBuf = new byte[m_nSize];
+		archive.Read(m_pBuf, (UINT)m_nSize);
+	}
+	return true;
 }
