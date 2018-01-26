@@ -8,5 +8,7 @@ class ObjectImage :
 public:
 	ObjectImage();
 	virtual ~ObjectImage();
+public:
+	virtual void InitialObjectParam();
 };
 

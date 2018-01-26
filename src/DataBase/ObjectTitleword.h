@@ -7,5 +7,7 @@ class ObjectTitleword :
 public:
 	ObjectTitleword();
 	virtual ~ObjectTitleword();
+public:
+	virtual void InitialObjectParam();
 };
 

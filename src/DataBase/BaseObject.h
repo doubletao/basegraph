@@ -6,7 +6,7 @@ using BaseGraph_Common::Value;
 
 namespace BaseGraph_DataBase
 {
-	class BASEGRAPH_DATABASE_API BaseObject
+	class BaseObject
 	{
 	protected:
 		std::map<ParamValueDef, Value> m_mapParam;

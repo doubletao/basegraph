@@ -48,10 +48,12 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\bin\</OutDir>
     <TargetName>$(ProjectName)D</TargetName>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\bin\</OutDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="DataBase.cpp" />
+    <ClCompile Include="DataBaseManager.cpp" />
     <ClCompile Include="IntIDGenerator.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="ObjectImage.cpp" />
@@ -129,6 +132,7 @@
     <ClInclude Include="..\..\include\ExportDataBase.h" />
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="DataBase.h" />
+    <ClInclude Include="DataBaseManager.h" />
     <ClInclude Include="DataTypeDef.h" />
     <ClInclude Include="IntIDGenerator.h" />
     <ClInclude Include="ObjectFactory.h" />

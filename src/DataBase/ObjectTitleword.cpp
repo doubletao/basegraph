@@ -11,3 +11,7 @@ ObjectTitleword::ObjectTitleword()
 ObjectTitleword::~ObjectTitleword()
 {
 }
+
+void ObjectTitleword::InitialObjectParam()
+{
+}

@@ -114,7 +114,8 @@ CString BaseGraph_Common::Value::ToDebugString()
 		break;
 	case BaseGraph_Common::ValueType_TEXT:
 	{
-		strRet.Format(_T("CString:%s"), ToCString());
+		strRet = _T("CString:%s");
+		strRet.Append(ToCString());
 	}
 		break;
 	default:
@@ -188,7 +189,6 @@ int BaseGraph_Common::Value::ToInt()
 {
 	int nTmp = -1;
 	if (m_emType == ValueType_INT
-		|| m_emType == ValueType_INT
 		|| m_emType == ValueType_ENUM
 		|| m_emType == ValueType_ANGLE
 		|| m_emType == ValueType_TIME)
@@ -256,7 +256,7 @@ CString BaseGraph_Common::Value::ToCString()
 		TCHAR * szBuf = new TCHAR[m_nSize / sizeof(TCHAR)];
 		memcpy(szBuf, m_pBuf, m_nSize);
 		strTmp = szBuf;
-		delete szBuf;
+		delete[] szBuf;
 		szBuf = nullptr;
 	}
 	else

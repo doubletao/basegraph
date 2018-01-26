@@ -8,5 +8,7 @@ class ObjectScroll :
 public:
 	ObjectScroll();
 	virtual ~ObjectScroll();
+public:
+	virtual void InitialObjectParam();
 };
 

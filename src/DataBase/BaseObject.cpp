@@ -6,6 +6,7 @@
 BaseGraph_DataBase::BaseObject::BaseObject()
 	: m_pParent(nullptr)
 {
+	m_mapParam[ObjID].SetValue(IntIDGenerator::Instance().GetNewID());
 }
 
 
@@ -15,11 +16,46 @@ BaseGraph_DataBase::BaseObject::~BaseObject()
 
 void BaseGraph_DataBase::BaseObject::InitialObjectParam()
 {
-	//如果有值则不覆盖，如果没值，则给值
-	if (m_mapParam.count(ObjID) < 1)
+	auto AddDefaultParam = [this](ParamValueDef emParamValueDef)
 	{
-		m_mapParam[ObjID].SetValue(IntIDGenerator::Instance().GetNewID());
-	}
+		if (m_mapParam.count(emParamValueDef) < 1)
+		{
+			m_mapParam[emParamValueDef] = GetValueDescriptor(emParamValueDef).stuDefault;
+		}
+	};
+	
+	//空间值
+	AddDefaultParam(SpacePosition_X);
+	AddDefaultParam(SpacePosition_Y);
+	AddDefaultParam(SpacePosition_Z);
+	AddDefaultParam(SpaceRotate_X);
+	AddDefaultParam(SpaceRotate_Y);
+	AddDefaultParam(SpaceRotate_Z);
+	AddDefaultParam(SpaceScale_X);
+	AddDefaultParam(SpaceScale_Y);
+	AddDefaultParam(SpaceScale_Z);
+	AddDefaultParam(SpaceCenter_X);
+	AddDefaultParam(SpaceCenter_Y);
+	AddDefaultParam(SpaceCenter_Z);
+
+	//颜色值
+	AddDefaultParam(ColorFace_Enable);
+	AddDefaultParam(ColorFace_Soft);
+	AddDefaultParam(ColorFace_EffectType);
+	AddDefaultParam(ColorFace_EffectWidth);
+	AddDefaultParam(ColorFace_AVColor);
+	AddDefaultParam(ColorFace_Art);
+	AddDefaultParam(ColorFace_Color);
+	AddDefaultParam(ColorBorder_Enable);
+	AddDefaultParam(ColorBorder_Soft);
+	AddDefaultParam(ColorBorder_LineStyle);
+	AddDefaultParam(ColorBorder_Width);
+	AddDefaultParam(ColorBorder_Interval);
+	AddDefaultParam(ColorBorder_EffectType);
+	AddDefaultParam(ColorBorder_EffectWidth);
+	AddDefaultParam(ColorBorder_AVColor);
+	AddDefaultParam(ColorBorder_Art);
+	AddDefaultParam(ColorBorder_Color);
 }
 
 bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)

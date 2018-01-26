@@ -11,3 +11,7 @@ ObjectScroll::ObjectScroll()
 ObjectScroll::~ObjectScroll()
 {
 }
+
+void ObjectScroll::InitialObjectParam()
+{
+}
