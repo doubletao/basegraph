@@ -17,13 +17,13 @@ private:
 	DataBaseManager();
 	~DataBaseManager();
 private:
-	vector<BaseObject> m_vecObject;
+	vector<BaseObject *> m_vecObject;
 public:
 	static DataBaseManager & Instance();
 	//取得列表
-	bool GetAllItem(OUT vector<BaseObject> & vecObject);
-	bool GetAllItemExpandSub(OUT vector<BaseObject>& vecObject);
-	bool GetItem(IN int nID, OUT BaseObject & stuObject);
+	bool GetAllItem(OUT vector<BaseObject *> & vecObject);
+	bool GetAllItemExpandSub(OUT vector<BaseObject *>& vecObject);
+	bool GetItem(IN int nID, OUT BaseObject * & stuObject);
 	//增删
 	bool CreateItem(IN ObjectType emType, IN const map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam, OUT int & nID);
 	bool AddSubItemTo(IN int nParentID, IN int nSubID);

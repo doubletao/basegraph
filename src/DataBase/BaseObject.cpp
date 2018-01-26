@@ -4,7 +4,7 @@
 #include "ObjectFactory.h"
 
 BaseGraph_DataBase::BaseObject::BaseObject()
-	: m_pParent(nullptr)
+	: m_nParentID(0)
 {
 	m_mapParam[ObjID].SetValue(IntIDGenerator::Instance().GetNewID());
 }
@@ -71,14 +71,13 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 			archive << nTmp;
 			it->second.Serialize(archive);
 		}
-		nTmp = (int)m_vecChildObj.size();
+		archive << m_nParentID;
+		nTmp = (int)m_vecChildID.size();
 		archive << nTmp;
-		for (size_t i = 0; i < m_vecChildObj.size(); i++)
+		for (size_t i = 0; i < m_vecChildID.size(); i++)
 		{
-			BaseObject * pObj = m_vecChildObj[i];
-			nTmp = pObj->GetObjectType();
+			nTmp = m_vecChildID[i];
 			archive << nTmp;
-			pObj->Serialize(archive);
 		}
 	}
 	else
@@ -94,16 +93,13 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 			valueTmp.Serialize(archive);
 			m_mapParam.insert(std::make_pair(emParamValueDef, valueTmp));
 		}
+		archive >> m_nParentID;
 		archive >> nSize;
 		for (int i = 0; i < nSize; i++)
 		{
 			int nTmp = 0;
 			archive >> nTmp;
-			BaseGraph_DataBase::ObjectType emObjType = (BaseGraph_DataBase::ObjectType)nTmp;
-			BaseObject * pObject = ObjectFactory::CreateObject(emObjType);
-			pObject->Serialize(archive);
-			pObject->m_pParent = this;
-			m_vecChildObj.push_back(pObject);
+			m_vecChildID.push_back(nTmp);
 		}
 	}
 	return true;

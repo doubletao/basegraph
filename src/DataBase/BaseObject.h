@@ -10,8 +10,8 @@ namespace BaseGraph_DataBase
 	{
 	protected:
 		std::map<ParamValueDef, Value> m_mapParam;
-		BaseObject * m_pParent;
-		std::vector<BaseObject *> m_vecChildObj;
+		int m_nParentID;
+		std::vector<int> m_vecChildID;
 	public:
 		BaseObject();
 		virtual ~BaseObject() = 0;

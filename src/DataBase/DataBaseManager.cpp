@@ -17,17 +17,17 @@ DataBaseManager & DataBaseManager::Instance()
 	return inst;
 }
 
-bool DataBaseManager::GetAllItem(OUT vector<BaseObject>& vecObject)
+bool DataBaseManager::GetAllItem(OUT vector<BaseObject *>& vecObject)
 {
 	return false;
 }
 
-bool DataBaseManager::GetAllItemExpandSub(OUT vector<BaseObject>& vecObject)
+bool DataBaseManager::GetAllItemExpandSub(OUT vector<BaseObject *>& vecObject)
 {
 	return false;
 }
 
-bool DataBaseManager::GetItem(IN int nID, OUT BaseObject & stuObject)
+bool DataBaseManager::GetItem(IN int nID, OUT BaseObject * & stuObject)
 {
 	return false;
 }
