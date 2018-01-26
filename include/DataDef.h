@@ -23,9 +23,11 @@ namespace BaseGraph_Common
 		byte * m_pBuf;
 	public:
 		Value();
+		Value(const Value & other);
+		Value & operator = (const Value & other);
 		~Value();
 		void Reset();
-		CString ToString();
+		CString ToDebugString();
 
 		bool SetValue(int nValue);
 		bool SetValue(DWORD dwValue);
@@ -38,5 +40,7 @@ namespace BaseGraph_Common
 		BOOL ToBOOL();
 		float ToFloat();
 		CString ToCString();
+
+		bool Serilize(CArchive & archive);
 	};
 };

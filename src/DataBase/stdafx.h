@@ -44,3 +44,5 @@
 #else
 #define BASEGRAPH_DATABASE_API __declspec(dllimport)
 #endif // BASEGRAPH_DATABASE_EXPORTS
+
+#include "ExportCommon.h"

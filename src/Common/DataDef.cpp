@@ -9,6 +9,41 @@ BaseGraph_Common::Value::Value()
 {
 }
 
+BaseGraph_Common::Value::Value(const Value & other)
+	: m_emType(ValueType_ERR)
+	, m_nSize(0)
+	, m_pBuf(nullptr)
+{
+	m_emType = other.m_emType;
+	m_nSize = other.m_nSize;
+	if (m_nSize > 0)
+	{
+		m_pBuf = new byte[m_nSize];
+		memcpy(m_pBuf, other.m_pBuf, m_nSize);
+	}
+}
+
+BaseGraph_Common::Value & BaseGraph_Common::Value::operator=(const Value & other)
+{
+	m_emType = other.m_emType;
+	m_nSize = other.m_nSize;
+	if (m_nSize != other.m_nSize)
+	{
+		m_nSize = other.m_nSize;
+		delete m_pBuf;
+		m_pBuf = nullptr;
+		if (m_nSize > 0)
+		{
+			m_pBuf = new byte[m_nSize];
+		}
+	}
+	if (other.m_nSize > 0)
+	{
+		memcpy(m_pBuf, other.m_pBuf, m_nSize);
+	}
+	return *this;
+}
+
 BaseGraph_Common::Value::~Value()
 {
 	Reset();
@@ -25,7 +60,7 @@ void BaseGraph_Common::Value::Reset()
 	}
 }
 
-CString BaseGraph_Common::Value::ToString()
+CString BaseGraph_Common::Value::ToDebugString()
 {
 	CString strRet = _T("");
 	switch (m_emType)
@@ -220,4 +255,9 @@ CString BaseGraph_Common::Value::ToCString()
 		assert(false);
 	}
 	return strTmp;
+}
+
+bool BaseGraph_Common::Value::Serilize(CArchive & archive)
+{
+	return false;
 }
