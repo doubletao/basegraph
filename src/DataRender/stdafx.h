@@ -37,3 +37,14 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 
+#define BASEGRAPH_AUTO_LOAD
+
+#define BASEGRAPH_DATARENDER_EXPORTS
+#ifdef BASEGRAPH_DATARENDER_EXPORTS
+#define BASEGRAPH_DATARENDER_API __declspec(dllexport)
+#else
+#define BASEGRAPH_DATARENDER_API __declspec(dllimport)
+#endif // BASEGRAPH_DATARENDER_EXPORTS
+
+#include "ExportCommon.h"
+#include "ExportDataBase.h"

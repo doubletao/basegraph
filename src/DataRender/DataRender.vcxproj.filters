@@ -24,6 +24,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectCalculator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataRender.h">
@@ -36,6 +39,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectCalculator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportDataRender.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
