@@ -62,8 +62,8 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 {
 	if (archive.IsStoring())
 	{
-		//先己后子
-		int nTmp = (int)m_mapParam.size();
+		int nTmp = 0;
+		nTmp = (int)m_mapParam.size();
 		archive << nTmp;
 		for (std::map<ParamValueDef, Value>::iterator it = m_mapParam.begin(); it != m_mapParam.end(); it++)
 		{

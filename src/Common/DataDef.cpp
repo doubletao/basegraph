@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "DataDef.h"
+#include "Common/DataDef.h"
 #include <assert.h>
 
 BaseGraph_Common::Value::Value()

@@ -1,6 +1,5 @@
 #pragma once
 #include "DataTypeDef.h"
-#include "DataDef.h"
 #include "BaseObject.h"
 using BaseGraph_DataBase::BaseObject;
 using BaseGraph_DataBase::ObjectType;
@@ -8,8 +7,6 @@ using BaseGraph_DataBase::ParamValueDef;
 using BaseGraph_Common::Value;
 using std::vector;
 using std::map;
-#define IN
-#define OUT
 
 class DataBaseManager
 {
@@ -42,5 +39,6 @@ public:
 	//序列化
 	bool SaveToFile(CString strFile);
 	bool LoadFromFile(CString strFile);
+	bool SerializeObjects(CArchive & archive, vector<BaseObject *> & vecObject);//特殊的序列化接口，仅处理物件，不管其他(注意，load出来的物件需要自己释放)
 };
 

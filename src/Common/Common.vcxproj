@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="CommonMatrix.cpp" />
     <ClCompile Include="DataDef.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -119,7 +120,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\DataDef.h" />
+    <ClInclude Include="..\..\include\Common\CommonMatrix.h" />
+    <ClInclude Include="..\..\include\Common\DataDef.h" />
     <ClInclude Include="..\..\include\ExportCommon.h" />
     <ClInclude Include="Eigen\Cholesky\LDLT.h" />
     <ClInclude Include="Eigen\Cholesky\LLT.h" />

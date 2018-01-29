@@ -30,6 +30,9 @@
     <ClCompile Include="DataDef.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CommonMatrix.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -845,9 +848,6 @@
     <ClInclude Include="Eigen\Core\util\XprHelper.h">
       <Filter>Eigen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\DataDef.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\ExportCommon.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -858,6 +858,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\CommonMatrix.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\DataDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

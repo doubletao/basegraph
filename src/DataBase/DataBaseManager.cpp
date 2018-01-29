@@ -96,10 +96,53 @@ bool DataBaseManager::SetItemProperty(IN int nID, IN const map<ParamValueDef, Va
 
 bool DataBaseManager::SaveToFile(CString strFile)
 {
+	CFile cf;
+	CFileException e;
+	BOOL bOpenSuc = FALSE;
+	bOpenSuc = cf.Open(strFile, CFile::modeCreate | CFile::modeWrite, &e);
+
+	if (bOpenSuc)
+	{
+		CArchive ar(&cf, CArchive::store);
+		//先序列化物件
+		bool bRet = SerializeObjects(ar, m_vecObject);
+		//序列化其他
+		ar.Close();
+		cf.Close();
+		return bRet;
+	}
 	return false;
 }
 
 bool DataBaseManager::LoadFromFile(CString strFile)
 {
+	CFile cf;
+	CFileException e;
+	BOOL bOpenSuc = FALSE;
+	if (_taccess(strFile, 0) != -1)
+	{
+		bOpenSuc = cf.Open(strFile, CFile::modeRead, &e);
+	}
+
+	if (bOpenSuc)
+	{
+		CArchive ar(&cf, CArchive::load);
+		bool bRet = SerializeObjects(ar, m_vecObject);
+		ar.Close();
+		cf.Close();
+		return bRet;
+	}
 	return false;
 }
+
+bool DataBaseManager::SerializeObjects(CArchive & archive, vector<BaseObject*>& vecObject)
+{
+	if (archive.IsStoring())
+	{
+	}
+	else
+	{
+	}
+	return false;
+}
+

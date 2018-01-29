@@ -1,5 +1,4 @@
 #pragma once
-#include "DataDef.h"
 #include <vector>
 #include <map>
 using BaseGraph_Common::Value;
@@ -65,6 +64,11 @@ namespace BaseGraph_DataBase
 		ScrollParam_End,
 
 		ImageParam = 3000,
+		Image_Path,
+		Image_SrcWidth,
+		Image_SrcHeight,
+		Image_DispWidth,
+		Image_DispHeight,
 		ImageParam_End,
 	};
 
@@ -309,6 +313,39 @@ namespace BaseGraph_DataBase
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("颜色参数");
 			valueDesc.stuDefault.SetValue(ValueColor());
+			break;
+		case Image_Path:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("图片路径");
+			valueDesc.stuDefault.SetValue(_T(""));
+			break;
+		case Image_SrcWidth:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("图源宽");
+			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(8192, _T("最大值")));
+			break;
+		case Image_SrcHeight:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("图源高");
+			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(8192, _T("最大值")));
+			break;
+		case Image_DispWidth:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("展示宽");
+			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(8192, _T("最大值")));
+			break;
+		case Image_DispHeight:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("展示高");
+			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(8192, _T("最大值")));
 			break;
 		default:
 			break;
