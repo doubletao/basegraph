@@ -4,7 +4,9 @@
 #define BASEGRAPH_COMMON_API __declspec(dllexport)
 #else
 #define BASEGRAPH_COMMON_API __declspec(dllimport)
-#include "Common/DataDef.h"
+#include "Common\DataDef.h"
+#include "Common\CommonMatrix.h"
+#include "Common\CommonFunction.h"
 #endif // BASEGRAPH_COMMON_EXPORTS
 
 #ifdef BASEGRAPH_AUTO_LOAD

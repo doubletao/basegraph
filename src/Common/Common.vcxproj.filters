@@ -33,6 +33,9 @@
     <ClCompile Include="CommonMatrix.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CommonFunction.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -864,6 +867,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Common\DataDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\CommonFunction.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

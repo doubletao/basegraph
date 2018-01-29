@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="CommonFunction.cpp" />
     <ClCompile Include="CommonMatrix.cpp" />
     <ClCompile Include="DataDef.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -120,6 +121,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\Common\CommonFunction.h" />
     <ClInclude Include="..\..\include\Common\CommonMatrix.h" />
     <ClInclude Include="..\..\include\Common\DataDef.h" />
     <ClInclude Include="..\..\include\ExportCommon.h" />

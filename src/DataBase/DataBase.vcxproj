@@ -118,6 +118,7 @@
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="DataBaseManager.cpp" />
+    <ClCompile Include="DataResourceManager.cpp" />
     <ClCompile Include="IntIDGenerator.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="ObjectImage.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="DataBase.h" />
     <ClInclude Include="DataBaseManager.h" />
+    <ClInclude Include="DataResourceManager.h" />
     <ClInclude Include="DataTypeDef.h" />
     <ClInclude Include="IntIDGenerator.h" />
     <ClInclude Include="ObjectFactory.h" />

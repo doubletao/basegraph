@@ -19,5 +19,16 @@ namespace BaseGraph_DataBase
 	public:
 		bool Serialize(CArchive & archive);
 		BaseGraph_DataBase::ObjectType GetObjectType();
+
+		Value GetValue(ParamValueDef emValueDef);
+
+		point3 GetItemPos();
+		void SetItemPos(point3 ptValue);
+		point3 GetItemRotate();
+		void SetItemRotate(point3 ptValue);
+		point3 GetItemScale();
+		void SetItemScale(point3 ptValue);
+		point3 GetItemCenter();
+		void SetItemCenter(point3 ptValue);
 	};
 };

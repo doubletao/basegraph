@@ -114,3 +114,76 @@ BaseGraph_DataBase::ObjectType BaseGraph_DataBase::BaseObject::GetObjectType()
 	}
 	return emObjType;
 }
+
+Value BaseGraph_DataBase::BaseObject::GetValue(ParamValueDef emValueDef)
+{
+	if (m_mapParam.count(emValueDef) < 1)
+	{
+		return GetValueDescriptor(emValueDef).stuDefault;
+	}
+	return m_mapParam[emValueDef];
+}
+
+point3 BaseGraph_DataBase::BaseObject::GetItemPos()
+{
+	point3 ptRet = {0};
+	ptRet.x = GetValue(SpacePosition_X).ToInt();
+	ptRet.y = GetValue(SpacePosition_Y).ToInt();
+	ptRet.z = GetValue(SpacePosition_Z).ToInt();
+	return ptRet;
+}
+
+void BaseGraph_DataBase::BaseObject::SetItemPos(point3 ptValue)
+{
+	m_mapParam[SpacePosition_X].SetValue(ptValue.x);
+	m_mapParam[SpacePosition_Y].SetValue(ptValue.y);
+	m_mapParam[SpacePosition_Z].SetValue(ptValue.z);
+}
+
+point3 BaseGraph_DataBase::BaseObject::GetItemRotate()
+{
+	point3 ptRet = { 0 };
+	ptRet.x = GetValue(SpaceRotate_X).ToInt();
+	ptRet.y = GetValue(SpaceRotate_Y).ToInt();
+	ptRet.z = GetValue(SpaceRotate_Z).ToInt();
+	return ptRet;
+}
+
+void BaseGraph_DataBase::BaseObject::SetItemRotate(point3 ptValue)
+{
+	m_mapParam[SpaceRotate_X].SetValue(ptValue.x);
+	m_mapParam[SpaceRotate_Y].SetValue(ptValue.y);
+	m_mapParam[SpaceRotate_Z].SetValue(ptValue.z);
+}
+
+point3 BaseGraph_DataBase::BaseObject::GetItemScale()
+{
+	point3 ptRet = { 0 };
+	ptRet.x = GetValue(SpaceScale_X).ToInt();
+	ptRet.y = GetValue(SpaceScale_Y).ToInt();
+	ptRet.z = GetValue(SpaceScale_Z).ToInt();
+	return ptRet;
+}
+
+void BaseGraph_DataBase::BaseObject::SetItemScale(point3 ptValue)
+{
+	m_mapParam[SpaceScale_X].SetValue(ptValue.x);
+	m_mapParam[SpaceScale_Y].SetValue(ptValue.y);
+	m_mapParam[SpaceScale_Z].SetValue(ptValue.z);
+}
+
+point3 BaseGraph_DataBase::BaseObject::GetItemCenter()
+{
+	point3 ptRet = { 0 };
+	ptRet.x = GetValue(SpaceCenter_X).ToInt();
+	ptRet.y = GetValue(SpaceCenter_Y).ToInt();
+	ptRet.z = GetValue(SpaceCenter_Z).ToInt();
+	return ptRet;
+}
+
+void BaseGraph_DataBase::BaseObject::SetItemCenter(point3 ptValue)
+{
+	m_mapParam[SpaceCenter_X].SetValue(ptValue.x);
+	m_mapParam[SpaceCenter_Y].SetValue(ptValue.y);
+	m_mapParam[SpaceCenter_Z].SetValue(ptValue.z);
+}

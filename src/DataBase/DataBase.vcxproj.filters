@@ -45,6 +45,9 @@
     <ClCompile Include="DataBaseManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="DataResourceManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataBase.h">
@@ -84,6 +87,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="DataBaseManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DataResourceManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
