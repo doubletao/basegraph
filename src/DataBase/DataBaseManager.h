@@ -1,5 +1,4 @@
 #pragma once
-#include "DataTypeDef.h"
 #include "BaseObject.h"
 using BaseGraph_DataBase::BaseObject;
 using BaseGraph_DataBase::ObjectType;

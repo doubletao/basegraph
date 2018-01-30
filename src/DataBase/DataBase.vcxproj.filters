@@ -89,7 +89,7 @@
     <ClInclude Include="DataResourceManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\DataTypeDef.h">
+    <ClInclude Include="..\..\include\DataBase\DataTypeDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

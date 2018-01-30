@@ -27,6 +27,15 @@
     <ClCompile Include="ObjectCalculator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DataBufferManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCalculator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataRender.h">
@@ -45,6 +54,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ExportDataRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DataBufferManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageCalculator.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

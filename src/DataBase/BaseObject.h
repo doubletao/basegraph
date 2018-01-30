@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
-#include "DataTypeDef.h"
+#include "DataBase\DataTypeDef.h"
 using BaseGraph_Common::Value;
 
 namespace BaseGraph_DataBase

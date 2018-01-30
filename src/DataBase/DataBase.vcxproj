@@ -130,7 +130,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\DataTypeDef.h" />
+    <ClInclude Include="..\..\include\DataBase\DataTypeDef.h" />
     <ClInclude Include="..\..\include\ExportDataBase.h" />
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="DataBase.h" />

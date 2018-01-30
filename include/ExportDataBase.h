@@ -3,7 +3,7 @@
 #define BASEGRAPH_DATABASE_API __declspec(dllexport)
 #else
 #define BASEGRAPH_DATABASE_API __declspec(dllimport)
-#include "DataTypeDef.h"
+#include "DataBase\DataTypeDef.h"
 #endif // BASEGRAPH_COMMON_EXPORTS
 
 #ifdef BASEGRAPH_AUTO_LOAD
