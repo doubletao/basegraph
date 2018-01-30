@@ -21,6 +21,7 @@ public:
 	int Query2DBuffer(int nWidth, int nHeight);//取一个2Dbuf
 	bool UnQuery2DBuffer(int nBufferID);//释放一个2Dbuf的使用权（不释放）
 	bool Compress2DBuffer();//压缩2Dbuf（释放掉所有未使用的bufer）
+	ObjectBuffer * GetObjectBuf(int nBufferID);
 	//3D Buffer操作
 	//...
 };

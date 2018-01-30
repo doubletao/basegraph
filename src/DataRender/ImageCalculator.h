@@ -8,5 +8,7 @@ public:
 	virtual ~ImageCalculator();
 public:
 	virtual bool UpdateRenderBuffer();
+	virtual int GetWidth();
+	virtual int GetHeight();
 };
 

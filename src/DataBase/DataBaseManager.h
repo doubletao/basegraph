@@ -17,9 +17,10 @@ private:
 public:
 	static DataBaseManager & Instance();
 	//取得列表
+	bool GetAllItemID(OUT std::vector<int>& vecID);
+	bool GetItemType(IN int nID, OUT BaseGraph_DataBase::ObjectType & emType);
 	bool GetAllItem(OUT vector<BaseObject *> & vecObject);
-	bool GetAllItemExpandSub(OUT vector<BaseObject *>& vecObject);
-	bool GetItem(IN int nID, OUT BaseObject * & stuObject);
+	bool GetItem(IN int nID, OUT BaseObject * & pObject);
 	//增删
 	bool CreateItem(IN ObjectType emType, IN const map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam, OUT int & nID);
 	bool AddSubItemTo(IN int nParentID, IN int nSubID);

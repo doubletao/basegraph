@@ -131,3 +131,12 @@ bool DataBufferManager::Compress2DBuffer()
 	}
 	return true;
 }
+
+ObjectBuffer * DataBufferManager::GetObjectBuf(int nBufferID)
+{
+	if (m_map2DBuffer.count(nBufferID) > 0)
+	{
+		return m_map2DBuffer[nBufferID];
+	}
+	return nullptr;
+}

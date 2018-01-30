@@ -20,7 +20,11 @@ namespace BaseGraph_DataBase
 		bool Serialize(CArchive & archive);
 		BaseGraph_DataBase::ObjectType GetObjectType();
 
+		std::map<ParamValueDef, Value> & GetProperty();
 		Value GetValue(ParamValueDef emValueDef);
+		void SetValue(ParamValueDef emValueDef, Value stuValue);
+
+		int GetItemID();
 
 		point3 GetItemPos();
 		void SetItemPos(point3 ptValue);

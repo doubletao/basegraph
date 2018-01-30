@@ -5,7 +5,7 @@ using namespace BaseGraph_DataBase;
 
 ObjectImage::ObjectImage()
 {
-	m_mapParam[ObjType].SetValue(ObjectType_Image, BaseGraph_Common::ValueType_ENUM);
+	SetValue(ObjType, Value(ObjectType_Image, BaseGraph_Common::ValueType_ENUM));
 }
 
 ObjectImage::~ObjectImage()
@@ -39,7 +39,7 @@ CString ObjectImage::GetImagePath()
 void ObjectImage::SetImagePath(CString strPath)
 {
 	DataResourceManager::Instance().DelResource(GetValue(Image_Path).ToCString());
-	m_mapParam[Image_Path].SetValue(DataResourceManager::Instance().AddResource(strPath));
+	SetValue(Image_Path, DataResourceManager::Instance().AddResource(strPath));
 }
 
 int ObjectImage::GetSrcWidth()
@@ -49,7 +49,7 @@ int ObjectImage::GetSrcWidth()
 
 void ObjectImage::SetSrcWidth(int nValue)
 {
-	m_mapParam[Image_SrcWidth].SetValue(nValue);
+	SetValue(Image_SrcWidth, nValue);
 }
 
 int ObjectImage::GetSrcHeight()
@@ -59,7 +59,7 @@ int ObjectImage::GetSrcHeight()
 
 void ObjectImage::SetSrcHeight(int nValue)
 {
-	m_mapParam[Image_SrcHeight].SetValue(nValue);
+	SetValue(Image_SrcHeight, nValue);
 }
 
 int ObjectImage::GetDispWidth()
@@ -69,7 +69,7 @@ int ObjectImage::GetDispWidth()
 
 void ObjectImage::SetDispWidth(int nValue)
 {
-	m_mapParam[Image_DispWidth].SetValue(nValue);
+	SetValue(Image_DispWidth, nValue);
 }
 
 int ObjectImage::GetDispHeight()
@@ -79,5 +79,5 @@ int ObjectImage::GetDispHeight()
 
 void ObjectImage::SetDispHeight(int nValue)
 {
-	m_mapParam[Image_DispHeight].SetValue(nValue);
+	SetValue(Image_DispHeight, nValue);
 }

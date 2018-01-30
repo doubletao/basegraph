@@ -24,18 +24,47 @@ DataBaseManager & DataBaseManager::Instance()
 	return inst;
 }
 
+bool DataBaseManager::GetAllItemID(OUT std::vector<int>& vecID)
+{
+	vecID.clear();
+	for (size_t i = 0; i < m_vecObject.size(); i++)
+	{
+		if (m_vecObject[i])
+		{
+			vecID.push_back(m_vecObject[i]->GetItemID());
+		}
+	}
+	return true;
+}
+
+bool DataBaseManager::GetItemType(IN int nID, OUT BaseGraph_DataBase::ObjectType & emType)
+{
+	BaseObject * pObj = nullptr;
+	if (GetItem(nID, pObj)
+		&& pObj)
+	{
+		BaseGraph_Common::Value stuParam = pObj->GetValue(BaseGraph_DataBase::ObjType);
+		emType = (BaseGraph_DataBase::ObjectType)stuParam.ToInt();
+		return true;
+	}
+	return false;
+}
+
 bool DataBaseManager::GetAllItem(OUT vector<BaseObject *>& vecObject)
 {
 	return false;
 }
 
-bool DataBaseManager::GetAllItemExpandSub(OUT vector<BaseObject *>& vecObject)
+bool DataBaseManager::GetItem(IN int nID, OUT BaseObject * & pObject)
 {
-	return false;
-}
-
-bool DataBaseManager::GetItem(IN int nID, OUT BaseObject * & stuObject)
-{
+	for (size_t i = 0; i < m_vecObject.size(); i++)
+	{
+		if (m_vecObject[i] && m_vecObject[i]->GetItemID() == nID)
+		{
+			pObject = m_vecObject[i];
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -76,21 +105,52 @@ bool DataBaseManager::MoveItemAfter(IN int nSrcID, IN int nDesID)
 
 bool DataBaseManager::GetItemProperty(IN int nID, IN ParamValueDef emParam, OUT Value & stuParam)
 {
+	BaseObject * pObj = nullptr;
+	if (GetItem(nID, pObj)
+		&& pObj)
+	{
+		stuParam = pObj->GetValue(emParam);
+		return true;
+	}
 	return false;
 }
 
 bool DataBaseManager::GetItemProperty(IN int nID, OUT map<ParamValueDef, Value>& mapParam)
 {
+	BaseObject * pObj = nullptr;
+	if (GetItem(nID, pObj)
+		&& pObj)
+	{
+		mapParam = pObj->GetProperty();
+		return true;
+	}
 	return false;
 }
 
 bool DataBaseManager::SetItemProperty(IN int nID, IN ParamValueDef emParam, IN const Value & stuParam)
 {
+	BaseObject * pObj = nullptr;
+	if (GetItem(nID, pObj)
+		&& pObj)
+	{
+		pObj->SetValue(emParam, stuParam);
+		return true;
+	}
 	return false;
 }
 
 bool DataBaseManager::SetItemProperty(IN int nID, IN const map<ParamValueDef, Value>& mapParam)
 {
+	BaseObject * pObj = nullptr;
+	if (GetItem(nID, pObj)
+		&& pObj)
+	{
+		for (map<ParamValueDef, Value>::const_iterator it = mapParam.begin(); it != mapParam.end(); it++)
+		{
+			pObj->SetValue(it->first, it->second);
+		}
+		return true;
+	}
 	return false;
 }
 

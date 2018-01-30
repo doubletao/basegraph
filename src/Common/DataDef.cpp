@@ -9,6 +9,36 @@ BaseGraph_Common::Value::Value()
 {
 }
 
+BaseGraph_Common::Value::Value(int nValue)
+{
+	SetValue(nValue);
+}
+
+BaseGraph_Common::Value::Value(DWORD dwValue)
+{
+	SetValue(dwValue);
+}
+
+BaseGraph_Common::Value::Value(int nValue, ValueType emType)
+{
+	SetValue(nValue, emType);
+}
+
+BaseGraph_Common::Value::Value(float fValue)
+{
+	SetValue(fValue);
+}
+
+BaseGraph_Common::Value::Value(CString strValue)
+{
+	SetValue(strValue);
+}
+
+BaseGraph_Common::Value::Value(const ValueAbleInterface & stuValue)
+{
+	SetValue(stuValue);
+}
+
 BaseGraph_Common::Value::Value(const Value & other)
 	: m_emType(ValueType_ERR)
 	, m_nSize(0)

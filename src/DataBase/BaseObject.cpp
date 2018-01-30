@@ -115,6 +115,11 @@ BaseGraph_DataBase::ObjectType BaseGraph_DataBase::BaseObject::GetObjectType()
 	return emObjType;
 }
 
+std::map<BaseGraph_DataBase::ParamValueDef, Value>& BaseGraph_DataBase::BaseObject::GetProperty()
+{
+	return m_mapParam;
+}
+
 Value BaseGraph_DataBase::BaseObject::GetValue(ParamValueDef emValueDef)
 {
 	if (m_mapParam.count(emValueDef) < 1)
@@ -122,6 +127,18 @@ Value BaseGraph_DataBase::BaseObject::GetValue(ParamValueDef emValueDef)
 		return GetValueDescriptor(emValueDef).stuDefault;
 	}
 	return m_mapParam[emValueDef];
+}
+
+void BaseGraph_DataBase::BaseObject::SetValue(ParamValueDef emValueDef, Value stuValue)
+{
+	m_mapParam[emValueDef] = stuValue;
+}
+
+int BaseGraph_DataBase::BaseObject::GetItemID()
+{
+	int nRet = 0;
+	nRet = GetValue(ObjID).ToInt();
+	return nRet;
 }
 
 point3 BaseGraph_DataBase::BaseObject::GetItemPos()
@@ -135,9 +152,9 @@ point3 BaseGraph_DataBase::BaseObject::GetItemPos()
 
 void BaseGraph_DataBase::BaseObject::SetItemPos(point3 ptValue)
 {
-	m_mapParam[SpacePosition_X].SetValue(ptValue.x);
-	m_mapParam[SpacePosition_Y].SetValue(ptValue.y);
-	m_mapParam[SpacePosition_Z].SetValue(ptValue.z);
+	SetValue(SpacePosition_X, ptValue.x);
+	SetValue(SpacePosition_Y, ptValue.y);
+	SetValue(SpacePosition_Z, ptValue.z);
 }
 
 point3 BaseGraph_DataBase::BaseObject::GetItemRotate()
@@ -151,9 +168,9 @@ point3 BaseGraph_DataBase::BaseObject::GetItemRotate()
 
 void BaseGraph_DataBase::BaseObject::SetItemRotate(point3 ptValue)
 {
-	m_mapParam[SpaceRotate_X].SetValue(ptValue.x);
-	m_mapParam[SpaceRotate_Y].SetValue(ptValue.y);
-	m_mapParam[SpaceRotate_Z].SetValue(ptValue.z);
+	SetValue(SpaceRotate_X, ptValue.x);
+	SetValue(SpaceRotate_Y, ptValue.y);
+	SetValue(SpaceRotate_Z, ptValue.z);
 }
 
 point3 BaseGraph_DataBase::BaseObject::GetItemScale()
@@ -167,9 +184,9 @@ point3 BaseGraph_DataBase::BaseObject::GetItemScale()
 
 void BaseGraph_DataBase::BaseObject::SetItemScale(point3 ptValue)
 {
-	m_mapParam[SpaceScale_X].SetValue(ptValue.x);
-	m_mapParam[SpaceScale_Y].SetValue(ptValue.y);
-	m_mapParam[SpaceScale_Z].SetValue(ptValue.z);
+	SetValue(SpaceScale_X, ptValue.x);
+	SetValue(SpaceScale_Y, ptValue.y);
+	SetValue(SpaceScale_Z, ptValue.z);
 }
 
 point3 BaseGraph_DataBase::BaseObject::GetItemCenter()
@@ -183,7 +200,7 @@ point3 BaseGraph_DataBase::BaseObject::GetItemCenter()
 
 void BaseGraph_DataBase::BaseObject::SetItemCenter(point3 ptValue)
 {
-	m_mapParam[SpaceCenter_X].SetValue(ptValue.x);
-	m_mapParam[SpaceCenter_Y].SetValue(ptValue.y);
-	m_mapParam[SpaceCenter_Z].SetValue(ptValue.z);
+	SetValue(SpaceCenter_X, ptValue.x);
+	SetValue(SpaceCenter_Y, ptValue.y);
+	SetValue(SpaceCenter_Z, ptValue.z);
 }

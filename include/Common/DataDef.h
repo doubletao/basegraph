@@ -31,6 +31,12 @@ namespace BaseGraph_Common
 		byte * m_pBuf;
 	public:
 		Value();
+		Value(int nValue);
+		Value(DWORD dwValue);
+		Value(int nValue, ValueType emType);//对于枚举，角度，BOOL，时间等类型，内部其实都是int，但需要指定
+		Value(float fValue);
+		Value(CString strValue);
+		Value(const ValueAbleInterface & stuValue);
 		Value(const Value & other);
 		Value & operator = (const Value & other);
 		~Value();

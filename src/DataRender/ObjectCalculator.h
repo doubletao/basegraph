@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
+#include "DataBufferManager.h"
 
 /*
 Îï¼þ¼ÆËãÆ÷
@@ -19,6 +20,7 @@ class ObjectCalculator
 {
 protected:
 	int m_nObjID;
+	int m_nObjBufferID;
 	EmObjectChgLevel m_emChgLevel;
 public:
 	ObjectCalculator();
@@ -26,6 +28,7 @@ public:
 	virtual int GetWidth();
 	virtual int GetHeight();
 public:
+	virtual bool NeedRenderBuffer();
 	virtual bool UpdateRenderBuffer();
 };
 
