@@ -28,7 +28,7 @@ bool BASEGRAPH_DATABASE_API DataBase_MoveItemBefore(IN int nSrcID, IN int nDesID
 bool BASEGRAPH_DATABASE_API DataBase_MoveItemAfter(IN int nSrcID, IN int nDesID);
 //属性获取
 bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam);
-bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+//bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
 //属性设置
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN int nID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN int nID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);

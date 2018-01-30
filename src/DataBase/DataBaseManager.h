@@ -32,7 +32,7 @@ public:
 	bool MoveItemAfter(IN int nSrcID, IN int nDesID);
 	//属性获取
 	bool GetItemProperty(IN int nID, IN ParamValueDef emParam, OUT Value & stuParam);
-	bool GetItemProperty(IN int nID, OUT map<ParamValueDef, Value> & mapParam);
+	//bool GetItemProperty(IN int nID, OUT map<ParamValueDef, Value> & mapParam);
 	//属性设置
 	bool SetItemProperty(IN int nID, IN ParamValueDef emParam, IN const Value & stuParam);
 	bool SetItemProperty(IN int nID, IN const map<ParamValueDef, Value> & mapParam);

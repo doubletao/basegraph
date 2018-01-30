@@ -14,6 +14,11 @@ bool ImageCalculator::UpdateRenderBuffer()
 {
 	if (NeedRenderBuffer())
 	{
+		BaseGraph_Common::Value stuValue;
+		if (DataBase_GetItemProperty(m_nObjID, BaseGraph_DataBase::Image_Path, stuValue))
+		{
+		}
+		return false;
 	}
 	return true;
 }

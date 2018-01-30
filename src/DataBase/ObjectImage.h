@@ -10,6 +10,7 @@ public:
 	virtual ~ObjectImage();
 public:
 	virtual void InitialObjectParam();
+
 	CString GetImagePath();
 	void SetImagePath(CString strPath);
 	int GetSrcWidth();

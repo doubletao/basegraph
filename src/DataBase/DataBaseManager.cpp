@@ -43,8 +43,7 @@ bool DataBaseManager::GetItemType(IN int nID, OUT BaseGraph_DataBase::ObjectType
 	if (GetItem(nID, pObj)
 		&& pObj)
 	{
-		BaseGraph_Common::Value stuParam = pObj->GetValue(BaseGraph_DataBase::ObjType);
-		emType = (BaseGraph_DataBase::ObjectType)stuParam.ToInt();
+		emType = pObj->GetItemType();
 		return true;
 	}
 	return false;
@@ -115,17 +114,17 @@ bool DataBaseManager::GetItemProperty(IN int nID, IN ParamValueDef emParam, OUT 
 	return false;
 }
 
-bool DataBaseManager::GetItemProperty(IN int nID, OUT map<ParamValueDef, Value>& mapParam)
-{
-	BaseObject * pObj = nullptr;
-	if (GetItem(nID, pObj)
-		&& pObj)
-	{
-		mapParam = pObj->GetProperty();
-		return true;
-	}
-	return false;
-}
+//bool DataBaseManager::GetItemProperty(IN int nID, OUT map<ParamValueDef, Value>& mapParam)
+//{
+//	BaseObject * pObj = nullptr;
+//	if (GetItem(nID, pObj)
+//		&& pObj)
+//	{
+//		mapParam = pObj->GetProperty();
+//		return true;
+//	}
+//	return false;
+//}
 
 bool DataBaseManager::SetItemProperty(IN int nID, IN ParamValueDef emParam, IN const Value & stuParam)
 {

@@ -20,11 +20,14 @@ namespace BaseGraph_DataBase
 		bool Serialize(CArchive & archive);
 		BaseGraph_DataBase::ObjectType GetObjectType();
 
-		std::map<ParamValueDef, Value> & GetProperty();
+		//std::map<ParamValueDef, Value> & GetProperty();
 		Value GetValue(ParamValueDef emValueDef);
 		void SetValue(ParamValueDef emValueDef, Value stuValue);
 
+		bool IsCustomValue(ParamValueDef emValueDef);//遇到需要额外动作的值，obj不处理，交给工厂来
+
 		int GetItemID();
+		ObjectType GetItemType();
 
 		point3 GetItemPos();
 		void SetItemPos(point3 ptValue);

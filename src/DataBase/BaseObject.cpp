@@ -115,23 +115,53 @@ BaseGraph_DataBase::ObjectType BaseGraph_DataBase::BaseObject::GetObjectType()
 	return emObjType;
 }
 
-std::map<BaseGraph_DataBase::ParamValueDef, Value>& BaseGraph_DataBase::BaseObject::GetProperty()
-{
-	return m_mapParam;
-}
+//std::map<BaseGraph_DataBase::ParamValueDef, Value>& BaseGraph_DataBase::BaseObject::GetProperty()
+//{
+//	return m_mapParam;
+//}
 
 Value BaseGraph_DataBase::BaseObject::GetValue(ParamValueDef emValueDef)
 {
-	if (m_mapParam.count(emValueDef) < 1)
+	if (IsCustomValue(emValueDef))
 	{
-		return GetValueDescriptor(emValueDef).stuDefault;
+		//对于上了特定名单的值类型，交给工厂处理成具体的对象指针后再继续操作
+		return ObjectFactory::GetValue(this, emValueDef);
 	}
-	return m_mapParam[emValueDef];
+	else
+	{
+		if (m_mapParam.count(emValueDef) < 1)
+		{
+			return GetValueDescriptor(emValueDef).stuDefault;
+		}
+		return m_mapParam[emValueDef];
+	}
 }
 
 void BaseGraph_DataBase::BaseObject::SetValue(ParamValueDef emValueDef, Value stuValue)
 {
-	m_mapParam[emValueDef] = stuValue;
+	if (IsCustomValue(emValueDef))
+	{
+		//对于上了特定名单的值类型，交给工厂处理成具体的对象指针后再继续操作
+		ObjectFactory::SetValue(this, emValueDef, stuValue);
+	}
+	else
+	{
+		m_mapParam[emValueDef] = stuValue;
+	}
+}
+
+bool BaseGraph_DataBase::BaseObject::IsCustomValue(ParamValueDef emValueDef)
+{
+	switch (emValueDef)
+	{
+	case BaseGraph_DataBase::Image_Path://图片需要做路径转换，set和get时需要经过资源管理器
+		return true;
+		break;
+	default:
+		return false;
+		break;
+	}
+	return false;
 }
 
 int BaseGraph_DataBase::BaseObject::GetItemID()
@@ -139,6 +169,13 @@ int BaseGraph_DataBase::BaseObject::GetItemID()
 	int nRet = 0;
 	nRet = GetValue(ObjID).ToInt();
 	return nRet;
+}
+
+ObjectType BaseGraph_DataBase::BaseObject::GetItemType()
+{
+	ObjectType emRet = ObjectType_Err;
+	emRet = (ObjectType)GetValue(ObjID).ToInt();
+	return emRet;
 }
 
 point3 BaseGraph_DataBase::BaseObject::GetItemPos()

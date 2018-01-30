@@ -48,3 +48,4 @@
 
 #include "ExportCommon.h"
 #include "ExportDataBase.h"
+#include "ExportBaseCodec.h"

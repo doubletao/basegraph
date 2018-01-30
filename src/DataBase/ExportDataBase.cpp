@@ -52,10 +52,10 @@ bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, IN BaseGraph_Da
 	return DataBaseManager::Instance().GetItemProperty(nID, emParam, stuParam);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
-{
-	return DataBaseManager::Instance().GetItemProperty(nID, mapParam);
-}
+//bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
+//{
+//	return DataBaseManager::Instance().GetItemProperty(nID, mapParam);
+//}
 
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN int nID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
 {

@@ -33,13 +33,14 @@ void ObjectImage::InitialObjectParam()
 
 CString ObjectImage::GetImagePath()
 {
-	return GetValue(Image_Path).ToCString();
+	CString strResGUID = m_mapParam[Image_Path].ToCString();
+	return DataResourceManager::Instance().GetResource(strResGUID);
 }
 
 void ObjectImage::SetImagePath(CString strPath)
 {
-	DataResourceManager::Instance().DelResource(GetValue(Image_Path).ToCString());
-	SetValue(Image_Path, DataResourceManager::Instance().AddResource(strPath));
+	DataResourceManager::Instance().DelResource(GetImagePath());
+	m_mapParam[Image_Path] = DataResourceManager::Instance().AddResource(strPath);
 }
 
 int ObjectImage::GetSrcWidth()

@@ -10,5 +10,7 @@ private:
 	virtual ~ObjectFactory() = 0;
 public:
 	static BaseObject * CreateObject(ObjectType emObjectType);
+	static Value GetValue(BaseObject * pObj, BaseGraph_DataBase::ParamValueDef emValueDef);
+	static void SetValue(BaseObject * pObj, BaseGraph_DataBase::ParamValueDef emValueDef, Value stuValue);
 };
 

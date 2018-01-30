@@ -27,6 +27,9 @@
     <ClCompile Include="ExportBaseCodec.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ImageDecoder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseCodec.h">
@@ -42,6 +45,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ExportBaseCodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageDecoder.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
