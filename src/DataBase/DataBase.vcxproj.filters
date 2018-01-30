@@ -48,6 +48,9 @@
     <ClCompile Include="DataResourceManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ExportDataBase.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataBase.h">
