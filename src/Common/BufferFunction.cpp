@@ -56,7 +56,3 @@ BOOL BufferFunction::BufferBitblt(DWORD * pdwDesBuffer, int nDesX, int nDesY, in
 	return FALSE;
 }
 
-BOOL BufferFunction::Buffer_Fix_CutRange(IN OUT int &nDesX, IN OUT int &nDesY, IN OUT int &nDesWidth, IN OUT int &nDesHeight, IN int nDesBufferWidth, IN int nDesBufferHeight, IN OUT int &nSrcX, IN OUT int &nSrcY, IN OUT int &nSrcWidth, IN OUT int &nSrcHeight, IN int nSrcBufferWidth, IN int nSrcBufferHeight, IN RECT * prcDesClip)
-{
-	return 0;
-}

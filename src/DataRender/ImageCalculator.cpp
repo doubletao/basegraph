@@ -79,6 +79,7 @@ bool ImageCalculator::StretchImage()
 					&& pImgBuf->GetWidth() > 0
 					&& pImgBuf->GetHeight() > 0)
 				{
+					//BufferFunction::BufferBitblt();
 				}
 			}
 		}

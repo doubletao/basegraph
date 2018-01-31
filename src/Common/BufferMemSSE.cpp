@@ -60,7 +60,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Fix_SSE(OUT DWORD * pDes, IN int nDesX, IN int nD
 		return FALSE;
 
 	// 获得有效的操作范围
-	if (!BufferFunction::Buffer_Fix_CutRange(nDesX, nDesY, nDesWidth, nDesHeight, nDesBufferWidth, nDesBufferHeight, \
+	if (!Buffer_Fix_CutRange(nDesX, nDesY, nDesWidth, nDesHeight, nDesBufferWidth, nDesBufferHeight, \
 		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufferWidth, nSrcBufferHeight, prcDesClip))
 		return FALSE;
 
@@ -446,11 +446,490 @@ BOOL BufferMemSSE::Buffer_BGRA_Fix_SSE(OUT DWORD * pDes, IN int nDesX, IN int nD
 
 BOOL BufferMemSSE::Buffer_BGRA_BLStretch_SSE(OUT DWORD * pDes, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufferWidth, IN int nDesBufferHeight, IN DWORD * pSrc, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufferWidth, IN int nSrcBufferHeight, IN BUFFER_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
 {
-	return 0;
+	if (pSrc == NULL || pDes == NULL)
+		return FALSE;
+
+	float fScaleWidth(1.0f), fScaleHeight(1.0f), fSrcStartX(0.0f), fSrcStartY(0.0f);
+	int nDesAddWidth(0), nLineIndex(0), nLineInc(1);
+
+	// 获得有效的操作范围
+	if (!Buffer_Stretch_CutRange(nDesX, nDesY, nDesWidth, nDesHeight, nDesBufferWidth, nDesBufferHeight, \
+		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufferWidth, nSrcBufferHeight, 1, \
+		fScaleWidth, fScaleHeight, fSrcStartX, fSrcStartY, nDesAddWidth, nLineIndex, nLineInc, \
+		eParity, prcDesClip))
+		return FALSE;
+
+	// 申请权重表与索引表的内存空间
+	__declspec(align(16)) DWORD* pPowerX = (DWORD*)_mm_malloc(sizeof(DWORD) * (nDesWidth), 16);		// X 方向上目标列映射到源列的权重表
+	__declspec(align(16)) int* pMapX = (int*)_mm_malloc(sizeof(int) * (nDesWidth), 16);			// X 方向上目标列映射到源列的索引表
+	__declspec(align(16)) DWORD* pPowerY = (DWORD*)_mm_malloc(sizeof(DWORD) * (nDesHeight), 16);	// Y 方向上目标行映射到源行的权重表
+	__declspec(align(16)) int* pMapY = (int*)_mm_malloc(sizeof(int) * (nDesHeight), 16);			// Y 方向上目标行映射到源行的索引表
+	__declspec(align(16)) DWORD* pTmpBuf = NULL;	// 临时缓存
+											// Buffer 起始地址
+	DWORD *pDesLine = pDes + nDesY * nDesBufferWidth + nDesX, *pSrcLine = NULL;
+	int nSrcPitch = (nSrcBufferWidth << 2);
+	int na16 = (nDesWidth >> 2), nm16 = ((nDesWidth & 0x03) << 2);
+
+	// 计算权重与映射索引
+	Buffer_Power_BLStretch(pPowerX, pMapX, pPowerY, pMapY, nDesWidth, nDesHeight, \
+		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufferWidth, nSrcBufferHeight, \
+		fScaleWidth, fScaleHeight, fSrcStartX, fSrcStartY, sizeof(DWORD));
+	// 逐行处理
+	switch (eMode)
+	{
+	case BUFFER_COPY:		// 拷贝
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pSrcLine = pSrc + pMapY[nLineIndex] * nSrcBufferWidth;
+			bgra32_bl_copy_line(pDesLine, nDesWidth, pSrcLine, nSrcPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_MIX:			// Alpha 混叠
+		pTmpBuf = (DWORD*)_mm_malloc(sizeof(DWORD) * (nDesWidth), 16);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pSrcLine = pSrc + pMapY[nLineIndex] * nSrcBufferWidth;
+			bgra32_bl_copy_line(pTmpBuf, nDesWidth, pSrcLine, nSrcPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_line_mix(pDesLine, pTmpBuf, na16, nm16, g_pdwMixGainTable);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_MIX_NOTSRC:	// Alpha 反向源混叠
+		pTmpBuf = (DWORD*)_mm_malloc(sizeof(DWORD) * (nDesWidth), 16);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pSrcLine = pSrc + pMapY[nLineIndex] * nSrcBufferWidth;
+			bgra32_bl_copy_line(pTmpBuf, nDesWidth, pSrcLine, nSrcPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_line_mix_notsrc(pDesLine, pTmpBuf, na16, nm16, g_pdwMixGainTable);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_ALPHA_BLEND:		// 快速 Alpha 混合
+		pTmpBuf = (DWORD*)_mm_malloc(sizeof(DWORD) * (nDesWidth), 16);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pSrcLine = pSrc + pMapY[nLineIndex] * nSrcBufferWidth;
+			bgra32_bl_copy_line(pTmpBuf, nDesWidth, pSrcLine, nSrcPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_line_alpha_blend(pDesLine, pTmpBuf, na16, nm16);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_ALPHA_BLEND_NOT:	// 快速 Alpha 反向源混合
+		pTmpBuf = (DWORD*)_mm_malloc(sizeof(DWORD) * (nDesWidth), 16);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pSrcLine = pSrc + pMapY[nLineIndex] * nSrcBufferWidth;
+			bgra32_bl_copy_line(pTmpBuf, nDesWidth, pSrcLine, nSrcPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_line_alpha_blend_not(pDesLine, pTmpBuf, na16, nm16);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_LINEAR_DODGE:	// 线性减淡
+		pTmpBuf = (DWORD*)_mm_malloc(sizeof(DWORD) * (nDesWidth), 16);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pSrcLine = pSrc + pMapY[nLineIndex] * nSrcBufferWidth;
+			bgra32_bl_copy_line(pTmpBuf, nDesWidth, pSrcLine, nSrcPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_line_linear_dodge(pDesLine, pTmpBuf, na16, nm16, g_pdwMixGainTable);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_LINEAR_BURN:		// 线性加深
+		pTmpBuf = (DWORD*)_mm_malloc(sizeof(DWORD) * (nDesWidth), 16);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pSrcLine = pSrc + pMapY[nLineIndex] * nSrcBufferWidth;
+			bgra32_bl_copy_line(pTmpBuf, nDesWidth, pSrcLine, nSrcPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_line_linear_burn(pDesLine, pTmpBuf, na16, nm16, g_pdwMixGainTable);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_COLOR_DODGE:		// 颜色减淡
+		break;
+	case BUFFER_COLOR_BURN:		// 颜色加深
+		break;
+	case BUFFER_MULTIPLY:		// 正片叠底
+		break;
+	case BUFFER_SCREEN:			// 屏幕滤色
+		break;
+	case BUFFER_LIGHTEN:			// 变亮
+		break;
+	case BUFFER_DARKEN:			// 变暗
+		break;
+	case BUFFER_DIFFERENCE:		// 差值
+		break;
+	case BUFFER_EXCLUSION:		// 排除
+		break;
+	case BUFFER_HARD_LIGHT:		// 强光
+		break;
+	case BUFFER_SOFT_LIGHT:		// 柔光
+		break;
+	case BUFFER_PIN_LIGHT:		// 点光
+		break;
+	case BUFFER_OVERLAY:			// 叠加
+		break;
+	case BUFFER_HUE:				// 相位替换
+		break;
+	case BUFFER_LUM:				// 亮度替换
+		break;
+	case BUFFER_SAT:				// 饱和度替换
+		break;
+	case BUFFER_CHROMA:			// 色度替换
+		break;
+	default:
+		break;
+		//assert(FALSE);
+	}
+	// 释放权重表与索引表
+	_mm_free(pPowerX);
+	_mm_free(pMapX);
+	_mm_free(pPowerY);
+	_mm_free(pMapY);
+	if ((pTmpBuf) != NULL)
+		_mm_free(pTmpBuf);
+
+	return TRUE;
 }
 
 BOOL BufferMemSSE::Buffer_Parity_Range(IN OUT int &nDesY, OUT int & nDesAddWidth, IN int nDesBufferWidth, IN int nDesClipHeight, IN OUT int &nSrcY, OUT int & nSrcAddWidth, IN int nSrcBufferWidth, IN int nSrcBufferHeight, OUT int & nLineInc, IN BUFFER_PARITY_STYLE eParity, IN int n, IN int k)
 {
-	return 0;
+	switch (eParity)		// 根据奇偶场类型获得增量
+	{
+	case BUFFER_PARITY_BOTH:		// 全场
+		nDesAddWidth = nDesBufferWidth;
+		nSrcAddWidth = nSrcBufferWidth;
+		nLineInc = 1;
+		break;
+	case BUFFER_PARITY_EVEN:			// 偶场
+		if ((nDesY % 2) == 1)		// 起点在奇场，则从下一行开始
+		{
+			nDesY++;
+			nSrcY++;
+			// 判断范围的有效性
+			if (nDesY >= nDesClipHeight || nSrcY >= nSrcBufferHeight)
+				return FALSE;
+		}
+		nDesAddWidth = (nDesBufferWidth << 1);
+		nSrcAddWidth = (nSrcBufferWidth << 1);
+		nLineInc = 2;
+		break;
+	case BUFFER_PARITY_ODD:				// 奇场
+		if ((nDesY % 2) == 0)		// 起点在偶场，则从下一行开始
+		{
+			nDesY++;
+			nSrcY++;
+			// 判断范围的有效性
+			if (nDesY >= nDesClipHeight || nSrcY >= nSrcBufferHeight)
+				return FALSE;
+		}
+		nDesAddWidth = (nDesBufferWidth << 1);
+		nSrcAddWidth = (nSrcBufferWidth << 1);
+		nLineInc = 2;
+		break;
+	case BUFFER_PARITY_FOUR_0:
+	case BUFFER_PARITY_FOUR_1:
+	case BUFFER_PARITY_FOUR_2:
+	case BUFFER_PARITY_FOUR_3:
+	{
+		int noline = eParity - BUFFER_PARITY_FOUR_0;
+		int nline = nDesY % 4;
+		nline = (4 + noline - nline) % 4;
+		nDesY += nline;
+		nSrcY += nline;
+		if (nDesY >= nDesClipHeight || nSrcY >= nSrcBufferHeight)
+			return FALSE;
+		nDesAddWidth = (nDesBufferWidth << 2);
+		nSrcAddWidth = (nSrcBufferWidth << 2);
+		nLineInc = 4;
+	}
+	break;
+	case BUFFER_PARITY_N_K:
+	{
+		int noline = k;
+		int nline = nDesY % n;
+		nline = (n + noline - nline) % n;
+		nDesY += nline;
+		nSrcY += nline;
+		if (nDesY >= nDesClipHeight || nSrcY >= nSrcBufferHeight)
+			return FALSE;
+		nDesAddWidth = (nDesBufferWidth * n);
+		nSrcAddWidth = (nSrcBufferWidth * n);
+		nLineInc = n;
+	}
+	break;
+	default:
+		//assert(FALSE);
+		return FALSE;
+	}
+	return TRUE;
 }
 
+BOOL BufferMemSSE::Buffer_Fix_CutRange(IN OUT int &nDesX, IN OUT int &nDesY, IN OUT int &nDesWidth, IN OUT int &nDesHeight, IN int nDesBufferWidth, IN int nDesBufferHeight, IN OUT int &nSrcX, IN OUT int &nSrcY, IN OUT int &nSrcWidth, IN OUT int &nSrcHeight, IN int nSrcBufferWidth, IN int nSrcBufferHeight, IN RECT * prcDesClip)
+{
+	// 边界有效性检测
+	if (nDesBufferWidth <= 0 || nDesBufferHeight <= 0
+		|| nSrcBufferWidth <= 0 || nSrcBufferHeight <= 0
+		|| nDesX >= nDesBufferWidth || nDesY >= nDesBufferHeight
+		|| nSrcX >= nSrcBufferWidth || nSrcY >= nSrcBufferHeight
+		|| nDesWidth <= 0 || nDesHeight <= 0)
+		return FALSE;
+
+	int nLeft(0), nTop(0), nRight(nDesBufferWidth), nBottom(nDesBufferHeight);
+
+	if (prcDesClip != NULL)		// 如果有裁剪区域
+	{
+		nLeft = (nLeft > prcDesClip->left) ? nLeft : prcDesClip->left;
+		nRight = (nRight < prcDesClip->right) ? nRight : prcDesClip->right;
+		nTop = (nTop > prcDesClip->top) ? nTop : prcDesClip->top;
+		nBottom = (nBottom < prcDesClip->bottom) ? nBottom : prcDesClip->bottom;
+		// 判断区域是否有效
+		if (nLeft >= nRight || nTop >= nBottom || nDesX >= nRight || nDesY >= nBottom)
+			return FALSE;
+	}
+	// 剪切超出范围
+	if (nDesX < nLeft)		// 目标左边界超出，拷贝范围进行右缩进
+	{
+		int nDelta = nLeft - nDesX;
+
+		nDesWidth -= nDelta; nSrcX += nDelta; nDesX = nLeft;
+	}
+	if (nDesY < nTop)		// 目标上边界超出，拷贝范围进行下缩进
+	{
+		int nDelta = nTop - nDesY;
+
+		nDesHeight -= nDelta; nSrcY += nDelta; nDesY = nTop;
+	}
+	if (nSrcX < 0)		// 源左边界超出，拷贝范围进行右缩进
+	{
+		nDesWidth += nSrcX; nDesX -= nSrcX; nSrcX = 0;
+	}
+	if (nSrcY < 0)		// 源上边界超出，拷贝范围进行下缩进
+	{
+		nDesHeight += nSrcY; nDesY -= nSrcY; nSrcY = 0;
+	}
+
+	int nTmpWidth = nDesWidth + nSrcX;		// 考虑源的右边界
+	int nTmpHeight = nDesHeight + nSrcY;	// 考虑源的下边界
+
+	if (nTmpWidth > nSrcBufferWidth)	// 源右边界超出，拷贝范围进行左缩进
+	{
+		nDesWidth -= (nTmpWidth - nSrcBufferWidth);
+	}
+	if (nTmpHeight > nSrcBufferHeight)	// 源下边界超出，拷贝范围进行上缩进
+	{
+		nDesHeight -= (nTmpHeight - nSrcBufferHeight);
+	}
+	nTmpWidth = nDesWidth + nDesX;		// 考虑目标的右边界
+	nTmpHeight = nDesHeight + nDesY;	// 考虑目标的下边界
+	if (nTmpWidth > nRight)		// 目标右边界超出，拷贝范围进行左缩进
+	{
+		nDesWidth -= (nTmpWidth - nRight);
+	}
+	if (nTmpHeight > nBottom)	// 目标下边界超出，拷贝范围进行上缩进
+	{
+		nDesHeight -= (nTmpHeight - nBottom);
+	}
+	if (nDesWidth <= 0 || nDesHeight <= 0)	// 拷贝范围无效
+		return FALSE;
+
+	nSrcWidth = nDesWidth;
+	nSrcHeight = nDesHeight;
+
+	return TRUE;
+}
+
+BOOL BufferMemSSE::Buffer_Stretch_CutRange(IN OUT int &nDesX, IN OUT int &nDesY, IN OUT int &nDesWidth, IN OUT int &nDesHeight, IN int nDesBufferWidth, IN int nDesBufferHeight, IN OUT int &nSrcX, IN OUT int &nSrcY, IN OUT int &nSrcWidth, IN OUT int &nSrcHeight, IN int nSrcBufferWidth, IN int nSrcBufferHeight, IN int nEdgeOffset, OUT float & fScaleWidth, OUT float & fScaleHeight, OUT float & fSrcStartX, OUT float & fSrcStartY, OUT int & nDesAddWidth, OUT int & nLineIndex, OUT int & nLineInc, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
+{
+	// 边界有效性检测
+	if (nDesBufferWidth <= 0 || nDesBufferHeight <= 0
+		|| nSrcBufferWidth <= 0 || nSrcBufferHeight <= 0
+		|| nDesX >= nDesBufferWidth || nDesY >= nDesBufferHeight
+		|| nSrcX >= nSrcBufferWidth || nSrcY >= nSrcBufferHeight)
+		return FALSE;
+
+	if (nDesWidth <= nEdgeOffset || nDesHeight <= nEdgeOffset
+		|| nSrcWidth <= nEdgeOffset || nSrcHeight <= nEdgeOffset)
+		return FALSE;
+
+	int nLeft(0), nTop(0), nRight(nDesBufferWidth), nBottom(nDesBufferHeight);
+
+	if (prcDesClip != NULL)		// 如果有裁剪区域
+	{
+		nLeft = (nLeft > prcDesClip->left) ? nLeft : prcDesClip->left;
+		nRight = (nRight < prcDesClip->right) ? nRight : prcDesClip->right;
+		nTop = (nTop > prcDesClip->top) ? nTop : prcDesClip->top;
+		nBottom = (nBottom < prcDesClip->bottom) ? nBottom : prcDesClip->bottom;
+		// 判断区域是否有效
+		if (nLeft >= nRight || nTop >= nBottom || nDesX >= nRight || nDesY >= nBottom)
+			return FALSE;
+	}
+	if ((nDesX + nDesWidth) <= nLeft || (nDesY + nDesHeight) <= nTop
+		|| (nSrcX + nSrcWidth) <= 0 || (nSrcY + nSrcHeight) <= 0)
+		return FALSE;
+
+	int nOldDesX(nDesX), nOldDesY(nDesY), nOldSrcX(nSrcX), nOldSrcY(nSrcY);
+	int nTmpOffset(0), nTmpWidth(0), nTmpHeight(0);
+
+	fScaleWidth = (float)(nSrcWidth - nEdgeOffset) / (nDesWidth - nEdgeOffset);	// 缩放比例
+	fScaleHeight = (float)(nSrcHeight - nEdgeOffset) / (nDesHeight - nEdgeOffset);
+	// 剪切超出范围
+	if (nDesX < nLeft)		// 目标左边界超出，缩放范围进行右缩进
+	{
+		nTmpOffset = nLeft - nDesX;
+		nDesWidth -= nTmpOffset; nDesX = nLeft;
+		nTmpOffset = (int)((float)nTmpOffset * fScaleWidth + 0.5f);	// 源的右缩进量
+		nSrcWidth -= nTmpOffset; nSrcX += nTmpOffset;
+	}
+	if (nDesY < nTop)		// 目标上边界超出，缩放范围进行下缩进
+	{
+		nTmpOffset = nTop - nDesY;
+		nDesHeight -= nTmpOffset; nDesY = nTop;
+		nTmpOffset = (int)((float)nTmpOffset * fScaleHeight + 0.5f);	// 源的下缩进量
+		nSrcHeight -= nTmpOffset; nSrcY += nTmpOffset;
+	}
+	if (nSrcX < 0)		// 源左边界超出，缩放范围进行右缩进
+	{
+		nTmpOffset = (int)ceilf((-nSrcX) / fScaleWidth);		// 目标的右缩进量
+		nSrcWidth += nSrcX; nSrcX = 0;
+		nDesWidth -= nTmpOffset; nDesX += nTmpOffset;
+	}
+	if (nSrcY < 0)		// 源上边界超出，缩放范围进行下缩进
+	{
+		nTmpOffset = (int)ceilf((-nSrcY) / fScaleHeight);	// 目标的下缩进量
+		nSrcHeight += nSrcY; nSrcY = 0;
+		nDesHeight -= nTmpOffset; nDesY += nTmpOffset;
+	}
+	nTmpWidth = nDesWidth + nDesX;		// 考虑目标的右边界
+	nTmpHeight = nDesHeight + nDesY;	// 考虑目标的下边界
+	if (nTmpWidth > nRight)		// 目标右边界超出，缩放范围进行左缩进
+	{
+		nTmpOffset = (nTmpWidth - nRight);	// 目标的左缩进量
+		nDesWidth -= nTmpOffset;
+		nTmpOffset = (int)(nTmpOffset * fScaleWidth);	// 源的左缩进量
+		nSrcWidth -= nTmpOffset;
+		if (nSrcWidth <= 0)
+			return FALSE;
+	}
+	if (nTmpHeight > nBottom)	// 目标下边界超出，缩放范围进行上缩进
+	{
+		nTmpOffset = (nTmpHeight - nBottom);	// 目标的上缩进量
+		nDesHeight -= nTmpOffset;
+		nTmpOffset = (int)(nTmpOffset * fScaleHeight);	// 源的上缩进量
+		nSrcHeight -= nTmpOffset;
+		if (nSrcHeight <= 0)
+			return FALSE;
+	}
+	nTmpWidth = nSrcWidth + nSrcX;		// 考虑源的右边界
+	nTmpHeight = nSrcHeight + nSrcY;	// 考虑源的下边界
+	if (nTmpWidth > nSrcBufferWidth)	// 源右边界超出，缩放范围进行左缩进
+	{
+		nTmpOffset = (nTmpWidth - nSrcBufferWidth);		// 源的左缩进量
+		nSrcWidth -= nTmpOffset;
+		nTmpOffset = (int)ceilf(nTmpOffset / fScaleWidth);	// 目标的左缩进量
+		nDesWidth -= nTmpOffset;
+		if (nDesWidth <= 0)
+			return FALSE;
+	}
+	if (nTmpHeight > nSrcBufferHeight)	// 源下边界超出，拷贝范围进行上缩进
+	{
+		nTmpOffset = (nTmpHeight - nSrcBufferHeight);	// 源的上缩进量
+		nSrcHeight -= nTmpOffset;
+		nTmpOffset = (int)ceilf(nTmpOffset / fScaleHeight);	// 目标的上缩进量
+		nDesHeight -= nTmpOffset;
+		if (nDesHeight <= 0)
+			return FALSE;
+	}
+	// 源起点坐标
+	fSrcStartX = fScaleWidth * (nDesX - nOldDesX) + nOldSrcX;
+	fSrcStartY = fScaleHeight * (nDesY - nOldDesY) + nOldSrcY;
+	// 根据奇偶场类型获得增量
+	switch (eParity)
+	{
+	case BUFFER_PARITY_BOTH:		// 全场
+		nDesAddWidth = nDesBufferWidth;
+		nLineIndex = 0;
+		nLineInc = 1;
+		break;
+	case BUFFER_PARITY_ODD:			// 奇场
+		nLineIndex = 0;
+		if ((nDesY % 2) == 1)		// 起点在偶场，则从下一行开始
+		{
+			nDesY++;
+			nLineIndex = 1;
+			// 判断范围的有效性
+			if (nDesY >= nBottom)
+				return FALSE;
+		}
+		nDesAddWidth = (nDesBufferWidth << 1);
+		nLineInc = 2;
+		break;
+	case BUFFER_PARITY_EVEN:		// 偶场
+		nLineIndex = 0;
+		if ((nDesY % 2) == 0)		// 起点在奇场，则从下一行开始
+		{
+			nDesY++;
+			nLineIndex = 1;
+			// 判断范围的有效性
+			if (nDesY >= nBottom)
+				return FALSE;
+		}
+		nDesAddWidth = (nDesBufferWidth << 1);
+		nLineInc = 2;
+		break;
+	default:
+		return FALSE;
+	}
+	return TRUE;
+}
+
+void BufferMemSSE::Buffer_Power_BLStretch(OUT DWORD * pPowerX, OUT int * pMapX, OUT DWORD * pPowerY, OUT int * pMapY, IN int nDesWidth, IN int nDesHeight, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufferWidth, IN int nSrcBufferHeight, IN float fScaleWidth, IN float fScaleHeight, IN float fSrcStartX, IN float fSrcStartY, IN int nPixelBytes)
+{
+	int nMapTmp(0), nLastWidth(nSrcBufferWidth - 2), nLastHeight(nSrcBufferHeight - 2);
+	DWORD dwPowerTmp1(0), dwPowerTmp2(0);
+
+	nDesWidth--; nDesHeight--;
+	// 计算 X 方向的权重表与索引表
+	for (int i = 0; i<nDesWidth; i++, fSrcStartX += fScaleWidth)
+	{
+		nMapTmp = (int)fSrcStartX;
+		dwPowerTmp1 = (DWORD)((nMapTmp + 1.0f - fSrcStartX) * 65535.0f + 0.5f);
+		dwPowerTmp2 = 65535 - dwPowerTmp1;
+		pPowerX[i] = (dwPowerTmp1 | (dwPowerTmp2 << 16));
+		nMapTmp = (nMapTmp > nLastWidth) ? nLastWidth : nMapTmp;
+		pMapX[i] = (nMapTmp * nPixelBytes);
+	}
+	if (nSrcX + nSrcWidth >= nSrcBufferWidth)
+	{
+		pMapX[nDesWidth] = ((nSrcBufferWidth - 2) * nPixelBytes);
+		pPowerX[nDesWidth] = 0xffff0000;
+	}
+	else
+	{
+		nMapTmp = (int)fSrcStartX;
+		dwPowerTmp1 = (DWORD)((nMapTmp + 1.0f - fSrcStartX) * 65535.0f + 0.5f);
+		dwPowerTmp2 = 65535 - dwPowerTmp1;
+		pPowerX[nDesWidth] = (dwPowerTmp1 | (dwPowerTmp2 << 16));
+		pMapX[nDesWidth] = (nMapTmp * nPixelBytes);
+	}
+	// 计算 Y 方向的权重表与索引表
+	for (int i = 0; i<nDesHeight; i++, fSrcStartY += fScaleHeight)
+	{
+		nMapTmp = (int)fSrcStartY;
+		dwPowerTmp1 = (DWORD)((nMapTmp + 1.0f - fSrcStartY) * 65535.0f + 0.5f);
+		pPowerY[i] = (dwPowerTmp1 | (dwPowerTmp1 << 16));
+		nMapTmp = (nMapTmp > nLastHeight) ? nLastHeight : nMapTmp;
+		pMapY[i] = nMapTmp;
+	}
+	if (nSrcY + nSrcHeight >= nSrcBufferHeight)
+	{
+		pMapY[nDesHeight] = nSrcBufferHeight - 2;
+		pPowerY[nDesHeight] = 0x00000000;
+	}
+	else
+	{
+		pMapY[nDesHeight] = nMapTmp = (int)fSrcStartY;
+		dwPowerTmp1 = (DWORD)((nMapTmp + 1.0f - fSrcStartY) * 65535.0f + 0.5f);
+		pPowerY[nDesHeight] = (dwPowerTmp1 | (dwPowerTmp1 << 16));
+	}
+}
