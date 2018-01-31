@@ -96,6 +96,13 @@ int DataBufferManager::Query2DBuffer(int nWidth, int nHeight)
 	return CreateBuffer(nWidth, nHeight);
 }
 
+ObjectBuffer * DataBufferManager::Query2DBuffer(int & nBufferID, int nWidth, int nHeight)
+{
+	UnQuery2DBuffer(nBufferID);
+	nBufferID = Query2DBuffer(nWidth, nHeight);
+	return GetObjectBuf(nBufferID);
+}
+
 bool DataBufferManager::UnQuery2DBuffer(int & nBufferID)
 {
 	assert(m_map2DBuffer.count(nBufferID) > 0);

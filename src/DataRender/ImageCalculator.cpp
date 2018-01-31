@@ -48,11 +48,7 @@ bool ImageCalculator::UpdateImage(CString &strImgPath)
 			if (nImageWidth > 0
 				&& nImageHeight > 0)
 			{
-				//´´½¨Ô´Í¼Ïñbuf
-				DataBufferManager::Instance().UnQuery2DBuffer(m_nImageBufferID);
-				m_nImageBufferID = DataBufferManager::Instance().Query2DBuffer(nImageWidth, nImageHeight);
-
-				ObjectBuffer * pImgBuf = DataBufferManager::Instance().GetObjectBuf(m_nImageBufferID);
+				ObjectBuffer * pImgBuf = DataBufferManager::Instance().Query2DBuffer(m_nImageBufferID, nImageWidth, nImageHeight);
 				if (pImgBuf)
 				{
 					if (BaseCodec_ReadImage(strImgPath, nImageWidth, nImageHeight, pImgBuf->GetBuffer()))
