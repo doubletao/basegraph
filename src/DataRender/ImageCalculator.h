@@ -8,10 +8,12 @@ private:
 public:
 	ImageCalculator();
 	virtual ~ImageCalculator();
-public:
-	virtual bool UpdateRenderBuffer();
+protected:
 	bool UpdateImage(CString &strImgPath);
 	bool StretchImage();
+	bool PrepareObjBuffer();
+public:
+	virtual bool UpdateRenderBuffer();
 	virtual int GetWidth();
 	virtual int GetHeight();
 };

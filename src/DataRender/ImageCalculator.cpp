@@ -17,14 +17,18 @@ bool ImageCalculator::UpdateRenderBuffer()
 		BaseGraph_Common::Value stuValue;
 		if (DataBase_GetItemProperty(m_nObjID, BaseGraph_DataBase::Image_Path, stuValue))
 		{
-			CString strImgPath = stuValue.ToCString();
-			if (UpdateImage(strImgPath))
+			//创建物件buf
+			if (PrepareObjBuffer())
 			{
-				if (StretchImage())
+				CString strImgPath = stuValue.ToCString();
+				if (UpdateImage(strImgPath))
 				{
-					return true;
+					if (StretchImage())
+					{
+						return true;
+					}
 				}
-			}
+			} 
 		}
 		return false;
 	}
@@ -41,18 +45,22 @@ bool ImageCalculator::UpdateImage(CString &strImgPath)
 		int nImageHeight = 0;
 		if (BaseCodec_GetImgInfo(strImgPath, nXStart, nYStart, nImageWidth, nImageHeight))
 		{
-			//创建源图像buf
-			DataBufferManager::Instance().UnQuery2DBuffer(m_nImageBufferID);
-			m_nImageBufferID = DataBufferManager::Instance().Query2DBuffer(nImageWidth, nImageHeight);
-
-			ObjectBuffer * pImgBuf = DataBufferManager::Instance().GetObjectBuf(m_nImageBufferID);
-			if (pImgBuf)
+			if (nImageWidth > 0
+				&& nImageHeight > 0)
 			{
-				if (BaseCodec_ReadImage(strImgPath, nImageWidth, nImageHeight, pImgBuf->GetBuffer()))
+				//创建源图像buf
+				DataBufferManager::Instance().UnQuery2DBuffer(m_nImageBufferID);
+				m_nImageBufferID = DataBufferManager::Instance().Query2DBuffer(nImageWidth, nImageHeight);
+
+				ObjectBuffer * pImgBuf = DataBufferManager::Instance().GetObjectBuf(m_nImageBufferID);
+				if (pImgBuf)
 				{
-					DataBase_SetItemProperty(m_nObjID, BaseGraph_DataBase::Image_SrcWidth, nImageWidth);
-					DataBase_SetItemProperty(m_nObjID, BaseGraph_DataBase::Image_SrcHeight, nImageHeight);
-					return true;
+					if (BaseCodec_ReadImage(strImgPath, nImageWidth, nImageHeight, pImgBuf->GetBuffer()))
+					{
+						DataBase_SetItemProperty(m_nObjID, BaseGraph_DataBase::Image_SrcWidth, nImageWidth);
+						DataBase_SetItemProperty(m_nObjID, BaseGraph_DataBase::Image_SrcHeight, nImageHeight);
+						return true;
+					}
 				}
 			}
 		}
@@ -62,26 +70,56 @@ bool ImageCalculator::UpdateImage(CString &strImgPath)
 
 bool ImageCalculator::StretchImage()
 {
-	int nDispWidth = 0;
-	int nDispHeight = 0;
-	BaseGraph_Common::Value stuValue;
-	if (DataBase_GetItemProperty(m_nObjID, BaseGraph_DataBase::Image_DispWidth, stuValue))
+	auto BuferValid = [](ObjectBuffer * pBuf)->bool
 	{
-		nDispWidth = stuValue.ToInt();
-		if (DataBase_GetItemProperty(m_nObjID, BaseGraph_DataBase::Image_DispHeight, stuValue))
+		if (pBuf
+			&& pBuf->GetWidth() > 0
+			&& pBuf->GetHeight() > 0)
 		{
-			nDispHeight = stuValue.ToInt();
-			if (nDispWidth > 0
-				&& nDispHeight > 0)
-			{
-				ObjectBuffer * pImgBuf = DataBufferManager::Instance().GetObjectBuf(m_nImageBufferID);
-				if (pImgBuf
-					&& pImgBuf->GetWidth() > 0
-					&& pImgBuf->GetHeight() > 0)
-				{
-					//BufferFunction::BufferBitblt();
-				}
-			}
+			return true;
+		}
+		return false;
+	};
+	int nDispWidth = GetWidth();
+	int nDispHeight = GetHeight();
+	if (nDispWidth > 0
+		&& nDispHeight > 0)
+	{
+		ObjectBuffer * pImgBuf = DataBufferManager::Instance().GetObjectBuf(m_nImageBufferID);
+		ObjectBuffer * pObjBuf = DataBufferManager::Instance().GetObjectBuf(m_nObjBufferID);
+		if (BuferValid(pImgBuf) && BuferValid(pObjBuf))
+		{
+			BufferFunction::BufferBitblt((DWORD *)pObjBuf->GetBuffer(),
+				0, 0, pObjBuf->GetWidth(), pObjBuf->GetHeight(), pObjBuf->GetWidth(), pObjBuf->GetHeight(),
+				(DWORD *)pImgBuf->GetBuffer(),
+				0, 0, pImgBuf->GetWidth(), pImgBuf->GetHeight(), pImgBuf->GetWidth(), pImgBuf->GetHeight(),
+				BUFFER_COPY, BUFFER_PARITY_BOTH);
+		}
+	}
+	return false;
+}
+
+bool ImageCalculator::PrepareObjBuffer()
+{
+	auto GetPropertyValue = [](int nObjID, BaseGraph_DataBase::ParamValueDef emValueDef)->BaseGraph_Common::Value
+	{
+		BaseGraph_Common::Value stuValue;
+		if (DataBase_GetItemProperty(nObjID, BaseGraph_DataBase::Image_DispWidth, stuValue))
+		{
+			return stuValue;
+		}
+		return 0;
+	};
+	int nObjWidth = GetPropertyValue(m_nObjID, BaseGraph_DataBase::Image_SrcWidth).ToInt();
+	int nObjHeight = GetPropertyValue(m_nObjID, BaseGraph_DataBase::Image_SrcHeight).ToInt();
+	if (nObjWidth > 0
+		&& nObjHeight > 0)
+	{
+		DataBufferManager::Instance().UnQuery2DBuffer(m_nObjBufferID);
+		m_nObjBufferID = DataBufferManager::Instance().Query2DBuffer(nObjWidth, nObjHeight);
+		if (m_nObjBufferID > 0)
+		{
+			return true;
 		}
 	}
 	return false;
