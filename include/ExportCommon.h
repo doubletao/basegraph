@@ -16,3 +16,5 @@
 #include "Common\DataDef.h"
 #include "Common\CommonMatrix.h"
 #include "Common\CommonFunction.h"
+#include "Common\BufferCommonDef.h"
+#include "Common\BufferFunction.h"

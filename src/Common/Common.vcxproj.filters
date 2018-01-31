@@ -39,6 +39,15 @@
     <ClCompile Include="BufferFunction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="BufferMemSSE.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferSSE2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferColorSpaceConv.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -875,7 +884,28 @@
     <ClInclude Include="..\..\include\Common\CommonFunction.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="BufferFunction.h">
+    <ClInclude Include="..\..\include\Common\BufferFunction.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferMemSSE.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\BufferCommonDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferRipRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferSSE2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferColorSpaceConv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferSSE2Static.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -891,5 +921,10 @@
     <ResourceCompile Include="Common.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="BufferRipRender.asm">
+      <Filter>源文件</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

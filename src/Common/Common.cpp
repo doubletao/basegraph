@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Common.h"
+#include "BufferMemSSE.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -58,6 +59,12 @@ CCommonApp theApp;
 BOOL CCommonApp::InitInstance()
 {
 	CWinApp::InitInstance();
-
+	BufferMemSSE::Buffer_CreateGainTable();
 	return TRUE;
+}
+
+int CCommonApp::ExitInstance()
+{
+	BufferMemSSE::Buffer_ReleaseGainTable();
+	return 0;
 }

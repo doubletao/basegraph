@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Common/CommonFunction.h"
+#include "Common\CommonFunction.h"
 #pragma comment(lib, "Rpcrt4.lib")
 
 CommonFunction::CommonFunction()

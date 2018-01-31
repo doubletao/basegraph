@@ -51,4 +51,5 @@
 #endif
 #endif
 
-
+#define BASEGRAPH_AUTO_LOAD
+#include "ExportCommon.h"
