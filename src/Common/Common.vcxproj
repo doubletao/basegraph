@@ -111,6 +111,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BufferFunction.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CommonFunction.cpp" />
     <ClCompile Include="CommonMatrix.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="..\..\include\Common\CommonMatrix.h" />
     <ClInclude Include="..\..\include\Common\DataDef.h" />
     <ClInclude Include="..\..\include\ExportCommon.h" />
+    <ClInclude Include="BufferFunction.h" />
     <ClInclude Include="Eigen\Cholesky\LDLT.h" />
     <ClInclude Include="Eigen\Cholesky\LLT.h" />
     <ClInclude Include="Eigen\Cholesky\LLT_LAPACKE.h" />

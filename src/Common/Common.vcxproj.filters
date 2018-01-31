@@ -36,6 +36,9 @@
     <ClCompile Include="CommonFunction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="BufferFunction.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -870,6 +873,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Common\CommonFunction.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferFunction.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

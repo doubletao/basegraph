@@ -94,6 +94,7 @@ LPCTSTR ImageDecoder::EnumSuportImageType(bool bAddAllFile, bool bTerminated)
 
 bool ImageDecoder::Open(LPCTSTR szFileName)
 {
+	m_image.Destroy();
 	if (m_image.Load(szFileName) == E_FAIL)
 		return false;
 	bOpen = true;

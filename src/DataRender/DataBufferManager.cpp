@@ -96,12 +96,13 @@ int DataBufferManager::Query2DBuffer(int nWidth, int nHeight)
 	return CreateBuffer(nWidth, nHeight);
 }
 
-bool DataBufferManager::UnQuery2DBuffer(int nBufferID)
+bool DataBufferManager::UnQuery2DBuffer(int & nBufferID)
 {
 	assert(m_map2DBuffer.count(nBufferID) > 0);
 	if (m_map2DBuffer.count(nBufferID) > 0)
 	{
 		m_map2DBuffer[nBufferID]->ReleaseUse();
+		nBufferID = 0;
 		return true;
 	}
 	return false;
