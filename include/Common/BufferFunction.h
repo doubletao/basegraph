@@ -26,5 +26,7 @@ public:
 		RECT* prcDesClip = NULL,
 		int n = 1,
 		int k = 1);
+
+	static BOOL WriteBitmap(LPCTSTR ptszFileName, int iWidth, int iHeight, int iDepth, BYTE* pData);
 };
 

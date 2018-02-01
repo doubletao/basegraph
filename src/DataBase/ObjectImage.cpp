@@ -31,10 +31,39 @@ void ObjectImage::InitialObjectParam()
 	AddDefaultParam(Image_DispHeight);
 }
 
+std::map<BaseGraph_DataBase::ParamValueDef, Value> ObjectImage::GetProperty()
+{
+	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = m_mapParam;
+	mapParam[BaseGraph_DataBase::Image_Path] = GetImagePath();
+	return mapParam;
+}
+
+Value ObjectImage::GetValue(BaseGraph_DataBase::ParamValueDef emValueDef)
+{
+	if (emValueDef == BaseGraph_DataBase::Image_Path)
+	{
+		return GetImagePath();
+	}
+	return BaseObject::GetValue(emValueDef);
+}
+
+void ObjectImage::SetValue(BaseGraph_DataBase::ParamValueDef emValueDef, Value stuValue)
+{
+	if (emValueDef == BaseGraph_DataBase::Image_Path)
+	{
+		return SetImagePath(stuValue.ToCString());
+	}
+	return BaseObject::SetValue(emValueDef, stuValue);
+}
+
 CString ObjectImage::GetImagePath()
 {
-	CString strResGUID = m_mapParam[Image_Path].ToCString();
-	return DataResourceManager::Instance().GetResource(strResGUID);
+	if (m_mapParam.count(Image_Path) > 0)
+	{
+		CString strResGUID = m_mapParam[Image_Path].ToCString();
+		return DataResourceManager::Instance().GetResource(strResGUID);
+	}
+	return _T("");
 }
 
 void ObjectImage::SetImagePath(CString strPath)

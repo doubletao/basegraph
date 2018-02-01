@@ -36,7 +36,13 @@
     <ClCompile Include="ImageCalculator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectCalculatorManager.cpp">
+    <ClCompile Include="CalculatorFactory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportDataRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatorManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,9 +62,6 @@
     <ClInclude Include="ObjectCalculator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ExportDataRender.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -68,7 +71,13 @@
     <ClInclude Include="ImageCalculator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectCalculatorManager.h">
+    <ClInclude Include="CalculatorFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ExportDataRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

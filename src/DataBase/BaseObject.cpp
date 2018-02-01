@@ -4,9 +4,9 @@
 #include "ObjectFactory.h"
 
 BaseGraph_DataBase::BaseObject::BaseObject()
-	: m_nParentID(0)
+	: m_nParentID(_T(""))
 {
-	m_mapParam[ObjID].SetValue(IntIDGenerator::Instance().GetNewID());
+	m_mapParam[ObjID].SetValue(CommonFunction::CreateGUID());
 }
 
 
@@ -74,10 +74,11 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 		archive << m_nParentID;
 		nTmp = (int)m_vecChildID.size();
 		archive << nTmp;
+		CString strTmp;
 		for (size_t i = 0; i < m_vecChildID.size(); i++)
 		{
-			nTmp = m_vecChildID[i];
-			archive << nTmp;
+			strTmp = m_vecChildID[i];
+			archive << strTmp;
 		}
 	}
 	else
@@ -97,9 +98,9 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 		archive >> nSize;
 		for (int i = 0; i < nSize; i++)
 		{
-			int nTmp = 0;
-			archive >> nTmp;
-			m_vecChildID.push_back(nTmp);
+			CString strTmp;
+			archive >> strTmp;
+			m_vecChildID.push_back(strTmp);
 		}
 	}
 	return true;
@@ -115,66 +116,44 @@ BaseGraph_DataBase::ObjectType BaseGraph_DataBase::BaseObject::GetObjectType()
 	return emObjType;
 }
 
-//std::map<BaseGraph_DataBase::ParamValueDef, Value>& BaseGraph_DataBase::BaseObject::GetProperty()
-//{
-//	return m_mapParam;
-//}
+std::map<BaseGraph_DataBase::ParamValueDef, Value> BaseGraph_DataBase::BaseObject::GetProperty()
+{
+	return m_mapParam;
+}
+
+void BaseGraph_DataBase::BaseObject::SetProperty(std::map<ParamValueDef, Value> mapParam)
+{
+	for (std::map<ParamValueDef, Value>::iterator it = mapParam.begin(); it != mapParam.end(); it++)
+	{
+		SetValue(it->first, it->second);
+	}
+}
 
 Value BaseGraph_DataBase::BaseObject::GetValue(ParamValueDef emValueDef)
 {
-	if (IsCustomValue(emValueDef))
+	if (m_mapParam.count(emValueDef) < 1)
 	{
-		//对于上了特定名单的值类型，交给工厂处理成具体的对象指针后再继续操作
-		return ObjectFactory::GetValue(this, emValueDef);
+		return GetValueDescriptor(emValueDef).stuDefault;
 	}
-	else
-	{
-		if (m_mapParam.count(emValueDef) < 1)
-		{
-			return GetValueDescriptor(emValueDef).stuDefault;
-		}
-		return m_mapParam[emValueDef];
-	}
+	return m_mapParam[emValueDef];
 }
 
 void BaseGraph_DataBase::BaseObject::SetValue(ParamValueDef emValueDef, Value stuValue)
 {
-	if (IsCustomValue(emValueDef))
-	{
-		//对于上了特定名单的值类型，交给工厂处理成具体的对象指针后再继续操作
-		ObjectFactory::SetValue(this, emValueDef, stuValue);
-	}
-	else
-	{
-		m_mapParam[emValueDef] = stuValue;
-	}
+	m_mapParam[emValueDef] = stuValue;
 }
 
-bool BaseGraph_DataBase::BaseObject::IsCustomValue(ParamValueDef emValueDef)
+CString BaseGraph_DataBase::BaseObject::GetItemID()
 {
-	switch (emValueDef)
-	{
-	case BaseGraph_DataBase::Image_Path://图片需要做路径转换，set和get时需要经过资源管理器
-		return true;
-		break;
-	default:
-		return false;
-		break;
-	}
-	return false;
-}
-
-int BaseGraph_DataBase::BaseObject::GetItemID()
-{
-	int nRet = 0;
-	nRet = GetValue(ObjID).ToInt();
-	return nRet;
+	CString strRet = 0;
+	strRet = GetValue(ObjID).ToCString();
+	return strRet;
 }
 
 ObjectType BaseGraph_DataBase::BaseObject::GetItemType()
 {
 	ObjectType emRet = ObjectType_Err;
-	emRet = (ObjectType)GetValue(ObjID).ToInt();
+	emRet = (ObjectType)GetValue(ObjType).ToInt();
 	return emRet;
 }
 

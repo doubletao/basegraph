@@ -28,7 +28,18 @@ namespace BaseGraph_Common
 	private:
 		ValueType m_emType;
 		size_t m_nSize;
+#ifdef DEBUG
+		union
+		{
+			int * pnValue;
+			DWORD * pdwValue;
+			TCHAR * pszValue;
+			float * pfValue;
+			byte * m_pBuf;
+		};
+#else
 		byte * m_pBuf;
+#endif // DEBUG
 	public:
 		Value();
 		Value(int nValue);

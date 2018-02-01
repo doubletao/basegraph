@@ -56,3 +56,28 @@ BOOL BufferFunction::BufferBitblt(DWORD * pdwDesBuffer, int nDesX, int nDesY, in
 	return FALSE;
 }
 
+BOOL BufferFunction::WriteBitmap(LPCTSTR ptszFileName, int iWidth, int iHeight, int iDepth, BYTE * pData)
+{
+	BITMAPFILEHEADER stFileHdr;
+	stFileHdr.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+	stFileHdr.bfSize = sizeof(BITMAPFILEHEADER);
+	stFileHdr.bfType = 0x4d42;
+	BITMAPINFOHEADER stInfoHdr;
+	memset(&stInfoHdr, 0, sizeof(BITMAPINFOHEADER));
+	stInfoHdr.biSize = sizeof(BITMAPINFOHEADER);
+	stInfoHdr.biPlanes = 1;
+	stInfoHdr.biWidth = iWidth;
+	stInfoHdr.biHeight = iHeight;
+	stInfoHdr.biBitCount = iDepth;
+	stInfoHdr.biSizeImage = stInfoHdr.biWidth * stInfoHdr.biHeight * stInfoHdr.biBitCount / 8;
+	FILE* fp = NULL;
+	_tfopen_s(&fp, ptszFileName, _T("wb"));
+	if (!fp)
+		return FALSE;
+	fwrite(&stFileHdr, 1, sizeof(BITMAPFILEHEADER), fp);
+	fwrite(&stInfoHdr, 1, sizeof(BITMAPINFOHEADER), fp);
+	size_t nSize = fwrite(pData, 1, stInfoHdr.biSizeImage, fp);
+	fclose(fp);
+	return TRUE;
+}
+

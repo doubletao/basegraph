@@ -10,8 +10,8 @@ namespace BaseGraph_DataBase
 	{
 	protected:
 		std::map<ParamValueDef, Value> m_mapParam;
-		int m_nParentID;
-		std::vector<int> m_vecChildID;
+		CString m_nParentID;
+		std::vector<CString> m_vecChildID;
 	public:
 		BaseObject();
 		virtual ~BaseObject() = 0;
@@ -20,13 +20,12 @@ namespace BaseGraph_DataBase
 		bool Serialize(CArchive & archive);
 		BaseGraph_DataBase::ObjectType GetObjectType();
 
-		//std::map<ParamValueDef, Value> & GetProperty();
-		Value GetValue(ParamValueDef emValueDef);
-		void SetValue(ParamValueDef emValueDef, Value stuValue);
+		virtual std::map<ParamValueDef, Value> GetProperty();
+		void SetProperty(std::map<ParamValueDef, Value> mapParam);
+		virtual Value GetValue(ParamValueDef emValueDef);
+		virtual void SetValue(ParamValueDef emValueDef, Value stuValue);
 
-		bool IsCustomValue(ParamValueDef emValueDef);//遇到需要额外动作的值，obj不处理，交给工厂来
-
-		int GetItemID();
+		CString GetItemID();
 		ObjectType GetItemType();
 
 		point3 GetItemPos();

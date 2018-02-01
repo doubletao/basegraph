@@ -10,31 +10,49 @@ BaseGraph_Common::Value::Value()
 }
 
 BaseGraph_Common::Value::Value(int nValue)
+	: m_emType(ValueType_ERR)
+	, m_nSize(0)
+	, m_pBuf(nullptr)
 {
 	SetValue(nValue);
 }
 
 BaseGraph_Common::Value::Value(DWORD dwValue)
+	: m_emType(ValueType_ERR)
+	, m_nSize(0)
+	, m_pBuf(nullptr)
 {
 	SetValue(dwValue);
 }
 
 BaseGraph_Common::Value::Value(int nValue, ValueType emType)
+	: m_emType(ValueType_ERR)
+	, m_nSize(0)
+	, m_pBuf(nullptr)
 {
 	SetValue(nValue, emType);
 }
 
 BaseGraph_Common::Value::Value(float fValue)
+	: m_emType(ValueType_ERR)
+	, m_nSize(0)
+	, m_pBuf(nullptr)
 {
 	SetValue(fValue);
 }
 
 BaseGraph_Common::Value::Value(CString strValue)
+	: m_emType(ValueType_ERR)
+	, m_nSize(0)
+	, m_pBuf(nullptr)
 {
 	SetValue(strValue);
 }
 
 BaseGraph_Common::Value::Value(const ValueAbleInterface & stuValue)
+	: m_emType(ValueType_ERR)
+	, m_nSize(0)
+	, m_pBuf(nullptr)
 {
 	SetValue(stuValue);
 }
@@ -55,8 +73,6 @@ BaseGraph_Common::Value::Value(const Value & other)
 
 BaseGraph_Common::Value & BaseGraph_Common::Value::operator=(const Value & other)
 {
-	m_emType = other.m_emType;
-	m_nSize = other.m_nSize;
 	if (m_nSize != other.m_nSize)
 	{
 		m_nSize = other.m_nSize;
@@ -67,6 +83,8 @@ BaseGraph_Common::Value & BaseGraph_Common::Value::operator=(const Value & other
 			m_pBuf = new byte[m_nSize];
 		}
 	}
+	m_emType = other.m_emType;
+	m_nSize = other.m_nSize;
 	if (other.m_nSize > 0)
 	{
 		memcpy(m_pBuf, other.m_pBuf, m_nSize);

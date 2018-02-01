@@ -3,6 +3,7 @@
 #include <assert.h>
 
 static const int BUFFER_AREA_RATIO = 2;//面积系数，当前设为2，即reserve面积小于等于实际使用面积的2倍
+static const int BUFFER_DEPTH = 4;//默认未RGBA，4字节
 
 ObjectBuffer::ObjectBuffer()
 {
@@ -20,7 +21,7 @@ bool ObjectBuffer::InitializeBuffer(int nWidth, int nHeight)
 	assert(nWidth);
 	assert(nHeight);
 	ReleaseBuffer();
-	m_pBuffer = new byte[nWidth * nHeight];
+	m_pBuffer = new byte[nWidth * nHeight * BUFFER_DEPTH];
 	if (m_pBuffer)
 	{
 		m_nReserveWidth = nWidth;
@@ -59,7 +60,7 @@ void ObjectBuffer::ReleaseUse()
 {
 	m_nWidth = 0;
 	m_nHeight = 0;
-	m_bUsed = true;
+	m_bUsed = false;
 }
 
 bool ObjectBuffer::IsUsed()

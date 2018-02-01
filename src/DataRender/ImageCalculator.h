@@ -6,7 +6,7 @@ class ImageCalculator :
 private:
 	int m_nImageBufferID;
 public:
-	ImageCalculator();
+	ImageCalculator(CString strObjID);
 	virtual ~ImageCalculator();
 protected:
 	bool UpdateImage(CString &strImgPath);

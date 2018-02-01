@@ -34,66 +34,16 @@ BaseObject * ObjectFactory::CreateObject(ObjectType emObjectType)
 	return pObj;
 }
 
-Value ObjectFactory::GetValue(BaseObject * pObj, BaseGraph_DataBase::ParamValueDef emValueDef)
+std::map<BaseGraph_DataBase::ParamValueDef, Value> ObjectFactory::GetDefaultParam(BaseGraph_DataBase::ObjectType emType)
 {
-	assert(pObj);
-	Value stuValue;
+	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
+	BaseObject * pObj = CreateObject(emType);
 	if (pObj)
 	{
-		ObjectType emObjType = pObj->GetItemType();
-		switch (emObjType)
-		{
-		case BaseGraph_DataBase::ObjectType_Title:
-			break;
-		case BaseGraph_DataBase::ObjectType_Scroll:
-			break;
-		case BaseGraph_DataBase::ObjectType_Image:
-		{
-			ObjectImage * pImage = (ObjectImage *)pObj;
-			switch (emValueDef)
-			{
-			case BaseGraph_DataBase::Image_Path:
-				stuValue = pImage->GetImagePath();
-				break;
-			default:
-				break;
-			}
-		}
-			break;
-		default:
-			break;
-		}
+		pObj->InitialObjectParam();
+		mapParam = pObj->GetProperty();
+		delete pObj;
+		pObj = nullptr;
 	}
-	return stuValue;
-}
-
-void ObjectFactory::SetValue(BaseObject * pObj, BaseGraph_DataBase::ParamValueDef emValueDef, Value stuValue)
-{
-	assert(pObj);
-	if (pObj)
-	{
-		ObjectType emObjType = pObj->GetItemType();
-		switch (emObjType)
-		{
-		case BaseGraph_DataBase::ObjectType_Title:
-			break;
-		case BaseGraph_DataBase::ObjectType_Scroll:
-			break;
-		case BaseGraph_DataBase::ObjectType_Image:
-		{
-			ObjectImage * pImage = (ObjectImage *)pObj;
-			switch (emValueDef)
-			{
-			case BaseGraph_DataBase::Image_Path:
-				pImage->SetImagePath(stuValue.ToCString());
-				break;
-			default:
-				break;
-			}
-		}
-		break;
-		default:
-			break;
-		}
-	}
+	return mapParam;
 }

@@ -131,7 +131,7 @@ bool ImageDecoder::ReadImage(IN int nWidth, IN int nHeight, OUT byte * pBuffer, 
 
 	//每个像素所占的字节数  
 	int nClrCount = m_image.GetBPP() / 8;
-	LPBYTE pBits;
+	LPBYTE pBits = nullptr;
 	for (int index = 0; index < nClrCount; index++)
 	{
 		pBits = (LPBYTE)m_image.GetBits();

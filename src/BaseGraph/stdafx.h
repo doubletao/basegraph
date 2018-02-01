@@ -53,3 +53,5 @@
 
 #define BASEGRAPH_AUTO_LOAD
 #include "ExportCommon.h"
+#include "ExportDataBase.h"
+#include "ExportDataRender.h"

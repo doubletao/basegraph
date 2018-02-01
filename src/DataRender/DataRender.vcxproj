@@ -113,25 +113,28 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CalculatorFactory.cpp" />
+    <ClCompile Include="CalculatorManager.cpp" />
     <ClCompile Include="DataBufferManager.cpp" />
     <ClCompile Include="DataRender.cpp" />
+    <ClCompile Include="ExportDataRender.cpp" />
     <ClCompile Include="ImageCalculator.cpp" />
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="ObjectCalculator.cpp" />
-    <ClCompile Include="ObjectCalculatorManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\ExportDataRender.h" />
+    <ClInclude Include="CalculatorFactory.h" />
+    <ClInclude Include="CalculatorManager.h" />
     <ClInclude Include="DataBufferManager.h" />
     <ClInclude Include="DataRender.h" />
-    <ClInclude Include="ExportDataRender.h" />
     <ClInclude Include="ImageCalculator.h" />
     <ClInclude Include="ObjectBuffer.h" />
     <ClInclude Include="ObjectCalculator.h" />
-    <ClInclude Include="ObjectCalculatorManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

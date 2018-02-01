@@ -1,70 +1,71 @@
 #include "stdafx.h"
 #include "ExportDataBase.h"
 #include "DataBaseManager.h"
+#include "ObjectFactory.h"
 
-bool BASEGRAPH_DATABASE_API DataBase_GetAllItemID(OUT std::vector<int>& vecID)
+bool BASEGRAPH_DATABASE_API DataBase_GetAllItemID(OUT std::vector<CString>& vecID)
 {
 	return DataBaseManager::Instance().GetAllItemID(vecID);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_GetItemType(IN int nID, OUT BaseGraph_DataBase::ObjectType & emType)
+bool BASEGRAPH_DATABASE_API DataBase_GetItemType(IN CString strID, OUT BaseGraph_DataBase::ObjectType & emType)
 {
-	return DataBaseManager::Instance().GetItemType(nID, emType);
+	return DataBaseManager::Instance().GetItemType(strID, emType);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_CreateItem(IN BaseGraph_DataBase::ObjectType emType, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, OUT int & nID)
+bool BASEGRAPH_DATABASE_API DataBase_CreateItem(IN BaseGraph_DataBase::ObjectType emType, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, OUT CString & strID)
 {
-	return DataBaseManager::Instance().CreateItem(emType, mapParam, nID);
+	return DataBaseManager::Instance().CreateItem(emType, mapParam, strID);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_AddSubItemTo(IN int nParentID, IN int nSubID)
+bool BASEGRAPH_DATABASE_API DataBase_AddSubItemTo(IN CString strParentID, IN CString strSubID)
 {
-	return DataBaseManager::Instance().AddSubItemTo(nParentID, nSubID);
+	return DataBaseManager::Instance().AddSubItemTo(strParentID, strSubID);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_DeleteItem(IN int nID)
+bool BASEGRAPH_DATABASE_API DataBase_DeleteItem(IN CString strID)
 {
-	return DataBaseManager::Instance().DeleteItem(nID);
+	return DataBaseManager::Instance().DeleteItem(strID);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_MoveItemToTop(IN int nID)
+bool BASEGRAPH_DATABASE_API DataBase_MoveItemToTop(IN CString strID)
 {
-	return DataBaseManager::Instance().MoveItemToTop(nID);
+	return DataBaseManager::Instance().MoveItemToTop(strID);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_MoveItemToBottom(IN int nID)
+bool BASEGRAPH_DATABASE_API DataBase_MoveItemToBottom(IN CString strID)
 {
-	return DataBaseManager::Instance().MoveItemToBottom(nID);
+	return DataBaseManager::Instance().MoveItemToBottom(strID);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_MoveItemBefore(IN int nSrcID, IN int nDesID)
+bool BASEGRAPH_DATABASE_API DataBase_MoveItemBefore(IN CString strSrcID, IN CString strDesID)
 {
-	return DataBaseManager::Instance().MoveItemBefore(nSrcID, nDesID);
+	return DataBaseManager::Instance().MoveItemBefore(strSrcID, strDesID);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_MoveItemAfter(IN int nSrcID, IN int nDesID)
+bool BASEGRAPH_DATABASE_API DataBase_MoveItemAfter(IN CString strSrcID, IN CString strDesID)
 {
-	return DataBaseManager::Instance().MoveItemAfter(nSrcID, nDesID);
+	return DataBaseManager::Instance().MoveItemAfter(strSrcID, strDesID);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam)
+bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam)
 {
-	return DataBaseManager::Instance().GetItemProperty(nID, emParam, stuParam);
+	return DataBaseManager::Instance().GetItemProperty(strID, emParam, stuParam);
 }
 
-//bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
-//{
-//	return DataBaseManager::Instance().GetItemProperty(nID, mapParam);
-//}
-
-bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN int nID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
+bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
 {
-	return DataBaseManager::Instance().SetItemProperty(nID, emParam, stuParam);
+	return DataBaseManager::Instance().GetItemProperty(strID, mapParam);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN int nID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
+bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
 {
-	return DataBaseManager::Instance().SetItemProperty(nID, mapParam);
+	return DataBaseManager::Instance().SetItemProperty(strID, emParam, stuParam);
+}
+
+bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
+{
+	return DataBaseManager::Instance().SetItemProperty(strID, mapParam);
 }
 
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile)
@@ -75,4 +76,10 @@ bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile)
 bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile)
 {
 	return DataBaseManager::Instance().LoadFromFile(strFile);
+}
+
+std::map<BaseGraph_DataBase::ParamValueDef, Value>BASEGRAPH_DATABASE_API DataBase_GetDefaultParam(IN BaseGraph_DataBase::ObjectType emType)
+{
+	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
+	return ObjectFactory::GetDefaultParam(emType);
 }

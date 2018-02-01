@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "ImageCalculator.h"
 
-ImageCalculator::ImageCalculator()
+ImageCalculator::ImageCalculator(CString strObjID)
+	: ObjectCalculator(strObjID)
+	, m_nImageBufferID(0)
 {
 }
 
@@ -15,7 +17,7 @@ bool ImageCalculator::UpdateRenderBuffer()
 	if (NeedRenderBuffer())
 	{
 		BaseGraph_Common::Value stuValue;
-		if (DataBase_GetItemProperty(m_nObjID, BaseGraph_DataBase::Image_Path, stuValue))
+		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_Path, stuValue))
 		{
 			//创建物件buf
 			if (PrepareObjBuffer())
@@ -53,8 +55,8 @@ bool ImageCalculator::UpdateImage(CString &strImgPath)
 				{
 					if (BaseCodec_ReadImage(strImgPath, nImageWidth, nImageHeight, pImgBuf->GetBuffer()))
 					{
-						DataBase_SetItemProperty(m_nObjID, BaseGraph_DataBase::Image_SrcWidth, nImageWidth);
-						DataBase_SetItemProperty(m_nObjID, BaseGraph_DataBase::Image_SrcHeight, nImageHeight);
+						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcWidth, nImageWidth);
+						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcHeight, nImageHeight);
 						return true;
 					}
 				}
@@ -81,10 +83,14 @@ bool ImageCalculator::StretchImage()
 	if (nDispWidth > 0
 		&& nDispHeight > 0)
 	{
-		ObjectBuffer * pImgBuf = DataBufferManager::Instance().GetObjectBuf(m_nImageBufferID);
-		ObjectBuffer * pObjBuf = DataBufferManager::Instance().GetObjectBuf(m_nObjBufferID);
+		ObjectBuffer * pImgBuf = DataBufferManager::Instance().GetBuf(m_nImageBufferID);
+		ObjectBuffer * pObjBuf = DataBufferManager::Instance().GetBuf(m_nObjBufferID);
 		if (BuferValid(pImgBuf) && BuferValid(pObjBuf))
 		{
+			if (true)
+			{
+				BufferFunction::WriteBitmap(_T("e:\\1.bmp"), pImgBuf->GetWidth(), pImgBuf->GetHeight(), 32, pImgBuf->GetBuffer());
+			}
 			BufferFunction::BufferBitblt((DWORD *)pObjBuf->GetBuffer(),
 				0, 0, pObjBuf->GetWidth(), pObjBuf->GetHeight(), pObjBuf->GetWidth(), pObjBuf->GetHeight(),
 				(DWORD *)pImgBuf->GetBuffer(),
@@ -97,17 +103,17 @@ bool ImageCalculator::StretchImage()
 
 bool ImageCalculator::PrepareObjBuffer()
 {
-	auto GetPropertyValue = [](int nObjID, BaseGraph_DataBase::ParamValueDef emValueDef)->BaseGraph_Common::Value
+	auto GetPropertyValue = [](CString strObjID, BaseGraph_DataBase::ParamValueDef emValueDef)->BaseGraph_Common::Value
 	{
 		BaseGraph_Common::Value stuValue;
-		if (DataBase_GetItemProperty(nObjID, BaseGraph_DataBase::Image_DispWidth, stuValue))
+		if (DataBase_GetItemProperty(strObjID, emValueDef, stuValue))
 		{
 			return stuValue;
 		}
 		return 0;
 	};
-	int nObjWidth = GetPropertyValue(m_nObjID, BaseGraph_DataBase::Image_SrcWidth).ToInt();
-	int nObjHeight = GetPropertyValue(m_nObjID, BaseGraph_DataBase::Image_SrcHeight).ToInt();
+	int nObjWidth = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Image_DispWidth).ToInt();
+	int nObjHeight = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Image_DispHeight).ToInt();
 	if (nObjWidth > 0
 		&& nObjHeight > 0)
 	{
@@ -125,7 +131,7 @@ int ImageCalculator::GetWidth()
 {
 	int nRet = 0;
 	BaseGraph_Common::Value stuValue;
-	if (DataBase_GetItemProperty(m_nObjID, BaseGraph_DataBase::Image_DispWidth, stuValue))
+	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_DispWidth, stuValue))
 	{
 		nRet = stuValue.ToInt();
 	}
@@ -136,7 +142,7 @@ int ImageCalculator::GetHeight()
 {
 	int nRet = 0;
 	BaseGraph_Common::Value stuValue;
-	if (DataBase_GetItemProperty(m_nObjID, BaseGraph_DataBase::Image_DispHeight, stuValue))
+	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_DispHeight, stuValue))
 	{
 		nRet = stuValue.ToInt();
 	}

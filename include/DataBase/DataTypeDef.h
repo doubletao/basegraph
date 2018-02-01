@@ -102,7 +102,7 @@ namespace BaseGraph_DataBase
 		case BaseGraph_DataBase::ObjID:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("ID");
-			valueDesc.stuDefault.SetValue(-1);
+			valueDesc.stuDefault.SetValue(_T("unknown"));
 			break;
 		case BaseGraph_DataBase::ObjType:
 			valueDesc.nDispIndex = 0;

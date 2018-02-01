@@ -30,7 +30,7 @@ bool BASEGRAPH_BASECODEC_API BaseCodec_ReadImage(IN LPCTSTR szFileName, IN int n
 	ImageDecoder imgDec;
 	if (imgDec.Open(szFileName))
 	{
-		imgDec.ReadImage(nWidth, nHeight, pBuffer, nPixSize);
+		return imgDec.ReadImage(nWidth, nHeight, pBuffer, nPixSize);
 	}
 	return false;
 }

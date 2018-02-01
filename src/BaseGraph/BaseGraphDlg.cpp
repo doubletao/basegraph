@@ -99,6 +99,16 @@ BOOL CBaseGraphDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	CString strObjID = _T("");
+	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Image);
+	mapParam[BaseGraph_DataBase::Image_Path].SetValue(_T("F:\\Media\\图片\\1.png"));
+	mapParam[BaseGraph_DataBase::Image_DispWidth].SetValue(800, BaseGraph_Common::ValueType_INT);
+	mapParam[BaseGraph_DataBase::Image_DispHeight].SetValue(600, BaseGraph_Common::ValueType_INT);
+	DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Image, mapParam, strObjID);
+	if (!strObjID.IsEmpty())
+	{
+		DataRender_UpdateRender(strObjID);
+	}
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }

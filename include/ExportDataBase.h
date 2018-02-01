@@ -15,23 +15,25 @@
 #include "DataBase\DataTypeDef.h"
 
 //物件管理
-bool BASEGRAPH_DATABASE_API DataBase_GetAllItemID(OUT std::vector<int> & vecID);
-bool BASEGRAPH_DATABASE_API DataBase_GetItemType(IN int nID, OUT BaseGraph_DataBase::ObjectType & emType);
+bool BASEGRAPH_DATABASE_API DataBase_GetAllItemID(OUT std::vector<CString> & vecID);
+bool BASEGRAPH_DATABASE_API DataBase_GetItemType(IN CString strID, OUT BaseGraph_DataBase::ObjectType & emType);
 //增删
-bool BASEGRAPH_DATABASE_API DataBase_CreateItem(IN BaseGraph_DataBase::ObjectType emType, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam, OUT int & nID);
-bool BASEGRAPH_DATABASE_API DataBase_AddSubItemTo(IN int nParentID, IN int nSubID);
-bool BASEGRAPH_DATABASE_API DataBase_DeleteItem(IN int nID);
+bool BASEGRAPH_DATABASE_API DataBase_CreateItem(IN BaseGraph_DataBase::ObjectType emType, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam, OUT CString & strID);
+bool BASEGRAPH_DATABASE_API DataBase_AddSubItemTo(IN CString strParentID, IN CString strSubID);
+bool BASEGRAPH_DATABASE_API DataBase_DeleteItem(IN CString strID);
 //层次调整
-bool BASEGRAPH_DATABASE_API DataBase_MoveItemToTop(IN int nID);
-bool BASEGRAPH_DATABASE_API DataBase_MoveItemToBottom(IN int nID);
-bool BASEGRAPH_DATABASE_API DataBase_MoveItemBefore(IN int nSrcID, IN int nDesID);
-bool BASEGRAPH_DATABASE_API DataBase_MoveItemAfter(IN int nSrcID, IN int nDesID);
+bool BASEGRAPH_DATABASE_API DataBase_MoveItemToTop(IN CString strID);
+bool BASEGRAPH_DATABASE_API DataBase_MoveItemToBottom(IN CString strID);
+bool BASEGRAPH_DATABASE_API DataBase_MoveItemBefore(IN CString strSrcID, IN CString strDesID);
+bool BASEGRAPH_DATABASE_API DataBase_MoveItemAfter(IN CString strSrcID, IN CString strDesID);
 //属性获取
-bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam);
-//bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN int nID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam);
+bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
 //属性设置
-bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN int nID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
-bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN int nID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
+bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
 //序列化
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile);
 bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile);
+//工具/其他
+std::map<BaseGraph_DataBase::ParamValueDef, Value> BASEGRAPH_DATABASE_API DataBase_GetDefaultParam(IN BaseGraph_DataBase::ObjectType emType);

@@ -19,16 +19,19 @@ enum EmObjectChgLevel
 class ObjectCalculator
 {
 protected:
-	int m_nObjID;
+	CString m_strObjID;
 	int m_nObjBufferID;
 	EmObjectChgLevel m_emChgLevel;
 public:
-	ObjectCalculator();
+	ObjectCalculator(CString strObjID);
 	virtual ~ObjectCalculator();
 	virtual int GetWidth();
 	virtual int GetHeight();
-public:
+	int GetObjBufferID();
+	bool GetObjBuffer(byte *& pBuffer);
+protected:
 	virtual bool NeedRenderBuffer();
+public:
 	virtual bool UpdateRenderBuffer();
 };
 
