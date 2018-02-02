@@ -26,6 +26,7 @@ bool ObjectBuffer::InitializeBuffer(int nWidth, int nHeight)
 	{
 		m_nReserveWidth = nWidth;
 		m_nReserveHeight = nHeight;
+		memset(m_pBuffer, 255, nWidth * nHeight * BUFFER_DEPTH);
 		return true;
 	}
 	return false;
@@ -99,4 +100,9 @@ int ObjectBuffer::GetHeight()
 {
 	assert(m_nHeight);
 	return m_nHeight;
+}
+
+void ObjectBuffer::DebugWriteImage(CString strPath)
+{
+	BufferFunction::WriteBitmap(strPath, GetWidth(), GetHeight(), 32, GetBuffer());
 }

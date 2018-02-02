@@ -121,39 +121,24 @@ bool ImageDecoder::ReadImage(IN int nWidth, IN int nHeight, OUT byte * pBuffer, 
 		return false;
 	}
 
+	nWidth = nWidth > m_image.GetWidth() ? m_image.GetWidth() : nWidth;
+	nHeight = nHeight > m_image.GetHeight() ? m_image.GetHeight() : nHeight;
 	int nBufSize = nWidth * nHeight * nPixSize;
 
-	//图像每一行的字节数  
-	int nRowBytes = m_image.GetPitch();
-	int nImageWidth = m_image.GetWidth();
-	int nImageHeight = m_image.GetHeight();
+	HDC hdc = ::GetDC(NULL);
+	HBITMAP hBmp = ::CreateCompatibleBitmap(hdc, nWidth, nHeight);
 
+	HDC hdcMem = ::CreateCompatibleDC(hdc);
+	::SelectObject(hdcMem, hBmp);
 
-	//每个像素所占的字节数  
-	int nClrCount = m_image.GetBPP() / 8;
-	LPBYTE pBits = nullptr;
-	for (int index = 0; index < nClrCount; index++)
-	{
-		pBits = (LPBYTE)m_image.GetBits();
-		for (int i = 0; i < nImageHeight; i++)
-		{
-			for (int j = 0; j < nImageWidth; j++)
-			{
-				if (j * nClrCount + index < nBufSize)
-				{
-					pBuffer[j * nClrCount + index] = pBits[j * nClrCount + index];
-				}
-				else
-				{
-					return false;
-				}
-			}
+	m_image.Draw(hdcMem, 0, 0, nWidth, nHeight);
 
-			//如果nRowBytes>0  则从开始到结尾  
-			//如果nRowBytes<0, 则从结尾到开始  
-			pBits += nRowBytes;
-		}
-	}
+	::GetBitmapBits(hBmp, nBufSize, pBuffer);
+
+	::ReleaseDC(NULL, hdc);
+	::DeleteDC(hdcMem);
+	::DeleteObject(hBmp);
+
 
 	return true;
 }

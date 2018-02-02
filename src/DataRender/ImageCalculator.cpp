@@ -57,6 +57,10 @@ bool ImageCalculator::UpdateImage(CString &strImgPath)
 					{
 						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcWidth, nImageWidth);
 						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcHeight, nImageHeight);
+						if (false)
+						{
+							pImgBuf->DebugWriteImage(_T("e:\\2.bmp"));
+						}
 						return true;
 					}
 				}
@@ -87,15 +91,15 @@ bool ImageCalculator::StretchImage()
 		ObjectBuffer * pObjBuf = DataBufferManager::Instance().GetBuf(m_nObjBufferID);
 		if (BuferValid(pImgBuf) && BuferValid(pObjBuf))
 		{
-			if (true)
-			{
-				BufferFunction::WriteBitmap(_T("e:\\1.bmp"), pImgBuf->GetWidth(), pImgBuf->GetHeight(), 32, pImgBuf->GetBuffer());
-			}
 			BufferFunction::BufferBitblt((DWORD *)pObjBuf->GetBuffer(),
 				0, 0, pObjBuf->GetWidth(), pObjBuf->GetHeight(), pObjBuf->GetWidth(), pObjBuf->GetHeight(),
 				(DWORD *)pImgBuf->GetBuffer(),
 				0, 0, pImgBuf->GetWidth(), pImgBuf->GetHeight(), pImgBuf->GetWidth(), pImgBuf->GetHeight(),
 				BUFFER_COPY, BUFFER_PARITY_BOTH);
+			if (false)
+			{
+				pObjBuf->DebugWriteImage(_T("e:\\1.bmp"));
+			}
 		}
 	}
 	return false;

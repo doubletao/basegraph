@@ -33,5 +33,7 @@ public:
 	byte * GetBuffer();
 	int GetWidth();
 	int GetHeight();
+
+	void DebugWriteImage(CString strPath);
 };
 
