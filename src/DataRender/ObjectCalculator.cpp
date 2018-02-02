@@ -31,13 +31,15 @@ int ObjectCalculator::GetObjBufferID()
 	return m_nObjBufferID;
 }
 
-bool ObjectCalculator::GetObjBuffer(byte *& pBuffer)
+bool ObjectCalculator::GetObjBuffer(byte *& pBuffer, int & nWidth, int & nHeight)
 {
 	int nBufID = GetObjBufferID();
 	ObjectBuffer * pObjBuf = DataBufferManager::Instance().GetBuf(nBufID);
 	if (pObjBuf)
 	{
 		pBuffer = pObjBuf->GetBuffer();
+		nWidth = pObjBuf->GetWidth();
+		nHeight = pObjBuf->GetHeight();
 		return true;
 	}
 	return false;

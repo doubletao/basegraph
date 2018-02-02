@@ -17,6 +17,6 @@ public:
 	bool ReleaseCalculator(ObjectCalculator * pCalc);
 
 	bool UpdateRenderBuffer(CString strObjID);
-	bool GetBuffer(IN CString strID, OUT byte *& pBuffer);
+	bool GetBuffer(IN CString strID, OUT byte *& pBuffer, OUT int & nWidth, OUT int & nHeight);
 };
 

@@ -108,6 +108,13 @@ BOOL CBaseGraphDlg::OnInitDialog()
 	if (!strObjID.IsEmpty())
 	{
 		DataRender_UpdateRender(strObjID);
+		byte * pBuf = nullptr;
+		int nWidth = 0;
+		int nHeight = 0;
+		if (DataRender_GetBuffer(strObjID, pBuf, nWidth, nHeight))
+		{
+			BufferFunction::WriteBitmap(_T("e:\\4.bmp"), nWidth, nHeight, 32, pBuf);
+		}
 	}
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE

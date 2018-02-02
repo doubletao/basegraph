@@ -28,7 +28,7 @@ public:
 	virtual int GetWidth();
 	virtual int GetHeight();
 	int GetObjBufferID();
-	bool GetObjBuffer(byte *& pBuffer);
+	bool GetObjBuffer(byte *& pBuffer, int & nWidth, int & nHeight);
 protected:
 	virtual bool NeedRenderBuffer();
 public:

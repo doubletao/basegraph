@@ -14,4 +14,4 @@
 
 BASEGRAPH_DATARENDER_API bool DataRender_UpdateRender(IN CString strID);
 //注意，拿到的是内部指针，不要释放
-BASEGRAPH_DATARENDER_API bool DataRender_GetBuffer(IN CString strID, OUT byte *& pBuffer);
+BASEGRAPH_DATARENDER_API bool DataRender_GetBuffer(IN CString strID, OUT byte *& pBuffer, OUT int & nWidth, OUT int & nHeight);
