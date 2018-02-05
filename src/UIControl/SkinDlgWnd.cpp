@@ -8,54 +8,22 @@
 #define  ID_MAX_BTN   111
 #define  ID_MIN_BTN   112
 
-#define _UNICODE
-
 // CSkinDlgWnd
 
 IMPLEMENT_DYNCREATE(CSkinDlgWnd,CDialog)
 
 void CSkinDlgWnd::LoadBmpRes()
 {
-	CImage * pImage = NULL;
-
-	CString strPath = SYPath_GetPath(SY_PATH_BIN);
-	strPath += _T("\\CGSkin\\OtherRes\\");
-	{
-		//CString strFile = strPath + _T("dlg_minimize_button.png");
-		CString strFile = _T("UI_UIIMAGE_THEME_DLG_MIN_");
-		m_vecStrBtnImages.push_back(strFile);
-	}
-
-	{
-		//CString strFile = strPath + _T("dlg_maxmize_button.png");
-		CString strFile = _T("UI_UIIMAGE_THEME_DLG_MAX_");
-		m_vecStrBtnImages.push_back(strFile);
-	}
-
-	{
-		//CString strFile = strPath + _T("dlg_close_btn.png");
-		CString strFile = _T("UI_UIIMAGE_THEME_DLG_CLOSE_");
-		m_vecStrBtnImages.push_back(strFile);
-	}
-
-	{
-		//CString strFile = strPath + _T("DialogBkg.png");
-		SYIamgeResHandle BKRes = SYGetIamgeRes(_T("UI_UIIMAGE_THEME_DLG_BK"),FALSE);
-		m_pImgBk = new CImage;
-		m_pImgBk->Attach(BKRes.hImg);
-	}
 }
 
 CSkinDlgWnd::CSkinDlgWnd()
-	: m_rtMenuBar()
-	, m_pImgBk(NULL)
 {
 	m_nTitleHeight = 38;
 	m_nFrameWidth = 3;
 
 	LoadBmpRes();
 	m_iXButtonHovering = -1;
-
+	
 	m_bNCHovering = FALSE;
 	m_bNCTracking = FALSE;
 
@@ -64,8 +32,6 @@ CSkinDlgWnd::CSkinDlgWnd()
 
 CSkinDlgWnd::CSkinDlgWnd(UINT nIDTemplate, CWnd* pParentWnd /*= NULL*/)
 	: CDialog(nIDTemplate, pParentWnd)
-	, m_pImgBk(NULL)
-	, m_rtMenuBar()
 {
 	m_nTitleHeight = 38;
 	m_nFrameWidth = 3;
@@ -81,21 +47,6 @@ CSkinDlgWnd::CSkinDlgWnd(UINT nIDTemplate, CWnd* pParentWnd /*= NULL*/)
 
 CSkinDlgWnd::~CSkinDlgWnd()
 {
-	if (m_pImgBk != NULL)
-	{
-		m_pImgBk->Detach();
-		delete m_pImgBk;
-		m_pImgBk = NULL;
-	}
-	for(std::map<int,CDUIButton * >::iterator it = m_TitleBtn.begin(); it != m_TitleBtn.end(); it++)
-	{
-		if (it->second != NULL)
-		{
-			delete it->second;
-			it->second = NULL;
-		}
-	}
-	m_TitleBtn.clear();
 }
 
 
@@ -117,7 +68,6 @@ BEGIN_MESSAGE_MAP(CSkinDlgWnd, CDialog)
 	ON_WM_SIZE()
 	ON_WM_SYSCOMMAND()
 	ON_WM_NCCREATE()
-	ON_NOTIFY_EX(TTN_NEEDTEXT, 0, &CSkinDlgWnd::OnToolTipText)
 END_MESSAGE_MAP()
 
 
@@ -126,11 +76,6 @@ END_MESSAGE_MAP()
 void CSkinDlgWnd::OnNcPaint()
 {
 	CWindowDC dc(this);
-
-	if (m_pImgBk==NULL)
-	{
-		return;
-	}
 
 	CDC MemDC;
 
@@ -157,74 +102,6 @@ void CSkinDlgWnd::OnNcPaint()
 	MemDC.SelectObject(&bmp);
 	MemDC.SetBkMode(TRANSPARENT);
 
-	Gdiplus::Graphics graphics(MemDC.GetSafeHdc());
-	RectF destRect;
-
-	//绘制底部和边框
-	destRect.X = 0;
-	destRect.Y = rcWindow.Height() - m_nFrameWidth;
-	destRect.Width = rcWindow.Width();
-	destRect.Height = m_nFrameWidth;
-	if (destRect.Width <= 0 || destRect.Height <= 0)
-	{
-		return;
-	}
-	m_pImgBk->Draw(MemDC.GetSafeHdc(), CRect(destRect.GetLeft(), destRect.GetTop(), destRect.GetRight(), destRect.GetBottom()));
-
-	destRect.X = rcWindow.right-m_nTitleHeight;
-	destRect.Y = rcWindow.bottom - m_nTitleHeight;
-	destRect.Width = m_nTitleHeight;
-	destRect.Height = m_nTitleHeight;
-	if (destRect.Width <= 0 || destRect.Height <= 0)
-	{
-		return;
-	}
-	m_pImgBk->Draw(MemDC.GetSafeHdc(), CRect(destRect.GetLeft(), destRect.GetTop(), destRect.GetRight(), destRect.GetBottom()));
-
-	destRect.X = 0;
-	destRect.Y = rcWindow.Height() - m_nTitleHeight;
-	destRect.Width = m_nTitleHeight;
-	destRect.Height = m_nTitleHeight;
-	if (destRect.Width <= 0 || destRect.Height <= 0)
-	{
-		return;
-	}
-	m_pImgBk->Draw(MemDC.GetSafeHdc(), CRect(destRect.GetLeft(), destRect.GetTop(), destRect.GetRight(), destRect.GetBottom()));
-
-	//左边框
-	destRect.X = 0;
-	destRect.Y = m_nTitleHeight;
-	destRect.Width = m_nFrameWidth;
-	destRect.Height = rcWindow.Height() - 2*m_nTitleHeight;
-	if (destRect.Width <= 0 || destRect.Height <= 0)
-	{
-		return;
-	}
-	m_pImgBk->Draw(MemDC.GetSafeHdc(), CRect(destRect.GetLeft(), destRect.GetTop(), destRect.GetRight(), destRect.GetBottom()));
-
-
-	//右边框
-	destRect.X = rcWindow.Width() - m_nFrameWidth;
-	destRect.Y = m_nTitleHeight;
-	destRect.Width = m_nFrameWidth;
-	destRect.Height = rcWindow.Height() - 2*m_nTitleHeight;
-	if (destRect.Width <= 0 || destRect.Height <= 0)
-	{
-		return;
-	}
-	m_pImgBk->Draw(MemDC.GetSafeHdc(), CRect(destRect.GetLeft(), destRect.GetTop(), destRect.GetRight(), destRect.GetBottom()));
-
-	//绘制标题栏
-	destRect.X = 0;
-	destRect.Y = 0;
-	destRect.Width = rcWindow.Width();
-	destRect.Height = m_nTitleHeight;
-	if (destRect.Width <= 0 || destRect.Height <= 0)
-	{
-		return;
-	}
-	m_pImgBk->Draw(MemDC.GetSafeHdc(), CRect(destRect.GetLeft(), destRect.GetTop(), destRect.GetRight(), destRect.GetBottom()));
-
 	//沿着窗口四周画一圈一个像素宽的蓝色矩形
 	int nSavedDC = MemDC.SaveDC();
 	COLORREF col = RGB(142, 170, 195);
@@ -248,59 +125,6 @@ void CSkinDlgWnd::OnNcPaint()
 		xPos += 5;
 	}
 
-	CString strText;
-	GetWindowText(strText);
-	if (!strText.IsEmpty())
-	{
-		//绘制标题
-		LOGFONT lfFont;
-		memset(&lfFont, 0, sizeof(lfFont));
-		lfFont.lfHeight = -12;
-		//lfFont.lfWeight |= FW_BOLD;
-		lstrcpy(lfFont.lfFaceName, _T("微软雅黑"));
-		Gdiplus::Font font(dc.GetSafeHdc(), &lfFont);
-
-		StringFormat stringFormat;
-		stringFormat.SetFormatFlags( StringFormatFlagsNoWrap);
-		stringFormat.SetAlignment(StringAlignmentNear);
-		stringFormat.SetLineAlignment(StringAlignmentNear);
-		CStringW strTitle(strText);
-		SolidBrush brush((ARGB)Color::White);
-		PointF point;
-
-		point.X=(Gdiplus::REAL)xPos;
-		point.Y=(Gdiplus::REAL)yPos;
-		graphics.DrawString(strTitle, strTitle.GetLength(), &font, point,&stringFormat, &brush);
-
-	}
-
-	CRect rcPaint;
-	dc.GetClipBox(&rcPaint);
-	std::map<int,CDUIButton *>::iterator iter;
-	for (iter = m_TitleBtn.begin(); iter != m_TitleBtn.end(); iter++)
-	{
-		CDUIButton* dcControl = iter->second;
-		CRect rcControl;
-		dcControl->GetRect(&rcControl);
-
-		// 判断当前按钮是否需要重绘
-		if(!rcPaint.IsRectEmpty() && !CRect().IntersectRect(&rcControl, rcPaint))
-		{
-			continue;
-		}
-
-		dcControl->DrawButton(MemDC.GetSafeHdc());
-	}
-
-	//绘制菜单
-	DWORD	dwStyle	= GetStyle();
-	DWORD	dwExStyle = GetExStyle();
-	CMenu* pMenu = GetMenu();
-	if (pMenu != NULL && !(dwStyle & WS_CHILD) && !(dwExStyle & WS_EX_TOOLWINDOW))
-	{
-		int n = 0;
-	}
-
 	dc.BitBlt(0,0,rcWindow.Width(),rcWindow.Height(),&MemDC,0,0,SRCCOPY);
 
 	dc.SelectClipRgn(NULL);
@@ -310,22 +134,6 @@ HBRUSH CSkinDlgWnd::OnCtlColor(CDC* pDC,  CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialog::OnCtlColor(pDC,pWnd, nCtlColor);
 	// TODO: Change any attributes of theDC here
-
-	pDC->SetTextColor(RGB(185,185,185));
-	if (pWnd->IsKindOf(RUNTIME_CLASS( CStatic )))
-	{
-		// CStatic
-		pDC->SetBkMode(TRANSPARENT); ///选择透明背景模式
-		return g_brBK;
-	}
-	else if (pWnd->IsKindOf(RUNTIME_CLASS( CListBox )) ||
-			pWnd->IsKindOf(RUNTIME_CLASS( CEdit )) ||
-			pWnd->IsKindOf(RUNTIME_CLASS( CComboBox )))
-	{
-		// CStatic
-		pDC->SetBkMode(TRANSPARENT); ///选择透明背景模式
-		return g_brEdtBK;
-	}
 	return hbr;
 }
 
@@ -374,51 +182,18 @@ void CSkinDlgWnd::OnPaint()
 	CBitmap*	pOldMemBmp = MemDC.SelectObject(&MemBitmap);
 
 	//如果指定了背景图，则加载背景图，否则涂成灰色
-	if (g_brBK.GetSafeHandle() != NULL)
-	{
-		MemDC.FillRect(rtClient, &g_brBK);
-	}
-	else
-	{
-		MemDC.FillSolidRect(rtClient,RGB(60,60,60));
-	}
+	MemDC.FillSolidRect(rtClient,RGB(60,60,60));
+
 	dc.BitBlt(rtClient.left,rtClient.top, rtClient.Width(), rtClient.Height(), 
 		&MemDC, 0, 0, SRCCOPY);
 	MemDC.SelectObject(pOldMemBmp);
 	MemDC.DeleteDC();
 }
 
-BOOL CSkinDlgWnd::OnToolTipText(UINT, NMHDR* pNMHDR, LRESULT* pResult)
-{
-	TOOLTIPTEXT *pTTT = (TOOLTIPTEXT *)pNMHDR;
-	UINT nID = (UINT)pNMHDR->idFrom;
-	if (pTTT->uFlags & TTF_IDISHWND)
-	{
-		nID = ::GetDlgCtrlID((HWND)nID);
-		if(nID)
-		{
-			CString strTips(_T(""));
-			if(GetToolTips(nID,strTips))
-			{
-				lstrcpyn(pTTT->szText, strTips, sizeof(pTTT->szText));
-				return TRUE;
-			}
-		}
-	}
-	return(FALSE);
-}
-
 BOOL CSkinDlgWnd::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	EnableToolTips(TRUE);
-	m_tt.Create(this);
-	m_tt.Activate(TRUE);
-	for (std::map<UINT, CString>::iterator it = m_mapIDTips.begin(); it != m_mapIDTips.end(); it++)
-	{
-		assert(GetDlgItem(it->first));
-		m_tt.AddTool(GetDlgItem(it->first), LPSTR_TEXTCALLBACK);//添加
-	}
+
 	return TRUE;
 }
 
@@ -538,25 +313,9 @@ void CSkinDlgWnd::OnNcLButtonDblClk(UINT nHitTest, CPoint point)
 	int iButton = TButtonHitTest(pt, rtButton);
 	if(iButton != -1)
 	{
-		m_TitleBtn[iButton]->LButtonDown();
 		OnNcPaint();
 		return;
 	}
-
-	//if (rcWindow.PtInRect(pt))
-	//{
-	//	if (IsZoomed())
-	//	{
-	//		ShowWindow(SW_RESTORE);
-	//	}
-	//	else
-	//	{
-	//		ShowWindow(SW_MAXIMIZE);
-	//	}
-
-	//	OnNcPaint();
-	//	return;
-	//}
 
 	OnNcPaint();
 }
@@ -573,7 +332,6 @@ void CSkinDlgWnd::OnNcLButtonDown(UINT nHitTest, CPoint point)
 	int iButton = TButtonHitTest(pt, rtButton);
 	if(iButton != -1)
 	{
-		m_TitleBtn[iButton]->LButtonDown();
 		OnNcPaint();
 		return;
 	}
@@ -635,7 +393,6 @@ void CSkinDlgWnd::OnNcLButtonUp(UINT nHitTest, CPoint point)
 			break;
 		default:
 			{
-               m_TitleBtn[iButton]->LButtonUp();
 			   OnNcPaint();
 			}
 			break;
@@ -673,17 +430,6 @@ void CSkinDlgWnd::OnNcMouseMove(UINT nHitTest, CPoint point)
 	int iButton = TButtonHitTest(point, rtButton);
 	if(iButton != m_iXButtonHovering)
 	{
-		if(m_iXButtonHovering != -1)
-		{
-			m_TitleBtn[m_iXButtonHovering]->MouseLeave();
-			m_iXButtonHovering = -1;
-		}
-		if(iButton != -1)
-		{
-			m_iXButtonHovering = iButton;
-			m_TitleBtn[m_iXButtonHovering]->MouseHover();
-		}
-
 		OnNcPaint();
 	}
 }
@@ -700,7 +446,6 @@ void CSkinDlgWnd::OnNcMouseLeave()
 
 	if(m_iXButtonHovering != -1)
 	{
-		m_TitleBtn[m_iXButtonHovering]->MouseLeave();
 		m_iXButtonHovering = -1;
 	}
 }
@@ -734,25 +479,6 @@ void CSkinDlgWnd::OnSize(UINT nType, int cx, int cy)
 	nY = (m_nTitleHeight - rtClose.Height()) / 2;
 	nYEnd = nY + rtClose.Height();
 	int nLeft = 10;
-	if (m_TitleBtn.count(ID_CLOSE_BTN) > 0)
-	{
-		m_TitleBtn[ID_CLOSE_BTN]->GetRect(rtClose);
-		nY = (m_nTitleHeight - rtClose.Height()) / 2;
-		nYEnd = nY + rtClose.Height();
-
-		CRect rClose(rcWnd.right - rtClose.Width() - nLeft, nY, rcWnd.right - nLeft, nYEnd);
-		m_TitleBtn[ID_CLOSE_BTN]->SetRect(rClose);
-	}
-	if (m_TitleBtn.count(ID_MIN_BTN) > 0)
-	{
-		CRect rMin(rcWnd.right - rtClose.Width() * 3 - nLeft, nY, rcWnd.right - rtClose.Width() * 2 - nLeft, nYEnd);
-		m_TitleBtn[ID_MIN_BTN]->SetRect(rMin);
-	}
-	if (m_TitleBtn.count(ID_MAX_BTN) > 0)
-	{
-		CRect rMax(rcWnd.right - rtClose.Width() * 2 - nLeft, nY, rcWnd.right - rtClose.Width() - nLeft, nYEnd);
-		m_TitleBtn[ID_MAX_BTN]->SetRect(rMax);
-	}
 
 	if (nType == SIZE_MAXIMIZED||
 		nType == SIZE_RESTORED)
@@ -803,33 +529,7 @@ BOOL CSkinDlgWnd::OnNcCreate(LPCREATESTRUCT lpCreateStruct)
 	m_rcControl.right = m_rcControl.left + 17;
 	m_rcControl.bottom = m_rcControl.top + 17;
 
-	DWORD	dwStyle	= lpCreateStruct->style;
-	if ((dwStyle & WS_MINIMIZEBOX) != 0 &&
-		(dwStyle & WS_SYSMENU) != 0)
-	{
-		AddTitleButton(m_rcControl,m_vecStrBtnImages[0],3,ID_MIN_BTN);
-	}
-	if ((dwStyle & WS_MAXIMIZEBOX) != 0 &&
-		(dwStyle & WS_SYSMENU) != 0)
-	{
-		AddTitleButton(m_rcControl,m_vecStrBtnImages[1],3,ID_MAX_BTN);
-	}
-	if ((dwStyle & WS_SYSMENU) != 0)
-	{
-		AddTitleButton(m_rcControl,m_vecStrBtnImages[2],3,ID_CLOSE_BTN);
-	}
-
 	return TRUE;
-}
-
-//往对话框添加一个按钮
-CDUIButton* CSkinDlgWnd::AddTitleButton(LPRECT lpRect, CString strImage, UINT nCount /*= 3*/ , UINT nID/* = 0*/,LPCTSTR lpszCaption/*=NULL*/)
-{
-	CDUIButton  * dcControl = new CDUIButton;
-	dcControl->CreateButton(lpszCaption, lpRect, this,strImage,nCount, nID);
-	m_TitleBtn[nID] = dcControl;
-
-	return m_TitleBtn[nID];
 }
 
 BOOL CSkinDlgWnd::PreTranslateMessage(MSG* pMsg)
@@ -843,16 +543,5 @@ BOOL CSkinDlgWnd::PreTranslateMessage(MSG* pMsg)
 
 int CSkinDlgWnd::TButtonHitTest(CPoint point, CRect& rtButton)
 {
-	std::map<int,CDUIButton *>::iterator iter;
-	for (iter = m_TitleBtn.begin(); iter != m_TitleBtn.end(); iter++)
-	{
-		CDUIButton * dcControl = iter->second;
-		if(dcControl->PtInButton(point))
-		{
-			dcControl->GetRect(&rtButton);
-			return dcControl->GetControlId();
-		}
-	}
-
 	return -1;
 }

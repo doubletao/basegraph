@@ -86,3 +86,13 @@ CImage * ThemeManager::GetImage(int nImgID)
 	}
 	return nullptr;
 }
+
+int ThemeManager::GetIntValue(int nIntID)
+{
+	UITheme * pTheme = GetCurTheme();
+	if (pTheme)
+	{
+		return pTheme->GetIntValue(nIntID);
+	}
+	return 0;
+}

@@ -19,5 +19,6 @@ public:
 	LOGFONT GetFont(int nFontID);
 	COLORREF GetColor(int nColorID);
 	CImage * GetImage(int nImgID);
+	int GetIntValue(int nIntID);
 };
 

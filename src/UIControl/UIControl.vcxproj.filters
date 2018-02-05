@@ -13,7 +13,16 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="NewFilter1">
+    <Filter Include="UIElementBase">
+      <UniqueIdentifier>{be7f15b4-d1de-4f95-a7a5-e4f23ee2f020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIElementCtrl">
+      <UniqueIdentifier>{2eec88f4-6427-4715-95d5-79044e052ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UITheme">
+      <UniqueIdentifier>{4b664a96-0c7a-4b96-909f-30316d5217fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SkinedWindow">
       <UniqueIdentifier>{21a04262-ed02-4fc5-a5eb-630616da53e1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -27,11 +36,20 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ThemeManager.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="SkinDlgWnd.cpp">
+      <Filter>SkinedWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinFrameWnd.cpp">
+      <Filter>SkinedWindow</Filter>
     </ClCompile>
     <ClCompile Include="UITheme.cpp">
-      <Filter>源文件</Filter>
+      <Filter>UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="ThemeManager.cpp">
+      <Filter>UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinWnd.cpp">
+      <Filter>SkinedWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -47,11 +65,20 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ThemeManager.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="SkinDlgWnd.h">
+      <Filter>SkinedWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinFrameWnd.h">
+      <Filter>SkinedWindow</Filter>
     </ClInclude>
     <ClInclude Include="UITheme.h">
-      <Filter>头文件</Filter>
+      <Filter>UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="ThemeManager.h">
+      <Filter>UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinWnd.h">
+      <Filter>SkinedWindow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

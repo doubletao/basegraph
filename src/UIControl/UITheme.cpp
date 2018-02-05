@@ -72,3 +72,12 @@ CImage * UITheme::GetImage(int nImgID)
 	}
 	return &m_DefaultImage;
 }
+
+int UITheme::GetIntValue(int nIntID)
+{
+	if (m_mapIntValue.count(nIntID) > 0)
+	{
+		return m_mapIntValue[nIntID];
+	}
+	return m_nDefaultInt;
+}

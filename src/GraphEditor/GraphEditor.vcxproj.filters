@@ -13,6 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="TitleBar">
+      <UniqueIdentifier>{a4623c5d-f605-4efe-af61-208b1ced5d9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ActionBar">
+      <UniqueIdentifier>{8997408e-56c9-47a3-88d4-fe63cbdbb873}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayControl">
+      <UniqueIdentifier>{a9236722-ea18-4949-908a-2baaeaf02d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TimeLine">
+      <UniqueIdentifier>{69d795ab-55e4-40d1-bb6d-7b5f84d313eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PropertyView">
+      <UniqueIdentifier>{e93391d7-ef61-4e05-ac9d-e4632c0a3237}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
