@@ -37,3 +37,15 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 
+#define BASEGRAPH_AUTO_LOAD
+
+#define BASEGRAPH_GRAPHEDITOR_EXPORTS
+#ifdef BASEGRAPH_GRAPHEDITOR_EXPORTS
+#define BASEGRAPH_GRAPHEDITOR_API __declspec(dllexport)
+#else
+#define BASEGRAPH_GRAPHEDITOR_API __declspec(dllimport)
+#endif // BASEGRAPH_GRAPHEDITOR_EXPORTS
+
+#include "ExportCommon.h"
+#include "ExportDataBase.h"
+#include "ExportDataRender.h"

@@ -60,12 +60,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>.\GraphEditor.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>..\..\interdir\Debug\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -86,6 +88,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -94,6 +97,7 @@
       <ModuleDefinitionFile>.\GraphEditor.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>..\..\interdir\Release\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -109,6 +113,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseGraphMainFrame.cpp" />
+    <ClCompile Include="ExportGraphEditor.cpp" />
     <ClCompile Include="GraphEditor.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -116,6 +122,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\ExportGraphEditor.h" />
+    <ClInclude Include="BaseGraphMainFrame.h" />
     <ClInclude Include="GraphEditor.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />

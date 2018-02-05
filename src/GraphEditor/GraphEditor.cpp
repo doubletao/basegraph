@@ -35,29 +35,45 @@
 
 // CGraphEditorApp
 
-BEGIN_MESSAGE_MAP(CGraphEditorApp, CWinApp)
-END_MESSAGE_MAP()
-
 
 // CGraphEditorApp 构造
 
 CGraphEditorApp::CGraphEditorApp()
+	: m_pMainFrame(nullptr)
 {
 	// TODO:  在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
+	m_pMainFrame = new BaseGraphMainFrame;
 }
 
-
-// 唯一的一个 CGraphEditorApp 对象
-
-CGraphEditorApp theApp;
+CGraphEditorApp::~CGraphEditorApp()
+{
+}
 
 
 // CGraphEditorApp 初始化
 
 BOOL CGraphEditorApp::InitInstance()
 {
-	CWinApp::InitInstance();
+	if (nullptr != m_pMainFrame)
+	{
+		BOOL bRet = m_pMainFrame->Create(nullptr, _T("BaseGraphEditor"));
+		if (!bRet)
+		{
+			return FALSE;
+		}
+	}
 
 	return TRUE;
+}
+
+int CGraphEditorApp::ExitInstance()
+{
+	int nRet = FALSE;
+	return nRet;
+}
+
+BaseGraphMainFrame * CGraphEditorApp::GetBaseGraphFrameWnd()
+{
+	return m_pMainFrame;
 }

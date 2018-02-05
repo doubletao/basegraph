@@ -8,20 +8,24 @@
 #endif
 
 #include "resource.h"		// 主符号
-
+#include "BaseGraphMainFrame.h"
 
 // CGraphEditorApp
 // 有关此类实现的信息，请参阅 GraphEditor.cpp
 //
 
-class CGraphEditorApp : public CWinApp
+class CGraphEditorApp
 {
+protected:
+	BaseGraphMainFrame * m_pMainFrame;
 public:
 	CGraphEditorApp();
+	~CGraphEditorApp();
 
 // 重写
 public:
 	virtual BOOL InitInstance();
+	virtual int ExitInstance();
 
-	DECLARE_MESSAGE_MAP()
+	BaseGraphMainFrame * GetBaseGraphFrameWnd();
 };
