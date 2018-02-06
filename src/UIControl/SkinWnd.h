@@ -1,8 +1,21 @@
 #pragma once
+#include "UIButton.h"
 
 class SkinWnd :
 	public CWnd
 {
+	DECLARE_DYNCREATE(SkinWnd)
+protected:
+	DECLARE_MESSAGE_MAP()
+protected:
+	CString m_strTitle;
+	CRect m_rcIcon;
+	CRect m_rtTitleBar;
+	std::vector<UIButton *> m_vecButton;
+	BOOL   m_bNCTracking;
+	int    m_iXButtonHovering;
+	BOOL   m_bNCHovering;
+	CRgn m_Rgn;
 public:
 	SkinWnd();
 	virtual ~SkinWnd();
@@ -25,5 +38,7 @@ public:
 	afx_msg BOOL OnNcCreate(LPCREATESTRUCT lpCreateStruct);
 protected:
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+	int SysButtonHitTest(CPoint pt);
+	void AddSysButton(int nImageN, int nImageF, int nImageD, int nImageX);
 };
 

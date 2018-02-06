@@ -60,12 +60,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>.\UIControl.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>..\..\interdir\Debug\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -86,6 +88,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -94,6 +97,7 @@
       <ModuleDefinitionFile>.\UIControl.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>..\..\interdir\Release\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -117,8 +121,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ThemeManager.cpp" />
+    <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIColorDrawer.cpp" />
     <ClCompile Include="UIControl.cpp" />
+    <ClCompile Include="UIDrawer.cpp" />
+    <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="UIImageDrawer.cpp" />
+    <ClCompile Include="UITextDrawer.cpp" />
     <ClCompile Include="UITheme.cpp" />
+    <ClCompile Include="UIThemeDefault.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h" />
@@ -128,8 +139,16 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThemeManager.h" />
+    <ClInclude Include="ThemeResoueceID.h" />
+    <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIColorDrawer.h" />
     <ClInclude Include="UIControl.h" />
+    <ClInclude Include="UIDrawer.h" />
+    <ClInclude Include="UIElement.h" />
+    <ClInclude Include="UIImageDrawer.h" />
+    <ClInclude Include="UITextDrawer.h" />
     <ClInclude Include="UITheme.h" />
+    <ClInclude Include="UIThemeDefault.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\UIControl.rc2" />

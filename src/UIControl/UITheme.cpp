@@ -30,6 +30,20 @@ bool UITheme::Initialize()
 	::ReleaseDC(NULL, hdc);
 	::DeleteDC(hdcMem);
 	::DeleteObject(hb);
+
+	lstrcpy((LPTSTR)m_DefaultLogFont.lfFaceName, _T("Î¢ÈíÑÅºÚ"));
+	m_DefaultLogFont.lfWeight = 0;
+	m_DefaultLogFont.lfWidth = 12;
+	m_DefaultLogFont.lfHeight = 30;
+	m_DefaultLogFont.lfEscapement = 0;
+	m_DefaultLogFont.lfUnderline = FALSE;
+	m_DefaultLogFont.lfItalic = FALSE;
+	m_DefaultLogFont.lfStrikeOut = FALSE;
+	m_DefaultLogFont.lfCharSet = GB2312_CHARSET;
+
+	m_DefaultColor = RGB(255, 0, 0);
+	m_nDefaultInt = 1;
+
 	return true;
 }
 

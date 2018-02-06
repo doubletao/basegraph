@@ -4,7 +4,7 @@
 
 class UITheme
 {
-private:
+protected:
 	std::map<int, LOGFONT> m_mapFontList;
 	std::map<int, COLORREF> m_mapColorList;
 	std::map<int, CImage * > m_mapImageList;

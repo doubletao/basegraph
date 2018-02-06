@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
+#include "UIButton.h"
 
 /*
 框架窗口非客户区自绘类
@@ -13,12 +14,19 @@ class CSkinDlgWnd : public CDialog
 {
 	DECLARE_DYNCREATE(CSkinDlgWnd)
 protected:
-	CSkinDlgWnd();           // protected constructor used by dynamic creation
-	CSkinDlgWnd(UINT nIDTemplate, CWnd* pParentWnd = NULL);           // protected constructor used by dynamic creation
-	virtual ~CSkinDlgWnd();
-	 virtual BOOL PreTranslateMessage(MSG* pMsg);
-protected:
 	DECLARE_MESSAGE_MAP()
+protected:
+	CString m_strTitle;
+	CRect m_rcIcon;
+	CRect m_rtTitleBar;
+	std::vector<UIButton *> m_vecButton;
+	BOOL   m_bNCTracking;
+	int    m_iXButtonHovering;
+	BOOL   m_bNCHovering;
+	CRgn m_Rgn;
+public:
+	CSkinDlgWnd();
+	virtual ~CSkinDlgWnd();
 public:
 	afx_msg void OnNcPaint();
 	afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp);
@@ -29,40 +37,17 @@ public:
 	afx_msg void OnNcLButtonDblClk(UINT nHitTest, CPoint point);
 	afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
 	afx_msg void OnNcLButtonUp(UINT nHitTest, CPoint point);
+	afx_msg void OnNcRButtonDown(UINT nHitTest, CPoint point);
 	afx_msg void OnNcMouseMove(UINT nHitTest, CPoint point);
 	afx_msg void OnNcMouseHover(UINT nFlags, CPoint point);
 	afx_msg void OnNcMouseLeave();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg BOOL OnNcCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnPaint();
-	virtual BOOL OnInitDialog();
-	HBRUSH  OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-
-	CWnd * GetValidCtrlWnd(DWORD ID);
-	BOOL GetToolTips(UINT nID,CString &strTips);
-	void ModifyTooltips(UINT nID, const CString &strTips);
-	void RemoveTooltips(UINT nID);
-
 protected:
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	int		TButtonHitTest(CPoint point, CRect& rtButton);
-	void	LoadBmpRes();
-protected:
-	int  m_nTitleHeight;
-	int  m_nFrameWidth;
-	int    m_iXButtonHovering;
-	BOOL   m_bNCHovering;
-	BOOL   m_bNCTracking;
-	CRgn m_Rgn;
-	CRect  m_rcIcon;
-
-	//三个标题按钮图片
-	CRect m_rcControl;
-	std::vector<CString> m_vecStrBtnImages;
-	CRect			m_rtMenuBar;		// 主菜单矩形
-	CToolTipCtrl m_tt;
-	std::map<UINT, CString> m_mapIDTips;
+	int SysButtonHitTest(CPoint pt);
+	void AddSysButton(int nImageN, int nImageF, int nImageD, int nImageX);
 };
 
 

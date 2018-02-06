@@ -1,5 +1,6 @@
 #pragma once
 #include "Common\BufferCommonDef.h"
+#include <atlimage.h>
 
 class BASEGRAPH_COMMON_API BufferFunction
 {
@@ -28,5 +29,18 @@ public:
 		int k = 1);
 
 	static BOOL WriteBitmap(LPCTSTR ptszFileName, int iWidth, int iHeight, int iDepth, BYTE* pData);
+
+	static void DrawImageWithAplha(CDC* pDC, HBITMAP hBitmap, const CRect& rc, const CRect& rcPaint,
+		const CRect& rcBmpPart, const CRect& rcCorners, BOOL alphaChannel,
+		BYTE uFade, BOOL hole);
+
+	static void DrawImageWithAplha(CDC* pDC, CImage * pImg, const CRect& rc, const CRect& rcPaint,
+		const CRect& rcBmpPart, const CRect& rcCorners, BOOL alphaChannel,
+		BYTE uFade, BOOL hole);
+
+	static BOOL  AlphaBitBlt(CDC* pDC, int nDestX, int nDestY, int dwWidth, int dwHeight, CDC* SrcDC, \
+		int nSrcX, int nSrcY, int wSrc, int hSrc, BLENDFUNCTION ftn);
+
+	static COLORREF PixelAlpha(COLORREF clrSrc, double src_darken, COLORREF clrDest, double dest_darken);
 };
 

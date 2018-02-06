@@ -81,3 +81,288 @@ BOOL BufferFunction::WriteBitmap(LPCTSTR ptszFileName, int iWidth, int iHeight, 
 	return TRUE;
 }
 
+void BufferFunction::DrawImageWithAplha(CDC * pDC, HBITMAP hBitmap, const CRect & rc, const CRect & rcPaint, const CRect & rcBmpPart, const CRect & rcCorners, BOOL alphaChannel, BYTE uFade, BOOL hole)
+{
+	if (hBitmap == NULL) return;
+
+	CBitmap Bitmap;
+	Bitmap.Attach(hBitmap);
+
+	CDC CloneDC;
+	CloneDC.CreateCompatibleDC(pDC);
+	CBitmap* pOldBitmap = CloneDC.SelectObject(&Bitmap);
+	pDC->SetStretchBltMode(COLORONCOLOR);
+
+	CRect rcTemp(0, 0, 0, 0);
+	CRect rcDest(0, 0, 0, 0);
+	if (alphaChannel || uFade < 255)
+	{
+		BLENDFUNCTION bf = { AC_SRC_OVER, 0, uFade, AC_SRC_ALPHA };
+		// middle
+		if (!hole) {
+			rcDest.left = rc.left + rcCorners.left;
+			rcDest.top = rc.top + rcCorners.top;
+			rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+			rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest))
+			{
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.left + rcCorners.left, rcBmpPart.top + rcCorners.top, \
+					rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, \
+					rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, bf);
+			}
+		}
+
+		// left-top
+		if (rcCorners.left > 0 && rcCorners.top > 0) {
+			rcDest.left = rc.left;
+			rcDest.top = rc.top;
+			rcDest.right = rcCorners.left;
+			rcDest.bottom = rcCorners.top;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest)) {
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.left, rcBmpPart.top, rcCorners.left, rcCorners.top, bf);
+			}
+		}
+		// top
+		if (rcCorners.top > 0) {
+			rcDest.left = rc.left + rcCorners.left;
+			rcDest.top = rc.top;
+			rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+			rcDest.bottom = rcCorners.top;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest)) {
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.left + rcCorners.left, rcBmpPart.top, rcBmpPart.right - rcBmpPart.left - \
+					rcCorners.left - rcCorners.right, rcCorners.top, bf);
+			}
+		}
+		// right-top
+		if (rcCorners.right > 0 && rcCorners.top > 0) {
+			rcDest.left = rc.right - rcCorners.right;
+			rcDest.top = rc.top;
+			rcDest.right = rcCorners.right;
+			rcDest.bottom = rcCorners.top;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest)) {
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.right - rcCorners.right, rcBmpPart.top, rcCorners.right, rcCorners.top, bf);
+			}
+		}
+		// left
+		if (rcCorners.left > 0) {
+			rcDest.left = rc.left;
+			rcDest.top = rc.top + rcCorners.top;
+			rcDest.right = rcCorners.left;
+			rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest)) {
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.left, rcBmpPart.top + rcCorners.top, rcCorners.left, rcBmpPart.bottom - \
+					rcBmpPart.top - rcCorners.top - rcCorners.bottom, bf);
+			}
+		}
+		// right
+		if (rcCorners.right > 0) {
+			rcDest.left = rc.right - rcCorners.right;
+			rcDest.top = rc.top + rcCorners.top;
+			rcDest.right = rcCorners.right;
+			rcDest.bottom = rc.bottom - rc.top - rcCorners.top - rcCorners.bottom;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest)) {
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.right - rcCorners.right, rcBmpPart.top + rcCorners.top, rcCorners.right, \
+					rcBmpPart.bottom - rcBmpPart.top - rcCorners.top - rcCorners.bottom, bf);
+			}
+		}
+		// left-bottom
+		if (rcCorners.left > 0 && rcCorners.bottom > 0) {
+			rcDest.left = rc.left;
+			rcDest.top = rc.bottom - rcCorners.bottom;
+			rcDest.right = rcCorners.left;
+			rcDest.bottom = rcCorners.bottom;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest)) {
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.left, rcBmpPart.bottom - rcCorners.bottom, rcCorners.left, rcCorners.bottom, bf);
+			}
+		}
+		// bottom
+		if (rcCorners.bottom > 0) {
+			rcDest.left = rc.left + rcCorners.left;
+			rcDest.top = rc.bottom - rcCorners.bottom;
+			rcDest.right = rc.right - rc.left - rcCorners.left - rcCorners.right;
+			rcDest.bottom = rcCorners.bottom;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest)) {
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.left + rcCorners.left, rcBmpPart.bottom - rcCorners.bottom, \
+					rcBmpPart.right - rcBmpPart.left - rcCorners.left - rcCorners.right, rcCorners.bottom, bf);
+			}
+		}
+		// right-bottom
+		if (rcCorners.right > 0 && rcCorners.bottom > 0) {
+			rcDest.left = rc.right - rcCorners.right;
+			rcDest.top = rc.bottom - rcCorners.bottom;
+			rcDest.right = rcCorners.right;
+			rcDest.bottom = rcCorners.bottom;
+			rcDest.right += rcDest.left;
+			rcDest.bottom += rcDest.top;
+			if (::IntersectRect(&rcTemp, &rcPaint, &rcDest)) {
+				rcDest.right -= rcDest.left;
+				rcDest.bottom -= rcDest.top;
+				AlphaBitBlt(pDC, rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, &CloneDC, \
+					rcBmpPart.right - rcCorners.right, rcBmpPart.bottom - rcCorners.bottom, rcCorners.right, \
+					rcCorners.bottom, bf);
+			}
+		}
+	}
+	CloneDC.SelectObject(pOldBitmap);
+	CloneDC.DeleteDC();
+	Bitmap.Detach();
+}
+
+void BufferFunction::DrawImageWithAplha(CDC * pDC, CImage * pImg, const CRect & rc, const CRect & rcPaint, const CRect & rcBmpPart, const CRect & rcCorners, BOOL alphaChannel, BYTE uFade, BOOL hole)
+{
+	HBITMAP hBmp = pImg->Detach();
+	DrawImageWithAplha(pDC, hBmp, rc, rcPaint, rcBmpPart, rcCorners, alphaChannel, uFade, hole);
+	pImg->Attach(hBmp);
+}
+
+BOOL BufferFunction::AlphaBitBlt(CDC * pDC, int nDestX, int nDestY, int dwWidth, int dwHeight, CDC * SrcDC, int nSrcX, int nSrcY, int wSrc, int hSrc, BLENDFUNCTION ftn)
+{
+	CDC	TempDC;
+	TempDC.CreateCompatibleDC(pDC);
+	//Creates Source DIB
+	LPBITMAPINFO lpbiSrc = NULL;
+	// Fill in the BITMAPINFOHEADER
+	lpbiSrc = (LPBITMAPINFO) new BYTE[sizeof(BITMAPINFOHEADER)];
+	if (lpbiSrc == NULL)
+		return FALSE;
+	lpbiSrc->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	lpbiSrc->bmiHeader.biWidth = dwWidth;
+	lpbiSrc->bmiHeader.biHeight = dwHeight;
+	lpbiSrc->bmiHeader.biPlanes = 1;
+	lpbiSrc->bmiHeader.biBitCount = 32;
+	lpbiSrc->bmiHeader.biCompression = BI_RGB;
+	lpbiSrc->bmiHeader.biSizeImage = dwWidth * dwHeight;
+	lpbiSrc->bmiHeader.biXPelsPerMeter = 0;
+	lpbiSrc->bmiHeader.biYPelsPerMeter = 0;
+	lpbiSrc->bmiHeader.biClrUsed = 0;
+	lpbiSrc->bmiHeader.biClrImportant = 0;
+
+	COLORREF* pSrcBits = NULL;
+	HBITMAP hSrcDib = CreateDIBSection(
+		SrcDC->m_hDC, lpbiSrc, DIB_RGB_COLORS, (void **)&pSrcBits,
+		NULL, NULL);
+
+	if ((NULL == hSrcDib) || (NULL == pSrcBits))
+	{
+		delete[] lpbiSrc;
+		return FALSE;
+	}
+
+	CBitmap *pBitmap = NULL;
+	pBitmap = CBitmap::FromHandle(hSrcDib);
+	CBitmap* pOldTempBmp = TempDC.SelectObject(pBitmap);
+	TempDC.StretchBlt(0, 0, dwWidth, dwHeight, SrcDC, nSrcX, nSrcY, wSrc, hSrc, SRCCOPY);
+	TempDC.SelectObject(pOldTempBmp);
+
+
+	//Creates Destination DIB
+	LPBITMAPINFO lpbiDest = NULL;
+	// Fill in the BITMAPINFOHEADER
+	lpbiDest = (LPBITMAPINFO) new BYTE[sizeof(BITMAPINFOHEADER)];
+	if (lpbiDest == NULL)
+	{
+		delete[] lpbiSrc;
+		return FALSE;
+	}
+
+	lpbiDest->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	lpbiDest->bmiHeader.biWidth = dwWidth;
+	lpbiDest->bmiHeader.biHeight = dwHeight;
+	lpbiDest->bmiHeader.biPlanes = 1;
+	lpbiDest->bmiHeader.biBitCount = 32;
+	lpbiDest->bmiHeader.biCompression = BI_RGB;
+	lpbiDest->bmiHeader.biSizeImage = dwWidth * dwHeight;
+	lpbiDest->bmiHeader.biXPelsPerMeter = 0;
+	lpbiDest->bmiHeader.biYPelsPerMeter = 0;
+	lpbiDest->bmiHeader.biClrUsed = 0;
+	lpbiDest->bmiHeader.biClrImportant = 0;
+
+	COLORREF* pDestBits = NULL;
+	HBITMAP hDestDib = CreateDIBSection(
+		pDC->m_hDC, lpbiDest, DIB_RGB_COLORS, (void **)&pDestBits,
+		NULL, NULL);
+
+	if ((NULL == hDestDib) || (NULL == pDestBits))
+	{
+		delete[] lpbiSrc;
+		delete[] lpbiDest;
+		return FALSE;
+	}
+
+	CBitmap* pBitmapD = NULL;
+	pBitmapD = CBitmap::FromHandle(hDestDib);
+	TempDC.SelectObject(pBitmapD);
+	TempDC.BitBlt(0, 0, dwWidth, dwHeight, pDC, nDestX, nDestY, SRCCOPY);
+	TempDC.SelectObject(pOldTempBmp);
+
+	double src_darken;
+	BYTE nAlpha;
+
+	for (int pixel = 0; pixel < dwWidth * dwHeight; pixel++, pSrcBits++, pDestBits++)
+	{
+		nAlpha = LOBYTE(*pSrcBits >> 24);
+		src_darken = (double)(nAlpha * ftn.SourceConstantAlpha) / 255.0 / 255.0;
+		if (src_darken < 0.0) src_darken = 0.0;
+		*pDestBits = PixelAlpha(*pSrcBits, src_darken, *pDestBits, 1.0 - src_darken);
+	}
+	TempDC.SelectObject(hDestDib);
+
+	pDC->BitBlt(nDestX, nDestY, dwWidth, dwHeight, &TempDC, 0, 0, SRCCOPY);
+	::DeleteObject(hDestDib);
+	delete[] lpbiDest;
+	::DeleteObject(hSrcDib);
+	delete[] lpbiSrc;
+	TempDC.SelectObject(pOldTempBmp);
+	TempDC.DeleteDC();
+	pBitmap->DeleteObject();
+	pBitmapD->DeleteObject();
+	return TRUE;
+}
+
+COLORREF BufferFunction::PixelAlpha(COLORREF clrSrc, double src_darken, COLORREF clrDest, double dest_darken)
+{
+	return RGB(GetRValue(clrSrc) * src_darken + GetRValue(clrDest) * dest_darken,
+		GetGValue(clrSrc) * src_darken + GetGValue(clrDest) * dest_darken,
+		GetBValue(clrSrc) * src_darken + GetBValue(clrDest) * dest_darken);
+}
+

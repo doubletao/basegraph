@@ -51,6 +51,27 @@
     <ClCompile Include="SkinWnd.cpp">
       <Filter>SkinedWindow</Filter>
     </ClCompile>
+    <ClCompile Include="UIDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIThemeDefault.cpp">
+      <Filter>UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="UITextDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIImageDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIColorDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -79,6 +100,30 @@
     </ClInclude>
     <ClInclude Include="SkinWnd.h">
       <Filter>SkinedWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="ThemeResoueceID.h">
+      <Filter>UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="UIDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="UIThemeDefault.h">
+      <Filter>UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="UITextDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="UIImageDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="UIColorDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="UIButton.h">
+      <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
