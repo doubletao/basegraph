@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "UITextDrawer.h"
+#include "UIControl\UITextDrawer.h"
 #include "ThemeManager.h"
 
 UITextDrawer::UITextDrawer(int nResID/* = 0*/)

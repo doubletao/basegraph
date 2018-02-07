@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "UIButton.h"
-#include "UIImageDrawer.h"
-#include "UITextDrawer.h"
+#include "UIControl\UIButton.h"
+#include "UIControl\UIImageDrawer.h"
+#include "UIControl\UITextDrawer.h"
 
 UIButton::UIButton()
 	: m_strText(_T(""))

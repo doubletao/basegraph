@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SkinWnd.h"
+#include "UIControl\SkinWnd.h"
 #include "ThemeManager.h"
 #include <assert.h>
 

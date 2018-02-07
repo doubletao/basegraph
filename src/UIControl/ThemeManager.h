@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "UITheme.h"
-#include "ThemeResoueceID.h"
+#include "UIControl\ThemeResoueceID.h"
 
 class ThemeManager
 {

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "UIColorDrawer.h"
+#include "UIControl\UIColorDrawer.h"
 #include "ThemeManager.h"
 
 UIColorDrawer::UIColorDrawer(int nResID/* = 0*/)

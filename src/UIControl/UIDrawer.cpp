@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "UIDrawer.h"
+#include "UIControl\UIDrawer.h"
 
 
 UIDrawer::UIDrawer(int nResID/* = 0*/)

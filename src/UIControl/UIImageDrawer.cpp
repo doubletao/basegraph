@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "UIImageDrawer.h"
+#include "UIControl\UIImageDrawer.h"
 #include "ThemeManager.h"
 
 UIImageDrawer::UIImageDrawer(int nResID/* = 0*/)

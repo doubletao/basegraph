@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "SkinDlgWnd.h"
+#include "UIControl\SkinDlgWnd.h"
 #include "ThemeManager.h"
 #include <assert.h>
 

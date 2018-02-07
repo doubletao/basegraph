@@ -72,6 +72,9 @@
     <ClCompile Include="UIButton.cpp">
       <Filter>UIElementCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="ExportUIControl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -86,44 +89,47 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SkinDlgWnd.h">
-      <Filter>SkinedWindow</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinFrameWnd.h">
-      <Filter>SkinedWindow</Filter>
-    </ClInclude>
     <ClInclude Include="UITheme.h">
       <Filter>UITheme</Filter>
     </ClInclude>
     <ClInclude Include="ThemeManager.h">
       <Filter>UITheme</Filter>
     </ClInclude>
-    <ClInclude Include="SkinWnd.h">
-      <Filter>SkinedWindow</Filter>
-    </ClInclude>
-    <ClInclude Include="ThemeResoueceID.h">
-      <Filter>UITheme</Filter>
-    </ClInclude>
-    <ClInclude Include="UIDrawer.h">
-      <Filter>UIElementBase</Filter>
-    </ClInclude>
     <ClInclude Include="UIThemeDefault.h">
       <Filter>UITheme</Filter>
     </ClInclude>
-    <ClInclude Include="UITextDrawer.h">
+    <ClInclude Include="..\..\include\UIControl\SkinDlgWnd.h">
+      <Filter>SkinedWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\SkinFrameWnd.h">
+      <Filter>SkinedWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\SkinWnd.h">
+      <Filter>SkinedWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h">
       <Filter>UIElementBase</Filter>
     </ClInclude>
-    <ClInclude Include="UIImageDrawer.h">
+    <ClInclude Include="..\..\include\UIControl\UIDrawer.h">
       <Filter>UIElementBase</Filter>
     </ClInclude>
-    <ClInclude Include="UIColorDrawer.h">
+    <ClInclude Include="..\..\include\UIControl\UIElement.h">
       <Filter>UIElementBase</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement.h">
+    <ClInclude Include="..\..\include\UIControl\UIImageDrawer.h">
       <Filter>UIElementBase</Filter>
     </ClInclude>
-    <ClInclude Include="UIButton.h">
+    <ClInclude Include="..\..\include\UIControl\UITextDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIButton.h">
       <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\ThemeResoueceID.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportUIControl.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

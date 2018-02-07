@@ -113,6 +113,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ExportUIControl.cpp" />
     <ClCompile Include="SkinDlgWnd.cpp" />
     <ClCompile Include="SkinFrameWnd.cpp" />
     <ClCompile Include="SkinWnd.cpp" />
@@ -132,21 +133,22 @@
     <ClCompile Include="UIThemeDefault.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\UIControl\SkinDlgWnd.h" />
+    <ClInclude Include="..\..\include\UIControl\SkinFrameWnd.h" />
+    <ClInclude Include="..\..\include\UIControl\SkinWnd.h" />
+    <ClInclude Include="..\..\include\UIControl\ThemeResoueceID.h" />
+    <ClInclude Include="..\..\include\UIControl\UIButton.h" />
+    <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UIDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UIElement.h" />
+    <ClInclude Include="..\..\include\UIControl\UIImageDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UITextDrawer.h" />
+    <ClInclude Include="ExportUIControl.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SkinDlgWnd.h" />
-    <ClInclude Include="SkinFrameWnd.h" />
-    <ClInclude Include="SkinWnd.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThemeManager.h" />
-    <ClInclude Include="ThemeResoueceID.h" />
-    <ClInclude Include="UIButton.h" />
-    <ClInclude Include="UIColorDrawer.h" />
     <ClInclude Include="UIControl.h" />
-    <ClInclude Include="UIDrawer.h" />
-    <ClInclude Include="UIElement.h" />
-    <ClInclude Include="UIImageDrawer.h" />
-    <ClInclude Include="UITextDrawer.h" />
     <ClInclude Include="UITheme.h" />
     <ClInclude Include="UIThemeDefault.h" />
   </ItemGroup>

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "UIElement.h"
+#include "UIControl\UIElement.h"
 
 
 void UIElement::Release()
