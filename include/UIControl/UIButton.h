@@ -1,7 +1,7 @@
 #pragma once
 #include "UIElement.h"
 
-class UIButton :
+class BASEGRAPH_UICONTROL_API UIButton :
 	public UIElement
 {
 	enum

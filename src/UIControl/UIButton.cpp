@@ -22,14 +22,12 @@ void UIButton::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND
 
 void UIButton::OnButtonClickDown()
 {
-	::SetCapture(m_hParentWnd);
 	//…Ë÷√◊¥Ã¨
 	SetState(UIElement_Down, true);
 }
 
 void UIButton::OnButtonClickUp()
 {
-	::ReleaseCapture();
 	//…Ë÷√◊¥Ã¨
 	SetState(UIElement_Float, true);
 	//œÏ”¶∞¥≈•
@@ -122,16 +120,10 @@ EmUIElementMsgRet UIButton::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 
 void UIButton::OnMouseHover()
 {
-	if (UIElement_Normal == m_nState)
-	{
-		SetState(UIElement_Float, true);
-	}
+	SetState(UIElement_Float, true);
 }
 
 void UIButton::OnMouseLeave()
 {
-	if (UIElement_Float == m_nState)
-	{
-		SetState(UIElement_Normal, true);
-	}
+	SetState(UIElement_Normal, true);
 }

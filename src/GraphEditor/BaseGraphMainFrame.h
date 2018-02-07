@@ -1,7 +1,7 @@
 #pragma once
 
 class BaseGraphMainFrame :
-	public CFrameWnd
+	public CSkinFrameWnd
 {
 public:
 	BaseGraphMainFrame();

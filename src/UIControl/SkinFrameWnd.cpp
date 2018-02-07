@@ -67,137 +67,135 @@ void CSkinFrameWnd::OnNcPaint()
 		&& nullptr != pImgIcon
 		)
 	{
-		return;
-	}
+		CDC MemDC;
 
-	CDC MemDC;
+		// 获取位置
+		CRect rcWindow;
+		GetWindowRect(&rcWindow);
+		rcWindow.OffsetRect(-rcWindow.left, -rcWindow.top);
 
-	// 获取位置
-	CRect rcWindow;
-	GetWindowRect(&rcWindow);
-	rcWindow.OffsetRect(-rcWindow.left, -rcWindow.top);
+		CRect rcClient;
+		GetClientRect(&rcClient);
 
-	CRect rcClient;
-	GetClientRect(&rcClient);
+		//剪除掉客户区
+		rcClient.OffsetRect(nFrameWidth, nTitleHeight);
+		dc.ExcludeClipRect(rcClient.left, rcClient.top,
+			rcClient.right, rcClient.bottom);
 
-	//剪除掉客户区
-	rcClient.OffsetRect(nFrameWidth, nTitleHeight);
-	dc.ExcludeClipRect(rcClient.left, rcClient.top,
-		rcClient.right, rcClient.bottom);
+		MemDC.CreateCompatibleDC(&dc);
 
-	MemDC.CreateCompatibleDC(&dc);
+		CBitmap bmp;
+		bmp.CreateCompatibleBitmap(&dc, rcWindow.Width(), rcWindow.Height());
+		MemDC.SelectObject(&bmp);
+		MemDC.SetBkMode(TRANSPARENT);
 
-	CBitmap bmp;
-	bmp.CreateCompatibleBitmap(&dc, rcWindow.Width(), rcWindow.Height());
-	MemDC.SelectObject(&bmp);
-	MemDC.SetBkMode(TRANSPARENT);
+		CRect destRect;
 
-	CRect destRect;
-
-	//绘制底部
-	destRect.left = 0;
-	destRect.top = rcWindow.Height() - nFrameWidth;
-	destRect.right = destRect.left + rcWindow.Width();
-	destRect.bottom = destRect.top + nFrameWidth;
-	if (destRect.Width() <= 0 || destRect.Height() <= 0)
-	{
-		return;
-	}
-	pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
-
-	//左边框
-	destRect.left = 0;
-	destRect.top = 0;
-	destRect.right = destRect.left + nFrameWidth;
-	destRect.bottom = destRect.top + rcWindow.Height();
-	if (destRect.Width() <= 0 || destRect.Height() <= 0)
-	{
-		return;
-	}
-	pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
-
-
-	//右边框
-	destRect.left = rcWindow.Width() - nFrameWidth;
-	destRect.top = 0;
-	destRect.right = destRect.left + nFrameWidth;
-	destRect.bottom = destRect.top + rcWindow.Height();
-	if (destRect.Width() <= 0 || destRect.Height() <= 0)
-	{
-		return;
-	}
-	pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
-
-	//绘制标题栏
-	destRect.left = 0;
-	destRect.top = 0;
-	destRect.right = destRect.left + rcWindow.Width() + nFrameWidth;
-	destRect.bottom = destRect.top + nTitleHeight;
-	m_rtTitleBar = destRect;
-	if (destRect.Width() <= 0 || destRect.Height() <= 0)
-	{
-		return;
-	}
-	pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
-
-	int nWidth = pImgIcon->GetWidth();
-	int nHeight = pImgIcon->GetHeight();
-	int xPos = 15;
-	int yPos = (nTitleHeight + nFrameWidth - nHeight) / 2;
-	m_rcIcon.SetRect(xPos, yPos, xPos + nWidth, yPos + nHeight);
-	BufferFunction::DrawImageWithAplha(&MemDC, pImgIcon, m_rcIcon, m_rcIcon,
-		CRect(0, 0, nWidth, nHeight), CRect(), TRUE, 255, FALSE);
-
-	//沿着窗口四周画一圈一个像素宽的蓝色矩形
-	int nSavedDC = MemDC.SaveDC();
-	COLORREF col = RGB(142, 170, 195);
-	CPen pen(PS_SOLID, 1, col);
-	MemDC.SelectObject(&pen);
-	(CBrush*)MemDC.SelectStockObject(NULL_BRUSH);//空心的笔
-	MemDC.RoundRect(&rcWindow, CPoint(6, 6));
-	MemDC.RoundRect(&rcWindow, CPoint(8, 8));
-	pen.DeleteObject();
-	MemDC.RestoreDC(nSavedDC);
-
-	//绘制标题栏按钮
-	CRect rcPaint;
-	dc.GetClipBox(&rcPaint);
-	for (size_t i = 0; i < m_vecButton.size(); i++)
-	{
-		UIButton *& pButton = m_vecButton[i];
-		if (pButton)
+		//绘制底部
+		destRect.left = 0;
+		destRect.top = rcWindow.Height() - nFrameWidth;
+		destRect.right = destRect.left + rcWindow.Width();
+		destRect.bottom = destRect.top + nFrameWidth;
+		if (destRect.Width() <= 0 || destRect.Height() <= 0)
 		{
-			CRect rcControl = pButton->GetRect();
-
-			// 判断当前按钮是否需要重绘
-			if (!rcPaint.IsRectEmpty() && !CRect().IntersectRect(&rcControl, rcPaint))
-			{
-				continue;
-			}
-
-			pButton->DrawElement(&MemDC);
+			return;
 		}
+		pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
+
+		//左边框
+		destRect.left = 0;
+		destRect.top = 0;
+		destRect.right = destRect.left + nFrameWidth;
+		destRect.bottom = destRect.top + rcWindow.Height();
+		if (destRect.Width() <= 0 || destRect.Height() <= 0)
+		{
+			return;
+		}
+		pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
+
+
+		//右边框
+		destRect.left = rcWindow.Width() - nFrameWidth;
+		destRect.top = 0;
+		destRect.right = destRect.left + nFrameWidth;
+		destRect.bottom = destRect.top + rcWindow.Height();
+		if (destRect.Width() <= 0 || destRect.Height() <= 0)
+		{
+			return;
+		}
+		pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
+
+		//绘制标题栏
+		destRect.left = 0;
+		destRect.top = 0;
+		destRect.right = destRect.left + rcWindow.Width() + nFrameWidth;
+		destRect.bottom = destRect.top + nTitleHeight;
+		m_rtTitleBar = destRect;
+		if (destRect.Width() <= 0 || destRect.Height() <= 0)
+		{
+			return;
+		}
+		pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
+
+		int nWidth = pImgIcon->GetWidth();
+		int nHeight = pImgIcon->GetHeight();
+		int xPos = 15;
+		int yPos = (nTitleHeight + nFrameWidth - nHeight) / 2;
+		m_rcIcon.SetRect(xPos, yPos, xPos + nWidth, yPos + nHeight);
+		BufferFunction::DrawImageWithAplha(&MemDC, pImgIcon, m_rcIcon, m_rcIcon,
+			CRect(0, 0, nWidth, nHeight), CRect(), TRUE, 255, FALSE);
+
+		//沿着窗口四周画一圈一个像素宽的蓝色矩形
+		int nSavedDC = MemDC.SaveDC();
+		COLORREF col = RGB(142, 170, 195);
+		CPen pen(PS_SOLID, 1, col);
+		MemDC.SelectObject(&pen);
+		(CBrush*)MemDC.SelectStockObject(NULL_BRUSH);//空心的笔
+		MemDC.RoundRect(&rcWindow, CPoint(6, 6));
+		MemDC.RoundRect(&rcWindow, CPoint(8, 8));
+		pen.DeleteObject();
+		MemDC.RestoreDC(nSavedDC);
+
+		//绘制标题栏按钮
+		CRect rcPaint;
+		dc.GetClipBox(&rcPaint);
+		for (size_t i = 0; i < m_vecButton.size(); i++)
+		{
+			UIButton *& pButton = m_vecButton[i];
+			if (pButton)
+			{
+				CRect rcControl = pButton->GetRect();
+
+				// 判断当前按钮是否需要重绘
+				if (!rcPaint.IsRectEmpty() && !CRect().IntersectRect(&rcControl, rcPaint))
+				{
+					continue;
+				}
+
+				pButton->DrawElement(&MemDC);
+			}
+		}
+
+		//绘制标题
+		CFont font;
+		font.CreateFontIndirect(&lfTitleFont);
+
+		MemDC.SelectObject(&font);
+
+		// 绘制标题,左边
+		MemDC.SetTextColor(RGB(200, 200, 200));
+		CRect rtTitle(destRect.left, destRect.right + 6, destRect.Width(), destRect.Height());
+		rtTitle.left = m_rcIcon.right + 100;
+		rtTitle.right -= m_rcIcon.right;
+		MemDC.DrawText(m_strTitle, rtTitle, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
+
+		dc.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), &MemDC, 0, 0, SRCCOPY);
+
+		dc.SelectClipRgn(NULL);
+
+		MemDC.DeleteDC();
+		bmp.DeleteObject();
 	}
-
-	//绘制标题
-	CFont font;
-	font.CreateFontIndirect(&lfTitleFont);
-
-	MemDC.SelectObject(&font);
-
-	// 绘制标题,左边
-	MemDC.SetTextColor(RGB(200, 200, 200));
-	CRect rtTitle(destRect.left, destRect.right + 6, destRect.Width(), destRect.Height());
-	rtTitle.left = m_rcIcon.right + 100;
-	rtTitle.right -= m_rcIcon.right;
-	MemDC.DrawText(m_strTitle, rtTitle, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
-
-	dc.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), &MemDC, 0, 0, SRCCOPY);
-
-	dc.SelectClipRgn(NULL);
-
-	MemDC.DeleteDC();
-	bmp.DeleteObject();
 }
 
 void CSkinFrameWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpncsp)
@@ -347,7 +345,7 @@ void CSkinFrameWnd::OnNcLButtonDown(UINT nHitTest, CPoint point)
 	int iButton = SysButtonHitTest(pt);
 	if (iButton != -1)
 	{
-		m_vecButton[iButton]->HandleMsg(WM_LBUTTONUP, 0, 0);
+		m_vecButton[iButton]->HandleMsg(WM_LBUTTONDOWN, 0, 0);
 		OnNcPaint();
 		return;
 	}
@@ -390,6 +388,7 @@ void CSkinFrameWnd::OnNcLButtonUp(UINT nHitTest, CPoint point)
 	int iButton = SysButtonHitTest(pt);
 	if (iButton != -1)
 	{
+		m_vecButton[iButton]->HandleMsg(WM_LBUTTONUP, 0, 0);
 		switch (iButton)
 		{
 		case 0:
@@ -524,46 +523,48 @@ void CSkinFrameWnd::OnSize(UINT nType, int cx, int cy)
 	GetWindowRect(&rcWnd);
 	rcWnd.OffsetRect(-rcWnd.left, -rcWnd.top);
 
-	//按钮位置要右对齐，垂直居中
-	int nY = 0;
-	int nYEnd = 0;
-	CRect rtClose;
-	if (m_vecButton.size() > 0)
+	//摆放三个系统按钮的位置
+	CImage * pImg = ThemeManager::Instance().GetImage(ThemeImage_SkinWndMinizeBtn_N);
+	if (pImg)
 	{
-		UIButton *& pButton = m_vecButton[0];
-		if (pButton)
+		int nBtnWidth = pImg->GetWidth();
+		int nBtnHeight = pImg->GetHeight();
+		int nTitleHeight = ThemeManager::Instance().GetIntValue(ThemeInt_SkinWndTitleHeight);
+		int nFrameWidth = ThemeManager::Instance().GetIntValue(ThemeInt_SkinWndFrameWidth);
+		int nY = (nTitleHeight - nBtnHeight) / 2;
+		int nX = nFrameWidth;
+		DWORD	dwStyle = GetStyle();
+		if (dwStyle & WS_MAXIMIZE)
 		{
-			rtClose = pButton->GetRect();
+			nY += nFrameWidth;
+			nX += nFrameWidth;
 		}
-	}
-	nY = (m_rtTitleBar.Height() - rtClose.Height()) / 2;
-	nYEnd = nY + rtClose.Height();
-	int nLeft = 10;
-	if (m_vecButton.size() > 2)
-	{
-		CRect rMin(rcWnd.right - rtClose.Width() * 3 - nLeft, nY, rcWnd.right - rtClose.Width() * 2 - nLeft, nYEnd);
-		UIButton *& pButton = m_vecButton[2];
-		if (pButton)
+		UIButton * pCloseBtn = nullptr;
+		UIButton * pMaxBtn = nullptr;
+		UIButton * pMinBtn = nullptr;
+		if (m_vecButton.size() > 0)
 		{
-			pButton->MoveTo(rMin);
+			pCloseBtn = m_vecButton[0];
 		}
-	}
-	if (m_vecButton.size() > 1)
-	{
-		CRect rMax(rcWnd.right - rtClose.Width() * 2 - nLeft, nY, rcWnd.right - rtClose.Width() - nLeft, nYEnd);
-		UIButton *& pButton = m_vecButton[1];
-		if (pButton)
+		if (m_vecButton.size() > 1)
 		{
-			pButton->MoveTo(rMax);
+			pMaxBtn = m_vecButton[1];
 		}
-	}
-	CRect rClose(rcWnd.right - rtClose.Width() - nLeft, nY, rcWnd.right - nLeft, nYEnd);
-	if (m_vecButton.size() > 0)
-	{
-		UIButton *& pButton = m_vecButton[0];
-		if (pButton)
+		if (m_vecButton.size() > 2)
 		{
-			pButton->MoveTo(rtClose);
+			pMinBtn = m_vecButton[2];
+		}
+		if (pCloseBtn)
+		{
+			pCloseBtn->MoveTo(rcWnd.Width() - nBtnWidth - nX, nY);
+		}
+		if (pMaxBtn)
+		{
+			pMaxBtn->MoveTo(rcWnd.Width() - nBtnWidth * 2 - nX, nY);
+		}
+		if (pMinBtn)
+		{
+			pMinBtn->MoveTo(rcWnd.Width() - nBtnWidth * 3 - nX, nY);
 		}
 	}
 
@@ -645,12 +646,15 @@ int CSkinFrameWnd::SysButtonHitTest(CPoint pt)
 void CSkinFrameWnd::AddSysButton(int nImageN, int nImageF, int nImageD, int nImageX)
 {
 	CImage * pImg = ThemeManager::Instance().GetImage(ThemeImage_SkinWndMinizeBtn_N);
-	int nBtnWidth = pImg->GetWidth();
-	int nBtnHeight = pImg->GetHeight();
+	if (pImg)
+	{
+		int nBtnWidth = pImg->GetWidth();
+		int nBtnHeight = pImg->GetHeight();
 
-	UIButton * pButton = nullptr;
+		UIButton * pButton = nullptr;
 
-	pButton = new UIButton;
-	pButton->Create(0, 0, nBtnWidth, nBtnHeight, 0, m_hWnd, nImageN, nImageF, nImageD, nImageX);
-	m_vecButton.push_back(pButton);
+		pButton = new UIButton;
+		pButton->Create(0, 0, nBtnWidth, nBtnHeight, 0, GetSafeHwnd(), nImageN, nImageF, nImageD, nImageX);
+		m_vecButton.push_back(pButton);
+	}
 }

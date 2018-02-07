@@ -7,6 +7,7 @@ public:
 	UIThemeDefault();
 	virtual ~UIThemeDefault();
 public:
+	virtual CString GetThemePath();
 	virtual bool Initialize();
 };
 

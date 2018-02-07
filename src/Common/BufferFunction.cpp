@@ -88,6 +88,14 @@ void BufferFunction::DrawImageWithAplha(CDC * pDC, HBITMAP hBitmap, const CRect 
 	CBitmap Bitmap;
 	Bitmap.Attach(hBitmap);
 
+	if (false)
+	{
+		CImage img;
+		img.Attach(hBitmap);
+		img.Save(_T("e:\\test.bmp"));
+		img.Detach();
+	}
+
 	CDC CloneDC;
 	CloneDC.CreateCompatibleDC(pDC);
 	CBitmap* pOldBitmap = CloneDC.SelectObject(&Bitmap);
@@ -348,6 +356,19 @@ BOOL BufferFunction::AlphaBitBlt(CDC * pDC, int nDestX, int nDestY, int dwWidth,
 	TempDC.SelectObject(hDestDib);
 
 	pDC->BitBlt(nDestX, nDestY, dwWidth, dwHeight, &TempDC, 0, 0, SRCCOPY);
+
+	if (false)
+	{
+		CImage img;
+		img.Attach(hSrcDib);
+		img.Save(_T("e:\\hSrcDib.bmp"));
+		img.Detach();
+
+		img.Attach(hDestDib);
+		img.Save(_T("e:\\hDesDib.bmp"));
+		img.Detach();
+	}
+
 	::DeleteObject(hDestDib);
 	delete[] lpbiDest;
 	::DeleteObject(hSrcDib);

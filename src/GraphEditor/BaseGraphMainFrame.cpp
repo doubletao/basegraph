@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "BaseGraphMainFrame.h"
 
-IMPLEMENT_DYNAMIC(BaseGraphMainFrame, CFrameWnd)
+IMPLEMENT_DYNAMIC(BaseGraphMainFrame, CSkinFrameWnd)
 
-BEGIN_MESSAGE_MAP(BaseGraphMainFrame, CFrameWnd)
+BEGIN_MESSAGE_MAP(BaseGraphMainFrame, CSkinFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_TIMER()
 	ON_WM_SETFOCUS()
@@ -23,12 +23,12 @@ BaseGraphMainFrame::~BaseGraphMainFrame()
 
 BOOL BaseGraphMainFrame::PreTranslateMessage(MSG * pMsg)
 {
-	return CFrameWnd::PreTranslateMessage(pMsg);
+	return CSkinFrameWnd::PreTranslateMessage(pMsg);
 }
 
 int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
+	if (CSkinFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
 	//≤‚ ‘¥˙¬Î
@@ -55,17 +55,17 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void BaseGraphMainFrame::OnDestroy()
 {
-	CFrameWnd::OnDestroy();
+	CSkinFrameWnd::OnDestroy();
 }
 
 void BaseGraphMainFrame::OnSetFocus(CWnd * pOldWnd)
 {
-	CFrameWnd::OnSetFocus(pOldWnd);
+	CSkinFrameWnd::OnSetFocus(pOldWnd);
 }
 
 void BaseGraphMainFrame::OnSize(UINT nType, int cx, int cy)
 {
-	CFrameWnd::OnSize(nType, cx, cy);
+	CSkinFrameWnd::OnSize(nType, cx, cy);
 }
 
 void BaseGraphMainFrame::OnPaint()

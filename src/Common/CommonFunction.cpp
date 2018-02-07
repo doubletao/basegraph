@@ -38,3 +38,42 @@ HRESULT CommonFunction::GuidToCString(const GUID & guid, CString & str)
 
 	return S_FALSE;
 }
+
+CString CommonFunction::GetBinPath()
+{
+	CString strCurName;
+	GetModuleFileName(NULL, strCurName.GetBufferSetLength(MAX_PATH + 1), MAX_PATH);
+	strCurName.ReleaseBuffer();
+	CString strCurPath;
+	CString strCurPurName;
+	GetPathAndName(strCurName, strCurPath, strCurPurName);
+	return strCurPath;
+}
+
+void CommonFunction::GetPathAndName(const CString & strSrcFilePath, CString & strPath, CString & strName)
+{
+	strPath.Empty();
+	strName.Empty();
+
+	int nPos = strSrcFilePath.ReverseFind(_T('\\'));
+	if (nPos < 0)
+	{
+		//未发现反斜杠时，可能只有文件名而无路径，可以继续获取文件名
+		strPath.Empty();
+	}
+	else
+	{
+		strPath = strSrcFilePath.Left(nPos);
+		strName = strSrcFilePath.Right(strSrcFilePath.GetLength() - nPos - 1);
+	}
+
+	nPos = strName.ReverseFind(_T('.'));
+	if (nPos < 0)
+	{
+		//未发现点号(.)，视为无后缀的文件名，不处理
+	}
+	else
+	{
+		strName = strName.Left(nPos);
+	}
+}

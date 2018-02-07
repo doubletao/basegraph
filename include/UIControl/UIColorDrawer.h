@@ -1,6 +1,6 @@
 #pragma once
 #include "UIDrawer.h"
-class UIColorDrawer :
+class BASEGRAPH_UICONTROL_API UIColorDrawer :
 	public UIDrawer
 {
 public:

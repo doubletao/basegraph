@@ -128,7 +128,7 @@
     <ClInclude Include="..\..\include\UIControl\ThemeResoueceID.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ExportUIControl.h">
+    <ClInclude Include="..\..\include\ExportUIControl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

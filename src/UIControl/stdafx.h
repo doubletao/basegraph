@@ -37,5 +37,12 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 #define BASEGRAPH_AUTO_LOAD
+#define BASEGRAPH_UICONTROL_EXPORTS
+
+#ifdef BASEGRAPH_UICONTROL_EXPORTS
+#define BASEGRAPH_UICONTROL_API __declspec(dllexport)
+#else
+#define BASEGRAPH_UICONTROL_API __declspec(dllimport)
+#endif
 
 #include "ExportCommon.h"

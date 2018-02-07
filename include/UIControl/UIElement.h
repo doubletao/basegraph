@@ -19,7 +19,7 @@ enum EmUIElementMsgRet
 	UIElementMsgFailBreak		= 0,
 };
 
-class UIElement
+class BASEGRAPH_UICONTROL_API UIElement
 {
 protected:
 	HWND m_hParentWnd;//¸¸´°¿Ú¾ä±ú
@@ -50,6 +50,7 @@ public:
 	virtual inline bool HitTest(LPARAM lParam);
 	virtual inline CRect GetRect();
 	virtual inline void MoveTo(CRect rtNew);
+	virtual inline void MoveTo(int nX, int nY);
 	virtual void DrawElement(CDC * pDC, int nX = 0, int nY = 0);
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();

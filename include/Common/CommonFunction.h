@@ -7,4 +7,6 @@ private:
 public:
 	static CString CreateGUID();//生成新的GUID
 	static HRESULT GuidToCString(const GUID& guid, CString& str);//转换GUID到字符串
+	static CString GetBinPath();
+	static void GetPathAndName(const CString &strSrcFilePath, CString &strPath, CString &strName);//根据文件全名获取文件路径及文件名
 };

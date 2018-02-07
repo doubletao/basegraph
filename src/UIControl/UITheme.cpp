@@ -9,10 +9,19 @@ UITheme::UITheme()
 
 UITheme::~UITheme()
 {
+	Release();
+}
+
+CString UITheme::GetThemePath()
+{
+	CString strPath = CommonFunction::GetBinPath();
+	strPath.Append(_T("\\Theme\\"));
+	return strPath;
 }
 
 bool UITheme::Initialize()
 {
+	Release();
 	//初始化三个默认值
 	HDC hdc = ::GetDC(NULL);
 	int width = 20;
@@ -25,7 +34,10 @@ bool UITheme::Initialize()
 	::FillRect(hdcMem, &rc, hb);
 
 	m_DefaultImage.Attach(hbmp);
-	m_DefaultImage.Save(_T("test.jpg"));
+	if (false)
+	{
+		m_DefaultImage.Save(_T("e:\\test.jpg"));
+	}
 
 	::ReleaseDC(NULL, hdc);
 	::DeleteDC(hdcMem);

@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "ThemeManager.h"
-
+#include "UIThemeDefault.h"
+#include <assert.h>
 
 ThemeManager::ThemeManager()
 	: m_nCurrentTheme(-1)
 {
+	InitialThemeList();
 }
 
 
@@ -24,7 +26,6 @@ UITheme * ThemeManager::GetCurTheme()
 	if (m_nCurrentTheme > -1 && m_vecTheme.size() > m_nCurrentTheme
 		&& m_vecTheme[m_nCurrentTheme])
 	{
-		m_vecTheme[m_nCurrentTheme]->Initialize();
 		return m_vecTheme[m_nCurrentTheme];
 	}
 	return nullptr;
@@ -32,7 +33,22 @@ UITheme * ThemeManager::GetCurTheme()
 
 void ThemeManager::InitialThemeList()
 {
-	//TODO:主题列表的创建在这里
+	UITheme * pTheme = nullptr;
+
+	do
+	{
+		pTheme = new UIThemeDefault;
+		if (pTheme)
+		{
+			pTheme->Initialize();
+			m_vecTheme.push_back(pTheme);
+		}
+	} while (false);
+
+	if (m_vecTheme.size() > 0)
+	{
+		m_nCurrentTheme = 0;
+	}
 }
 
 ThemeManager & ThemeManager::Instance()
@@ -43,15 +59,25 @@ ThemeManager & ThemeManager::Instance()
 
 bool ThemeManager::SwitchTheme(int nTheme)
 {
-	if (nTheme > -1 && m_vecTheme.size() > nTheme)
+	auto CheckThemeIndex = [&](int nIndex)->bool
 	{
-		UITheme * pTheme = nullptr;
-		if (m_nCurrentTheme > -1 && m_vecTheme.size() > m_nCurrentTheme
-			&& m_vecTheme[m_nCurrentTheme])
+		if (nIndex > -1 && m_vecTheme.size() > nIndex
+			&& m_vecTheme[nIndex])
 		{
-			m_vecTheme[m_nCurrentTheme]->Release();
+			return true;
 		}
-		m_nCurrentTheme = nTheme;
+		return false;
+	};
+	//处于节约资源的考虑，主题的切换动作会释放掉当前主题，创建新的主题，保证同一时刻内存中只有一个主题
+	if (CheckThemeIndex(nTheme))
+	{
+		if (CheckThemeIndex(m_nCurrentTheme))
+		{
+			UITheme *& pThemeCur = m_vecTheme[m_nCurrentTheme];
+			pThemeCur->Release();
+		}
+		UITheme *& pThemeNew = m_vecTheme[nTheme];
+		pThemeNew->Initialize();
 		return true;
 	}
 	return false;
@@ -80,6 +106,7 @@ COLORREF ThemeManager::GetColor(int nColorID)
 CImage * ThemeManager::GetImage(int nImgID)
 {
 	UITheme * pTheme = GetCurTheme();
+	assert(pTheme);
 	if (pTheme)
 	{
 		return pTheme->GetImage(nImgID);

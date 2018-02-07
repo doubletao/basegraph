@@ -165,3 +165,10 @@ inline void UIElement::MoveTo(CRect rtNew)
 	Refresh();
 }
 
+inline void UIElement::MoveTo(int nX, int nY)
+{
+	m_nX = nX;
+	m_nY = nY;
+	Refresh();
+}
+

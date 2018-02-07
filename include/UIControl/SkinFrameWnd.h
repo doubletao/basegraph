@@ -11,7 +11,7 @@
 
 // CSkinFrameWnd frame
 
-class CSkinFrameWnd : public CFrameWnd
+class BASEGRAPH_UICONTROL_API CSkinFrameWnd : public CFrameWnd
 {
 	DECLARE_DYNCREATE(CSkinFrameWnd)
 protected:

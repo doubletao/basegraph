@@ -15,8 +15,9 @@ protected:
 	int m_nDefaultInt;
 public:
 	UITheme();
-	~UITheme();
+	virtual ~UITheme();
 public:
+	virtual CString GetThemePath();
 	virtual bool Initialize() = 0;
 	virtual bool Release();
 	virtual LOGFONT GetFont(int nFontID);

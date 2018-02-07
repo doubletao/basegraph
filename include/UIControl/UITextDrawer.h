@@ -1,7 +1,7 @@
 #pragma once
 #include "UIDrawer.h"
 
-class UITextDrawer :
+class BASEGRAPH_UICONTROL_API UITextDrawer :
 	public UIDrawer
 {
 public:

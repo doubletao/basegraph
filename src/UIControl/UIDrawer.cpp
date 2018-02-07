@@ -3,7 +3,7 @@
 
 
 UIDrawer::UIDrawer(int nResID/* = 0*/)
-	: m_nResID(0)
+	: m_nResID(nResID)
 {
 }
 

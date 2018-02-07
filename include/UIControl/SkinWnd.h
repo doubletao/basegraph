@@ -1,7 +1,7 @@
 #pragma once
 #include "UIButton.h"
 
-class SkinWnd :
+class BASEGRAPH_UICONTROL_API SkinWnd :
 	public CWnd
 {
 	DECLARE_DYNCREATE(SkinWnd)

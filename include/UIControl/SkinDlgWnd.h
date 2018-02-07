@@ -10,7 +10,7 @@
 
 // CSkinDlgWnd frame
 
-class CSkinDlgWnd : public CDialog
+class BASEGRAPH_UICONTROL_API CSkinDlgWnd : public CDialog
 {
 	DECLARE_DYNCREATE(CSkinDlgWnd)
 protected:

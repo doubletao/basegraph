@@ -1,5 +1,5 @@
 #pragma once
-class UIDrawer
+class BASEGRAPH_UICONTROL_API UIDrawer
 {
 private:
 	int m_nResID;
