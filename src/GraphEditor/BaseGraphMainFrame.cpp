@@ -28,11 +28,6 @@ BaseGraphMainFrame::~BaseGraphMainFrame()
 
 BOOL BaseGraphMainFrame::PreTranslateMessage(MSG * pMsg)
 {
-	if (WM_NCPAINT == pMsg->message)
-	{
-		OnNcPaint();
-		return TRUE;
-	}
 	return CSkinFrameWnd::PreTranslateMessage(pMsg);
 }
 
@@ -196,6 +191,10 @@ void BaseGraphMainFrame::OnNcPaint()
 
 void BaseGraphMainFrame::OnNcLButtonDown(UINT nHitTest, CPoint point)
 {
+	CRect rcWindow;
+	GetWindowRect(&rcWindow);
+	point.x -= rcWindow.left;
+	point.y -= rcWindow.top;
 	if (m_uiObjectBar.HitTest(point))
 	{
 		m_uiObjectBar.HandleMsg(WM_LBUTTONDOWN, MAKELPARAM(point.x, point.y), 0);
@@ -206,6 +205,10 @@ void BaseGraphMainFrame::OnNcLButtonDown(UINT nHitTest, CPoint point)
 
 void BaseGraphMainFrame::OnNcLButtonUp(UINT nHitTest, CPoint point)
 {
+	CRect rcWindow;
+	GetWindowRect(&rcWindow);
+	point.x -= rcWindow.left;
+	point.y -= rcWindow.top;
 	if (m_uiObjectBar.HitTest(point))
 	{
 		m_uiObjectBar.HandleMsg(WM_LBUTTONUP, MAKELPARAM(point.x, point.y), 0);
@@ -216,6 +219,10 @@ void BaseGraphMainFrame::OnNcLButtonUp(UINT nHitTest, CPoint point)
 
 void BaseGraphMainFrame::OnNcMouseMove(UINT nHitTest, CPoint point)
 {
+	CRect rcWindow;
+	GetWindowRect(&rcWindow);
+	point.x -= rcWindow.left;
+	point.y -= rcWindow.top;
 	if (m_uiObjectBar.HitTest(point))
 	{
 		m_uiObjectBar.HandleMsg(WM_MOUSEMOVE, MAKELPARAM(point.x, point.y), 0);
@@ -288,11 +295,6 @@ void BaseGraphMainFrame::OnDestroy()
 void BaseGraphMainFrame::OnSetFocus(CWnd * pOldWnd)
 {
 	CSkinFrameWnd::OnSetFocus(pOldWnd);
-}
-
-void BaseGraphMainFrame::OnSize(UINT nType, int cx, int cy)
-{
-	CSkinFrameWnd::OnSize(nType, cx, cy);
 }
 
 void BaseGraphMainFrame::OnPaint()

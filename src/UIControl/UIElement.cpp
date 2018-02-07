@@ -100,6 +100,13 @@ bool UIElement::NeedContinue(EmUIElementMsgRet emMsgRet)
 
 bool UIElement::HitTest(CPoint point)
 {
+	if (false)
+	{
+		CRect rtTest = GetRect();
+		BOOL bTest = rtTest.PtInRect(point);
+		int i = 0;
+		i++;
+	}
 	if (GetRect().PtInRect(point))
 	{
 		return true;

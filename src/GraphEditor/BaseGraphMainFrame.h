@@ -16,15 +16,14 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
 	afx_msg virtual void OnNcPaint();
-	afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
-	afx_msg void OnNcLButtonUp(UINT nHitTest, CPoint point);
-	afx_msg void OnNcMouseMove(UINT nHitTest, CPoint point);
-	afx_msg BOOL OnNcCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg virtual void OnNcLButtonDown(UINT nHitTest, CPoint point);
+	afx_msg virtual void OnNcLButtonUp(UINT nHitTest, CPoint point);
+	afx_msg virtual void OnNcMouseMove(UINT nHitTest, CPoint point);
+	afx_msg virtual BOOL OnNcCreate(LPCREATESTRUCT lpCreateStruct);
 
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDestroy();
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	DECLARE_MESSAGE_MAP()

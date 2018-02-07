@@ -12,6 +12,7 @@ protected:
 	void InitializeObject();
 	void ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	void EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	LPARAM MapPointIn(LPARAM lParam);//外部坐标转化为内部坐标
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);

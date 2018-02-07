@@ -51,7 +51,7 @@ void UIObjectBar::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	for (size_t i = 0; i < m_vecChildElement.size(); i++)
 	{
 		UIElement *& pChild = m_vecChildElement[i];
-		if (pChild && pChild->HitTest(lParam))
+		if (pChild && pChild->HitTest(MapPointIn(lParam)))
 		{
 			pChild->HandleMsg(nMsg, lParam, wParam);
 		}
@@ -63,7 +63,7 @@ void UIObjectBar::EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	for (size_t i = 0; i < m_vecChildElement.size(); i++)
 	{
 		UIElement *& pChild = m_vecChildElement[i];
-		if (pChild && pChild->HitTest(lParam))
+		if (pChild && pChild->HitTest(MapPointIn(lParam)))
 		{
 			pChild->OnMouseHover();
 		}
@@ -72,6 +72,15 @@ void UIObjectBar::EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam)
 			pChild->OnMouseLeave();
 		}
 	}
+}
+
+LPARAM UIObjectBar::MapPointIn(LPARAM lParam)
+{
+	LPARAM lRet = 0;
+	int nX = LOWORD(lParam);
+	int nY = HIWORD(lParam);
+	lRet = MAKELPARAM(nX - m_nX, nY - m_nY);
+	return lRet;
 }
 
 bool UIObjectBar::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
