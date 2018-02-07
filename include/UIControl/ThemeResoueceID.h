@@ -3,6 +3,7 @@ enum ThemeIntValueDef
 {
 	ThemeInt_SkinWndTitleHeight,
 	ThemeInt_SkinWndFrameWidth,
+	ThemeInt_SkinWndTitleObjectBarX,
 };
 
 enum ThemeFontValueDef
@@ -34,4 +35,9 @@ enum ThemeImageValueDef
 	ThemeImage_SkinWndMaxizeBtn_F,
 	ThemeImage_SkinWndMaxizeBtn_D,
 	ThemeImage_SkinWndMaxizeBtn_X,
+
+	ThemeImage_ObjectBtnBKImg_N,
+	ThemeImage_ObjectBtnBKImg_F,
+	ThemeImage_ObjectBtnBKImg_D,
+	ThemeImage_ObjectBtnBKImg_X,
 };

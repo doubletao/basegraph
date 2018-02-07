@@ -48,6 +48,9 @@
     <ClCompile Include="ExportGraphEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="UIObjectBar.cpp">
+      <Filter>ObjectBar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -66,6 +69,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ExportGraphEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObjectBar.h">
+      <Filter>ObjectBar</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphEditorCommonDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

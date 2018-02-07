@@ -34,6 +34,7 @@ bool UIThemeDefault::Initialize()
 	//ÕûÊý
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleHeight, 35));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndFrameWidth, 3));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleObjectBarX, 150));
 
 	/////////////////////////////////////////////////////////////////////
 	//ÑÕÉ«
@@ -74,6 +75,11 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_SkinWndCloseBtn_F, strThemePath + _T("SkinedWnd\\SkinWndCloseBtn_F.png"));
 		LoadOneImg(ThemeImage_SkinWndCloseBtn_D, strThemePath + _T("SkinedWnd\\SkinWndCloseBtn_D.png"));
 		LoadOneImg(ThemeImage_SkinWndCloseBtn_X, strThemePath + _T("SkinedWnd\\SkinWndCloseBtn_X.png"));
+
+		LoadOneImg(ThemeImage_ObjectBtnBKImg_N, strThemePath + _T("SkinedWnd\\ObjectBtnBKImg_N.png"));
+		LoadOneImg(ThemeImage_ObjectBtnBKImg_F, strThemePath + _T("SkinedWnd\\ObjectBtnBKImg_F.png"));
+		LoadOneImg(ThemeImage_ObjectBtnBKImg_D, strThemePath + _T("SkinedWnd\\ObjectBtnBKImg_D.png"));
+		LoadOneImg(ThemeImage_ObjectBtnBKImg_X, strThemePath + _T("SkinedWnd\\ObjectBtnBKImg_X.png"));
 	} while (false);
 	return true;
 }

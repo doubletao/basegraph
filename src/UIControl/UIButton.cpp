@@ -4,7 +4,6 @@
 #include "UIControl\UITextDrawer.h"
 
 UIButton::UIButton()
-	: m_strText(_T(""))
 {
 }
 
@@ -40,7 +39,7 @@ void UIButton::SetState(int nState, bool bRefresh)
 	Refresh();
 }
 
-bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, LPCTSTR strText, int nFont/* = 0*/)
+bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, LPCTSTR strText, int nFont/* = 0*/, COLORREF nFontColor/* = 0*/)
 {
 	auto InsertOneDrawer = [&](int nStateValue, int nImgValue)
 	{
@@ -49,6 +48,7 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 		if (strText)
 		{
 			UITextDrawer * pTextDrawer = new UITextDrawer(nFont);
+			pTextDrawer->SetColor(nFontColor);
 			m_mapDrawer[nStateValue].push_back(pTextDrawer);
 		}
 	};
@@ -67,7 +67,7 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 	return false;
 }
 
-bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, int nForeImgN, int nForeImgF, int nForeImgD, int nForeImgX, LPCTSTR strText, int nFont/* = 0*/)
+bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, int nForeImgN, int nForeImgF, int nForeImgD, int nForeImgX, LPCTSTR strText, int nFont/* = 0*/, COLORREF nFontColor/* = 0*/)
 {
 	auto InsertOneDrawer = [&](int nStateValue, int nBKImgValue, int nForeImgValue)
 	{

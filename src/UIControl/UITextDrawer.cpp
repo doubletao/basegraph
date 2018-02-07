@@ -20,8 +20,14 @@ void UITextDrawer::Draw(CDC * pDC, int nX, int nY, int nWidth, int nHeight, LPCT
 		CFont font;
 		font.CreateFontIndirect(&lgfont);
 		CFont * pOldFont = pDC->SelectObject(&font);
-		CRect rtText(nX, nY, nWidth, nHeight);
+		CRect rtText(nX, nY, nX + nWidth, nY + nHeight);
+		pDC->SetTextColor(m_nColor);
 		pDC->DrawText(strText, rtText, DT_SINGLELINE | DT_VCENTER | DT_CENTER);
 		pDC->SelectObject(pOldFont);
 	}
+}
+
+void UITextDrawer::SetColor(COLORREF nColor)
+{
+	m_nColor = nColor;
 }

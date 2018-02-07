@@ -11,8 +11,6 @@ class BASEGRAPH_UICONTROL_API UIButton :
 		UIElement_Down,		//°´ÏÂ
 		UIElement_Xable,	//disable
 	};
-private:
-	CString m_strText;
 public:
 	UIButton();
 	virtual ~UIButton();
@@ -23,10 +21,10 @@ protected:
 	void SetState(int nState, bool bRefresh);
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd,
-		int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, LPCTSTR strText = nullptr, int nFont = 0);
+		int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, LPCTSTR strText = nullptr, int nFont = 0, COLORREF nFontColor = 0);
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, 
 		int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, int nForeImgN, int nForeImgF, int nForeImgD, int nForeImgX, 
-		LPCTSTR strText = nullptr, int nFont = 0);
+		LPCTSTR strText = nullptr, int nFont = 0, COLORREF nFontColor = 0);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();

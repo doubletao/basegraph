@@ -1,8 +1,11 @@
 #pragma once
+#include "UIObjectBar.h"
 
 class BaseGraphMainFrame :
 	public CSkinFrameWnd
 {
+private:
+	UIObjectBar m_uiObjectBar;
 public:
 	BaseGraphMainFrame();
 	virtual ~BaseGraphMainFrame();
@@ -12,6 +15,12 @@ protected:
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
+	afx_msg virtual void OnNcPaint();
+	afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
+	afx_msg void OnNcLButtonUp(UINT nHitTest, CPoint point);
+	afx_msg void OnNcMouseMove(UINT nHitTest, CPoint point);
+	afx_msg BOOL OnNcCreate(LPCREATESTRUCT lpCreateStruct);
+
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDestroy();
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
