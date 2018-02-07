@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="TitleBar">
-      <UniqueIdentifier>{a4623c5d-f605-4efe-af61-208b1ced5d9c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ActionBar">
       <UniqueIdentifier>{8997408e-56c9-47a3-88d4-fe63cbdbb873}</UniqueIdentifier>
     </Filter>
@@ -27,6 +24,12 @@
     </Filter>
     <Filter Include="PropertyView">
       <UniqueIdentifier>{e93391d7-ef61-4e05-ac9d-e4632c0a3237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneView">
+      <UniqueIdentifier>{fcc553c9-9225-4921-8181-e7a3ab508681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ObjectBar">
+      <UniqueIdentifier>{a4623c5d-f605-4efe-af61-208b1ced5d9c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

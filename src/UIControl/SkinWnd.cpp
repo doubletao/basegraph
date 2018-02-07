@@ -25,8 +25,7 @@ BEGIN_MESSAGE_MAP(SkinWnd, CWnd)
 END_MESSAGE_MAP()
 
 SkinWnd::SkinWnd()
-	: m_strTitle(_T("窗口"))
-	, m_rtTitleBar(0)
+	: m_rtTitleBar(0)
 	, m_bNCTracking(FALSE)
 	, m_iXButtonHovering(-1)
 	, m_bNCHovering(FALSE)
@@ -55,6 +54,7 @@ void SkinWnd::OnNcPaint()
 	int nTitleHeight = ThemeManager::Instance().GetIntValue(ThemeInt_SkinWndTitleHeight);
 	CImage * pImgIcon = ThemeManager::Instance().GetImage(ThemeImage_SkinFrameDefaultIcon);
 	LOGFONT lfTitleFont = ThemeManager::Instance().GetFont(ThemeFont_SkinWndTitleText);
+	COLORREF nFontColor = ThemeManager::Instance().GetColor(ThemeColor_SkinWndTitleText);
 
 	if (nullptr != pImgBk
 		&& nFrameWidth > 0
@@ -132,13 +132,23 @@ void SkinWnd::OnNcPaint()
 		}
 		pImgBk->Draw(MemDC.GetSafeHdc(), destRect);
 
-		int nWidth = pImgIcon->GetWidth();
-		int nHeight = pImgIcon->GetHeight();
-		int xPos = 15;
-		int yPos = (nTitleHeight + nFrameWidth - nHeight) / 2;
-		m_rcIcon.SetRect(xPos, yPos, xPos + nWidth, yPos + nHeight);
+		int nXOffset = 0;
+		int nYOffset = 0;
+		DWORD	dwStyle = GetStyle();
+		if (dwStyle & WS_MAXIMIZE)
+		{
+			nXOffset = nFrameWidth;
+			nYOffset = nFrameWidth * 2;
+		}
+
+		//绘制ICON
+		int nIconWidth = pImgIcon->GetWidth();
+		int nIconHeight = pImgIcon->GetHeight();
+		int xIconPos = nFrameWidth + nXOffset;
+		int yIconPos = (nTitleHeight + nFrameWidth - nIconHeight + nYOffset) / 2;
+		m_rcIcon.SetRect(xIconPos, yIconPos, xIconPos + nIconWidth, yIconPos + nIconHeight);
 		BufferFunction::DrawImageWithAplha(&MemDC, pImgIcon, m_rcIcon, m_rcIcon,
-			CRect(0, 0, nWidth, nHeight), CRect(), TRUE, 255, FALSE);
+			CRect(0, 0, nIconWidth, nIconHeight), CRect(), TRUE, 255, FALSE);
 
 		//沿着窗口四周画一圈一个像素宽的蓝色矩形
 		int nSavedDC = MemDC.SaveDC();
@@ -172,17 +182,14 @@ void SkinWnd::OnNcPaint()
 		}
 
 		//绘制标题
+		CString strTitle;
+		GetWindowText(strTitle);
 		CFont font;
 		font.CreateFontIndirect(&lfTitleFont);
-
 		MemDC.SelectObject(&font);
-
-		// 绘制标题,左边
-		MemDC.SetTextColor(RGB(200, 200, 200));
-		CRect rtTitle(destRect.left, destRect.right + 6, destRect.Width(), destRect.Height());
-		rtTitle.left = m_rcIcon.right + 100;
-		rtTitle.right -= m_rcIcon.right;
-		MemDC.DrawText(m_strTitle, rtTitle, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
+		MemDC.SetTextColor(nFontColor);
+		CRect rtTitle(xIconPos + nIconWidth + nFrameWidth + nXOffset, 0, rcWindow.Width(), nTitleHeight + nYOffset);
+		MemDC.DrawText(strTitle, rtTitle, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
 
 		dc.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), &MemDC, 0, 0, SRCCOPY);
 

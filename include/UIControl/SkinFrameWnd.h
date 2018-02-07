@@ -17,7 +17,6 @@ class BASEGRAPH_UICONTROL_API CSkinFrameWnd : public CFrameWnd
 protected:
 	DECLARE_MESSAGE_MAP()
 protected:
-	CString m_strTitle;
 	CRect m_rcIcon;
 	CRect m_rtTitleBar;
 	std::vector<UIButton *> m_vecButton;

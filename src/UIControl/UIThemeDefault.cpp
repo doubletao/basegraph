@@ -26,7 +26,7 @@ bool UIThemeDefault::Initialize()
 	//×ÖÌå
 	LOGFONT lfFont;
 	memset(&lfFont, 0, sizeof(lfFont));
-	lfFont.lfHeight = -12;
+	lfFont.lfHeight = -14;
 	lstrcpy(lfFont.lfFaceName, _T("Î¢ÈíÑÅºÚ"));
 	m_mapFontList.insert(std::make_pair(ThemeFont_SkinWndTitleText, lfFont));
 
@@ -37,7 +37,7 @@ bool UIThemeDefault::Initialize()
 
 	/////////////////////////////////////////////////////////////////////
 	//ÑÕÉ«
-	m_mapColorList;
+	m_mapColorList.insert(std::make_pair(ThemeColor_SkinWndTitleText, RGB(233, 233, 233)));
 
 	/////////////////////////////////////////////////////////////////////
 	//Í¼Æ¬

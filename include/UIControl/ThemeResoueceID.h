@@ -10,6 +10,11 @@ enum ThemeFontValueDef
 	ThemeFont_SkinWndTitleText,
 };
 
+enum ThemeColorValueDef
+{
+	ThemeColor_SkinWndTitleText,
+};
+
 enum ThemeImageValueDef
 {
 	ThemeImage_SkinWndNcBkgrd,

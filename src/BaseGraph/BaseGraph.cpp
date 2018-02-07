@@ -60,8 +60,6 @@ BOOL CBaseGraphApp::InitInstance()
 			return FALSE;
 		m_pMainWnd = pFrame;
 
-		pFrame->SetWindowText(_T("GraphEditor"));
-
 		// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 		pFrame->ShowWindow(SHOW_FULLSCREEN);
 		pFrame->UpdateWindow();

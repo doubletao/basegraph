@@ -31,6 +31,8 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CSkinFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
+	SetWindowText(_T("Í¼ÎÄ±à¼­Æ÷"));
+
 	//²âÊÔ´úÂë
 	CString strObjID = _T("");
 	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Image);
