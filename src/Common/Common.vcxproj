@@ -119,6 +119,7 @@
     <ClCompile Include="CommonFunction.cpp" />
     <ClCompile Include="CommonMatrix.cpp" />
     <ClCompile Include="DataDef.cpp" />
+    <ClCompile Include="ResourceLock.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -130,6 +131,7 @@
     <ClInclude Include="..\..\include\Common\CommonFunction.h" />
     <ClInclude Include="..\..\include\Common\CommonMatrix.h" />
     <ClInclude Include="..\..\include\Common\DataDef.h" />
+    <ClInclude Include="..\..\include\Common\ResourceLock.h" />
     <ClInclude Include="..\..\include\ExportCommon.h" />
     <ClInclude Include="BufferColorSpaceConv.h" />
     <ClInclude Include="BufferMemSSE.h" />

@@ -48,6 +48,9 @@
     <ClCompile Include="BufferColorSpaceConv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ResourceLock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -906,6 +909,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="BufferSSE2Static.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\ResourceLock.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

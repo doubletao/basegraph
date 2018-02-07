@@ -18,3 +18,4 @@
 #include "Common\CommonFunction.h"
 #include "Common\BufferCommonDef.h"
 #include "Common\BufferFunction.h"
+#include "Common\ResourceLock.h"

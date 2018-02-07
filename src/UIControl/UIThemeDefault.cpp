@@ -32,7 +32,7 @@ bool UIThemeDefault::Initialize()
 
 	/////////////////////////////////////////////////////////////////////
 	//ÕûÊý
-	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleHeight, 38));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleHeight, 35));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndFrameWidth, 3));
 
 	/////////////////////////////////////////////////////////////////////

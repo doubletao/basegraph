@@ -4,4 +4,8 @@
 
 #include "stdafx.h"
 
-
+#ifdef _DEBUG
+LPCTSTR g_ModuleName = _T("GraphEditorD.lib");
+#else
+LPCTSTR g_ModuleName = _T("GraphEditor.lib");
+#endif

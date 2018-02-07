@@ -45,4 +45,3 @@
 #define BASEGRAPH_COMMON_API __declspec(dllimport)
 #endif // BASEGRAPH_COMMON_EXPORTS
 
-
