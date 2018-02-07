@@ -193,11 +193,13 @@ void BaseGraphMainFrame::OnNcLButtonDown(UINT nHitTest, CPoint point)
 {
 	CRect rcWindow;
 	GetWindowRect(&rcWindow);
-	point.x -= rcWindow.left;
-	point.y -= rcWindow.top;
-	if (m_uiObjectBar.HitTest(point))
+	CPoint ptTmp = point;
+	ptTmp.x -= rcWindow.left;
+	ptTmp.y -= rcWindow.top;
+	m_uiObjectBar.HandleMsg(WM_LBUTTONDOWN, MAKELPARAM(ptTmp.x, ptTmp.y), 0);
+	OnNcPaint();
+	if (m_uiObjectBar.HitTest(ptTmp))
 	{
-		m_uiObjectBar.HandleMsg(WM_LBUTTONDOWN, MAKELPARAM(point.x, point.y), 0);
 		return;
 	}
 	CSkinFrameWnd::OnNcLButtonDown(nHitTest, point);
@@ -207,11 +209,13 @@ void BaseGraphMainFrame::OnNcLButtonUp(UINT nHitTest, CPoint point)
 {
 	CRect rcWindow;
 	GetWindowRect(&rcWindow);
-	point.x -= rcWindow.left;
-	point.y -= rcWindow.top;
-	if (m_uiObjectBar.HitTest(point))
+	CPoint ptTmp = point;
+	ptTmp.x -= rcWindow.left;
+	ptTmp.y -= rcWindow.top;
+	m_uiObjectBar.HandleMsg(WM_LBUTTONUP, MAKELPARAM(ptTmp.x, ptTmp.y), 0);
+	OnNcPaint();
+	if (m_uiObjectBar.HitTest(ptTmp))
 	{
-		m_uiObjectBar.HandleMsg(WM_LBUTTONUP, MAKELPARAM(point.x, point.y), 0);
 		return;
 	}
 	CSkinFrameWnd::OnNcLButtonUp(nHitTest, point);
@@ -221,11 +225,13 @@ void BaseGraphMainFrame::OnNcMouseMove(UINT nHitTest, CPoint point)
 {
 	CRect rcWindow;
 	GetWindowRect(&rcWindow);
-	point.x -= rcWindow.left;
-	point.y -= rcWindow.top;
-	if (m_uiObjectBar.HitTest(point))
+	CPoint ptTmp = point;
+	ptTmp.x -= rcWindow.left;
+	ptTmp.y -= rcWindow.top;
+	m_uiObjectBar.HandleMsg(WM_MOUSEMOVE, MAKELPARAM(ptTmp.x, ptTmp.y), 0);
+	OnNcPaint();
+	if (m_uiObjectBar.HitTest(ptTmp))
 	{
-		m_uiObjectBar.HandleMsg(WM_MOUSEMOVE, MAKELPARAM(point.x, point.y), 0);
 		return;
 	}
 	CSkinFrameWnd::OnNcMouseMove(nHitTest, point);
