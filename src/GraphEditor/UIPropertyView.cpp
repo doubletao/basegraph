@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UIPropertyView.h"
-
+#include "UIPropertyTabBar.h"
 
 UIPropertyView::UIPropertyView()
 {
@@ -19,8 +19,24 @@ void UIPropertyView::Initialize(int nX, int nY, int nWidth, int nHeight, int nID
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
 }
 
+void UIPropertyView::RearrangeChildPos()
+{
+	int nPropertyTabBarWdith = UIControl_GetIntValue(ThemeInt_PropretyViewTabWidth);
+	if (m_vecChildElement.size() > 0)
+	{
+		UIPropertyTabBar * pPropertyTabBar = (UIPropertyTabBar *)m_vecChildElement[0];
+		if (pPropertyTabBar)
+		{
+			pPropertyTabBar->MoveTo(0, 0, nPropertyTabBarWdith, m_nHeight);
+		}
+	}
+}
+
 void UIPropertyView::InitializeObject()
 {
+	UIPropertyTabBar * pPropertyTabBar = new UIPropertyTabBar;
+	pPropertyTabBar->Create(0, 0, 100, 100, m_hParentWnd, this);
+	m_vecChildElement.push_back(pPropertyTabBar);
 }
 
 void UIPropertyView::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)

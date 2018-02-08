@@ -25,4 +25,10 @@ enum UIElementMsgDef
 	UIElementMsg_PlayCtrlPlayPause,
 	UIElementMsg_PlayCtrlNextFrame,
 	UIElementMsg_PlayCtrlLastFrame,
+
+	UIElementMsg_PropertyTabColor,
+	UIElementMsg_PropertyTabObject,
+	UIElementMsg_PropertyTabSpace,
+	UIElementMsg_PropertyTabFx,
+	UIElementMsg_PropertyTabText,
 };

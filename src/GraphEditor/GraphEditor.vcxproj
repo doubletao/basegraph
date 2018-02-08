@@ -124,6 +124,7 @@
     <ClCompile Include="UIActionBar.cpp" />
     <ClCompile Include="UIObjectBar.cpp" />
     <ClCompile Include="UIPlayControlBar.cpp" />
+    <ClCompile Include="UIPropertyTabBar.cpp" />
     <ClCompile Include="UIPropertyView.cpp" />
     <ClCompile Include="UISimpleTimeLine.cpp" />
     <ClCompile Include="UITimeLine.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="UIActionBar.h" />
     <ClInclude Include="UIObjectBar.h" />
     <ClInclude Include="UIPlayControlBar.h" />
+    <ClInclude Include="UIPropertyTabBar.h" />
     <ClInclude Include="UIPropertyView.h" />
     <ClInclude Include="UISimpleTimeLine.h" />
     <ClInclude Include="UITimeLine.h" />

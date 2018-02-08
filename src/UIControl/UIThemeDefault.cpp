@@ -40,6 +40,7 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarWidth, 260));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarHeight, 40));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 300));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
 
 	/////////////////////////////////////////////////////////////////////
 	//ÑÕÉ«

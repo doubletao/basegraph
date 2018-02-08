@@ -9,6 +9,7 @@ enum ThemeIntValueDef
 	ThemeInt_PlayControlBarWidth,
 	ThemeInt_PlayControlBarHeight,
 	ThemeInt_PropretyViewWidth,
+	ThemeInt_PropretyViewTabWidth,
 };
 
 enum ThemeFontValueDef

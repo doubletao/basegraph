@@ -8,6 +8,7 @@ public:
 	virtual ~UIPropertyView();
 protected:
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr);//初始化工作
+	virtual void RearrangeChildPos();
 	virtual void InitializeObject();
 	void ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	void EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam);
