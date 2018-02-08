@@ -17,6 +17,7 @@ BEGIN_MESSAGE_MAP(BaseGraphMainFrame, CSkinFrameWnd)
 	ON_WM_PAINT()
 	ON_WM_ERASEBKGND()
 	ON_WM_DESTROY()
+	ON_MESSAGE(EmUIElementMsg_BtnClick, BaseGraphMainFrame::OnUIElementBtnClicked)
 END_MESSAGE_MAP()
 
 BaseGraphMainFrame::BaseGraphMainFrame()
@@ -342,4 +343,38 @@ void BaseGraphMainFrame::OnPaint()
 BOOL BaseGraphMainFrame::OnEraseBkgnd(CDC * pDC)
 {
 	return TRUE;
+}
+
+LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case UIElementMsg_CreateTitle:
+		OnBtnCreateTitle();
+		break;
+	case UIElementMsg_CreateScroll:
+		OnBtnCreateScroll();
+		break;
+	case UIElementMsg_CreateImage:
+		OnBtnCreateImage();
+		break;
+	default:
+		break;
+	}
+	return LRESULT();
+}
+
+void BaseGraphMainFrame::OnBtnCreateTitle()
+{
+	AfxMessageBox(_T("创建标题字"));
+}
+
+void BaseGraphMainFrame::OnBtnCreateScroll()
+{
+	AfxMessageBox(_T("创建滚屏"));
+}
+
+void BaseGraphMainFrame::OnBtnCreateImage()
+{
+	AfxMessageBox(_T("创建图片"));
 }

@@ -9,12 +9,10 @@ private:
 public:
 	BaseGraphMainFrame();
 	virtual ~BaseGraphMainFrame();
-protected:
 	DECLARE_DYNAMIC(BaseGraphMainFrame)
 	// 生成的消息映射函数
-public:
+	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-protected:
 	afx_msg virtual void OnNcPaint();
 	afx_msg virtual void OnNcLButtonDblClk(UINT nHitTest, CPoint point);
 	afx_msg virtual void OnNcLButtonDown(UINT nHitTest, CPoint point);
@@ -27,6 +25,11 @@ protected:
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	DECLARE_MESSAGE_MAP()
+protected:
+	afx_msg LRESULT OnUIElementBtnClicked(WPARAM wParam = 0, LPARAM lParam = 0);
+public:
+	void OnBtnCreateTitle();
+	void OnBtnCreateScroll();
+	void OnBtnCreateImage();
 };
 

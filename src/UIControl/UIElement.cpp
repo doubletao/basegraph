@@ -39,7 +39,7 @@ void UIElement::Release()
 	m_bCreated = false;
 }
 
-void UIElement::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd/* = nullptr*/)
+void UIElement::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd/* = nullptr*/, UIElement * pParent/* = nullptr*/)
 {
 	m_nX = nX;
 	m_nY = nY;
@@ -47,17 +47,46 @@ void UIElement::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWN
 	m_nHeight = nHeight;
 	m_nID = nID;
 	m_hParentWnd = hParentWnd;
+	m_pParentElement = pParent;
 	m_nState = 0;
 	m_bCreated = true;
 }
 
 void UIElement::Refresh()
 {
-	InvalidateRect(m_hParentWnd, CRect(m_nX, m_nY, m_nWidth, m_nHeight), false);
+	if (m_pParentElement)
+	{
+		//如果有父物件，就通知父物件刷新
+		m_pParentElement->Refresh();
+	}
+	else
+	{
+		//如果已经是顶层，则刷新自己的区域
+		InvalidateRect(m_hParentWnd, CRect(m_nX, m_nY, m_nWidth, m_nHeight), false);
+	}
+}
+
+int UIElement::GetRealX()
+{
+	if (m_pParentElement)
+	{
+		return m_nX + m_pParentElement->GetRealX();
+	}
+	return m_nX;
+}
+
+int UIElement::GetRealY()
+{
+	if (m_pParentElement)
+	{
+		return m_nY + m_pParentElement->GetRealY();
+	}
+	return m_nY;
 }
 
 UIElement::UIElement()
 	: m_hParentWnd(nullptr)
+	, m_pParentElement(nullptr)
 	, m_nID(0)
 	, m_nX(0)
 	, m_nY(0)
@@ -124,7 +153,7 @@ bool UIElement::HitTest(LPARAM lParam)
 	return HitTest(LOWORD(lParam), HIWORD(lParam));
 }
 
-void UIElement::DrawElement(CDC * pDC, int nX/* = 0*/, int nY/* = 0*/)
+void UIElement::DrawElement(CDC * pDC)
 {
 	//先画自己
 	if (m_mapDrawer.count(m_nState))
@@ -135,7 +164,7 @@ void UIElement::DrawElement(CDC * pDC, int nX/* = 0*/, int nY/* = 0*/)
 			UIDrawer * & pDrawer = vecDrawer[i];
 			if (pDrawer)
 			{
-				pDrawer->Draw(pDC, nX + m_nX, nY + m_nY, m_nWidth, m_nHeight, m_strText);
+				pDrawer->Draw(pDC, GetRealX(), GetRealY(), m_nWidth, m_nHeight, m_strText);
 			}
 		}
 	}
@@ -145,7 +174,7 @@ void UIElement::DrawElement(CDC * pDC, int nX/* = 0*/, int nY/* = 0*/)
 		UIElement * & pChild = m_vecChildElement[i];
 		if (pChild)
 		{
-			pChild->DrawElement(pDC, nX + m_nX, nY + m_nY);
+			pChild->DrawElement(pDC);
 		}
 	}
 }
@@ -160,7 +189,9 @@ void UIElement::OnMouseLeave()
 
 CRect UIElement::GetRect()
 {
-	return CRect(m_nX, m_nY, m_nX + m_nWidth, m_nY + m_nHeight);
+	int nX = GetRealX();
+	int nY = GetRealY();
+	return CRect(nX, nY, nX + m_nWidth, nY + m_nHeight);
 }
 
 inline void UIElement::MoveTo(CRect rtNew)

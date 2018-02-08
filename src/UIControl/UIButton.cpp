@@ -12,9 +12,9 @@ UIButton::~UIButton()
 {
 }
 
-void UIButton::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
+void UIButton::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent/* = nullptr*/)
 {
-	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd);
+	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 	m_setMsgFilter.insert(WM_LBUTTONDOWN);
 	m_setMsgFilter.insert(WM_LBUTTONUP);
 }
@@ -40,7 +40,7 @@ void UIButton::SetState(int nState, bool bRefresh)
 	Refresh();
 }
 
-bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, LPCTSTR strText, int nFont/* = 0*/, COLORREF nFontColor/* = 0*/)
+bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, UIElement * pParent/* = nullptr*/, LPCTSTR strText/* = nullptr*/, int nFont/* = 0*/, COLORREF nFontColor/* = 0*/)
 {
 	auto InsertOneDrawer = [&](int nStateValue, int nImgValue)
 	{
@@ -55,7 +55,7 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 	};
 	if (!m_bCreated)
 	{
-		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd);
+		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 		m_strText = strText;
 
 		InsertOneDrawer(UIElement_Normal, nBKImgN);
@@ -68,7 +68,7 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 	return false;
 }
 
-bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, int nForeImgN, int nForeImgF, int nForeImgD, int nForeImgX, LPCTSTR strText, int nFont/* = 0*/, COLORREF nFontColor/* = 0*/)
+bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, int nForeImgN, int nForeImgF, int nForeImgD, int nForeImgX, UIElement * pParent/* = nullptr*/, LPCTSTR strText/* = nullptr*/, int nFont/* = 0*/, COLORREF nFontColor/* = 0*/)
 {
 	auto InsertOneDrawer = [&](int nStateValue, int nBKImgValue, int nForeImgValue)
 	{
@@ -86,7 +86,7 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 	};
 	if (!m_bCreated)
 	{
-		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd);
+		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 		m_strText = strText;
 
 		InsertOneDrawer(UIElement_Normal, nBKImgN, nForeImgN);

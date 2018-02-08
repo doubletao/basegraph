@@ -23,6 +23,7 @@ class BASEGRAPH_UICONTROL_API UIElement
 {
 protected:
 	HWND m_hParentWnd;//父窗口句柄
+	UIElement * m_pParentElement;//父元素指针
 	int m_nID;//一个身份标识，用来做消息发送时标志
 	int m_nX;
 	int m_nY;
@@ -39,8 +40,11 @@ public:
 	static bool NeedContinue(EmUIElementMsgRet emMsgRet);
 protected:
 	virtual void Release();
-	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr);//初始化工作
+	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
 	void Refresh();
+	//向上追溯获取自己的实际窗口坐标
+	int GetRealX();
+	int GetRealY();
 public:
 	UIElement();
 	virtual ~UIElement();
@@ -51,7 +55,7 @@ public:
 	virtual inline CRect GetRect();
 	virtual inline void MoveTo(CRect rtNew);
 	virtual inline void MoveTo(int nX, int nY);
-	virtual void DrawElement(CDC * pDC, int nX = 0, int nY = 0);
+	virtual void DrawElement(CDC * pDC);
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();
 };
