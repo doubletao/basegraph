@@ -366,15 +366,15 @@ LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
 
 void BaseGraphMainFrame::OnBtnCreateTitle()
 {
-	AfxMessageBox(_T("创建标题字"));
+	//AfxMessageBox(_T("创建标题字"));
 }
 
 void BaseGraphMainFrame::OnBtnCreateScroll()
 {
-	AfxMessageBox(_T("创建滚屏"));
+	//AfxMessageBox(_T("创建滚屏"));
 }
 
 void BaseGraphMainFrame::OnBtnCreateImage()
 {
-	AfxMessageBox(_T("创建图片"));
+	//AfxMessageBox(_T("创建图片"));
 }

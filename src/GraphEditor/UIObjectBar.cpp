@@ -32,11 +32,11 @@ void UIObjectBar::InitializeObject()
 				nImgSize = pImg->GetWidth();
 			}
 		}
-		UIButton * pButton = new UIButton;
+		UICheckBtn * pCheck = new UICheckBtn;
 		int nXPos = (int)m_vecChildElement.size() * (nImgSize + 1);
 		int nYPos = (m_nHeight - nImgSize) / 2;
-		pButton->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this, strText, ThemeFont_SkinWndTitleText, nTextColor);
-		m_vecChildElement.push_back(pButton);
+		pCheck->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this, strText, ThemeFont_SkinWndTitleText, nTextColor);
+		m_vecChildElement.push_back(pCheck);
 	};
 
 	AddOneObjectBtn(UIElementMsg_CreateTitle, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("ÎÄ×Ö"), RGB(255, 255, 255));
@@ -50,7 +50,11 @@ void UIObjectBar::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 {
 	for (size_t i = 0; i < m_vecChildElement.size(); i++)
 	{
-		UIElement *& pChild = m_vecChildElement[i];
+		UICheckBtn * pChild = (UICheckBtn *)m_vecChildElement[i];
+		if (WM_LBUTTONUP == nMsg)
+		{
+			pChild->SetCheck(false);
+		}
 		if (pChild && pChild->HitTest(lParam))
 		{
 			pChild->HandleMsg(nMsg, lParam, wParam);

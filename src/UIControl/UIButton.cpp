@@ -36,7 +36,6 @@ void UIButton::OnButtonClickUp()
 void UIButton::SetState(int nState, bool bRefresh)
 {
 	m_nState = nState;
-	//TODO:这里的刷新机制有问题，子物件根据自己的矩形去要求刷新是没有意义的，应当做一个坐标转化后再刷新
 	Refresh();
 }
 

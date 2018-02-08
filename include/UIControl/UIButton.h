@@ -4,6 +4,7 @@
 class BASEGRAPH_UICONTROL_API UIButton :
 	public UIElement
 {
+protected:
 	enum
 	{
 		UIElement_Normal,	//正常
@@ -16,8 +17,6 @@ public:
 	virtual ~UIButton();
 protected:
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
-	void OnButtonClickDown();
-	void OnButtonClickUp();
 	void SetState(int nState, bool bRefresh);
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd,
@@ -26,6 +25,8 @@ public:
 		int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, int nForeImgN, int nForeImgF, int nForeImgD, int nForeImgX, 
 		UIElement * pParent = nullptr, LPCTSTR strText = nullptr, int nFont = 0, COLORREF nFontColor = 0);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual void OnButtonClickDown();
+	virtual void OnButtonClickUp();
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();
 };

@@ -22,6 +22,7 @@
 #include "UIControl\UIElement.h"
 #include "UIControl\UIImageDrawer.h"
 #include "UIControl\UITextDrawer.h"
+#include "UIControl\UICheckBtn.h"
 
 BASEGRAPH_UICONTROL_API bool UIControl_SwitchTheme(int nTheme);
 BASEGRAPH_UICONTROL_API LOGFONT UIControl_GetFont(int nFontID);

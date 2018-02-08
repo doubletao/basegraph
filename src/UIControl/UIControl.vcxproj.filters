@@ -75,6 +75,9 @@
     <ClCompile Include="ExportUIControl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="UICheckBtn.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -130,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ExportUIControl.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UICheckBtn.h">
+      <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
