@@ -16,6 +16,7 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
 	afx_msg virtual void OnNcPaint();
+	afx_msg virtual void OnNcLButtonDblClk(UINT nHitTest, CPoint point);
 	afx_msg virtual void OnNcLButtonDown(UINT nHitTest, CPoint point);
 	afx_msg virtual void OnNcLButtonUp(UINT nHitTest, CPoint point);
 	afx_msg virtual void OnNcMouseMove(UINT nHitTest, CPoint point);

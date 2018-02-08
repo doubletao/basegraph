@@ -6,6 +6,7 @@ IMPLEMENT_DYNAMIC(BaseGraphMainFrame, CSkinFrameWnd)
 BEGIN_MESSAGE_MAP(BaseGraphMainFrame, CSkinFrameWnd)
 	ON_WM_NCPAINT()
 	ON_WM_NCLBUTTONDOWN()
+	ON_WM_NCLBUTTONDBLCLK()
 	ON_WM_NCLBUTTONUP()
 	ON_WM_NCMOUSEMOVE()
 	ON_WM_NCCREATE()
@@ -187,6 +188,21 @@ void BaseGraphMainFrame::OnNcPaint()
 		MemDC.DeleteDC();
 		bmp.DeleteObject();
 	}
+}
+
+void BaseGraphMainFrame::OnNcLButtonDblClk(UINT nHitTest, CPoint point)
+{
+	CRect rcWindow;
+	GetWindowRect(&rcWindow);
+	CPoint ptTmp = point;
+	ptTmp.x -= rcWindow.left;
+	ptTmp.y -= rcWindow.top;
+	OnNcPaint();
+	if (m_uiObjectBar.HitTest(ptTmp))
+	{
+		return;
+	}
+	CSkinFrameWnd::OnNcLButtonDblClk(nHitTest, point);
 }
 
 void BaseGraphMainFrame::OnNcLButtonDown(UINT nHitTest, CPoint point)
