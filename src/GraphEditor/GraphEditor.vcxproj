@@ -116,21 +116,33 @@
     <ClCompile Include="BaseGraphMainFrame.cpp" />
     <ClCompile Include="ExportGraphEditor.cpp" />
     <ClCompile Include="GraphEditor.cpp" />
+    <ClCompile Include="GraphEditorStatusManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UIActionBar.cpp" />
     <ClCompile Include="UIObjectBar.cpp" />
+    <ClCompile Include="UIPlayControlBar.cpp" />
+    <ClCompile Include="UIPropertyView.cpp" />
+    <ClCompile Include="UISimpleTimeLine.cpp" />
+    <ClCompile Include="UITimeLine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ExportGraphEditor.h" />
     <ClInclude Include="BaseGraphMainFrame.h" />
     <ClInclude Include="GraphEditor.h" />
+    <ClInclude Include="GraphEditorStatusManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="GraphEditorCommonDef.h" />
+    <ClInclude Include="UIActionBar.h" />
     <ClInclude Include="UIObjectBar.h" />
+    <ClInclude Include="UIPlayControlBar.h" />
+    <ClInclude Include="UIPropertyView.h" />
+    <ClInclude Include="UISimpleTimeLine.h" />
+    <ClInclude Include="UITimeLine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GraphEditor.def" />

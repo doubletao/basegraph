@@ -64,6 +64,10 @@ void UIElement::Refresh()
 		//如果已经是顶层，则刷新自己的区域
 		InvalidateRect(m_hParentWnd, CRect(m_nX, m_nY, m_nWidth, m_nHeight), false);
 	}
+	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+	{
+		::SendMessage(m_hParentWnd, EmUIElementMsg_BtnRefresh, m_nID, 0);
+	}
 }
 
 int UIElement::GetRealX()
@@ -102,6 +106,10 @@ UIElement::UIElement()
 UIElement::~UIElement()
 {
 	Release();
+}
+
+void UIElement::RearrangeChildPos()
+{
 }
 
 EmUIElementMsgRet UIElement::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
@@ -155,6 +163,12 @@ bool UIElement::HitTest(LPARAM lParam)
 
 void UIElement::DrawElement(CDC * pDC)
 {
+	if (false)
+	{
+		CString strDebug;
+		strDebug.Format(_T("m_nState:%d, m_nID:%d\n"), m_nState, m_nID);
+		OutputDebugString(strDebug);
+	}
 	//先画自己
 	if (m_mapDrawer.count(m_nState))
 	{
@@ -192,6 +206,16 @@ int UIElement::GetMsgID()
 	return m_nID;
 }
 
+int UIElement::GetWidth()
+{
+	return m_nWidth;
+}
+
+int UIElement::GetHeight()
+{
+	return m_nHeight;
+}
+
 CRect UIElement::GetRect()
 {
 	int nX = GetRealX();
@@ -205,6 +229,7 @@ inline void UIElement::MoveTo(CRect rtNew)
 	m_nY = rtNew.top;
 	m_nWidth = rtNew.Width();
 	m_nHeight = rtNew.Height();
+	RearrangeChildPos();
 	Refresh();
 }
 
@@ -212,6 +237,17 @@ inline void UIElement::MoveTo(int nX, int nY)
 {
 	m_nX = nX;
 	m_nY = nY;
+	RearrangeChildPos();
+	Refresh();
+}
+
+inline void UIElement::MoveTo(int nX, int nY, int nWidth, int nHeight)
+{
+	m_nX = nX;
+	m_nY = nY;
+	m_nWidth = nWidth;
+	m_nHeight = nHeight;
+	RearrangeChildPos();
 	Refresh();
 }
 

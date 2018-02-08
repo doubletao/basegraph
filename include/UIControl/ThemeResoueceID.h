@@ -4,6 +4,11 @@ enum ThemeIntValueDef
 	ThemeInt_SkinWndTitleHeight,
 	ThemeInt_SkinWndFrameWidth,
 	ThemeInt_SkinWndTitleObjectBarX,
+	ThemeInt_ActionBarWidth,
+	ThemeInt_TimeLineHeight,
+	ThemeInt_PlayControlBarWidth,
+	ThemeInt_PlayControlBarHeight,
+	ThemeInt_PropretyViewWidth,
 };
 
 enum ThemeFontValueDef
@@ -40,4 +45,6 @@ enum ThemeImageValueDef
 	ThemeImage_ObjectBtnBKImg_F,
 	ThemeImage_ObjectBtnBKImg_D,
 	ThemeImage_ObjectBtnBKImg_X,
+
+	ThemeImage_ElementArea,
 };

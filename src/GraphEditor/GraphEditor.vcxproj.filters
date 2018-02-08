@@ -51,6 +51,24 @@
     <ClCompile Include="UIObjectBar.cpp">
       <Filter>ObjectBar</Filter>
     </ClCompile>
+    <ClCompile Include="UIActionBar.cpp">
+      <Filter>ActionBar</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphEditorStatusManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPlayControlBar.cpp">
+      <Filter>PlayControl</Filter>
+    </ClCompile>
+    <ClCompile Include="UISimpleTimeLine.cpp">
+      <Filter>PlayControl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPropertyView.cpp">
+      <Filter>PropertyView</Filter>
+    </ClCompile>
+    <ClCompile Include="UITimeLine.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -76,6 +94,24 @@
     </ClInclude>
     <ClInclude Include="GraphEditorCommonDef.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIActionBar.h">
+      <Filter>ActionBar</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphEditorStatusManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPlayControlBar.h">
+      <Filter>PlayControl</Filter>
+    </ClInclude>
+    <ClInclude Include="UISimpleTimeLine.h">
+      <Filter>PlayControl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyView.h">
+      <Filter>PropertyView</Filter>
+    </ClInclude>
+    <ClInclude Include="UITimeLine.h">
+      <Filter>TimeLine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

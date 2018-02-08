@@ -123,6 +123,7 @@
     </ClCompile>
     <ClCompile Include="ThemeManager.cpp" />
     <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIButtonBar.cpp" />
     <ClCompile Include="UICheckBtn.cpp" />
     <ClCompile Include="UICheckBtnBar.cpp" />
     <ClCompile Include="UIColorDrawer.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="..\..\include\UIControl\SkinWnd.h" />
     <ClInclude Include="..\..\include\UIControl\ThemeResoueceID.h" />
     <ClInclude Include="..\..\include\UIControl\UIButton.h" />
+    <ClInclude Include="..\..\include\UIControl\UIButtonBar.h" />
     <ClInclude Include="..\..\include\UIControl\UICheckBtn.h" />
     <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h" />
     <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />

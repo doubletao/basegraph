@@ -29,5 +29,7 @@ public:
 	virtual void OnButtonClickUp();
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();
+	virtual void SetCheck(bool bCheck);
+	virtual bool GetCheck();
 };
 

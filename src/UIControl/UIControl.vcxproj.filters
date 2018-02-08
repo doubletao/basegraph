@@ -81,6 +81,9 @@
     <ClCompile Include="UICheckBtnBar.cpp">
       <Filter>UIElementCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="UIButtonBar.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -141,6 +144,9 @@
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIButtonBar.h">
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>

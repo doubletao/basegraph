@@ -7,6 +7,7 @@
 enum EmUIElementMsg
 {
 	EmUIElementMsg_BtnClick = WM_USER + 0x00000101,
+	EmUIElementMsg_BtnRefresh,
 };
 
 enum EmUIElementMsgRet
@@ -48,6 +49,7 @@ protected:
 public:
 	UIElement();
 	virtual ~UIElement();
+	virtual void RearrangeChildPos();
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	virtual inline bool HitTest(CPoint point);
 	virtual inline bool HitTest(int nX, int nY);
@@ -55,9 +57,12 @@ public:
 	virtual inline CRect GetRect();
 	virtual inline void MoveTo(CRect rtNew);
 	virtual inline void MoveTo(int nX, int nY);
+	virtual inline void MoveTo(int nX, int nY, int nWidth, int nHeight);
 	virtual void DrawElement(CDC * pDC);
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();
 	int GetMsgID();
+	int GetWidth();
+	int GetHeight();
 };
 

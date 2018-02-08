@@ -8,5 +8,8 @@ public:
 	virtual ~UIObjectBar();
 protected:
 	virtual void InitializeObject();
+	virtual void RearrangeChildPos();
+public:
+	void UpdateStatus();
 };
 

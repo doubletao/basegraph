@@ -23,6 +23,7 @@
 #include "UIControl\UIImageDrawer.h"
 #include "UIControl\UITextDrawer.h"
 #include "UIControl\UICheckBtn.h"
+#include "UIControl\UIButtonBar.h"
 #include "UIControl\UICheckBtnBar.h"
 
 BASEGRAPH_UICONTROL_API bool UIControl_SwitchTheme(int nTheme);

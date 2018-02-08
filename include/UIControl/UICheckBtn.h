@@ -10,8 +10,8 @@ public:
 	UICheckBtn();
 	virtual ~UICheckBtn();
 public:
-	void SetCheck(bool bCheck);
-	bool GetCheck();
+	virtual void SetCheck(bool bCheck);
+	virtual bool GetCheck();
 	virtual void OnButtonClickDown();
 	virtual void OnButtonClickUp();
 	virtual void OnMouseHover();

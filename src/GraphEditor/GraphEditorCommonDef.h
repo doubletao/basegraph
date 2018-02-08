@@ -8,4 +8,21 @@ enum UIElementMsgDef
 	UIElementMsg_CreateTitle = 1,
 	UIElementMsg_CreateScroll,
 	UIElementMsg_CreateImage,
+
+	UIElementMsg_NewFile,
+	UIElementMsg_SaveFile,
+	UIElementMsg_SaveAs,
+
+	UIElementMsg_DefaultAction,
+	UIElementMsg_MoveAction,
+	UIElementMsg_ZoomAction,
+	UIElementMsg_RotateAction,
+
+	UIElementMsg_SystemSetting,
+
+	UIElementMsg_PlayCtrlFirstFrame,
+	UIElementMsg_PlayCtrlPreFrame,
+	UIElementMsg_PlayCtrlPlayPause,
+	UIElementMsg_PlayCtrlNextFrame,
+	UIElementMsg_PlayCtrlLastFrame,
 };

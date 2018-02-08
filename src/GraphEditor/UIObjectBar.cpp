@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UIObjectBar.h"
-
+#include "GraphEditorStatusManager.h"
 
 UIObjectBar::UIObjectBar()
 {
@@ -36,4 +36,23 @@ void UIObjectBar::InitializeObject()
 	AddOneObjectBtn(UIElementMsg_CreateImage, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("ͼƬ"), RGB(255, 255, 255));
 
 	m_nWidth = (int)m_vecChildElement.size() * (nImgSize + 1);
+}
+
+void UIObjectBar::RearrangeChildPos()
+{
+	for (size_t i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIElement *& m_pChild = m_vecChildElement[i];
+		if (m_pChild)
+		{
+			int nXPos = (int)i * (m_pChild->GetWidth() + 1); 
+			int nYPos = (m_nHeight - m_pChild->GetWidth()) / 2;
+			m_pChild->MoveTo(nXPos, nYPos);
+		}
+	}
+}
+
+void UIObjectBar::UpdateStatus()
+{
+	UnCkeckAll(GraphEditorStatusManager::Instance().GetCurrentObjectTool());
 }

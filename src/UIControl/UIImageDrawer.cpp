@@ -19,6 +19,6 @@ void UIImageDrawer::Draw(CDC * pDC, int nX, int nY, int nWidth, int nHeight, LPC
 	{
 		CRect rtDes(nX, nY, nX + nWidth, nY + nHeight);
 		BufferFunction::DrawImageWithAplha(pDC, pImg, rtDes, rtDes,
-			CRect(0, 0, nWidth, nHeight), CRect(), TRUE, 255, FALSE);
+			CRect(0, 0, pImg->GetWidth(), pImg->GetWidth()), CRect(), TRUE, 255, FALSE);
 	}
 }

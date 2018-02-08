@@ -27,16 +27,26 @@ void UIButton::OnButtonClickDown()
 
 void UIButton::OnButtonClickUp()
 {
+	//响应按钮
+	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+	{
+		::SendMessage(m_hParentWnd, EmUIElementMsg_BtnClick, m_nID, 0);
+	}
 	//设置状态
 	SetState(UIElement_Float, true);
-	//响应按钮
-	::SendMessage(m_hParentWnd, EmUIElementMsg_BtnClick, m_nID, 0);
 }
 
 void UIButton::SetState(int nState, bool bRefresh)
 {
+	if (m_nState == nState)
+	{
+		bRefresh = false;
+	}
 	m_nState = nState;
-	Refresh();
+	if (bRefresh)
+	{
+		Refresh();
+	}
 }
 
 bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, UIElement * pParent/* = nullptr*/, LPCTSTR strText/* = nullptr*/, int nFont/* = 0*/, COLORREF nFontColor/* = 0*/)
@@ -126,4 +136,13 @@ void UIButton::OnMouseHover()
 void UIButton::OnMouseLeave()
 {
 	SetState(UIElement_Normal, true);
+}
+
+void UIButton::SetCheck(bool bCheck)
+{
+}
+
+bool UIButton::GetCheck()
+{
+	return false;
 }

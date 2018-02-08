@@ -1,11 +1,21 @@
 #pragma once
 #include "UIObjectBar.h"
+#include "UIActionBar.h"
+#include "UIPlayControlBar.h"
+#include "UISimpleTimeLine.h"
+#include "UIPropertyView.h"
+#include "UITimeLine.h"
 
 class BaseGraphMainFrame :
 	public CSkinFrameWnd
 {
 private:
 	UIObjectBar m_uiObjectBar;
+	UIActionBar m_uiActionBar;
+	UIPlayControlBar m_uiPlayControlBar;
+	UISimpleTimeLine m_uiSimpleTimeLine;
+	UIPropertyView m_uiPropertyView;
+	UITimeLine m_uiTimeLine;
 public:
 	BaseGraphMainFrame();
 	virtual ~BaseGraphMainFrame();
@@ -25,11 +35,20 @@ public:
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 protected:
 	afx_msg LRESULT OnUIElementBtnClicked(WPARAM wParam = 0, LPARAM lParam = 0);
 public:
 	void OnBtnCreateTitle();
 	void OnBtnCreateScroll();
 	void OnBtnCreateImage();
+	void OnBtnNewFile();
+	void OnBtnSaveFile();
+	void OnBtnSaveAs();
+	void OnBtnDefaultAction();
+	void OnBtnMoveAction();
+	void OnBtnZoomAction();
+	void OnBtnRotateAction();
+	void OnBtnSystemSetting();
 };
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "BaseGraphMainFrame.h"
+#include "GraphEditorStatusManager.h"
 
 IMPLEMENT_DYNAMIC(BaseGraphMainFrame, CSkinFrameWnd)
 
@@ -30,6 +31,22 @@ BaseGraphMainFrame::~BaseGraphMainFrame()
 
 BOOL BaseGraphMainFrame::PreTranslateMessage(MSG * pMsg)
 {
+	auto DealMsg = [&](UIElement & bar)->bool
+	{
+		if (UIElement::NeedContinue(bar.HandleMsg(pMsg->message, pMsg->lParam, pMsg->wParam)))
+		{
+			return false;
+		}
+		return true;
+	};
+	if (DealMsg(m_uiActionBar)
+		|| DealMsg(m_uiPlayControlBar)
+		|| DealMsg(m_uiSimpleTimeLine)
+		|| DealMsg(m_uiPropertyView)
+		|| DealMsg(m_uiTimeLine))
+	{
+		return TRUE;
+	}
 	return CSkinFrameWnd::PreTranslateMessage(pMsg);
 }
 
@@ -288,6 +305,12 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	SetWindowText(_T("图文编辑器"));
 
+	m_uiActionBar.Create(0, 0, 100, 100, GetSafeHwnd());
+	m_uiPlayControlBar.Create(0, 0, 100, 100, GetSafeHwnd());
+	m_uiSimpleTimeLine.Create(0, 0, 100, 100, GetSafeHwnd());
+	m_uiPropertyView.Create(0, 0, 100, 100, GetSafeHwnd());
+	m_uiTimeLine.Create(0, 0, 100, 100, GetSafeHwnd());
+
 	//测试代码
 	CString strObjID = _T("");
 	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Image);
@@ -332,7 +355,18 @@ void BaseGraphMainFrame::OnPaint()
 	dcMem.CreateCompatibleDC(NULL);
 	bmpMem.CreateCompatibleBitmap(&dc, rcClient.Width(), rcClient.Height());
 	dcMem.SelectObject(&bmpMem);
-	dcMem.FillSolidRect(rcClient, RGB(0, 255, 255));
+	dcMem.SetBkMode(TRANSPARENT);
+
+	//绘制物件条
+	m_uiActionBar.DrawElement(&dcMem);
+	//绘制播控条
+	m_uiPlayControlBar.DrawElement(&dcMem);
+	//绘制简单时间线
+	m_uiSimpleTimeLine.DrawElement(&dcMem);
+	//绘制属性窗
+	m_uiPropertyView.DrawElement(&dcMem);
+	//绘制时间线
+	m_uiTimeLine.DrawElement(&dcMem);
 
 	dc.BitBlt(0, 0, rcClient.Width(), rcClient.Height(), &dcMem, 0, 0, SRCCOPY);
 
@@ -343,6 +377,31 @@ void BaseGraphMainFrame::OnPaint()
 BOOL BaseGraphMainFrame::OnEraseBkgnd(CDC * pDC)
 {
 	return TRUE;
+}
+
+void BaseGraphMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+	CRect rtClient;
+	GetClientRect(rtClient);
+
+	int nActionBarWidth = UIControl_GetIntValue(ThemeInt_ActionBarWidth);
+	int nTimeLineHeight = UIControl_GetIntValue(ThemeInt_TimeLineHeight);
+	int nPlayControlBarWidth = UIControl_GetIntValue(ThemeInt_PlayControlBarWidth);
+	int nPlayControlBarHeight = UIControl_GetIntValue(ThemeInt_PlayControlBarHeight);
+	int nPropertyViewWidth = UIControl_GetIntValue(ThemeInt_PropretyViewWidth);
+
+	//action条在左上
+	m_uiActionBar.MoveTo(0, 0, nActionBarWidth, rtClient.Height() - nTimeLineHeight);
+	//playcontrol条在顶部
+	m_uiPlayControlBar.MoveTo(nActionBarWidth, 0, nPlayControlBarWidth, nPlayControlBarHeight);
+	//simpletimeline在顶部右侧
+	m_uiSimpleTimeLine.MoveTo(nActionBarWidth + nPlayControlBarWidth, 0, rtClient.Width() - nActionBarWidth - nPlayControlBarWidth - nPropertyViewWidth, nPlayControlBarHeight);
+	//属性窗在整个窗口右侧
+	m_uiPropertyView.MoveTo(rtClient.Width() - nPropertyViewWidth, 0, nPropertyViewWidth, rtClient.Height());
+	//时间线在整个窗口底部
+	m_uiTimeLine.MoveTo(0, rtClient.Height() - nTimeLineHeight, rtClient.Width() - nPropertyViewWidth, nTimeLineHeight);
+
+	CSkinFrameWnd::OnSize(nType, cx, cy);
 }
 
 LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
@@ -358,26 +417,105 @@ LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
 	case UIElementMsg_CreateImage:
 		OnBtnCreateImage();
 		break;
+	case UIElementMsg_NewFile:
+		OnBtnNewFile();
+		break;
+	case UIElementMsg_SaveFile:
+		OnBtnSaveFile();
+		break;
+	case UIElementMsg_SaveAs:
+		OnBtnSaveAs();
+		break;
+	case UIElementMsg_DefaultAction:
+		OnBtnDefaultAction();
+		break;
+	case UIElementMsg_MoveAction:
+		OnBtnMoveAction();
+		break;
+	case UIElementMsg_ZoomAction:
+		OnBtnZoomAction();
+		break;
+	case UIElementMsg_RotateAction:
+		OnBtnRotateAction();
+		break;
+	case UIElementMsg_SystemSetting:
+		OnBtnSystemSetting();
+		break;
 	default:
 		break;
 	}
-	return LRESULT();
+	return 0;
 }
 
 void BaseGraphMainFrame::OnBtnCreateTitle()
 {
 	OutputDebugString(_T("创建标题字\n"));
-	m_uiObjectBar.UnCkeckAll(UIElementMsg_CreateTitle);
+	GraphEditorStatusManager::Instance().SetCurrentObjectTool(UIElementMsg_CreateTitle);
+	m_uiObjectBar.UpdateStatus();
 }
 
 void BaseGraphMainFrame::OnBtnCreateScroll()
 {
 	OutputDebugString(_T("创建滚屏\n"));
-	m_uiObjectBar.UnCkeckAll(UIElementMsg_CreateScroll);
+	GraphEditorStatusManager::Instance().SetCurrentObjectTool(UIElementMsg_CreateScroll);
+	m_uiObjectBar.UpdateStatus();
 }
 
 void BaseGraphMainFrame::OnBtnCreateImage()
 {
 	OutputDebugString(_T("创建图片\n"));
-	m_uiObjectBar.UnCkeckAll(UIElementMsg_CreateImage);
+	GraphEditorStatusManager::Instance().SetCurrentObjectTool(UIElementMsg_CreateImage);
+	m_uiObjectBar.UpdateStatus();
+}
+
+void BaseGraphMainFrame::OnBtnNewFile()
+{
+	OutputDebugString(_T("新建\n"));
+	m_uiActionBar.UpdateStatus();
+}
+
+void BaseGraphMainFrame::OnBtnSaveFile()
+{
+	OutputDebugString(_T("保存\n"));
+	m_uiActionBar.UpdateStatus();
+}
+
+void BaseGraphMainFrame::OnBtnSaveAs()
+{
+	OutputDebugString(_T("另存\n"));
+	m_uiActionBar.UpdateStatus();
+}
+
+void BaseGraphMainFrame::OnBtnDefaultAction()
+{
+	OutputDebugString(_T("默认\n"));
+	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_DefaultAction);
+	m_uiActionBar.UpdateStatus();
+}
+
+void BaseGraphMainFrame::OnBtnMoveAction()
+{
+	OutputDebugString(_T("移动\n"));
+	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_MoveAction);
+	m_uiActionBar.UpdateStatus();
+}
+
+void BaseGraphMainFrame::OnBtnZoomAction()
+{
+	OutputDebugString(_T("缩放\n"));
+	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_ZoomAction);
+	m_uiActionBar.UpdateStatus();
+}
+
+void BaseGraphMainFrame::OnBtnRotateAction()
+{
+	OutputDebugString(_T("旋转\n"));
+	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_RotateAction);
+	m_uiActionBar.UpdateStatus();
+}
+
+void BaseGraphMainFrame::OnBtnSystemSetting()
+{
+	OutputDebugString(_T("设置\n"));
+	m_uiActionBar.UpdateStatus();
 }

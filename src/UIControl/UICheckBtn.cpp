@@ -15,7 +15,14 @@ UICheckBtn::~UICheckBtn()
 void UICheckBtn::SetCheck(bool bCheck)
 {
 	m_bCheck = bCheck;
-	Refresh();
+	if (m_bCheck)
+	{
+		SetState(UIElement_Down, true);
+	}
+	else
+	{
+		SetState(UIElement_Normal, true);
+	}
 }
 
 bool UICheckBtn::GetCheck()
@@ -37,11 +44,18 @@ void UICheckBtn::OnButtonClickDown()
 
 void UICheckBtn::OnButtonClickUp()
 {
-	m_bCheck = !m_bCheck;
+	if (!m_bCheck)
+	{
+		m_bCheck = true;
+	}
 	if (m_bCheck && m_nState == UIElement_Down)
 	{
 		//œÏ”¶∞¥≈•
-		::SendMessage(m_hParentWnd, EmUIElementMsg_BtnClick, m_nID, 0);
+		if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+		{
+			::SendMessage(m_hParentWnd, EmUIElementMsg_BtnClick, m_nID, 0);
+		}
+		SetState(UIElement_Down, true);
 	}
 	else
 	{
