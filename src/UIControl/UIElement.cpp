@@ -187,6 +187,11 @@ void UIElement::OnMouseLeave()
 {
 }
 
+int UIElement::GetMsgID()
+{
+	return m_nID;
+}
+
 CRect UIElement::GetRect()
 {
 	int nX = GetRealX();

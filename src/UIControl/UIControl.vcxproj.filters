@@ -78,6 +78,9 @@
     <ClCompile Include="UICheckBtn.cpp">
       <Filter>UIElementCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="UICheckBtnBar.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -135,6 +138,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\UICheckBtn.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h">
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>

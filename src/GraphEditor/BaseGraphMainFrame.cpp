@@ -366,15 +366,18 @@ LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
 
 void BaseGraphMainFrame::OnBtnCreateTitle()
 {
-	//AfxMessageBox(_T("创建标题字"));
+	OutputDebugString(_T("创建标题字\n"));
+	m_uiObjectBar.UnCkeckAll(UIElementMsg_CreateTitle);
 }
 
 void BaseGraphMainFrame::OnBtnCreateScroll()
 {
-	//AfxMessageBox(_T("创建滚屏"));
+	OutputDebugString(_T("创建滚屏\n"));
+	m_uiObjectBar.UnCkeckAll(UIElementMsg_CreateScroll);
 }
 
 void BaseGraphMainFrame::OnBtnCreateImage()
 {
-	//AfxMessageBox(_T("创建图片"));
+	OutputDebugString(_T("创建图片\n"));
+	m_uiObjectBar.UnCkeckAll(UIElementMsg_CreateImage);
 }

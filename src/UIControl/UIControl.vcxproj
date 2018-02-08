@@ -124,6 +124,7 @@
     <ClCompile Include="ThemeManager.cpp" />
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UICheckBtn.cpp" />
+    <ClCompile Include="UICheckBtnBar.cpp" />
     <ClCompile Include="UIColorDrawer.cpp" />
     <ClCompile Include="UIControl.cpp" />
     <ClCompile Include="UIDrawer.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="..\..\include\UIControl\ThemeResoueceID.h" />
     <ClInclude Include="..\..\include\UIControl\UIButton.h" />
     <ClInclude Include="..\..\include\UIControl\UICheckBtn.h" />
+    <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h" />
     <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIElement.h" />

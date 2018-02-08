@@ -58,5 +58,6 @@ public:
 	virtual void DrawElement(CDC * pDC);
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();
+	int GetMsgID();
 };
 
