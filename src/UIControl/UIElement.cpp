@@ -163,7 +163,7 @@ bool UIElement::HitTest(LPARAM lParam)
 
 void UIElement::DrawElement(CDC * pDC)
 {
-	if (false)
+	if (true)
 	{
 		CString strDebug;
 		strDebug.Format(_T("m_nState:%d, m_nID:%d\n"), m_nState, m_nID);
