@@ -62,7 +62,7 @@ void UIElement::Refresh()
 	else
 	{
 		//如果已经是顶层，则刷新自己的区域
-		InvalidateRect(m_hParentWnd, CRect(m_nX, m_nY, m_nWidth, m_nHeight), false);
+		InvalidateRect(m_hParentWnd, CRect(m_nX, m_nY, m_nX + m_nWidth, m_nY + m_nHeight), false);
 	}
 	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
 	{
@@ -163,10 +163,10 @@ bool UIElement::HitTest(LPARAM lParam)
 
 void UIElement::DrawElement(CDC * pDC)
 {
-	if (true)
+	if (false)
 	{
 		CString strDebug;
-		strDebug.Format(_T("m_nState:%d, m_nID:%d\n"), m_nState, m_nID);
+		strDebug.Format(_T("m_nState:%d, m_nID:%d, m_strText:%s, GetRealX():%d, GetRealY():%d\n"), m_nState, m_nID, m_strText, GetRealX(), GetRealY());
 		OutputDebugString(strDebug);
 	}
 	//先画自己
@@ -190,6 +190,13 @@ void UIElement::DrawElement(CDC * pDC)
 		{
 			pChild->DrawElement(pDC);
 		}
+	}
+	if (false)
+	{
+		CImage img;
+		img.Attach((HBITMAP)pDC->GetCurrentBitmap()->GetSafeHandle());
+		img.Save(_T("F:\\test.bmp"));
+		img.Detach();
 	}
 }
 

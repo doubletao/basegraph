@@ -13,7 +13,14 @@ UIPropertyTabBar::~UIPropertyTabBar()
 
 bool UIPropertyTabBar::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd, UIElement * pParent)
 {
+	auto InsertOneDrawer = [&](int nStateValue, int nImgValue)
+	{
+		UIImageDrawer * pImgDrawer = new UIImageDrawer(nImgValue);
+		m_mapDrawer[nStateValue].push_back(pImgDrawer);
+		m_strText = _T(" Ù–‘Tab¿∏");
+	};
 	bool bRet = UICheckBtnBar::Create(nX, nY, nWidth, nHeight, hParentWnd);
+	InsertOneDrawer(0, ThemeImage_SkinWndNcBkgrd);
 	m_pParentElement = pParent;
 	return bRet;
 }

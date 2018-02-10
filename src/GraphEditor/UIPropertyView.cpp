@@ -24,7 +24,7 @@ void UIPropertyView::RearrangeChildPos()
 	int nPropertyTabBarWdith = UIControl_GetIntValue(ThemeInt_PropretyViewTabWidth);
 	if (m_vecChildElement.size() > 0)
 	{
-		UIPropertyTabBar * pPropertyTabBar = (UIPropertyTabBar *)m_vecChildElement[0];
+		UIElement * pPropertyTabBar = m_vecChildElement[0];
 		if (pPropertyTabBar)
 		{
 			pPropertyTabBar->MoveTo(0, 0, nPropertyTabBarWdith, m_nHeight);

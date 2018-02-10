@@ -365,8 +365,22 @@ void BaseGraphMainFrame::OnPaint()
 	m_uiSimpleTimeLine.DrawElement(&dcMem);
 	//绘制属性窗
 	m_uiPropertyView.DrawElement(&dcMem);
+	if (false)
+	{
+		CImage img;
+		img.Attach((HBITMAP)dcMem.GetCurrentBitmap()->GetSafeHandle());
+		img.Save(_T("F:\\test.bmp"));
+		img.Detach();
+	}
 	//绘制时间线
 	m_uiTimeLine.DrawElement(&dcMem);
+	if (false)
+	{
+		CImage img;
+		img.Attach((HBITMAP)dcMem.GetCurrentBitmap()->GetSafeHandle());
+		img.Save(_T("F:\\test.bmp"));
+		img.Detach();
+	}
 
 	dc.BitBlt(0, 0, rcClient.Width(), rcClient.Height(), &dcMem, 0, 0, SRCCOPY);
 
