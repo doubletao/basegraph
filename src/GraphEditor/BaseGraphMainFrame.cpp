@@ -330,6 +330,9 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		}
 	}
 
+	//CEdit * m_pEdit = new CEdit;
+	//m_pEdit->CreateEx(WS_EX_CLIENTEDGE, _T("Edit"), _T("myedit"), WS_BORDER | WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL | ES_CENTER, CRect(1800, 250, 1900, 350), this, 100081);
+
 	return 0;
 }
 
@@ -346,6 +349,9 @@ void BaseGraphMainFrame::OnSetFocus(CWnd * pOldWnd)
 void BaseGraphMainFrame::OnPaint()
 {
 	CPaintDC dc(this);
+
+	//先从绘制区域中排除掉MFC自带控件，避免闪烁问题
+	//dc.ExcludeClipRect(CRect(1800, 250, 1900, 350));
 
 	CRect rcClient;
 	GetClientRect(&rcClient);
