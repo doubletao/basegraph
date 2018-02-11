@@ -351,7 +351,15 @@ void BaseGraphMainFrame::OnPaint()
 	CPaintDC dc(this);
 
 	//先从绘制区域中排除掉MFC自带控件，避免闪烁问题
-	//dc.ExcludeClipRect(CRect(1800, 250, 1900, 350));
+	CWnd *pChild = GetWindow(GW_CHILD); //取第一个子窗口
+	while (pChild != NULL && ::IsWindow(pChild->GetSafeHwnd()))
+	{
+		CRect rtChild;
+		pChild->GetWindowRect(rtChild);
+		ScreenToClient(rtChild);
+		dc.ExcludeClipRect(rtChild);
+		pChild = pChild->GetNextWindow(); //取下一个子窗口
+	}
 
 	CRect rcClient;
 	GetClientRect(&rcClient);
