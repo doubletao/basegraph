@@ -128,6 +128,9 @@
     <ClCompile Include="UIPropertyView.cpp" />
     <ClCompile Include="UISimpleTimeLine.cpp" />
     <ClCompile Include="UITimeLine.cpp" />
+    <ClCompile Include="UITLObject.cpp" />
+    <ClCompile Include="UITLRuler.cpp" />
+    <ClCompile Include="UITLTimeCode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ExportGraphEditor.h" />
@@ -145,6 +148,9 @@
     <ClInclude Include="UIPropertyView.h" />
     <ClInclude Include="UISimpleTimeLine.h" />
     <ClInclude Include="UITimeLine.h" />
+    <ClInclude Include="UITLObject.h" />
+    <ClInclude Include="UITLRuler.h" />
+    <ClInclude Include="UITLTimeCode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GraphEditor.def" />

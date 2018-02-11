@@ -10,16 +10,20 @@ enum ThemeIntValueDef
 	ThemeInt_PlayControlBarHeight,
 	ThemeInt_PropretyViewWidth,
 	ThemeInt_PropretyViewTabWidth,
+	ThemeInt_TimeLineTimeCodeWidth,
+	ThemeInt_TimeLineTimeCodeHeight
 };
 
 enum ThemeFontValueDef
 {
 	ThemeFont_SkinWndTitleText,
+	ThemeFont_TimeLineTimeCode,
 };
 
 enum ThemeColorValueDef
 {
 	ThemeColor_SkinWndTitleText,
+	ThemeColor_TimeLineTimeCodeText,
 };
 
 enum ThemeImageValueDef
@@ -48,4 +52,6 @@ enum ThemeImageValueDef
 	ThemeImage_ObjectBtnBKImg_X,
 
 	ThemeImage_ElementArea,
+
+	ThemeImage_TimeLineTimeCodeBk,
 };

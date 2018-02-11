@@ -1,14 +1,20 @@
 #include "stdafx.h"
 #include "UIPropertyView.h"
-#include "UIPropertyTabBar.h"
 
 UIPropertyView::UIPropertyView()
+	:m_pPropertyTabBar(nullptr)
 {
 }
 
 
 UIPropertyView::~UIPropertyView()
 {
+}
+
+void UIPropertyView::Release()
+{
+	UIElement::Release();
+	m_pPropertyTabBar = nullptr;
 }
 
 void UIPropertyView::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
@@ -22,28 +28,24 @@ void UIPropertyView::Initialize(int nX, int nY, int nWidth, int nHeight, int nID
 void UIPropertyView::RearrangeChildPos()
 {
 	int nPropertyTabBarWdith = UIControl_GetIntValue(ThemeInt_PropretyViewTabWidth);
-	if (m_vecChildElement.size() > 0)
+	if (m_pPropertyTabBar)
 	{
-		UIElement * pPropertyTabBar = m_vecChildElement[0];
-		if (pPropertyTabBar)
-		{
-			pPropertyTabBar->MoveTo(0, 0, nPropertyTabBarWdith, m_nHeight);
-		}
+		m_pPropertyTabBar->MoveTo(0, 0, nPropertyTabBarWdith, m_nHeight);
 	}
 }
 
 void UIPropertyView::InitializeObject()
 {
-	UIPropertyTabBar * pPropertyTabBar = new UIPropertyTabBar;
-	pPropertyTabBar->Create(0, 0, 100, 100, m_hParentWnd, this);
-	m_vecChildElement.push_back(pPropertyTabBar);
+	m_pPropertyTabBar = new UIPropertyTabBar;
+	m_pPropertyTabBar->Create(0, 0, 100, 100, m_hParentWnd, this);
+	m_vecChildElement.push_back(m_pPropertyTabBar);
 }
 
 void UIPropertyView::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 {
 	for (size_t i = 0; i < m_vecChildElement.size(); i++)
 	{
-		UICheckBtn * pChild = (UICheckBtn *)m_vecChildElement[i];
+		UIElement * pChild = m_vecChildElement[i];
 		if (pChild)
 		{
 			pChild->HandleMsg(nMsg, lParam, wParam);

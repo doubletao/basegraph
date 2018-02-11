@@ -24,11 +24,22 @@ bool UIThemeDefault::Initialize()
 	UITheme::Initialize();
 	/////////////////////////////////////////////////////////////////////
 	//×ÖÌå
-	LOGFONT lfFont;
-	memset(&lfFont, 0, sizeof(lfFont));
-	lfFont.lfHeight = -14;
-	lstrcpy(lfFont.lfFaceName, _T("Î¢ÈíÑÅºÚ"));
-	m_mapFontList.insert(std::make_pair(ThemeFont_SkinWndTitleText, lfFont));
+	{
+		LOGFONT lfFont;
+		memset(&lfFont, 0, sizeof(lfFont));
+		lfFont.lfHeight = -14;
+		lstrcpy(lfFont.lfFaceName, _T("Î¢ÈíÑÅºÚ"));
+		m_mapFontList.insert(std::make_pair(ThemeFont_SkinWndTitleText, lfFont));
+	}
+
+	{
+		LOGFONT lfFont;
+		memset(&lfFont, 0, sizeof(lfFont));
+		lfFont.lfHeight = -20;
+		lfFont.lfWeight = 700;
+		lstrcpy(lfFont.lfFaceName, _T("Î¢ÈíÑÅºÚ"));
+		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineTimeCode, lfFont));
+	}
 
 	/////////////////////////////////////////////////////////////////////
 	//ÕûÊý
@@ -41,10 +52,13 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarHeight, 40));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 300));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 300));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 40));
 
 	/////////////////////////////////////////////////////////////////////
 	//ÑÕÉ«
 	m_mapColorList.insert(std::make_pair(ThemeColor_SkinWndTitleText, RGB(233, 233, 233)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineTimeCodeText, RGB(233, 233, 0)));
 
 	/////////////////////////////////////////////////////////////////////
 	//Í¼Æ¬
@@ -61,7 +75,6 @@ bool UIThemeDefault::Initialize()
 		}
 	};
 	CString strThemePath = GetThemePath();
-	//SkinedWnd
 	do
 	{
 		LoadOneImg(ThemeImage_SkinWndNcBkgrd, strThemePath + _T("SkinedWnd\\SkinWndNcBkgrd.png"));
@@ -82,12 +95,14 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_SkinWndCloseBtn_D, strThemePath + _T("SkinedWnd\\SkinWndCloseBtn_D.png"));
 		LoadOneImg(ThemeImage_SkinWndCloseBtn_X, strThemePath + _T("SkinedWnd\\SkinWndCloseBtn_X.png"));
 
-		LoadOneImg(ThemeImage_ObjectBtnBKImg_N, strThemePath + _T("SkinedWnd\\ObjectBtnBKImg_N.png"));
-		LoadOneImg(ThemeImage_ObjectBtnBKImg_F, strThemePath + _T("SkinedWnd\\ObjectBtnBKImg_F.png"));
-		LoadOneImg(ThemeImage_ObjectBtnBKImg_D, strThemePath + _T("SkinedWnd\\ObjectBtnBKImg_D.png"));
-		LoadOneImg(ThemeImage_ObjectBtnBKImg_X, strThemePath + _T("SkinedWnd\\ObjectBtnBKImg_X.png"));
+		LoadOneImg(ThemeImage_ObjectBtnBKImg_N, strThemePath + _T("Common\\ObjectBtnBKImg_N.png"));
+		LoadOneImg(ThemeImage_ObjectBtnBKImg_F, strThemePath + _T("Common\\ObjectBtnBKImg_F.png"));
+		LoadOneImg(ThemeImage_ObjectBtnBKImg_D, strThemePath + _T("Common\\ObjectBtnBKImg_D.png"));
+		LoadOneImg(ThemeImage_ObjectBtnBKImg_X, strThemePath + _T("Common\\ObjectBtnBKImg_X.png"));
 
-		LoadOneImg(ThemeImage_ElementArea, strThemePath + _T("SkinedWnd\\ElementArea.png"));
+		LoadOneImg(ThemeImage_ElementArea, strThemePath + _T("Common\\ElementArea.png"));
+
+		LoadOneImg(ThemeImage_TimeLineTimeCodeBk, strThemePath + _T("TimeLine\\TimeLineTimeCodeBk.png"));
 	} while (false);
 	return true;
 }

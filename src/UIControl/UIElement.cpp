@@ -1,3 +1,4 @@
+#include "..\..\include\UIControl\UIElement.h"
 #include "stdafx.h"
 #include "UIControl\UIElement.h"
 
@@ -50,6 +51,12 @@ void UIElement::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWN
 	m_pParentElement = pParent;
 	m_nState = 0;
 	m_bCreated = true;
+}
+
+void UIElement::SetText(CString strText)
+{
+	m_strText = strText;
+	Refresh();
 }
 
 void UIElement::Refresh()

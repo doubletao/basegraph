@@ -72,6 +72,15 @@
     <ClCompile Include="UIPropertyTabBar.cpp">
       <Filter>PropertyView</Filter>
     </ClCompile>
+    <ClCompile Include="UITLTimeCode.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLRuler.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLObject.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -118,6 +127,15 @@
     </ClInclude>
     <ClInclude Include="UIPropertyTabBar.h">
       <Filter>PropertyView</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLTimeCode.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLRuler.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLObject.h">
+      <Filter>TimeLine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

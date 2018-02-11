@@ -42,6 +42,7 @@ public:
 protected:
 	virtual void Release();
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
+	virtual void SetText(CString strText);
 	void Refresh();
 	//向上追溯获取自己的实际窗口坐标
 	int GetRealX();

@@ -3,12 +3,19 @@
 
 
 UITimeLine::UITimeLine()
+	: m_pTimeCode(nullptr)
 {
 }
 
 
 UITimeLine::~UITimeLine()
 {
+}
+
+void UITimeLine::Release()
+{
+	UIElement::Release();
+	m_pTimeCode = nullptr;
 }
 
 void UITimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
@@ -21,6 +28,9 @@ void UITimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HW
 
 void UITimeLine::InitializeObject()
 {
+	m_pTimeCode = new UITLTimeCode;
+	m_pTimeCode->Create(0, 0, 100, 100, m_hParentWnd, this);
+	m_vecChildElement.push_back(m_pTimeCode);
 }
 
 void UITimeLine::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
@@ -29,6 +39,16 @@ void UITimeLine::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 
 void UITimeLine::EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam)
 {
+}
+
+void UITimeLine::RearrangeChildPos()
+{
+	int nTimeCodeWidth = UIControl_GetIntValue(ThemeInt_TimeLineTimeCodeWidth);
+	int nTimeCodeHeight = UIControl_GetIntValue(ThemeInt_TimeLineTimeCodeHeight);
+	if (m_pTimeCode)
+	{
+		m_pTimeCode->MoveTo(0, 0, nTimeCodeWidth, nTimeCodeHeight);
+	}
 }
 
 bool UITimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
