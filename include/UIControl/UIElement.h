@@ -44,12 +44,10 @@ protected:
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
 	virtual void SetText(CString strText);
 	void Refresh();
-	//向上追溯获取自己的实际窗口坐标
-	int GetRealX();
-	int GetRealY();
 public:
 	UIElement();
 	virtual ~UIElement();
+public:
 	virtual void RearrangeChildPos();
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	virtual inline bool HitTest(CPoint point);
@@ -62,6 +60,9 @@ public:
 	virtual void DrawElement(CDC * pDC);
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();
+	//向上追溯获取自己的实际窗口坐标
+	virtual int GetRealX();
+	virtual int GetRealY();
 	int GetMsgID();
 	int GetWidth();
 	int GetHeight();

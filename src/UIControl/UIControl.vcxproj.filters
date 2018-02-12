@@ -84,6 +84,12 @@
     <ClCompile Include="UIButtonBar.cpp">
       <Filter>UIElementCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="UIScrollElement.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIScrollBar.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -147,6 +153,12 @@
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\UIButtonBar.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIScrollElement.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIScrollBar.h">
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>

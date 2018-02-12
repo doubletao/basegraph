@@ -52,8 +52,8 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarHeight, 40));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 300));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 300));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 40));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 200));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 35));
 
 	/////////////////////////////////////////////////////////////////////
 	//ÑÕÉ«
