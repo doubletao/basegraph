@@ -54,4 +54,19 @@ enum ThemeImageValueDef
 	ThemeImage_ElementArea,
 
 	ThemeImage_TimeLineTimeCodeBk,
+
+	ThemeImage_ScrollLeftTopBtn_N,
+	ThemeImage_ScrollLeftTopBtn_F,
+	ThemeImage_ScrollLeftTopBtn_D,
+	ThemeImage_ScrollLeftTopBtn_X,
+
+	ThemeImage_ScrollRightBottomBtn_N,
+	ThemeImage_ScrollRightBottomBtn_F,
+	ThemeImage_ScrollRightBottomBtn_D,
+	ThemeImage_ScrollRightBottomBtn_X,
+
+	ThemeImage_ScrollThumbBtn_N,
+	ThemeImage_ScrollThumbBtn_F,
+	ThemeImage_ScrollThumbBtn_D,
+	ThemeImage_ScrollThumbBtn_X,
 };

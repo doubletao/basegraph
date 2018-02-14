@@ -63,6 +63,8 @@ public:
 	//向上追溯获取自己的实际窗口坐标
 	virtual int GetRealX();
 	virtual int GetRealY();
+	virtual bool EmitMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
+	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	int GetMsgID();
 	int GetWidth();
 	int GetHeight();

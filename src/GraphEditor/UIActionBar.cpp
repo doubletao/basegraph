@@ -65,6 +65,6 @@ void UIActionBar::RearrangeChildPos()
 
 void UIActionBar::UpdateStatus()
 {
-	OutputDebugString(_T("UpdateStatus\n"));
+	//OutputDebugString(_T("UpdateStatus\n"));
 	UnCkeckAll(GraphEditorStatusManager::Instance().GetCurrentActionTool());
 }

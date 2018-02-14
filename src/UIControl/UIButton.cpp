@@ -22,18 +22,15 @@ void UIButton::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND
 void UIButton::OnButtonClickDown()
 {
 	//…Ë÷√◊¥Ã¨
-	SetState(UIElement_Down, true);
+	SetState(UIElement_BtnDown, true);
 }
 
 void UIButton::OnButtonClickUp()
 {
 	//œÏ”¶∞¥≈•
-	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
-	{
-		::SendMessage(m_hParentWnd, EmUIElementMsg_BtnClick, m_nID, 0);
-	}
+	EmitMsg(EmUIElementMsg_BtnClick, m_nID, 0);
 	//…Ë÷√◊¥Ã¨
-	SetState(UIElement_Float, true);
+	SetState(UIElement_BtnFloat, true);
 }
 
 void UIButton::SetState(int nState, bool bRefresh)
@@ -67,10 +64,10 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 		m_strText = strText;
 
-		InsertOneDrawer(UIElement_Normal, nBKImgN);
-		InsertOneDrawer(UIElement_Float, nBKImgF);
-		InsertOneDrawer(UIElement_Down, nBKImgD);
-		InsertOneDrawer(UIElement_Xable, nBKImgX);
+		InsertOneDrawer(UIElement_BtnNormal, nBKImgN);
+		InsertOneDrawer(UIElement_BtnFloat, nBKImgF);
+		InsertOneDrawer(UIElement_BtnDown, nBKImgD);
+		InsertOneDrawer(UIElement_BtnXable, nBKImgX);
 
 		return true;
 	}
@@ -98,10 +95,10 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 		m_strText = strText;
 
-		InsertOneDrawer(UIElement_Normal, nBKImgN, nForeImgN);
-		InsertOneDrawer(UIElement_Float, nBKImgF, nForeImgF);
-		InsertOneDrawer(UIElement_Down, nBKImgD, nForeImgD);
-		InsertOneDrawer(UIElement_Xable, nBKImgX, nForeImgX);
+		InsertOneDrawer(UIElement_BtnNormal, nBKImgN, nForeImgN);
+		InsertOneDrawer(UIElement_BtnFloat, nBKImgF, nForeImgF);
+		InsertOneDrawer(UIElement_BtnDown, nBKImgD, nForeImgD);
+		InsertOneDrawer(UIElement_BtnXable, nBKImgX, nForeImgX);
 
 		return true;
 	}
@@ -130,12 +127,12 @@ EmUIElementMsgRet UIButton::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 
 void UIButton::OnMouseHover()
 {
-	SetState(UIElement_Float, true);
+	SetState(UIElement_BtnFloat, true);
 }
 
 void UIButton::OnMouseLeave()
 {
-	SetState(UIElement_Normal, true);
+	SetState(UIElement_BtnNormal, true);
 }
 
 void UIButton::SetCheck(bool bCheck)

@@ -71,10 +71,7 @@ void UIElement::Refresh()
 		//如果已经是顶层，则刷新自己的区域
 		InvalidateRect(m_hParentWnd, CRect(m_nX, m_nY, m_nX + m_nWidth, m_nY + m_nHeight), false);
 	}
-	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
-	{
-		::SendMessage(m_hParentWnd, EmUIElementMsg_BtnRefresh, m_nID, 0);
-	}
+	EmitMsg(EmUIElementMsg_BtnRefresh, m_nID, 0);
 }
 
 int UIElement::GetRealX()
@@ -93,6 +90,29 @@ int UIElement::GetRealY()
 		return m_nY + m_pParentElement->GetRealY();
 	}
 	return m_nY;
+}
+
+bool UIElement::EmitMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+	{
+		::SendMessage(m_hParentWnd, emMsg, wParam, lParam);
+	}
+	if (m_pParentElement)
+	{
+		m_pParentElement->OnChildMsg(emMsg, wParam, lParam);
+	}
+	return true;
+}
+
+bool UIElement::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (m_pParentElement)
+	{
+		//默认就把消息往上扔
+		return m_pParentElement->OnChildMsg(emMsg, wParam, lParam);
+	}
+	return false;
 }
 
 UIElement::UIElement()

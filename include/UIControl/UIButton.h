@@ -7,10 +7,10 @@ class BASEGRAPH_UICONTROL_API UIButton :
 protected:
 	enum
 	{
-		UIElement_Normal,	//正常
-		UIElement_Float,	//划过
-		UIElement_Down,		//按下
-		UIElement_Xable,	//disable
+		UIElement_BtnNormal,	//正常
+		UIElement_BtnFloat,	//划过
+		UIElement_BtnDown,		//按下
+		UIElement_BtnXable,	//disable
 	};
 public:
 	UIButton();

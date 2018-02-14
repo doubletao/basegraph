@@ -17,11 +17,11 @@ void UICheckBtn::SetCheck(bool bCheck)
 	m_bCheck = bCheck;
 	if (m_bCheck)
 	{
-		SetState(UIElement_Down, true);
+		SetState(UIElement_BtnDown, true);
 	}
 	else
 	{
-		SetState(UIElement_Normal, true);
+		SetState(UIElement_BtnNormal, true);
 	}
 }
 
@@ -38,7 +38,7 @@ void UICheckBtn::OnButtonClickDown()
 	}
 	else
 	{
-		SetState(UIElement_Down, true);
+		SetState(UIElement_BtnDown, true);
 	}
 }
 
@@ -48,18 +48,15 @@ void UICheckBtn::OnButtonClickUp()
 	{
 		m_bCheck = true;
 	}
-	if (m_bCheck && m_nState == UIElement_Down)
+	if (m_bCheck && m_nState == UIElement_BtnDown)
 	{
 		//œÏ”¶∞¥≈•
-		if (m_hParentWnd && ::IsWindow(m_hParentWnd))
-		{
-			::SendMessage(m_hParentWnd, EmUIElementMsg_BtnClick, m_nID, 0);
-		}
-		SetState(UIElement_Down, true);
+		EmitMsg(EmUIElementMsg_BtnClick, m_nID, 0);
+		SetState(UIElement_BtnDown, true);
 	}
 	else
 	{
-		SetState(UIElement_Float, true);
+		SetState(UIElement_BtnFloat, true);
 	}
 }
 
@@ -67,11 +64,11 @@ void UICheckBtn::OnMouseHover()
 {
 	if (m_bCheck || GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
-		SetState(UIElement_Down, true);
+		SetState(UIElement_BtnDown, true);
 	}
-	else if (m_nState != UIElement_Down)
+	else if (m_nState != UIElement_BtnDown)
 	{
-		SetState(UIElement_Float, true);
+		SetState(UIElement_BtnFloat, true);
 	}
 }
 
@@ -79,10 +76,10 @@ void UICheckBtn::OnMouseLeave()
 {
 	if (m_bCheck)
 	{
-		SetState(UIElement_Down, true);
+		SetState(UIElement_BtnDown, true);
 	}
 	else
 	{
-		SetState(UIElement_Normal, true);
+		SetState(UIElement_BtnNormal, true);
 	}
 }
