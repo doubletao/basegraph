@@ -27,6 +27,10 @@ void UIScrollBar::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, H
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
 }
 
+void UIScrollBar::RearrangeChildPos()
+{
+}
+
 bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID, bool bHorizon, HWND hParentWnd, UIElement * pParent)
 {
 	if (!m_bCreated)

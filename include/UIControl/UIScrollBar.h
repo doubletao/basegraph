@@ -26,6 +26,7 @@ public:
 	virtual ~UIScrollBar();
 protected:
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
+	virtual void RearrangeChildPos();
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID = 0, bool bHorizon = false, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
