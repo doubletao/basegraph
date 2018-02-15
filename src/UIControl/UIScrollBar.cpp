@@ -38,7 +38,11 @@ bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLeng
 		m_pBtnLeftTop->Create(0, 0, 10, 10, EmLeftTopButton, m_hParentWnd, ThemeImage_ScrollLeftTopBtn_N, ThemeImage_ScrollLeftTopBtn_F, ThemeImage_ScrollLeftTopBtn_D, ThemeImage_ScrollLeftTopBtn_X);
 
 		m_pBtnRightBottom = new UIButton;
+		m_pBtnLeftTop->Create(0, 0, 10, 10, EmRightBottomButton, m_hParentWnd, ThemeImage_ScrollRightBottomBtn_N, ThemeImage_ScrollRightBottomBtn_F, ThemeImage_ScrollRightBottomBtn_D, ThemeImage_ScrollRightBottomBtn_X);
+
 		m_pBtnThumb = new UIButton;
+		m_pBtnLeftTop->Create(0, 0, 10, 10, EmThumbButton, m_hParentWnd, ThemeImage_ScrollThumbBtn_N, ThemeImage_ScrollThumbBtn_F, ThemeImage_ScrollThumbBtn_D, ThemeImage_ScrollThumbBtn_X);
+
 		return true;
 	}
 	return false;
