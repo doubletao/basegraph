@@ -103,6 +103,19 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_ElementArea, strThemePath + _T("Common\\ElementArea.png"));
 
 		LoadOneImg(ThemeImage_TimeLineTimeCodeBk, strThemePath + _T("TimeLine\\TimeLineTimeCodeBk.png"));
+
+		LoadOneImg(ThemeImage_ScrollLeftTopBtn_N, strThemePath + _T("TimeLine\\TimeLineLeftTopBtn_N.png"));
+		LoadOneImg(ThemeImage_ScrollLeftTopBtn_F, strThemePath + _T("TimeLine\\TimeLineLeftTopBtn_F.png"));
+		LoadOneImg(ThemeImage_ScrollLeftTopBtn_D, strThemePath + _T("TimeLine\\TimeLineLeftTopBtn_D.png"));
+		LoadOneImg(ThemeImage_ScrollLeftTopBtn_X, strThemePath + _T("TimeLine\\TimeLineLeftTopBtn_X.png"));
+		LoadOneImg(ThemeImage_ScrollRightBottomBtn_N, strThemePath + _T("TimeLine\\TimeLineRightBottomBtn_N.png"));
+		LoadOneImg(ThemeImage_ScrollRightBottomBtn_F, strThemePath + _T("TimeLine\\TimeLineRightBottomBtn_F.png"));
+		LoadOneImg(ThemeImage_ScrollRightBottomBtn_D, strThemePath + _T("TimeLine\\TimeLineRightBottomBtn_D.png"));
+		LoadOneImg(ThemeImage_ScrollRightBottomBtn_X, strThemePath + _T("TimeLine\\TimeLineRightBottomBtn_X.png"));
+		LoadOneImg(ThemeImage_ScrollThumbBtn_N, strThemePath + _T("TimeLine\\TimeLineThumbBtn_N.png"));
+		LoadOneImg(ThemeImage_ScrollThumbBtn_F, strThemePath + _T("TimeLine\\TimeLineThumbBtn_F.png"));
+		LoadOneImg(ThemeImage_ScrollThumbBtn_D, strThemePath + _T("TimeLine\\TimeLineThumbBtn_D.png"));
+		LoadOneImg(ThemeImage_ScrollThumbBtn_X, strThemePath + _T("TimeLine\\TimeLineThumbBtn_X.png"));
 	} while (false);
 	return true;
 }

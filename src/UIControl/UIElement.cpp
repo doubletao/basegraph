@@ -257,31 +257,40 @@ CRect UIElement::GetRect()
 	return CRect(nX, nY, nX + m_nWidth, nY + m_nHeight);
 }
 
-inline void UIElement::MoveTo(CRect rtNew)
+inline void UIElement::MoveTo(CRect rtNew, bool bRefresh/* = true*/)
 {
 	m_nX = rtNew.left;
 	m_nY = rtNew.top;
 	m_nWidth = rtNew.Width();
 	m_nHeight = rtNew.Height();
-	RearrangeChildPos();
-	Refresh();
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
 }
 
-inline void UIElement::MoveTo(int nX, int nY)
+inline void UIElement::MoveTo(int nX, int nY, bool bRefresh/* = true*/)
 {
 	m_nX = nX;
 	m_nY = nY;
-	RearrangeChildPos();
-	Refresh();
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
 }
 
-inline void UIElement::MoveTo(int nX, int nY, int nWidth, int nHeight)
+inline void UIElement::MoveTo(int nX, int nY, int nWidth, int nHeight, bool bRefresh/* = true*/)
 {
 	m_nX = nX;
 	m_nY = nY;
 	m_nWidth = nWidth;
 	m_nHeight = nHeight;
-	RearrangeChildPos();
-	Refresh();
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
 }
 

@@ -43,7 +43,7 @@ protected:
 	virtual void Release();
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
 	virtual void SetText(CString strText);
-	void Refresh();
+	virtual void Refresh();
 public:
 	UIElement();
 	virtual ~UIElement();
@@ -54,9 +54,9 @@ public:
 	virtual inline bool HitTest(int nX, int nY);
 	virtual inline bool HitTest(LPARAM lParam);
 	virtual inline CRect GetRect();
-	virtual inline void MoveTo(CRect rtNew);
-	virtual inline void MoveTo(int nX, int nY);
-	virtual inline void MoveTo(int nX, int nY, int nWidth, int nHeight);
+	virtual inline void MoveTo(CRect rtNew, bool bRefresh = true);
+	virtual inline void MoveTo(int nX, int nY, bool bRefresh = true);
+	virtual inline void MoveTo(int nX, int nY, int nWidth, int nHeight, bool bRefresh = true);
 	virtual void DrawElement(CDC * pDC);
 	virtual void OnMouseHover();
 	virtual void OnMouseLeave();

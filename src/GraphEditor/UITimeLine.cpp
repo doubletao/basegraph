@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "UITimeLine.h"
-
+#include "GraphEditorCommonDef.h"
 
 UITimeLine::UITimeLine()
 	: m_pTimeCode(nullptr)
+	, m_pScrollHor(nullptr)
 {
 }
 
@@ -16,6 +17,7 @@ void UITimeLine::Release()
 {
 	UIElement::Release();
 	m_pTimeCode = nullptr;
+	m_pScrollHor = nullptr;
 }
 
 void UITimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
@@ -31,6 +33,10 @@ void UITimeLine::InitializeObject()
 	m_pTimeCode = new UITLTimeCode;
 	m_pTimeCode->Create(0, 0, 100, 100, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pTimeCode);
+
+	m_pScrollHor = new UIScrollBar;
+	m_pScrollHor->Create(0, 0, 10, 10, 10, 10, UIElementMsg_TimeLineHorScroll, true, m_hParentWnd, this);
+	m_vecChildElement.push_back(m_pScrollHor);
 }
 
 void UITimeLine::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
@@ -48,6 +54,11 @@ void UITimeLine::RearrangeChildPos()
 	if (m_pTimeCode)
 	{
 		m_pTimeCode->MoveTo(0, 0, nTimeCodeWidth, nTimeCodeHeight);
+	}
+	if (m_pScrollHor)
+	{
+		m_pScrollHor->MoveTo(nTimeCodeWidth, 0, m_nWidth - nTimeCodeWidth, nTimeCodeHeight / 2);
+		m_pScrollHor->ResetScroll(m_nWidth * 4, m_nWidth);
 	}
 }
 

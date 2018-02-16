@@ -26,6 +26,7 @@
 #include "UIControl\UIButtonBar.h"
 #include "UIControl\UICheckBtnBar.h"
 #include "UIControl\UIScrollElement.h"
+#include "UIControl\UIScrollBar.h"
 
 BASEGRAPH_UICONTROL_API bool UIControl_SwitchTheme(int nTheme);
 BASEGRAPH_UICONTROL_API LOGFONT UIControl_GetFont(int nFontID);

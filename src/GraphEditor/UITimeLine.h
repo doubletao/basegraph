@@ -6,6 +6,7 @@ class UITimeLine :
 {
 protected:
 	UITLTimeCode * m_pTimeCode;
+	UIScrollBar * m_pScrollHor;
 public:
 	UITimeLine();
 	virtual ~UITimeLine();
