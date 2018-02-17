@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIControl\UIScrollBar.h"
 #include "UIControl\ThemeResoueceID.h"
+#include "UIControl\UIControlDef.h"
 
 
 UIScrollBar::UIScrollBar()
@@ -11,6 +12,7 @@ UIScrollBar::UIScrollBar()
 	, m_nWholeLength(0)
 	, m_nPageLength(0)
 	, m_nPos(0)
+	, m_nStep(10)
 {
 }
 
@@ -87,11 +89,70 @@ bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLeng
 
 EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 {
-	return EmUIElementMsgRet();
+	auto BtnHandleMsg = [&](UIElement * pElement)
+	{
+		if (pElement)
+		{
+			pElement->HandleMsg(nMsg, lParam, wParam);
+		}
+	};
+	auto BtnEnterLeaveMsg = [&](UIElement * pElement)
+	{
+		if (pElement && pElement->HitTest(lParam))
+		{
+			pElement->OnMouseHover();
+		}
+		else
+		{
+			pElement->OnMouseLeave();
+		}
+	};
+	if (m_setMsgFilter.count(nMsg) > 0)
+	{
+		switch (nMsg)
+		{
+		case WM_LBUTTONDOWN:
+		case WM_LBUTTONUP:
+			BtnHandleMsg(m_pBtnLeftTop);
+			BtnHandleMsg(m_pBtnRightBottom);
+			break;
+		case WM_MOUSEMOVE:
+			BtnEnterLeaveMsg(m_pBtnLeftTop);
+			BtnEnterLeaveMsg(m_pBtnRightBottom);
+			break;
+		default:
+			break;
+		}
+		return UIElementMsgSuccBreak;
+	}
+	return UIElementMsgSuccContinue;
 }
 
 bool UIScrollBar::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 {
+	switch (emMsg)
+	{
+	case EmUIElementMsg_BtnClick:
+		if (EmLeftTopButton == wParam)
+		{
+			m_nPos -= m_nStep;
+			if (m_nPos < 0)
+			{
+				m_nPos = 0;
+			}
+		}
+		else if (EmRightBottomButton == wParam)
+		{
+			m_nPos += m_nStep;
+			if (m_nPos > m_nWholeLength - m_nPageLength)
+			{
+				m_nPos = m_nWholeLength - m_nPageLength;
+			}
+		}
+		break;
+	default:
+		break;
+	}
 	return false;
 }
 

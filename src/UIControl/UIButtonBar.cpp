@@ -21,34 +21,6 @@ void UIButtonBar::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, H
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
 }
 
-void UIButtonBar::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
-{
-	for (size_t i = 0; i < m_vecChildElement.size(); i++)
-	{
-		UICheckBtn * pChild = (UICheckBtn *)m_vecChildElement[i];
-		if (pChild && pChild->HitTest(lParam))
-		{
-			pChild->HandleMsg(nMsg, lParam, wParam);
-		}
-	}
-}
-
-void UIButtonBar::EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam)
-{
-	for (size_t i = 0; i < m_vecChildElement.size(); i++)
-	{
-		UIElement *& pChild = m_vecChildElement[i];
-		if (pChild && pChild->HitTest(lParam))
-		{
-			pChild->OnMouseHover();
-		}
-		else
-		{
-			pChild->OnMouseLeave();
-		}
-	}
-}
-
 bool UIButtonBar::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
 {
 	auto InsertOneDrawer = [&](int nStateValue, int nImgValue)

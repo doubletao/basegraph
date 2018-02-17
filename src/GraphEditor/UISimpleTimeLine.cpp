@@ -23,14 +23,6 @@ void UISimpleTimeLine::InitializeObject()
 {
 }
 
-void UISimpleTimeLine::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
-{
-}
-
-void UISimpleTimeLine::EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam)
-{
-}
-
 bool UISimpleTimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
 {
 	auto InsertOneDrawer = [&](int nStateValue, int nImgValue)

@@ -6,17 +6,11 @@ class BASEGRAPH_UICONTROL_API UIScrollBar :
 	public UIElement
 {
 protected:
-	enum
-	{
-		EmLeftTopButton,
-		EmRightBottomButton,
-		EmThumbButton,
-	};
-protected:
 	bool m_bHorScroll;
 	int m_nWholeLength;
 	int m_nPageLength;
 	int m_nPos;
+	int m_nStep;
 protected:
 	UIButton * m_pBtnLeftTop;
 	UIButton * m_pBtnRightBottom;

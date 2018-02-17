@@ -74,6 +74,34 @@ void UIElement::Refresh()
 	EmitMsg(EmUIElementMsg_BtnRefresh, m_nID, 0);
 }
 
+void UIElement::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+{
+	for (size_t i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIElement * pChild = m_vecChildElement[i];
+		if (pChild)
+		{
+			pChild->HandleMsg(nMsg, lParam, wParam);
+		}
+	}
+}
+
+void UIElement::EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam)
+{
+	for (size_t i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIElement *& pChild = m_vecChildElement[i];
+		if (pChild && pChild->HitTest(lParam))
+		{
+			pChild->OnMouseHover();
+		}
+		else
+		{
+			pChild->OnMouseLeave();
+		}
+	}
+}
+
 int UIElement::GetRealX()
 {
 	if (m_pParentElement)

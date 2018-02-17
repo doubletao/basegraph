@@ -44,6 +44,8 @@ protected:
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
 	virtual void SetText(CString strText);
 	virtual void Refresh();
+	virtual void ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual void EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam);
 public:
 	UIElement();
 	virtual ~UIElement();

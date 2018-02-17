@@ -148,6 +148,7 @@
     <ClInclude Include="..\..\include\UIControl\UICheckBtn.h" />
     <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h" />
     <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UIControlDef.h" />
     <ClInclude Include="..\..\include\UIControl\UIDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIElement.h" />
     <ClInclude Include="..\..\include\UIControl\UIImageDrawer.h" />

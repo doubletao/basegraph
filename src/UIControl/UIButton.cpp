@@ -112,10 +112,16 @@ EmUIElementMsgRet UIButton::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 		switch (nMsg)
 		{
 		case WM_LBUTTONDOWN:
-			OnButtonClickDown();
+			if (HitTest(lParam))
+			{
+				OnButtonClickDown();
+			}
 			break;
 		case WM_LBUTTONUP:
-			OnButtonClickUp();
+			if (HitTest(lParam))
+			{
+				OnButtonClickUp();
+			}
 			break;
 		default:
 			break;

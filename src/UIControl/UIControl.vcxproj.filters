@@ -161,6 +161,9 @@
     <ClInclude Include="..\..\include\UIControl\UIScrollBar.h">
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIControlDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="UIControl.def">
