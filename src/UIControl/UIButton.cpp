@@ -115,18 +115,19 @@ EmUIElementMsgRet UIButton::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 			if (HitTest(lParam))
 			{
 				OnButtonClickDown();
+				return UIElementMsgSuccBreak;
 			}
 			break;
 		case WM_LBUTTONUP:
 			if (HitTest(lParam))
 			{
 				OnButtonClickUp();
+				return UIElementMsgSuccBreak;
 			}
 			break;
 		default:
 			break;
 		}
-		return UIElementMsgSuccBreak;
 	}
 	return UIElementMsgSuccContinue;
 }

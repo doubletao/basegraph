@@ -12,7 +12,10 @@ UIScrollBar::UIScrollBar()
 	, m_nWholeLength(0)
 	, m_nPageLength(0)
 	, m_nPos(0)
-	, m_nStep(10)
+	, m_nStep(50)
+	, m_bMoving(false)
+	, m_ptBegin(0)
+	, m_ptEnd(0)
 {
 }
 
@@ -59,6 +62,46 @@ void UIScrollBar::Recalculate(bool bRefresh/* = true*/)
 	}
 }
 
+void UIScrollBar::MoveStep(bool bFore)
+{
+	if (!bFore)
+	{
+		m_nPos -= m_nStep;
+		if (m_nPos < 0)
+		{
+			m_nPos = 0;
+		}
+	}
+	else
+	{
+		m_nPos += m_nStep;
+		if (m_nPos > m_nWholeLength - m_nPageLength)
+		{
+			m_nPos = m_nWholeLength - m_nPageLength;
+		}
+	}
+}
+
+void UIScrollBar::MovePage(bool bFore)
+{
+	if (!bFore)
+	{
+		m_nPos -= m_nPageLength;
+		if (m_nPos < 0)
+		{
+			m_nPos = 0;
+		}
+	}
+	else
+	{
+		m_nPos += m_nPageLength;
+		if (m_nPos > m_nWholeLength - m_nPageLength)
+		{
+			m_nPos = m_nWholeLength - m_nPageLength;
+		}
+	}
+}
+
 bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID, bool bHorizon, HWND hParentWnd, UIElement * pParent)
 {
 	if (!m_bCreated)
@@ -89,12 +132,18 @@ bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLeng
 
 EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 {
-	auto BtnHandleMsg = [&](UIElement * pElement)
+	bool bContinue = true;
+	auto BtnHandleMsg = [&](UIElement * pElement)->bool
 	{
 		if (pElement)
 		{
-			pElement->HandleMsg(nMsg, lParam, wParam);
+			if (UIElementMsgSuccBreak == pElement->HandleMsg(nMsg, lParam, wParam))
+			{
+				bContinue = false;
+			}
+			return true;
 		}
+		return false;
 	};
 	auto BtnEnterLeaveMsg = [&](UIElement * pElement)
 	{
@@ -114,7 +163,10 @@ EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONUP:
 			BtnHandleMsg(m_pBtnLeftTop);
-			BtnHandleMsg(m_pBtnRightBottom);
+			if (bContinue)
+			{
+				BtnHandleMsg(m_pBtnRightBottom);
+			}
 			break;
 		case WM_MOUSEMOVE:
 			BtnEnterLeaveMsg(m_pBtnLeftTop);
@@ -122,6 +174,10 @@ EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam
 			break;
 		default:
 			break;
+		}
+		if (true)
+		{
+
 		}
 		return UIElementMsgSuccBreak;
 	}
@@ -135,25 +191,17 @@ bool UIScrollBar::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 	case EmUIElementMsg_BtnClick:
 		if (EmLeftTopButton == wParam)
 		{
-			m_nPos -= m_nStep;
-			if (m_nPos < 0)
-			{
-				m_nPos = 0;
-			}
+			MoveStep(false);
 		}
 		else if (EmRightBottomButton == wParam)
 		{
-			m_nPos += m_nStep;
-			if (m_nPos > m_nWholeLength - m_nPageLength)
-			{
-				m_nPos = m_nWholeLength - m_nPageLength;
-			}
+			MoveStep(true);
 		}
 		break;
 	default:
 		break;
 	}
-	return false;
+	return true;
 }
 
 void UIScrollBar::ResetScroll(int nWholeLength, int nPageLength, int nPos/* = 0*/, bool bRefresh/* = true*/)

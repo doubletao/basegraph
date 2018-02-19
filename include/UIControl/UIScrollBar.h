@@ -11,6 +11,10 @@ protected:
 	int m_nPageLength;
 	int m_nPos;
 	int m_nStep;
+
+	bool m_bMoving;
+	CPoint m_ptBegin;
+	CPoint m_ptEnd;
 protected:
 	UIButton * m_pBtnLeftTop;
 	UIButton * m_pBtnRightBottom;
@@ -24,6 +28,10 @@ protected:
 	virtual void RearrangeChildPos();
 	virtual void Refresh();
 	void Recalculate(bool bRefresh = true);
+	void MoveStep(bool bFore);
+	void MovePage(bool bFore);
+
+	bool ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam);
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID = 0, bool bHorizon = false, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);

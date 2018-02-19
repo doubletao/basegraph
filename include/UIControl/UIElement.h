@@ -8,6 +8,7 @@ enum EmUIElementMsg
 {
 	EmUIElementMsg_BtnClick = WM_USER + 0x00000101,
 	EmUIElementMsg_BtnRefresh,
+	EmUIElementMsg_SetCapture,//wParam为set和release，lParam为需要capture的element指针
 };
 
 enum EmUIElementMsgRet
