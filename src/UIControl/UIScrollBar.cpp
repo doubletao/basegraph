@@ -102,6 +102,12 @@ void UIScrollBar::MovePage(bool bFore)
 	}
 }
 
+bool UIScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
+{
+
+	return false;
+}
+
 bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID, bool bHorizon, HWND hParentWnd, UIElement * pParent)
 {
 	if (!m_bCreated)
@@ -171,13 +177,17 @@ EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam
 		case WM_MOUSEMOVE:
 			BtnEnterLeaveMsg(m_pBtnLeftTop);
 			BtnEnterLeaveMsg(m_pBtnRightBottom);
+			if (!m_bMoving)
+			{
+				BtnEnterLeaveMsg(m_pBtnThumb);
+			}
 			break;
 		default:
 			break;
 		}
-		if (true)
+		if (bContinue)
 		{
-
+			ThumbAreaMsgHandler(nMsg, lParam, wParam);
 		}
 		return UIElementMsgSuccBreak;
 	}
