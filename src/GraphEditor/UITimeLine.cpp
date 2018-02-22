@@ -5,6 +5,7 @@
 UITimeLine::UITimeLine()
 	: m_pTimeCode(nullptr)
 	, m_pScrollHor(nullptr)
+	, m_pObjectArea(nullptr)
 {
 }
 
@@ -37,6 +38,9 @@ void UITimeLine::InitializeObject()
 	m_pScrollHor = new UIScrollBar;
 	m_pScrollHor->Create(0, 0, 10, 10, 10, 10, UIElementMsg_TimeLineHorScroll, true, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pScrollHor);
+
+	m_pObjectArea = new UITLObjectArea;
+	m_vecChildElement.push_back(m_pObjectArea);
 }
 
 void UITimeLine::RearrangeChildPos()
@@ -54,24 +58,45 @@ void UITimeLine::RearrangeChildPos()
 	}
 }
 
+bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (EmUIElementMsg_OnHScroll == emMsg)
+	{
+		if (true)
+		{
+			CString strDebug;
+			strDebug.Format(_T("m_nID=%d, m_nPos=%d\n"), wParam, lParam);
+			OutputDebugString(strDebug);
+		}
+		return true;
+	}
+	else if (EmUIElementMsg_OnVScroll == emMsg)
+	{
+		if (true)
+		{
+			CString strDebug;
+			strDebug.Format(_T("m_nID=%d, m_nPos=%d\n"), wParam, lParam);
+			OutputDebugString(strDebug);
+		}
+		return true;
+	}
+	return false;
+}
+
 bool UITimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
 {
-	auto InsertOneDrawer = [&](int nStateValue, int nImgValue)
-	{
-		UIImageDrawer * pImgDrawer = new UIImageDrawer(nImgValue);
-		m_mapDrawer[nStateValue].push_back(pImgDrawer);
-
-		UITextDrawer * pTextDrawer = new UITextDrawer(ThemeFont_SkinWndTitleText);
-		pTextDrawer->SetColor(RGB(255, 255, 255));
-		m_mapDrawer[nStateValue].push_back(pTextDrawer);
-		m_strText = _T("时间线");
-	};
 	if (!m_bCreated)
 	{
 		Initialize(nX, nY, nWidth, nHeight, 0, hParentWnd);
 		InitializeObject();
 
-		InsertOneDrawer(0, ThemeImage_ElementArea);
+		UIImageDrawer * pImgDrawer = new UIImageDrawer(ThemeImage_ElementArea);
+		m_mapDrawer[0].push_back(pImgDrawer);
+
+		UITextDrawer * pTextDrawer = new UITextDrawer(ThemeFont_SkinWndTitleText);
+		pTextDrawer->SetColor(RGB(255, 255, 255));
+		m_mapDrawer[0].push_back(pTextDrawer);
+		m_strText = _T("时间线");
 	}
 	return true;
 }

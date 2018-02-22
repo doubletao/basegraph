@@ -100,6 +100,26 @@ bool UIScrollElement::SetScrollYPos(int nYPos, bool bRefresh/* = true*/)
 	return true;
 }
 
+void UIScrollElement::SetLogicWidth(int nWidth)
+{
+	//逻辑宽高一定要大于等于实际宽高
+	if (nWidth < m_nWidth)
+	{
+		nWidth = m_nWidth;
+	}
+	m_nLogicWidth = nWidth;
+}
+
+void UIScrollElement::SetLogicHeight(int nHeight)
+{
+	//逻辑宽高一定要大于等于实际宽高
+	if (nHeight < m_nHeight)
+	{
+		nHeight = m_nHeight;
+	}
+	m_nLogicHeight = nHeight;
+}
+
 int UIScrollElement::GetLogicWidth()
 {
 	return m_nLogicWidth;

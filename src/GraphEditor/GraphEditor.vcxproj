@@ -128,7 +128,7 @@
     <ClCompile Include="UIPropertyView.cpp" />
     <ClCompile Include="UISimpleTimeLine.cpp" />
     <ClCompile Include="UITimeLine.cpp" />
-    <ClCompile Include="UITLObject.cpp" />
+    <ClCompile Include="UITLObjectArea.cpp" />
     <ClCompile Include="UITLRuler.cpp" />
     <ClCompile Include="UITLTimeCode.cpp" />
   </ItemGroup>
@@ -148,7 +148,7 @@
     <ClInclude Include="UIPropertyView.h" />
     <ClInclude Include="UISimpleTimeLine.h" />
     <ClInclude Include="UITimeLine.h" />
-    <ClInclude Include="UITLObject.h" />
+    <ClInclude Include="UITLObjectArea.h" />
     <ClInclude Include="UITLRuler.h" />
     <ClInclude Include="UITLTimeCode.h" />
   </ItemGroup>

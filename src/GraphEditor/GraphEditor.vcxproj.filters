@@ -78,7 +78,7 @@
     <ClCompile Include="UITLRuler.cpp">
       <Filter>TimeLine</Filter>
     </ClCompile>
-    <ClCompile Include="UITLObject.cpp">
+    <ClCompile Include="UITLObjectArea.cpp">
       <Filter>TimeLine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,7 +134,7 @@
     <ClInclude Include="UITLRuler.h">
       <Filter>TimeLine</Filter>
     </ClInclude>
-    <ClInclude Include="UITLObject.h">
+    <ClInclude Include="UITLObjectArea.h">
       <Filter>TimeLine</Filter>
     </ClInclude>
   </ItemGroup>

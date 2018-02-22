@@ -32,11 +32,13 @@ protected:
 	void MovePage(bool bFore);
 
 	bool ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	CRect GetThumbAreaRect();
+	CRect GetThumbRect();
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID = 0, bool bHorizon = false, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
-	void ResetScroll(int nWholeLength, int nPageLength, int nPos = 0, bool bRefresh = true);
+	void ResetScroll(int nWholeLength, int nPageLength, int nPos = -1, bool bRefresh = true);
 	void SetPos(int nPos, bool bRefresh = true);
 	int GetPos();
 	void SetWholeLength(int nWholeLength, bool bRefresh = true);

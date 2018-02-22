@@ -23,6 +23,8 @@ public:
 	int GetScrollYPos();
 	bool SetScrollXPos(int nXPos, bool bRefresh = true);
 	bool SetScrollYPos(int nYPos, bool bRefresh = true);
+	void SetLogicWidth(int nWidth);
+	void SetLogicHeight(int nHeight);
 	int GetLogicWidth();
 	int GetLogicHeight();
 };

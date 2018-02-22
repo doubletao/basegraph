@@ -4,7 +4,7 @@
 class BASEGRAPH_UICONTROL_API UIButton :
 	public UIElement
 {
-protected:
+public:
 	enum
 	{
 		UIElement_BtnNormal,	//正常
@@ -17,8 +17,8 @@ public:
 	virtual ~UIButton();
 protected:
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
-	void SetState(int nState, bool bRefresh);
 public:
+	void SetState(int nState, bool bRefresh);
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd,
 		int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, UIElement * pParent = nullptr, LPCTSTR strText = nullptr, int nFont = 0, COLORREF nFontColor = 0);
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, 
