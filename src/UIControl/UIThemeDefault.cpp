@@ -54,6 +54,11 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 200));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 35));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionHeight, 20));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTrackHeight, 20));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeTabWidth, 30));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeWidth, 400));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePresetPixel, 40));
 
 	/////////////////////////////////////////////////////////////////////
 	//ÑÕÉ«

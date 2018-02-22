@@ -32,6 +32,9 @@ bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, OUT std::
 //属性设置
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+//统计
+bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(OUT int & nLength);
+bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);
 //序列化
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile);
 bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile);

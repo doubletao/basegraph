@@ -39,6 +39,9 @@ public:
 	//属性设置
 	bool SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam);
 	bool SetItemProperty(IN CString strID, IN const map<ParamValueDef, Value> & mapParam);
+	//统计
+	bool GetItemLength(OUT int & nLength);
+	bool GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);
 	//序列化
 	bool SaveToFile(CString strFile);
 	bool LoadFromFile(CString strFile);

@@ -11,19 +11,27 @@ enum ThemeIntValueDef
 	ThemeInt_PropretyViewWidth,
 	ThemeInt_PropretyViewTabWidth,
 	ThemeInt_TimeLineTimeCodeWidth,
-	ThemeInt_TimeLineTimeCodeHeight
+	ThemeInt_TimeLineTimeCodeHeight,
+	ThemeInt_TimeLineItemActionHeight,//时间线物件条高度
+	ThemeInt_TimeLineItemTrackHeight,//时间线物件关键帧轨道高度
+	ThemeInt_TimeLineItemTreeTabWidth,//时间线物件tree的tab宽度
+	ThemeInt_TimeLineItemTreeWidth,//时间线物件tree的宽度
+	ThemeInt_TimeLinePresetPixel,//时间线比例尺为100%时每帧对应的像素数
 };
 
 enum ThemeFontValueDef
 {
 	ThemeFont_SkinWndTitleText,
 	ThemeFont_TimeLineTimeCode,
+	ThemeFont_TimeLineObjectTrackText,
 };
 
 enum ThemeColorValueDef
 {
 	ThemeColor_SkinWndTitleText,
 	ThemeColor_TimeLineTimeCodeText,
+	ThemeColor_TimeLineObjectTrackText_Nor,
+	ThemeColor_TimeLineObjectTrackText_Sel,
 };
 
 enum ThemeImageValueDef
@@ -69,4 +77,10 @@ enum ThemeImageValueDef
 	ThemeImage_ScrollThumbBtn_F,
 	ThemeImage_ScrollThumbBtn_D,
 	ThemeImage_ScrollThumbBtn_X,
+
+	ThemeImage_TimeLineLeftObjectBkGnd_Nor,
+	ThemeImage_TimeLineLeftObjectBkGnd_Sel,
+	ThemeImage_TimeLineRightObjectBkGnd_Nor,
+	ThemeImage_TimeLineRightObjectBkGnd_Sel,
+	ThemeImage_TimeLineObjectActionBar_TotalLength,
 };

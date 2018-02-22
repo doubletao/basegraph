@@ -129,6 +129,7 @@
     <ClCompile Include="UISimpleTimeLine.cpp" />
     <ClCompile Include="UITimeLine.cpp" />
     <ClCompile Include="UITLObjectArea.cpp" />
+    <ClCompile Include="UITLObjectItem.cpp" />
     <ClCompile Include="UITLRuler.cpp" />
     <ClCompile Include="UITLTimeCode.cpp" />
   </ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="UISimpleTimeLine.h" />
     <ClInclude Include="UITimeLine.h" />
     <ClInclude Include="UITLObjectArea.h" />
+    <ClInclude Include="UITLObjectItem.h" />
     <ClInclude Include="UITLRuler.h" />
     <ClInclude Include="UITLTimeCode.h" />
   </ItemGroup>

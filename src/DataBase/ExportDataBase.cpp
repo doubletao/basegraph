@@ -68,6 +68,16 @@ bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const 
 	return DataBaseManager::Instance().SetItemProperty(strID, mapParam);
 }
 
+bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(OUT int & nLength)
+{
+	return DataBaseManager::Instance().GetItemLength(nLength);
+}
+
+bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(IN const std::vector<CString>& vecID, OUT int & nLength)
+{
+	return DataBaseManager::Instance().GetItemLength(vecID, nLength);
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile)
 {
 	return DataBaseManager::Instance().SaveToFile(strFile);

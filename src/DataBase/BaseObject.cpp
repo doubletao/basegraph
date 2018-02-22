@@ -24,6 +24,8 @@ void BaseGraph_DataBase::BaseObject::InitialObjectParam()
 		}
 	};
 	
+	//物件属性
+	AddDefaultParam(ObjName);
 	//空间值
 	AddDefaultParam(SpacePosition_X);
 	AddDefaultParam(SpacePosition_Y);

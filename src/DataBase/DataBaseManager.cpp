@@ -195,6 +195,34 @@ bool DataBaseManager::SetItemProperty(IN CString strID, IN const map<ParamValueD
 	return false;
 }
 
+bool DataBaseManager::GetItemLength(OUT int & nLength)
+{
+	std::vector<CString> vecItemID;
+	GetAllItemID(vecItemID);
+	return GetItemLength(vecItemID, nLength);
+}
+
+bool DataBaseManager::GetItemLength(IN const std::vector<CString>& vecID, OUT int & nLength)
+{
+	bool bRet = false;
+	nLength = 0;
+	for (size_t i = 0; i < vecID.size(); i++)
+	{
+		CString strID = vecID[i];
+		BaseGraph_Common::Value valueEndFrame;
+		if (GetItemProperty(strID, BaseGraph_DataBase::ObjActionEnd, valueEndFrame))
+		{
+			int nEndFrame = valueEndFrame.ToInt();
+			if (nLength < nEndFrame)
+			{
+				nLength = nEndFrame;
+			}
+			bRet = true;
+		}
+	}
+	return bRet;
+}
+
 bool DataBaseManager::SaveToFile(CString strFile)
 {
 	CFile cf;

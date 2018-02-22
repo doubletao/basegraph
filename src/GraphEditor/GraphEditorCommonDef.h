@@ -33,4 +33,5 @@ enum UIElementMsgDef
 	UIElementMsg_PropertyTabText,
 
 	UIElementMsg_TimeLineHorScroll,
+	UIElementMsg_TimeLineObjectArea,
 };

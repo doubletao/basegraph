@@ -40,6 +40,7 @@ void UITimeLine::InitializeObject()
 	m_vecChildElement.push_back(m_pScrollHor);
 
 	m_pObjectArea = new UITLObjectArea;
+	m_pObjectArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectArea, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pObjectArea);
 }
 
@@ -55,6 +56,10 @@ void UITimeLine::RearrangeChildPos()
 	{
 		m_pScrollHor->MoveTo(nTimeCodeWidth, 0, m_nWidth - nTimeCodeWidth, nTimeCodeHeight / 2);
 		m_pScrollHor->ResetScroll(m_nWidth * 4, m_nWidth);
+	}
+	if (m_pObjectArea)
+	{
+		m_pObjectArea->MoveTo(0, nTimeCodeHeight, m_nWidth, m_nHeight - nTimeCodeHeight);
 	}
 }
 

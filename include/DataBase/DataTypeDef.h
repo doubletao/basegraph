@@ -20,6 +20,8 @@ namespace BaseGraph_DataBase
 		ObjID,
 		ObjType,
 		ObjName,
+		ObjActionBegin,
+		ObjActionEnd,
 		ObjParam_End,
 
 		SpaceParam = 100,
@@ -113,6 +115,20 @@ namespace BaseGraph_DataBase
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("物件名称");
 			valueDesc.stuDefault.SetValue(_T("未知物件"));
+			break;
+		case ObjActionBegin:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("起始场");
+			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(INT32_MAX, _T("最大值")));
+			break;
+		case ObjActionEnd:
+			valueDesc.nDispIndex = 10 * 25 * 2;
+			valueDesc.strDispName = _T("结束场");
+			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(INT32_MAX, _T("最大值")));
 			break;
 		case SpacePosition_X:
 			valueDesc.nDispIndex = 0;

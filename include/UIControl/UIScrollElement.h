@@ -27,4 +27,6 @@ public:
 	void SetLogicHeight(int nHeight);
 	int GetLogicWidth();
 	int GetLogicHeight();
+	float GetXRatio();
+	float GetYRatio();
 };

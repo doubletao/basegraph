@@ -129,3 +129,23 @@ int UIScrollElement::GetLogicHeight()
 {
 	return m_nLogicHeight;
 }
+
+float UIScrollElement::GetXRatio()
+{
+	float fRet = 0.0f;
+	if (m_nWidth > 0)
+	{
+		fRet = m_nLogicWidth * 1.0f / m_nWidth;
+	}
+	return fRet;
+}
+
+float UIScrollElement::GetYRatio()
+{
+	float fRet = 0.0f;
+	if (m_nHeight > 0)
+	{
+		fRet = m_nLogicHeight * 1.0f / m_nHeight;
+	}
+	return fRet;
+}
