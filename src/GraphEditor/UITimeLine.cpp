@@ -63,6 +63,7 @@ void UITimeLine::RearrangeChildPos()
 	if (m_pScrollHor)
 	{
 		m_pScrollHor->MoveTo(nTimeCodeWidth, 0, m_nWidth - nTimeCodeWidth, nTimeCodeHeight / 2);
+		m_pScrollHor->ResetScroll(1000, 250);
 		fXRatio = m_pScrollHor->GetPagePercent();
 	}
 	if (m_pScrollVer)
@@ -73,8 +74,8 @@ void UITimeLine::RearrangeChildPos()
 	if (m_pObjectArea)
 	{
 		m_pObjectArea->MoveTo(0, nTimeCodeHeight, m_nWidth - nTimeCodeHeight / 2, m_nHeight - nTimeCodeHeight);
-		int nLogicWidth = int(m_pObjectArea->GetWidth() * fXRatio);
-		int nLogicHeight = int(m_pObjectArea->GetHeight() * fXRatio);
+		int nLogicWidth = int(m_pObjectArea->GetWidth() / fXRatio);
+		int nLogicHeight = int(m_pObjectArea->GetHeight() / fYRatio);
 		m_pObjectArea->SetScrollInfo(nLogicWidth, nLogicHeight);
 	}
 }
@@ -91,7 +92,6 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 		}
 		if (m_pObjectArea)
 		{
-			//m_pObjectArea->AdjustScrollZoom();
 			m_pObjectArea->SetScrollXPos((int)lParam);
 		}
 		return true;
@@ -115,7 +115,7 @@ void UITimeLine::AdjustScrollZoom()
 	{
 		if (m_pObjectArea)
 		{
-			m_pObjectArea->AdjustScrollZoom();
+			m_pObjectArea->AdjustScrollZoom(1.0f);
 			int nLogicWidth = int(m_pObjectArea->GetWidth() / m_pScrollHor->GetPagePercent());
 			int nLogicHeight = int(m_pObjectArea->GetHeight() / m_pScrollHor->GetPagePercent());
 			m_pObjectArea->SetScrollInfo(nLogicWidth, nLogicHeight);

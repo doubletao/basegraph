@@ -83,6 +83,10 @@ int UITLObjectArea::GetTotalLength()
 
 void UITLObjectArea::RearrangeChildPos()
 {
+	if (m_pScrollHor)
+	{
+		AdjustScrollZoom(m_pScrollHor->GetPagePercent());
+	}
 	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
 	if (m_pLeftArea)
 	{
@@ -183,7 +187,7 @@ void UITLObjectArea::SetScrollBar(UIScrollBar * pScrollHor)
 	m_pScrollHor = pScrollHor;
 }
 
-void UITLObjectArea::AdjustScrollZoom()
+void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
 {
 	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
 	int nRightWidth = m_nWidth - nItemTreeWidth;

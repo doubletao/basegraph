@@ -24,9 +24,9 @@ bool UITLObjectRightArea::Create(int nX, int nY, int nWidth, int nHeight, int nI
 
 void UITLObjectRightArea::DrawElement(CDC * pDC)
 {
-	int nXStart = GetRealX();
-	int nYStart = GetRealY();
-	CRect rcClient(nXStart, nYStart, nXStart + m_nLogicWidth, nYStart + m_nLogicHeight);
+	int nXStart = GetRealX() + m_nScrollX;
+	int nYStart = GetRealY() + m_nScrollY;
+	CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
 
 	CDC dcMem;
 	CBitmap bmpMem;
@@ -64,7 +64,7 @@ void UITLObjectRightArea::DrawElement(CDC * pDC)
 		pActionBarImage->AlphaBlend(dcMem.GetSafeHdc(), rtBar.left, rtBar.top, rtBar.Width(), rtBar.Height(), 0, 0, pActionBarImage->GetWidth(), pActionBarImage->GetHeight());
 	}
 
-	pDC->BitBlt(rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), &dcMem, 0, 0, SRCCOPY);
+	pDC->BitBlt(rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), &dcMem, m_nScrollX, m_nScrollY, SRCCOPY);
 
 	bmpMem.DeleteObject();
 	dcMem.DeleteDC();

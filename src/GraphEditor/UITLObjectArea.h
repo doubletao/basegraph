@@ -30,7 +30,7 @@ public:
 
 	void SetScrollBar(UIScrollBar * pScrollHor);
 
-	void AdjustScrollZoom();//按比例缩放frame总长使得横向滚动条满屏
+	void AdjustScrollZoom(float fScrollPercent);//按比例缩放frame总长使得横向滚动条满屏
 	std::map<CString, UITLObjectItem *> & GetObjDrawerInfo();
 	UITLObjectItem * GetObjDrawerInfo(CString strID);
 	bool  DeleteObjDrawerInfo(CString strID);//TODO: 目前为空,需要实现

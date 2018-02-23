@@ -311,8 +311,6 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_uiPropertyView.Create(0, 0, 100, 100, GetSafeHwnd());
 	m_uiTimeLine.Create(0, 0, 100, 100, GetSafeHwnd());
 
-	m_uiTimeLine.AdjustScrollZoom();
-
 	//²âÊÔ´úÂë
 	CString strObjID = _T("");
 	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Image);
@@ -502,6 +500,7 @@ void BaseGraphMainFrame::OnBtnNewFile()
 {
 	OutputDebugString(_T("ÐÂ½¨\n"));
 	m_uiActionBar.UpdateStatus();
+	m_uiTimeLine.AdjustScrollZoom();
 }
 
 void BaseGraphMainFrame::OnBtnSaveFile()
