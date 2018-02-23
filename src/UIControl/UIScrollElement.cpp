@@ -78,6 +78,10 @@ bool UIScrollElement::SetScrollXPos(int nXPos, bool bRefresh/* = true*/)
 	{
 		nXPos = m_nLogicWidth - m_nWidth;
 	}
+	if (nXPos < 0)
+	{
+		nXPos = 0;
+	}
 	m_nScrollX = nXPos;
 	if (bRefresh)
 	{
@@ -91,6 +95,10 @@ bool UIScrollElement::SetScrollYPos(int nYPos, bool bRefresh/* = true*/)
 	if (nYPos > m_nLogicHeight - m_nHeight)
 	{
 		nYPos = m_nLogicHeight - m_nHeight;
+	}
+	if (nYPos < 0)
+	{
+		nYPos = 0;
 	}
 	m_nScrollY = nYPos;
 	if (bRefresh)

@@ -55,7 +55,7 @@ void UITLObjectRightArea::DrawElement(CDC * pDC)
 	if (pActionBarImage)
 	{
 		//取出当前总长及当前比例尺，画总长条
-		int nBarLength = int(m_pObjectArea->GetTotalLength() * UITLRuler::Instance().GetPixelPerFrame());
+		int nBarLength = int(UITLRuler::Instance().GetDispFrameLength() * UITLRuler::Instance().GetPixelPerFrame());
 
 		CRect rtBar(nXStart, nYStart, nXStart + nBarLength, nYStart + nItemHeight);
 		rtBar.OffsetRect(-m_nScrollX, -m_nScrollY);

@@ -19,7 +19,6 @@ protected:
 	virtual void RearrangeChildPos();
 	UITLObjectItem * CreateObjectItem(CString strID);
 public:
-	int GetTotalLength();
 	virtual void DrawElement(CDC * pDC);
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement);
 
@@ -32,6 +31,7 @@ public:
 	void SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrollVer);
 
 	void AdjustScrollZoom(float fScrollPercent);//按比例缩放frame总长使得横向滚动条满屏
+	float GetCurrentPercent();
 	std::map<CString, UITLObjectItem *> & GetObjDrawerInfo();
 	UITLObjectItem * GetObjDrawerInfo(CString strID);
 	bool  DeleteObjDrawerInfo(CString strID);//TODO: 目前为空,需要实现

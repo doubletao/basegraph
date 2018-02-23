@@ -24,6 +24,7 @@ protected:
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
-	void AdjustScrollZoom();
+	void AdjustScrollZoom();//横向滚动条适配到全屏显示
+	void AdjustScrollZoom(int nDeta);//调整横向滚动条,nDeta可正可负,每单位调整百分之n
 };
 

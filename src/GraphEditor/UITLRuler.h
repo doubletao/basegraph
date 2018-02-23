@@ -13,10 +13,11 @@ private:
 	virtual ~UITLRuler();
 protected:
 	float m_fPixelPerFrame;//每帧对应的像素数（放大一百倍取整）
-	inline void LimitValue();
+	inline int LimitValue();
 public:
 	static UITLRuler & Instance();
+	int GetDispFrameLength();
 	float GetPixelPerFrame();
-	void SetPixelPerFrame(float fPixelPerFrame);
+	int SetPixelPerFrame(float fPixelPerFrame);
 	float RecalPixelPerFrame(int nWndWidth, int nFrameLength, float fScrollPercent);//重新计算比例尺需要知道当前窗口宽度和当前总帧长以及当前滚动条占整体的百分比
 };

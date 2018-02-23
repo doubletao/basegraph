@@ -507,12 +507,14 @@ void BaseGraphMainFrame::OnBtnSaveFile()
 {
 	OutputDebugString(_T("±£¥Ê\n"));
 	m_uiActionBar.UpdateStatus();
+	m_uiTimeLine.AdjustScrollZoom(10);
 }
 
 void BaseGraphMainFrame::OnBtnSaveAs()
 {
 	OutputDebugString(_T("¡Ì¥Ê\n"));
 	m_uiActionBar.UpdateStatus();
+	m_uiTimeLine.AdjustScrollZoom(-10);
 }
 
 void BaseGraphMainFrame::OnBtnDefaultAction()

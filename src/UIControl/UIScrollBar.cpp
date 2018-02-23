@@ -300,6 +300,10 @@ void UIScrollBar::ResetScroll(int nWholeLength, int nPageLength, int nPos/* = -1
 	{
 		SetPos(nPos, false);
 	}
+	else
+	{
+		SetPos(m_nPos, false);
+	}
 	if (bRefresh)
 	{
 		Refresh();
@@ -309,19 +313,19 @@ void UIScrollBar::ResetScroll(int nWholeLength, int nPageLength, int nPos/* = -1
 void UIScrollBar::SetPos(int nPos, bool bRefresh/* = true*/)
 {
 	bool bMsg = false;
+	if (nPos < 0)
+	{
+		nPos = 0;
+	}
+	if (nPos > m_nWholeLength - m_nPageLength)
+	{
+		nPos = m_nWholeLength - m_nPageLength;
+	}
 	if (m_nPos != nPos)
 	{
 		bMsg = true;
 	}
 	m_nPos = nPos;
-	if (m_nPos < 0)
-	{
-		m_nPos = 0;
-	}
-	if (m_nPos > m_nWholeLength - m_nPageLength)
-	{
-		m_nPos = m_nWholeLength - m_nPageLength;
-	}
 	if (bRefresh)
 	{
 		Refresh();

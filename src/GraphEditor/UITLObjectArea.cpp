@@ -68,20 +68,6 @@ bool UITLObjectArea::DeleteObjDrawerInfo(CString strID)
 	return false;
 }
 
-int UITLObjectArea::GetTotalLength()
-{
-	int nFrameLength = 0;
-	if (DataBase_GetItemLength(nFrameLength))
-	{
-		nFrameLength = nFrameLength / 2;
-	}
-	else
-	{
-		nFrameLength = 5;
-	}
-	return nFrameLength;
-}
-
 void UITLObjectArea::RearrangeChildPos()
 {
 	if (m_pScrollHor)
@@ -152,7 +138,7 @@ bool UITLObjectArea::SetScrollInfo(bool bRefresh)
 	}
 	if (m_pRightArea)
 	{
-		int nLogicWidth = int((m_pRightArea->GetWidth() - nItemTreeWidth) / fXRatio);
+		int nLogicWidth = int(m_pRightArea->GetWidth() / fXRatio);
 		m_pRightArea->SetScrollInfo(nLogicWidth, nLogicHeight, bRefresh);
 	}
 	return true;
@@ -210,11 +196,33 @@ void UITLObjectArea::SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrol
 
 void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
 {
+	if (fScrollPercent > 1.0f)
+	{
+		fScrollPercent = 1.0f;
+	}
+	else if (fScrollPercent < 0.01f)
+	{
+		fScrollPercent = 0.01f;
+	}
+	
 	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
 	int nRightWidth = m_nWidth - nItemTreeWidth;
-	int nFrameLength = GetTotalLength();
+	int nFrameLength = UITLRuler::Instance().GetDispFrameLength();
 	int nAdjustPreservePercent = UIControl_GetIntValue(ThemeInt_TimeLineAdjustPreservePercent);
 
 	nFrameLength = int(nFrameLength * (1 + 10 / 100.0));
-	UITLRuler::Instance().RecalPixelPerFrame(nRightWidth, nFrameLength, fScrollPercent);
+	fScrollPercent = UITLRuler::Instance().RecalPixelPerFrame(nRightWidth, nFrameLength, fScrollPercent);
+	if (m_pRightArea && m_pScrollHor)
+	{
+		m_pScrollHor->ResetScroll(int(m_pRightArea->GetWidth() / fScrollPercent), m_pRightArea->GetWidth());
+	}
+}
+
+float UITLObjectArea::GetCurrentPercent()
+{
+	if (m_pScrollHor)
+	{
+		return m_pScrollHor->GetPagePercent();
+	}
+	return 1.0f;
 }

@@ -104,14 +104,21 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 
 void UITimeLine::AdjustScrollZoom()
 {
-	if (m_pScrollHor)
+	if (m_pObjectArea)
 	{
-		m_pScrollHor->ResetScroll(1000, 250);
-		if (m_pObjectArea)
-		{
-			m_pObjectArea->AdjustScrollZoom(1.0f);
-			m_pObjectArea->SetScrollInfo();
-		}
+		m_pObjectArea->AdjustScrollZoom(1.0f);
+		m_pObjectArea->SetScrollInfo();
+	}
+}
+
+void UITimeLine::AdjustScrollZoom(int nDeta)
+{
+	if (m_pObjectArea)
+	{
+		float fCurPercent = m_pObjectArea->GetCurrentPercent();
+		fCurPercent += nDeta * 1.0f / 100;
+		m_pObjectArea->AdjustScrollZoom(fCurPercent);
+		m_pObjectArea->SetScrollInfo();
 	}
 }
 
