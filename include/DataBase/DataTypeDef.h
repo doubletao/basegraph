@@ -124,9 +124,9 @@ namespace BaseGraph_DataBase
 			valueDesc.vecValueLimit.push_back(std::make_pair(INT32_MAX, _T("最大值")));
 			break;
 		case ObjActionEnd:
-			valueDesc.nDispIndex = 10 * 25 * 2;
+			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("结束场");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(10 * 25 * 2, BaseGraph_Common::ValueType_INT);
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(INT32_MAX, _T("最大值")));
 			break;

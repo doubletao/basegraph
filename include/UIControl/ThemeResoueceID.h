@@ -16,7 +16,9 @@ enum ThemeIntValueDef
 	ThemeInt_TimeLineItemTrackHeight,//时间线物件关键帧轨道高度
 	ThemeInt_TimeLineItemTreeTabWidth,//时间线物件tree的tab宽度
 	ThemeInt_TimeLineItemTreeWidth,//时间线物件tree的宽度
-	ThemeInt_TimeLinePresetPixel,//时间线比例尺为100%时每帧对应的像素数
+	ThemeInt_TimeLinePixelPerFrameMax,//时间线比例尺每帧最多对应的像素数(放大100倍取整)
+	ThemeInt_TimeLinePixelPerFrameMin,//时间线比例尺每像素最多对应的帧数(放大100倍取整)
+	ThemeInt_TimeLineAdjustPreservePercent,//时间线adjust横向滚动条后预留的空间百分比
 };
 
 enum ThemeFontValueDef

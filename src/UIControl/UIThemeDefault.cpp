@@ -41,6 +41,14 @@ bool UIThemeDefault::Initialize()
 		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineTimeCode, lfFont));
 	}
 
+	{
+		LOGFONT lfFont;
+		memset(&lfFont, 0, sizeof(lfFont));
+		lfFont.lfHeight = -16;
+		lstrcpy(lfFont.lfFaceName, _T("微软雅黑"));
+		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineObjectTrackText, lfFont));
+	}
+
 	/////////////////////////////////////////////////////////////////////
 	//整数
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleHeight, 35));
@@ -58,12 +66,15 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTrackHeight, 20));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeTabWidth, 30));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeWidth, 400));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePresetPixel, 40));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePixelPerFrameMax, 1000));//每帧最多对应10像素(放大一百倍)
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePixelPerFrameMin, 5));//每帧最少对应0.05像素（放大一百倍）
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineAdjustPreservePercent, 10));//时间线adjust横向滚动条后预留的空间百分比
 
 	/////////////////////////////////////////////////////////////////////
 	//颜色
 	m_mapColorList.insert(std::make_pair(ThemeColor_SkinWndTitleText, RGB(233, 233, 233)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineTimeCodeText, RGB(233, 233, 0)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Nor, RGB(233, 233, 0)));
 
 	/////////////////////////////////////////////////////////////////////
 	//图片
@@ -121,6 +132,9 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_ScrollThumbBtn_F, strThemePath + _T("TimeLine\\TimeLineThumbBtn_F.png"));
 		LoadOneImg(ThemeImage_ScrollThumbBtn_D, strThemePath + _T("TimeLine\\TimeLineThumbBtn_D.png"));
 		LoadOneImg(ThemeImage_ScrollThumbBtn_X, strThemePath + _T("TimeLine\\TimeLineThumbBtn_X.png"));
+		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Nor.png"));
+		LoadOneImg(ThemeImage_TimeLineRightObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineRightObjectBkGnd_Nor.png"));
+		LoadOneImg(ThemeImage_TimeLineObjectActionBar_TotalLength, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_TotalLength.png"));
 	} while (false);
 	return true;
 }

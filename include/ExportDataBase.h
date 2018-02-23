@@ -32,7 +32,7 @@ bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, OUT std::
 //属性设置
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
-//统计
+//物件长度（注意，这里的单位是场(按照一帧两场计数)）
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(OUT int & nLength);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);
 //序列化

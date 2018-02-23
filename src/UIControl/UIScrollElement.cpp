@@ -19,7 +19,7 @@ int UIScrollElement::GetRealX()
 	{
 		nRet = m_nX;
 	}
-	return nRet + m_nScrollX;
+	return nRet - m_nScrollX;
 }
 
 int UIScrollElement::GetRealY()
@@ -33,7 +33,7 @@ int UIScrollElement::GetRealY()
 	{
 		nRet = m_nY;
 	}
-	return nRet + m_nScrollY;
+	return nRet - m_nScrollY;
 }
 
 UIScrollElement::UIScrollElement()

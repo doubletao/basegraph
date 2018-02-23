@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UITLObjectArea.h"
+#include "UITLRuler.h"
 #include <assert.h>
 
 UITLObjectArea::UITLObjectArea()
@@ -30,6 +31,20 @@ UITLObjectItem * UITLObjectArea::CreateObjectItem(CString strID)
 	return pObjectItem;
 }
 
+int UITLObjectArea::GetTotalLength()
+{
+	int nFrameLength = 0;
+	if (DataBase_GetItemLength(nFrameLength))
+	{
+		nFrameLength = nFrameLength / 2;
+	}
+	else
+	{
+		nFrameLength = 5;
+	}
+	return nFrameLength;
+}
+
 void UITLObjectArea::DrawElement(CDC * pDC)
 {
 	int nXStart = GetRealX();
@@ -37,35 +52,41 @@ void UITLObjectArea::DrawElement(CDC * pDC)
 	int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
 	int nItemTabWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeTabWidth);
 	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
-	int nPresetPix = UIControl_GetIntValue(ThemeInt_TimeLinePresetPixel);
 	LOGFONT logFont = UIControl_GetFont(ThemeFont_TimeLineObjectTrackText);
 	int nGraListTextColor = UIControl_GetColor(ThemeColor_TimeLineObjectTrackText_Nor);
 	CImage * pLeftBkImage = UIControl_GetImage(ThemeImage_TimeLineLeftObjectBkGnd_Nor);
 	CImage * pRightBkImage = UIControl_GetImage(ThemeImage_TimeLineRightObjectBkGnd_Nor);
 	CImage * pActionBarImage = UIControl_GetImage(ThemeImage_TimeLineObjectActionBar_TotalLength);
 
-	int nCurrentYPos = 0;
+	int nCurrentYPos = nYStart;
 	//绘制一个总长度条
 	if (pLeftBkImage
 		&& pRightBkImage
 		&& pActionBarImage)
 	{
 		CRect rtLeft(0, nCurrentYPos, nItemTreeWidth, nCurrentYPos + nItemHeight);
-		rtLeft.OffsetRect(nXStart, nYStart);
 		CRect rtRight(nItemTreeWidth, nCurrentYPos, m_nWidth, nCurrentYPos + nItemHeight);
-		rtRight.OffsetRect(nXStart, nYStart);
 
 		pLeftBkImage->AlphaBlend(pDC->GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pLeftBkImage->GetWidth(), pLeftBkImage->GetHeight());
 		pRightBkImage->AlphaBlend(pDC->GetSafeHdc(), rtRight.left, rtRight.top, rtRight.Width(), rtRight.Height(), 0, 0, pRightBkImage->GetWidth(), pRightBkImage->GetHeight());
+
+		//取出当前总长及当前比例尺，画总长条
+		int nBarLength = int(GetTotalLength() * UITLRuler::Instance().GetPixelPerFrame());
+
+		CRect rtBar(nItemTreeWidth, nCurrentYPos + 1, nItemTreeWidth + nBarLength, nCurrentYPos + nItemHeight - 1);
+		rtBar.OffsetRect(nXStart, 0);//bar需要考虑滚动条的滚动
+		pActionBarImage->AlphaBlend(pDC->GetSafeHdc(), rtBar.left, rtBar.top, rtBar.Width(), rtBar.Height(), 0, 0, pActionBarImage->GetWidth(), pActionBarImage->GetHeight());
 	}
 	//在两个tab的地方绘制文本绘制文本
 	CFont font;
 	font.CreateFontIndirect(&logFont);
 	CFont * pOldFont = pDC->SelectObject(&font);
-	CRect rtText(nItemTabWidth * 2, nCurrentYPos, nItemTabWidth * 2 + nItemTreeWidth, nCurrentYPos + nItemHeight);
+	CRect rtText(nItemTabWidth, nCurrentYPos, nItemTabWidth * 2 + nItemTreeWidth, nCurrentYPos + nItemHeight);
 	pDC->SetTextColor(nGraListTextColor);
-	pDC->DrawText(_T("字幕单"), rtText, DT_SINGLELINE | DT_LEFT | DT_CENTER);
+	int nOldBkMode = pDC->SetBkMode(TRANSPARENT);
+	pDC->DrawText(_T("字幕单"), rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
 	pDC->SelectObject(pOldFont);
+	pDC->SetBkMode(nOldBkMode);
 
 	nCurrentYPos += nItemHeight;
 	//绘制各个物件
@@ -106,4 +127,15 @@ bool UITLObjectArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HW
 	}
 
 	return false;
+}
+
+void UITLObjectArea::AdjustScrollZoom()
+{
+	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
+	int nRightWidth = m_nWidth - nItemTreeWidth;
+	int nFrameLength = GetTotalLength();
+	int nAdjustPreservePercent = UIControl_GetIntValue(ThemeInt_TimeLineAdjustPreservePercent);
+
+	nFrameLength = int(nFrameLength * (1 + 10 / 100.0));
+	UITLRuler::Instance().RecalPixelPerFrame(nRightWidth, nFrameLength, 1.0f);
 }

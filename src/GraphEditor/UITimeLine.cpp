@@ -60,6 +60,7 @@ void UITimeLine::RearrangeChildPos()
 	if (m_pObjectArea)
 	{
 		m_pObjectArea->MoveTo(0, nTimeCodeHeight, m_nWidth, m_nHeight - nTimeCodeHeight);
+		m_pObjectArea->SetScrollInfo(m_nWidth * 4, m_nHeight - nTimeCodeHeight);
 	}
 }
 
@@ -72,6 +73,11 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 			CString strDebug;
 			strDebug.Format(_T("m_nID=%d, m_nPos=%d\n"), wParam, lParam);
 			OutputDebugString(strDebug);
+		}
+		if (m_pObjectArea)
+		{
+			//m_pObjectArea->AdjustScrollZoom();
+			m_pObjectArea->SetScrollXPos((int)lParam);
 		}
 		return true;
 	}
