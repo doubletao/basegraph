@@ -2,8 +2,12 @@
 #include "UITLObjectArea.h"
 #include "UITLRuler.h"
 #include <assert.h>
+#include "GraphEditorCommonDef.h"
 
 UITLObjectArea::UITLObjectArea()
+	: m_pLeftArea(nullptr)
+	, m_pRightArea(nullptr)
+	, m_pScrollHor(nullptr)
 {
 }
 
@@ -20,6 +24,16 @@ UITLObjectArea::~UITLObjectArea()
 		}
 	}
 	m_mapObjDrawerInfo.clear();
+	if (m_pLeftArea)
+	{
+		delete m_pLeftArea;
+		m_pLeftArea = nullptr;
+	}
+	if (m_pRightArea)
+	{
+		delete m_pRightArea;
+		m_pRightArea = nullptr;
+	}
 }
 
 UITLObjectItem * UITLObjectArea::CreateObjectItem(CString strID)
@@ -29,6 +43,28 @@ UITLObjectItem * UITLObjectArea::CreateObjectItem(CString strID)
 	pObjectItem->SetExpand(false);
 	m_mapObjDrawerInfo.insert(std::make_pair(strID, pObjectItem));
 	return pObjectItem;
+}
+
+std::map<CString, UITLObjectItem*>& UITLObjectArea::GetObjDrawerInfo()
+{
+	return m_mapObjDrawerInfo;
+}
+
+UITLObjectItem * UITLObjectArea::GetObjDrawerInfo(CString strID)
+{
+	if (m_mapObjDrawerInfo.count(strID) > 0)
+	{
+		return m_mapObjDrawerInfo[strID];
+	}
+	else
+	{
+		return CreateObjectItem(strID);
+	}
+}
+
+bool UITLObjectArea::DeleteObjDrawerInfo(CString strID)
+{
+	return false;
 }
 
 int UITLObjectArea::GetTotalLength()
@@ -45,76 +81,28 @@ int UITLObjectArea::GetTotalLength()
 	return nFrameLength;
 }
 
+void UITLObjectArea::RearrangeChildPos()
+{
+	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
+	if (m_pLeftArea)
+	{
+		m_pLeftArea->MoveTo(0, 0, nItemTreeWidth, m_nHeight);
+	}
+	if (m_pRightArea)
+	{
+		m_pRightArea->MoveTo(nItemTreeWidth, 0, m_nWidth - nItemTreeWidth, m_nHeight);
+	}
+}
+
 void UITLObjectArea::DrawElement(CDC * pDC)
 {
-	int nXStart = GetRealX();
-	int nYStart = GetRealY();
-	int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
-	int nItemTabWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeTabWidth);
-	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
-	LOGFONT logFont = UIControl_GetFont(ThemeFont_TimeLineObjectTrackText);
-	int nGraListTextColor = UIControl_GetColor(ThemeColor_TimeLineObjectTrackText_Nor);
-	CImage * pLeftBkImage = UIControl_GetImage(ThemeImage_TimeLineLeftObjectBkGnd_Nor);
-	CImage * pRightBkImage = UIControl_GetImage(ThemeImage_TimeLineRightObjectBkGnd_Nor);
-	CImage * pActionBarImage = UIControl_GetImage(ThemeImage_TimeLineObjectActionBar_TotalLength);
-
-	int nCurrentYPos = nYStart;
-	//绘制一个总长度条
-	if (pLeftBkImage
-		&& pRightBkImage
-		&& pActionBarImage)
+	if (m_pLeftArea)
 	{
-		CRect rtLeft(0, nCurrentYPos, nItemTreeWidth, nCurrentYPos + nItemHeight);
-		CRect rtRight(nItemTreeWidth, nCurrentYPos, m_nWidth, nCurrentYPos + nItemHeight);
-
-		pLeftBkImage->AlphaBlend(pDC->GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pLeftBkImage->GetWidth(), pLeftBkImage->GetHeight());
-		pRightBkImage->AlphaBlend(pDC->GetSafeHdc(), rtRight.left, rtRight.top, rtRight.Width(), rtRight.Height(), 0, 0, pRightBkImage->GetWidth(), pRightBkImage->GetHeight());
-
-		//取出当前总长及当前比例尺，画总长条
-		int nBarLength = int(GetTotalLength() * UITLRuler::Instance().GetPixelPerFrame());
-
-		CRect rtBar(nItemTreeWidth, nCurrentYPos + 1, nItemTreeWidth + nBarLength, nCurrentYPos + nItemHeight - 1);
-		rtBar.OffsetRect(nXStart, 0);//bar需要考虑滚动条的滚动
-		pActionBarImage->AlphaBlend(pDC->GetSafeHdc(), rtBar.left, rtBar.top, rtBar.Width(), rtBar.Height(), 0, 0, pActionBarImage->GetWidth(), pActionBarImage->GetHeight());
+		m_pLeftArea->DrawElement(pDC);
 	}
-	//在两个tab的地方绘制文本绘制文本
-	CFont font;
-	font.CreateFontIndirect(&logFont);
-	CFont * pOldFont = pDC->SelectObject(&font);
-	CRect rtText(nItemTabWidth, nCurrentYPos, nItemTabWidth * 2 + nItemTreeWidth, nCurrentYPos + nItemHeight);
-	pDC->SetTextColor(nGraListTextColor);
-	int nOldBkMode = pDC->SetBkMode(TRANSPARENT);
-	pDC->DrawText(_T("字幕单"), rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
-	pDC->SelectObject(pOldFont);
-	pDC->SetBkMode(nOldBkMode);
-
-	nCurrentYPos += nItemHeight;
-	//绘制各个物件
-	std::vector<CString> strObjID;
-	DataBase_GetAllItemID(strObjID);
-	UITLObjectItem * pObjectEle = nullptr;
-	for (size_t i = 0; i < strObjID.size(); i++)
+	if (m_pRightArea)
 	{
-		CString strID = strObjID[i];
-		if (m_mapObjDrawerInfo.count(strID) > 0)
-		{
-			pObjectEle = m_mapObjDrawerInfo[strID];
-		}
-		else
-		{
-			//不存在则创建
-			pObjectEle = CreateObjectItem(strID);
-		}
-		if (pObjectEle)
-		{
-			//pObjectEle->MoveTo(0, nCurrentYPos, false);
-			//pObjectEle->DrawElement(pDC);
-			//nCurrentYPos += pObjectEle->GetHeight();
-		}
-		else
-		{
-			assert(false);
-		}
+		m_pRightArea->DrawElement(pDC);
 	}
 }
 
@@ -123,10 +111,76 @@ bool UITLObjectArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HW
 	if (!m_bCreated)
 	{
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParentElement);
+
+		m_pLeftArea = new UITLObjectLeftArea;
+		m_pLeftArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectLeftArea, hParentWnd, this);
+
+		m_pRightArea = new UITLObjectRightArea;
+		m_pRightArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectRightArea, hParentWnd, this);
+
 		return true;
 	}
 
 	return false;
+}
+
+bool UITLObjectArea::SetScrollInfo(int nLogicWidth, int nLogicHeight, bool bRefresh)
+{
+	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
+	if (m_pLeftArea)
+	{
+		m_pLeftArea->SetScrollInfo(nItemTreeWidth, nLogicHeight, bRefresh);
+	}
+	if (m_pRightArea)
+	{
+		m_pRightArea->SetScrollInfo(nLogicWidth - nItemTreeWidth, nLogicHeight, bRefresh);
+	}
+	return true;
+}
+
+bool UITLObjectArea::SetScrollXPos(int nXPos, bool bRefresh)
+{
+	if (m_pRightArea)
+	{
+		m_pRightArea->SetScrollXPos(nXPos, bRefresh);
+	}
+	return true;
+}
+
+bool UITLObjectArea::SetScrollYPos(int nYPos, bool bRefresh)
+{
+	if (m_pLeftArea)
+	{
+		m_pLeftArea->SetScrollXPos(nYPos, bRefresh);
+	}
+	if (m_pRightArea)
+	{
+		m_pRightArea->SetScrollXPos(nYPos, bRefresh);
+	}
+	return true;
+}
+
+int UITLObjectArea::GetScrollXPos()
+{
+	if (m_pRightArea)
+	{
+		return m_pRightArea->GetScrollXPos();
+	}
+	return 0;
+}
+
+int UITLObjectArea::GetScrollYPos()
+{
+	if (m_pRightArea)
+	{
+		return m_pRightArea->GetScrollYPos();
+	}
+	return 0;
+}
+
+void UITLObjectArea::SetScrollBar(UIScrollBar * pScrollHor)
+{
+	m_pScrollHor = pScrollHor;
 }
 
 void UITLObjectArea::AdjustScrollZoom()

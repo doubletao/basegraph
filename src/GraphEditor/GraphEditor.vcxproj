@@ -130,6 +130,8 @@
     <ClCompile Include="UITimeLine.cpp" />
     <ClCompile Include="UITLObjectArea.cpp" />
     <ClCompile Include="UITLObjectItem.cpp" />
+    <ClCompile Include="UITLObjectLeftArea.cpp" />
+    <ClCompile Include="UITLObjectRightArea.cpp" />
     <ClCompile Include="UITLRuler.cpp" />
     <ClCompile Include="UITLTimeCode.cpp" />
   </ItemGroup>
@@ -151,6 +153,8 @@
     <ClInclude Include="UITimeLine.h" />
     <ClInclude Include="UITLObjectArea.h" />
     <ClInclude Include="UITLObjectItem.h" />
+    <ClInclude Include="UITLObjectLeftArea.h" />
+    <ClInclude Include="UITLObjectRightArea.h" />
     <ClInclude Include="UITLRuler.h" />
     <ClInclude Include="UITLTimeCode.h" />
   </ItemGroup>

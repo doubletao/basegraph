@@ -57,7 +57,7 @@ void UIScrollBar::Recalculate(bool bRefresh/* = true*/)
 	{
 		float fRatio = m_nWholeLength * 1.0f / (m_nHeight - m_nWidth * 2);
 		m_pBtnLeftTop->MoveTo(0, 0, m_nWidth, m_nWidth, bRefresh);
-		m_pBtnRightBottom->MoveTo(0, m_nHeight - m_nWidth, m_nHeight, m_nHeight, bRefresh);
+		m_pBtnRightBottom->MoveTo(0, m_nHeight - m_nWidth, m_nWidth, m_nWidth, bRefresh);
 		m_pBtnThumb->MoveTo(GetThumbRect(), bRefresh);
 	}
 }
@@ -180,8 +180,8 @@ CRect UIScrollBar::GetThumbRect()
 	}
 	else
 	{
-		float fRatio = m_nWholeLength * 1.0f / (m_nHeight - m_nWidth * 2);
-		rtRet.SetRect(0, (int)(m_nWidth + m_nPos * fRatio), m_nHeight, (int)(m_nWidth + (m_nPos + m_nPageLength) * fRatio));
+		float fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
+		rtRet.SetRect(0, (int)(m_nWidth + m_nPos * fRatio), m_nWidth, (int)(m_nWidth + (m_nPos + m_nPageLength) * fRatio));
 	}
 	return rtRet;
 }
@@ -370,4 +370,13 @@ void UIScrollBar::SetPageLength(int nPageLength, bool bRefresh/* = true*/)
 int UIScrollBar::GetPageLength()
 {
 	return m_nPageLength;
+}
+
+float UIScrollBar::GetPagePercent()
+{
+	if (m_nWholeLength > 0)
+	{
+		return m_nPageLength * 1.0f / m_nWholeLength;
+	}
+	return 0.0f;
 }

@@ -9,6 +9,7 @@ class UITimeLine :
 protected:
 	UITLTimeCode * m_pTimeCode;
 	UIScrollBar * m_pScrollHor;
+	UIScrollBar * m_pScrollVer;
 	UITLObjectArea * m_pObjectArea;
 public:
 	UITimeLine();
@@ -23,5 +24,6 @@ protected:
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	void AdjustScrollZoom();
 };
 

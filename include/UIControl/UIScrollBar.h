@@ -45,4 +45,5 @@ public:
 	int GetWholeLength();
 	void SetPageLength(int nPageLength, bool bRefresh = true);
 	int GetPageLength();
+	float GetPagePercent();
 };

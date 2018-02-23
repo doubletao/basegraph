@@ -85,4 +85,6 @@ enum ThemeImageValueDef
 	ThemeImage_TimeLineRightObjectBkGnd_Nor,
 	ThemeImage_TimeLineRightObjectBkGnd_Sel,
 	ThemeImage_TimeLineObjectActionBar_TotalLength,
+	ThemeImage_TimeLineObjectLeftAreaBk,
+	ThemeImage_TimeLineObjectRightAreaBk,
 };

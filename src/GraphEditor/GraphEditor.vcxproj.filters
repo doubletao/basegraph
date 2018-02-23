@@ -84,6 +84,12 @@
     <ClCompile Include="UITLObjectItem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="UITLObjectLeftArea.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLObjectRightArea.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -141,6 +147,12 @@
       <Filter>TimeLine</Filter>
     </ClInclude>
     <ClInclude Include="UITLObjectItem.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLObjectLeftArea.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLObjectRightArea.h">
       <Filter>TimeLine</Filter>
     </ClInclude>
   </ItemGroup>

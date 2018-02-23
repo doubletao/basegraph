@@ -135,6 +135,8 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Nor.png"));
 		LoadOneImg(ThemeImage_TimeLineRightObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineRightObjectBkGnd_Nor.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectActionBar_TotalLength, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_TotalLength.png"));
+		LoadOneImg(ThemeImage_TimeLineObjectLeftAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectLeftAreaBk.png"));
+		LoadOneImg(ThemeImage_TimeLineObjectRightAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectRightAreaBk.png"));
 	} while (false);
 	return true;
 }
