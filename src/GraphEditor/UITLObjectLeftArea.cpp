@@ -13,16 +13,13 @@ UITLObjectLeftArea::~UITLObjectLeftArea()
 
 void UITLObjectLeftArea::DrawElement(CDC * pDC)
 {
-	int nXStart = GetRealX();
-	int nYStart = GetRealY();
-	CRect rcClient(nXStart, nYStart, nXStart + m_nLogicWidth, nYStart + m_nLogicHeight);
+	int nXStart = GetRealX() + m_nScrollX;
+	int nYStart = GetRealY() + m_nScrollY;
+	CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
 
-	CDC dcMem;
-	CBitmap bmpMem;
-	dcMem.CreateCompatibleDC(NULL);
-	bmpMem.CreateCompatibleBitmap(pDC, m_nLogicWidth, m_nLogicHeight);
-	dcMem.SelectObject(&bmpMem);
-	dcMem.SetBkMode(TRANSPARENT);
+	CRgn rgnDC;
+	rgnDC.CreateRectRgnIndirect(rcClient);
+	pDC->SelectClipRgn(&rgnDC);
 
 	int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
 	int nItemTabWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeTabWidth);
@@ -34,31 +31,31 @@ void UITLObjectLeftArea::DrawElement(CDC * pDC)
 	//绘制背景
 	if (pLeftAreaBkImage)
 	{
-		CRect rtBk(0, 0, m_nWidth, m_nHeight);
-		pLeftAreaBkImage->AlphaBlend(dcMem.GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pLeftAreaBkImage->GetWidth(), pLeftAreaBkImage->GetHeight());
+		CRect rtBk(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
+		pLeftAreaBkImage->AlphaBlend(pDC->GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pLeftAreaBkImage->GetWidth(), pLeftAreaBkImage->GetHeight());
 	}
 
 	//绘制首条底色
 	if (pLeftBkImage)
 	{
-		CRect rtLeft(0, 0, m_nWidth, nItemHeight);
-		pLeftBkImage->AlphaBlend(dcMem.GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pLeftBkImage->GetWidth(), pLeftBkImage->GetHeight());
+		CRect rtLeft(nXStart, nYStart, nXStart + m_nWidth, nYStart + nItemHeight);
+		rtLeft.OffsetRect(-m_nScrollX, -m_nScrollY);
+		pLeftBkImage->AlphaBlend(pDC->GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pLeftBkImage->GetWidth(), pLeftBkImage->GetHeight());
 	}
 	//在两个tab的地方绘制文本绘制文本
 	CFont font;
 	font.CreateFontIndirect(&logFont);
-	CFont * pOldFont = dcMem.SelectObject(&font);
-	CRect rtText(nItemTabWidth, 0, nItemTabWidth * 2 + m_nWidth, nItemHeight);
-	dcMem.SetTextColor(nGraListTextColor);
-	int nOldBkMode = dcMem.SetBkMode(TRANSPARENT);
-	dcMem.DrawText(_T("字幕单"), rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
-	dcMem.SelectObject(pOldFont);
-	dcMem.SetBkMode(nOldBkMode);
+	CFont * pOldFont = pDC->SelectObject(&font);
+	pDC->SetTextColor(nGraListTextColor);
+	int nOldBkMode = pDC->SetBkMode(TRANSPARENT);
+	CSize sizText = pDC->GetTextExtent(_T("字幕单"));
+	CRect rtText(nXStart + nItemTabWidth, nYStart, nXStart + nItemTabWidth + sizText.cx, nYStart + nItemHeight);
+	rtText.OffsetRect(-m_nScrollX, -m_nScrollY);
+	pDC->DrawText(_T("字幕单"), rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
+	pDC->SelectObject(pOldFont);
+	pDC->SetBkMode(nOldBkMode);
 
-	pDC->BitBlt(rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), &dcMem, 0, 0, SRCCOPY);
-
-	bmpMem.DeleteObject();
-	dcMem.DeleteDC();
+	pDC->SelectClipRgn(NULL);
 }
 
 bool UITLObjectLeftArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement)

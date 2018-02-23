@@ -11,6 +11,7 @@ public:
 	virtual ~UITLObjectArea();
 protected:
 	UIScrollBar * m_pScrollHor;
+	UIScrollBar * m_pScrollVer;
 	std::map<CString, UITLObjectItem *> m_mapObjDrawerInfo;//绘制信息的集合
 	UITLObjectLeftArea * m_pLeftArea;
 	UITLObjectRightArea * m_pRightArea;
@@ -22,13 +23,13 @@ public:
 	virtual void DrawElement(CDC * pDC);
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement);
 
-	bool SetScrollInfo(int nLogicWidth, int nLogicHeight, bool bRefresh = true);
+	bool SetScrollInfo(bool bRefresh = true);
 	bool SetScrollXPos(int nXPos, bool bRefresh = true);
 	bool SetScrollYPos(int nYPos, bool bRefresh = true);
 	int GetScrollXPos();
 	int GetScrollYPos();
 
-	void SetScrollBar(UIScrollBar * pScrollHor);
+	void SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrollVer);
 
 	void AdjustScrollZoom(float fScrollPercent);//按比例缩放frame总长使得横向滚动条满屏
 	std::map<CString, UITLObjectItem *> & GetObjDrawerInfo();

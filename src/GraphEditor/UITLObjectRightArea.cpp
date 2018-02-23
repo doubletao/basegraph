@@ -28,12 +28,9 @@ void UITLObjectRightArea::DrawElement(CDC * pDC)
 	int nYStart = GetRealY() + m_nScrollY;
 	CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
 
-	CDC dcMem;
-	CBitmap bmpMem;
-	dcMem.CreateCompatibleDC(NULL);
-	bmpMem.CreateCompatibleBitmap(pDC, m_nLogicWidth, m_nLogicHeight);
-	dcMem.SelectObject(&bmpMem);
-	dcMem.SetBkMode(TRANSPARENT);
+	CRgn rgnDC;
+	rgnDC.CreateRectRgnIndirect(rcClient);
+	pDC->SelectClipRgn(&rgnDC);
 
 	int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
 	CImage * pRightBkImage = UIControl_GetImage(ThemeImage_TimeLineRightObjectBkGnd_Nor);
@@ -43,15 +40,15 @@ void UITLObjectRightArea::DrawElement(CDC * pDC)
 	//绘制背景
 	if (pRightAreaBkImage)
 	{
-		CRect rtBk(0, 0, m_nWidth, m_nHeight);
-		pRightAreaBkImage->AlphaBlend(dcMem.GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pRightAreaBkImage->GetWidth(), pRightAreaBkImage->GetHeight());
+		CRect rtBk(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
+		pRightAreaBkImage->AlphaBlend(pDC->GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pRightAreaBkImage->GetWidth(), pRightAreaBkImage->GetHeight());
 	}
 
 	//绘制一个总长度条底色
 	if (pRightBkImage)
 	{
-		CRect rtLeft(0, 0, m_nWidth, nItemHeight);
-		pRightBkImage->AlphaBlend(dcMem.GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pRightBkImage->GetWidth(), pRightBkImage->GetHeight());
+		CRect rtLeft(nXStart, nYStart, nXStart + m_nWidth, nYStart + nItemHeight);
+		pRightBkImage->AlphaBlend(pDC->GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pRightBkImage->GetWidth(), pRightBkImage->GetHeight());
 	}
 
 	//绘制总长度条
@@ -60,12 +57,10 @@ void UITLObjectRightArea::DrawElement(CDC * pDC)
 		//取出当前总长及当前比例尺，画总长条
 		int nBarLength = int(m_pObjectArea->GetTotalLength() * UITLRuler::Instance().GetPixelPerFrame());
 
-		CRect rtBar(0, 0, nBarLength, nItemHeight);
-		pActionBarImage->AlphaBlend(dcMem.GetSafeHdc(), rtBar.left, rtBar.top, rtBar.Width(), rtBar.Height(), 0, 0, pActionBarImage->GetWidth(), pActionBarImage->GetHeight());
+		CRect rtBar(nXStart, nYStart, nXStart + nBarLength, nYStart + nItemHeight);
+		rtBar.OffsetRect(-m_nScrollX, -m_nScrollY);
+		pActionBarImage->AlphaBlend(pDC->GetSafeHdc(), rtBar.left, rtBar.top, rtBar.Width(), rtBar.Height(), 0, 0, pActionBarImage->GetWidth(), pActionBarImage->GetHeight());
 	}
 
-	pDC->BitBlt(rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), &dcMem, m_nScrollX, m_nScrollY, SRCCOPY);
-
-	bmpMem.DeleteObject();
-	dcMem.DeleteDC();
+	pDC->SelectClipRgn(NULL);
 }

@@ -85,10 +85,10 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UITLObjectLeftArea.cpp">
-      <Filter>源文件</Filter>
+      <Filter>TimeLine</Filter>
     </ClCompile>
     <ClCompile Include="UITLObjectRightArea.cpp">
-      <Filter>源文件</Filter>
+      <Filter>TimeLine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

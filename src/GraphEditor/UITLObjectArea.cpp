@@ -8,6 +8,7 @@ UITLObjectArea::UITLObjectArea()
 	: m_pLeftArea(nullptr)
 	, m_pRightArea(nullptr)
 	, m_pScrollHor(nullptr)
+	, m_pScrollVer(nullptr)
 {
 }
 
@@ -128,8 +129,22 @@ bool UITLObjectArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HW
 	return false;
 }
 
-bool UITLObjectArea::SetScrollInfo(int nLogicWidth, int nLogicHeight, bool bRefresh)
+bool UITLObjectArea::SetScrollInfo(bool bRefresh)
 {
+	float fXRatio = 1.0f;
+	float fYRatio = 1.0f;
+
+	if (m_pScrollHor)
+	{
+		fXRatio = m_pScrollHor->GetPagePercent();
+	}
+	if (m_pScrollVer)
+	{
+		fYRatio = m_pScrollVer->GetPagePercent();
+	}
+
+	int nLogicHeight = int(m_nHeight / fYRatio);
+
 	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
 	if (m_pLeftArea)
 	{
@@ -137,13 +152,18 @@ bool UITLObjectArea::SetScrollInfo(int nLogicWidth, int nLogicHeight, bool bRefr
 	}
 	if (m_pRightArea)
 	{
-		m_pRightArea->SetScrollInfo(nLogicWidth - nItemTreeWidth, nLogicHeight, bRefresh);
+		int nLogicWidth = int((m_pRightArea->GetWidth() - nItemTreeWidth) / fXRatio);
+		m_pRightArea->SetScrollInfo(nLogicWidth, nLogicHeight, bRefresh);
 	}
 	return true;
 }
 
 bool UITLObjectArea::SetScrollXPos(int nXPos, bool bRefresh)
 {
+	if (m_pLeftArea)
+	{
+		m_pLeftArea->SetScrollXPos(nXPos, bRefresh);
+	}
 	if (m_pRightArea)
 	{
 		m_pRightArea->SetScrollXPos(nXPos, bRefresh);
@@ -155,11 +175,11 @@ bool UITLObjectArea::SetScrollYPos(int nYPos, bool bRefresh)
 {
 	if (m_pLeftArea)
 	{
-		m_pLeftArea->SetScrollXPos(nYPos, bRefresh);
+		m_pLeftArea->SetScrollYPos(nYPos, bRefresh);
 	}
 	if (m_pRightArea)
 	{
-		m_pRightArea->SetScrollXPos(nYPos, bRefresh);
+		m_pRightArea->SetScrollYPos(nYPos, bRefresh);
 	}
 	return true;
 }
@@ -182,9 +202,10 @@ int UITLObjectArea::GetScrollYPos()
 	return 0;
 }
 
-void UITLObjectArea::SetScrollBar(UIScrollBar * pScrollHor)
+void UITLObjectArea::SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrollVer)
 {
 	m_pScrollHor = pScrollHor;
+	m_pScrollVer = pScrollVer;
 }
 
 void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
@@ -195,5 +216,5 @@ void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
 	int nAdjustPreservePercent = UIControl_GetIntValue(ThemeInt_TimeLineAdjustPreservePercent);
 
 	nFrameLength = int(nFrameLength * (1 + 10 / 100.0));
-	UITLRuler::Instance().RecalPixelPerFrame(nRightWidth, nFrameLength, 1.0f);
+	UITLRuler::Instance().RecalPixelPerFrame(nRightWidth, nFrameLength, fScrollPercent);
 }

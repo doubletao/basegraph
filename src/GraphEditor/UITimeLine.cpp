@@ -46,7 +46,7 @@ void UITimeLine::InitializeObject()
 
 	m_pObjectArea = new UITLObjectArea;
 	m_pObjectArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectArea, m_hParentWnd, this);
-	m_pObjectArea->SetScrollBar(m_pScrollHor);
+	m_pObjectArea->SetScrollBar(m_pScrollHor, m_pScrollVer);
 	m_vecChildElement.push_back(m_pObjectArea);
 }
 
@@ -58,25 +58,18 @@ void UITimeLine::RearrangeChildPos()
 	{
 		m_pTimeCode->MoveTo(0, 0, nTimeCodeWidth, nTimeCodeHeight);
 	}
-	float fXRatio = 1.0f;
-	float fYRatio = 1.0f;
 	if (m_pScrollHor)
 	{
 		m_pScrollHor->MoveTo(nTimeCodeWidth, 0, m_nWidth - nTimeCodeWidth, nTimeCodeHeight / 2);
-		m_pScrollHor->ResetScroll(1000, 250);
-		fXRatio = m_pScrollHor->GetPagePercent();
 	}
 	if (m_pScrollVer)
 	{
 		m_pScrollVer->MoveTo(m_nWidth - nTimeCodeHeight / 2, nTimeCodeHeight, nTimeCodeHeight / 2, m_nHeight - nTimeCodeHeight);
-		fYRatio = m_pScrollHor->GetPagePercent();
 	}
 	if (m_pObjectArea)
 	{
 		m_pObjectArea->MoveTo(0, nTimeCodeHeight, m_nWidth - nTimeCodeHeight / 2, m_nHeight - nTimeCodeHeight);
-		int nLogicWidth = int(m_pObjectArea->GetWidth() / fXRatio);
-		int nLogicHeight = int(m_pObjectArea->GetHeight() / fYRatio);
-		m_pObjectArea->SetScrollInfo(nLogicWidth, nLogicHeight);
+		m_pObjectArea->SetScrollInfo();
 	}
 }
 
@@ -113,12 +106,11 @@ void UITimeLine::AdjustScrollZoom()
 {
 	if (m_pScrollHor)
 	{
+		m_pScrollHor->ResetScroll(1000, 250);
 		if (m_pObjectArea)
 		{
 			m_pObjectArea->AdjustScrollZoom(1.0f);
-			int nLogicWidth = int(m_pObjectArea->GetWidth() / m_pScrollHor->GetPagePercent());
-			int nLogicHeight = int(m_pObjectArea->GetHeight() / m_pScrollHor->GetPagePercent());
-			m_pObjectArea->SetScrollInfo(nLogicWidth, nLogicHeight);
+			m_pObjectArea->SetScrollInfo();
 		}
 	}
 }
