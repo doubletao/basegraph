@@ -98,18 +98,18 @@ void UITLRuler::DrawElement(CDC * pDC)
 		//为确保刻度视觉效果，刻度应该有最小像素数和最大像素数
 		int nGapMinPixel = UIControl_GetIntValue(ThemeInt_TimeLineRulerGapMinPixel);
 		int nGapMaxPixel = UIControl_GetIntValue(ThemeInt_TimeLineRulerGapMaxPixel);
-		//于是推出【条件1】：每刻度表达的帧数乘以每帧像素数得出的每刻度像素数应当介于刻度最小像素数和最大像素数之间
-		//由【条件1】反推出每刻度表达帧数的最大值及最小值
+		//于是得出【公式】：每刻度表达的帧数乘以每帧像素数得出的每刻度像素数应当介于刻度最小像素数和最大像素数之间
+		//由【公式】反推出每刻度表达帧数的最大值及最小值
 		int nFramePerGapMin = (int)ceil(nGapMinPixel / m_fPixelPerFrame);
 		int nFramePerGapMax = (int)ceil(nGapMaxPixel / m_fPixelPerFrame);
 		if (nFramePerGapMin <= nFramePerGapMax)
 		{
-			//理论上区间[nFramePerGapMin, nFramePerGapMax]内的值都可以用，所以干脆取个中间值
+			//理论上区间[nFramePerGapMin, nFramePerGapMax]内的值都可以用，为了好看，我们干脆取个中间值
 			nFramePerGap = (nFramePerGapMin + nFramePerGapMax) / 2;
 		}
 		else
 		{
-			//此时找不到合适的刻度，应当是比例尺失调的情况，干脆以初始值为结果，画个夸张的效果出来
+			//此时找不到合适的刻度，应当是比例尺失调的情况，此时以初始值为结果，画个夸张的效果出来
 		}
 		//求出刻度的总数，刻度总数为frame总数/每刻度帧数
 		int nWholeFrameCount = (int)ceil(m_nWidth / m_pScrollHor->GetPagePercent() / m_fPixelPerFrame);
@@ -127,7 +127,7 @@ void UITLRuler::DrawElement(CDC * pDC)
 				CRect rtLine(nXStart + nXLoop, nYStart + m_nHeight - nLongLineLength, nXStart + nXLoop + 1, nYStart + m_nHeight);
 				rtLine.OffsetRect(-m_nScrollX, -m_nScrollY);
 				pDC->FillSolidRect(rtLine, clLine);
-
+				//画文本
 				CString strText = CommonFunction::ConverFrameToText(nFrame);
 				CFont font;
 				font.CreateFontIndirect(&lgFont);

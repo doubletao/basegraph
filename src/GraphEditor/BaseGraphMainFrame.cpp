@@ -317,6 +317,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mapParam[BaseGraph_DataBase::Image_Path].SetValue(_T("F:\\Media\\ͼƬ\\1.png"));
 	mapParam[BaseGraph_DataBase::Image_DispWidth].SetValue(800, BaseGraph_Common::ValueType_INT);
 	mapParam[BaseGraph_DataBase::Image_DispHeight].SetValue(600, BaseGraph_Common::ValueType_INT);
+	mapParam[BaseGraph_DataBase::ObjActionEnd].SetValue(5000, BaseGraph_Common::ValueType_INT);
 	DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Image, mapParam, strObjID);
 	if (!strObjID.IsEmpty())
 	{
