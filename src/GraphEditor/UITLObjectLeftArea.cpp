@@ -43,15 +43,16 @@ void UITLObjectLeftArea::DrawElement(CDC * pDC)
 		pLeftBkImage->AlphaBlend(pDC->GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pLeftBkImage->GetWidth(), pLeftBkImage->GetHeight());
 	}
 	//在两个tab的地方绘制文本绘制文本
+	CString strText = _T("物件列表");
 	CFont font;
 	font.CreateFontIndirect(&logFont);
 	CFont * pOldFont = pDC->SelectObject(&font);
 	pDC->SetTextColor(nGraListTextColor);
 	int nOldBkMode = pDC->SetBkMode(TRANSPARENT);
-	CSize sizText = pDC->GetTextExtent(_T("字幕单"));
+	CSize sizText = pDC->GetTextExtent(strText);
 	CRect rtText(nXStart + nItemTabWidth, nYStart, nXStart + nItemTabWidth + sizText.cx, nYStart + nItemHeight);
 	rtText.OffsetRect(-m_nScrollX, -m_nScrollY);
-	pDC->DrawText(_T("字幕单"), rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
+	pDC->DrawText(strText, rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
 	pDC->SelectObject(pOldFont);
 	pDC->SetBkMode(nOldBkMode);
 

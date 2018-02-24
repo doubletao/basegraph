@@ -19,6 +19,10 @@ enum ThemeIntValueDef
 	ThemeInt_TimeLinePixelPerFrameMax,//时间线比例尺每帧最多对应的像素数(放大100倍取整)
 	ThemeInt_TimeLinePixelPerFrameMin,//时间线比例尺每像素最多对应的帧数(放大100倍取整)
 	ThemeInt_TimeLineAdjustPreservePercent,//时间线adjust横向滚动条后预留的空间百分比
+	ThemeInt_TimeLineRulerShortLineLength,//时间线刻度尺短线长
+	ThemeInt_TimeLineRulerLongLineLength,//时间线刻度尺长线长
+	ThemeInt_TimeLineRulerGapMinPixel,//时间线刻度尺每刻度的最小像素数
+	ThemeInt_TimeLineRulerGapMaxPixel,//时间线刻度尺每刻度的最大像素数
 };
 
 enum ThemeFontValueDef
@@ -26,6 +30,7 @@ enum ThemeFontValueDef
 	ThemeFont_SkinWndTitleText,
 	ThemeFont_TimeLineTimeCode,
 	ThemeFont_TimeLineObjectTrackText,
+	ThemeFont_TimeLineRuler,//时间线刻度尺字体
 };
 
 enum ThemeColorValueDef
@@ -34,13 +39,15 @@ enum ThemeColorValueDef
 	ThemeColor_TimeLineTimeCodeText,
 	ThemeColor_TimeLineObjectTrackText_Nor,
 	ThemeColor_TimeLineObjectTrackText_Sel,
+	ThemeColor_TimeLineRulerLine,
+	ThemeColor_TimeLineRulerText,
 };
 
 enum ThemeImageValueDef
 {
 	ThemeImage_SkinWndNcBkgrd,
 	ThemeImage_SkinFrameDefaultIcon,
-	
+
 	ThemeImage_SkinWndCloseBtn_N,
 	ThemeImage_SkinWndCloseBtn_F,
 	ThemeImage_SkinWndCloseBtn_D,
@@ -87,4 +94,5 @@ enum ThemeImageValueDef
 	ThemeImage_TimeLineObjectActionBar_TotalLength,
 	ThemeImage_TimeLineObjectLeftAreaBk,
 	ThemeImage_TimeLineObjectRightAreaBk,
+	ThemeImage_TimeLineRulerBk,
 };

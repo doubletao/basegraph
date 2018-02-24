@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Common\DataDef.h"
+#include "Common\CommonFunction.h"
 #include <assert.h>
 
 BaseGraph_Common::Value::Value()
@@ -151,13 +152,7 @@ CString BaseGraph_Common::Value::ToDebugString()
 	case BaseGraph_Common::ValueType_TIME:
 	{
 		int nTmp = ToInt();
-		int nFps = 25;
-		int nWholeSec = nTmp / nFps;
-		int nFrame = nTmp % nFps;
-		int nHour = nWholeSec / 3600;
-		int nMin = nWholeSec % 3600 / 60;
-		int nSec = nWholeSec % 3600 % 60;
-		strRet.Format(_T("frame:%d 25fps:%02d:%02d:%02d:%02d"), nTmp, nHour, nMin, nSec, nFrame);
+		strRet.Format(_T("frame:%d 25fps:%s"), nTmp, CommonFunction::ConverFrameToText(nTmp));
 	}
 		break;
 	case BaseGraph_Common::ValueType_TEXT:

@@ -7,8 +7,6 @@
 UITLObjectArea::UITLObjectArea()
 	: m_pLeftArea(nullptr)
 	, m_pRightArea(nullptr)
-	, m_pScrollHor(nullptr)
-	, m_pScrollVer(nullptr)
 {
 }
 
@@ -70,9 +68,9 @@ bool UITLObjectArea::DeleteObjDrawerInfo(CString strID)
 
 void UITLObjectArea::RearrangeChildPos()
 {
-	if (m_pScrollHor)
+	if (UITLRuler::Instance().GetHScrollBar())
 	{
-		AdjustScrollZoom(m_pScrollHor->GetPagePercent());
+		AdjustScrollZoom(UITLRuler::Instance().GetHScrollBar()->GetPagePercent());
 	}
 	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
 	if (m_pLeftArea)
@@ -95,6 +93,8 @@ void UITLObjectArea::DrawElement(CDC * pDC)
 	{
 		m_pRightArea->DrawElement(pDC);
 	}
+	//标尺的绘制逻辑放在这里调用
+	UITLRuler::Instance().DrawElement(pDC);
 }
 
 bool UITLObjectArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement)
@@ -120,13 +120,13 @@ bool UITLObjectArea::SetScrollInfo(bool bRefresh)
 	float fXRatio = 1.0f;
 	float fYRatio = 1.0f;
 
-	if (m_pScrollHor)
+	if (UITLRuler::Instance().GetHScrollBar())
 	{
-		fXRatio = m_pScrollHor->GetPagePercent();
+		fXRatio = UITLRuler::Instance().GetHScrollBar()->GetPagePercent();
 	}
-	if (m_pScrollVer)
+	if (UITLRuler::Instance().GetVScrollBar())
 	{
-		fYRatio = m_pScrollVer->GetPagePercent();
+		fYRatio = UITLRuler::Instance().GetVScrollBar()->GetPagePercent();
 	}
 
 	int nLogicHeight = int(m_nHeight / fYRatio);
@@ -140,6 +140,8 @@ bool UITLObjectArea::SetScrollInfo(bool bRefresh)
 	{
 		int nLogicWidth = int(m_pRightArea->GetWidth() / fXRatio);
 		m_pRightArea->SetScrollInfo(nLogicWidth, nLogicHeight, bRefresh);
+		nLogicWidth = int(UITLRuler::Instance().GetWidth() / fXRatio);
+		UITLRuler::Instance().SetScrollInfo(nLogicWidth, nLogicHeight, bRefresh);
 	}
 	return true;
 }
@@ -154,6 +156,8 @@ bool UITLObjectArea::SetScrollXPos(int nXPos, bool bRefresh)
 	{
 		m_pRightArea->SetScrollXPos(nXPos, bRefresh);
 	}
+	//尺子的滚动也跟着物件区一起走
+	UITLRuler::Instance().SetScrollXPos(nXPos, bRefresh);
 	return true;
 }
 
@@ -188,12 +192,6 @@ int UITLObjectArea::GetScrollYPos()
 	return 0;
 }
 
-void UITLObjectArea::SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrollVer)
-{
-	m_pScrollHor = pScrollHor;
-	m_pScrollVer = pScrollVer;
-}
-
 void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
 {
 	if (fScrollPercent > 1.0f)
@@ -212,17 +210,17 @@ void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
 
 	nFrameLength = int(nFrameLength * (1 + 10 / 100.0));
 	fScrollPercent = UITLRuler::Instance().RecalPixelPerFrame(nRightWidth, nFrameLength, fScrollPercent);
-	if (m_pRightArea && m_pScrollHor)
+	if (m_pRightArea && UITLRuler::Instance().GetHScrollBar())
 	{
-		m_pScrollHor->ResetScroll(int(m_pRightArea->GetWidth() / fScrollPercent), m_pRightArea->GetWidth());
+		UITLRuler::Instance().GetHScrollBar()->ResetScroll(int(m_pRightArea->GetWidth() / fScrollPercent), m_pRightArea->GetWidth());
 	}
 }
 
 float UITLObjectArea::GetCurrentPercent()
 {
-	if (m_pScrollHor)
+	if (UITLRuler::Instance().GetHScrollBar())
 	{
-		return m_pScrollHor->GetPagePercent();
+		return UITLRuler::Instance().GetHScrollBar()->GetPagePercent();
 	}
 	return 1.0f;
 }

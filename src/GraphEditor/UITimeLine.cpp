@@ -17,6 +17,8 @@ UITimeLine::~UITimeLine()
 
 void UITimeLine::Release()
 {
+	UITLRuler::Instance().SetScrollBar(nullptr, nullptr);
+
 	UIElement::Release();
 	m_pTimeCode = nullptr;
 	m_pScrollHor = nullptr;
@@ -46,8 +48,11 @@ void UITimeLine::InitializeObject()
 
 	m_pObjectArea = new UITLObjectArea;
 	m_pObjectArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectArea, m_hParentWnd, this);
-	m_pObjectArea->SetScrollBar(m_pScrollHor, m_pScrollVer);
 	m_vecChildElement.push_back(m_pObjectArea);
+
+	//标尺在这里初始化，但不push到子物件集合
+	UITLRuler::Instance().Create(0, 0, 10, 10, UIElementMsg_TimeLineRuler, m_hParentWnd, this);
+	UITLRuler::Instance().SetScrollBar(m_pScrollHor, m_pScrollVer);
 }
 
 void UITimeLine::RearrangeChildPos()
@@ -60,7 +65,7 @@ void UITimeLine::RearrangeChildPos()
 	}
 	if (m_pScrollHor)
 	{
-		m_pScrollHor->MoveTo(nTimeCodeWidth, 0, m_nWidth - nTimeCodeWidth, nTimeCodeHeight / 2);
+		m_pScrollHor->MoveTo(nTimeCodeWidth, 0, m_nWidth - nTimeCodeWidth, nTimeCodeHeight / 3);
 	}
 	if (m_pScrollVer)
 	{
@@ -71,6 +76,8 @@ void UITimeLine::RearrangeChildPos()
 		m_pObjectArea->MoveTo(0, nTimeCodeHeight, m_nWidth - nTimeCodeHeight / 2, m_nHeight - nTimeCodeHeight);
 		m_pObjectArea->SetScrollInfo();
 	}
+
+	UITLRuler::Instance().MoveTo(nTimeCodeWidth, nTimeCodeHeight / 3, m_nWidth - nTimeCodeWidth, nTimeCodeHeight * 2 / 3);
 }
 
 bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)

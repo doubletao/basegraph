@@ -32,13 +32,6 @@ bool UITLTimeCode::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentW
 
 void UITLTimeCode::SetFrame(int nFrame, float fFPS/* = 25.0*/)
 {
-	int nFps = (int)fFPS;
-	int nWholeSec = nFrame / nFps;
-	int nFrameTail = nFrame % nFps;
-	int nHour = nWholeSec / 3600;
-	int nMin = nWholeSec % 3600 / 60;
-	int nSec = nWholeSec % 3600 % 60;
-	CString strDisp;
-	strDisp.Format(_T("%02d:%02d:%02d:%02d"), nHour, nMin, nSec, nFrameTail);
+	CString strDisp = CommonFunction::ConverFrameToText(nFrame, fFPS);
 	SetText(strDisp);
 }

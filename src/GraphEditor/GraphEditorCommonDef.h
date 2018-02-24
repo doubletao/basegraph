@@ -37,4 +37,5 @@ enum UIElementMsgDef
 	UIElementMsg_TimeLineObjectArea,
 	UIElementMsg_TimeLineObjectLeftArea,
 	UIElementMsg_TimeLineObjectRightArea,
+	UIElementMsg_TimeLineRuler,
 };

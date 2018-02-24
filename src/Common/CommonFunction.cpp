@@ -77,3 +77,16 @@ void CommonFunction::GetPathAndName(const CString & strSrcFilePath, CString & st
 		strName = strName.Left(nPos);
 	}
 }
+
+CString CommonFunction::ConverFrameToText(int nFrame, float fFPS/* = 25.0*/)
+{
+	int nFps = (int)fFPS;
+	int nWholeSec = nFrame / nFps;
+	int nFrameTail = nFrame % nFps;
+	int nHour = nWholeSec / 3600;
+	int nMin = nWholeSec % 3600 / 60;
+	int nSec = nWholeSec % 3600 % 60;
+	CString strDisp;
+	strDisp.Format(_T("%02d:%02d:%02d:%02d"), nHour, nMin, nSec, nFrameTail);
+	return strDisp;
+}

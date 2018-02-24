@@ -4,6 +4,8 @@
 
 UITLRuler::UITLRuler()
 	: m_fPixelPerFrame(1.0f)
+	, m_pScrollHor(nullptr)
+	, m_pScrollVer(nullptr)
 {
 }
 
@@ -34,6 +36,122 @@ UITLRuler & UITLRuler::Instance()
 {
 	static UITLRuler inst;
 	return inst;
+}
+
+void UITLRuler::SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrollVer)
+{
+	m_pScrollHor = pScrollHor;
+	m_pScrollVer = pScrollVer;
+}
+
+UIScrollBar * UITLRuler::GetHScrollBar()
+{
+	return m_pScrollHor;
+}
+
+UIScrollBar * UITLRuler::GetVScrollBar()
+{
+	return m_pScrollVer;
+}
+
+void UITLRuler::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent)
+{
+	Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
+}
+
+void UITLRuler::DrawElement(CDC * pDC)
+{
+	int nXStart = GetRealX() + m_nScrollX;
+	int nYStart = GetRealY() + m_nScrollY;
+	CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
+
+	CRgn rgnDC;
+	rgnDC.CreateRectRgnIndirect(rcClient);
+	pDC->SelectClipRgn(&rgnDC);
+
+	//短线长，长线长，线色，字体，字色，背景图
+	int nShortLineLength = UIControl_GetIntValue(ThemeInt_TimeLineRulerShortLineLength);
+	int nLongLineLength = UIControl_GetIntValue(ThemeInt_TimeLineRulerLongLineLength);
+	COLORREF clLine = UIControl_GetColor(ThemeColor_TimeLineRulerLine);
+	LOGFONT lgFont = UIControl_GetFont(ThemeFont_TimeLineRuler);
+	COLORREF clText = UIControl_GetColor(ThemeColor_TimeLineRulerText);
+	CImage * pBkImage = UIControl_GetImage(ThemeImage_TimeLineRulerBk);
+
+	//绘制背景
+	if (pBkImage)
+	{
+		CRect rtBk(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
+		pBkImage->AlphaBlend(pDC->GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pBkImage->GetWidth(), pBkImage->GetHeight());
+	}
+
+	//绘制一个标尺底
+	CRect rtBottomLine(nXStart, nYStart + m_nHeight - 1, nXStart + m_nWidth, nYStart + m_nHeight);
+	pDC->FillSolidRect(rtBottomLine, clLine);
+
+	//绘制刻度线及刻度文本
+	if (m_pScrollHor && m_pScrollHor->GetPagePercent()
+		&& m_fPixelPerFrame > 0)
+	{
+		//要进行绘制，需要先决定每一个刻度表达的帧数
+		//为确保每5格可以显示一个5的倍数的文本，每个刻度应该是帧的整数倍
+		int nFramePerGap = 1;//初始化为1倍
+		//为确保刻度视觉效果，刻度应该有最小像素数和最大像素数
+		int nGapMinPixel = UIControl_GetIntValue(ThemeInt_TimeLineRulerGapMinPixel);
+		int nGapMaxPixel = UIControl_GetIntValue(ThemeInt_TimeLineRulerGapMaxPixel);
+		//于是推出【条件1】：每刻度表达的帧数乘以每帧像素数得出的每刻度像素数应当介于刻度最小像素数和最大像素数之间
+		//由【条件1】反推出每刻度表达帧数的最大值及最小值
+		int nFramePerGapMin = (int)ceil(nGapMinPixel / m_fPixelPerFrame);
+		int nFramePerGapMax = (int)ceil(nGapMaxPixel / m_fPixelPerFrame);
+		if (nFramePerGapMin <= nFramePerGapMax)
+		{
+			//理论上区间[nFramePerGapMin, nFramePerGapMax]内的值都可以用，所以干脆取个中间值
+			nFramePerGap = (nFramePerGapMin + nFramePerGapMax) / 2;
+		}
+		else
+		{
+			//此时找不到合适的刻度，应当是比例尺失调的情况，干脆以初始值为结果，画个夸张的效果出来
+		}
+		//求出刻度的总数，刻度总数为frame总数/每刻度帧数
+		int nWholeFrameCount = (int)ceil(m_nWidth / m_pScrollHor->GetPagePercent() / m_fPixelPerFrame);
+		int nGapCount = (int)ceil(nWholeFrameCount * 1.0f / nFramePerGap);
+		//找到了刻度，剩下的就是画了
+		for (int i = 0; i < nGapCount; i++)
+		{
+			//当前刻度的帧数
+			int nFrame = i * nFramePerGap;
+			//横向的X偏移
+			int nXLoop = int(nFrame * m_fPixelPerFrame);
+			if (i % 5 == 0)
+			{
+				//如果刻度是5的倍数，则画个长线画个刻度文本
+				CRect rtLine(nXStart + nXLoop, nYStart + m_nHeight - nLongLineLength, nXStart + nXLoop + 1, nYStart + m_nHeight);
+				rtLine.OffsetRect(-m_nScrollX, -m_nScrollY);
+				pDC->FillSolidRect(rtLine, clLine);
+
+				CString strText = CommonFunction::ConverFrameToText(nFrame);
+				CFont font;
+				font.CreateFontIndirect(&lgFont);
+				CFont * pOldFont = pDC->SelectObject(&font);
+				pDC->SetTextColor(clText);
+				int nOldBkMode = pDC->SetBkMode(TRANSPARENT);
+				CSize sizText = pDC->GetTextExtent(strText);
+				CRect rtText(nXStart + nXLoop, nYStart, nXStart + nXLoop + sizText.cx, nYStart + m_nHeight - nLongLineLength);
+				rtText.OffsetRect(-m_nScrollX, -m_nScrollY);
+				pDC->DrawText(strText, rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
+				pDC->SelectObject(pOldFont);
+				pDC->SetBkMode(nOldBkMode);
+			}
+			else
+			{
+				//否则画个短线
+				CRect rtLine(nXStart + nXLoop, nYStart + m_nHeight - nShortLineLength, nXStart + nXLoop + 1, nYStart + m_nHeight);
+				rtLine.OffsetRect(-m_nScrollX, -m_nScrollY);
+				pDC->FillSolidRect(rtLine, clLine);
+			}
+		}
+	}
+
+	pDC->SelectClipRgn(NULL);
 }
 
 int UITLRuler::GetDispFrameLength()

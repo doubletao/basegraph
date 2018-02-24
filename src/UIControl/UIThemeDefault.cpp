@@ -2,6 +2,7 @@
 #include "UIThemeDefault.h"
 #include "UIControl\ThemeResoueceID.h"
 #include <assert.h>
+#include <vector>
 
 UIThemeDefault::UIThemeDefault()
 {
@@ -49,6 +50,14 @@ bool UIThemeDefault::Initialize()
 		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineObjectTrackText, lfFont));
 	}
 
+	{
+		LOGFONT lfFont;
+		memset(&lfFont, 0, sizeof(lfFont));
+		lfFont.lfHeight = -10;
+		lstrcpy(lfFont.lfFaceName, _T("微软雅黑"));
+		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineRuler, lfFont));
+	}
+
 	/////////////////////////////////////////////////////////////////////
 	//整数
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleHeight, 35));
@@ -60,7 +69,7 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarHeight, 40));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 300));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 200));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 400));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 35));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionHeight, 20));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTrackHeight, 20));
@@ -69,26 +78,42 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePixelPerFrameMax, 1000));//每帧最多对应10像素(放大一百倍)
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePixelPerFrameMin, 5));//每帧最少对应0.05像素（放大一百倍）
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineAdjustPreservePercent, 10));//时间线adjust横向滚动条后预留的空间百分比
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerShortLineLength, 5));//时间线刻度尺短线长
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerLongLineLength, 10));//时间线刻度尺长线长
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerGapMinPixel, 20));//时间线刻度尺每刻度的最小像素数
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerGapMaxPixel, 35));//时间线刻度尺每刻度的最大像素数
 
 	/////////////////////////////////////////////////////////////////////
 	//颜色
 	m_mapColorList.insert(std::make_pair(ThemeColor_SkinWndTitleText, RGB(233, 233, 233)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineTimeCodeText, RGB(233, 233, 0)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Nor, RGB(233, 233, 0)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerLine, RGB(233, 233, 0)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerText, RGB(233, 233, 0)));
 
 	/////////////////////////////////////////////////////////////////////
 	//图片
 	auto LoadOneImg = [&](int nID, CString strPath)
 	{
+#ifdef DEBUG
+		std::vector<CString> strMissingImg;
+#endif // DEBUG
 		CImage * pImg = new CImage;
 		if (E_FAIL != pImg->Load(strPath))
 		{
 			m_mapImageList.insert(std::make_pair(nID, pImg));
 		}
+#ifdef DEBUG
 		else
 		{
-			assert(false);//缺资源
+			strMissingImg.push_back(strPath);
 		}
+		if (strMissingImg.size() > 0)
+		{
+			//这些图片资源缺失或加载失败，查一下怎么回事
+			assert(false);
+		}
+#endif // DEBUG
 	};
 	CString strThemePath = GetThemePath();
 	do
@@ -137,6 +162,7 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_TimeLineObjectActionBar_TotalLength, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_TotalLength.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectLeftAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectLeftAreaBk.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectRightAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectRightAreaBk.png"));
+		LoadOneImg(ThemeImage_TimeLineRulerBk, strThemePath + _T("TimeLine\\TimeLineRulerBk.png"));
 	} while (false);
 	return true;
 }

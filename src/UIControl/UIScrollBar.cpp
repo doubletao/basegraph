@@ -390,5 +390,5 @@ float UIScrollBar::GetPagePercent()
 	{
 		return m_nPageLength * 1.0f / m_nWholeLength;
 	}
-	return 0.0f;
+	return 1.0f;
 }

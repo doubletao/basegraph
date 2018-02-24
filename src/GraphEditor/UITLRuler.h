@@ -12,10 +12,18 @@ private:
 	UITLRuler();
 	virtual ~UITLRuler();
 protected:
+	//尺子上保存这两个滚动条的指针目的为方便全局操作滚动条
+	UIScrollBar * m_pScrollHor;
+	UIScrollBar * m_pScrollVer;
 	float m_fPixelPerFrame;//每帧对应的像素数（放大一百倍取整）
 	inline int LimitValue();
 public:
 	static UITLRuler & Instance();
+	void SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrollVer);
+	UIScrollBar * GetHScrollBar();
+	UIScrollBar * GetVScrollBar();
+	void Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent);
+	virtual void DrawElement(CDC * pDC);
 	int GetDispFrameLength();
 	float GetPixelPerFrame();
 	int SetPixelPerFrame(float fPixelPerFrame);
