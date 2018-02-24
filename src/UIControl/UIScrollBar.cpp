@@ -114,6 +114,14 @@ bool UIScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
 				m_bMoving = true;
 				return true;
 			}
+			if (ptMsg.x < rtThumb.left)
+			{
+				MovePage(false);
+			}
+			else if (ptMsg.x > rtThumb.right)
+			{
+				MovePage(true);
+			}
 			m_bMoving = false;
 			return true;
 		}
