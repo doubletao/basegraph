@@ -1,27 +1,17 @@
 #pragma once
 
-enum UITLObjectActionBarType
-{
-	ActionBarType_Err,
-	ActionBarType_Normal,//普通
-	ActionBarType_Sel,//选中
-	ActionBarType_Group,//组普通
-	ActionBarType_GroupFloat,//组选中
-	ActionBarType_Lock,//锁定
-};
-
 class UITLObjectItem
-	: public UIElement
 {
-protected:
+public:
 	CString m_strObjID;
-	bool m_bExpand;
+	bool m_bHasTrack;//是否有轨道
+	bool m_bExpandTrack;//轨道是否展开
+	bool m_bHasSub;//是否有子物件
+	bool m_bExpandSub;//子物件是否展开
+	CRect rtLeft;
+	CRect rtRight;
+	CRect rtActionBar;
 public:
 	UITLObjectItem();
 	~UITLObjectItem();
-public:
-	bool GetExpand();
-	void SetExpand(bool bExpand);
-	CString GetObjID();
-	void SetObjID(CString strID);
 };

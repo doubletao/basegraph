@@ -79,3 +79,36 @@ bool CalculatorManager::GetBuffer(IN CString strObjID, OUT byte *& pBuffer, OUT 
 	}
 	return false;
 }
+
+bool CalculatorManager::IsItemSelected(IN CString strID, OUT bool & bSel)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strID);
+	if (pCalc)
+	{
+		bSel = pCalc->GetSelected();
+		return true;
+	}
+	return false;
+}
+
+bool CalculatorManager::SetItemSelected(IN CString strID, OPTIONAL bool & bSel)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strID);
+	if (pCalc)
+	{
+		bSel = pCalc->SetSelected(bSel);
+		return true;
+	}
+	return false;
+}
+
+bool CalculatorManager::SetItemSelected(IN CString strID, IN const bool & bSel)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strID);
+	if (pCalc)
+	{
+		pCalc->SetSelected(bSel);
+		return true;
+	}
+	return false;
+}

@@ -38,8 +38,13 @@ UITLObjectArea::~UITLObjectArea()
 UITLObjectItem * UITLObjectArea::CreateObjectItem(CString strID)
 {
 	UITLObjectItem * pObjectItem = new UITLObjectItem;
-	pObjectItem->SetObjID(strID);
-	pObjectItem->SetExpand(false);
+	pObjectItem->m_strObjID = strID;
+	if (DataBase_HasSubItem(strID))
+	{
+		pObjectItem->m_bHasSub = true;
+		pObjectItem->m_bExpandSub = true;
+		//轨道暂时不实现
+	}
 	m_mapObjDrawerInfo.insert(std::make_pair(strID, pObjectItem));
 	return pObjectItem;
 }

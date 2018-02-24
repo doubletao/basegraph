@@ -6,6 +6,7 @@ ObjectCalculator::ObjectCalculator(CString strObjID)
 	: m_strObjID(strObjID)
 	, m_nObjBufferID(0)
 	, m_emChgLevel(ChgLevel_NULL)
+	, m_bSelected(false)
 {
 }
 
@@ -43,6 +44,18 @@ bool ObjectCalculator::GetObjBuffer(byte *& pBuffer, int & nWidth, int & nHeight
 		return true;
 	}
 	return false;
+}
+
+bool ObjectCalculator::SetSelected(bool bSel)
+{
+	bool bSelOri = m_bSelected;
+	m_bSelected = bSel;
+	return bSelOri;
+}
+
+bool ObjectCalculator::GetSelected()
+{
+	return m_bSelected;
 }
 
 bool ObjectCalculator::NeedRenderBuffer()

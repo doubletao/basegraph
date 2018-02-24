@@ -21,6 +21,7 @@ class ObjectCalculator
 protected:
 	CString m_strObjID;
 	int m_nObjBufferID;
+	bool m_bSelected;
 	EmObjectChgLevel m_emChgLevel;
 public:
 	ObjectCalculator(CString strObjID);
@@ -29,6 +30,8 @@ public:
 	virtual int GetHeight();
 	int GetObjBufferID();
 	bool GetObjBuffer(byte *& pBuffer, int & nWidth, int & nHeight);
+	bool SetSelected(bool bSel);//返回原来的状态
+	bool GetSelected();
 protected:
 	virtual bool NeedRenderBuffer();
 public:

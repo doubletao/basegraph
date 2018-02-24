@@ -11,3 +11,18 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetBuffer(IN CString strID, OUT byte *&
 {
 	return CalculatorManager::Instance().GetBuffer(strID, pBuffer, nWidth, nHeight);
 }
+
+BASEGRAPH_DATARENDER_API bool DataRender_IsItemSelected(IN CString strID, OUT bool & bSel)
+{
+	return CalculatorManager::Instance().IsItemSelected(strID, bSel);
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, OPTIONAL bool & bSel)
+{
+	return CalculatorManager::Instance().SetItemSelected(strID, bSel);
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, IN const bool &  bSel)
+{
+	return CalculatorManager::Instance().SetItemSelected(strID, bSel);
+}

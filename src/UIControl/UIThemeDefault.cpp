@@ -88,6 +88,7 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_SkinWndTitleText, RGB(233, 233, 233)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineTimeCodeText, RGB(233, 233, 0)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Nor, RGB(233, 233, 0)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Sel, RGB(233, 233, 233)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerLine, RGB(233, 233, 0)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerText, RGB(233, 233, 0)));
 
@@ -158,6 +159,7 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_ScrollThumbBtn_D, strThemePath + _T("TimeLine\\TimeLineThumbBtn_D.png"));
 		LoadOneImg(ThemeImage_ScrollThumbBtn_X, strThemePath + _T("TimeLine\\TimeLineThumbBtn_X.png"));
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Nor.png"));
+		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Sel, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Sel.png"));
 		LoadOneImg(ThemeImage_TimeLineRightObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineRightObjectBkGnd_Nor.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectActionBar_TotalLength, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_TotalLength.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectLeftAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectLeftAreaBk.png"));

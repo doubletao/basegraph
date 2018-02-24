@@ -12,11 +12,12 @@ UITLObjectRightArea::~UITLObjectRightArea()
 {
 }
 
-bool UITLObjectRightArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement)
+bool UITLObjectRightArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UITLObjectArea * pParentElement)
 {
 	if (!m_bCreated)
 	{
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParentElement);
+		m_pObjectArea = pParentElement;
 		return true;
 	}
 	return false;

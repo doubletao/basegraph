@@ -8,6 +8,11 @@ bool BASEGRAPH_DATABASE_API DataBase_GetAllItemID(OUT std::vector<CString>& vecI
 	return DataBaseManager::Instance().GetAllItemID(vecID);
 }
 
+bool BASEGRAPH_DATABASE_API DataBase_GetAllItemIDExceptSubItem(OUT std::vector<CString>& vecID)
+{
+	return DataBaseManager::Instance().GetAllItemIDExceptSubItem(vecID);
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_GetItemType(IN CString strID, OUT BaseGraph_DataBase::ObjectType & emType)
 {
 	return DataBaseManager::Instance().GetItemType(strID, emType);
@@ -78,6 +83,26 @@ bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(IN const std::vector<CString>
 	return DataBaseManager::Instance().GetItemLength(vecID, nLength);
 }
 
+bool BASEGRAPH_DATABASE_API DataBase_HasSubItem(IN CString strParentID)
+{
+	return DataBaseManager::Instance().HasSubItem(strParentID);
+}
+
+bool BASEGRAPH_DATABASE_API DataBase_GetSubItem(IN CString strParentID, OUT std::vector<CString>& vecSubID)
+{
+	return DataBaseManager::Instance().GetSubItem(strParentID, vecSubID);
+}
+
+bool BASEGRAPH_DATABASE_API DataBase_HasParentItem(IN CString strSubID)
+{
+	return DataBaseManager::Instance().HasParentItem(strSubID);
+}
+
+bool BASEGRAPH_DATABASE_API DataBase_GetParentItem(IN CString strSubID, OUT CString & strParentID)
+{
+	return DataBaseManager::Instance().GetParentItem(strSubID, strParentID);
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile)
 {
 	return DataBaseManager::Instance().SaveToFile(strFile);
@@ -88,8 +113,7 @@ bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile)
 	return DataBaseManager::Instance().LoadFromFile(strFile);
 }
 
-std::map<BaseGraph_DataBase::ParamValueDef, Value>BASEGRAPH_DATABASE_API DataBase_GetDefaultParam(IN BaseGraph_DataBase::ObjectType emType)
+std::map<BaseGraph_DataBase::ParamValueDef, Value> BASEGRAPH_DATABASE_API DataBase_GetDefaultParam(IN BaseGraph_DataBase::ObjectType emType)
 {
-	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
 	return ObjectFactory::GetDefaultParam(emType);
 }

@@ -51,6 +51,20 @@ bool DataBaseManager::GetAllItemID(OUT std::vector<CString>& vecID)
 	return true;
 }
 
+bool DataBaseManager::GetAllItemIDExceptSubItem(OUT std::vector<CString>& vecID)
+{
+	vecID.clear();
+	for (size_t i = 0; i < m_vecObject.size(); i++)
+	{
+		if (m_vecObject[i]
+			&& !HasSubItem(m_vecObject[i]->GetItemID()))
+		{
+			vecID.push_back(m_vecObject[i]->GetItemID());
+		}
+	}
+	return true;
+}
+
 bool DataBaseManager::GetItemType(IN CString strID, OUT BaseGraph_DataBase::ObjectType & emType)
 {
 	BaseObject * pObj = nullptr;
@@ -140,6 +154,26 @@ bool DataBaseManager::MoveItemBefore(IN CString strSrcID, IN CString strDesID)
 }
 
 bool DataBaseManager::MoveItemAfter(IN CString strSrcID, IN CString strDesID)
+{
+	return false;
+}
+
+bool DataBaseManager::HasSubItem(IN CString strParentID)
+{
+	return false;
+}
+
+bool DataBaseManager::GetSubItem(IN CString strParentID, OUT std::vector<CString>& vecSubID)
+{
+	return false;
+}
+
+bool DataBaseManager::HasParentItem(IN CString strSubID)
+{
+	return false;
+}
+
+bool DataBaseManager::GetParentItem(IN CString strSubID, OUT CString & strParentID)
 {
 	return false;
 }

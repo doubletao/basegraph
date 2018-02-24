@@ -11,6 +11,6 @@ public:
 	UITLObjectRightArea();
 	~UITLObjectRightArea();
 public:
-	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement);
+	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UITLObjectArea * pParentElement);
 	virtual void DrawElement(CDC * pDC);
 };

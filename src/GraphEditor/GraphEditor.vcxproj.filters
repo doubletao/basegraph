@@ -81,13 +81,13 @@
     <ClCompile Include="UITLObjectArea.cpp">
       <Filter>TimeLine</Filter>
     </ClCompile>
-    <ClCompile Include="UITLObjectItem.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="UITLObjectLeftArea.cpp">
       <Filter>TimeLine</Filter>
     </ClCompile>
     <ClCompile Include="UITLObjectRightArea.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLObjectItem.cpp">
       <Filter>TimeLine</Filter>
     </ClCompile>
   </ItemGroup>

@@ -16,6 +16,7 @@
 
 //物件管理
 bool BASEGRAPH_DATABASE_API DataBase_GetAllItemID(OUT std::vector<CString> & vecID);
+bool BASEGRAPH_DATABASE_API DataBase_GetAllItemIDExceptSubItem(OUT std::vector<CString>& vecID);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemType(IN CString strID, OUT BaseGraph_DataBase::ObjectType & emType);
 //增删
 bool BASEGRAPH_DATABASE_API DataBase_CreateItem(IN BaseGraph_DataBase::ObjectType emType, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam, OUT CString & strID);
@@ -35,8 +36,15 @@ bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const 
 //物件长度（注意，这里的单位是场(按照一帧两场计数)）
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(OUT int & nLength);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);
+//父子物件
+bool BASEGRAPH_DATABASE_API DataBase_HasSubItem(IN CString strParentID);
+bool BASEGRAPH_DATABASE_API DataBase_GetSubItem(IN CString strParentID, OUT std::vector<CString> & vecSubID);
+bool BASEGRAPH_DATABASE_API DataBase_HasParentItem(IN CString strSubID);
+bool BASEGRAPH_DATABASE_API DataBase_GetParentItem(IN CString strSubID, OUT CString & strParentID);
 //序列化
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile);
 bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile);
+//关键帧
+//...
 //工具/其他
 std::map<BaseGraph_DataBase::ParamValueDef, Value> BASEGRAPH_DATABASE_API DataBase_GetDefaultParam(IN BaseGraph_DataBase::ObjectType emType);
