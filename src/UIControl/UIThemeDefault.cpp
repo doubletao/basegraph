@@ -161,7 +161,13 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Nor.png"));
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Sel, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Sel.png"));
 		LoadOneImg(ThemeImage_TimeLineRightObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineRightObjectBkGnd_Nor.png"));
+		LoadOneImg(ThemeImage_TimeLineRightObjectBkGnd_Sel, strThemePath + _T("TimeLine\\TimeLineRightObjectBkGnd_Sel.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectActionBar_TotalLength, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_TotalLength.png"));
+		LoadOneImg(ThemeImage_TimeLineObjectActionBar_Nor, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_Nor.png"));
+		LoadOneImg(ThemeImage_TimeLineObjectActionBar_Sel, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_Sel.png"));
+		LoadOneImg(ThemeImage_TimeLineObjectActionBar_Group_Nor, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_Group_Nor.png"));
+		LoadOneImg(ThemeImage_TimeLineObjectActionBar_Group_Sel, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_Group_Sel.png"));
+		LoadOneImg(ThemeImage_TimeLineObjectActionBar_Lock, strThemePath + _T("TimeLine\\TimeLineObjectActionBar_Lock.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectLeftAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectLeftAreaBk.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectRightAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectRightAreaBk.png"));
 		LoadOneImg(ThemeImage_TimeLineRulerBk, strThemePath + _T("TimeLine\\TimeLineRulerBk.png"));

@@ -20,8 +20,8 @@ namespace BaseGraph_DataBase
 		ObjID,
 		ObjType,
 		ObjName,
-		ObjActionBegin,
-		ObjActionEnd,
+		ObjActionBegin,//使用场作为单位
+		ObjActionEnd,//使用场作为单位
 		ObjParam_End,
 
 		SpaceParam = 100,

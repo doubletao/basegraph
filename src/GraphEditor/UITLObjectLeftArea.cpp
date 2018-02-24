@@ -11,7 +11,7 @@ UITLObjectLeftArea::~UITLObjectLeftArea()
 {
 }
 
-int UITLObjectLeftArea::DrawItemLeft(CDC * pDC, CString strID, int nCol, LOGFONT & logFont, int nGraListTextColorNor, CImage * pLeftBkImageNor, int nGraListTextColorSel, CImage * pLeftBkImageSel, int nItemTabWidth, int nItemHeight, int nCurrentY)
+int UITLObjectLeftArea::DrawItemLeft(CDC * pDC, CString strID, int nCol, int nCurrentY)
 {
 	if (m_pObjectArea)
 	{
@@ -23,8 +23,23 @@ int UITLObjectLeftArea::DrawItemLeft(CDC * pDC, CString strID, int nCol, LOGFONT
 			bool bSel = false;
 			DataRender_IsItemSelected(strID, bSel);
 
-			CImage * pImgBk = pLeftBkImageNor;
-			int nGraListTextColor = nGraListTextColorNor;
+			int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
+			int nItemTabWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeTabWidth);
+			LOGFONT logFont = UIControl_GetFont(ThemeFont_TimeLineObjectTrackText);
+			CImage * pLeftAreaBkImage = UIControl_GetImage(ThemeImage_TimeLineObjectLeftAreaBk);
+
+			CImage * pImgBk = nullptr; 
+			int nGraListTextColor = 0;
+			if (bSel)
+			{
+				pImgBk = UIControl_GetImage(ThemeImage_TimeLineLeftObjectBkGnd_Sel);
+				nGraListTextColor = UIControl_GetColor(ThemeColor_TimeLineObjectTrackText_Sel);
+			}
+			else
+			{
+				pImgBk = UIControl_GetImage(ThemeImage_TimeLineLeftObjectBkGnd_Nor);
+				nGraListTextColor = UIControl_GetColor(ThemeColor_TimeLineObjectTrackText_Nor);
+			}
 
 			//绘制底色
 			if (pImgBk)
@@ -32,6 +47,9 @@ int UITLObjectLeftArea::DrawItemLeft(CDC * pDC, CString strID, int nCol, LOGFONT
 				CRect rtLeft(nXStart, nYStart, nXStart + m_nWidth, nYStart + nItemHeight);
 				rtLeft.OffsetRect(-m_nScrollX, -m_nScrollY);
 				pImgBk->AlphaBlend(pDC->GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pImgBk->GetWidth(), pImgBk->GetHeight());
+
+				//将自己的左边矩形记录下来
+				pObjDrawerInfo->rtLeft = rtLeft;
 			}
 
 			//绘制文本
@@ -61,7 +79,7 @@ int UITLObjectLeftArea::DrawItemLeft(CDC * pDC, CString strID, int nCol, LOGFONT
 				for (size_t i = 0; i < vecSubID.size(); i++)
 				{
 					CString strSubID = vecSubID[i];
-					nRet = DrawItemLeft(pDC, strSubID, nCol + 1, logFont, nGraListTextColorNor, pLeftBkImageNor, nGraListTextColorSel, pLeftBkImageSel, nItemTabWidth, nItemHeight, nCurrentY + nItemHeight);
+					nRet = DrawItemLeft(pDC, strSubID, nCol + 1, nCurrentY + nItemHeight);
 				}
 			}
 			return nRet;
@@ -127,7 +145,7 @@ void UITLObjectLeftArea::DrawElement(CDC * pDC)
 		for (size_t i = 0; i < vecObjID.size(); i++)
 		{
 			CString strID = vecObjID[i];
-			nCurentY = DrawItemLeft(pDC, strID, nCol + 1, logFont, nGraListTextColorNor, pLeftBkImageNor, nGraListTextColorSel, pLeftBkImageSel, nItemTabWidth, nItemHeight, nCurentY);
+			nCurentY = DrawItemLeft(pDC, strID, nCol + 1, nCurentY);
 		}
 	}
 

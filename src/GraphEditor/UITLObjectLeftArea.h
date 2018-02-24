@@ -12,7 +12,7 @@ public:
 	~UITLObjectLeftArea();
 protected:
 	//本函数会递归绘制item的子，返回绘制完成后的Y值
-	int DrawItemLeft(CDC * pDC, CString strID, int nCol, LOGFONT &logFont, int nGraListTextColorNor, CImage * pLeftBkImageNor, int nGraListTextColorSel, CImage * pLeftBkImageSel, int nItemTabWidth, int nItemHeight, int nCurrentY);
+	int DrawItemLeft(CDC * pDC, CString strID, int nCol, int nCurrentY);
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UITLObjectArea * pParentElement);
 	virtual void DrawElement(CDC * pDC);

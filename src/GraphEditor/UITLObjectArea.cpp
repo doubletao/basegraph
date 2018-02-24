@@ -7,6 +7,7 @@
 UITLObjectArea::UITLObjectArea()
 	: m_pLeftArea(nullptr)
 	, m_pRightArea(nullptr)
+	, m_nMaxHeight(0)
 {
 }
 
@@ -195,6 +196,22 @@ int UITLObjectArea::GetScrollYPos()
 		return m_pRightArea->GetScrollYPos();
 	}
 	return 0;
+}
+
+int UITLObjectArea::SetMaxHeight(int nHeight/* = 0*/, bool bReset/* = false*/)
+{
+	if (bReset)
+	{
+		m_nMaxHeight = nHeight;
+	}
+	else
+	{
+		if (nHeight > m_nMaxHeight)
+		{
+			m_nMaxHeight = nHeight;
+		}
+	}
+	return m_nMaxHeight;
 }
 
 void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)

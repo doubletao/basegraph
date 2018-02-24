@@ -312,23 +312,45 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_uiTimeLine.Create(0, 0, 100, 100, GetSafeHwnd());
 
 	//≤‚ ‘¥˙¬Î
-	CString strObjID = _T("");
-	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Image);
-	mapParam[BaseGraph_DataBase::Image_Path].SetValue(_T("F:\\Media\\Õº∆¨\\1.png"));
-	mapParam[BaseGraph_DataBase::Image_DispWidth].SetValue(800, BaseGraph_Common::ValueType_INT);
-	mapParam[BaseGraph_DataBase::Image_DispHeight].SetValue(600, BaseGraph_Common::ValueType_INT);
-	mapParam[BaseGraph_DataBase::ObjActionEnd].SetValue(5000, BaseGraph_Common::ValueType_INT);
-	DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Image, mapParam, strObjID);
-	if (!strObjID.IsEmpty())
+	auto CreateTestImgObj = [](CString strName, CString strImgPath, CString strDebugPath, int nBegin, int nEnd)
 	{
-		DataRender_UpdateRender(strObjID);
-		byte * pBuf = nullptr;
-		int nWidth = 0;
-		int nHeight = 0;
-		if (DataRender_GetBuffer(strObjID, pBuf, nWidth, nHeight))
+		CString strObjID = _T("");
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Image);
+		mapParam[BaseGraph_DataBase::Image_Path].SetValue(strImgPath);
+		mapParam[BaseGraph_DataBase::ObjName].SetValue(strName);
+		mapParam[BaseGraph_DataBase::Image_DispWidth].SetValue(800, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Image_DispHeight].SetValue(600, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::ObjActionBegin].SetValue(nBegin, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::ObjActionEnd].SetValue(nEnd, BaseGraph_Common::ValueType_INT);
+		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Image, mapParam, strObjID);
+		if (!strObjID.IsEmpty())
 		{
-			BufferFunction::WriteBitmap(_T("e:\\4.bmp"), nWidth, nHeight, 32, pBuf);
+			DataRender_UpdateRender(strObjID);
+			byte * pBuf = nullptr;
+			int nWidth = 0;
+			int nHeight = 0;
+			if (DataRender_GetBuffer(strObjID, pBuf, nWidth, nHeight))
+			{
+				BufferFunction::WriteBitmap(strDebugPath, nWidth, nHeight, 32, pBuf);
+			}
 		}
+	};
+	std::vector<int> vecImg;
+	vecImg.push_back(1);
+	vecImg.push_back(5);
+	vecImg.push_back(6);
+	for (int i = 0; i < 20; i++)
+	{
+		CString strName;
+		strName.Format(_T("Õº∆¨%d"), i);
+		CString strImg;
+		strImg.Format(_T("F:\\Media\\Õº∆¨\\%d.png"), vecImg[i % 3]);
+		CString strDebug;
+		strDebug.Format(_T("e:\\%d.bmp"), i);
+		int nBegin = 100 * i;
+		int nEnd = 500 + 100 * i;
+
+		CreateTestImgObj(strName, strImg, strDebug, nBegin, nEnd);
 	}
 
 	//CEdit * m_pEdit = new CEdit;
