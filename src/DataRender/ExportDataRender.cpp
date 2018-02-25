@@ -17,6 +17,11 @@ BASEGRAPH_DATARENDER_API bool DataRender_IsItemSelected(IN CString strID, OUT bo
 	return CalculatorManager::Instance().IsItemSelected(strID, bSel);
 }
 
+BASEGRAPH_DATARENDER_API bool DataRender_ClearAllSelect()
+{
+	return CalculatorManager::Instance().ClearAllSelect();
+}
+
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, OPTIONAL bool & bSel)
 {
 	return CalculatorManager::Instance().SetItemSelected(strID, bSel);

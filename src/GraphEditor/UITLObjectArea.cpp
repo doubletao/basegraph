@@ -50,6 +50,60 @@ UITLObjectItem * UITLObjectArea::CreateObjectItem(CString strID)
 	return pObjectItem;
 }
 
+void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
+{
+	if (!HitTest(lParam))
+	{
+		return;
+	}
+	if (true)
+	{
+		CString strDebug;
+		strDebug.Format(_T("OnLButtonDown\n"));
+		OutputDebugString(strDebug);
+	}
+	//如果点中了某个物件，则清掉其他选中物件并将该物件置为选中状态，如果没有点中物件，则清掉所有物件的选中状态
+	CString strHitID;
+	DataRender_ClearAllSelect();
+	if (ObjectArea_HitNull != ObjectHittest(lParam, &strHitID))
+	{
+		DataRender_SetItemSelected(strHitID, true);
+	}
+	Refresh();
+}
+
+ObjectAreaHittestType UITLObjectArea::ObjectHittest(CPoint ptHit, CString * pStrID)
+{
+	ObjectAreaHittestType emHitRet = ObjectArea_HitNull;
+	for (std::map<CString, UITLObjectItem *>::iterator it = m_mapObjDrawerInfo.begin(); it != m_mapObjDrawerInfo.end(); it++)
+	{
+		UITLObjectItem * pObjDrawer = it->second;
+		if (pObjDrawer)
+		{
+			if (pObjDrawer->rtLeft.PtInRect(ptHit)
+				|| pObjDrawer->rtRight.PtInRect(ptHit))
+			{
+				emHitRet = ObjectArea_HitItem;
+				if (pStrID)
+				{
+					*pStrID = pObjDrawer->m_strObjID;
+				}
+			}
+		}
+	}
+	return emHitRet;
+}
+
+ObjectAreaHittestType UITLObjectArea::ObjectHittest(int x, int y, CString * strID)
+{
+	return ObjectHittest(CPoint(x, y), strID);
+}
+
+ObjectAreaHittestType UITLObjectArea::ObjectHittest(LPARAM lParam, CString * strID)
+{
+	return ObjectHittest(LOWORD(lParam), HIWORD(lParam), strID);
+}
+
 std::map<CString, UITLObjectItem*>& UITLObjectArea::GetObjDrawerInfo()
 {
 	return m_mapObjDrawerInfo;
@@ -110,6 +164,7 @@ EmUIElementMsgRet UITLObjectArea::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wPa
 		switch (nMsg)
 		{
 		case WM_LBUTTONDOWN:
+			OnLButtonDown(wParam, lParam);
 			break;
 		case WM_LBUTTONUP:
 			break;

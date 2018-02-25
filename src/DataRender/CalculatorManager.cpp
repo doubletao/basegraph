@@ -112,3 +112,16 @@ bool CalculatorManager::SetItemSelected(IN CString strID, IN const bool & bSel)
 	}
 	return false;
 }
+
+bool CalculatorManager::ClearAllSelect()
+{
+	for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
+	{
+		ObjectCalculator * pCalc = it->second;
+		if (pCalc->GetSelected())
+		{
+			pCalc->SetSelected(false);
+		}
+	}
+	return true;
+}

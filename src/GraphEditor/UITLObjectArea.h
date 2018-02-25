@@ -3,6 +3,13 @@
 #include "UITLObjectLeftArea.h"
 #include "UITLObjectRightArea.h"
 
+enum ObjectAreaHittestType
+{
+	ObjectArea_HitNull,
+	ObjectArea_HitItem,
+	ObjectArea_HitBar,
+};
+
 class UITLObjectArea :
 	public UIElement
 {
@@ -17,7 +24,12 @@ protected:
 protected:
 	virtual void RearrangeChildPos();
 	UITLObjectItem * CreateObjectItem(CString strID);
+	void OnLButtonDown(WPARAM wParam, LPARAM lParam);
 public:
+	ObjectAreaHittestType ObjectHittest(CPoint ptHit, CString * pStrID = nullptr);
+	ObjectAreaHittestType ObjectHittest(int x, int y, CString * pStrID = nullptr);
+	ObjectAreaHittestType ObjectHittest(LPARAM lParam, CString * pStrID = nullptr);
+
 	virtual void DrawElement(CDC * pDC);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement);
