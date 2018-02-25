@@ -7,7 +7,7 @@
 UITLObjectArea::UITLObjectArea()
 	: m_pLeftArea(nullptr)
 	, m_pRightArea(nullptr)
-	, m_nMaxHeight(0)
+	, m_nVScrollHeight(0)
 {
 }
 
@@ -103,11 +103,34 @@ void UITLObjectArea::DrawElement(CDC * pDC)
 	UITLRuler::Instance().DrawElement(pDC);
 }
 
+EmUIElementMsgRet UITLObjectArea::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+{
+	if (m_setMsgFilter.count(nMsg) > 0)
+	{
+		switch (nMsg)
+		{
+		case WM_LBUTTONDOWN:
+			break;
+		case WM_LBUTTONUP:
+			break;
+		case WM_MOUSEMOVE:
+			break;
+		default:
+			break;
+		}
+		return UIElementMsgSuccBreak;
+	}
+	return UIElementMsgSuccContinue;
+}
+
 bool UITLObjectArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement)
 {
 	if (!m_bCreated)
 	{
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParentElement);
+		m_setMsgFilter.insert(WM_LBUTTONDOWN);
+		m_setMsgFilter.insert(WM_LBUTTONUP);
+		m_setMsgFilter.insert(WM_MOUSEMOVE);
 
 		m_pLeftArea = new UITLObjectLeftArea;
 		m_pLeftArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectLeftArea, hParentWnd, this);
@@ -198,20 +221,28 @@ int UITLObjectArea::GetScrollYPos()
 	return 0;
 }
 
-int UITLObjectArea::SetMaxHeight(int nHeight/* = 0*/, bool bReset/* = false*/)
+void UITLObjectArea::SetVScrollHeight(int nHeight/* = 0*/, bool bReset/* = false*/)
 {
 	if (bReset)
 	{
-		m_nMaxHeight = nHeight;
+		m_nVScrollHeight = nHeight;
 	}
 	else
 	{
-		if (nHeight > m_nMaxHeight)
+		if (nHeight > m_nVScrollHeight)
 		{
-			m_nMaxHeight = nHeight;
+			m_nVScrollHeight = nHeight;
 		}
 	}
-	return m_nMaxHeight;
+}
+
+int UITLObjectArea::GetVScrollHeight()
+{
+	if (m_nVScrollHeight < m_nHeight)
+	{
+		m_nHeight;
+	}
+	return m_nVScrollHeight;
 }
 
 void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)

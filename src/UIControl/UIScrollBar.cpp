@@ -48,14 +48,12 @@ void UIScrollBar::Recalculate(bool bRefresh/* = true*/)
 	//两个按钮一个thumb
 	if (m_bHorScroll)
 	{
-		float fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
 		m_pBtnLeftTop->MoveTo(0, 0, m_nHeight, m_nHeight, bRefresh);
 		m_pBtnRightBottom->MoveTo(m_nWidth - m_nHeight, 0, m_nHeight, m_nHeight, bRefresh);
 		m_pBtnThumb->MoveTo(GetThumbRect(), bRefresh);
 	}
 	else
 	{
-		float fRatio = m_nWholeLength * 1.0f / (m_nHeight - m_nWidth * 2);
 		m_pBtnLeftTop->MoveTo(0, 0, m_nWidth, m_nWidth, bRefresh);
 		m_pBtnRightBottom->MoveTo(0, m_nHeight - m_nWidth, m_nWidth, m_nWidth, bRefresh);
 		m_pBtnThumb->MoveTo(GetThumbRect(), bRefresh);
@@ -114,14 +112,29 @@ bool UIScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
 				m_bMoving = true;
 				return true;
 			}
-			if (ptMsg.x < rtThumb.left)
+			if (m_bHorScroll)
 			{
-				MovePage(false);
+				if (ptMsg.x < rtThumb.left)
+				{
+					MovePage(false);
+				}
+				else if (ptMsg.x > rtThumb.right)
+				{
+					MovePage(true);
+				}
 			}
-			else if (ptMsg.x > rtThumb.right)
+			else
 			{
-				MovePage(true);
+				if (ptMsg.y < rtThumb.top)
+				{
+					MovePage(false);
+				}
+				else if (ptMsg.y > rtThumb.bottom)
+				{
+					MovePage(true);
+				}
 			}
+			
 			m_bMoving = false;
 			return true;
 		}
@@ -148,7 +161,7 @@ bool UIScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
 			}
 			else
 			{
-				float fRatio = m_nWholeLength * 1.0f / (m_nHeight - m_nWidth * 2);
+				float fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
 				nOffset = ptMsg.y - m_ptBegin.y;
 				int nPos = m_nPos + int(nOffset / fRatio);
 				SetPos(nPos);
@@ -312,6 +325,7 @@ void UIScrollBar::ResetScroll(int nWholeLength, int nPageLength, int nPos/* = -1
 	{
 		SetPos(m_nPos, false);
 	}
+	Recalculate(bRefresh);
 	if (bRefresh)
 	{
 		Refresh();

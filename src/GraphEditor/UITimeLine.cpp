@@ -34,6 +34,10 @@ void UITimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HW
 
 void UITimeLine::InitializeObject()
 {
+	m_pObjectArea = new UITLObjectArea;
+	m_pObjectArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectArea, m_hParentWnd, this);
+	m_vecChildElement.push_back(m_pObjectArea);
+
 	m_pTimeCode = new UITLTimeCode;
 	m_pTimeCode->Create(0, 0, 100, 100, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pTimeCode);
@@ -45,10 +49,6 @@ void UITimeLine::InitializeObject()
 	m_pScrollVer = new UIScrollBar;
 	m_pScrollVer->Create(0, 0, 10, 10, 10, 10, UIElementMsg_TimeLineVerScroll, false, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pScrollVer);
-
-	m_pObjectArea = new UITLObjectArea;
-	m_pObjectArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectArea, m_hParentWnd, this);
-	m_vecChildElement.push_back(m_pObjectArea);
 
 	//标尺在这里初始化，但不push到子物件集合
 	UITLRuler::Instance().Create(0, 0, 10, 10, UIElementMsg_TimeLineRuler, m_hParentWnd, this);
@@ -84,7 +84,7 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (EmUIElementMsg_OnHScroll == emMsg)
 	{
-		if (true)
+		if (false)
 		{
 			CString strDebug;
 			strDebug.Format(_T("m_nID=%d, m_nPos=%d\n"), wParam, lParam);
@@ -98,11 +98,15 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 	}
 	else if (EmUIElementMsg_OnVScroll == emMsg)
 	{
-		if (true)
+		if (false)
 		{
 			CString strDebug;
 			strDebug.Format(_T("m_nID=%d, m_nPos=%d\n"), wParam, lParam);
 			OutputDebugString(strDebug);
+		}
+		if (m_pObjectArea)
+		{
+			m_pObjectArea->SetScrollYPos((int)lParam);
 		}
 		return true;
 	}
@@ -145,6 +149,36 @@ bool UITimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd
 		m_strText = _T("时间线");
 	}
 	return true;
+}
+
+void UITimeLine::DrawElement(CDC * pDC)
+{
+	//时间线的绘制自己来，因为物件区绘制后需要更新物件区高度后再绘制垂直滚动条，所以需要保证物件区绘制在垂直滚动条前边
+	if (m_pTimeCode)
+	{
+		m_pTimeCode->DrawElement(pDC);
+	}
+	if (m_pScrollHor)
+	{
+		m_pScrollHor->DrawElement(pDC);
+	}
+	if (m_pObjectArea)
+	{
+		m_pObjectArea->DrawElement(pDC);
+		if (m_pScrollVer)
+		{
+			if (false)
+			{
+				CString strDebug;
+				strDebug.Format(_T("m_pObjectArea->GetVScrollHeight()=%d\n"), m_pObjectArea->GetVScrollHeight());
+				OutputDebugString(strDebug);
+			}
+			m_pScrollVer->ResetScroll(m_pObjectArea->GetVScrollHeight(), m_pObjectArea->GetHeight(), -1, false);
+			m_pScrollVer->DrawElement(pDC);
+		}
+		m_pObjectArea->SetScrollInfo(false);
+	}
+
 }
 
 EmUIElementMsgRet UITimeLine::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)

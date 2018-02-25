@@ -103,6 +103,11 @@ bool UITLObjectRightArea::Create(int nX, int nY, int nWidth, int nHeight, int nI
 
 void UITLObjectRightArea::DrawElement(CDC * pDC)
 {
+	if (m_pObjectArea)
+	{
+		m_pObjectArea->SetVScrollHeight(0, true);
+	}
+
 	int nXStart = GetRealX() + m_nScrollX;
 	int nYStart = GetRealY() + m_nScrollY;
 	CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
@@ -152,6 +157,11 @@ void UITLObjectRightArea::DrawElement(CDC * pDC)
 			CString strID = vecObjID[i];
 			nCurentY = DrawItemRight(pDC, strID, nCurentY);
 		}
+	}
+
+	if (m_pObjectArea)
+	{
+		m_pObjectArea->SetVScrollHeight(nCurentY - nYStart + m_nScrollY + nItemHeight * 2);
 	}
 
 	pDC->SelectClipRgn(NULL);
