@@ -96,6 +96,12 @@
     <ClCompile Include="3DMainViewWnd.cpp">
       <Filter>SceneView</Filter>
     </ClCompile>
+    <ClCompile Include="C3DViewBufferInfo.cpp">
+      <Filter>SceneView</Filter>
+    </ClCompile>
+    <ClCompile Include="C3DViewInfo.cpp">
+      <Filter>SceneView</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -165,6 +171,12 @@
       <Filter>SceneView</Filter>
     </ClInclude>
     <ClInclude Include="3DSceneViewWnd.h">
+      <Filter>SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="C3DViewInfo.h">
+      <Filter>SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="C3DViewBufferInfo.h">
       <Filter>SceneView</Filter>
     </ClInclude>
   </ItemGroup>

@@ -116,6 +116,8 @@
     <ClCompile Include="3DMainViewWnd.cpp" />
     <ClCompile Include="3DSceneViewWnd.cpp" />
     <ClCompile Include="BaseGraphMainFrame.cpp" />
+    <ClCompile Include="C3DViewBufferInfo.cpp" />
+    <ClCompile Include="C3DViewInfo.cpp" />
     <ClCompile Include="ExportGraphEditor.cpp" />
     <ClCompile Include="GraphEditor.cpp" />
     <ClCompile Include="GraphEditorStatusManager.cpp" />
@@ -141,6 +143,8 @@
     <ClInclude Include="..\..\include\ExportGraphEditor.h" />
     <ClInclude Include="3DSceneViewWnd.h" />
     <ClInclude Include="BaseGraphMainFrame.h" />
+    <ClInclude Include="C3DViewBufferInfo.h" />
+    <ClInclude Include="C3DViewInfo.h" />
     <ClInclude Include="GraphEditor.h" />
     <ClInclude Include="GraphEditorStatusManager.h" />
     <ClInclude Include="3DMainViewWnd.h" />
