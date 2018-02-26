@@ -100,7 +100,7 @@ ObjectBuffer * DataBufferManager::Query2DBuffer(int & nBufferID, int nWidth, int
 {
 	UnQuery2DBuffer(nBufferID);
 	nBufferID = Query2DBuffer(nWidth, nHeight);
-	return GetBuf(nBufferID);
+	return Get2DBuf(nBufferID);
 }
 
 bool DataBufferManager::UnQuery2DBuffer(int & nBufferID)
@@ -139,7 +139,7 @@ bool DataBufferManager::Compress2DBuffer()
 	return true;
 }
 
-ObjectBuffer * DataBufferManager::GetBuf(int nBufferID)
+ObjectBuffer * DataBufferManager::Get2DBuf(int nBufferID)
 {
 	if (m_map2DBuffer.count(nBufferID) > 0)
 	{

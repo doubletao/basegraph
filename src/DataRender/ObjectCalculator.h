@@ -29,7 +29,7 @@ public:
 	virtual int GetWidth();
 	virtual int GetHeight();
 	int GetObjBufferID();
-	bool GetObjBuffer(byte *& pBuffer, int & nWidth, int & nHeight);
+	bool GetObjBuffer(StuSimpleBuffer & pBuf);
 	bool SetSelected(bool bSel);//返回原来的状态
 	bool GetSelected();
 protected:

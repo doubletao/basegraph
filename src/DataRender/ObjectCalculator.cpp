@@ -32,15 +32,15 @@ int ObjectCalculator::GetObjBufferID()
 	return m_nObjBufferID;
 }
 
-bool ObjectCalculator::GetObjBuffer(byte *& pBuffer, int & nWidth, int & nHeight)
+bool ObjectCalculator::GetObjBuffer(StuSimpleBuffer & pBuf)
 {
 	int nBufID = GetObjBufferID();
-	ObjectBuffer * pObjBuf = DataBufferManager::Instance().GetBuf(nBufID);
+	ObjectBuffer * pObjBuf = DataBufferManager::Instance().Get2DBuf(nBufID);
 	if (pObjBuf)
 	{
-		pBuffer = pObjBuf->GetBuffer();
-		nWidth = pObjBuf->GetWidth();
-		nHeight = pObjBuf->GetHeight();
+		pBuf.pBuffer = pObjBuf->GetBuffer();
+		pBuf.nWidth = pObjBuf->GetWidth();
+		pBuf.nHeight = pObjBuf->GetHeight();
 		return true;
 	}
 	return false;
@@ -61,7 +61,7 @@ bool ObjectCalculator::GetSelected()
 bool ObjectCalculator::NeedRenderBuffer()
 {
 	//如果连bufer都还没有呢，必然需要render
-	ObjectBuffer * pBufer = DataBufferManager::Instance().GetBuf(GetObjBufferID());
+	ObjectBuffer * pBufer = DataBufferManager::Instance().Get2DBuf(GetObjBufferID());
 	if (!pBufer)
 	{
 		return true;

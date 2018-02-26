@@ -70,12 +70,12 @@ bool CalculatorManager::UpdateRenderBuffer(CString strObjID)
 	return false;
 }
 
-bool CalculatorManager::GetBuffer(IN CString strObjID, OUT byte *& pBuffer, OUT int & nWidth, OUT int & nHeight)
+bool CalculatorManager::GetBuffer(IN CString strObjID, OUT StuSimpleBuffer & pBuf)
 {
 	ObjectCalculator * pCalc = GetObjCalculator(strObjID);
 	if (pCalc)
 	{
-		return pCalc->GetObjBuffer(pBuffer, nWidth, nHeight);
+		return pCalc->GetObjBuffer(pBuf);
 	}
 	return false;
 }

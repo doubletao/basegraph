@@ -46,6 +46,7 @@
 #define BASEGRAPH_DATARENDER_API __declspec(dllimport)
 #endif // BASEGRAPH_DATARENDER_EXPORTS
 
+#include "ExportDataRender.h"
 #include "ExportCommon.h"
 #include "ExportDataBase.h"
 #include "ExportBaseCodec.h"

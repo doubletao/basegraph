@@ -5,6 +5,7 @@
 #include "UISimpleTimeLine.h"
 #include "UIPropertyView.h"
 #include "UITimeLine.h"
+#include "3DMainViewWnd.h"
 
 class BaseGraphMainFrame :
 	public CSkinFrameWnd
@@ -16,6 +17,7 @@ private:
 	UISimpleTimeLine m_uiSimpleTimeLine;
 	UIPropertyView m_uiPropertyView;
 	UITimeLine m_uiTimeLine;
+	C3DMainViewWnd m_pwndMainView;
 public:
 	BaseGraphMainFrame();
 	virtual ~BaseGraphMainFrame();

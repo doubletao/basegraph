@@ -17,7 +17,7 @@ public:
 	bool ReleaseCalculator(ObjectCalculator * pCalc);
 
 	bool UpdateRenderBuffer(CString strObjID);
-	bool GetBuffer(IN CString strID, OUT byte *& pBuffer, OUT int & nWidth, OUT int & nHeight);
+	bool GetBuffer(IN CString strID, OUT StuSimpleBuffer & pBuf);
 
 	bool IsItemSelected(IN CString strID, OUT bool & bSel);
 	bool SetItemSelected(IN CString strID, OPTIONAL bool & bSel);//bSel会返回之前的状态

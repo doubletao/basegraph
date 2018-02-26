@@ -90,6 +90,12 @@
     <ClCompile Include="UITLObjectItem.cpp">
       <Filter>TimeLine</Filter>
     </ClCompile>
+    <ClCompile Include="3DSceneViewWnd.cpp">
+      <Filter>SceneView</Filter>
+    </ClCompile>
+    <ClCompile Include="3DMainViewWnd.cpp">
+      <Filter>SceneView</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -154,6 +160,12 @@
     </ClInclude>
     <ClInclude Include="UITLObjectRightArea.h">
       <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="3DMainViewWnd.h">
+      <Filter>SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="3DSceneViewWnd.h">
+      <Filter>SceneView</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

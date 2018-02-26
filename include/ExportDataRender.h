@@ -12,9 +12,27 @@
 #endif // BASEGRAPH_AUTO_LOAD
 #endif // BASEGRAPH_DATARENDER_EXPORTS
 
+struct StuSimpleBuffer
+{
+	byte * pBuffer;
+	int nWidth;
+	int nHeight;
+	StuSimpleBuffer()
+		: pBuffer(nullptr)
+		, nWidth(0)
+		, nHeight(0)
+	{
+	}
+};
+
 BASEGRAPH_DATARENDER_API bool DataRender_UpdateRender(IN CString strID);
-//注意，拿到的是内部指针，不要释放
-BASEGRAPH_DATARENDER_API bool DataRender_GetBuffer(IN CString strID, OUT byte *& pBuffer, OUT int & nWidth, OUT int & nHeight);
+//BufferManager相关操作，注意，拿到的是内部指针，不要释放
+BASEGRAPH_DATARENDER_API bool DataRender_GetBuffer(IN CString strID, OUT StuSimpleBuffer & stuBuf);
+BASEGRAPH_DATARENDER_API bool Query2DBuffer(IN int nWidth, IN int nHeight, OUT int nBufID);//取一个2Dbuf
+BASEGRAPH_DATARENDER_API bool DataRender_Query2DBuffer(OPTIONAL int & nBufferID, IN int nWidth, IN int nHeight, OUT StuSimpleBuffer & stuBuf);//取一个2Dbuf
+BASEGRAPH_DATARENDER_API bool DataRender_UnQuery2DBuffer(OPTIONAL int & nBufferID);//释放一个2Dbuf的使用权（不释放）
+BASEGRAPH_DATARENDER_API bool DataRender_Compress2DBuffer();//压缩2Dbuf（释放掉所有未使用的bufer）
+BASEGRAPH_DATARENDER_API bool DataRender_Get2DBuf(IN int nBufferID, OUT StuSimpleBuffer & stuBuf);
 BASEGRAPH_DATARENDER_API bool DataRender_IsItemSelected(IN CString strID, OUT bool & bSel);
 BASEGRAPH_DATARENDER_API bool DataRender_ClearAllSelect();
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, OPTIONAL bool & bSel);//bSel会返回之前的状态

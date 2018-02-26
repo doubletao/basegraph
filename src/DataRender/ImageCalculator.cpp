@@ -87,8 +87,8 @@ bool ImageCalculator::StretchImage()
 	if (nDispWidth > 0
 		&& nDispHeight > 0)
 	{
-		ObjectBuffer * pImgBuf = DataBufferManager::Instance().GetBuf(m_nImageBufferID);
-		ObjectBuffer * pObjBuf = DataBufferManager::Instance().GetBuf(m_nObjBufferID);
+		ObjectBuffer * pImgBuf = DataBufferManager::Instance().Get2DBuf(m_nImageBufferID);
+		ObjectBuffer * pObjBuf = DataBufferManager::Instance().Get2DBuf(m_nObjBufferID);
 		if (BuferValid(pImgBuf) && BuferValid(pObjBuf))
 		{
 			BufferFunction::BufferBitblt((DWORD *)pObjBuf->GetBuffer(),

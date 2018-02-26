@@ -310,6 +310,11 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_uiSimpleTimeLine.Create(0, 0, 100, 100, GetSafeHwnd());
 	m_uiPropertyView.Create(0, 0, 100, 100, GetSafeHwnd());
 	m_uiTimeLine.Create(0, 0, 100, 100, GetSafeHwnd());
+	if (m_pwndMainView.Create(NULL, _T("主回显窗"), WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, CRect(0, 0, 200, 400), this, 0, NULL) == -1)
+	{
+		OutputDebugString(_T("主回显窗创建失败\n"));
+		return 0;
+	}
 
 	//测试代码
 	auto CreateTestImgObj = [](CString strName, CString strImgPath, CString strDebugPath, int nBegin, int nEnd)
@@ -326,12 +331,10 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		if (!strObjID.IsEmpty())
 		{
 			DataRender_UpdateRender(strObjID);
-			byte * pBuf = nullptr;
-			int nWidth = 0;
-			int nHeight = 0;
-			if (DataRender_GetBuffer(strObjID, pBuf, nWidth, nHeight))
+			StuSimpleBuffer stuSimpleBuf;
+			if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
 			{
-				BufferFunction::WriteBitmap(strDebugPath, nWidth, nHeight, 32, pBuf);
+				BufferFunction::WriteBitmap(strDebugPath, stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
 			}
 		}
 	};
@@ -373,7 +376,7 @@ void BaseGraphMainFrame::OnPaint()
 {
 	CPaintDC dc(this);
 
-	//先从绘制区域中排除掉MFC自带控件，避免闪烁问题
+	//先从绘制区域中排除掉子窗口，避免闪烁问题
 	CWnd *pChild = GetWindow(GW_CHILD); //取第一个子窗口
 	while (pChild != NULL && ::IsWindow(pChild->GetSafeHwnd()))
 	{
@@ -451,6 +454,8 @@ void BaseGraphMainFrame::OnSize(UINT nType, int cx, int cy)
 	m_uiPropertyView.MoveTo(rtClient.Width() - nPropertyViewWidth, 0, nPropertyViewWidth, rtClient.Height());
 	//时间线在整个窗口底部
 	m_uiTimeLine.MoveTo(0, rtClient.Height() - nTimeLineHeight, rtClient.Width() - nPropertyViewWidth, nTimeLineHeight);
+	//回显窗在中间
+	m_pwndMainView.MoveWindow(nActionBarWidth, nPlayControlBarHeight, rtClient.Width() - nActionBarWidth - nPropertyViewWidth, rtClient.Height() - nPlayControlBarHeight - nTimeLineHeight);
 
 	CSkinFrameWnd::OnSize(nType, cx, cy);
 }
