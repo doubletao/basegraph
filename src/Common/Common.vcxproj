@@ -111,27 +111,46 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="2DBuffer\2DBuffer.cpp" />
+    <ClCompile Include="2DBuffer\2DBufferAPI.cpp" />
     <ClCompile Include="BufferColorSpaceConv.cpp" />
     <ClCompile Include="BufferFunction.cpp" />
     <ClCompile Include="BufferMemSSE.cpp" />
     <ClCompile Include="BufferSSE2.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CommonFunction.cpp" />
-    <ClCompile Include="CommonMatrix.cpp" />
+    <ClCompile Include="CommonDataContainer.cpp" />
     <ClCompile Include="DataDef.cpp" />
+    <ClCompile Include="MathOp\MatrixDef.cpp" />
+    <ClCompile Include="MathOp\PlaneDef.cpp" />
+    <ClCompile Include="MathOp\QuatnDef.cpp" />
+    <ClCompile Include="MathOp\VectorDef.cpp" />
     <ClCompile Include="ResourceLock.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="tinystr.cpp" />
+    <ClCompile Include="tinyxml.cpp" />
+    <ClCompile Include="tinyxmlerror.cpp" />
+    <ClCompile Include="tinyxmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\Common\2DBuffer.h" />
+    <ClInclude Include="..\..\include\Common\2DBufferAPI.h" />
     <ClInclude Include="..\..\include\Common\BufferCommonDef.h" />
     <ClInclude Include="..\..\include\Common\BufferFunction.h" />
     <ClInclude Include="..\..\include\Common\CommonFunction.h" />
-    <ClInclude Include="..\..\include\Common\CommonMatrix.h" />
+    <ClInclude Include="..\..\include\Common\CommonDataContainer.h" />
     <ClInclude Include="..\..\include\Common\DataDef.h" />
+    <ClInclude Include="..\..\include\Common\MathDef.h" />
+    <ClInclude Include="..\..\include\Common\MatrixDef.h" />
+    <ClInclude Include="..\..\include\Common\PlaneDef.h" />
+    <ClInclude Include="..\..\include\Common\QuatnDef.h" />
     <ClInclude Include="..\..\include\Common\ResourceLock.h" />
+    <ClInclude Include="..\..\include\Common\tinystr.h" />
+    <ClInclude Include="..\..\include\Common\tinyxml.h" />
+    <ClInclude Include="..\..\include\Common\VectorDef.h" />
     <ClInclude Include="..\..\include\ExportCommon.h" />
     <ClInclude Include="BufferColorSpaceConv.h" />
     <ClInclude Include="BufferMemSSE.h" />
@@ -410,6 +429,7 @@
     <ClInclude Include="Eigen\SVD\SVDBase.h" />
     <ClInclude Include="Eigen\SVD\UpperBidiagonalization.h" />
     <ClInclude Include="Eigen\UmfPackSupport\UmfPackSupport.h" />
+    <ClInclude Include="MathOp\MathOpASM64.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -423,12 +443,17 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <TreatOutputAsContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</TreatOutputAsContent>
-      <TreatOutputAsContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</TreatOutputAsContent>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </CustomBuild>
     <None Include="Common.def" />
+    <CustomBuild Include="MathOp\MathOpASM64.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ml64.exe /c  /nologo /Fo"$(IntDir)\%(Filename).obj" /W3 /Zi /errorReport:prompt  /Ta MathOp/%(Filename)%(Extension)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64.exe /c  /nologo /Fo"$(IntDir)\%(Filename).obj" /W3 /Zi /errorReport:prompt  /Ta MathOp/%(Filename)%(Extension)</Command>
+    </CustomBuild>
     <None Include="res\Common.rc2" />
   </ItemGroup>
   <ItemGroup>

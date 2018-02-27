@@ -60,12 +60,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>.\SceneRender.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>..\..\interdir\Debug\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -86,6 +88,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -94,6 +97,7 @@
       <ModuleDefinitionFile>.\SceneRender.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>..\..\interdir\Release\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -109,6 +113,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="2DBufferApi\SYBuffer.cpp" />
+    <ClCompile Include="2DBufferApi\SYBufferAPI.cpp" />
+    <ClCompile Include="3DEngineApi\DXEngineManagerAPI.cpp" />
+    <ClCompile Include="3DEngineApi\DXRenderEngineDX10Api.cpp" />
+    <ClCompile Include="3DEngineApi\DXRenderEngineSoftAPI.cpp" />
     <ClCompile Include="SceneRender.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -116,6 +125,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\ExportSceneRender.h" />
+    <ClInclude Include="..\..\include\SceneRender\2DBuffer.h" />
+    <ClInclude Include="..\..\include\SceneRender\2DBufferAPI.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXEngineDataDef.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXEngineManagerAPI.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXRenderEngineDX10Api.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXRenderEngineSoftAPI.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneRender.h" />
     <ClInclude Include="stdafx.h" />

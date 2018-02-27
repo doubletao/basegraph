@@ -16,6 +16,12 @@
     <Filter Include="Eigen">
       <UniqueIdentifier>{81a1c9ac-3203-4ec2-a86f-314f35a3803f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MathOp">
+      <UniqueIdentifier>{68b6f097-ff20-4f5d-a4f7-d9e363968839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DBuffer">
+      <UniqueIdentifier>{1f06fa19-8067-4056-8b1b-2ff833374723}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -28,9 +34,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DataDef.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CommonMatrix.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CommonFunction.cpp">
@@ -50,6 +53,39 @@
     </ClCompile>
     <ClCompile Include="ResourceLock.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MathOp\MatrixDef.cpp">
+      <Filter>MathOp</Filter>
+    </ClCompile>
+    <ClCompile Include="tinystr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxmlerror.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxmlparser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MathOp\PlaneDef.cpp">
+      <Filter>MathOp</Filter>
+    </ClCompile>
+    <ClCompile Include="MathOp\QuatnDef.cpp">
+      <Filter>MathOp</Filter>
+    </ClCompile>
+    <ClCompile Include="MathOp\VectorDef.cpp">
+      <Filter>MathOp</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonDataContainer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="2DBuffer\2DBuffer.cpp">
+      <Filter>2DBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="2DBuffer\2DBufferAPI.cpp">
+      <Filter>2DBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -878,9 +914,6 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Common\CommonMatrix.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\Common\DataDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -914,6 +947,39 @@
     <ClInclude Include="..\..\include\Common\ResourceLock.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Common\MatrixDef.h">
+      <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\PlaneDef.h">
+      <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\QuatnDef.h">
+      <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\VectorDef.h">
+      <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\tinyxml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\MathDef.h">
+      <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="MathOp\MathOpASM64.h">
+      <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\tinystr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\CommonDataContainer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\2DBuffer.h">
+      <Filter>2DBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\2DBufferAPI.h">
+      <Filter>2DBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.def">
@@ -931,6 +997,9 @@
   <ItemGroup>
     <CustomBuild Include="BufferRipRender.asm">
       <Filter>源文件</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MathOp\MathOpASM64.asm">
+      <Filter>MathOp</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

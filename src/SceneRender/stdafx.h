@@ -26,7 +26,7 @@
 #endif // _AFX_NO_DB_SUPPORT
 
 #ifndef _AFX_NO_DAO_SUPPORT
-#include <afxdao.h>                     // MFC DAO 数据库类
+#include <afxdao.h>                     // MFC DAO 数据库类 
 #endif // _AFX_NO_DAO_SUPPORT
 
 #ifndef _AFX_NO_OLE_SUPPORT
@@ -37,3 +37,13 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 
+#define BASEGRAPH_AUTO_LOAD
+#define BASEGRAPH_SCENE_RENDER_EXPORTS
+
+#ifdef BASEGRAPH_SCENE_RENDER_EXPORTS
+#define BASEGRAPH_SCENE_RENDER_API __declspec(dllexport)
+#else
+#define BASEGRAPH_SCENE_RENDER_API __declspec(dllimport)
+#endif
+
+#include "ExportCommon.h"

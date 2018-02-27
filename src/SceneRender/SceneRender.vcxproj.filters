@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="3DEngineApi">
+      <UniqueIdentifier>{43f61201-a7fd-4032-af2d-38a0b9ead824}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DBufferApi">
+      <UniqueIdentifier>{fa740bd5-e15b-4319-bf96-1bc2b977b1ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -23,6 +29,21 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="3DEngineApi\DXEngineManagerAPI.cpp">
+      <Filter>3DEngineApi</Filter>
+    </ClCompile>
+    <ClCompile Include="3DEngineApi\DXRenderEngineDX10Api.cpp">
+      <Filter>3DEngineApi</Filter>
+    </ClCompile>
+    <ClCompile Include="3DEngineApi\DXRenderEngineSoftAPI.cpp">
+      <Filter>3DEngineApi</Filter>
+    </ClCompile>
+    <ClCompile Include="2DBufferApi\SYBuffer.cpp">
+      <Filter>2DBufferApi</Filter>
+    </ClCompile>
+    <ClCompile Include="2DBufferApi\SYBufferAPI.cpp">
+      <Filter>2DBufferApi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +58,27 @@
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ExportSceneRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SceneRender\DXEngineManagerAPI.h">
+      <Filter>3DEngineApi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SceneRender\DXRenderEngineDX10Api.h">
+      <Filter>3DEngineApi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SceneRender\DXRenderEngineSoftAPI.h">
+      <Filter>3DEngineApi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SceneRender\DXEngineDataDef.h">
+      <Filter>3DEngineApi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SceneRender\2DBuffer.h">
+      <Filter>2DBufferApi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SceneRender\2DBufferAPI.h">
+      <Filter>2DBufferApi</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
