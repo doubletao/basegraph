@@ -39,13 +39,16 @@ BOOL BaseGraphMainFrame::PreTranslateMessage(MSG * pMsg)
 		}
 		return true;
 	};
-	if (DealMsg(m_uiActionBar)
-		|| DealMsg(m_uiPlayControlBar)
-		|| DealMsg(m_uiSimpleTimeLine)
-		|| DealMsg(m_uiPropertyView)
-		|| DealMsg(m_uiTimeLine))
+	if (pMsg->hwnd == m_hWnd)//如果是子窗口的消息，UIElement不拦截
 	{
-		return TRUE;
+		if (DealMsg(m_uiActionBar)
+			|| DealMsg(m_uiPlayControlBar)
+			|| DealMsg(m_uiSimpleTimeLine)
+			|| DealMsg(m_uiPropertyView)
+			|| DealMsg(m_uiTimeLine))
+		{
+			return TRUE;
+		}
 	}
 	return CSkinFrameWnd::PreTranslateMessage(pMsg);
 }

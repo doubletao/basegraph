@@ -28,7 +28,7 @@ void C3DSceneViewWnd::OnPaint()
 	CPaintDC dc(this);
 	CRect rtClient;
 	GetClientRect(rtClient);
-	dc.FillSolidRect(rtClient, RGB(0, 0, 0));
+	dc.FillSolidRect(rtClient, RGB(255, 0, 0));
 }
 
 int C3DSceneViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
