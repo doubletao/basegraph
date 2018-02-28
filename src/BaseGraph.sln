@@ -33,6 +33,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DataRender", "DataRender\Da
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneRender", "SceneRender\SceneRender.vcxproj", "{9E59FA57-527E-4020-B210-C856453DC2D6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1BC4EAEA-82F2-4494-B65D-27C332CA160A} = {1BC4EAEA-82F2-4494-B65D-27C332CA160A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphEditor", "GraphEditor\GraphEditor.vcxproj", "{9B288E74-5045-4D56-BF2F-615EEFCEABC6}"
 	ProjectSection(ProjectDependencies) = postProject
