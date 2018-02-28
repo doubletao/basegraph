@@ -244,6 +244,4 @@ inline void getTextureInfo(CSYBuffer* pTexture,int* pWidth,int* pHeight)
 	if(pHeight)
 		*pHeight = pTexture->m_nHeight;
 }
-////Main//////////////////////////////////////////////////////////////////////
-BASEGRAPH_SCENE_RENDER_API BOOL RenderSoftEngine_Main(int ncmd, int hDevice, void* paramin, void* paramout);
 #endif//softEngineEnd

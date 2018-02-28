@@ -117,6 +117,7 @@
     <ClCompile Include="BufferFunction.cpp" />
     <ClCompile Include="BufferMemSSE.cpp" />
     <ClCompile Include="BufferSSE2.cpp" />
+    <ClCompile Include="ColorAPI.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CommonFunction.cpp" />
     <ClCompile Include="CommonDataContainer.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="..\..\include\Common\2DBufferAPI.h" />
     <ClInclude Include="..\..\include\Common\BufferCommonDef.h" />
     <ClInclude Include="..\..\include\Common\BufferFunction.h" />
+    <ClInclude Include="..\..\include\Common\ColorAPI.h" />
     <ClInclude Include="..\..\include\Common\ColorDef.h" />
     <ClInclude Include="..\..\include\Common\CommonFunction.h" />
     <ClInclude Include="..\..\include\Common\CommonDataContainer.h" />

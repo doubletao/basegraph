@@ -1,11 +1,93 @@
 #include "stdafx.h"
-#include "SYRenderEngineDX10Api.h"
+#include "SceneRender\DXRenderEngineDX10Api.h"
 
 htable g_deviceHT;
 IDXGIFactory*	g_pDXFactory = NULL;
 IDXGIAdapter* g_pAdapter = NULL;
 TCHAR g_szDX10PathShader[MAX_PATH] = {0};	
 TCHAR g_szDX10PathEffect[MAX_PATH] = {0};	
+
+inline void cutStrechArea(int& srcOffsetX, int& srcOffsetY, int& srcValidWidth, int& srcValidHeight, int srcBufferWidth, int srcBufferHeight, int& destOffsetX, int& destOffsetY, int& destValidWidth, int& destValidHeight, int destBufferWidth, int destBufferHeight, float* fXScale, float* fYScale)
+{
+	float xscale = destValidWidth / (float)srcValidWidth;
+	float yscale = destValidHeight / (float)srcValidHeight;
+	if (fXScale)
+		*fXScale = xscale;
+	if (fYScale)
+		*fYScale = yscale;
+
+
+	if (srcOffsetX > srcBufferWidth
+		|| srcOffsetY > srcBufferHeight
+		|| destOffsetX > destBufferWidth
+		|| destOffsetY > destBufferHeight
+		|| srcOffsetX + srcValidWidth < 0
+		|| srcOffsetY + srcValidHeight < 0
+		|| destOffsetY + destValidHeight < 0
+		|| destOffsetX + destValidWidth < 0)
+	{
+		srcValidHeight = 0;
+		srcValidWidth = 0;
+		destValidHeight = 0;
+		destValidWidth = 0;
+		return;
+	}
+	if (srcOffsetX < 0)
+	{
+		destOffsetX -= SY_FToI(srcOffsetX * xscale);
+		srcValidWidth += srcOffsetX;
+		destValidWidth += SY_FToI(srcOffsetX * xscale);
+		srcOffsetX = 0;
+	}
+	if (destOffsetX < 0)
+	{
+		srcOffsetX -= SY_FToI(destOffsetX / xscale);
+		destValidWidth += destOffsetX;
+		srcValidWidth += SY_FToI(destOffsetX / xscale);
+		destOffsetX = 0;
+	}
+
+	if (srcOffsetY < 0)
+	{
+		destOffsetY -= SY_FToI(srcOffsetY * yscale);
+		srcValidHeight += srcOffsetY;
+		destValidHeight += SY_FToI(srcOffsetY * yscale);
+		srcOffsetY = 0;
+	}
+	if (destOffsetY < 0)
+	{
+		srcOffsetY -= SY_FToI(destOffsetY * yscale);
+		destValidHeight += destOffsetY;
+		srcValidHeight += SY_FToI(destOffsetY / yscale);
+		destOffsetY = 0;
+	}
+
+	if (srcOffsetX + srcValidWidth > srcBufferWidth)
+	{
+		int OffsetX = srcOffsetX + srcValidWidth - srcBufferWidth;
+		srcValidWidth -= OffsetX;
+		destValidWidth -= SY_FToI(OffsetX * xscale);
+	}
+	if (srcOffsetY + srcValidHeight > srcBufferHeight)
+	{
+		int OffsetY = srcOffsetY + srcValidHeight - srcBufferHeight;
+		srcValidHeight -= OffsetY;
+		destValidHeight -= SY_FToI(OffsetY * yscale);
+	}
+
+	if (destOffsetX + destValidWidth > destBufferWidth)
+	{
+		int OffsetX = destOffsetX + destValidWidth - destBufferWidth;
+		destValidWidth -= OffsetX;
+		srcValidWidth -= SY_FToI(OffsetX / xscale);
+	}
+	if (destOffsetY + destValidHeight > destBufferHeight)
+	{
+		int OffsetY = destOffsetY + destValidHeight - destBufferHeight;
+		destValidHeight -= OffsetY;
+		srcValidHeight -= SY_FToI(OffsetY / yscale);
+	}
+}
 
 CRITICAL_SECTION	g_dx10EngineLock;  // just for temp
 static int g_nEngineLockCount = 0;
@@ -257,7 +339,7 @@ inline int CreateBuffer(SY_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,
 
 int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileName,SYShaderType nType,SYVertexType* pType)
 {
-	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(SYHash_key)shaderName);
+	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(void *)shaderName);
 	if (pShaderHashValue)
 	{
 		++(pShaderHashValue->nCount) ;
@@ -2003,13 +2085,13 @@ bool Render_ReleaseTexture(int hDevice,void* paramin,void* paramout)
 		else if(pSrcWDTexture->nType == SYTexture_2DReadOnly)
 			pHash = pDevice->TextureFromFileHash;
 
-		HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(SYHash_key)pSrcWDTexture->pTexFile);
+		HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(void *)pSrcWDTexture->pTexFile);
 		--(pTexHashValue->nCount);
 		if (pTexHashValue->nCount != 0)
 		{
 			return true;
 		}
-		SYHash_RemoveAt(pHash,(SYHash_key)pSrcWDTexture->pTexFile,TRUE);
+		SYHash_RemoveAt(pHash,(void *)pSrcWDTexture->pTexFile,TRUE);
 		Render_ReleaseTexture(pSrcWDTexture);
 	}
 	else if(pSrcWDTexture)
@@ -2387,7 +2469,7 @@ bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 		Render_EngineLock(hDevice,NULL,NULL);
 	EngineThreadLock();
 
-	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(SYHash_key)param->shaderName);
+	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(void *)param->shaderName);
 
 	if (pShaderHashValue)
 	{
@@ -2463,7 +2545,7 @@ bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 			nBinSize = pShader->GetBufferSize();
 		}
 					
-		shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(SYHash_key)param->shaderName);
+		shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(void *)param->shaderName);
 		if (pShaderHashValue)
 		{
 			++(pShaderHashValue->nCount) ;
@@ -2935,7 +3017,7 @@ bool Render_CreateTexFromFile(int hDevice,void* paramin,void* paramout)
 	else if(nType == SYTexture_2DReadOnly)
 		pHash = pDevice->TextureFromFileHash;
 
-	HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(SYHash_key)pPath);
+	HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(void *)pPath);
 	if (pTexHashValue)
 	{
 		++(pTexHashValue->nCount) ;
@@ -2949,7 +3031,7 @@ bool Render_CreateTexFromFile(int hDevice,void* paramin,void* paramout)
 	HRESULT hr = S_FALSE ;
 	BOOL bMipMap = FALSE;
 	int nX = 0,nY = 0;
-	SYGetImgInfo(pPath,nX,nY,nImgWidth,nImgHeight);
+	BaseCodec_GetImgInfo(pPath,nX,nY,nImgWidth,nImgHeight);
 	if(nImgWidth * nImgHeight == 0)
 	{
 		if(D3DX10CreateTextureFromFile(pDevice->pDevice,pPath,NULL,NULL,&pNewTexture,NULL) )
@@ -2965,7 +3047,7 @@ bool Render_CreateTexFromFile(int hDevice,void* paramin,void* paramout)
 		GetTexScale((UINT&)nImgWidth,(UINT&)nImgHeight,1,nMipMap);
 
 		DWORD* pBuffer = new DWORD[nImgWidth * nImgHeight];
-		SYReadImage(pPath,(DWORD*)pBuffer,nImgWidth,nImgHeight);
+		BaseCodec_ReadImage(pPath, nImgWidth, nImgHeight, pBuffer);
 		D3D10_SUBRESOURCE_DATA initData = {pBuffer,nImgWidth * sizeof(DWORD),0};
 		D3D10_TEXTURE2D_DESC* pMemDesc = createMemTexDesc(nImgWidth,nImgHeight);
 		ID3D10Texture2D* pMemTex = NULL;

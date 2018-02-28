@@ -46,5 +46,14 @@
 #define BASEGRAPH_SCENE_RENDER_API __declspec(dllimport)
 #endif
 
+#include <D3D10.h>
+#include <D3DX10.h>
+#include "d3dx9mesh.h"
+#pragma comment(lib,"d3dx9.lib")
+#pragma comment(lib,"d3d9.lib")
+#pragma comment(lib,"d3dx10.lib")
+#pragma comment(lib,"d3d10.lib")
+#pragma comment(lib,"DXGI.lib")
+
 #include "ExportCommon.h"
 #include "ExportBaseCodec.h"

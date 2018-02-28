@@ -87,6 +87,9 @@
     <ClCompile Include="2DBuffer\2DBufferAPI.cpp">
       <Filter>2DBuffer</Filter>
     </ClCompile>
+    <ClCompile Include="ColorAPI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -981,6 +984,9 @@
       <Filter>2DBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Common\ColorDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\ColorAPI.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -48,10 +48,14 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\bin\</OutDir>
     <TargetName>$(ProjectName)D</TargetName>
+    <IncludePath>$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\bin\</OutDir>
+    <IncludePath>$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -113,8 +117,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="2DBufferApi\SYBuffer.cpp" />
-    <ClCompile Include="2DBufferApi\SYBufferAPI.cpp" />
+    <ClCompile Include="3DEngineApi\3DInterSection.cpp" />
+    <ClCompile Include="3DEngineApi\3DSpaceConvert.cpp" />
+    <ClCompile Include="3DEngineApi\DXEffectManager.cpp" />
     <ClCompile Include="3DEngineApi\DXEngineManagerAPI.cpp" />
     <ClCompile Include="3DEngineApi\DXRenderEngineDX10Api.cpp" />
     <ClCompile Include="3DEngineApi\DXRenderEngineSoftAPI.cpp" />
@@ -126,8 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ExportSceneRender.h" />
-    <ClInclude Include="..\..\include\SceneRender\2DBuffer.h" />
-    <ClInclude Include="..\..\include\SceneRender\2DBufferAPI.h" />
+    <ClInclude Include="..\..\include\SceneRender\3DInterSection.h" />
+    <ClInclude Include="..\..\include\SceneRender\3DSpaceConvert.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXEffectManager.h" />
     <ClInclude Include="..\..\include\SceneRender\DXEngineDataDef.h" />
     <ClInclude Include="..\..\include\SceneRender\DXEngineManagerAPI.h" />
     <ClInclude Include="..\..\include\SceneRender\DXRenderEngineDX10Api.h" />

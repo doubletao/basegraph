@@ -83,6 +83,164 @@ enum	SYRenderState
 	SYRenderState_Count,
 };
 
+struct SY_Ray_Parameter
+{
+	vector3f	startPoint;
+	vector3f	Direction;//必须是归一化过的
+};
+
+struct SY_QuadRang_Intersection
+{
+	vector3f		firstPoint;
+	vector3f		secondPoint;
+	vector3f		thirdPoint;
+	vector3f		forthPoint;
+	vector3f		fifthPoint;
+	vector3f		sixthPoint;
+	vector3f		seventhPoint;
+	vector3f		eighthPoint;
+	SY_Ray_Parameter Ray;
+};
+
+struct Point_Intersection
+{
+	vector3f		nearPoint;
+	vector3f		farPoint;
+};
+
+struct SY_Triangle_Param
+{
+	vector3f		v0;
+	vector3f		v1;
+	vector3f		v2;
+};
+
+struct SY_Triangle_Intersection
+{
+	SY_Triangle_Param	triangle;
+	SY_Ray_Parameter	ray;
+};
+
+struct SY_Plane_Parameter
+{
+	vector3f point;
+	vector3f normal;
+};
+struct SY_Plane_Intersection
+{
+	SY_Plane_Parameter	Plane;
+	SY_Ray_Parameter	Ray;
+};
+struct SY_3DCircle_Parameter
+{
+	vector3f Normal;
+	vector3f Centre;
+	float Radius;
+};
+struct SY_3DCircle_Intersection
+{
+	SY_3DCircle_Parameter Circle;
+	SY_Ray_Parameter Ray;
+};
+struct SY_LineSeg_Parameter
+{
+	vector3f start;
+	vector3f end;
+};
+struct SY_LineSeg_Intersection
+{
+	SY_LineSeg_Parameter line;
+	SY_Ray_Parameter Ray;
+};
+struct SY_Sphere_Intersection
+{
+	float		fSphereRadius;
+	SY_Ray_Parameter		Ray;
+};
+//四面体结构，四个顶点
+struct SY_Tetrahedron_Intersection
+{
+	vector3f			firstPoint;
+	vector3f			secondPoint;
+	vector3f			thirdPoint;
+	vector3f			forthPoint;
+	SY_Ray_Parameter	Ray;
+};
+struct SY_Segment_Intersection
+{
+	vector3f			firstPoint;
+	vector3f			secondPoint;
+	vector3f			thirdPoint;
+	vector3f			forthPoint;
+	SY_Ray_Parameter	Ray;
+};
+
+struct SY_3DPoint_Intersection
+{
+	vector3f			vPoint;
+	SY_Ray_Parameter	ray;
+};
+
+struct SY_Cone_Parameter//圆锥特征参数
+{
+	float fBaseRadius;
+	float fHeight;
+	float fTopRadius;
+	float fStartAngle;//start angle == 0
+	float fEndAngle;//when begin end angle = 2pi
+};
+
+enum SYTriType
+{
+	SY_TRIANGLE_LIST = 1,
+	SY_TRIANGLE_STRIP,
+	SY_TRIANGLE_FAN,
+	SY_TRI_TYPE_NO_USE = 0xffffffff,
+};
+
+enum SY_POST_PROCESS_TYPE
+{
+	SY_POST_DEFAULT_PROCESS,
+	SY_POST_NORMAL_PROCESS,
+	SY_POST_POSITION_PROCESS,
+	SY_POST_DEPTH_PROCESS,
+	SY_POST_TRANSPARENT_PROCESS,
+	SY_POST_PROCESS_COUNT,
+};
+
+typedef struct tag_sy_render_submodel
+{
+	DWORD	vstart;
+	DWORD	vcount;
+	DWORD	istart;
+	DWORD	icount;
+	int		nTri_Type;
+	int		nTri_Num;
+	void*	pVideoMaterial;
+	BOOL		bShaderChange;
+	int	    hPixShader[SY_POST_PROCESS_COUNT];
+	bool		bSharedMaterial; //标志是否是共享的材质
+}SYRenderSubModel;
+
+typedef struct tag_syvertex3d		// 3d vertex declaration
+{
+	union
+	{
+		// dynamic vertex coordinates
+		struct { float  x, y, z; };
+		vector3f	vDyn;
+	};
+	union
+	{	// normal
+		struct { float  nx, ny, nz; };
+		vector3f	vNorm;
+	};
+	float	tu, tv;				// texture coordinates
+
+	vector3f tangent;
+	vector3f binormal;
+} syvertex3d, SYVertex3D, *LPSYVERTEX3D;
+
 enum SYDepthStateType
 {
 	SYDepthState_Default = 0,

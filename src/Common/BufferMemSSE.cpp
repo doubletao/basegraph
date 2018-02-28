@@ -1150,3 +1150,571 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 
 	return TRUE;
 }
+
+BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN LPBYTE pbyKey, IN int nKeyX, IN int nKeyY, IN int nKeyWidth, IN int nKeyHeight, IN int nKeyBufWidth, IN int nKeyBufHeight, IN int nKeyPitch, IN SY_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip, IN int n, IN int k)
+{
+	if (pdwBuf == NULL || pbyKey == NULL)
+		return FALSE;
+
+	// 获得有效的操作范围
+	if (!Buffer_Fix_CutRange(nDesX, nDesY, nDesWidth, nDesHeight, nDesBufWidth, nDesBufHeight, \
+		nKeyX, nKeyY, nKeyWidth, nKeyHeight, nKeyBufWidth, nKeyBufHeight, prcDesClip))
+		return FALSE;
+
+	int nDesAddWidth(0), nKeyAddPitch(0), nLineInc(0);
+	int nDesClipHeight = (prcDesClip == NULL) ? nDesBufHeight	\
+		: ((nDesBufHeight > prcDesClip->bottom) ? prcDesClip->bottom : nDesBufHeight);
+
+	// 获得有效的奇偶场操作范围
+	if (!Buffer_Parity_Range(nDesY, nDesAddWidth, nDesBufWidth, nDesClipHeight, \
+		nKeyY, nKeyAddPitch, nKeyPitch, nKeyBufHeight, nLineInc, eParity, n, k))
+		return FALSE;
+
+	//	printf("DesX = %d,DesY = %d\n",nDesX,nDesY);
+	DWORD* pdwDesLine = pdwBuf + nDesY * nDesBufWidth + nDesX;		// 目标 Buffer 起始地址
+	BYTE* pbyKeyLine = pbyKey + nKeyY * nKeyPitch + nKeyX;			// 键起始地址
+	int na16 = (nDesWidth >> 2), nm16 = ((nDesWidth & 0x03) << 2);	// 一行的对齐参数
+
+																	// 逐行处理
+	switch (eMode)
+	{
+	case SY_KEY_MULTIPLY:			// 相乘
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			bgra32_key_mul_line(pdwDesLine, pbyKeyLine, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+			pbyKeyLine += nKeyAddPitch;
+		}
+		break;
+	case SY_KEY_MULTIPLY_NOTSRC:	// 反向源键相乘
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			bgra32_key_mul_notsrc_line(pdwDesLine, pbyKeyLine, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+			pbyKeyLine += nKeyAddPitch;
+		}
+		break;
+	case SY_KEY_MULTIPLY_NOTDES:	// 反向目标键相乘
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			bgra32_key_mul_notdes_line(pdwDesLine, pbyKeyLine, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+			pbyKeyLine += nKeyAddPitch;
+		}
+		break;
+	case SY_KEY_REPLACE:			// 替换
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			//			printf("i = %d/n",i);
+			bgra32_replace_alpha_line(pdwDesLine, pbyKeyLine, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+			pbyKeyLine += nKeyAddPitch;
+		}
+		break;
+	case SY_KEY_MIX:				// 混叠
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			bgra32_key_mix_line(pdwDesLine, pbyKeyLine, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+			pbyKeyLine += nKeyAddPitch;
+		}
+		break;
+	case SY_KEY_MIX_NOTSRC:			// 反向源键混叠
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			bgra32_key_mix_notsrc_line(pdwDesLine, pbyKeyLine, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+			pbyKeyLine += nKeyAddPitch;
+		}
+		break;
+	case SY_KEY_SAT_SUB:		// 饱和差值
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			bgra32_key_sat_sub_line(pdwDesLine, pbyKeyLine, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+			pbyKeyLine += nKeyAddPitch;
+		}
+		break;
+	default:
+		break;
+		//assert(FALSE);
+	}
+	return TRUE;
+}
+
+BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN LPBYTE pbyKey, IN int nKeyX, IN int nKeyY, IN int nKeyWidth, IN int nKeyHeight, IN int nKeyBufWidth, IN int nKeyBufHeight, IN int nKeyPitch, IN SY_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
+{
+	if (pdwBuf == NULL || pbyKey == NULL)
+		return FALSE;
+
+	float fScaleWidth(1.0f), fScaleHeight(1.0f), fSrcStartX(0.0f), fSrcStartY(0.0f);
+	int nDesAddWidth(0), nLineIndex(0), nLineInc(1);
+
+	// 获得有效的操作范围
+	if (!Buffer_Stretch_CutRange(nDesX, nDesY, nDesWidth, nDesHeight, nDesBufWidth, nDesBufHeight, \
+		nKeyX, nKeyY, nKeyWidth, nKeyHeight, nKeyBufWidth, nKeyBufHeight, 1, \
+		fScaleWidth, fScaleHeight, fSrcStartX, fSrcStartY, nDesAddWidth, nLineIndex, nLineInc, \
+		eParity, prcDesClip))
+		return FALSE;
+
+	// 申请权重表与索引表的内存空间
+	SYSSE_DECLARE(DWORD*) pPowerX = SYSSE_NEW(nDesWidth, DWORD);	// X 方向上目标列映射到源列的权重表
+	SYSSE_DECLARE(int*) pMapX = SYSSE_NEW(nDesWidth, int);			// X 方向上目标列映射到源列的索引表
+	SYSSE_DECLARE(DWORD*) pPowerY = SYSSE_NEW(nDesHeight, DWORD);	// Y 方向上目标行映射到源行的权重表
+	SYSSE_DECLARE(int*) pMapY = SYSSE_NEW(nDesHeight, int);			// Y 方向上目标行映射到源行的索引表
+	SYSSE_DECLARE(BYTE*) pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);		// 临时缓存
+																	// Buffer 起始地址
+	DWORD* pdwDesLine = pdwBuf + nDesY * nDesBufWidth + nDesX;		// 目标 Buffer 起始地址
+	BYTE* pbyKeyLine = NULL;
+	int na4 = (nDesWidth >> 2), nm4 = (nDesWidth & 0x03);
+	int na16 = (nDesWidth >> 2), nm16 = ((nDesWidth & 0x03) << 2);	// 一行的对齐参数
+
+																	// 计算权重与映射索引
+	Buffer_Power_BLStretch(pPowerX, pMapX, pPowerY, pMapY, nDesWidth, nDesHeight, \
+		nKeyX, nKeyY, nKeyWidth, nKeyHeight, nKeyBufWidth, nKeyBufHeight, \
+		fScaleWidth, fScaleHeight, fSrcStartX, fSrcStartY, sizeof(BYTE));
+	// 逐行处理
+	switch (eMode)
+	{
+	case SY_KEY_MULTIPLY:		// 相乘
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbyKeyLine, nKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_key_mul_line(pdwDesLine, pTmpBuf, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+		}
+		break;
+	case SY_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbyKeyLine, nKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_key_mul_notsrc_line(pdwDesLine, pTmpBuf, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+		}
+		break;
+	case SY_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbyKeyLine, nKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_key_mul_notdes_line(pdwDesLine, pTmpBuf, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+		}
+		break;
+	case SY_KEY_REPLACE:		// 替换
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbyKeyLine, nKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_replace_alpha_line(pdwDesLine, pTmpBuf, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+		}
+		break;
+	case SY_KEY_MIX:		// 混叠
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbyKeyLine, nKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_key_mix_line(pdwDesLine, pTmpBuf, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+		}
+		break;
+	case SY_KEY_MIX_NOTSRC:		// 反向源键混叠
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbyKeyLine, nKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_key_mix_notsrc_line(pdwDesLine, pTmpBuf, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+		}
+		break;
+	case SY_KEY_SAT_SUB:		// 饱和差值
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbyKeyLine, nKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			bgra32_key_sat_sub_line(pdwDesLine, pTmpBuf, na16, nm16);
+			pdwDesLine += nDesAddWidth;
+		}
+		break;
+	default:
+		break;
+		//assert(FALSE);
+	}
+	// 释放权重表与索引表
+	SYSSE_FREE(pPowerX);
+	SYSSE_FREE(pMapX);
+	SYSSE_FREE(pPowerY);
+	SYSSE_FREE(pMapY);
+	SYSSE_FREE(pTmpBuf);
+
+	return TRUE;
+}
+
+BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN int nDesKeyPitch, IN LPBYTE pbySrc, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, IN int nSrcBufHeight, IN int nSrcKeyPitch, IN SY_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip, IN int n, IN int k)
+{
+	if (pbyDes == NULL || pbySrc == NULL)
+		return FALSE;
+
+	// 获得有效的操作范围
+	if (!Buffer_Fix_CutRange(nDesX, nDesY, nDesWidth, nDesHeight, nDesBufWidth, nDesBufHeight, \
+		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufWidth, nSrcBufHeight, prcDesClip))
+		return FALSE;
+
+	int nDesAddPitch(0), nSrcAddPitch(0), nLineInc(0);
+	int nDesClipHeight = (prcDesClip == NULL) ? nDesBufHeight	\
+		: ((nDesBufHeight > prcDesClip->bottom) ? prcDesClip->bottom : nDesBufHeight);
+
+	// 获得有效的奇偶场操作范围
+	if (!Buffer_Parity_Range(nDesY, nDesAddPitch, nDesKeyPitch, nDesClipHeight, \
+		nSrcY, nSrcAddPitch, nSrcKeyPitch, nSrcBufHeight, nLineInc, eParity, n, k))
+		return FALSE;
+
+	LPBYTE pbyDesLine = pbyDes + nDesY * nDesKeyPitch + nDesX;		// 目标键起始地址
+	LPBYTE pbySrcLine = pbySrc + nSrcY * nSrcKeyPitch + nSrcX;		// 目标键起始地址
+	int na16 = (nDesWidth >> 4), nm16 = (nDesWidth & 0x0f);			// 一行的对齐参数
+
+																	// 逐行处理
+	switch (eMode)
+	{
+	case SY_KEY_MULTIPLY:		// 相乘
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			keybuf_mul_buf_line(pbyDesLine, pbySrcLine, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+			pbySrcLine += nSrcAddPitch;
+		}
+		break;
+	case SY_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			keybuf_mul_buf_line_notsrc(pbyDesLine, pbySrcLine, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+			pbySrcLine += nSrcAddPitch;
+		}
+		break;
+	case SY_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			keybuf_mul_buf_line_notdes(pbyDesLine, pbySrcLine, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+			pbySrcLine += nSrcAddPitch;
+		}
+		break;
+	case SY_KEY_REPLACE:		// 替换
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			memcpy_line(pbyDesLine, pbySrcLine, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+			pbySrcLine += nSrcAddPitch;
+		}
+		break;
+	case SY_KEY_MIX:		// 混叠
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			keybuf_mix_buf_line(pbyDesLine, pbySrcLine, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+			pbySrcLine += nSrcAddPitch;
+		}
+		break;
+	case SY_KEY_MIX_NOTSRC:		// 反向源键混叠
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			keybuf_mix_buf_line_notsrc(pbyDesLine, pbySrcLine, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+			pbySrcLine += nSrcAddPitch;
+		}
+		break;
+	case SY_KEY_SAT_SUB:		// 饱和差值
+		for (int i = 0; i<nDesHeight; i += nLineInc)
+		{
+			keybuf_sat_sub_buf_line(pbyDesLine, pbySrcLine, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+			pbySrcLine += nSrcAddPitch;
+		}
+		break;
+	default:
+		break;
+		//assert(FALSE);
+	}
+	return TRUE;
+}
+
+BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN int nDesKeyPitch, IN LPBYTE pbySrc, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, IN int nSrcBufHeight, IN int nSrcKeyPitch, IN SY_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
+{
+	if (pbyDes == NULL || pbySrc == NULL)
+		return FALSE;
+
+	float fScaleWidth(1.0f), fScaleHeight(1.0f), fSrcStartX(0.0f), fSrcStartY(0.0f);
+	int nDesAddPitch(0), nLineIndex(0), nLineInc(1);
+
+	// 获得有效的操作范围
+	if (!Buffer_Stretch_CutRange(nDesX, nDesY, nDesWidth, nDesHeight, nDesBufWidth, nDesBufHeight, \
+		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufWidth, nSrcBufHeight, 1, \
+		fScaleWidth, fScaleHeight, fSrcStartX, fSrcStartY, nDesAddPitch, nLineIndex, nLineInc, \
+		eParity, prcDesClip))
+		return FALSE;
+
+	// 重新定位目标的增长
+	nDesAddPitch = (nDesKeyPitch << (nLineInc - 1));
+
+	// 申请权重表与索引表的内存空间
+	SYSSE_DECLARE(DWORD*) pPowerX = SYSSE_NEW(nDesWidth, DWORD);	// X 方向上目标列映射到源列的权重表
+	SYSSE_DECLARE(int*) pMapX = SYSSE_NEW(nDesWidth, int);			// X 方向上目标列映射到源列的索引表
+	SYSSE_DECLARE(DWORD*) pPowerY = SYSSE_NEW(nDesHeight, DWORD);	// Y 方向上目标行映射到源行的权重表
+	SYSSE_DECLARE(int*) pMapY = SYSSE_NEW(nDesHeight, int);			// Y 方向上目标行映射到源行的索引表
+	SYSSE_DECLARE(BYTE*) pTmpBuf = NULL;				// 临时缓存
+														// Buffer 起始地址
+	LPBYTE pbyDesLine = pbyDes + nDesY * nDesKeyPitch + nDesX, pbySrcLine = NULL;
+	int na4 = (nDesWidth >> 2), nm4 = (nDesWidth & 0x03);
+	int na16 = (nDesWidth >> 4), nm16 = (nDesWidth & 0x0f);
+
+	// 计算权重与映射索引
+	Buffer_Power_BLStretch(pPowerX, pMapX, pPowerY, pMapY, nDesWidth, nDesHeight, \
+		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufWidth, nSrcBufHeight, \
+		fScaleWidth, fScaleHeight, fSrcStartX, fSrcStartY, sizeof(BYTE));
+	// 逐行处理
+	switch (eMode)
+	{
+	case SY_KEY_MULTIPLY:		// 相乘
+		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbySrcLine, nSrcKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			keybuf_mul_buf_line(pbyDesLine, pTmpBuf, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+		}
+		break;
+	case SY_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
+		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbySrcLine, nSrcKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			keybuf_mul_buf_line_notsrc(pbyDesLine, pTmpBuf, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+		}
+		break;
+	case SY_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
+		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbySrcLine, nSrcKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			keybuf_mul_buf_line_notdes(pbyDesLine, pTmpBuf, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+		}
+		break;
+	case SY_KEY_REPLACE:		// 替换
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
+			keybuf_bl_copy_line(pbyDesLine, na4, nm4, pbySrcLine, nSrcKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			pbyDesLine += nDesAddPitch;
+		}
+		break;
+	case SY_KEY_MIX:		// 混叠
+		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbySrcLine, nSrcKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			keybuf_mix_buf_line(pbyDesLine, pTmpBuf, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+		}
+		break;
+	case SY_KEY_MIX_NOTSRC:		// 反向源键混叠
+		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbySrcLine, nSrcKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			keybuf_mix_buf_line_notsrc(pbyDesLine, pTmpBuf, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+		}
+		break;
+	case SY_KEY_SAT_SUB:		// 饱和差值
+		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
+			keybuf_bl_copy_line(pTmpBuf, na4, nm4, pbySrcLine, nSrcKeyPitch, pPowerX, pMapX, pPowerY[nLineIndex]);
+			keybuf_sat_sub_buf_line(pbyDesLine, pTmpBuf, na16, nm16);
+			pbyDesLine += nDesAddPitch;
+		}
+		break;
+	default:
+		break;
+		//assert(FALSE);
+	}
+	// 释放权重表与索引表
+	SYSSE_FREE(pPowerX);
+	SYSSE_FREE(pMapX);
+	SYSSE_FREE(pPowerY);
+	SYSSE_FREE(pMapY);
+	SYSSE_SAFEFREE(pTmpBuf);
+
+	return TRUE;
+}
+
+BOOL BufferMemSSE::Buffer_Trans_CalcBorder(IN SYBufferDef32 * pDesBuf, IN int nOffsetLeft, IN int nOffsetTop, IN LPSYINNERVERTEX pvVertexes, OUT LPSYINNERVERTEX pvLeftEdgeUVW, OUT LPSYINNERVERTEX pvDeltaUVW, OUT DWORD ** ppdwDesLeftEdge, OUT int * pnLinePixels, OUT int * pnMaxLinePixels)
+{
+	return FALSE;
+}
+
+void BufferMemSSE::Buffer_Trans_CalcPowerAndIndex_BL(IN LPSYINNERVERTEX pvLeftEdgeUVW, IN LPSYINNERVERTEX pvDeltaUVW, IN int nLinePixels, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, OUT DWORD * pdwSrcIndex, OUT float * pfPowerX, OUT float * pfPowerY, OUT float * pfPowerXY)
+{
+	float fU = pvLeftEdgeUVW->x, fV = pvLeftEdgeUVW->y, fW = pvLeftEdgeUVW->z;
+	float fDU = pvDeltaUVW->x, fDV = pvDeltaUVW->y, fDW = pvDeltaUVW->z;
+	float fGainW(0.f), fTmp(0.f), fSrcX(0.f), fSrcY(0.f);
+	int nSrcX(0), nSrcY(0), nScaleWidth(nSrcWidth - 1), nScaleHeight(nSrcHeight - 1);
+	float *pfTmpPowerX = pfPowerX, *pfTmpPowerY = pfPowerY, *pfTmpPowerXY = pfPowerXY;
+	DWORD* pdwTmpSrcIndex = pdwSrcIndex;
+
+	fU *= nScaleWidth;
+	fV *= nScaleHeight;
+	fDU *= nScaleWidth;
+	fDV *= nScaleHeight;
+	for (int i = 0; i<nLinePixels; i++)
+	{
+		fGainW = 1.f / fW;
+		//fSrcX = fU * nScaleWidth * fGainW;
+		//fSrcY = fV * nScaleHeight * fGainW;
+		fSrcX = fU * fGainW;
+		fSrcY = fV * fGainW;
+		nSrcX = (int)fSrcX;
+		nSrcY = (int)fSrcY;
+		*pfTmpPowerX = nSrcX + 1.f - fSrcX;
+		*pfTmpPowerY = nSrcY + 1.f - fSrcY;
+		*pfTmpPowerXY = *pfTmpPowerX * *pfTmpPowerY;
+		nSrcX = (nSrcX <= 0) ? 0 : nSrcX;
+		nSrcX = (nSrcX >= nScaleWidth) ? nScaleWidth : nSrcX;
+		nSrcY = (nSrcY <= 0) ? 0 : nSrcY;
+		nSrcY = (nSrcY >= nScaleHeight) ? nScaleHeight : nSrcY;
+		pdwTmpSrcIndex[0] = nSrcX + nSrcY * nSrcBufWidth;
+		pdwTmpSrcIndex[1] = (nSrcX >= nScaleWidth) ? pdwTmpSrcIndex[0] : (pdwTmpSrcIndex[0] + 1);
+		pdwTmpSrcIndex[2] = (nSrcY >= nScaleHeight) ? pdwTmpSrcIndex[0] : (pdwTmpSrcIndex[0] + nSrcBufWidth);
+		pdwTmpSrcIndex[3] = (nSrcY >= nScaleHeight) ? pdwTmpSrcIndex[1] : (pdwTmpSrcIndex[1] + nSrcBufWidth);
+		pdwTmpSrcIndex += 4;
+		pfTmpPowerX++;
+		pfTmpPowerY++;
+		pfTmpPowerXY++;
+		fU += fDU;
+		fV += fDV;
+		fW += fDW;
+	}
+}
+
+void BufferMemSSE::Buffer_Trans_Interpolate_BL(OUT DWORD * pdwDesLeftEdge, IN int nLinePixels, IN DWORD ** ppdwSrcStart, IN DWORD * pdwSrcIndex, IN float * pfPowerX, IN float * pfPowerY, IN float * pfPowerXY)
+{
+	float *pfTmpPowerX = pfPowerX, *pfTmpPowerY = pfPowerY, *pfTmpPowerXY = pfPowerXY;
+	DWORD* pdwTmpSrcIndex = pdwSrcIndex, *pdwSrcStart = ppdwSrcStart[0], *pdwTmpDes = pdwDesLeftEdge;
+	DWORD *pdwSrc00 = NULL, *pdwSrc01 = NULL, *pdwSrc10 = NULL, *pdwSrc11 = NULL;
+	int nTmp00(0), nTmp01(0), nTmp10(0), nTmp11(0), nR(0), nG(0), nB(0);
+	int nA00(0), nA01(0), nA10(0), nA11(0), nA(0);
+
+	// 计算公式		S00 * x * y				S01 * (1 - x) * y
+	//				S10 * x * (1 - y)		S11 * (1 - x) * (1 - y)
+	// D = S11 + (S00 - S01 - S10 + S11) * x * y + (S10 - S11) * x + (S01 - S11) * y
+	// 要特殊处理边缘问题，防止透明像素影响边缘的颜色，透明像素只能影响边缘的透明度。
+	for (int i = 0; i<nLinePixels; i++)
+	{
+		pdwSrc00 = pdwTmpSrcIndex[0] + pdwSrcStart;
+		pdwSrc01 = pdwTmpSrcIndex[1] + pdwSrcStart;
+		pdwSrc10 = pdwTmpSrcIndex[2] + pdwSrcStart;
+		pdwSrc11 = pdwTmpSrcIndex[3] + pdwSrcStart;
+		// A
+		nA00 = (int)(((*pdwSrc00) & 0xff000000) >> 24);
+		nA01 = (int)(((*pdwSrc01) & 0xff000000) >> 24);
+		nA10 = (int)(((*pdwSrc10) & 0xff000000) >> 24);
+		nA11 = (int)(((*pdwSrc11) & 0xff000000) >> 24);
+		nA = (int)(nA11 + (nA00 - nA01 - nA10 + nA11) * *pfTmpPowerXY
+			+ (nA10 - nA11) * *pfTmpPowerX + (nA01 - nA11) * *pfTmpPowerY);
+		nA = (nA < 0) ? 0 : nA;
+		// B
+		nTmp00 = (int)((*pdwSrc00) & 0x000000ff);
+		nTmp01 = (int)((*pdwSrc01) & 0x000000ff);
+		nTmp10 = (int)((*pdwSrc10) & 0x000000ff);
+		nTmp11 = (int)((*pdwSrc11) & 0x000000ff);
+		//////////////////////////////////////////////////////////////////////////
+		// 先进行列交换
+		if (nA00 == 0 && nA01 == 0)
+		{
+			nTmp00 = nTmp10;
+			nTmp01 = nTmp11;
+		}
+		if (nA10 == 0 && nA11 == 0)
+		{
+			nTmp10 = nTmp00;
+			nTmp11 = nTmp01;
+		}
+		nTmp00 = (nA00 == 0) ? nTmp01 : nTmp00;
+		nTmp01 = (nA01 == 0) ? nTmp00 : nTmp01;
+		nTmp10 = (nA10 == 0) ? nTmp11 : nTmp10;
+		nTmp11 = (nA11 == 0) ? nTmp10 : nTmp11;
+		//////////////////////////////////////////////////////////////////////////
+		nB = (int)(nTmp11 + (nTmp00 - nTmp01 - nTmp10 + nTmp11) * *pfTmpPowerXY
+			+ (nTmp10 - nTmp11) * *pfTmpPowerX + (nTmp01 - nTmp11) * *pfTmpPowerY);
+		nB = (nB < 0) ? 0 : nB;
+		// G
+		nTmp00 = (int)(((*pdwSrc00) & 0x0000ff00) >> 8);
+		nTmp01 = (int)(((*pdwSrc01) & 0x0000ff00) >> 8);
+		nTmp10 = (int)(((*pdwSrc10) & 0x0000ff00) >> 8);
+		nTmp11 = (int)(((*pdwSrc11) & 0x0000ff00) >> 8);
+		//////////////////////////////////////////////////////////////////////////
+		// 先进行列交换
+		if (nA00 == 0 && nA01 == 0)
+		{
+			nTmp00 = nTmp10;
+			nTmp01 = nTmp11;
+		}
+		if (nA10 == 0 && nA11 == 0)
+		{
+			nTmp10 = nTmp00;
+			nTmp11 = nTmp01;
+		}
+		nTmp00 = (nA00 == 0) ? nTmp01 : nTmp00;
+		nTmp01 = (nA01 == 0) ? nTmp00 : nTmp01;
+		nTmp10 = (nA10 == 0) ? nTmp11 : nTmp10;
+		nTmp11 = (nA11 == 0) ? nTmp10 : nTmp11;
+		//////////////////////////////////////////////////////////////////////////
+		nG = (int)(nTmp11 + (nTmp00 - nTmp01 - nTmp10 + nTmp11) * *pfTmpPowerXY
+			+ (nTmp10 - nTmp11) * *pfTmpPowerX + (nTmp01 - nTmp11) * *pfTmpPowerY);
+		nG = (nG < 0) ? 0 : nG;
+		// R
+		nTmp00 = (int)(((*pdwSrc00) & 0x00ff0000) >> 16);
+		nTmp01 = (int)(((*pdwSrc01) & 0x00ff0000) >> 16);
+		nTmp10 = (int)(((*pdwSrc10) & 0x00ff0000) >> 16);
+		nTmp11 = (int)(((*pdwSrc11) & 0x00ff0000) >> 16);
+		//////////////////////////////////////////////////////////////////////////
+		// 先进行列交换
+		if (nA00 == 0 && nA01 == 0)
+		{
+			nTmp00 = nTmp10;
+			nTmp01 = nTmp11;
+		}
+		if (nA10 == 0 && nA11 == 0)
+		{
+			nTmp10 = nTmp00;
+			nTmp11 = nTmp01;
+		}
+		nTmp00 = (nA00 == 0) ? nTmp01 : nTmp00;
+		nTmp01 = (nA01 == 0) ? nTmp00 : nTmp01;
+		nTmp10 = (nA10 == 0) ? nTmp11 : nTmp10;
+		nTmp11 = (nA11 == 0) ? nTmp10 : nTmp11;
+		//////////////////////////////////////////////////////////////////////////
+		nR = (int)(nTmp11 + (nTmp00 - nTmp01 - nTmp10 + nTmp11) * *pfTmpPowerXY
+			+ (nTmp10 - nTmp11) * *pfTmpPowerX + (nTmp01 - nTmp11) * *pfTmpPowerY);
+		nR = (nR < 0) ? 0 : nR;
+		// 组合
+		*pdwTmpDes = ((nA << 24) | (nR << 16) | (nG << 8) | nB);
+		pdwTmpSrcIndex += 4;
+		pfTmpPowerX++;
+		pfTmpPowerY++;
+		pfTmpPowerXY++;
+		pdwTmpDes++;
+	}
+}

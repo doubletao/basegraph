@@ -13,8 +13,8 @@
 #endif // BASEGRAPH_AUTO_LOAD
 #endif // BASEGRAPH_COMMON_EXPORTS
 
-#ifndef SAFERELEASE
-#define SAFERELEASE(p)                            { if(p) p->Release(); p = NULL; }
+#ifndef SAFE_RELEASE
+#define SAFE_RELEASE(p)                            { if(p) p->Release(); p = NULL; }
 #endif
 
 #ifndef SAFE_DELETE
@@ -40,3 +40,4 @@
 #include "Common\2DBuffer.h"
 #include "Common\2DBufferApi.h"
 #include "Common\ColorDef.h"
+#include "Common\ColorAPI.h"

@@ -1,9 +1,10 @@
 #ifndef SYRenderEngineDX10Api_h__
 #define SYRenderEngineDX10Api_h__
 #include "assert.h"
-#include "SYD3DEffectManager.h"
-#include "..\Algorithm\SYBufferAPI.h"
-#include "..\Algorithm\SYSpaceConvert.h"
+#include "DXEffectManager.h"
+#include "Common\2DBufferAPI.h"
+#include "3DSpaceConvert.h"
+#include "SceneRender\DXEngineDataDef.h"
 //////////////////////////////////////////////////////////////////////////
 //ºê¶¨Òå
 #define VSPROFILE "vs_4_0"
@@ -254,12 +255,12 @@ inline void ReleaseShader(SY_DeviceDX10* pDevice,int hShader)
 {
 	SYShader* pShader = (SYShader*)SYHTable_GetAt(&pDevice->htShaderTable,hShader);
 	assert(pShader);
-	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(SYHash_key)pShader->pShaderName);
+	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(void *)pShader->pShaderName);
 	--(pShaderHashValue->nCount);
 	if (pShaderHashValue->nCount != 0)
 		return;
 
-	SYHash_RemoveAt(pDevice->ShaderHash,(SYHash_key)pShader->pShaderName,TRUE);
+	SYHash_RemoveAt(pDevice->ShaderHash,(void *)pShader->pShaderName,TRUE);
 	SAFEDELETE_ARRAY(pShader->pShaderName);
 	switch (pShader->nType)
 	{
@@ -609,7 +610,4 @@ inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,SYShaderType nShade
 	pDevice->nShaderTexstate[nShaderType][nRegIndex] = hTex;
 	return true;
 }
-////Main//////////////////////////////////////////////////////////////////////
-BASEGRAPH_SCENE_RENDER_API BOOL RenderEngineDX10_Main(int ncmd, int hDevice, void* paramin, void* paramout);
-BASEGRAPH_SCENE_RENDER_API void RenderEngineDX10SetOptimal(BOOL bOptimal=TRUE);
 #endif // SYRenderEngineDX10Api_h__

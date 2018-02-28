@@ -1,18 +1,13 @@
 #include "stdafx.h"
-#include "SYEngineManagerAPI.h"
-#include "SYRenderEngineDX10Api.h"
-#include "SYRenderEngineSoftAPI.h"
-#include "..\Algorithm\SYColorAPI.h"
-#include "..\Algorithm\SYInterSection.h"
+#include "SceneRender\DXEngineManagerAPI.h"
+#include "SceneRender\DXRenderEngineDX10Api.h"
+#include "SceneRender\DXRenderEngineSoftAPI.h"
+#include "SceneRender\3DInterSection.h"
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
-#ifdef _DEBUG
-#define new SY_DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+
 CSY3DLineManager* pLineManager = NULL;
 TCHAR g_szPathShader[MAX_PATH] = {0};	
 
@@ -1221,7 +1216,6 @@ BOOL SY3DEngine_UpLoad(OUT int hTex, IN int hDevice,int hTransTex,/*用于下行的中
 					IN int nSrcOffestX, IN int nSrcOffestY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufferWidth, IN int nSrcBufferHeight ,
 					BOOL bEngineLock)
 {
-	TIME_DEBUG_RECORD_FILTER("Render")
 	assert(pBuffer);
 	if(nDesWidth == 0 || nDesHeight == 0|| nSrcWidth == 0|| nSrcHeight == 0)
  		return FALSE;
@@ -1868,7 +1862,7 @@ void SY3DEngine_GenerateMip(int hDevice,int hTexture)
 
 int SY3DEngine_CreateShaderFromFile( int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,SYShaderType nType,SYVertexType* pVertexType /*= NULL/*FOR VS*/ )
 {
-	if (!SYCGlobalFunction::IsFileExists(shaderFilePath))
+	if (!CommonFunction::IsFileExists(shaderFilePath))
 	{
 		return 0;
 	}

@@ -933,6 +933,1081 @@ BASEGRAPH_COMMON_API BOOL SY_BufferTransform(IN OUT SYBufferDef32* pDesBuf,			//
 	return TRUE;
 }
 
+struct STU_Rect
+{
+	int left;
+	int top;
+	int width;
+	int height;
+};
+
+struct STU_deltaUV
+{
+	float dxu; //Ä¿±êbufferÖÐx·½Ïòµ¥Î»³¤¶ÈÔöÁ¿ÒýÆðµÄÔ´bufferÖÐÎ»ÖÃµÄx·½ÏòÔöÁ¿
+	float dxv; //Ä¿±êbufferÖÐx·½Ïòµ¥Î»³¤¶ÈÔöÁ¿ÒýÆðµÄÔ´bufferÖÐÎ»ÖÃµÄy·½ÏòÔöÁ¿
+	float dyu; //Ä¿±êbufferÖÐy·½Ïòµ¥Î»³¤¶ÈÔöÁ¿ÒýÆðµÄÔ´bufferÖÐÎ»ÖÃµÄx·½ÏòÔöÁ¿
+	float dyv; //Ä¿±êbufferÖÐy·½Ïòµ¥Î»³¤¶ÈÔöÁ¿ÒýÆðµÄÔ´bufferÖÐÎ»ÖÃµÄy·½ÏòÔöÁ¿
+};
+
+inline int SYBufferDef32_AreaW(const SYBufferDef32* p)
+{
+	return (int)(p->m_rtBound.right - p->m_rtBound.left);
+}
+
+inline int SYBufferDef32_AreaH(const SYBufferDef32* p)
+{
+	return (int)(p->m_rtBound.bottom - p->m_rtBound.top);
+}
+
+inline int SYBufferDef32_AreaX(const SYBufferDef32* p)
+{
+	return (int)(p->m_nOriginX + p->m_rtBound.left);
+}
+
+inline int SYBufferDef32_AreaY(const SYBufferDef32* p)
+{
+	return (int)(p->m_nOriginY + p->m_rtBound.top);
+}
+
+//°Ñ¸¡µãÊýÏòÉÏÈ¡Õû×ª»»ÎªÕûÊý
+//#define CEIL_F2I(f) ( (int)f+((f) > 0) )
+#define CEIL_F2I(f) ((int)ceilf(f))
+
+//°Ñ¸¡µãÊýÏòÏÂÈ¡Õû×ª»»ÎªÕûÊý
+//#define FLOOR_F2I(f) ( (int)f - ((f) < 0) )
+#define FLOOR_F2I(f) ((int)floorf(f))
+
+//°ÑboolÖµ×ª»»ÎªÕý¸º1£¬Õæ¶ÔÓ¦+1£¬¼Ù¶ÔÓ¦-1
+#define BOOL_TO_SIGN_ONE(b) ((((int)(b))<<1) - 1)
+
+//½»»»Á½¸öÕûÊýµÄÖµ£¬¶ÔÓÚint,char,longµÈÕûÊýÀàÐÍ¶¼ÊÊÓÃ
+#define SWAP_INT(a,b) \
+	do{					\
+	(a) ^= (b);			\
+	(b) ^= (a);			\
+	(a) ^= (b);			\
+	}while(false)
+
+void RefillTransparentPixel(DWORD& left_top, DWORD& right_top, DWORD& left_bottom, DWORD& right_bottom);
+BOOL SY_BufferTransformLineSYAR_cuda(IN OUT SYBufferDef32* pDesBuf,			// Ä¿±ê»º´æ
+	IN int nOffsetLeft,						// Ä¿±ê»º´æÔÚÍ¶Ó°Æ½Ãæ×ø±êÏµÏÂµÄÎ»ÖÃ
+	IN int nOffsetTop,
+	IN SYBufferDef32* pSrcBuf,				// Ô´»º´æ
+	IN int nSrcWidth,							// Ô´²Ù×÷ÇøÓò´óÐ¡£¨Ïà¶ÔÓÚ»º´æÆðµã¶øÑÔ£©
+	IN int nSrcHeight,
+	IN vector4f* pvfXYZW,					// Ô´²Ù×÷ÇøÓòµÄËÄ¸ö½Çµã¾­¹ýÒ»ÏµÁÐ±ä»»ºóµÄ¶¥µãÊý¾Ý£¨±ØÐëÓÐËÄ¸ö£¬Ë³ÐòÎª(0,0),(w,0),(w,h),(h,0)£©
+	IN SYBufferDef32* pMaskBuf);				// ÑÚÂë»º´æ
+
+DWORD Bilinear_interpolate(DWORD left_top,			//×óÉÏ½Ç²åÖµµãÑÕÉ«£¬RGBA
+	DWORD right_top,			//×óÉÏ½Ç²åÖµµãÑÕÉ«£¬RGBA
+	DWORD left_bottom,		//×óÉÏ½Ç²åÖµµãÑÕÉ«£¬RGBA
+	DWORD right_bottom,		//×óÉÏ½Ç²åÖµµãÑÕÉ«£¬RGBA
+	float x_weight,			//×óÉÏ½Ç²åÖµµãµÄx·½ÏòÈ¨ÖØ
+	float y_weight)			//×óÉÏ½Ç²åÖµµãµÄy·½ÏòÈ¨ÖØ
+{
+	//Ö±½ÓÊ¹ÓÃ¸¡µãÊý¼ÆËã
+	const float weight_lt = (x_weight*y_weight);
+	const float weight_rt = y_weight - weight_lt;
+	const float weight_lb = x_weight - weight_lt;
+	const float weight_rb = 1 - y_weight - x_weight + weight_lt;
+	//------------------------------------------------------------------------
+	// ÏÈ×öalphaÔ¤³Ë£¬²åÖµÍê±ÏÔÙ×öalpha³ý·¨(ÐèÒªÅÅ³ý·ÖÄ¸Îª0µÄÇé¿ö)
+	DWORD dst = 0;
+	//È¡³öalpha²¢´æ´¢
+	int alpha_lt = GetAValue(left_top);
+	int alpha_lb = GetAValue(left_bottom);
+	int alpha_rt = GetAValue(right_top);
+	int alpha_rb = GetAValue(right_bottom);
+
+	const float alpha_dst = alpha_lt*weight_lt + alpha_lb*weight_lb + alpha_rt*weight_rt + alpha_rb*weight_rb;
+	if (alpha_dst == 0)
+		return dst;
+
+	int byte_lt = alpha_lt*GetRValue(left_top);
+	int byte_lb = alpha_lb*GetRValue(left_bottom);
+	int byte_rt = alpha_rt*GetRValue(right_top);
+	int byte_rb = alpha_rb*GetRValue(right_bottom);
+	dst |= ((int)((byte_lt*weight_lt + byte_lb*weight_lb + byte_rt*weight_rt + byte_rb*weight_rb) / alpha_dst)) & 0xff;
+
+	byte_lt = alpha_lt*GetGValue(left_top);
+	byte_lb = alpha_lb*GetGValue(left_bottom);
+	byte_rt = alpha_rt*GetGValue(right_top);
+	byte_rb = alpha_rb*GetGValue(right_bottom);
+	dst |= (((int)((byte_lt*weight_lt + byte_lb*weight_lb + byte_rt*weight_rt + byte_rb*weight_rb) / alpha_dst)) & 0xff) << 8;
+
+	byte_lt = alpha_lt*GetBValue(left_top);
+	byte_lb = alpha_lb*GetBValue(left_bottom);
+	byte_rt = alpha_rt*GetBValue(right_top);
+	byte_rb = alpha_rb*GetBValue(right_bottom);
+	dst |= (((int)((byte_lt*weight_lt + byte_lb*weight_lb + byte_rt*weight_rt + byte_rb*weight_rb) / alpha_dst)) & 0xff) << 16;
+
+	dst |= (((int)alpha_dst) & 0xff) << 24;
+	return dst;
+}
+
+//¶¨Òå´æ´¢±ß½çµÄ½á¹¹²¢·ÖÅä¿Õ¼ä¡£´Ë´¦Ò²Ðí¿ÉÒÔ²ÉÓÃÄ¿±êbufferµÄ¿Õ¼äÀ´´æ´¢±ß½çÐÅÏ¢£¬¶ø²»ÁíÍâ¿ª±Ù¿Õ¼ä
+struct Edge_info
+{
+	int		type;	//±êÊ¶¸ÃÐÐµ±Ç°ÒÑ¾­´¦ÀíÁË¼¸¸öµã£¬¿ÉÈ¡Öµ£º0£¬1£¬2£¬ÁíÍâ£¬È¡-1±íÊ¾¸ÃÐÐÃ»ÓÐÓÐÐ§µÄÍêÈ«µã
+	union
+	{
+		float	fv;
+		int		iv;
+	}pos[2];		//¸ÃÐÐµÚÒ»¸öºÍ×îºóÒ»¸öÍêÈ«µãµÄÏà¶Ô×ø±ê£¨Ïà¶ÔÓÚboxµÄ×ó±ß½ç£©
+	float	u;		//¸ÃÐÐµÚÒ»¸öÍêÈ«µãµÄU
+	float	v;		//¸ÃÐÐµÚÒ»¸öÍêÈ«µãµÄV
+};
+
+void Fill_inner_pixel_simle(DWORD* t_pDst, DWORD* t_pSrc, Edge_info* edge_info, int src_buff_width,
+	int dst_buff_width, int box_height, float dxu, float dxv)
+{
+	//Ã¿ÐÐÒª¼ÇÂ¼µÄÐÅÏ¢£ºÐÐÊ×µÄUV£¬ÐÐÊ×µÄÄ¿±êbufferÖ¸Õë
+	DWORD* dst_line_head = t_pDst;
+	DWORD* cur_dst = NULL;
+	//Ã¿ÐÐÒª¼ÇÂ¼µÄÐÅÏ¢£ºÐÐÊ×µÄUV£¬ÐÐÊ×µÄÄ¿±êbufferÖ¸Õë
+	//Ã¿ÐÐÖÐÃ¿¸öµãÉ¨ÃèÊ±Òª¼ÇÂ¼µÄÐÅÏ¢£ºÄ¿±êbufferÖ¸Õë£¬ÐÐµÄÆðÊ¼½áÊøµãÎ»ÖÃ£¬µ±Ç°µãµÄUV
+	int line_start = 0; //ÐÐÆðÊ¼½áÊøÎ»ÖÃ¶¼ÊÇÏà¶ÔÓÚÐÐÊ×µÄ
+	int line_end = 0;	//ÐÐÄÚÓÐÐ§Î»ÖÃÓ¦¸ÃÐ¡ÓÚµÈÓÚline_end
+	Edge_info* p_cur_edge_info = edge_info;
+	float cur_u = 0;
+	float cur_v = 0;
+	int column_loop_max = box_height - 1;
+	for (int i = column_loop_max; i >= 0; --i) //½ö½öÊÇÑ­»·¼ÆÊýÓÃ
+	{
+		if (p_cur_edge_info->type == 2)
+		{
+			line_start = p_cur_edge_info->pos[0].iv + 1;
+			line_end = p_cur_edge_info->pos[1].iv - 1;
+
+			//------------------------------------------------------------------------
+			//¼ÆËãÉ¨ÃèÆðÊ¼µãµÄUVºÍÄ¿±êbufferµÄÖ¸Õë
+			cur_u = p_cur_edge_info->u + dxu;
+			cur_v = p_cur_edge_info->v + dxv;
+			cur_dst = dst_line_head + line_start;
+
+			//------------------------------------------------------------------------
+			//Ñ­»·É¨Ãèµ±Ç°ÐÐ
+			for (int j = line_end - line_start; j >= 0; --j) //½ö½öÊÇÑ­»·¼ÆÊýÓÃ
+			{
+				//È¡ÕûÓ³Éäµ½Ô´×ø±ê£¬¶ÁÈ¡ËÄ¸öÔ´µãÑÕÉ«
+				int left = FLOOR_F2I(cur_u);
+				int top = FLOOR_F2I(cur_v);
+				//¶ÁÈ¡ËÄ¸ö²åÖµµãµÄÑÕÉ«
+				*cur_dst = *(t_pSrc + src_buff_width*top + left);
+
+				//ÐÐÄÚÉ¨ÃèµÄÐÅÏ¢¸üÐÂ
+				cur_u += dxu;
+				cur_v += dxv;
+				++cur_dst;
+			}
+		}
+		//------------------------------------------------------------------------
+		//´¦ÀíÐÐÉ¨ÃèµÄÐÅÏ¢¸üÐÂ
+		dst_line_head += dst_buff_width;
+		++p_cur_edge_info;
+	}
+}
+
+//intelÓÅ»¯ºóµÄSSE2°æ±¾
+void Fill_inner_pixel_intel_opt_SSE2(DWORD* t_pDst, DWORD* t_pSrc, Edge_info* edge_info,
+	int src_buff_width, int dst_buff_width, int box_height, float dxu, float dxv)
+{
+	__declspec (align(16)) float cur_v_u[4];
+	__declspec (align(16)) float dxv_dxu[4] = { 2.0f*dxu, 2.0f*dxv, 2.0f*dxu, 2.0f*dxv };
+	__declspec (align(16)) float ones[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//__declspec (align(16)) int one = 1;
+	__declspec (align(16)) short src_offest[8] = { 1,src_buff_width, 1,src_buff_width, 0,0,0,0 };
+	__declspec (align(16)) int	zero[4] = { 0, 0, 0, 0 };
+	__declspec (align(16)) int	temp[4] = { 0, 0, 0, 0 };
+	__declspec (align(16)) int	tempA[4] = { 0, 0, 0, 0 };
+
+	__declspec (align(16)) int	alpha_mask[4] = { 0, 0xff0000, 0, 0xff0000 };
+	__declspec (align(16)) int	alpha_one_mask[4] = { 1, 0, 1, 0 };
+	__declspec (align(16)) int	alpha_ps_mask[4] = { 0, 0, 0, 0xffffffff };
+	__declspec (align(16)) float one_ps_mask[4] = { 1.f, 0, 0, 0 };
+	__declspec (align(16)) float one_ps_mask2[4] = { 0, 0, 0, 1.f };
+
+	//Ã¿ÐÐÒª¼ÇÂ¼µÄÐÅÏ¢£ºÐÐÊ×µÄUV£¬ÐÐÊ×µÄÄ¿±êbufferÖ¸Õë
+	DWORD* dst_line_head = t_pDst;
+	DWORD* cur_dst = NULL;
+	//Ã¿ÐÐÒª¼ÇÂ¼µÄÐÅÏ¢£ºÐÐÊ×µÄUV£¬ÐÐÊ×µÄÄ¿±êbufferÖ¸Õë
+	//Ã¿ÐÐÖÐÃ¿¸öµãÉ¨ÃèÊ±Òª¼ÇÂ¼µÄÐÅÏ¢£ºÄ¿±êbufferÖ¸Õë£¬ÐÐµÄÆðÊ¼½áÊøµãÎ»ÖÃ£¬µ±Ç°µãµÄUV
+	int line_start = 0; //ÐÐÆðÊ¼½áÊøÎ»ÖÃ¶¼ÊÇÏà¶ÔÓÚÐÐÊ×µÄ
+	int line_end = 0;	//ÐÐÄÚÓÐÐ§Î»ÖÃÓ¦¸ÃÐ¡ÓÚµÈÓÚline_end
+	Edge_info* p_cur_edge_info = edge_info;
+	//float cur_u = 0;
+	//float cur_v = 0;
+
+	int column_loop_max = box_height - 1;
+	//ÌáÇ°ÅÐ¶ÏÀ´È¥µôÑ­»·ÖÐµÄÌõ¼þ·ÖÖ§
+	{
+		p_cur_edge_info = edge_info;
+		int begin_pos = 0;
+		for (begin_pos = column_loop_max; begin_pos >= 0; --begin_pos)
+		{
+			if (p_cur_edge_info->type == 2)
+				break;
+			++p_cur_edge_info;
+		}
+		begin_pos = column_loop_max - begin_pos;
+		p_cur_edge_info = edge_info + column_loop_max;
+		int end_pos = 0;
+		for (end_pos = column_loop_max; end_pos >= 0; --end_pos)
+		{
+			if (p_cur_edge_info->type == 2)
+				break;
+			--p_cur_edge_info;
+		}
+		column_loop_max = end_pos - begin_pos;
+		p_cur_edge_info = edge_info + begin_pos;
+		dst_line_head += begin_pos*dst_buff_width;
+	}
+
+	for (int i = column_loop_max; i >= 0; --i) //½ö½öÊÇÑ­»·¼ÆÊýÓÃ
+	{
+		//Á½±ßÏòÖÐ¼äÊÕËõ1¸öÏñËØ£¬ÒòÎªÕâ¸öÏñËØÒÑ¾­ÔÚ»æÖÆ±ß½çÊ±»æÖÆ¹ýÁË£¬²¢ÇÒ¿ÉÄÜ²»ÊÇÍêÈ«µã
+		line_start = p_cur_edge_info->pos[0].iv + 1;
+		line_end = p_cur_edge_info->pos[1].iv - 1;
+
+		//------------------------------------------------------------------------
+		//¼ÆËãÉ¨ÃèÆðÊ¼µãµÄUVºÍÄ¿±êbufferµÄÖ¸Õë
+		//cur_u = p_cur_edge_info->u + dxu;
+		//cur_v = p_cur_edge_info->v + dxv;
+		cur_v_u[0] = p_cur_edge_info->u + dxu;
+		cur_v_u[1] = p_cur_edge_info->v + dxv;
+		cur_v_u[2] = cur_v_u[0] + dxu;		// for processing 2 pixels per iteration
+		cur_v_u[3] = cur_v_u[1] + dxv;
+		cur_dst = dst_line_head + line_start;
+
+		//@keycode 1 : ¹Ø¼ü»ã±à´úÂë£ºÉ¨ÃèÄ¿±êÖÐÒ»ÐÐµÄÄ³¸öÁ¬ÐøÇøÓòµÄÏñËØµã£¬¼ÆËãÆäÔÚÔ´ÖÐµÄÓ³ÉäÎ»ÖÃ²¢½øÐÐË«ÏßÐÔ²åÖµ
+		//------------------------------------------------------------------------
+		//Ñ­»·É¨Ãèµ±Ç°ÐÐ
+		/* Ô­Ê¼bufferÖÐÏñËØÅÅÁÐÐòºÅ
+		ÏñËØ1  ÏñËØ2  ÏñËØ5  ÏñËØ6
+		ÏñËØ3  ÏñËØ4  ÏñËØ7  ÏñËØ8
+		*/
+		int num_pix = line_end - line_start + 1;
+		_Fill_inner_pixel(t_pSrc, src_buff_width, cur_dst, num_pix, cur_v_u, dxv_dxu, src_offest, alpha_mask, alpha_one_mask, alpha_ps_mask, one_ps_mask2, one_ps_mask);
+		 //------------------------------------------------------------------------
+		 //´¦ÀíÐÐÉ¨ÃèµÄÐÅÏ¢¸üÐÂ
+		dst_line_head += dst_buff_width;
+		++p_cur_edge_info;
+	}
+	return;
+}
+
+void Fill_inner_pixel(DWORD* t_pDst, DWORD* t_pSrc, Edge_info* edge_info,
+	int src_buff_width, int dst_buff_width,
+	int box_height, float dxu, float dxv)
+{
+	Fill_inner_pixel_intel_opt_SSE2(t_pDst, t_pSrc, edge_info,
+		src_buff_width, dst_buff_width,
+		box_height,
+		dxu, dxv);
+	return;
+
+	const bool using_asm_version = false;
+	if (using_asm_version)
+	{
+		//Ã¿ÐÐÒª¼ÇÂ¼µÄÐÅÏ¢£ºÐÐÊ×µÄUV£¬ÐÐÊ×µÄÄ¿±êbufferÖ¸Õë
+		DWORD* dst_line_head = t_pDst;
+		DWORD* cur_dst = NULL;
+		//Ã¿ÐÐÒª¼ÇÂ¼µÄÐÅÏ¢£ºÐÐÊ×µÄUV£¬ÐÐÊ×µÄÄ¿±êbufferÖ¸Õë
+		//Ã¿ÐÐÖÐÃ¿¸öµãÉ¨ÃèÊ±Òª¼ÇÂ¼µÄÐÅÏ¢£ºÄ¿±êbufferÖ¸Õë£¬ÐÐµÄÆðÊ¼½áÊøµãÎ»ÖÃ£¬µ±Ç°µãµÄUV
+		int line_start = 0; //ÐÐÆðÊ¼½áÊøÎ»ÖÃ¶¼ÊÇÏà¶ÔÓÚÐÐÊ×µÄ
+		int line_end = 0;	//ÐÐÄÚÓÐÐ§Î»ÖÃÓ¦¸ÃÐ¡ÓÚµÈÓÚline_end
+		Edge_info* p_cur_edge_info = edge_info;
+		float cur_u = 0;
+		float cur_v = 0;
+		int column_loop_max = box_height - 1;
+		//ÌáÇ°ÅÐ¶ÏÀ´È¥µôÑ­»·ÖÐµÄÌõ¼þ·ÖÖ§
+		{
+			p_cur_edge_info = edge_info;
+			int begin_pos = 0;
+			for (begin_pos = column_loop_max; begin_pos >= 0; --begin_pos)
+			{
+				if (p_cur_edge_info->type == 2)
+					break;
+				++p_cur_edge_info;
+			}
+			begin_pos = column_loop_max - begin_pos;
+			p_cur_edge_info = edge_info + column_loop_max;
+			int end_pos = 0;
+			for (end_pos = column_loop_max; end_pos >= 0; --end_pos)
+			{
+				if (p_cur_edge_info->type == 2)
+					break;
+				--p_cur_edge_info;
+			}
+			column_loop_max = end_pos - begin_pos;
+			p_cur_edge_info = edge_info + begin_pos;
+			dst_line_head += begin_pos*dst_buff_width;
+		}
+
+		for (int i = column_loop_max; i >= 0; --i) //½ö½öÊÇÑ­»·¼ÆÊýÓÃ
+		{
+			//Á½±ßÏòÖÐ¼äÊÕËõ1¸öÏñËØ£¬ÒòÎªÕâ¸öÏñËØÒÑ¾­ÔÚ»æÖÆ±ß½çÊ±»æÖÆ¹ýÁË£¬²¢ÇÒ¿ÉÄÜ²»ÊÇÍêÈ«µã
+			line_start = p_cur_edge_info->pos[0].iv + 1;
+			line_end = p_cur_edge_info->pos[1].iv - 1;
+
+			//------------------------------------------------------------------------
+			//¼ÆËãÉ¨ÃèÆðÊ¼µãµÄUVºÍÄ¿±êbufferµÄÖ¸Õë
+			cur_u = p_cur_edge_info->u + dxu;
+			cur_v = p_cur_edge_info->v + dxv;
+			cur_dst = dst_line_head + line_start;
+
+			//------------------------------------------------------------------------
+			//Ñ­»·É¨Ãèµ±Ç°ÐÐ
+			assert(0);
+			//------------------------------------------------------------------------
+			//´¦ÀíÐÐÉ¨ÃèµÄÐÅÏ¢¸üÐÂ
+			dst_line_head += dst_buff_width;
+			++p_cur_edge_info;
+		}
+
+		return;
+	}
+
+	//Ã¿ÐÐÒª¼ÇÂ¼µÄÐÅÏ¢£ºÐÐÊ×µÄUV£¬ÐÐÊ×µÄÄ¿±êbufferÖ¸Õë
+	DWORD* dst_line_head = t_pDst;
+	DWORD* cur_dst = NULL;
+	//Ã¿ÐÐÒª¼ÇÂ¼µÄÐÅÏ¢£ºÐÐÊ×µÄUV£¬ÐÐÊ×µÄÄ¿±êbufferÖ¸Õë
+	//Ã¿ÐÐÖÐÃ¿¸öµãÉ¨ÃèÊ±Òª¼ÇÂ¼µÄÐÅÏ¢£ºÄ¿±êbufferÖ¸Õë£¬ÐÐµÄÆðÊ¼½áÊøµãÎ»ÖÃ£¬µ±Ç°µãµÄUV
+	int line_start = 0; //ÐÐÆðÊ¼½áÊøÎ»ÖÃ¶¼ÊÇÏà¶ÔÓÚÐÐÊ×µÄ
+	int line_end = 0;	//ÐÐÄÚÓÐÐ§Î»ÖÃÓ¦¸ÃÐ¡ÓÚµÈÓÚline_end
+	Edge_info* p_cur_edge_info = edge_info;
+	float cur_u = 0;
+	float cur_v = 0;
+	int column_loop_max = box_height - 1;
+	//ÌáÇ°ÅÐ¶ÏÀ´È¥µôÑ­»·ÖÐµÄÌõ¼þ·ÖÖ§
+	{
+		p_cur_edge_info = edge_info;
+		int begin_pos = 0;
+		for (begin_pos = column_loop_max; begin_pos >= 0; --begin_pos)
+		{
+			if (p_cur_edge_info->type == 2)
+				break;
+			++p_cur_edge_info;
+		}
+		begin_pos = column_loop_max - begin_pos;
+		p_cur_edge_info = edge_info + column_loop_max;
+		int end_pos = 0;
+		for (end_pos = column_loop_max; end_pos >= 0; --end_pos)
+		{
+			if (p_cur_edge_info->type == 2)
+				break;
+			--p_cur_edge_info;
+		}
+		column_loop_max = end_pos - begin_pos;
+		p_cur_edge_info = edge_info + begin_pos;
+		dst_line_head += begin_pos*dst_buff_width;
+	}
+	assert(column_loop_max < box_height);
+	for (int i = column_loop_max; i >= 0; --i) //½ö½öÊÇÑ­»·¼ÆÊýÓÃ
+	{
+		//if (p_cur_edge_info->type == 2)
+		{
+			line_start = p_cur_edge_info->pos[0].iv + 1;
+			line_end = p_cur_edge_info->pos[1].iv - 1;
+
+			//------------------------------------------------------------------------
+			//¼ÆËãÉ¨ÃèÆðÊ¼µãµÄUVºÍÄ¿±êbufferµÄÖ¸Õë
+			cur_u = p_cur_edge_info->u + dxu;
+			cur_v = p_cur_edge_info->v + dxv;
+			cur_dst = dst_line_head + line_start;
+
+			//------------------------------------------------------------------------
+			//Ñ­»·É¨Ãèµ±Ç°ÐÐ
+			for (int j = line_end - line_start; j >= 0; --j) //½ö½öÊÇÑ­»·¼ÆÊýÓÃ
+			{
+				//È¡ÕûÓ³Éäµ½Ô´×ø±ê£¬¶ÁÈ¡ËÄ¸öÔ´µãÑÕÉ«
+				int left = FLOOR_F2I(cur_u);
+				int top = FLOOR_F2I(cur_v);
+				const float x_weight = 1 - (cur_u - left);
+				const float y_weight = 1 - (cur_v - top);
+				//¶ÁÈ¡ËÄ¸ö²åÖµµãµÄÑÕÉ«
+				DWORD* const src_line_above = t_pSrc + src_buff_width*top + left;
+				DWORD* const src_line_below = src_line_above + src_buff_width;
+				DWORD left_top = *src_line_above;
+				DWORD right_top = *(src_line_above + 1);
+				DWORD left_bottom = *src_line_below;
+				DWORD right_bottom = *(src_line_below + 1);
+				//assert(left_top == 0x55555555 
+				//	&& right_top == 0x55555555 
+				//	&& left_bottom == 0x55555555 
+				//	&& right_bottom == 0x55555555);
+				RefillTransparentPixel(left_top, right_top, left_bottom, right_bottom);
+				*cur_dst = Bilinear_interpolate(left_top, right_top, left_bottom, right_bottom, x_weight, y_weight);
+
+				//ÐÐÄÚÉ¨ÃèµÄÐÅÏ¢¸üÐÂ
+				cur_u += dxu;
+				cur_v += dxv;
+				++cur_dst;
+			}
+		}
+		//------------------------------------------------------------------------
+		//´¦ÀíÐÐÉ¨ÃèµÄÐÅÏ¢¸üÐÂ
+		dst_line_head += dst_buff_width;
+		++p_cur_edge_info;
+	}
+}
+
+//------------------------------------------------------------------------
+//²âÊÔ£ºÌî³äÄ¿±êÇøÓòµÄ±ß½ç·½±ã¹Û²ì
+void Test_FillDstBound(SYBufferDef32* pDesBuf)
+{
+	DWORD* dst_head = pDesBuf->m_dwBuffer;
+	int width = pDesBuf->m_nWidth;
+	int height = pDesBuf->m_nHeight;
+	const int dst_buff_width = pDesBuf->m_nPitch >> 2; //Ä¿±êbufferµÄÔ­Ê¼ÇøÓò¿í¶È
+	memset(dst_head, -1, sizeof(DWORD)*width);
+	dst_head += dst_buff_width;
+	for (int i = 1; i < height - 1; ++i)
+	{
+		*dst_head = -1;
+		*(dst_head + width - 1) = -1;
+		dst_head += dst_buff_width;
+	}
+	memset(dst_head, -1, sizeof(DWORD)*width);
+}
+
+void CalcMinBoundingBox(LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, SYBufferDef32* pSrcBuf, SYBufferDef32* pDesBuf, int nOffsetLeft, int nOffsetTop)
+{
+	//------------------------------------------------------------------------
+	// ¼ÆËãËÄ¸öÄ¿±êµãµÄ×îÐ¡°üÎ§¾ØÐÎboxµÄ×óÉÏ½Çµã×ø±êºÍ³¤¿í
+	{
+		float max_value = max(max(t_pvfXYZW[0].x, t_pvfXYZW[1].x), max(t_pvfXYZW[2].x, t_pvfXYZW[3].x));
+		float min_value = min(min(t_pvfXYZW[0].x, t_pvfXYZW[1].x), min(t_pvfXYZW[2].x, t_pvfXYZW[3].x));
+		box.left = FLOOR_F2I(min_value);
+		//box.width = CEIL_F2I(max_value) - box.left;
+		box.width = (int)(max_value)+1 - box.left; //´Ë´¦µÄÐÐÎª²»ÊÇceil£¬ÀýÈç£ºµ±¸ÕºÃmax_valueÊÇ128.000Ê±128Ó¦¸ÃÊÇÒ»¸ö¿ÉÈ¡µÄµã£¬ËùÒÔ¿í¶ÈÓ¦¸ÃÊÇ129
+		max_value = max(max(t_pvfXYZW[0].y, t_pvfXYZW[1].y), max(t_pvfXYZW[2].y, t_pvfXYZW[3].y));
+		min_value = min(min(t_pvfXYZW[0].y, t_pvfXYZW[1].y), min(t_pvfXYZW[2].y, t_pvfXYZW[3].y));
+		box.top = FLOOR_F2I(min_value);
+		//box.height = CEIL_F2I(max_value) - box.top;
+		box.height = (int)(max_value)+1 - box.top;
+	}
+
+	//------------------------------------------------------------------------
+	//ÎªÓð»¯±ßÔµ¶Ôbox×öÊÊµ±À©´ó£º°´ÕÕ×î´ó¿ÉÄÜµÄ·Å´ó±ÈÀýÀ´À©³äÒ»¸öÔ´±ßÔµÏñËØ´øÀ´µÄÓ°Ïì
+	{
+		float dx = fabs(t_pvfXYZW[0].x - t_pvfXYZW[1].x);
+		float dy = fabs(t_pvfXYZW[0].y - t_pvfXYZW[1].y);
+		int dlen = CEIL_F2I(sqrtf(dx*dx + dy*dy) / SYBufferDef32_AreaW(pSrcBuf));
+		box.left -= dlen;
+		box.width += dlen << 1;
+		dx = fabs(t_pvfXYZW[2].x - t_pvfXYZW[1].x);
+		dy = fabs(t_pvfXYZW[2].y - t_pvfXYZW[1].y);
+		dlen = CEIL_F2I(sqrtf(dx*dx + dy*dy) / SYBufferDef32_AreaH(pSrcBuf));
+		box.top -= dlen;
+		box.height += dlen << 1;
+	}
+
+	//------------------------------------------------------------------------
+	//Í¨¹ýÄ¿±êbufferµÄ´óÐ¡ºÍÆ«ÒÆ¶Ôbox½øÐÐ¼ô²Ã
+	{
+		//Ä¿Ç°²»Çå³þpDesBufÖÐµÄrtBoundµÄº¬Òå£¬ºöÂÔÖ®
+		//ÏÈ´¦Àí¿í¶È·½Ïò
+		int min_pos = pDesBuf->m_nOriginX + nOffsetLeft;
+		int max_pos = min_pos + pDesBuf->m_nWidth;
+		if (max_pos < box.left + box.width) //ÓÒ±ß½ç²Ã¼ô
+			box.width = max_pos - box.left;
+		if (min_pos > box.left) //×ó±ß½ç²Ã¼ô
+		{
+			box.width -= min_pos - box.left;
+			box.left = min_pos;
+		}
+		//ÔÙ´¦Àí¸ß¶È·½Ïò
+		min_pos = pDesBuf->m_nOriginY + nOffsetTop;
+		max_pos = min_pos + pDesBuf->m_nHeight;
+		if (max_pos < box.top + box.height) //ÏÂ±ß½ç²Ã¼ô
+			box.height = max_pos - box.top;
+		if (min_pos > box.top) //ÉÏ±ß½ç²Ã¼ô
+		{
+			box.height -= min_pos - box.top;
+			box.top = min_pos;
+		}
+	}
+}
+
+//------------------------------------------------------------------------
+//²âÊÔ£º°ÑÔ´Í¼ÏñÖ±½ÓÌî³äµ½Ä¿±êÇøÓò¿´¿´
+void Test_FillDstWithSrc(DWORD* t_pSrc, DWORD* t_pDst, SYBufferDef32* pSrcBuf, SYBufferDef32* pDesBuf)
+{
+	DWORD* pSrc = NULL;
+	DWORD* pDst = NULL;
+	DWORD* src_head = t_pSrc;
+	DWORD* dst_head = t_pDst;
+	int width = pSrcBuf->m_nWidth + 2;
+	int height = pSrcBuf->m_nHeight + 2;
+	const int src_buff_width = pSrcBuf->m_nPitch >> 2; //Ô´bufferµÄÔ­Ê¼ÇøÓò¿í¶È
+	const int dst_buff_width = pDesBuf->m_nPitch >> 2; //Ä¿±êbufferµÄÔ­Ê¼ÇøÓò¿í¶È
+	memset(dst_head, -1, sizeof(DWORD)*width);
+	src_head += src_buff_width;
+	dst_head += dst_buff_width;
+	for (int i = 1; i < height - 1; ++i)
+	{
+		*dst_head = -1;
+		*(dst_head + width - 1) = -1;
+		memcpy(dst_head + 1, src_head, sizeof(DWORD)*(width - 2));
+		src_head += src_buff_width;
+		dst_head += dst_buff_width;
+	}
+	memset(dst_head, -1, sizeof(DWORD)*width);
+}
+
+//------------------------------------------------------------------------
+//¼ÆËã×îÐ¡°üÎ§¾ØÐÎboxµÄ×óÉÏ½ÇµãµÄU,VºÍÈ«¾ÖµÄdU,dV£¨ÒòÎªÊÇÏßÐÔ±ä»»£¬ËùÒÔÈ«¾ÖdUdVÊÇÏàÍ¬µÄ£©
+void CalcDeltaUV(SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv)
+{
+	/* mathematicaÖÐÇó½âµÃµ½µÄ·ûºÅ½â
+	x0\x1\x3\y0\y1\y3ÊÇ±ä»»ºóËÄ¸ö½ÇµãµÄ×ø±ê
+	xlt == box.left; ylt == box.top; w == box.width; h == box.height; ult == u_left_top; vlt == v_left_top;
+
+	Solve[{	(x0-xlt)*dxu+(y0-ylt)*dyu+ult==0,
+	(x0-xlt)*dxv+(y0-ylt)*dyv+vlt==0,
+	(x1-xlt)*dxu+(y1-ylt)*dyu+ult==w-1,
+	(x1-xlt)*dxv+(y1-ylt)*dyv+vlt==0,
+	(x3-xlt)*dxu+(y3-ylt)*dyu+ult==0,
+	(x3-xlt)*dxv+(y3-ylt)*dyv+vlt==h-1},{dxu,dxv,dyu,dyv,ult,vlt}]//FullSimplify
+
+	dxu->((-1+w) (y0-y3))/(x3 (-y0+y1)+x1 (y0-y3)+x0 (-y1+y3)),
+	dyu->((-1+w) (x0-x3))/(x3 (y0-y1)+x0 (y1-y3)+x1 (-y0+y3)),
+	dxv->((-1+h) (y0-y1))/(x3 (y0-y1)+x0 (y1-y3)+x1 (-y0+y3)),
+	dyv->((-1+h) (x0-x1))/(x3 (-y0+y1)+x1 (y0-y3)+x0 (-y1+y3)),
+	ult->((-1+w) (xlt (-y0+y3)+x3 (y0-ylt)+x0 (-y3+ylt)))/(x3 (y0-y1)+x0 (y1-y3)+x1 (-y0+y3)),
+	vlt->((-1+h) (xlt (y0-y1)+x0 (y1-ylt)+x1 (-y0+ylt)))/(x3 (y0-y1)+x0 (y1-y3)+x1 (-y0+y3))
+	·Ö½â£º
+	mx = w - 1;
+	my = h - 1;
+	dy03 = y0-y3;
+	dx03 = x0-x3;
+	dy01 = y0-y1;
+	dx01 = x0-x1;
+	denominator = (x3*dy01 + x0*(y1-y3) - x1*dy03;
+	dxu-> -	mx * dy03 / denominator,
+	dyu->	mx * dx03 / denominator,
+	dxv->	my * dy01 / denominator,
+	dyv-> -	my * dx01 / denominator,
+	ult->	mx * (xlt (-y0+y3)+x3 (y0-ylt)+x0 (-y3+ylt))/denominator,
+	vlt->	my * (xlt (y0-y1)+x0 (y1-ylt)+x1 (-y0+ylt)))/denominator
+	*/
+	const int max_x = SYBufferDef32_AreaW(pSrcBuf) - 1;
+	const int max_y = SYBufferDef32_AreaH(pSrcBuf) - 1;
+	const float& x0 = t_pvfXYZW[0].x;
+	const float& y0 = t_pvfXYZW[0].y;
+	const float& x1 = t_pvfXYZW[1].x;
+	const float& y1 = t_pvfXYZW[1].y;
+	const float& x3 = t_pvfXYZW[3].x;
+	const float& y3 = t_pvfXYZW[3].y;
+	const int& xlt = box.left;
+	const int& ylt = box.top;
+	const float dy03 = y0 - y3;
+	const float dx03 = x0 - x3;
+	const float dy01 = y0 - y1;
+	const float dx01 = x0 - x1;
+	const float denominator = x3*dy01 + x0*(y1 - y3) - x1*dy03;
+	duv.dxu = -max_x * dy03 / denominator;
+	duv.dyu = max_x * dx03 / denominator;
+	duv.dxv = max_y * dy01 / denominator;
+	duv.dyv = -max_y * dx01 / denominator;
+}
+
+//------------------------------------------------------------------------
+//¼ÆËã×îÐ¡°üÎ§¾ØÐÎboxµÄ×óÉÏ½ÇµãµÄU,VºÍÈ«¾ÖµÄdU,dV£¨ÒòÎªÊÇÏßÐÔ±ä»»£¬ËùÒÔÈ«¾ÖdUdVÊÇÏàÍ¬µÄ£©,²ÉÓÃ[0,1)Çø¼ä¹æ·¶»¯µÄ½á¹û
+void CalcDeltaUVandLTUV(SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv, float& ult, float& vlt)
+{
+	const int max_x = pSrcBuf->m_nWidth - 1;
+	const int max_y = pSrcBuf->m_nHeight - 1;
+	const float& x0 = t_pvfXYZW[0].x;
+	const float& y0 = t_pvfXYZW[0].y;
+	const float& x1 = t_pvfXYZW[1].x;
+	const float& y1 = t_pvfXYZW[1].y;
+	const float& x3 = t_pvfXYZW[3].x;
+	const float& y3 = t_pvfXYZW[3].y;
+	const int& xlt = box.left;
+	const int& ylt = box.top;
+	const float dy03 = y0 - y3;
+	const float dx03 = x0 - x3;
+	const float dy01 = y0 - y1;
+	const float dx01 = x0 - x1;
+	const float denominator = x3*dy01 + x0*(y1 - y3) - x1*dy03;
+	duv.dxu = -(max_x * dy03 / denominator) / pSrcBuf->m_nWidth;
+	duv.dyu = (max_x * dx03 / denominator) / pSrcBuf->m_nWidth;
+	duv.dxv = (max_y * dy01 / denominator) / pSrcBuf->m_nHeight;
+	duv.dyv = -(max_y * dx01 / denominator) / pSrcBuf->m_nHeight;
+	ult = (max_x * (xlt*(-y0 + y3) + x3*(y0 - ylt) + x0*(-y3 + ylt)) / denominator) / (pSrcBuf->m_nWidth - 1);
+	vlt = (max_y * (xlt*(y0 - y1) + x0*(y1 - ylt) + x1*(-y0 + ylt)) / denominator) / (pSrcBuf->m_nHeight - 1);
+}
+
+//------------------------------------------------------------------------
+//ÏÈ¼ÆËã±ß½ç£¬²¢Ìî³ä±ßÔµÏñËØ£¬Ö®ºó¾Í¿ÉÒÔÖ»×öÍêÕûµÄ¶¨³¤Ñ­»·ÏñËØäÖÈ¾
+//ÍêÈ«µã£ºÖ¸ÆäUVÓ³ÉäµÄ×ø±êÔÚÔ´bufferÖÐ¶¼ÊÇÓÐÐ§µÄ×ø±ê£¬²»»á³¬³ö±ß½ç
+//Ö®ËùÒÔÃ»ÓÐÊ¹ÓÃÖ®Ç°µÄÐÐÉ¨Ãè²¢¸ù¾ÝuºÍvµÄÈ¡Öµ·¶Î§·´Ëã³öÍêÈ«µãÇø¼ä£¬ÊÇÓÉÓÚ
+//Õâ¸ö·´Ëã¹ý³ÌÖÐÓÐ³ý·¨£¬Ïàµ±Ó°ÏìÐ§ÂÊµÄ
+void CalcEdge(Edge_info* edge_info, STU_Rect &box, SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_deltaUV &duv)
+{
+	memset(edge_info, 0, sizeof(Edge_info)*box.height);
+
+	const int src_width = SYBufferDef32_AreaW(pSrcBuf);
+	const int src_height = SYBufferDef32_AreaH(pSrcBuf);
+	const int src_x = SYBufferDef32_AreaX(pSrcBuf);
+	const int src_y = SYBufferDef32_AreaY(pSrcBuf);
+	//±éÀúËÄÌõ±ß£¬¼ÆËãÃ¿ÐÐµÄÍêÈ«µã×ø±ê·¶Î§¡£Ã¿Ìõ±ßÖ»´¦ÀíÆðµãºÍÖÐ¼ä²¿·Ö£¬²»´¦ÀíÖÕµã
+	const struct { int idx; float u; float v; } vertex_index[5] =
+	{
+		{ 0,		0,							0 },
+		{ 1,		(float)src_width - 1,			0 },
+		{ 2,		(float)src_width - 1,			(float)src_height - 1 },
+		{ 3,		0,							(float)src_height - 1 },
+		{ 0,		0,							0 }
+	};
+	Edge_info* p_cur_edge_info = NULL;
+	for (int i = 0; i < 4; ++i)
+	{
+		const float sxf = t_pvfXYZW[vertex_index[i].idx].x; //±ßµÄÆðµãx×ø±ê
+		const float syf = t_pvfXYZW[vertex_index[i].idx].y; //±ßµÄÆðµãy×ø±ê
+		const float exf = t_pvfXYZW[vertex_index[i + 1].idx].x; //±ßµÄÖÕµãx×ø±ê
+		const float eyf = t_pvfXYZW[vertex_index[i + 1].idx].y; //±ßµÄÖÕµãy×ø±ê
+		const int syi = FLOOR_F2I(syf);
+		const int eyi = FLOOR_F2I(eyf);
+		//¼ÆËãx¶Ôy(Ä¿±êbufferÖÐµÄ×ø±ê)Ôö³¤ÂÊ
+		//const float dx = ( (eyi == syi) ? 0 : (exf - sxf)/(eyf - syf) );
+		const float dx = (fabs(eyf - syf) < 0.0001 ? 0 : (exf - sxf) / (eyf - syf));
+		//¼ÆËã¸Ã±ßÉÏUV¶ÔyµÄÔö³¤ÂÊ
+		const float du = duv.dxu*dx + duv.dyu;
+		const float dv = duv.dxv*dx + duv.dyv;
+		//¼ÆËãÓÐÐ§µÄÆðµãºÍÖÕµã(Ïà¶ÔÓÚbox¶¥±ßµÄ×ø±ê)£¬eyÊÇ×îºóÒ»¸öµãµÄ×ø±ê(²»ÓëÆðµãÖØºÏÊ±±ÈÖÕµãÐ¡1£¬ÖØºÏÊ±¾ÍÊÇÆðµãµÄ×ø±ê)
+		int sy = syi - box.top;
+		int ey = (eyi == syi) ? sy : (eyi - BOOL_TO_SIGN_ONE(eyi > syi) - box.top); //¼Ó»ò¼õ1ÊÇÒòÎª²»´¦Àí±ßµÄÖÕµã
+		if (sy > ey)
+			SWAP_INT(sy, ey);
+		sy = max(sy, 0);
+		ey = min(ey, box.height - 1); //²»ÄÜ³¬¹ýboxµ×²¿
+									  //¼ÆËãÈ¡ÕûºóµÄÆðµãµÄUV
+		const float dy_start = sy + box.top - syf; //yÏòÈ¡ÕûµÄÆðµã¾àÀë±ßµÄÆðµãµÄyÏòÔöÁ¿
+		const float sx = sxf + dy_start*dx - box.left; //yÏòÈ¡ÕûµÄÆðµãµÄ¾«È·x×ø±ê£¨Ïà¶ÔÓÚboxµÄ×ó±ß£©
+		const float su = vertex_index[i].u + dy_start * du; //±ßÉÏµÄÕûÊýÆðµãµÄU
+		const float sv = vertex_index[i].v + dy_start * dv; //±ßÉÏµÄÕûÊýÆðµãµÄV
+															//±éÀúµ±Ç°±ßµÄÓÐÐ§ÐÐ²¢¼ÇÂ¼½»µãµÄx¼°ÆäUV
+		p_cur_edge_info = edge_info + sy;
+		float cur_u = su;
+		float cur_v = sv;
+		float cur_x = sx;
+		assert(sy >= 0 && ey < box.height);
+		const int min_u = src_x;
+		const int max_u = src_x + src_width - 2; //width-1µã¿ÉÒÔÈ¡£¬µ«ÊÇË«ÏßÐÔ²åÖµ»¹ÒªÈ¥ÓÒ±ßÒ»µã£¬ËùÒÔÍêÈ«µã×î´óÖ»ÄÜÈ¡µ½width-2
+		const int min_v = src_y;
+		const int max_v = src_y + src_height - 2; //-2Ô­ÒòÍ¬max_u
+		for (int j = sy; j <= ey; ++j)
+		{
+			if (p_cur_edge_info->type == 0)
+			{
+				p_cur_edge_info->pos[0].fv = cur_x;
+				p_cur_edge_info->u = cur_u;
+				p_cur_edge_info->v = cur_v;
+			}
+			else if (p_cur_edge_info->type == 1)
+			{
+				if (p_cur_edge_info->pos[0].fv > cur_x)
+				{
+					p_cur_edge_info->pos[1].iv = FLOOR_F2I(p_cur_edge_info->pos[0].fv);
+					p_cur_edge_info->pos[0].iv = CEIL_F2I(cur_x);
+					//¿ÉÄÜÁ½¸ö¸¡µãÖµºÜ½Ó½ü²¢ÇÒÃ»ÓÐ¿çÔ½ÕûÊý£¬´Ó¶øµ¼ÖÂÈ¡ÕûÔËËãºópos1 > pos2£¬Îª½â¾öÖ®ÐèÒª½øÐÐ±ØÒªµÄ½»»»
+					if (p_cur_edge_info->pos[0].iv > p_cur_edge_info->pos[1].iv)
+						SWAP_INT(p_cur_edge_info->pos[0].iv, p_cur_edge_info->pos[1].iv);
+					//Ð£ÕýÓÉÓÚxÈ¡Õûµ¼ÖÂµÄUVÎó²î
+					const float dx_error = p_cur_edge_info->pos[0].iv - cur_x;
+					p_cur_edge_info->u = dx_error*duv.dxu + cur_u;
+					p_cur_edge_info->v = dx_error*duv.dxv + cur_v;
+					//assert(p_cur_edge_info->u >= min_u - 1 && p_cur_edge_info->u <= max_u + 2
+					//	&& p_cur_edge_info->v >= min_v - 1 && p_cur_edge_info->v <= max_v + 2);
+				}
+				else
+				{
+					p_cur_edge_info->pos[1].iv = FLOOR_F2I(cur_x);
+					float dx_error = p_cur_edge_info->pos[0].fv;
+					p_cur_edge_info->pos[0].iv = CEIL_F2I(p_cur_edge_info->pos[0].fv);
+					//¿ÉÄÜÁ½¸ö¸¡µãÖµºÜ½Ó½ü²¢ÇÒÃ»ÓÐ¿çÔ½ÕûÊý£¬´Ó¶øµ¼ÖÂÈ¡ÕûÔËËãºópos1 > pos2£¬Îª½â¾öÖ®ÐèÒª½øÐÐ±ØÒªµÄ½»»»
+					if (p_cur_edge_info->pos[0].iv > p_cur_edge_info->pos[1].iv)
+						SWAP_INT(p_cur_edge_info->pos[0].iv, p_cur_edge_info->pos[1].iv);
+					//Ð£ÕýÓÉÓÚxÈ¡Õûµ¼ÖÂµÄUVÎó²î
+					dx_error = p_cur_edge_info->pos[0].iv - dx_error;
+					p_cur_edge_info->u += dx_error*duv.dxu;
+					p_cur_edge_info->v += dx_error*duv.dxv;
+					//assert(p_cur_edge_info->u >= min_u - 1 && p_cur_edge_info->u <= max_u + 2
+					//	&& p_cur_edge_info->v >= min_v - 1 && p_cur_edge_info->v <= max_v + 2);
+				}
+				//×¢Òâ£ºµ÷ÕûºóµÄ±ß½çµãµÄx×ø±ê¿ÉÄÜ³¬³öÄ¿±êbufferµÄÇøÓò(ÀýÈç¼¸ºõË®Æ½µÄ±ß×öÁËyÏòÈ¡ÕûÆ«ÒÆºó¿ÉÄÜÔ¶Ô¶³¬³ö¸ø¶¨Ä¿±ê±ß½ç)
+				//ËùÒÔÕâÀïÒª¶ÔÊ¼Ä©µãµÄ×ø±ê½øÐÐ³¬³ö½Ø¶Ï´¦Àí
+				if (p_cur_edge_info->pos[0].iv < 0)
+				{
+					float dx_error = 0.0f - p_cur_edge_info->pos[0].iv;
+					p_cur_edge_info->u += dx_error*duv.dxu;
+					p_cur_edge_info->v += dx_error*duv.dxv;
+					p_cur_edge_info->pos[0].iv = 0;
+				}
+				if (p_cur_edge_info->pos[1].iv >= box.width - 1)
+				{
+					p_cur_edge_info->pos[1].iv = box.width - 1;
+				}
+				//µ÷Õû×ó±ß½ç
+				const int t_max_left = p_cur_edge_info->pos[1].iv - 1;
+				float t_next_u = p_cur_edge_info->u;
+				float t_next_v = p_cur_edge_info->v;
+				for (int k = p_cur_edge_info->pos[0].iv; k <= t_max_left; ++k)
+				{
+					t_next_u += duv.dxu;
+					t_next_v += duv.dxv;
+					if ((t_next_u >= min_u && t_next_u <= max_u
+						&& t_next_v >= min_v && t_next_v <= max_v) || k == t_max_left)
+					{
+						if (p_cur_edge_info->pos[0].iv != k)
+						{
+							p_cur_edge_info->pos[0].iv = k;
+							p_cur_edge_info->u = t_next_u - duv.dxu;
+							p_cur_edge_info->v = t_next_v - duv.dxv;
+						}
+						break;
+					}
+				}
+				//µ÷ÕûÓÒ±ß½ç
+				const int t_min_right = p_cur_edge_info->pos[0].iv + 1;
+				const int t_row_len = p_cur_edge_info->pos[1].iv - p_cur_edge_info->pos[0].iv;
+				t_next_u = p_cur_edge_info->u + t_row_len*duv.dxu;
+				t_next_v = p_cur_edge_info->v + t_row_len*duv.dxv;
+				for (int k = p_cur_edge_info->pos[1].iv; k >= t_min_right; --k)
+				{
+					t_next_u -= duv.dxu;
+					t_next_v -= duv.dxv;
+					if ((t_next_u >= min_u && t_next_u <= max_u
+						&& t_next_v >= min_v && t_next_v <= max_v) || k == t_min_right)
+					{
+						if (p_cur_edge_info->pos[1].iv != k)
+						{
+							p_cur_edge_info->pos[1].iv = k;
+						}
+						break;
+					}
+				}
+				//Ä¿Ç°ÈÔÈ»ÓÐÄ³Ð©ÇéÐÎÏÂµ¼ÖÂÏÂÃæµÄ¶ÏÑÔÊ§°Ü£¬´ý²é
+				//assert(p_cur_edge_info->u >= min_u - duv.dxu && p_cur_edge_info->u <= max_u + duv.dxu
+				//	&& p_cur_edge_info->v >= min_v - duv.dxv && p_cur_edge_info->v <= max_v + duv.dxv);
+			}
+			else
+			{
+				//ÔÚºÜÌØÊâµÄÇé¿öÏÂ»á½øÈëÕâ¸ö·ÖÖ§£º
+				// 1¡¢Ä¿±êËÄ±ßÐÎ¸ß¶È·½Ïò±»¼·Ñ¹µ½Ö»ÓÐÒ»¸öÏñËØ
+				// 2¡¢Ä¿±êËÄ±ßÐÎ¸ß¶È·½Ïò±»¼·Ñ¹µ½Ö»ÓÐÁ½¸öÏñËØ²¢ÇÒÆäÖÐÈý¸ö¶¼´¦ÔÚÍ¬Ò»ÐÐ
+				// ´¦Àí·½°¸ÊÇÈ¡ËùÓÐ¿ÉÄÜÖµÖÐ×î´óºÍ×îÐ¡µÄ×÷Îª±ß½ç
+				// ¿É¼ûÕâÀï·Ö³ÉtypeÎª0¡¢1¡¢2»òÕß¸ü¶àµÄÇé¿ö·Ö±ð´¦Àí²»ºÏÊÊ£¬Ó¦¸Ã¸Ä³ÉÒ»¿ªÊ¼¾Í
+				//		³õÊ¼»¯Îª[box.width,-1]Õâ¸öÎÞÐ§Çø¼ä£¬È»ºóÃ¿´Î±È½ÏÐÂÖµµÄfloor¼°ceilÈ¡ÕûÖµ
+				//		ºÍÁ½¶Ë£¬´Ó¶øµÃµ½ÍêÈ«µãÇø¼ä¡£ÁíÍâ£¬ÔÚ½ÓÏÂÀ´µÄäÖÈ¾±ß½ç²¿·ÖÒªÏÈÅÐ¶Ïin_bound£¬
+				//		¶ø²»ÄÜ¼Ù¶¨µÚÒ»¸öµãÓÀÔ¶¶¼in bound.
+				//assert(0);
+			}
+			++p_cur_edge_info->type;
+
+			++p_cur_edge_info;
+			cur_u += du;
+			cur_v += dv;
+			cur_x += dx;
+		}
+	}
+}
+
+//´¦ÀíÍ¸Ã÷¶ÈÎª0µÄÏñËØ
+void RefillTransparentPixel(DWORD& left_top, DWORD& right_top, DWORD& left_bottom, DWORD& right_bottom)
+{
+	//ÓÅÏÈÐÐ½áºÏ
+	if (GetAValue(left_top) == 0)
+	{
+		if (GetAValue(right_top) != 0)
+			left_top = right_top;
+		else if (GetAValue(left_bottom) != 0)
+			left_top = left_bottom;
+		else
+			left_top = right_bottom;
+		left_top &= 0xffffff;
+	}
+	if (GetAValue(right_top) == 0)
+	{
+		if (GetAValue(left_top) != 0)
+			right_top = left_top;
+		else if (GetAValue(right_bottom) != 0)
+			right_top = right_bottom;
+		else
+			right_top = left_bottom;
+		right_top &= 0xffffff;
+	}
+	if (GetAValue(left_bottom) == 0)
+	{
+		if (GetAValue(right_bottom) != 0)
+			left_bottom = right_bottom;
+		else if (GetAValue(left_top) != 0)
+			left_bottom = left_top;
+		else
+			left_bottom = right_top;
+		left_bottom &= 0xffffff;
+	}
+	if (GetAValue(right_bottom) == 0)
+	{
+		if (GetAValue(left_bottom) != 0)
+			right_bottom = left_bottom;
+		else if (GetAValue(right_top) != 0)
+			right_bottom = right_top;
+		else
+			right_bottom = left_top;
+		right_bottom &= 0xffffff;
+	}
+}
+
+//------------------------------------------------------------------------
+//±éÀú±ß½ç²¢äÖÈ¾±ßÔµ
+void RenderEdge(SYBufferDef32* pSrcBuf, SYBufferDef32* pDesBuf, Edge_info* edge_info, DWORD* t_pDst, STU_Rect &box, DWORD* t_pSrc, STU_deltaUV &duv)
+{
+	const int src_buff_width = pSrcBuf->m_nPitch >> 2; //Ô´bufferµÄÔ­Ê¼ÇøÓò¿í¶È
+	const int dst_buff_width = pDesBuf->m_nPitch >> 2; //Ä¿±êbufferµÄÔ­Ê¼ÇøÓò¿í¶È
+
+	const int src_width = SYBufferDef32_AreaW(pSrcBuf);
+	const int src_height = SYBufferDef32_AreaH(pSrcBuf);
+	const int src_x = SYBufferDef32_AreaX(pSrcBuf);
+	const int src_y = SYBufferDef32_AreaY(pSrcBuf);
+
+	Edge_info* p_cur_edge_info = edge_info;
+	DWORD* dst_line_head = t_pDst;
+	DWORD* cur_dst = NULL;
+	int cur_rx = 0; //µ±Ç°µãÏà¶ÔÓÚbox×ó±ß½çµÄ×ø±ê
+	const bool test_render_edge = true;
+	float cur_u = 0;
+	float cur_v = 0;
+	int cur_dst_pos = 0;	//¼ÇÂ¼µ±Ç°É¨ÃèµÄÄ¿±êµãÎ»ÖÃ
+	for (int i = 0; test_render_edge && i < box.height; ++i)
+	{
+		if (p_cur_edge_info->type == 2)
+		{
+			//Ìî³ä×ó±ßÔµ
+			cur_dst_pos = p_cur_edge_info->pos[0].iv;
+			cur_dst = dst_line_head + cur_dst_pos;
+			cur_u = p_cur_edge_info->u;
+			cur_v = p_cur_edge_info->v;
+			bool in_bound = cur_u >= -1 && cur_u <= src_width - 1
+				&& cur_v >= -1 && cur_v <= src_height - 1
+				&& cur_dst_pos >= 0 && cur_dst_pos < box.width;
+			while (in_bound)
+			{
+				//È¡ÕûÓ³Éäµ½Ô´×ø±ê£¬¶ÁÈ¡ËÄ¸öÔ´µãÑÕÉ«
+				int left = FLOOR_F2I(cur_u);
+				int top = FLOOR_F2I(cur_v);
+				//¼ÆËãÈ¨Öµ
+				float x_weight = 1 - (cur_u - left);
+				float y_weight = 1 - (cur_v - top);
+				//¶ÁÈ¡ËÄ¸ö²åÖµµãµÄÑÕÉ«
+				DWORD* src_line_above = t_pSrc + src_buff_width*top + left;
+				DWORD* src_line_below = src_line_above + src_buff_width;
+				DWORD left_top = 0;
+				DWORD right_top = 0;
+				DWORD left_bottom = 0;
+				DWORD right_bottom = 0;
+				if (left >= 0 && top >= 0)
+				{
+					left_top = *src_line_above;
+					//assert(left_top == 0x55555555);
+				}
+				if (left < src_width - 1 && top >= 0)
+				{
+					right_top = *(src_line_above + 1);
+					//assert(right_top == 0x55555555);
+				}
+				if (left >= 0 && top < src_height - 1)
+				{
+					left_bottom = *src_line_below;
+					//assert(left_bottom == 0x55555555);
+				}
+				if (left < src_width - 1 && top < src_height - 1)
+				{
+					right_bottom = *(src_line_below + 1);
+					//assert(right_bottom == 0x55555555);
+				}
+
+				//*cur_dst = RGBA(255,255,255,255);
+				//½øÐÐË«ÏßÐÔ²åÖµ²¢Ð´Ä¿±ê»º´æ
+				//*cur_dst = left_top;
+				*cur_dst = Bilinear_interpolate(left_top, right_top, left_bottom, right_bottom, x_weight, y_weight);
+				//*cur_dst = RGBA(255,0,0,255);
+
+				cur_u -= duv.dxu;
+				cur_v -= duv.dxv;
+				--cur_dst_pos;
+				in_bound = cur_u >= -1 && cur_u <= src_width - 1
+					&& cur_v >= -1 && cur_v <= src_height - 1
+					&& cur_dst_pos >= 0 && cur_dst_pos < box.width;
+				--cur_dst;
+			}
+			//Ìî³äÓÒ±ßÔµ
+			cur_dst_pos = p_cur_edge_info->pos[1].iv;
+			cur_dst = dst_line_head + cur_dst_pos;
+			const int ling_len = p_cur_edge_info->pos[1].iv - p_cur_edge_info->pos[0].iv;
+			cur_u = p_cur_edge_info->u + ling_len*duv.dxu;
+			cur_v = p_cur_edge_info->v + ling_len*duv.dxv;
+			in_bound = cur_u >= -1 && cur_u <= src_width - 1
+				&& cur_v >= -1 && cur_v <= src_height - 1
+				&& cur_dst_pos >= 0 && cur_dst_pos < box.width;
+			while (in_bound)
+			{
+				//È¡ÕûÓ³Éäµ½Ô´×ø±ê£¬¶ÁÈ¡ËÄ¸öÔ´µãÑÕÉ«
+				int left = FLOOR_F2I(cur_u);
+				int top = FLOOR_F2I(cur_v);
+				//¼ÆËãÈ¨Öµ
+				float x_weight = 1 - (cur_u - left);
+				float y_weight = 1 - (cur_v - top);
+				//¶ÁÈ¡ËÄ¸ö²åÖµµãµÄÑÕÉ«
+				DWORD* src_line_above = t_pSrc + src_buff_width*top + left;
+				DWORD* src_line_below = src_line_above + src_buff_width;
+				DWORD left_top = 0;
+				DWORD right_top = 0;
+				DWORD left_bottom = 0;
+				DWORD right_bottom = 0;
+				if (left >= 0 && top >= 0)
+				{
+					left_top = *src_line_above;
+					//assert(left_top == 0x55555555);
+				}
+				if (left < src_width - 1 && top >= 0)
+				{
+					right_top = *(src_line_above + 1);
+					//assert(right_top == 0x55555555);
+				}
+				if (left >= 0 && top < src_height - 1)
+				{
+					left_bottom = *src_line_below;
+					//assert(left_bottom == 0x55555555);
+				}
+				if (left < src_width - 1 && top < src_height - 1)
+				{
+					right_bottom = *(src_line_below + 1);
+					//assert(right_bottom == 0x55555555);
+				}
+
+				//*cur_dst = RGBA(255,255,255,255);
+				//½øÐÐË«ÏßÐÔ²åÖµ²¢Ð´Ä¿±ê»º´æ
+				//*cur_dst = left_top;
+				*cur_dst = Bilinear_interpolate(left_top, right_top, left_bottom, right_bottom, x_weight, y_weight);
+				//*cur_dst = RGBA(255,0,0,255);
+
+				cur_u += duv.dxu;
+				cur_v += duv.dxv;
+				++cur_dst_pos;
+				in_bound = cur_u >= -1 && cur_u <= src_width - 1
+					&& cur_v >= -1 && cur_v <= src_height - 1
+					&& cur_dst_pos >= 0 && cur_dst_pos < box.width;
+				++cur_dst;
+			}
+		}
+
+		//¸üÐÂÑ­»·×´Ì¬
+		dst_line_head += dst_buff_width;
+		++p_cur_edge_info;
+	}
+}
+
+//------------------------------------------------------------------------
+//¼ÆËãÔ´ÇøÓòbufferµÄÆðÊ¼µãÖ¸Õë
+DWORD* CalcSrcHead(SYBufferDef32* pSrcBuf)
+{
+	return pSrcBuf->m_dwBuffer + (SYBufferDef32_AreaY(pSrcBuf)*pSrcBuf->m_nPitch / sizeof(DWORD) + SYBufferDef32_AreaX(pSrcBuf));
+}
+
+//------------------------------------------------------------------------
+//¼ÆËãÄ¿±êÇøÓòbufferµÄÆðÊ¼µãÖ¸Õë
+DWORD* CalcDstHead(SYBufferDef32* pDesBuf, STU_Rect &box, int nOffsetTop, int nOffsetLeft)
+{
+	DWORD* t_pDst = pDesBuf->m_dwBuffer;
+	{
+		const int dy = box.top - nOffsetTop - pDesBuf->m_nOriginY;
+		const int dx = box.left - nOffsetLeft - pDesBuf->m_nOriginX;
+		t_pDst += (dy*pDesBuf->m_nPitch / sizeof(DWORD) + dx);
+	}
+	return t_pDst;
+}
+
+//------------------------------------------------------------------------
+//¼ÆËãÊÇ·ñÊÇ²»·Å´ó²¢ÇÒ×ã¹»Ð¡µÄbuffer£¬Èç¹ûÊÇÔò¿ÉÒÔ²»Ê¹ÓÃË«ÏßÐÔ²åÖµ²¢ÇÒ²»äÖÈ¾±ß½ç
+bool JudgeSimpleTrans(STU_Rect &box, LPSYINNERVERTEX &t_pvfXYZW, SYBufferDef32* pSrcBuf)
+{
+	bool bSimpleTrans = false;
+	if (box.width < 55 && box.height < 55)
+	{
+		float y_len = t_pvfXYZW[1].y - t_pvfXYZW[0].y;
+		float x_len = t_pvfXYZW[1].x - t_pvfXYZW[0].x;
+		if (sqrt(x_len*x_len + y_len*y_len) <= pSrcBuf->m_nWidth)
+		{
+			y_len = t_pvfXYZW[3].y - t_pvfXYZW[0].y;
+			x_len = t_pvfXYZW[3].x - t_pvfXYZW[0].x;
+			if (sqrt(x_len*x_len + y_len*y_len) <= pSrcBuf->m_nHeight)
+				bSimpleTrans = true;
+		}
+	}
+	return bSimpleTrans;
+}
+
+BASEGRAPH_COMMON_API BOOL SY_BufferTransformLinear(IN OUT SYBufferDef32 * pDesBuf, IN int nOffsetLeft, IN int nOffsetTop, IN SYBufferDef32 * pSrcBuf, IN int nSrcWidth, IN int nSrcHeight, IN vector4f * pvfXYZW, IN SYBufferDef32 * pMaskBuf)
+{
+	if (SYBufferDef32_AreaW(pDesBuf) <= 0 || SYBufferDef32_AreaH(pDesBuf) <= 0
+		|| SYBufferDef32_AreaW(pSrcBuf) <= 0 || SYBufferDef32_AreaH(pSrcBuf) <= 0)
+	{
+		//assert(0 && "ÊäÈëbuffer»òÕßÊä³öbufferµÄ²Ã¼ôºóÇøÓò¸ß»òÕß¿í²»´óÓÚ0");
+		return FALSE;
+	}
+
+	//Test_FillDstBound(pDesBuf); //²âÊÔ£ºÌî³äÄ¿±êÇøÓòµÄ±ß½ç·½±ã¹Û²ì
+
+	LPSYINNERVERTEX t_pvfXYZW = (LPSYINNERVERTEX)pvfXYZW;
+
+	// ¼ÆËãÐèÒªäÖÈ¾µÄ×îÐ¡°üÎ§ºÐ
+	STU_Rect box = { 0,0,0,0 };
+	CalcMinBoundingBox(t_pvfXYZW, box, pSrcBuf, pDesBuf, nOffsetLeft, nOffsetTop);
+
+	//¼ÆËãÊÇ·ñÊÇ²»·Å´ó²¢ÇÒ×ã¹»Ð¡µÄbuffer£¬Èç¹ûÊÇÔò¿ÉÒÔ²»Ê¹ÓÃË«ÏßÐÔ²åÖµ²¢ÇÒ²»äÖÈ¾±ß½ç
+	bool bSimpleTrans = FALSE;//JudgeSimpleTrans(box, t_pvfXYZW, pSrcBuf);
+							  //¼ÆËãÔ´ÇøÓòºÍÄ¿±êÇøÓòbufferµÄÆðÊ¼µãÖ¸Õë
+	DWORD* t_pSrc = CalcSrcHead(pSrcBuf);
+	DWORD* t_pDst = CalcDstHead(pDesBuf, box, nOffsetTop, nOffsetLeft);
+
+	//²âÊÔ£º°ÑÔ´Í¼ÏñÖ±½ÓÌî³äµ½Ä¿±êÇøÓò¿´¿´
+	//if(pSrcBuf->m_nWidth <= box.width -2 && pSrcBuf->m_nHeight <= box.height - 2) return Test_FillDstWithSrc(t_pSrc, t_pDst, pSrcBuf, pDesBuf);
+
+	//¼ÆËã×îÐ¡°üÎ§¾ØÐÎboxµÄ×óÉÏ½ÇµãµÄU,VºÍÈ«¾ÖµÄdU,dV£¨ÒòÎªÊÇÏßÐÔ±ä»»£¬ËùÒÔÈ«¾ÖdUdVÊÇÏàÍ¬µÄ£©
+	STU_deltaUV duv = { 0,0,0,0 };
+	CalcDeltaUV(pSrcBuf, t_pvfXYZW, box, duv);
+
+	//ÏÈ¼ÆËã±ß½ç£¬²¢Ìî³ä±ßÔµÏñËØ£¬Ö®ºó¾Í¿ÉÒÔÖ»×öÍêÕûµÄ¶¨³¤Ñ­»·ÏñËØäÖÈ¾
+	//ÍêÈ«µã£ºÖ¸ÆäUVÓ³ÉäµÄ×ø±êÔÚÔ´bufferÖÐ¶¼ÊÇÓÐÐ§µÄ×ø±ê£¬²»»á³¬³ö±ß½ç
+	Edge_info* edge_info = new Edge_info[box.height];
+	CalcEdge(edge_info, box, pSrcBuf, t_pvfXYZW, duv);
+
+	//±éÀú±ß½ç²¢äÖÈ¾±ßÔµ
+	if (!bSimpleTrans)
+		RenderEdge(pSrcBuf, pDesBuf, edge_info, t_pDst, box, t_pSrc, duv);
+
+	//Ñ­»·´¦ÀíboxÃ¿Ò»ÐÐ,Ìî³äÄÚ²¿ÍêÈ«µã
+	const int src_buff_width = pSrcBuf->m_nPitch >> 2; //Ô´bufferµÄÔ­Ê¼ÇøÓò¿í¶È
+	const int dst_buff_width = pDesBuf->m_nPitch >> 2; //Ä¿±êbufferµÄÔ­Ê¼ÇøÓò¿í¶È
+	if (bSimpleTrans)
+		Fill_inner_pixel_simle(t_pDst, t_pSrc, edge_info,
+			src_buff_width, dst_buff_width,
+			box.height,
+			duv.dxu, duv.dxv);
+	else
+		Fill_inner_pixel(t_pDst, t_pSrc, edge_info,
+			src_buff_width, dst_buff_width,
+			box.height,
+			duv.dxu, duv.dxv);
+	delete[] edge_info;
+	edge_info = NULL;
+	return TRUE;
+}
+
 // Ê¹ÓÃÄ³¸öÖµÌî³äÄÚ´æÖÐµÄÄ³¿éÇøÓò£¬¿ÉÖ¸¶¨²Ã¼ôÇøÓò¡£
 BASEGRAPH_COMMON_API void SYBGRA32_FillRect(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 										   IN int nX,				// ²Ù×÷ÇøÓò
@@ -1285,7 +2360,6 @@ BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// Ä¿
 	}
 }
 
-#if 0
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //		£¨3£©¶Ô´óÆ¬ÄÚ´æ½øÐÐ´øÑÚÂëµÄ²Ù×÷
@@ -1315,7 +2389,7 @@ BASEGRAPH_COMMON_API BOOL SYBGRA32_ProcKey(IN OUT DWORD* pdwBuf,				// Ä¿±ê
 
 	if (nKeyWidth == nDesWidth && nKeyHeight == nDesHeight)		// ¹Ì¶¨´óÐ¡
 	{
-		return SYBGRA_Key_Fix_SSE(pdwBuf,
+		return BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(pdwBuf,
 						  		  nDesX,
 								  nDesY,
 								  nDesWidth,
@@ -1336,7 +2410,7 @@ BASEGRAPH_COMMON_API BOOL SYBGRA32_ProcKey(IN OUT DWORD* pdwBuf,				// Ä¿±ê
 	}
 	else		// Ëõ·ÅÔ´
 	{
-		return SYBGRA_Key_BLStretch_SSE(pdwBuf,
+		return BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(pdwBuf,
 										nDesX,
 										nDesY,
 										nDesWidth,
@@ -1462,7 +2536,7 @@ BASEGRAPH_COMMON_API BOOL SYKey_ProcBuffer(IN OUT LPBYTE pbyDes,				// Ä¿±ê¼ü
 
 	if (nSrcWidth == nDesWidth && nSrcHeight == nDesHeight)		// ¹Ì¶¨´óÐ¡
 	{
-		return SYKey_Fix_SSE(pbyDes,
+		return BufferMemSSE::Buffer_Key_Fix_SSE(pbyDes,
 							 nDesX,
 							 nDesY,
 							 nDesWidth,
@@ -1484,7 +2558,7 @@ BASEGRAPH_COMMON_API BOOL SYKey_ProcBuffer(IN OUT LPBYTE pbyDes,				// Ä¿±ê¼ü
 	}
 	else		// Ëõ·ÅÔ´
 	{
-		return SYKey_BLStretch_SSE(pbyDes,
+		return BufferMemSSE::Buffer_Key_BLStretch_SSE(pbyDes,
 								   nDesX,
 								   nDesY,
 								   nDesWidth,
@@ -1567,14 +2641,8 @@ BASEGRAPH_COMMON_API void SY_MakeTranslucentBack(OUT DWORD* pBuf,			// ±³¾° Buff
 // »ñÈ¡¼ÆÊýÆ÷Öµ£¨¸ß¾«¶È£©£ºÊ±ÖÓÖÜÆÚ¡ª¡ª£¨ÄÉÃë¼¶£©/Ö÷ÆµHZÊý
 BASEGRAPH_COMMON_API unsigned __int64 SY_GetCycleCount()
 {
-#ifdef WIN64
 	assert(0);
 	return 0;
-#else
-	__asm _emit 0x0F;		// RDTSC Ö¸Áî
-	__asm _emit 0x31;
-
-#endif
 }
 
 
@@ -1756,268 +2824,8 @@ void CALLBACK SY_CalMask(IN OUT BYTE *pbyMask,
 	BYTE *pTempBuf1 = pTempBuf;
 	BYTE *pDes = pSrcMask;
 
-#if 0
-	// Ò»´ÎËãMaskËÄ¸öµã
-	__asm
-	{
-		XOR ECX, ECX
-			MOVSS XMM7, fCalSum
-			PSHUFD XMM7, XMM7, 0		// ´æ·Å4¸önCalSum
-			MOV EDX, pTempBuf1			// ÁÙÊ±»º³åÇøÖ¸Õë
-LOOPX:
-		CMP ECX, nHeight				// x<nHeight
-			JGE LOOPXEND
-
-			PUSH ECX
-			XOR ECX, ECX
-			MOV EAX, pDes					// ÁÙÊ±ÏóËØµãÖ¸Õë
-LOOPY:
-		ADD ECX, 4
-			CMP ECX, nWidth				// y<nWidth
-			JG LOOPY2
-
-			PUSH ECX
-			PUSH EAX
-			PUSH EDX
-		{
-			XOR ECX, ECX
-				PXOR XMM0, XMM0		// ´æ·Å¼ÆËãµÄ½á¹û
-				MOV EDX, pbyOperator
-LOOPI:
-			CMP ECX, nOperatorHeight
-				JGE LOOPIEND
-				PUSH ECX
-				XOR ECX, ECX
-LOOPJ:
-			CMP ECX, nOperatorWidth
-				JGE LOOPJEND
-
-				PUSH EAX
-				XOR EAX, EAX
-				MOV  AL,  [ECX+EDX]			// ¶Á³öpbyTempOperator[j]Öµµ½AXµÄµÍ8Î»
-				MOVD XMM1,EAX 
-					POP EAX	
-					PSHUFD XMM1, XMM1, 0		// ´ò°ü£¬XMM1´æËÄ¸öÏàÍ¬µÄÖµ
-					MOVD XMM2, [ECX+EAX]		// ¶Á³öpbyTempDes[j]ºóÃæµÄËÄ¸öBYTEÖµ
-					PXOR XMM3, XMM3				// ×ª»»³É4¸öDWORDÖµ
-						PUNPCKLBW XMM2, XMM3
-						PUNPCKLWD XMM2, XMM3
-						PMULLW XMM1, XMM2			// pbyTempOperator[j]*pbyTempDes[j]
-						INC ECX
-						PADDD XMM0, XMM1			// nSum += pbyTempOperator[j]*pbyTempDes[j]
-
-						JMP LOOPJ
-LOOPJEND:
-					POP ECX
-						INC ECX
-						ADD EDX, nOperatorWidth			// pbyTempOperator += nOperatorWidth;
-						ADD EAX, nMaskWidth				// pbyTempDes += nMaskWidth;
-						JMP LOOPI
-LOOPIEND:
-					CVTDQ2PS XMM0, XMM0				// ×ª»»³Éfloat
-						MULPS XMM0,	XMM7				// nSum*1.0f/nCalSum
-						POP EDX
-						POP EAX
-						POP ECX
-						ADD EAX, 4							// pDes+4
-		}
-		CVTPS2DQ XMM0, XMM0					// ×ª»»³ÉDWORD
-			PACKSSDW XMM0, XMM0					// ½â°ü³É4¸öByte·ÅÔÚ×îºó4×Ö½Ú
-			PACKUSWB XMM0, XMM0						
-			MOVD     [EDX], XMM0				// *pTempBuf1 = nSum/nCalSum;
-			ADD EDX, 4							// pTempBuf1+4,ºóÒÆ4
-
-			JMP LOOPY
-LOOPY2:
-		SUB ECX, 4
-LOOPY3:
-		CMP ECX, nWidth
-			JGE LOOPYEND
-
-			PUSH ECX
-			PUSH EAX
-			PUSH EDX
-		{
-			XOR ECX, ECX
-				PXOR XMM0, XMM0		// ´æ·Å¼ÆËãµÄ½á¹û
-				MOV EDX, pbyOperator
-LOOPI2:
-			CMP ECX, nOperatorHeight
-				JGE LOOPIEND2
-				PUSH ECX
-				XOR ECX, ECX
-LOOPJ2:
-			CMP ECX, nOperatorWidth
-				JGE LOOPJEND2
-
-				PUSH EAX
-				XOR EAX, EAX
-				MOV  AL,  [ECX+EDX]			// ¶Á³öpbyTempOperator[j]Öµ
-				MOVD XMM1,EAX 
-					POP EAX	
-					PUSH EDX					// ¶Á³öpbyTempDes[j]
-					XOR EDX, EDX
-					MOV DL, [ECX+EAX]
-					MOVD XMM2, EDX
-						POP EDX 		
-						PXOR XMM3, XMM3				// ×ª»»³É4¸öDWORDÖµ
-						PUNPCKLBW XMM2, XMM3
-						PUNPCKLWD XMM2, XMM3
-						PMULLW XMM1, XMM2			// pbyTempOperator[j]*pbyTempDes[j]
-						INC ECX
-						PADDD XMM0, XMM1			// nSum += pbyTempOperator[j]*pbyTempDes[j]
-
-						JMP LOOPJ2
-LOOPJEND2:
-					POP ECX
-						INC ECX
-						ADD EDX, nOperatorWidth			// pbyTempOperator += nOperatorWidth;
-						ADD EAX, nMaskWidth				// pbyTempDes += nMaskWidth;
-						JMP LOOPI2
-LOOPIEND2:
-					CVTDQ2PS XMM0, XMM0				// ×ª»»³Éfloat
-						MULPS XMM0,	XMM7				// nSum*1.0f/nCalSum
-						POP EDX
-						POP EAX
-						POP ECX
-						ADD EAX, 1							// pDes+1
-		}
-		CVTPS2DQ XMM0, XMM0					// ×ª»»³ÉDWORD
-			PACKSSDW XMM0, XMM0					// ½â°ü³É4¸öByte·ÅÔÚ×îºó4×Ö½Ú
-			PACKUSWB XMM0, XMM0		
-			PUSH EAX
-			MOVD  EAX, XMM0
-			MOV     [EDX], AL					// *pTempBuf1 = nSum/nCalSum;
-			POP EAX
-			ADD EDX, 1							// pTempBuf1+1,ºóÒÆ1
-
-			INC ECX
-			JMP LOOPY3
-LOOPYEND:
-		MOV ECX, nMaskWidth
-			ADD [pDes], ECX
-			POP ECX
-			INC ECX
-			JMP LOOPX
-LOOPXEND:
-		EMMS
-	}
-	pTempBuf1 = pTempBuf;
-	pSrcMask = pbyMask +(nStartY+nMainOperatorY)*nMaskWidth + (nStartX+nMainOperatorX);
-	pDes = pSrcMask;
-	__asm
-	{
-		XOR ECX, ECX
-			MOV EAX, pTempBuf1
-			MOV EDX, pDes
-LOOPY1:
-		CMP ECX, nHeight
-			JGE LOOPY1END
-			PUSH ECX
-			XOR ECX, ECX
-LOOPX1:
-		Add ECX, 4
-			CMP ECX, nWidth
-			JG LOOPX2
-			SUB ECX, 4
-			MOVD MM0, [EAX]
-			MOVD [EDX+ECX], MM0
-				ADD EAX, 4
-				ADD ECX, 4
-				JMP LOOPX1
-LOOPX2:
-			SUB ECX, 4
-LOOPX3:
-			CMP ECX, nWidth
-				JGE LOOPX1END
-				PUSH EAX
-				PUSH EDX
-				MOV DL, [EAX]
-				MOV AL, DL
-					POP EDX
-					MOV [EDX+ECX], AL
-					POP EAX
-					INC EAX
-					INC ECX
-					JMP LOOPX3
-LOOPX1END:
-				POP ECX
-					INC ECX
-					ADD EDX, nMaskWidth
-					JMP LOOPY1
-LOOPY1END:
-				EMMS
-	}
-
-	delete[] pTempBuf;
-#endif
-#if 0
-	for(int y=0; y<nHeight; y++)
-	{
-		for(int x=0; x<nWidth/4; x++)
-		{
-			for(int k=0; k<4; k++)
-			{
-				int nSum = 0;
-				BYTE *pbyTempDes = pDes;// - nMainOperatorY*nMaskWidth - nMainOperatorX;
-				BYTE *pbyTempOperator = pbyOperator;
-				for(int i=0; i<nOperatorHeight; i++)
-				{
-					for(int j=0; j<nOperatorWidth; j++)
-					{
-						nSum += pbyTempOperator[j]*pbyTempDes[j];
-					}
-					pbyTempOperator += nOperatorWidth;
-					pbyTempDes += nMaskWidth;
-				}
-				*pTempBuf1 = nSum/nCalSum;
-				pTempBuf1++;
-				pDes++;
-			}
-		}
-		for(x=0; x<nWidth%4; x++)
-		{
-			int nSum = 0;
-			BYTE *pbyTempDes = pDes;// - nMainOperatorY*nMaskWidth - nMainOperatorX;
-			BYTE *pbyTempOperator = pbyOperator;
-			for(int i=0; i<nOperatorHeight; i++)
-			{
-				for(int j=0; j<nOperatorWidth; j++)
-				{
-					nSum += pbyTempOperator[j]*pbyTempDes[j];
-				}
-				pbyTempOperator += nOperatorWidth;
-				pbyTempDes += nMaskWidth;
-			}
-			*pTempBuf1 = nSum/nCalSum;
-			pTempBuf1++;
-			pDes++;
-		}
-		pSrcMask += nMaskWidth;
-		pDes = pSrcMask;
-	}
-
-	pTempBuf1 = pTempBuf;
-	pSrcMask = pbyMask +(nStartY+nMainOperatorY)*nMaskWidth + (nStartX+nMainOperatorX);
-	pDes = pSrcMask;
-	for(int y=0; y<nHeight; y++)
-	{
-		for(int x=0; x<nWidth; x++)
-		{
-			*pDes = *pTempBuf1;
-			pTempBuf1++;
-			pDes++;
-		}
-		pSrcMask += nMaskWidth;
-		pDes = pSrcMask;
-	}
-
-	delete[] pTempBuf;
-#endif
-
-	// Ìí¼ÓÓÚ2004.2.1,Ìí¼ÓÕß£º³ÂÓñ·å
 	// Ìí¼ÓÁË¶ÔMask±ßÔµµÄ¼ÆËã
-#if 1								// Æä»ã±àÊµÏÖ
+	// Æä»ã±àÊµÏÖ
 	int nCurHeight = 0;					// µ±Ç°×ø±êµã
 	int nCurWidth = 0;
 	int nCurX = 0;
@@ -2025,338 +2833,7 @@ LOOPY1END:
 	int nCurOperateHeight = 0;
 	int nCurOperateWidth = 0;
 	// Ò»´ÎËãMaskËÄ¸öµã
-#ifdef WIN64
-	assert(0);
-#else
-	__asm
-	{
-		MOVSS XMM7, fCalSum
-			PSHUFD XMM7, XMM7, 0		// ´æ·Å4¸öfCalSumÔÚXMM7ÖÐ
-			MOV EDX, pTempBuf1			// ÁÙÊ±»º³åÇøÖ¸Õë
-LOOPX:
-		MOV ECX, nCurHeight
-			CMP ECX, nHeight			// nCurHeight<nHeight
-			JGE LOOPXEND
-LOOPY:
-		MOV ECX, nCurWidth
-			ADD ECX, 4
-			CMP ECX, nWidth				// nCurWidth<nWidth
-			JG LOOPY2
-
-			PUSH EDX
-		{
-			PXOR XMM0, XMM0		// ´æ·Å¼ÆËãµÄ½á¹ûSUM
-				MOV EDX, pbyOperator// Ëã×ÓÖ¸Õë
-LOOPI:
-			MOV ECX, nCurOperateHeight
-				CMP ECX, nOperatorHeight	// nCurOperateHeight<nOperatorHeight
-				JGE LOOPIEND
-
-				MOV EAX, nCurHeight			// ¼ÆËãÏà¶ÔµÄCurY,´æÈënCurY
-				ADD EAX, ECX
-				SUB EAX, nMainOperatorY
-				CMP EAX, 0					// nCurY>=0ÇÒnCurY<nHeight
-				JL  LOOPJEND
-				CMP EAX, nHeight
-				JGE LOOPJEND
-				MOV nCurY, EAX
-LOOPJ:
-			MOV ECX, nCurOperateWidth
-				CMP ECX, nOperatorWidth		// nCurOperateWidth<nOperatorWidth
-				JGE LOOPJEND
-
-				XOR EAX, EAX
-				MOV  AL,  [ECX+EDX]			// ¶Á³öpbyOperator[nCurOperateWidth]Öµ
-				MOVD XMM1,EAX 
-					PSHUFD XMM1, XMM1, 0		// ´ò°ü£¬XMM1´æËÄ¸öÏàÍ¬µÄËã×ÓÖµ
-
-					PXOR XMM2, XMM2				// ´æ·ÅpDesµÄÖµ
-					PXOR XMM3, XMM3
-					PXOR XMM4, XMM4
-					PXOR XMM5, XMM5
-					PUSH EDX
-					MOV EAX, nCurY				// pDes+nCurY*nMaskWidth
-					MUL nMaskWidth
-					MOV EDX, pDes
-					ADD EDX, EAX
-
-					MOV ECX, nCurWidth			// ¼ÆËãÏà¶ÔµÄCurX
-					ADD ECX, nCurOperateWidth
-					SUB ECX, nMainOperatorX
-					CMP ECX, 0					// CurX>=0ÇÒnCurX<nWidth
-					JL  CurX1
-					CMP ECX, nWidth
-					JGE CurX1
-					XOR EAX, EAX
-					MOV AL,  [EDX+ECX]			// È¡³öpDes[nCurX][nCurY]µÄÖµ
-					MOVD XMM2, EAX
-CurX1:
-					INC ECX						// CurX+1
-						CMP ECX, 0					// CurX>=0ÇÒnCurX<nWidth
-						JL  CurX2
-						CMP ECX, nWidth
-						JGE CurX2
-						XOR EAX, EAX
-						MOV AL,  [EDX+ECX]			// È¡³öpDes[nCurX][nCurY]µÄÖµ
-						MOVD XMM3, EAX
-							PUNPCKLDQ XMM2, XMM3
-CurX2:
-						INC ECX						// CurX+1
-							CMP ECX, 0					// CurX>=0ÇÒnCurX<nWidth
-							JL  CurX3
-							CMP ECX, nWidth
-							JGE CurX3
-							XOR EAX, EAX
-							MOV AL,  [EDX+ECX]			// È¡³öpDes[nCurX][nCurY]µÄÖµ
-							MOVD XMM4, EAX
-CurX3:
-							INC ECX						// CurX+1
-								CMP ECX, 0					// CurX>=0ÇÒnCurX<nWidth
-								JL  CurXEnd			
-								CMP ECX, nWidth
-								JGE CurXEnd
-								XOR EAX, EAX
-								MOV AL,  [EDX+ECX]			// È¡³öpDes[nCurX][nCurY]µÄÖµ
-								MOVD XMM5, EAX
-									PUNPCKLDQ XMM4, XMM5
-CurXEnd:
-								PUNPCKLQDQ XMM2, XMM4		// ×éºÏ³É4¸öDWORD·ÅÈëXMM2
-									POP EDX
-
-									PMULLW XMM1, XMM2			// pbyOperator[j]*pDes[j]
-									PADDD XMM0, XMM1			// nSum += pOperator[j]*pDes[j]
-
-									MOV ECX, nCurOperateWidth
-									INC ECX
-									MOV nCurOperateWidth, ECX
-									JMP LOOPJ
-LOOPJEND:
-								MOV nCurOperateWidth, 0		// nCurOperateWidth Çå0
-									MOV ECX, nCurOperateHeight
-									INC ECX
-									MOV nCurOperateHeight, ECX
-									ADD EDX, nOperatorWidth			// pbyTempOperator += nOperatorWidth;
-									JMP LOOPI
-LOOPIEND:
-								MOV nCurOperateHeight, 0		// nCurOperateHeight Çå0
-									CVTDQ2PS XMM0, XMM0				// ×ª»»³Éfloat
-									MULPS XMM0,	XMM7				// nSum*1.0f/nCalSum
-									POP EDX							// µ¯³öpTempBufÖ¸Õë
-		}
-		CVTPS2DQ XMM0, XMM0					// ×ª»»³ÉDWORD
-			PACKSSDW XMM0, XMM0					// ½â°ü³É4¸öByte·ÅÔÚ×îºó4×Ö½Ú
-			PACKUSWB XMM0, XMM0						
-			MOVD     [EDX], XMM0				// *pTempBuf1 = nSum/nCalSum;
-			ADD EDX, 4							// pTempBuf1+4,ºóÒÆ4
-
-			MOV ECX, nCurWidth
-			ADD ECX, 4
-			MOV nCurWidth, ECX
-			JMP LOOPY
-LOOPY2:
-		MOV ECX, nCurWidth
-LOOPY3:
-		CMP ECX, nWidth
-			JGE LOOPYEND
-
-			PUSH EDX
-		{
-			PXOR XMM0, XMM0		// ´æ·Å¼ÆËãµÄ½á¹ûSUM
-				MOV EDX, pbyOperator// Ëã×ÓÖ¸Õë
-LOOPI1:
-			MOV ECX, nCurOperateHeight
-				CMP ECX, nOperatorHeight	// nCurOperateHeight<nOperatorHeight
-				JGE LOOPIEND1
-
-				MOV EAX, nCurHeight			// ¼ÆËãÏà¶ÔµÄCurY,´æÈënCurY
-				ADD EAX, ECX
-				SUB EAX, nMainOperatorY
-				CMP EAX, 0					// nCurY>=0ÇÒnCurY<nHeight
-				JL  LOOPJEND1
-				CMP EAX, nHeight
-				JGE LOOPJEND1
-				MOV nCurY, EAX
-LOOPJ1:
-			MOV ECX, nCurOperateWidth
-				CMP ECX, nOperatorWidth		// nCurOperateWidth<nOperatorWidth
-				JGE LOOPJEND1
-
-				XOR EAX, EAX
-				MOV  AL,  [ECX+EDX]			// ¶Á³öpbyOperator[nCurOperateWidth]Öµ
-				MOVD XMM1,EAX 
-
-					PXOR XMM2, XMM2				// ´æ·ÅpDesµÄÖµ
-					PUSH EDX
-					MOV EAX, nCurY				// pDes+nCurY*nMaskWidth
-					MUL nMaskWidth
-					MOV EDX, pDes
-					ADD EDX, EAX
-
-					MOV ECX, nCurWidth			// ¼ÆËãÏà¶ÔµÄCurX
-					ADD ECX, nCurOperateWidth
-					SUB ECX, nMainOperatorX
-					CMP ECX, 0					// CurX>=0ÇÒnCurX<nWidth
-					JL  CurXEnd1
-					CMP ECX, nWidth
-					JGE CurXEnd1
-					XOR EAX, EAX
-					MOV AL,  [EDX+ECX]			// È¡³öpDes[nCurX][nCurY]µÄÖµ
-					MOVD XMM2, EAX
-CurXEnd1:
-					POP EDX
-
-						PMULLW XMM1, XMM2			// pbyOperator[j]*pDes[j]
-						PADDD XMM0, XMM1			// nSum += pOperator[j]*pDes[j]
-
-						MOV ECX, nCurOperateWidth
-						INC ECX
-						MOV nCurOperateWidth, ECX
-						JMP LOOPJ1
-LOOPJEND1:
-					MOV nCurOperateWidth, 0		// nCurOperateWidth Çå0
-						MOV ECX, nCurOperateHeight
-						INC ECX
-						MOV nCurOperateHeight, ECX
-						ADD EDX, nOperatorWidth			// pbyTempOperator += nOperatorWidth;
-						JMP LOOPI1
-LOOPIEND1:
-					MOV nCurOperateHeight, 0		// nCurOperateHeight Çå0
-						CVTDQ2PS XMM0, XMM0				// ×ª»»³Éfloat
-						MULPS XMM0,	XMM7				// nSum*1.0f/nCalSum
-						POP EDX							// µ¯³öpTempBufÖ¸Õë
-		}
-		CVTPS2DQ XMM0, XMM0					// ×ª»»³ÉDWORD
-			PACKSSDW XMM0, XMM0					// ½â°ü³É4¸öByte·ÅÔÚ×îºó4×Ö½Ú
-			PACKUSWB XMM0, XMM0						
-			MOVD     EAX, XMM0				// *pTempBuf1 = nSum/nCalSum;
-			MOV      [EDX], AL
-			ADD EDX, 1							// pTempBuf1+1,ºóÒÆ1
-
-			MOV ECX, nCurWidth
-			INC ECX
-			MOV nCurWidth, ECX
-			JMP LOOPY3
-LOOPYEND:
-		MOV nCurWidth, 0				// nCurWidth Çå0
-			MOV ECX, nCurHeight
-			INC ECX
-			MOV nCurHeight, ECX
-			JMP LOOPX
-LOOPXEND:
-		EMMS
-	}
-	pTempBuf1 = pTempBuf;
-	__asm
-	{
-		XOR ECX, ECX
-			MOV EAX, pTempBuf1
-			MOV EDX, pDes
-LOOPY1:
-		CMP ECX, nHeight
-			JGE LOOPY1END
-			PUSH ECX
-			XOR ECX, ECX
-LOOPX1:
-		Add ECX, 4
-			CMP ECX, nWidth
-			JG LOOPX2
-			SUB ECX, 4
-			MOVD MM0, [EAX]
-			MOVD [EDX+ECX], MM0
-				ADD EAX, 4
-				ADD ECX, 4
-				JMP LOOPX1
-LOOPX2:
-			SUB ECX, 4
-LOOPX3:
-			CMP ECX, nWidth
-				JGE LOOPX1END
-				PUSH EAX
-				PUSH EDX
-				MOV DL, [EAX]
-				MOV AL, DL
-					POP EDX
-					MOV [EDX+ECX], AL
-					POP EAX
-					INC EAX
-					INC ECX
-					JMP LOOPX3
-LOOPX1END:
-				POP ECX
-					INC ECX
-					ADD EDX, nMaskWidth
-					JMP LOOPY1
-LOOPY1END:
-				EMMS
-	}
-
-#endif // WIN64
 	delete[] pTempBuf;
-#endif
-#if 0
-	int nSum = 0;
-	for(int y=0; y<nHeight; y++)
-	{
-		for(int x=0; x<nWidth/4; x++)
-		{
-			for(int k=0; k<4; k++)
-			{
-				nSum = 0;
-				BYTE *pbyTempOperator = pbyOperator;
-				for(int i=0; i<nOperatorHeight; i++)
-				{
-					for(int j=0; j<nOperatorWidth; j++)
-					{
-						// µ±Ç°µã×ø±ê
-						int nCurX = x*4 + k - nMainOperatorX + j;
-						int nCurY = y - nMainOperatorY + i;
-						if(nCurX>=0 && nCurX<nWidth && nCurY>=0 && nCurY<nHeight)
-							nSum += pbyTempOperator[j]*(*(pDes+nCurY*nWidth+nCurX));
-					}
-					pbyTempOperator += nOperatorWidth;
-				}
-				*pTempBuf1 = nSum/nCalSum;
-				pTempBuf1++;
-			}
-		}
-		for(x=x*4; x<nWidth; x++)
-		{
-			nSum = 0;
-			BYTE *pbyTempOperator = pbyOperator;
-			for(int i=0; i<nOperatorHeight; i++)
-			{
-				for(int j=0; j<nOperatorWidth; j++)
-				{
-					// µ±Ç°µã×ø±ê
-					int nCurX = x - nMainOperatorX + j;
-					int nCurY = y - nMainOperatorY + i;
-					if(nCurX>=0 && nCurX<nWidth && nCurY>=0 && nCurY<nHeight)
-						nSum += pbyTempOperator[j]*(*(pDes+nCurY*nWidth+nCurX));
-				}
-				pbyTempOperator += nOperatorWidth;
-			}
-			*pTempBuf1 = nSum/nCalSum;
-			pTempBuf1++;
-		}
-	}
-
-	pTempBuf1 = pTempBuf;
-	pSrcMask = pbyMask +nStartY*nMaskWidth + nStartX;
-	pDes = pSrcMask;
-	for(int y=0; y<nHeight; y++)
-	{
-		for(int x=0; x<nWidth; x++)
-		{
-			*pDes = *pTempBuf1;
-			pTempBuf1++;
-			pDes++;
-		}
-		pSrcMask += nMaskWidth;
-		pDes = pSrcMask;
-	}
-
-	delete[] pTempBuf;
-#endif
 }
 
 // Ô´ÏñËØË÷Òý±í
@@ -2409,133 +2886,9 @@ void CALLBACK SY_LinearScale_H1920To1440(OUT BYTE* pDes,
 	__declspec(align(8)) static const __int64 nMax		=		0x0100010001000100;
 	for(int i=0; i<nHeight; i++)
 	{
-		/*for(int j=0; j<nDesWidth; j++)
-		{
-			BYTE* pSrc1 = pSrcTemp + g_pnSrcIndexTable[j] * 4;
-			if(g_pnSrcWeightTable[j] == 0)
-			{
-				pDesTemp[j*4] = (*pSrc1);
-				pDesTemp[j*4+1] = (*(pSrc1+1));
-				pDesTemp[j*4+2] = (*(pSrc1+2));
-				pDesTemp[j*4+3] = (*(pSrc1+3));
-			}
-			else if(g_pnSrcIndexTable[j] >= nTemp)
-			{
-				pDesTemp[j*4] = (*pSrc1) * (256-g_pnSrcWeightTable[j]) /256;
-				pDesTemp[j*4+1] = (*(pSrc1+1)) * (256-g_pnSrcWeightTable[j]) /256;
-				pDesTemp[j*4+2] = (*(pSrc1+2)) * (256-g_pnSrcWeightTable[j]) /256;
-				pDesTemp[j*4+3] = (*(pSrc1+3)) * (256-g_pnSrcWeightTable[j]) /256;
-			}
-			else
-			{
-				pDesTemp[j*4] = ((*pSrc1) * (256-g_pnSrcWeightTable[j]) + (*(pSrc1+4)) * g_pnSrcWeightTable[j])/256;
-				pDesTemp[j*4+1] = ((*(pSrc1+1)) * (256-g_pnSrcWeightTable[j]) + (*(pSrc1+5)) * g_pnSrcWeightTable[j])/256;
-				pDesTemp[j*4+2] = ((*(pSrc1+2)) * (256-g_pnSrcWeightTable[j]) + (*(pSrc1+6)) * g_pnSrcWeightTable[j])/256;
-				pDesTemp[j*4+3] = ((*(pSrc1+3)) * (256-g_pnSrcWeightTable[j]) + (*(pSrc1+7)) * g_pnSrcWeightTable[j])/256;
-			}
-		}*/
-#ifdef WIN64
-		assert(0);
-#else
-		__asm
-		{
-			mov eax, pDesTemp
-			xor ecx, ecx
-LOOPWIDTH:
-			cmp ecx, nDesWidth
-			jge LOOPWIDTH_END
-
-			mov esi, ecx
-			shl esi, 2		// *4
-			add esi, g_pnSrcIndexTable
-			mov edx, [esi]	// g_pnSrcIndexTable[j] 
-			cmp edx, nTemp
-			jl  LOOPWIDTH_NORMAL
-
-			// g_pnSrcIndexTable[j] >= nTemp
-			shl edx, 2		// g_pnSrcIndexTable[j] * 4
-			add edx, pSrcTemp
-			mov edi, [edx]	// srcÑÕÉ«·ÅÔÚediÖÐ
-			mov esi, ecx
-			add esi, g_pnSrcWeightTable
-			xor edx, edx
-			mov dl, [esi]	// È¡³öÈ¨ÖØÖµ·ÅÔÚedxÖÐ
-			cmp dl, 0
-			jnz LOOPWIDTH_WEIGHT0  
-			// È¨ÖØ == 0 Ê±
-			mov [eax], edi	// Ö±½Ó¸½Öµ
-			inc ecx
-			add eax, 4
-			jmp LOOPWIDTH
-LOOPWIDTH_WEIGHT0:
-			// È¨ÖØ·Ç0Ê±
-			movq mm0, nMax
-			movd mm1, edx
-			punpcklwd mm1, mm1
-			punpckldq mm1, mm1
-			psubw mm0, mm1		// 256 - g_pnSrcWeightTable[j]
-			movd mm1, edi
-			pxor mm2, mm2
-			punpcklbw mm1, mm2	// 0A0R0G0B
-			pmullw mm0, mm1
-			psraw mm0, 8		// /256
-			packsswb mm0, mm0
-			movd [eax], mm0	// Ö±½Ó¸½Öµ
-			inc ecx
-			add eax, 4
-			jmp LOOPWIDTH
-
-LOOPWIDTH_NORMAL:
-			// g_pnSrcIndexTable[j] < nTemp
-			shl edx, 2		// g_pnSrcIndexTable[j] * 4
-			add edx, pSrcTemp
-			mov edi, [edx]	// srcÑÕÉ«·ÅÔÚediÖÐ
-			movd mm6, [edx+4] // srcºóÒ»ÏñËØ
-			mov esi, ecx
-			add esi, g_pnSrcWeightTable
-			xor edx, edx
-			mov dl, [esi]	// È¡³öÈ¨ÖØÖµ·ÅÔÚedxÖÐ
-			cmp dl, 0 
-			jnz LOOPWIDTH_NORMAL_WEIGHT0  
-			// È¨ÖØ == 0 Ê±
-			mov [eax], edi	// Ö±½Ó¸½Öµ 
-			inc ecx
-			add eax, 4
-			jmp LOOPWIDTH
-LOOPWIDTH_NORMAL_WEIGHT0:
-			// È¨ÖØ·Ç0Ê±
-			movq mm0, nMax
-			movd mm1, edx
-			punpcklwd mm1, mm1
-			punpckldq mm1, mm1
-			
-			psubw mm0, mm1		// mm0 = 256 - g_pnSrcWeightTable[j]
-			movd mm3, edi
-			pxor mm2, mm2
-			punpcklbw mm3, mm2	// 0A0R0G0B
-			pmullw mm0, mm3
-			punpcklbw mm6, mm2	// mm6 = ºóÃæÒ»ÏñËØ
-			pmullw mm6, mm1
-			paddusw mm0, mm6 
-			psraw mm0, 8		// /256
-			packsswb mm0, mm0
-			movd [eax], mm0	// Ö±½Ó¸½Öµ
-
-			inc ecx
-			add eax, 4
-			jmp LOOPWIDTH
-LOOPWIDTH_END:
-
-		}
-#endif // WIN64
 		pSrcTemp += nSrcPitch;
 		pDesTemp += nDesPitch;
 	}
-#ifdef WIN64
-	assert(0);
-#else
-	__asm emms
-#endif // WIN64
 }
 
 // YUYVÀ­Éì¿½±´(¶ÔÓÚ¶àÓàµÄYUV£¬Ôò±ä³ÉYU0V)
@@ -2552,7 +2905,6 @@ LRESULT CALLBACK SY_StretchBlt_YUYV(
 	float fScaleWidth	= nSrcBufferWidth/(float)nDesBufferWidth;
 	float fScaleHeight	= nSrcBufferHeight/(float)nDesBufferHeight;
  
-#if 1
 	// ÁÙÊ±´æ´¢YºÍY+1µÄYUVXYUVX´®
 	// Ã¿ÐÐ×Ö½ÚÊý
 	int nSrcBytes = nSrcBufferWidth<<2; // *3
@@ -2586,357 +2938,14 @@ LRESULT CALLBACK SY_StretchBlt_YUYV(
 		else
 		{
 			pTemp = pbySrcBuffer + nY*nSrcPitch;
-#ifdef WIN64
-			assert(0);
-#else
-			_asm
-			{
-				mov eax, pTemp
-				mov edx, pbyTempSrc1
-				mov ecx, nSrcBufferWidth
-				neg ecx
-				add ecx, 7					// Ã¿´Î8
-				jbe loopY1_4
-loopY1_8:
-				
-				movdqa xmm0, [eax]
-				movdqa xmm7, xmm0
-				punpckhqdq xmm7, xmm0		// y1Uy2Vy3Uy4V
-				movdqa xmm1, xmm0
-				psrlw xmm1, 8			// U0V0U0V0
-				punpcklbw xmm1, xmm1	// UU100VV00 UU200VV00
-				movdqa xmm2, xmm1
-				punpckhqdq xmm2, xmm1	// UU200VV00 UU100VV00
-
-				punpcklwd xmm1, xmm2
-				movdqa xmm2, xmm1
-				punpckhqdq xmm2, xmm2
-				punpckldq xmm1, xmm2
-
-			//	packssdw xmm1, xmm1		// UU1VVUUVV 
-			//	packssdw xmm2, xmm2		// UU2VVUUVV
-			//	punpcklwd xmm1, xmm2	// UU1UU2VV1VV2
-
-      pand xmm0, [mask]
-      packuswb xmm0, xmm0
-				punpcklbw xmm0, xmm1	// y1U1y2U1y3U2y4U2
-				punpcklbw xmm1, xmm0	// 
-				punpckhqdq xmm1, xmm1	// V1AV1AV2AV2A
-				punpcklwd xmm0, xmm1	// ×îÖÕ½á¹û
-				movdqa [edx], xmm0
-				add edx, 16
-
-				movdqa xmm1, xmm7
-				psrlw xmm1, 8			// U0V0U0V0
-				punpcklbw xmm1, xmm1	// UU100VV00 UU200VV00
-				movdqa xmm2, xmm1
-				punpckhqdq xmm2, xmm1	// UU200VV00 UU100VV00
-
-				punpcklwd xmm1, xmm2
-				movdqa xmm2, xmm1
-				punpckhqdq xmm2, xmm2
-				punpckldq xmm1, xmm2
-
-			//	packssdw xmm1, xmm1		// UU1VVUUVV
-			//	packssdw xmm2, xmm2		// UU2VVUUVV
-			//	punpcklwd xmm1, xmm2	// UU1UU2VV1VV2
-
-      pand xmm7, [mask]
-      packuswb xmm7, xmm7
-				punpcklbw xmm7, xmm1	// y1U1y2U1y3U2y4U2
-				punpcklbw xmm1, xmm7	// 
-				punpckhqdq xmm1, xmm1	// V1AV1AV2AV2A
-				punpcklwd xmm7, xmm1	// ×îÖÕ½á¹û
-				movdqa [edx], xmm7
-
-				add eax, 16
-				add edx, 16
-				add ecx, 8
-				jnc loopY1_8
-loopY1_4:
-				sub ecx, 4
-				jns loopY1_2
-
-				movq mm0, [eax]
-				movq2dq xmm0, mm0		// y1Uy2Vy3Uy4V
-				movdqa xmm1, xmm0
-				psrlw xmm1, 8			// U0V0U0V0
-				punpcklbw xmm1, xmm1	// UU100VV00 UU200VV00
-				movdqa xmm2, xmm1
-				punpckhqdq xmm2, xmm1	// UU200VV00 UU100VV00
-
-				punpcklwd xmm1, xmm2
-				movdqa xmm2, xmm1
-				punpckhqdq xmm2, xmm2
-				punpckldq xmm1, xmm2
-
-			//	packssdw xmm1, xmm1		// UU1VVUUVV
-			//	packssdw xmm2, xmm2		// UU2VVUUVV
-			//	punpcklwd xmm1, xmm2	// UU1UU2VV1VV2
-
-				punpcklbw xmm0, xmm1	// y1U1y2U1y3U2y4U2
-				punpcklbw xmm1, xmm0	// 
-				punpckhqdq xmm1, xmm1	// V1AV1AV2AV2A
-				punpcklwd xmm0, xmm1	// ×îÖÕ½á¹û
-				movdqa [edx], xmm0
-
-				add eax, 8
-				add edx, 16
-				add ecx, 4
-loopY1_2:
-				sub ecx, 2
-				jns skipLoopY1_2
-
-				movd mm0, [eax]			// y1Uy2V
-				movq mm1, mm0
-				psrlw mm1, 8			// U0V0
-				punpcklbw mm1, mm1		// UU100VV00
-				movq mm2, mm2
-				punpckhbw mm2, mm2
-				punpcklwd mm1, mm2
-			//	packssdw mm1, mm1		// UU1VV
-
-				punpcklbw mm0, mm1		// y1U1y2U1
-				psrlw mm1, mm1			// VUVU
-				punpcklwd mm0, mm1	// ×îÖÕ½á¹û
-				movq [edx], mm0
-
-skipLoopY1_2:
-				emms	
-			}
-#endif // WIN64
 		}
 		if(nY+1 >= nSrcBufferHeight)
 			memset(pbyTempSrc2, 0, nSrcBytes);
 		else
 		{
 			pTemp += nSrcPitch;
-#ifdef WIN64
-			assert(0);
-#else
-			_asm
-			{
-				mov eax, pTemp
-				mov edx, pbyTempSrc2
-				mov ecx, nSrcBufferWidth
-				neg ecx
-				add ecx, 7					// Ã¿´Î8
-				jbe loopY2_4
-loopY2_8:
-				
-        movdqa xmm0, [eax]
-        movdqa xmm7, xmm0
-          punpckhqdq xmm7, xmm0		// y1Uy2Vy3Uy4V
-          movdqa xmm1, xmm0
-          psrlw xmm1, 8			// U0V0U0V0
-          punpcklbw xmm1, xmm1	// UU100VV00 UU200VV00
-          movdqa xmm2, xmm1
-          punpckhqdq xmm2, xmm1	// UU200VV00 UU100VV00
-
-          punpcklwd xmm1, xmm2
-          movdqa xmm2, xmm1
-          punpckhqdq xmm2, xmm2
-          punpckldq xmm1, xmm2
-
-          //	packssdw xmm1, xmm1		// UU1VVUUVV 
-          //	packssdw xmm2, xmm2		// UU2VVUUVV
-          //	punpcklwd xmm1, xmm2	// UU1UU2VV1VV2
-
-          pand xmm0, [mask]
-          packuswb xmm0, xmm0
-          punpcklbw xmm0, xmm1	// y1U1y2U1y3U2y4U2
-          punpcklbw xmm1, xmm0	// 
-          punpckhqdq xmm1, xmm1	// V1AV1AV2AV2A
-          punpcklwd xmm0, xmm1	// ×îÖÕ½á¹û
-          movdqa [edx], xmm0
-          add edx, 16
-
-          movdqa xmm1, xmm7
-          psrlw xmm1, 8			// U0V0U0V0
-          punpcklbw xmm1, xmm1	// UU100VV00 UU200VV00
-          movdqa xmm2, xmm1
-          punpckhqdq xmm2, xmm1	// UU200VV00 UU100VV00
-
-          punpcklwd xmm1, xmm2
-          movdqa xmm2, xmm1
-          punpckhqdq xmm2, xmm2
-          punpckldq xmm1, xmm2
-
-          //	packssdw xmm1, xmm1		// UU1VVUUVV
-          //	packssdw xmm2, xmm2		// UU2VVUUVV
-          //	punpcklwd xmm1, xmm2	// UU1UU2VV1VV2
-         
-          pand xmm7, [mask]
-          packuswb xmm7, xmm7
-          punpcklbw xmm7, xmm1	// y1U1y2U1y3U2y4U2
-          punpcklbw xmm1, xmm7	// 
-          punpckhqdq xmm1, xmm1	// V1AV1AV2AV2A
-          punpcklwd xmm7, xmm1	// ×îÖÕ½á¹û
-          movdqa [edx], xmm7
-
-				add eax, 16
-				add edx, 16
-				add ecx, 8
-				jnc loopY2_8
-loopY2_4:
-				sub ecx, 4
-				jns loopY2_2
-
-				movq mm0, [eax]
-				movq2dq xmm0, mm0		// y1Uy2Vy3Uy4V
-				movdqa xmm1, xmm0
-				psrlw xmm1, 8			// U0V0U0V0
-				punpcklbw xmm1, xmm1	// UU100VV00 UU200VV00
-				movdqa xmm2, xmm1
-				punpckhqdq xmm2, xmm1	// UU200VV00 UU100VV00
-
-				punpcklwd xmm1, xmm2
-				movdqa xmm2, xmm1
-				punpckhqdq xmm2, xmm2
-				punpckldq xmm1, xmm2
-
-			//	packssdw xmm1, xmm1		// UU1VVUUVV
-			//	packssdw xmm2, xmm2		// UU2VVUUVV
-			//	punpcklwd xmm1, xmm2	// UU1UU2VV1VV2
-
-				punpcklbw xmm0, xmm1	// y1U1y2U1y3U2y4U2
-				punpcklbw xmm1, xmm0	// 
-				punpckhqdq xmm1, xmm1	// V1AV1AV2AV2A
-				punpcklwd xmm0, xmm1	// ×îÖÕ½á¹û
-				movdqa [edx], xmm0
-
-				add eax, 8
-				add edx, 16
-				add ecx, 4
-loopY2_2:
-				sub ecx, 2
-				jns skipLoopY2_2
-
-				movd mm0, [eax]			// y1Uy2V
-				movq mm1, mm0
-				psrlw mm1, 8			// U0V0
-				punpcklbw mm1, mm1		// UU100VV00
-				movq mm2, mm2
-				punpckhbw mm2, mm2
-				punpcklwd mm1, mm2
-			//	packssdw mm1, mm1		// UU1VV
-
-				punpcklbw mm0, mm1		// y1U1y2U1
-				psrlw mm1, mm1			// VUVU
-				punpcklwd mm0, mm1	// ×îÖÕ½á¹û
-				movq [edx], mm0
-				
-skipLoopY2_2:
-				emms	
-			}
-#endif // WIN64
 		}
 		//fX = 0.0f;
-#ifdef WIN64
-		assert(0);
-#else
-		_asm
-		{
-			MOVSS	XMM0, fModY
-			MOVSS	XMM1, fSubModY
-			PUNPCKLDQ XMM0, XMM0
-			PUNPCKLQDQ XMM0, XMM0
-			PUNPCKLDQ XMM1, XMM1
-			PUNPCKLQDQ XMM1, XMM1			// ËÄ¸öÏàÍ¬Öµ:XMM0´æ4¸öfModY, XMM1´æ4¸öfSubModY
-			pxor XMM7, XMM7
-			
-			mov edx, pbyTempDes
-			xor eax, eax
-blastloop:
-			cmp eax, nDesBufferWidth
-			jnl		skipblastloop			// Ìø×ª
-				
-			movaps xmm2, xmm7				// fScaleWidth
-			CVTPS2DQ XMM5, XMM2				// È¡fScaleWidthµÄÕûÊýnScaleWidth
-			CVTDQ2PS XMM3, XMM5				// ÕûÊý×ªÎªFloat,´æÔÚxmm3
-			SUBPS XMM2, XMM3				// Ïà¼õ£¬È¡³öÆäÐ¡Êý²¿·Ö´æÈëXMM2,fModx
-			MOVAPS XMM4, [arfTemp2]
-			SUBPS XMM4, XMM2				// Ïà¼õ£º1.0f - Ð¡Êý,´æÈëXmm4, fSubModx
-			
-			movd ecx, xmm5
-			cmp ecx, nSrcBufferWidth		// Èç¹ûnX >= nSrcBufferWidth
-			jl blastloop1
-			mov [edx], 0
-			add edx, 4
-			inc eax
-			addps xmm7, [arfTemp1]
-			jmp blastloop
-blastloop1:
-			
-			mov esi, ecx
-			shl esi, 2
-			mov edi, esi
-			add esi, pbyTempSrc1
-			add edi, pbyTempSrc2
-			movd xmm5, [esi]			// pixel0
-			movd xmm6, [edi]			// pixel2
-			pxor xmm3, xmm3
-			punpcklbw xmm5, xmm3
-			punpcklbw xmm6, xmm3
-			punpcklwd xmm5, xmm3
-			punpcklwd xmm6, xmm3
-			cvtdq2ps xmm5, xmm5			// ×ª³Éfloat
-			cvtdq2ps xmm6, xmm6
-			movaps xmm3, xmm4
-			mulps xmm3, xmm1			// fSubModY*fSubModX
-			mulps xmm3, xmm5			// fSubModY*fSubModX*p0
-			mulps xmm4,	xmm0			// fModY*fSubModX
-			mulps xmm4, xmm6			// fModY*fSubModX*p2
-			addps xmm3, xmm4
-
-			inc ecx
-			cmp ecx, nSrcBufferWidth	// Èç¹ûnX+1 >= nSrcBufferWidth
-			jl blastloop2
-			
-			cvtps2dq xmm3, xmm3			// ×ª³ÉÕûÊý
-			packssdw xmm3, xmm3
-			PACKUSWB xmm3, xmm3
-			movd [edx], xmm3
-
-			add edx, 4
-			inc eax
-			addps xmm7, [arfTemp1]
-			jmp blastloop
-blastloop2:
-			mov esi, ecx
-			shl esi, 2
-			mov edi, esi
-			add esi, pbyTempSrc1
-			add edi, pbyTempSrc2
-			movd xmm5, [esi]			// pixel1
-			movd xmm6, [edi]			// pixel3
-			pxor xmm4, xmm4
-			punpcklbw xmm5, xmm4
-			punpcklbw xmm6, xmm4
-			punpcklwd xmm5, xmm4
-			punpcklwd xmm6, xmm4
-			cvtdq2ps xmm5, xmm5			// ×ª³Éfloat
-			cvtdq2ps xmm6, xmm6
-			movaps xmm4, xmm2
-			mulps xmm2, xmm1			// fSubModY*fModX
-			mulps xmm2, xmm5			// fSubModY*fModX*p1
-			mulps xmm4,	xmm0			// fModY*fModX
-			mulps xmm4, xmm6			// fModY*fModX*p3
-			addps xmm2, xmm4
-			addps xmm2, xmm3			//
-			cvtps2dq xmm2,xmm2			// ×ª³ÉÕûÊý
-			packssdw xmm2, xmm2
-			PACKUSWB xmm2, xmm2
-			movd [edx], xmm2
-			
-			add edx, 4
-			inc eax
-			addps xmm7, [arfTemp1]
-			jmp blastloop
-skipblastloop:
-			emms
-		}
-#endif // WIN64
 		// ²ð³ÉYUYV
 		for(int k=0, p=0, q=0; k<nHalfDstWidth; k++)
 		{
@@ -2953,371 +2962,29 @@ skipblastloop:
 	_mm_free(pbyTempSrc1);
 	_mm_free(pbyTempSrc2);
 	_mm_free(pbyTempDes);
-#endif
 	return 1;
 }
 _declspec(align(16)) DWORD ymask[] = {0x00ff00ff,0x00ff00ff,0x00ff00ff,0x00ff00ff,};
 BOOL yuv_yyuuvv2yuv(BYTE* pDesBuffer,BYTE* pSrcField,int nA16,int nMod16)
 {
-#ifdef WIN64
 	_yuv_yyuuvv2yuv_x64(pDesBuffer,pSrcField,nA16,nMod16,ymask);
 	return TRUE;
-#else
-	_asm{
-		PXOR	XMM0,XMM0
-		MOVDQA	XMM1,ymask
-		MOV		EDI,pDesBuffer
-		MOV		ESI,pSrcField
-		MOV		ECX,nA16
-	loop_16:
-		TEST	 ECX,ECX
-		JZ		 loop_8
-		MOVDQU	 XMM2,[ESI]
-		PAND	 XMM2,XMM1
-	    ADD		 ESI,16
-		SUB		 ECX,1
-		JNZ		 loop_16_1
-		PACKUSWB XMM2,XMM2
-		MOVSD	 [EDI],XMM2
-		ADD		 EDI,8
-		JMP		 loop_8
-loop_16_1:
-		MOVDQU   XMM3,[ESI]
-		PAND	 XMM3,XMM1
-		PACKUSWB XMM2,XMM3
-		MOVDQU	 [EDI],XMM2
-		ADD		 EDI,16
-		ADD		 ESI,16
-		SUB		 ECX,1
-		JMP		 loop_16
-loop_8:
-		MOV		 ECX,nMod16
-		TEST	 ECX,0x00000008
-		JZ		 loop_4
-		MOVSD	 XMM2,[ESI]
-		PAND	 XMM2,XMM1
-		PACKUSWB XMM2,XMM2
-		MOVD	 [EDI],XMM2
-		ADD		 EDI,4
-		ADD		 ESI,8
-loop_4: 
-		TEST	 ECX,0x00000004
-		JZ		 loop_2
-		MOVD	 XMM2,[ESI]
-		PAND	 XMM2,XMM1
-		PACKUSWB XMM2,XMM2
-		MOVD	 EAX,XMM2
-		MOV		 [EDI],AX
-		ADD		 EDI,2
-		ADD		 ESI,4
-loop_2:
-		TEST	 ECX,0x00000002
-		JZ		 loop_end
-		MOV		 AX,[ESI]
-		MOVD	 XMM2,EAX
-		PAND	 XMM2,XMM1
-		PACKUSWB XMM2,XMM2
-		MOVD	 EAX,XMM2
-		MOV		 [EDI],AL
-		ADD		 EDI,1
-		ADD		 ESI,2
-loop_end:
-	}
-
-#endif
 }
 
 BOOL yuv_yuv2yyuuvv(BYTE* pDesBuffer,BYTE* pSrcField,int nA8,int nMod8)
 {
-#ifdef WIN64
 	_yuv_yuv2yyuuvv_x64(pDesBuffer,pSrcField,nA8,nMod8);
-#else
-	_asm{
-		PXOR	XMM0,XMM0
-		MOV		EDI,pDesBuffer
-		MOV		ESI,pSrcField
-		MOV		ECX,nA8
-	loop_8:
-		TEST	 ECX,ECX
-		JZ		 loop_4
-		MOVSD	 XMM1,[ESI]
-		PUNPCKLBW XMM1,XMM0
-		MOVDQA	 XMM2,XMM1
-		PSLLW	 XMM2,8
-		POR		 XMM1,XMM2
-		MOVDQU	 [EDI],XMM1
-		SUB		 ECX,1
-		ADD		 ESI,8
-		ADD	     EDI,16
-		JMP		 loop_8
-loop_4: 
-		MOV		 ECX,nMod8
-		TEST	 ECX,0x00000004
-		JZ		 loop_2
-		MOVD	 XMM1,[ESI]
-		PUNPCKLBW XMM1,XMM0
-		MOVDQA	 XMM2,XMM1
-		PSLLW	 XMM2,8
-		POR		 XMM1,XMM2
-		MOVSD	 [EDI],XMM1
-		ADD		 ESI,4
-		ADD	     EDI,8
-loop_2:
-		TEST	 ECX,0x00000002
-		JZ		 loop_1
-		MOV		 AX,[ESI]
-		MOVD	 XMM1,EAX
-		PUNPCKLBW XMM1,XMM0
-		MOVDQA	 XMM2,XMM1
-		PSLLW	 XMM2,8
-		POR		 XMM1,XMM2
-		MOVD	 [EDI],XMM1
-		ADD		 EDI,4
-		ADD		 ESI,2
-loop_1:
-		TEST	 ECX,0x00000001
-		JZ		 loop_end
-		MOV		 AL,[ESI]
-		MOVD	 XMM1,EAX
-		PUNPCKLBW XMM1,XMM0
-		MOVDQA	 XMM2,XMM1
-		PSLLW	 XMM2,8
-		POR		 XMM1,XMM2
-		MOVD	 EAX,XMM1
-		MOV		 [EDI],AX
-		ADD		 EDI,2
-		ADD		 ESI,1
-loop_end:
-	}
-
-#endif
 	return 1;
 }
 
 void yuv_uyvy2yuv8(BYTE* puyvy,BYTE* py,BYTE* pu,BYTE* pv,int nA16,int nM16)
 {
-#ifdef WIN64
 	_yuv_uyvy2yuv8_x64(puyvy,py,pu,pv,nA16,nM16);
-#else
-	__asm{
-		MOV			ECX,nA16
-		MOV			ESI,puyvy
-		MOV			EAX,py
-		MOV			EDI,pu
-		MOV			EDX,pv
-loop_16:		
-		TEST		ECX,ECX
-		JZ			loop_8
-		MOVDQU		XMM1,[ESI]
-		MOVDQA		XMM2,XMM1
-		PSRLW		XMM1,8
-		PACKUSWB	XMM1,XMM1
-		PSLLW		XMM2,8
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-
-		MOVDQA		XMM3,XMM2
-		PSLLW		XMM2,8
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-		PSRLW		XMM3,8
-		PACKUSWB	XMM3,XMM3
-
-		
-		
-
-		MOVSD		[EAX],XMM1
-		MOVD		[EDI],XMM2
-		MOVD		[EDX],XMM3
-
-		ADD			ESI,16
-		ADD			EAX,8
-		ADD			EDX,4
-		ADD			EDI,4
-		SUB			ECX,1
-		JMP			loop_16
-loop_8:
-		MOV			ECX,nM16
-		TEST		ECX,0x00000008
-		JZ			loop_4
-		MOVSD		XMM1,[ESI]
-		MOVSD		XMM2,XMM1
-		PSRLW		XMM1,8
-		PSLLW		XMM2,8
-		PACKUSWB	XMM1,XMM1
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-
-		MOVDQA		XMM3,XMM2
-		PSLLW		XMM2,8
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-		PSRLW		XMM3,8
-		PACKUSWB	XMM3,XMM3
-
-		MOVD		[EAX],XMM1
-		PUSH		EAX
-		MOVD		EAX,XMM2
-		MOV			[EDI],AX
-		MOVD		EAX,XMM3
-		MOV			[EDX],AX
-		POP			EAX
-		ADD			ESI,8
-		ADD			EAX,4
-		ADD			EDX,2
-		ADD			EDI,2
-loop_4:
-		TEST		ECX,0x00000004
-		JZ			loop_end
-		MOVD		XMM1,[ESI]
-		MOVDQA		XMM2,XMM1
-		PSRLW		XMM1,8
-		PSLLW		XMM2,8
-		PACKUSWB	XMM1,XMM1
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-
-		MOVDQA		XMM3,XMM2
-		PSLLW		XMM2,8
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-		PSRLW		XMM3,8
-		PACKUSWB	XMM3,XMM3
-
-		PUSH		EDX
-		MOVD		EDX,XMM1
-		MOV			[EAX],DX
-		POP			EDX
-
-		PUSH		EAX
-		MOVD		EAX,XMM2
-		MOV			[EDI],AL
-		MOVD		EAX,XMM3
-		MOV			[EDX],AL
-		POP			EAX
-
-		ADD			ESI,8
-		ADD			EAX,4
-		ADD			EDX,2
-		ADD			EDI,2
-loop_end:
-		
-	};
-
-#endif
 }
 
 void yuv_yuyv2yuv8(BYTE* puyvy,BYTE* py,BYTE* pu,BYTE* pv,int nA16,int nM16)
 {
-#ifdef WIN64
 	_yuv_yuyv2yuv8_x64(puyvy,py,pu,pv,nA16,nM16);
-#else
-	__asm{
-		MOV			ECX,nA16
-		MOV			ESI,puyvy
-		MOV			EAX,py
-		MOV			EDI,pu
-		MOV			EDX,pv
-loop_16:		
-		TEST		ECX,ECX
-		JZ			loop_8
-		MOVDQU		XMM1,[ESI]
-		MOVDQA		XMM2,XMM1
-		PSLLW		XMM1,8
-		PSRLW		XMM1,8
-		PACKUSWB	XMM1,XMM1
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-
-		MOVDQA		XMM3,XMM2
-		PSLLW		XMM2,8
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-		PSRLW		XMM3,8
-		PACKUSWB	XMM3,XMM3
-
-		
-		
-
-		MOVSD		[EAX],XMM1
-		MOVD		[EDI],XMM2
-		MOVD		[EDX],XMM3
-
-		ADD			ESI,16
-		ADD			EAX,8
-		ADD			EDX,4
-		ADD			EDI,4
-		SUB			ECX,1
-		JMP			loop_16
-loop_8:
-		MOV			ECX,nM16
-		TEST		ECX,0x00000008
-		JZ			loop_4
-		MOVSD		XMM1,[ESI]
-		MOVSD		XMM2,XMM1
-		PSLLW		XMM1,8
-		PSRLW		XMM1,8
-		PACKUSWB	XMM1,XMM1
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-
-		MOVDQA		XMM3,XMM2
-		PSLLW		XMM2,8
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-		PSRLW		XMM3,8
-		PACKUSWB	XMM3,XMM3
-
-		MOVD		[EAX],XMM1
-		PUSH		EAX
-		MOVD		EAX,XMM2
-		MOV			[EDI],AX
-		MOVD		EAX,XMM3
-		MOV			[EDX],AX
-		POP			EAX
-		ADD			ESI,8
-		ADD			EAX,4
-		ADD			EDX,2
-		ADD			EDI,2
-loop_4:
-		TEST		ECX,0x00000004
-		JZ			loop_end
-		MOVD		XMM1,[ESI]
-		MOVDQA		XMM2,XMM1
-		PSLLW		XMM1,8
-		PSRLW		XMM1,8
-		PACKUSWB	XMM1,XMM1
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-
-		MOVDQA		XMM3,XMM2
-		PSLLW		XMM2,8
-		PSRLW		XMM2,8
-		PACKUSWB	XMM2,XMM2
-		PSRLW		XMM3,8
-		PACKUSWB	XMM3,XMM3
-
-		PUSH		EDX
-		MOVD		EDX,XMM1
-		MOV			[EAX],DX
-		POP			EDX
-
-		PUSH		EAX
-		MOVD		EAX,XMM2
-		MOV			[EDI],AL
-		MOVD		EAX,XMM3
-		MOV			[EDX],AL
-		POP			EAX
-
-		ADD			ESI,8
-		ADD			EAX,4
-		ADD			EDX,2
-		ADD			EDI,2
-loop_end:
-		
-	};
-
-#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3920,91 +3587,7 @@ void bgra32_mean_copy_add_y_quick_field(OUT void* des,		// ÁÙÊ±»º´æÐÐ£¨ÊÇÔ´ÐÐ¿½±
 								  IN int nMapY,
 								  IN int nFirst)			// Ä¿±êÒ»ÐÐÓ³Éäµ½Ô´µÄÐÐÊý
 {
-#ifdef WIN64
 	_bgra32_mean_copy_add_y_quick_field_x64(des,src,scw,src_pitch,pPowerY,pCoefH,nMapY,nFirst);
-#else
-	_asm{
-		mov			edi, des;
-		mov			esi, src;
-		mov			ecx, scw;
-		mov			edx, pPowerY;
-		movss		xmm2, [edx];		
-		movss		xmm3, [edx + 0x04];	
-		shufps		xmm2, xmm2, 0x00;	
-		shufps		xmm3, xmm3, 0x00;
-		mov			eax, pCoefH;
-		pxor		xmm0, xmm0;			
-		movaps		xmm7, [eax];	
-		
-loop_pixel:
-		mov			edx, esi;
-		pxor		xmm6, xmm6;
-		pxor		xmm5, xmm5;
-		mov			eax,nFirst;
-		test		eax,eax
-		mov			eax, nMapY;
-		jz			loop_skip;
-seg_first_row:
-		// È¡µÃµÚÒ»ÐÐµÄÏñËØ
-		movss		xmm1, [edx];		
-		punpcklbw	xmm1, xmm0;			
-		punpcklwd	xmm1, xmm0;			
-		cvtdq2ps	xmm1, xmm1;
-		mulps		xmm1, xmm2;
-		add			edx, src_pitch;
-		addps		xmm6, xmm1;
-		add			edx, src_pitch;
-		// ÅÐ¶ÏÕ¼ÓÃµÄÏñËØÇé¿ö
-		sub			eax, 0x03;
-		jb			map_end;			
-		jnz			loop_mid_row;		
-		jmp			seg_last_row;		
-loop_skip:
-		add			edx, src_pitch;
-		// ÅÐ¶ÏÕ¼ÓÃµÄÏñËØÇé¿ö
-		sub			eax, 0x02;
-		jb			map_end;			
-		jnz			loop_mid_row;		
-		jmp			seg_last_row;
-loop_mid_row:
-		// È¡µÃÖÐ¼äÐÐµÄÏñËØ
-		movd		xmm1, [edx];		
-		punpcklbw	xmm1, xmm0;			
-		add			edx, src_pitch;
-		paddusw		xmm5, xmm1;
-		add			edx, src_pitch;
-		sub			eax, 0x02;
-		jb			loop_mid_toend;			// Ö»Õ¼Ò»¸öÏñËØ
-		jnz			loop_mid_row;
-		jz			seg_last_row;
-loop_mid_toend:
-		punpcklwd	xmm5, xmm0;			// 000a 000r 000g 000b
-		cvtdq2ps	xmm5, xmm5;
-		addps		xmm6, xmm5;			// ¼ÓÈ¨ÇóºÍ
-		jmp         map_end;
-seg_last_row:
-		// È¡µÃ×îºóÒ»ÐÐµÄÏñËØ
-		movss		xmm1, [edx];		// Ô´ÏñËØ 0 0 0 argb
-		punpcklbw	xmm1, xmm0;			// 0000 0000 0a0r 0g0b
-		punpcklwd	xmm1, xmm0;			// 000a 000r 000g 000b
-		cvtdq2ps	xmm1, xmm1;
-		punpcklwd	xmm5, xmm0;			// 000a 000r 000g 000b
-		mulps		xmm1, xmm3;
-		cvtdq2ps	xmm5, xmm5;
-		addps		xmm6, xmm5;
-		addps		xmm6, xmm1;			// ¼ÓÈ¨ÇóºÍ
-		
-map_end:
-		// ¼ÓÈ¨½áÊø
-		mulps		xmm6, xmm7;			// Æ½¾ù
-		movaps		[edi], xmm6;
-		add			esi, 0x04;
-		add			edi, 0x10;
-		sub			ecx, 0x01;
-		jnz			loop_pixel;
-	}
-
-#endif
 }
 
 void bgra32_mean_copy_add_x(OUT void* des,
@@ -4266,5 +3849,4 @@ BASEGRAPH_COMMON_API void SY_GuassianBlur(LPBYTE lpDes,LPSIZE pSize,int degrees 
 	int  nSign = CreateGaussMap( nGuass,degrees );
 	GauseFilter( lpDes,pSize,nGuass,nSign );
 }
-#endif
 

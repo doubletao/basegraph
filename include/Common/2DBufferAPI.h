@@ -379,7 +379,6 @@ BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// Ä¿
 												   IN SY_FILL_MODE eMode,	// Ìî³äÄ£Ê½
 												   IN DWORD pdwMaskCr);	// ÑÚÂëÑÕÉ«Öµ£¨ÒÀÀµÄ£Ê½µÄ¿ÉÑ¡Ïî£©
 
-#if 0
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //		£¨3£©¶Ô´óÆ¬ÄÚ´æ½øÐÐ´øÑÚÂëµÄ²Ù×÷
@@ -614,6 +613,5 @@ BASEGRAPH_COMMON_API LRESULT Gauss_RLE(IN OUT void* pInOutBuf,	// Ä¿±ê»º³åÇø:°üº
 									  IN float fVertical,
 									  IN int nRefPlane);
 BASEGRAPH_COMMON_API void SY_GuassianBlur(LPBYTE lpDes,LPSIZE pSize,int degrees );
-#endif
 //////////////////////////////////////////////////////////////////////////
 #endif

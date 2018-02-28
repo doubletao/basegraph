@@ -5,6 +5,7 @@
 #define VS_FILE_FOG		_T("\\VS\\Easy2.VS")
 #define PS_FILE_FOG		_T("\\PS\\Easy2.PS")
 #define DEFAULT_LINE_NUM	10
+#include "SceneRender\DXEngineDataDef.h"
 
 struct SYEasyVertex
 {
@@ -271,4 +272,8 @@ BASEGRAPH_SCENE_RENDER_API BOOL		SY3DEngine_EffectRenderInstance(int hDevice,
 
 BASEGRAPH_SCENE_RENDER_API void		SY3DEngine_TextOut(int hDevice,LPCTSTR strText,RECT* rtText,DWORD dwColor);
 BASEGRAPH_SCENE_RENDER_API void		EngineManagerSetOptimal(BOOL bOptimal=TRUE);
+
+BASEGRAPH_SCENE_RENDER_API BOOL RenderEngineDX10_Main(int ncmd, int hDevice, void* paramin, void* paramout);
+BASEGRAPH_SCENE_RENDER_API void RenderEngineDX10SetOptimal(BOOL bOptimal = TRUE);
+BASEGRAPH_SCENE_RENDER_API BOOL RenderSoftEngine_Main(int ncmd, int hDevice, void* paramin, void* paramout);
 //////////////////////////////////////////////////////////////////////////

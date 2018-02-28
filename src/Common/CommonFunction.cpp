@@ -1,3 +1,4 @@
+#include "..\..\include\Common\CommonFunction.h"
 #include "stdafx.h"
 #include "Common\CommonFunction.h"
 #pragma comment(lib, "Rpcrt4.lib")
@@ -89,4 +90,12 @@ CString CommonFunction::ConverFrameToText(int nFrame, float fFPS/* = 25.0*/)
 	CString strDisp;
 	strDisp.Format(_T("%02d:%02d:%02d:%02d"), nHour, nMin, nSec, nFrameTail);
 	return strDisp;
+}
+
+BOOL CommonFunction::IsFileExists(const CString & strSrcFilePath)
+{
+	if (strSrcFilePath.IsEmpty())
+		return FALSE;
+
+	return  (_taccess(strSrcFilePath, 00) == 0);
 }
