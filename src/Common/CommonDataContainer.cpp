@@ -199,3 +199,80 @@ BASEGRAPH_COMMON_API void SYHash_Delete(PSYHash ph, BOOL bFreeValue)
 	SYHash_Release(ph, bFreeValue);
 	free(ph);
 }
+
+BASEGRAPH_COMMON_API void * SYHash_Search(const SYHash * ph, void * pk)
+{
+	if (ph && ph->m_mapContainer.count(pk) > 0)
+	{
+		return ph->m_mapContainer.at(pk);
+	}
+	return nullptr;
+}
+
+BASEGRAPH_COMMON_API void * SYHash_RemoveAt(PSYHash ph, void * pk, BOOL bFreeValue)
+{
+	if (ph == NULL)
+		return nullptr;
+
+	// 分开写循环减少了判断次数
+	if (bFreeValue)
+	{
+		std::map<void *, void *>::iterator it = ph->m_mapContainer.find(pk);
+		if (it != ph->m_mapContainer.end())
+		{
+			if (ph->bKeyRelease)
+			{
+				if (ph->freekeyfn)
+				{
+					ph->freekeyfn(it->first);
+				}
+				else
+				{
+					delete it->first;
+				}
+			}
+			if (ph->bValueRelease)
+			{
+				if (ph->freevaluefn)
+				{
+					ph->freevaluefn(it->second);
+				}
+				else
+				{
+					SAFE_DELETE(it->second);
+				}
+			}
+			ph->m_mapContainer.erase(it);
+		}
+	}
+	else
+	{
+		std::map<void *, void *>::iterator it = ph->m_mapContainer.find(pk);
+		if (it != ph->m_mapContainer.end())
+		{
+			if (ph->bKeyRelease)
+			{
+				if (ph->freekeyfn)
+				{
+					ph->freekeyfn(it->first);
+				}
+				else
+				{
+					delete it->first;
+				}
+			}
+			ph->m_mapContainer.erase(it);
+		}
+	}
+	return nullptr;
+}
+
+BASEGRAPH_COMMON_API BOOL SYHash_Insert(PSYHash ph, void * pk, void * pv)
+{
+	if (!ph)
+	{
+		return FALSE;
+	}
+	ph->m_mapContainer.insert(std::make_pair(pk, pv));
+	return TRUE;
+}

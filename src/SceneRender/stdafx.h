@@ -47,3 +47,4 @@
 #endif
 
 #include "ExportCommon.h"
+#include "ExportBaseCodec.h"

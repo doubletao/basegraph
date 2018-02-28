@@ -34,3 +34,8 @@ bool BASEGRAPH_BASECODEC_API BaseCodec_ReadImage(IN LPCTSTR szFileName, IN int n
 	}
 	return false;
 }
+
+bool BASEGRAPH_BASECODEC_API BaseCodec_ReadImage(IN LPCTSTR szFileName, IN int nWidth, IN int nHeight, OUT DWORD * pBuffer, IN int nPixSize)
+{
+	return BaseCodec_ReadImage(szFileName, nWidth, nHeight, (byte *)pBuffer, nPixSize);
+}

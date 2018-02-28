@@ -2,17 +2,15 @@
 	摘要:	对缓冲区各种操作的加速算法的实现
 *********************************************************************/
 #include "stdafx.h"
-#include "SYBuffer.h"
-#include "SYBufferAPI.h"
-#include "SYSSE2.h"
-#include "SYMemSSE.h"
+#include "Common\2DBuffer.h"
+#include "Common\2DBufferAPI.h"
+#include "..\BufferSSE2.h"
+#include "..\BufferMemSSE.h"
 #include "stdio.h"
 #include "TCHAR.h"
-#include "SYRipRender.h"
-//////////////////////////////////////////////////////////////////////////
-// 全局变量
-extern SYSSE_DECLARE(DWORD*)	g_pdwMixGainTable;		// SA / (SA + DA - SA * DA / 255) 缩放 2^15 - 1（需要补偿）
-
+#include "..\BufferRipRender.h"
+#include <assert.h>
+#include "Common\ColorDef.h"
 //////////////////////////////////////////////////////////////////////////
 // 不缩放时的范围剪切，可选目标裁减矩形。
 // 如果裁减矩形为空指针，则表示裁减区覆盖整个目标。
@@ -241,7 +239,7 @@ BOOL SYStretch_CutRange(IN OUT int &nDesX,				// 目标起点
 		nLineIndex = 0;
 		nLineInc = 1;
 		break;
-	case SY_PARITY_ODD:			// 奇场
+	case BUFFER_PARITY_ODD:			// 奇场
 		nLineIndex = 0;
 		if ((nDesY % 2) == 1)		// 起点在偶场，则从下一行开始
 		{
@@ -254,7 +252,7 @@ BOOL SYStretch_CutRange(IN OUT int &nDesX,				// 目标起点
 		nDesAddWidth = (nDesBufferWidth << 1);
 		nLineInc = 2;
 		break;
-	case SY_PARITY_EVEN:		// 偶场
+	case BUFFER_PARITY_EVEN:		// 偶场
 		nLineIndex = 0;
 		if ((nDesY % 2) == 0)		// 起点在奇场，则从下一行开始
 		{
@@ -346,55 +344,7 @@ BASEGRAPH_COMMON_API void SY_GrayscaleColrReplace(IN OUT DWORD* pBuffer, //RGBA
 	const bool using_asm_version = true;
 	if(using_asm_version)
 	{
-#ifdef WIN64
 		assert(0);
-#else
-		__asm {
-			;// 计算len除以4，
-			;// 余数放在eax, 表示不对齐部分的双字数
-			;// 商放在ebx，表示对齐部分的dq数
-			mov		eax,	len;
-			mov		ebx,	eax;
-			shr		ebx,	2;
-			and		eax,	0x3;
-			;// 计算颜色掩码，存储在ecx中
-			mov		ecx,	color;
-			and		ecx,	0xffffff;
-			;// 把buffer指针存储在edx中
-			mov		edx,	pBuffer;
-			;// 进入dq循环，单次处理4个颜色值
-			test	ebx,	ebx;
-			jz		begin_w;
-
-			;// 为dq循环准备alpha掩码和颜色掩码的dq版本
-			;// 颜色掩码放在xmm0中，alpha掩码放在xmm1中
-			movd	xmm0,	ecx;					// xmm0 = 0,0,0,ecx
-			mov		edi,	0xff000000;
-			movd	xmm1,	edi;					// xmm1 = 0,0,0,0xff000000
-			shufps	xmm0,	xmm0,	0x00;			// xmm0 = ecx,ecx,ecx,ecx
-			shufps	xmm1,	xmm1,	0x00;			// xmm1 = 0xff000000,0xff000000,0xff000000,0xff000000
-loop_dq:
-			movdqu	xmm2,	[edx];
-			pand	xmm2,	xmm1;
-			por		xmm2,	xmm0;
-			movdqu	[edx],	xmm2;
-			add		edx,	16;
-			dec		ebx;
-			jnz		loop_dq;
-begin_w:
-			test	eax,	eax;
-			jz		loop_end;
-loop_w:
-			mov		edi,	[edx];
-			and		edi,	0xff000000;				// alpha掩码
-			or		edi,	ecx;
-			mov		[edx],	edi;
-			add		edx,	4;
-			dec		eax;
-			jnz		loop_w;
-loop_end:
-		}
-#endif // WIN64
 	}
 	else
 	{
@@ -421,66 +371,7 @@ BASEGRAPH_COMMON_API void SY_ColrWeightMix(IN OUT DWORD* pBuffer,	//RGBA
 	const bool using_asm_version = true;
 	if(using_asm_version)
 	{
-#ifdef WIN64
 		assert(0);
-#else
-		__asm {
-			;// 一次可以同时处理两个像素，所以计算len除以2，
-			;// 余数放在eax, 表示不对齐部分的DWORD数
-			;// 商放在ebx，表示对齐部分的double DWORD数
-			mov			eax,	len;
-			mov			ebx,	eax;
-			shr			ebx,	1;
-			and			eax,	0x1;
-			;// 把buffer指针存储在edx中
-			mov			edx,	pBuffer;
-			;// 进入dq循环，单次处理4个颜色值
-			test		ebx,	ebx;
-			jz			begin_dw;
-begin_qw:
-			pxor		xmm7,	xmm7;		// xmm7 0 0 0 0
-			mov			ecx,	255;
-			movd		xmm5,	weight;		// xmm5 0 0 0 w
-			movd		xmm4,	ecx;		// xmm4 0 0 0 255
-			punpckldq	xmm5,	xmm5;		// xmm5 0 0 w w
-			punpcklbw	xmm4,	xmm4;		// xmm4 0 0 0 0-0-255-255
-			movdqa		xmm2,	xmm7;		// xmm2 0 0 0 0
-			punpcklwd	xmm4,	xmm4;		// xmm4 0 0 0 255-255-255-255
-			punpcklbw	xmm2,	xmm5;		// xmm2 wa-0-wb-0, wg-0-wr-0, wa-0-wb-0, wg-0-wr-0
-			punpckldq	xmm4,	xmm4;		// xmm4 0 0 255-255-255-255 255-255-255-255
-			mov			ecx,	8;
-			movd		xmm5,	ecx;		// xmm5 0 0 0 8
-			movdqa		xmm3,	xmm7;		// xmm3 0 0 0 0
-			punpcklbw	xmm4,	xmm3;		// xmm4 0-255-0-255, 0-255-0-255, 0-255-0-255, 0-255-0-255
-			;//至此已经占用了xmm7,xmm5,xmm4,xmm2四个寄存器
-			;//有足够的寄存器可用，所以可以使用循环展开来提高循环效率和吞吐量，待改进
-loop_qw:
-			movdqa		xmm1,	xmm7;		// xmm1 0 0 0 0
-			movlps		xmm0,	[edx];		// xmm0 0, 0, A1-B1-G1-R1, A2-B2-G2-R2
-			punpcklbw	xmm1,	xmm0;		// xmm1 A1-0-B1-0, G1-0-R1-0, A2-0-B2-0, G2-0-R2-0
-			pmulhuw		xmm1,	xmm2;		// xmm1 A1*wa-B1*wb, G1*wg-R1*wr, A2*wa-B2*wb, G2*wg-R2*wr
-			paddw		xmm1,	xmm4;		// xmm1 (A1*wa+255)-(B1*wb+255), (G1*wg+255)-(R1*wr+255), (A2*wa+255)-(B2*wb+255), (G2*wg+255)-(R2*wr+255)
-			psrlw		xmm1,	xmm5;		// xmm1 A1*wa/255-B1*wb/255, G1*wg/255-R1*wr/255, A2*wa/255-B2*wb/255, G2*wg/255-R2*wr/255
-			packsswb	xmm1,	xmm7;		// xmm1 0 0 A1*wa/255-B1*wb/255-G1*wg/255-R1*wr/255, A2*wa/255-B2*wb/255-G2*wg/255-R2*wr/255
-			movlps		[edx],	xmm1;
-
-			add			edx,	8;
-			dec			ebx;
-			jnz			loop_qw;
-begin_dw:
-			test		eax,	eax;
-			jz			loop_end;
-			movdqa		xmm1,	xmm7;		// xmm1 0 0 0 0
-			movd		xmm0,	[edx];		// xmm0 0, 0, 0, A-B-G-R
-			punpcklbw	xmm1,	xmm0;		// xmm1 0, 0, A-0-B-0, G-0-R-0
-			pmulhuw		xmm1,	xmm2;		// xmm1 0, 0, A*wa-B*wb, G*wg-R*wr
-			paddw		xmm1,	xmm4;		// xmm1 255-255, 255-255, (A*wa+255)-(B*wb+255), (G*wg+255)-(R*wr+255)
-			psrlw		xmm1,	xmm5;		// xmm1 0, 0, A*wa/255-B*wb/255, G*wg/255-R*wr/255
-			packsswb	xmm1,	xmm7;		// xmm1 0 0 0, A*wa/255-B*wb/255-G*wg/255-R*wr/255
-			movd		[edx],	xmm1;
-loop_end:
-		}
-#endif // WIN64
 	}
 	else
 	{
@@ -607,14 +498,14 @@ BASEGRAPH_COMMON_API void SYBGRA32_LineMix(IN OUT void *des,		// 目标
 										  IN int na16,			// 宽度除以 16 的商
 										  IN int nm16)			// 宽度除以 16 的余数
 {
-	bgra32_line_mix(des, src, na16, nm16, g_pdwMixGainTable);
+	bgra32_line_mix(des, src, na16, nm16, BufferMemSSE::g_pdwMixGainTable);
 }
 BASEGRAPH_COMMON_API void SYBGRA32_LineMix_NotSrc(IN OUT void *des,		// 目标
 												 IN void *src,			// 源
 												 IN int na16,			// 宽度除以 16 的商
 												 IN int nm16)			// 宽度除以 16 的余数
 {
-	bgra32_line_mix_notsrc(des, src, na16, nm16, g_pdwMixGainTable);
+	bgra32_line_mix_notsrc(des, src, na16, nm16, BufferMemSSE::g_pdwMixGainTable);
 }
 
 // 第三方权重的填充操作：des = c0 * f + c1 * (1 - f) = (c0 - c1) * f + c1
@@ -669,7 +560,7 @@ BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标 Buf
 {
 	if (nSrcWidth == nDesWidth && nSrcHeight == nDesHeight)		// 固定大小
 	{
-		return SYBGRA_Fix_SSE(pDesBuf->m_dwBuffer,
+		return BufferMemSSE::Buffer_BGRA_Fix_SSE(pDesBuf->m_dwBuffer,
 							  nDesX,
 							  nDesY,
 							  nDesWidth,
@@ -688,7 +579,7 @@ BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标 Buf
 	}
 	else	// 缩放
 	{
-		return SYBGRA_BLStretch_SSE(pDesBuf->m_dwBuffer,
+		return BufferMemSSE::Buffer_BGRA_BLStretch_SSE(pDesBuf->m_dwBuffer,
 									nDesX,
 									nDesY,
 									nDesWidth,
@@ -724,7 +615,7 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标
 {
 	if (nSrcWidth != nDesWidth || nSrcHeight != nDesHeight)	// 缩放
 	{
-		return SYBGRA_BLStretch_SSE(pDesBuf->m_dwBuffer,
+		return BufferMemSSE::Buffer_BGRA_BLStretch_SSE(pDesBuf->m_dwBuffer,
 									nDesX,
 									nDesY,
 									nDesWidth,
@@ -743,7 +634,7 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标
 	}
 	else		// 固定大小
 	{
-		return SYBGRA_Fix_SSE(pDesBuf->m_dwBuffer,
+		return BufferMemSSE::Buffer_BGRA_Fix_SSE(pDesBuf->m_dwBuffer,
 							 nDesX,
 							 nDesY,
 							  nDesWidth,
@@ -779,7 +670,7 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt_Mean(IN OUT SYBufferDef32* pDesBuf,		// 
 {
 	if (nSrcWidth != nDesWidth || nSrcHeight != nDesHeight)		// 缩放
 	{
-		return SYBGRA_MeanStretch_SSE(pDesBuf->m_dwBuffer,
+		return BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(pDesBuf->m_dwBuffer,
 										nDesX,
 										nDesY,
 									  nDesWidth,
@@ -798,7 +689,7 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt_Mean(IN OUT SYBufferDef32* pDesBuf,		// 
 	}
 	else		// 固定大小
 	{
-		return SYBGRA_Fix_SSE(pDesBuf->m_dwBuffer,
+		return BufferMemSSE::Buffer_BGRA_Fix_SSE(pDesBuf->m_dwBuffer,
 								nDesX,
 								nDesY,
 							  nDesWidth,
@@ -842,7 +733,7 @@ BASEGRAPH_COMMON_API BOOL SY_BitBlt(IN OUT DWORD* pdwDesBuffer,		// 目标
 {
 	if (nSrcWidth == nDesWidth && nSrcHeight == nDesHeight)		// 固定大小
 	{
-		return SYBGRA_Fix_SSE(pdwDesBuffer,
+		return BufferMemSSE::Buffer_BGRA_Fix_SSE(pdwDesBuffer,
 							  nDesX,
 							  nDesY,
 							  nDesWidth,
@@ -862,7 +753,7 @@ BASEGRAPH_COMMON_API BOOL SY_BitBlt(IN OUT DWORD* pdwDesBuffer,		// 目标
 	}
 	else		// 缩放
 	{
-		return SYBGRA_BLStretch_SSE(pdwDesBuffer,
+		return BufferMemSSE::Buffer_BGRA_BLStretch_SSE(pdwDesBuffer,
 									nDesX,
 									nDesY,
 									nDesWidth,
@@ -904,7 +795,7 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt(IN OUT DWORD* pdwDesBuffer,		// 目标缓存
 {
 	if (nSrcWidth != nDesWidth || nSrcHeight != nDesHeight)		// 缩放
 	{
-		return SYBGRA_BLStretch_SSE(pdwDesBuffer,
+		return BufferMemSSE::Buffer_BGRA_BLStretch_SSE(pdwDesBuffer,
 									nDesX,
 									nDesY,
 									nDesWidth,
@@ -924,7 +815,7 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt(IN OUT DWORD* pdwDesBuffer,		// 目标缓存
 	}
 	else		// 固定大小
 	{
-		return SYBGRA_Fix_SSE(pdwDesBuffer,
+		return BufferMemSSE::Buffer_BGRA_Fix_SSE(pdwDesBuffer,
 							  nDesX,
 							  nDesY,
 							  nDesWidth,
@@ -994,7 +885,7 @@ BASEGRAPH_COMMON_API BOOL SY_BufferTransform(IN OUT SYBufferDef32* pDesBuf,			//
 
 	memset_dword_line(ppdwDesLeftEdge, 0, (pDesBuf->m_nHeight >> 2), ((pDesBuf->m_nHeight & 0x03) << 2));
 	memset_dword_line(pnLinePixels, 0, (pDesBuf->m_nHeight >> 2), ((pDesBuf->m_nHeight & 0x03) << 2));
-	memset_dword_line(ppdwSrcStart, (DWORD)(pSrcBuf->m_dwBuffer + pSrcBuf->m_nOriginX + pSrcBuf->m_rtBound.left + (pSrcBuf->m_nOriginY + pSrcBuf->m_rtBound.top)* pSrcBuf->m_nWidth), 1, 0);
+	memset_dword_line(ppdwSrcStart, (DWORD)(pSrcBuf->m_dwBuffer + pSrcBuf->m_nOriginX + pSrcBuf->m_rtBound.left + (pSrcBuf->m_nOriginY + pSrcBuf->m_rtBound.top) * pSrcBuf->m_nWidth), 1, 0);
 	// 求解按行扫描的左右边界，以及边界上的 u/w、v/w、1/w、delta等。
 	//if (!SYTrans_CalcBorder(pDesBuf, nOffsetLeft, nOffsetTop, (LPSYINNERVERTEX)pvfXYZW, pvLeftEdgeUVW,
 	//						pvDeltaUVW, ppdwDesLeftEdge, pnLinePixels, &nMaxLinePixels))
@@ -1363,28 +1254,28 @@ BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// 目
 	case SY_FILL_ALL:		// 全部填充
 		for (int i=0; i<nHeight; i++)
 		{
-			memset_alpha_line_all(pdwLineStart, cAlpha[i], na16, nm16);
+			memset_alpha_line_all(pdwLineStart, (char)cAlpha[i], na16, nm16);
 			pdwLineStart += nBufWidth;
 		}
 		break;
 	case SY_FILL_MASK:		// 只填充颜色为 pdwMaskCr 的像素
 		for (int i=0; i<nHeight; i++)
 		{
-			memset_alpha_line_mask(pdwLineStart, cAlpha[i], pdwMaskCr, na16, nm16);
+			memset_alpha_line_mask(pdwLineStart, (char)cAlpha[i], pdwMaskCr, na16, nm16);
 			pdwLineStart += nBufWidth;
 		}
 		break;
 	case SY_FILL_NOT_MASK:	// 不填充颜色为 pdwMaskCr 的像素
 		for (int i=0; i<nHeight; i++)
 		{
-			memset_alpha_line_notmask(pdwLineStart, cAlpha[i], pdwMaskCr, na16, nm16);
+			memset_alpha_line_notmask(pdwLineStart, (char)cAlpha[i], pdwMaskCr, na16, nm16);
 			pdwLineStart += nBufWidth;
 		}
 		break;
 	case SY_FILL_SCALE_ALPHA_ALL:
 		for (int i=0; i<nHeight; i++)
 		{
-			bgra32_scale_alpha_line(pdwLineStart, cAlpha[i], na16, nm16);
+			bgra32_scale_alpha_line(pdwLineStart, (char)cAlpha[i], na16, nm16);
 			pdwLineStart += nBufWidth;
 		}
 		break;
@@ -1394,6 +1285,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// 目
 	}
 }
 
+#if 0
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //		（3）对大片内存进行带掩码的操作
@@ -4374,4 +4266,5 @@ BASEGRAPH_COMMON_API void SY_GuassianBlur(LPBYTE lpDes,LPSIZE pSize,int degrees 
 	int  nSign = CreateGaussMap( nGuass,degrees );
 	GauseFilter( lpDes,pSize,nGuass,nSign );
 }
+#endif
 

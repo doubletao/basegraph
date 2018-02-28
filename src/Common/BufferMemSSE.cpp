@@ -933,3 +933,220 @@ void BufferMemSSE::Buffer_Power_BLStretch(OUT DWORD * pPowerX, OUT int * pMapX, 
 		pPowerY[nDesHeight] = (dwPowerTmp1 | (dwPowerTmp1 << 16));
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////
+// 用于加权平均缩放时计算权重的接口
+//////////////////////////////////////////////////////////////////////////
+// 计算水平或垂直方向上某个像素的权重个数及其首尾权重
+int calc_power_pixel(OUT float* pPower,		// 首尾权重表
+	IN OUT float& fStart,	// 起始点坐标值
+	IN float fStep)		// 缩放步长
+{
+	if (fStep < 1.0f)
+	{
+		if (1.0f - fStart > fStep)
+		{
+			pPower[0] = fStep;
+			fStart += fStep;
+			return 1;
+		}
+	}
+	pPower[0] = 1.0f - fStart;
+
+	// 上一次计算剩余占一个位置
+	float fLeave = fStep - (1.0f - fStart);
+	int n = (int)floorf(fLeave);
+
+	fStart = pPower[1] = (fLeave - n);
+
+	return n + 2;
+}
+// 计算水平或垂直方向上各像素的权重个数表与首尾权重表
+void strech_calc_power(OUT float* pPower,		// 权重表
+	OUT int* pMap,			// 每个点占用的权重个数表
+	IN int nCount,			// 目标拷贝长度或高度
+	IN float fStep,			// 缩放步长
+	IN float fStart = 0.0f)	// 起始点坐标值
+{
+	nCount--;
+	for (int i = 0; i<nCount; i++)
+	{
+		pMap[i] = calc_power_pixel(pPower, fStart, fStep);
+		pPower += 2;
+	}
+	pMap[nCount] = calc_power_pixel(pPower, fStart, fStep) - 1;
+	pPower[1] = 1.f;
+}
+
+BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufferWidth, IN int nDesBufferHeight, IN DWORD * pSrc, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufferWidth, IN int nSrcBufferHeight, IN BUFFER_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
+{
+	if (pSrc == NULL || pDes == NULL)
+		return FALSE;
+
+	float fScaleWidth(1.0f), fScaleHeight(1.0f), fSrcStartX(0.0f), fSrcStartY(0.0f);
+	int nDesAddWidth(0), nLineIndex(0), nLineInc(1);
+
+	// 获得有效的操作范围
+	if (!Buffer_Stretch_CutRange(nDesX, nDesY, nDesWidth, nDesHeight, nDesBufferWidth, nDesBufferHeight, \
+		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufferWidth, nSrcBufferHeight, 0, \
+		fScaleWidth, fScaleHeight, fSrcStartX, fSrcStartY, nDesAddWidth, nLineIndex, nLineInc, \
+		eParity, prcDesClip))
+		return FALSE;
+
+	// 申请权重表、权重数量表及缓存空间
+	float fScaleW_I = 1.0f / fScaleWidth, fScaleH_I = 1.0f / fScaleHeight;
+	SYSSE_DECLARE(int*) pMapX = SYSSE_NEW(nDesWidth, int);					// X 方向上的权重数量表
+	SYSSE_DECLARE(int*) pMapY = SYSSE_NEW(nDesHeight, int);					// Y 方向上的权重数量表
+	SYSSE_DECLARE(float*) pPowerX = SYSSE_NEW((nDesWidth << 1), float);		// X 方向上的权重表
+	SYSSE_DECLARE(float*) pPowerY = SYSSE_NEW((nDesHeight << 1), float);	// Y 方向上的权重表
+	DWORD *pDesLine = pDes + nDesX + nDesY * nDesBufferWidth;				// Buffer 起始地址
+	DWORD *pSrcLine = pSrc + nSrcX + nSrcY * nSrcBufferWidth;
+	float *pTmpPowerY = pPowerY;											// Y 方向权重表地址
+	int nSrcPitch = (nSrcBufferWidth << 2), na16 = (nDesWidth >> 2), nm16 = ((nDesWidth & 0x03) << 2);
+	SYSSE_DECLARE(float*) pTmpLine = SYSSE_NEW((nSrcWidth << 2), float);	// 源行的临时缓存
+	SYSSE_DECLARE(DWORD*) pTmpBuf = NULL;			// 临时缓存
+	SYSSE_DECLARE(float) fCoefW[4] = { fScaleW_I, fScaleW_I, fScaleW_I, fScaleW_I };
+	SYSSE_DECLARE(float) fCoefH[4] = { fScaleH_I, fScaleH_I, fScaleH_I, fScaleH_I };
+
+	// 计算权重
+	strech_calc_power(pPowerX, pMapX, nDesWidth, fScaleWidth, fSrcStartX - (int)fSrcStartX);
+	strech_calc_power(pPowerY, pMapY, nDesHeight, fScaleHeight, fSrcStartY - (int)fSrcStartY);
+	// 逐行处理
+	switch (eMode)
+	{
+	case BUFFER_COPY:		// 拷贝
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
+			bgra32_mean_copy_add_x(pDesLine, nDesWidth, pTmpLine, pPowerX, pMapX, fCoefW);
+			pSrcLine += ((pMapY[nLineIndex] + ((nLineInc == 1) ? -1 : (pMapY[nLineIndex + 1] - 2))) * nSrcBufferWidth);
+			pTmpPowerY += ((nLineInc == 1) ? 2 : 4);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_MIX:			// Alpha 混叠
+		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
+			bgra32_mean_copy_add_x(pTmpBuf, nDesWidth, pTmpLine, pPowerX, pMapX, fCoefW);
+			bgra32_line_mix(pDesLine, pTmpBuf, na16, nm16, g_pdwMixGainTable);
+			if (nLineInc == 1)
+			{
+				pSrcLine += ((pMapY[nLineIndex] - 1) * nSrcBufferWidth);
+				pTmpPowerY += 2;
+			}
+			else
+			{
+				pSrcLine += (pMapY[nLineIndex] - 2 + pMapY[nLineIndex + 1]) * nSrcBufferWidth;
+				pTmpPowerY += 4;
+			}
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_MIX_NOTSRC:	// Alpha 反向源混叠
+		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
+			bgra32_mean_copy_add_x(pTmpBuf, nDesWidth, pTmpLine, pPowerX, pMapX, fCoefW);
+			bgra32_line_mix_notsrc(pDesLine, pTmpBuf, na16, nm16, g_pdwMixGainTable);
+			pSrcLine += ((pMapY[nLineIndex] + (nLineInc == 1) ? -1 : (pMapY[nLineIndex + 1] - 2)) * nSrcBufferWidth);
+			pTmpPowerY += ((nLineInc == 1) ? 2 : 4);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_ALPHA_BLEND:		// 快速 Alpha 混合
+		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
+			bgra32_mean_copy_add_x(pTmpBuf, nDesWidth, pTmpLine, pPowerX, pMapX, fCoefW);
+			bgra32_line_alpha_blend(pDesLine, pTmpBuf, na16, nm16);
+			pSrcLine += ((pMapY[nLineIndex] + (nLineInc == 1) ? -1 : (pMapY[nLineIndex + 1] - 2)) * nSrcBufferWidth);
+			pTmpPowerY += ((nLineInc == 1) ? 2 : 4);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_ALPHA_BLEND_NOT:	// 快速 Alpha 反向源混合
+		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
+			bgra32_mean_copy_add_x(pTmpBuf, nDesWidth, pTmpLine, pPowerX, pMapX, fCoefW);
+			bgra32_line_alpha_blend_not(pDesLine, pTmpBuf, na16, nm16);
+			pSrcLine += ((pMapY[nLineIndex] + (nLineInc == 1) ? -1 : (pMapY[nLineIndex + 1] - 2)) * nSrcBufferWidth);
+			pTmpPowerY += ((nLineInc == 1) ? 2 : 4);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_LINEAR_DODGE:	// 线性减淡
+		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
+			bgra32_mean_copy_add_x(pTmpBuf, nDesWidth, pTmpLine, pPowerX, pMapX, fCoefW);
+			bgra32_line_linear_dodge(pDesLine, pTmpBuf, na16, nm16, g_pdwMixGainTable);
+			pSrcLine += ((pMapY[nLineIndex] + (nLineInc == 1) ? -1 : (pMapY[nLineIndex + 1] - 2)) * nSrcBufferWidth);
+			pTmpPowerY += ((nLineInc == 1) ? 2 : 4);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_LINEAR_BURN:		// 线性加深
+		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
+		{
+			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
+			bgra32_mean_copy_add_x(pTmpBuf, nDesWidth, pTmpLine, pPowerX, pMapX, fCoefW);
+			bgra32_line_linear_burn(pDesLine, pTmpBuf, na16, nm16, g_pdwMixGainTable);
+			pSrcLine += ((pMapY[nLineIndex] + (nLineInc == 1) ? -1 : (pMapY[nLineIndex + 1] - 2)) * nSrcBufferWidth);
+			pTmpPowerY += ((nLineInc == 1) ? 2 : 4);
+			pDesLine += nDesAddWidth;
+		}
+		break;
+	case BUFFER_COLOR_DODGE:		// 颜色减淡
+		break;
+	case BUFFER_COLOR_BURN:		// 颜色加深
+		break;
+	case BUFFER_MULTIPLY:		// 正片叠底
+		break;
+	case BUFFER_SCREEN:			// 屏幕滤色
+		break;
+	case BUFFER_LIGHTEN:			// 变亮
+		break;
+	case BUFFER_DARKEN:			// 变暗
+		break;
+	case BUFFER_DIFFERENCE:		// 差值
+		break;
+	case BUFFER_EXCLUSION:		// 排除
+		break;
+	case BUFFER_HARD_LIGHT:		// 强光
+		break;
+	case BUFFER_SOFT_LIGHT:		// 柔光
+		break;
+	case BUFFER_PIN_LIGHT:		// 点光
+		break;
+	case BUFFER_OVERLAY:			// 叠加
+		break;
+	case BUFFER_HUE:				// 相位替换
+		break;
+	case BUFFER_LUM:				// 亮度替换
+		break;
+	case BUFFER_SAT:				// 饱和度替换
+		break;
+	case BUFFER_CHROMA:			// 色度替换
+		break;
+	default:
+		break;
+		//assert(FALSE);
+	}
+	// 释放缓存资源
+	SYSSE_FREE(pMapX);
+	SYSSE_FREE(pMapY);
+	SYSSE_FREE(pPowerX);
+	SYSSE_FREE(pPowerY);
+	SYSSE_FREE(pTmpLine);
+	SYSSE_SAFEFREE(pTmpBuf);
+
+	return TRUE;
+}

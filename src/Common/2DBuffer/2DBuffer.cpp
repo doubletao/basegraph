@@ -2,13 +2,9 @@
 #include "..\BufferRipRender.h"
 #include "Common\2DBuffer.h"
 #include "Common\2DBufferAPI.h"
+#include "Common\ColorDef.h"
+#include "Common\PlaneDef.h"
 //////////////////////////////////////////////////////////////////////////
-#ifdef _DEBUG
-#define new SY_DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 void SYBufferDef32_Init(SYBufferDef32* pBuffer32)
 {
 	memset(pBuffer32,0,sizeof(SYBufferDef32));
@@ -614,12 +610,12 @@ void    CSYBuffer::ClearAll(DWORD color,RECT* rtRect,BUFFER_PARITY_STYLE fieldFl
 		return;
 
 	yStart = rtSrc.top;
-	if(fieldFlag == SY_PARITY_ODD || fieldFlag == SY_PARITY_EVEN)
+	if(fieldFlag == BUFFER_PARITY_ODD || fieldFlag == BUFFER_PARITY_EVEN)
 	{
 		nLineStep = 2;
 	}
 
-	if(fieldFlag == SY_PARITY_ODD)
+	if(fieldFlag == BUFFER_PARITY_ODD)
 	{
 		if(yStart&0x01)
 		{
@@ -627,7 +623,7 @@ void    CSYBuffer::ClearAll(DWORD color,RECT* rtRect,BUFFER_PARITY_STYLE fieldFl
 		else
 			yStart++;
 	}
-	else if(fieldFlag == SY_PARITY_EVEN)
+	else if(fieldFlag == BUFFER_PARITY_EVEN)
 	{
 		if(yStart&0x01)
 			yStart++;

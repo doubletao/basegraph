@@ -53,3 +53,30 @@ enum BUFFER_DEFINITION_TYPE
 };
 
 const int COEF_SCALE_16384 = 16384;			// 14 位放大，不需要补偿
+											// SSE 内存对齐声明、申请与释放宏定义
+#define		SYSSE_DECLARE(TYPE)				__declspec(align(16)) ##TYPE
+#define		SYSSE_NEW(nSize, TYPE)			(##TYPE*)_mm_malloc(sizeof(##TYPE) * (nSize), 16)
+#define		SYSSE_FREE(p)					_mm_free((p))
+#define		SYSSE_SAFEFREE(p)				if((p)!=NULL) _mm_free(p)
+
+// 填充模式
+enum SY_FILL_MODE
+{
+	SY_FILL_ALL = 0,		// 全部填充
+	SY_FILL_MASK,			// 只填充掩码部分
+	SY_FILL_NOT_MASK,		// 不填充掩码部分
+
+	SY_FILL_SCALE_ALPHA_ALL,	// 用于缩放 Alpha 的填充
+};
+
+// 键值操作模式
+enum SY_KEY_MODE
+{
+	SY_KEY_MULTIPLY = 0,		// 相乘（src * des）
+	SY_KEY_MULTIPLY_NOTSRC,		// 反向源键相乘（(1 - src) * des）
+	SY_KEY_MULTIPLY_NOTDES,		// 反向目标键相乘（src * (1 - des)）
+	SY_KEY_REPLACE,				// 替换（des = src）
+	SY_KEY_MIX,					// 混叠（src + des - src * des）
+	SY_KEY_MIX_NOTSRC,			// 反向源键混叠（(1 - src) + des - (1 - src) * des）
+	SY_KEY_SAT_SUB,				// 饱和差值（sat(des - src)）
+};

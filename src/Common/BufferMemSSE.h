@@ -1,6 +1,13 @@
 #pragma once
 #include "Common\BufferCommonDef.h"
 
+//////////////////////////////////////////////////////////////////////////
+// 缓存变换时的裁减与边界计算、双线性权重与索引计算、双线性插值计算
+//////////////////////////////////////////////////////////////////////////
+typedef struct tag_tpinnervertex {
+	float	x, y, z;// w;
+} SYInnerVertex, *LPSYINNERVERTEX;
+
 class BufferMemSSE
 {
 private:
@@ -128,5 +135,26 @@ public:
 		IN float fSrcStartX,		// 源浮点起点坐标
 		IN float fSrcStartY,
 		IN int nPixelBytes);		// 一个像素的字节宽度
+
+	//////////////////////////////////////////////////////////////////////////
+	// 两块 BGRA 32 位内存的平均插值算法操作
+	//////////////////////////////////////////////////////////////////////////
+	static BOOL Buffer_BGRA_MeanStretch_SSE(OUT DWORD* pDes,				// 目标 Buffer
+		IN int nDesX,					// 目标起始点
+		IN int nDesY,
+		IN int nDesWidth,				// 目标拷贝大小
+		IN int nDesHeight,
+		IN int nDesBufferWidth,		// 目标 Buffer 大小
+		IN int nDesBufferHeight,
+		IN DWORD* pSrc,				// 源 Buffer
+		IN int nSrcX,					// 源起始点
+		IN int nSrcY,
+		IN int nSrcWidth,				// 源拷贝大小
+		IN int nSrcHeight,
+		IN int nSrcBufferWidth,		// 源 Buffer 大小
+		IN int nSrcBufferHeight,
+		IN BUFFER_MODE eMode,		// 操作类型
+		IN BUFFER_PARITY_STYLE eParity,	// 奇偶场类型
+		IN RECT* prcDesClip = NULL);	// 目标裁减矩形（可选项，为 NULL 时表示目标全部有效）
 };
 

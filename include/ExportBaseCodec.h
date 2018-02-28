@@ -17,3 +17,4 @@ bool BASEGRAPH_BASECODEC_API BaseCodec_QueryImageSupport(IN LPCTSTR strExt, IN b
 LPCTSTR BASEGRAPH_BASECODEC_API BaseCodec_EnumSuportImageType(bool bAddAllFile = true, bool bTerminated = true);
 bool BASEGRAPH_BASECODEC_API BaseCodec_GetImgInfo(IN LPCTSTR szFileName, OUT int& xStart, OUT int& yStart, OUT int& Width, OUT int& Height, int nLayer = -1);
 bool BASEGRAPH_BASECODEC_API BaseCodec_ReadImage(IN LPCTSTR szFileName, IN int nWidth, IN int nHeight, OUT byte * pBuffer, IN int nPixSize = 4);
+bool BASEGRAPH_BASECODEC_API BaseCodec_ReadImage(IN LPCTSTR szFileName, IN int nWidth, IN int nHeight, OUT DWORD * pBuffer, IN int nPixSize = 4);

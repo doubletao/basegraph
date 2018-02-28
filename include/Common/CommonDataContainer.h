@@ -1,7 +1,6 @@
 #pragma once
 #include <map>
 #include <set>
-#include "Common\CommonSimpleBuffer.h"
 //本文件将C风格一些存储容器如array及hash转为stl的array及hash，仅供过渡期使用，后期会逐渐丢弃
 
 //用map模拟hash表
@@ -40,3 +39,6 @@ BASEGRAPH_COMMON_API PSYHash __cdecl SYHash_Create(unsigned int minsize,					// 
 	void(*valueFreeF)(void *));		// value 释放函数
 BASEGRAPH_COMMON_API void __cdecl SYHash_Release(PSYHash ph, BOOL bFreeValue);
 BASEGRAPH_COMMON_API void __cdecl SYHash_Delete(PSYHash ph, BOOL bFreeValue);
+BASEGRAPH_COMMON_API void * __cdecl SYHash_Search(const SYHash* ph, void * pk);
+BASEGRAPH_COMMON_API void * __cdecl SYHash_RemoveAt(PSYHash ph, void * pk, BOOL bFreeValue);
+BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Insert(PSYHash ph, void * pk, void * pv);

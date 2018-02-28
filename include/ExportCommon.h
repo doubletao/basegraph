@@ -37,4 +37,6 @@
 #include "Common\PlaneDef.h"
 #include "Common\QuatnDef.h"
 #include "Common\VectorDef.h"
-#include "Common\CommonSimpleBuffer.h"
+#include "Common\2DBuffer.h"
+#include "Common\2DBufferApi.h"
+#include "Common\ColorDef.h"
