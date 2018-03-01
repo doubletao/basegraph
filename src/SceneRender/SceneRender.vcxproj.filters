@@ -45,6 +45,9 @@
     <ClCompile Include="3DEngineApi\DXEffectManager.cpp">
       <Filter>3DEngineApi</Filter>
     </ClCompile>
+    <ClCompile Include="DXEngineDeviceManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneRender.h">
@@ -82,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\SceneRender\DXRenderEngineDX10Api.h">
       <Filter>3DEngineApi</Filter>
+    </ClInclude>
+    <ClInclude Include="DXEngineDeviceManager.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

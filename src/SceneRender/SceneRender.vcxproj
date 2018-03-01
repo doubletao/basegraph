@@ -123,6 +123,7 @@
     <ClCompile Include="3DEngineApi\DXEngineManagerAPI.cpp" />
     <ClCompile Include="3DEngineApi\DXRenderEngineDX10Api.cpp" />
     <ClCompile Include="3DEngineApi\DXRenderEngineSoftAPI.cpp" />
+    <ClCompile Include="DXEngineDeviceManager.cpp" />
     <ClCompile Include="SceneRender.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -138,6 +139,7 @@
     <ClInclude Include="..\..\include\SceneRender\DXEngineManagerAPI.h" />
     <ClInclude Include="..\..\include\SceneRender\DXRenderEngineDX10Api.h" />
     <ClInclude Include="..\..\include\SceneRender\DXRenderEngineSoftAPI.h" />
+    <ClInclude Include="DXEngineDeviceManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneRender.h" />
     <ClInclude Include="stdafx.h" />
