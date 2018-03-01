@@ -72,16 +72,16 @@ void SYDeviceContex::SetRenderTarget(SY_DeviceSoft* pDevice,int hRT,int hDepth)
 
 void  SYDeviceContex::BeginRenderTexture()
 {
-	memcpy(pSpritState,pNowState,SYRenderState_Count * sizeof(int));
-	SetRenderState(SYBlendState,SYBlend_Mix);
-	SetRenderState(SYDepthState,SYDepthDisable);
-	SetRenderState(SYRasterizerState,SYRas_Solid_NoCullBack_NoMultiSample);
-	SetSamplerState(SYSample_Line_Clamp,SYShaderType_PixelShader,0);
+	memcpy(pSpritState,pNowState,DXRenderState_Count * sizeof(int));
+	SetRenderState(DXBlendState,DXBlend_Mix);
+	SetRenderState(DXDepthState,DXDepthDisable);
+	SetRenderState(DXRasterizerState,DXRas_Solid_NoCullBack_NoMultiSample);
+	SetSamplerState(DXSample_Line_Clamp,DXShaderType_PixelShader,0);
 }
 
 void  SYDeviceContex::EndRenderTexture()
 {
-	for (int i = 0; i < SYRenderState_Count; i++)
+	for (int i = 0; i < DXRenderState_Count; i++)
 		SetRenderState(i,pSpritState[i]);
 }
 
@@ -114,7 +114,7 @@ BOOL SYDeviceContex::SetVertexBuffer(int hVertexBuffer)
 	return TRUE;
 }
 
-BOOL SYDeviceContex::SetShaderTexture(int hTex,SYShaderType nShaderType,int nRegIndex)
+BOOL SYDeviceContex::SetShaderTexture(int hTex,DXShaderType nShaderType,int nRegIndex)
 {
 	nShaderTexstate[nShaderType][nRegIndex] = hTex;
 	return true;
@@ -217,7 +217,7 @@ const int g_pLayoutNum[] =
 };
 
 //////////////////////////////////////////////////////////////////////////
-inline int CreateBuffer(SY_DeviceSoft* pDevice,int nSize,int nNum,void* pBuffer,SYBufferType nType,int nPriType = -1)
+inline int CreateBuffer(SY_DeviceSoft* pDevice,int nSize,int nNum,void* pBuffer,DXBufferType nType,int nPriType = -1)
 {
 	SYSoftBuffer* pVideoBuffer = new SYSoftBuffer;
 	pVideoBuffer->nType = nType;
@@ -289,7 +289,7 @@ int Create2DVertex(SY_DeviceSoft* pDevice)
 	pSrceenVertex[5].tu    = 1;
 	pSrceenVertex[5].tv    = 0;
 
-	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,SYVertexBuffer,TRIANGLELIST);
+	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,DXVertexBuffer,TRIANGLELIST);
 }
 int CreateScreenVertex(SY_DeviceSoft* pDevice)
 {
@@ -331,7 +331,7 @@ int CreateScreenVertex(SY_DeviceSoft* pDevice)
 	pSrceenVertex[5].tu    = 1;
 	pSrceenVertex[5].tv    = 1;
 
-	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,SYVertexBuffer,TRIANGLELIST);
+	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,DXVertexBuffer,TRIANGLELIST);
 }
 
 bool Render_init(void* paramin,void* paramout)
@@ -538,8 +538,8 @@ bool Render_CopyTexture(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,vo
 }
 bool render_DumpTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
-	LPCTSTR szFile = ((SYDumpIn*)paramin)->szFile;
-	int hTexture = ((SYDumpIn*)paramin)->hTexture;
+	LPCTSTR szFile = ((DXDumpIn*)paramin)->szFile;
+	int hTexture = ((DXDumpIn*)paramin)->hTexture;
 	CSYBuffer* pTexture = getTexture(pDevice,hTexture);
 	//CString path(L"e:\\testTex.bmp");
 	static const TCHAR* path = _T("e:\\testTex.TGA");
@@ -563,9 +563,9 @@ bool RenderSoft_ReleaseTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramo
 	if (pSrcWDTexture&&pSrcWDTexture->pTexFile)//ÓÐpSrcWDTexture == NULLµÄÊ±ºò
 	{
 		SYHash*	pHash = NULL;		
-		if(pSrcWDTexture->nType == SYTexture_2DDumpReadOnly)
+		if(pSrcWDTexture->nType == DXTexture_2DDumpReadOnly)
 			pHash = pDevice->BumpTextureFromFileHash;
-		else if(pSrcWDTexture->nType == SYTexture_2DReadOnly)
+		else if(pSrcWDTexture->nType == DXTexture_2DReadOnly)
 			pHash = pDevice->TextureFromFileHash;
 
 		HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(void *)pSrcWDTexture->pTexFile);
@@ -608,11 +608,11 @@ bool Render_RenderTex(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void
 	getTextureInfo(pRTTex,&nRTWidth,&nRTHeight);
 	
 	BUFFER_MODE mode = BUFFER_COPY; 
-	if(pDeviceContext->GetRenderState(SYBlendState) == SYBlend_Mix)
+	if(pDeviceContext->GetRenderState(DXBlendState) == DXBlend_Mix)
 		mode = BUFFER_MIX;
-	else if(pDeviceContext->GetRenderState(SYBlendState) == SYBlend_Mix)
+	else if(pDeviceContext->GetRenderState(DXBlendState) == DXBlend_Mix)
 		mode = BUFFER_MIX;
-	else if(pDeviceContext->GetRenderState(SYBlendState) == SYBlend_Add)
+	else if(pDeviceContext->GetRenderState(DXBlendState) == DXBlend_Add)
 		mode = BUFFER_LINEAR_DODGE;
 
 	RECT clearRT;
@@ -725,7 +725,7 @@ bool Render_GetViewPort(SYDeviceContex* pDeviceContext,void* paramin,void* param
 
 bool Render_SetRenderState(SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
 {
-	SYRenderStateIn* param = (SYRenderStateIn*)paramin;
+	DXRenderStateIn* param = (DXRenderStateIn*)paramin;
 	pDeviceContext->SetRenderState(param->nType,param->nValue);
 	return true;
 }
@@ -733,14 +733,14 @@ bool Render_SetRenderState(SYDeviceContex* pDeviceContext,void* paramin,void* pa
 BOOL Render_ClearScreen(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
 {
 	clearScreenIn* pParam = (clearScreenIn*)paramin;
-	if(pParam->nType == SY_CLEAR_RENDERTARGET_ONLY || pParam->nType == SY_CLEAR_ALL)
+	if(pParam->nType == DX_CLEAR_RENDERTARGET_ONLY || pParam->nType == DX_CLEAR_ALL)
 	{
 		RECT clearRT;
 		IntersectRect(&clearRT,&pDeviceContext->GetViewPort(),&pDeviceContext->GetScissor());
 		CSYBuffer* pBuffer = getTexture(pDevice,pDeviceContext->GetRenderTarget());
 		pBuffer->Clear(pParam->nColor,&clearRT);
 	}
-	if(pDeviceContext->GetDepth() && (pParam->nType == SY_CLEAR_DEPTH_ONLY || pParam->nType == SY_CLEAR_ALL))
+	if(pDeviceContext->GetDepth() && (pParam->nType == DX_CLEAR_DEPTH_ONLY || pParam->nType == DX_CLEAR_ALL))
 	{
 		//clearTextureIn param = {pDevice->hNowDepth,&pParam->fZValue};
 		//render_ClearTexture(hDevice,&param,NULL);
@@ -793,7 +793,7 @@ BOOL Render_RenderUnLock(SYDeviceContex* pDeviceContext)
 BOOL Render_GetMemTexBuffer(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	SYSoftTexture* pTexture = (SYSoftTexture*)SYHTable_GetAt(&pDevice->httexture,*(int*)paramin);
-	SYGetMemTexBufferOut* pBuffer = (SYGetMemTexBufferOut*)paramout;
+	DXGetMemTexBufferOut* pBuffer = (DXGetMemTexBufferOut*)paramout;
 	pBuffer->ptr = pTexture->pTexture->m_dwBuffer;
 	pBuffer->pitch = pTexture->pTexture->m_nPitch ;
 	return true;
@@ -828,10 +828,10 @@ bool Render_CreateTexFromFile(SY_DeviceSoft* pDevice,void* paramin,void* paramou
 	TCHAR* pPath = param->pPath;
 
 	SYHash*	pHash = NULL;		
-	SYTextureType nType = param->bNormalMap ? SYTexture_2DDumpReadOnly : SYTexture_2DReadOnly;
-	if(nType == SYTexture_2DDumpReadOnly)
+	DXTextureType nType = param->bNormalMap ? DXTexture_2DDumpReadOnly : DXTexture_2DReadOnly;
+	if(nType == DXTexture_2DDumpReadOnly)
 		pHash = pDevice->BumpTextureFromFileHash;
-	else if(nType == SYTexture_2DReadOnly)
+	else if(nType == DXTexture_2DReadOnly)
 		pHash = pDevice->TextureFromFileHash;
 
 	HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(void *)pPath);

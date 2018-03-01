@@ -93,16 +93,16 @@ protected:
 //TEXTURE操作
 BASEGRAPH_SCENE_RENDER_API BOOL		DXTextureManager_Init( IN int hDevice, IN int nBufferWidth, IN int nBufferHeight, IN int nAAFactor );
 BASEGRAPH_SCENE_RENDER_API BOOL		DXTextureManager_Release();
-BASEGRAPH_SCENE_RENDER_API int		DXTextureManager_QueryTexture( IN SYTextureType nTexType,int nAAFactor);//nAAFactor纹理大小的倍数
+BASEGRAPH_SCENE_RENDER_API int		DXTextureManager_QueryTexture( IN DXTextureType nTexType,int nAAFactor);//nAAFactor纹理大小的倍数
 //the width and height of the texture queryed out may be different from the param; 
-BASEGRAPH_SCENE_RENDER_API int		DXTextureManager_QueryTexture( IN SYTextureType nTexType,int nWidth,int nHeight);
+BASEGRAPH_SCENE_RENDER_API int		DXTextureManager_QueryTexture( IN DXTextureType nTexType,int nWidth,int nHeight);
 BASEGRAPH_SCENE_RENDER_API BOOL		DXTextureManager_UnQueryTexture(IN int hTexture,BOOL bForceRelease = TRUE);
 
 BASEGRAPH_SCENE_RENDER_API int		DXTMGetTexBufferWidth();
 BASEGRAPH_SCENE_RENDER_API int		DXTMGetTexBufferHeight();
 BASEGRAPH_SCENE_RENDER_API BOOL		DXTextureManager_ResetBufferSize( int nBufferWidth,int nBufferHeight );
 //设备相关操作
-BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_Init(SYDeviceType nType,LPCTSTR lpPathShader);
+BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_Init(DXDeviceType nType,LPCTSTR lpPathShader);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_Release();
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_GetType();
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateDevice(int nScreenWidth,int nScreenHeight,BOOL bDoubleDevice = TRUE);
@@ -120,14 +120,14 @@ BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_SetContext(int hDevice,int hContext)
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_GetSwapChainDesc(int hDevice,int nSwapchain,int& nWidth,int& nHeight,BOOL& bWindowed );
 //////////////////////////////////////////////////////////////////////////
 //纹理等显存资源相关操作
-BASEGRAPH_SCENE_RENDER_API int 		DX3DEngine_CreateBuffer( int hDevice,int nSize,int nNum,void* pBuffer,SYBufferType nType,int nPriType = -1 );
+BASEGRAPH_SCENE_RENDER_API int 		DX3DEngine_CreateBuffer( int hDevice,int nSize,int nNum,void* pBuffer,DXBufferType nType,int nPriType = -1 );
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_ReleaseBuffer( int hDevice,int hBuffer );
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_ModifyBuffer( int hDevice,int hBuffer,void* pBuffer );
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateSwapChain(int hDevice,HWND hWnd,int nWidth,int nHeight,BOOL bWindowed = TRUE);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ReleaseSwapChain(int hDevice,int hSwapChain);
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_GetSwapChainBuffer(int hDevice,int hSwapChain);
-BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateTexture(int hDevice,int nWidth,int nHeight,SYTextureType nType);
-BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateTexFromBuffer(int hDevice,DWORD* pBuffer,int nWidth,int nHeight,SYTextureType nType);
+BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateTexture(int hDevice,int nWidth,int nHeight,DXTextureType nType);
+BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateTexFromBuffer(int hDevice,DWORD* pBuffer,int nWidth,int nHeight,DXTextureType nType);
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateTextureFromFile(int hDevice,TCHAR* pPath,BOOL bNormalMap);
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_ResizeSwapChain(int hDevice,int hSwapChain,int nWidth,int nHeight);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_GetTextureInfo(int hDevice,int hTexture,int* nWidth, int* nHeight,int* nType);
@@ -177,8 +177,8 @@ BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_EndRenderTexture(int hDevice);
 
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetRenderTarget(int hDevice,int hRenderTarget,int hDepth);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_GetRenderTarget(int hDevice,int* phRenderTarget,int* phDepth);
-BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_ClearScreen( int hDevice, DWORD nColor, float fZValue, SYClearRTType nClearTarget );
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RenderTexture( int hDevice,SYHalDef32* pTex,const matrix4f* pWorldMatrix,const RECT* prtClip ,BOOL bAdjustColor,float fAlpha=1.0);
+BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_ClearScreen( int hDevice, DWORD nColor, float fZValue, DXClearRTType nClearTarget );
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RenderTexture( int hDevice,DXHalDef32* pTex,const matrix4f* pWorldMatrix,const RECT* prtClip ,BOOL bAdjustColor,float fAlpha=1.0);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RenderTexture( int hDevice,int hTex,float fAlpha,const RECT* pSrcRt,const RECT* pDesRt ,BOOL bAdjustColor,FIELD field = BOTH_FIELD,BOOL bStretch = TRUE);
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_Render(int hDevice,int hVertexBuffer,int hIndexBuffer,int nVertexType ,int nStrart,int PrimitiveCount,int nVertexCount);//nVertexCount兼容dx9
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_Render(int hDevice,int hVertexBuffer,int hIndexBuffer,int hVertexShader,int hGeometryShader,int hPixShader,int nStrart,int nVertexCount);
@@ -188,20 +188,20 @@ BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RenderTexture( int hDevice, int hTex
 
 //////////////////////////////////////////////////////////////////////////
 //浸染状态相关操作
-BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateShaderFromString(int hDevice,BOOL bEngineLock,LPCTSTR shaderName,LPCSTR shaderCode,SYShaderType nType,SYVertexType* pVertexType = NULL/*FOR VS*/);
-BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateShaderFromFile(int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,SYShaderType nType,SYVertexType* pVertexType = NULL/*FOR VS*/);
-BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateShaderFromCompliedFile(int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,SYShaderType nType,SYVertexType* pVertexType = NULL/*FOR VS*/);
+BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateShaderFromString(int hDevice,BOOL bEngineLock,LPCTSTR shaderName,LPCSTR shaderCode,DXShaderType nType,DXVertexType* pVertexType = NULL/*FOR VS*/);
+BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateShaderFromFile(int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,DXShaderType nType,DXVertexType* pVertexType = NULL/*FOR VS*/);
+BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateShaderFromCompliedFile(int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,DXShaderType nType,DXVertexType* pVertexType = NULL/*FOR VS*/);
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_GetShader(int hDevice,LPCTSTR shaderName);//会增加引用计数，需要release;
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ReleaseShader(int hDevice,int hShader);
-BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetConstBuffer(int hDevice,int hBuffer,int nRegisterIndex,SYShaderType nShaderType);
-BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetShaderTexture(int hDevice,int hTexture,int nRegisterIndex,SYShaderType nShaderType);
+BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetConstBuffer(int hDevice,int hBuffer,int nRegisterIndex,DXShaderType nShaderType);
+BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetShaderTexture(int hDevice,int hTexture,int nRegisterIndex,DXShaderType nShaderType);
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetVertexShader(int hDevice,int hVertexShader);
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetGeometreShader(int hDevice,int hVertexShader);
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetPixShader(int hDevice,int hVertexShader);
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetRenderState(int hDevice,int nType,int nValue);
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_GetRenderState(int hDevice,int nType);
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_SetSampleState(int hDevice,int nSampler,int nState,int nShaderType);
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_GetRenderInfo( int hDevice, SYRenderInfo* pInfo);
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_GetRenderInfo( int hDevice, DXRenderInfo* pInfo);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ClearRenderInfo( int hDevice);
 
 //线段管理器
@@ -229,23 +229,23 @@ BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_GetMeshInfo(int hDevice,int hMesh, i
 
 //高级渲染
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RGBA_To_BGRA(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt);
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ConvertFormat(int hDevice,int hSrcTex,FIELD srcField,const RECT* pSrcRt,int hDestTex,FIELD dstField,SYConvertType nType);
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ConvertFormat(int hDevice,int hSrcTex,FIELD srcField,const RECT* pSrcRt,int hDestTex,FIELD dstField,ColorConvertType nType);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_MakeFrame(int hDevice,int hFirstTex,int hSecondTex,const RECT* pRect,int hDestTex);
 //key的幅面大小与field大小
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ConvertFormatWithKey(int hDevice,int hSrcTex,int hSrcKey,FIELD srcField,const RECT* pSrcRt,int hDestTex,FIELD dstField,SYConvertType nType);
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_Blur_5Pt(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt,const SYDistortionParam* pParam);
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_Blur_9Pt(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt,const SYDistortionParam* pParam);
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RenderMask(int hDevice,int hSrcTex,rectf& cutRt,int hMaskTex,SYHalDef32* pTargetTex);
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RenderDynamicTex( int hDevice,matrix4f* pMat,BOOL bRepeat,BOOL bUseColorAlpha,SYHalDef32* pSrcTex,SYHalDef32* pMaskTex,SYHalDef32* pTargetTex );
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ConvertFormatWithKey(int hDevice,int hSrcTex,int hSrcKey,FIELD srcField,const RECT* pSrcRt,int hDestTex,FIELD dstField,ColorConvertType nType);
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_Blur_5Pt(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt,const DXDistortionParam* pParam);
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_Blur_9Pt(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt,const DXDistortionParam* pParam);
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RenderMask(int hDevice,int hSrcTex,rectf& cutRt,int hMaskTex,DXHalDef32* pTargetTex);
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_RenderDynamicTex( int hDevice,matrix4f* pMat,BOOL bRepeat,BOOL bUseColorAlpha,DXHalDef32* pSrcTex,DXHalDef32* pMaskTex,DXHalDef32* pTargetTex );
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_Render3DVisionTex(int hDevice,int hDstTex,const RECT* pDstRt,int hLeftTex,int hRightTex,const RECT* pSrcRt);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_FrontKeyOut(int hDevice,int hFrontTex,int hBackTex,const RECT* pSrcRt,int hDestTex,const RECT* pDestRt);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ProcessBright( int hDevice,int eTexType,int hTex,const RECT* pSrcRt,int hDestTex,const RECT* pDestRt,float fBrightGain );  //eTexType:DY_COLOR_FORMAT
-BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateEffectUnit(int hDevice,LPCTSTR EffectName,SYEffectTechDesc* techDesc,int nTechs);
+BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_CreateEffectUnit(int hDevice,LPCTSTR EffectName,DXEffectTechDesc* techDesc,int nTechs);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_ReleaseEffectUnit(int hDevice,int hEffect);
 BASEGRAPH_SCENE_RENDER_API int		DX3DEngine_GetQuadVB(int hDevice);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_EffectSetTexture(int hDevice,int hEffect,int hTex,const char* texName);
 BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_EffectSetConstBuffer(int hDevice,int hEffect,int hCB,const char* bufName);
-BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_EffectSetVariable(int hDevice,int hEffect,void* pScalar, int nCount, SYEffectVariableType nType,const char* varName);
+BASEGRAPH_SCENE_RENDER_API void		DX3DEngine_EffectSetVariable(int hDevice,int hEffect,void* pScalar, int nCount, DXEffectVariableType nType,const char* varName);
 BASEGRAPH_SCENE_RENDER_API BOOL		DX3DEngine_EffectRender(int hDevice,
 												int hEffect,
 												LPCTSTR TechniqueName,

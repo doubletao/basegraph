@@ -220,13 +220,13 @@ BOOL SetConstBuffer(SY_DeviceDX10* pDevice,int nShaderType,int nRegIndex,int hCo
 	}
 	switch(nShaderType)
 	{
-	case SYShaderType_VertexShader:
+	case DXShaderType_VertexShader:
 		pDevice->pDevice->VSSetConstantBuffers(nRegIndex,1,&pCB->pBuffer);
 		break;
-	case SYShaderType_GeometryShader:
+	case DXShaderType_GeometryShader:
 		pDevice->pDevice->GSSetConstantBuffers(nRegIndex,1,&pCB->pBuffer);
 		break;
-	case SYShaderType_PixelShader:
+	case DXShaderType_PixelShader:
 		pDevice->pDevice->PSSetConstantBuffers(nRegIndex,1,&pCB->pBuffer);
 		break;
 	default:
@@ -237,7 +237,7 @@ BOOL SetConstBuffer(SY_DeviceDX10* pDevice,int nShaderType,int nRegIndex,int hCo
 
 }
 void  RenderTexture(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT& SrcRect,const RECT& DestRect,
-	int nSrcBufferWidth,int nSrcBufferHeight,int nDstBufferWidth,int nDstBufferHeight,BOOL bAdjustColor,SYTextureType nType,FIELD fieldState=BOTH_FIELD)
+	int nSrcBufferWidth,int nSrcBufferHeight,int nDstBufferWidth,int nDstBufferHeight,BOOL bAdjustColor,DXTextureType nType,FIELD fieldState=BOTH_FIELD)
 {
 	screenCB screen;
 	matrix4f matWorld;
@@ -277,25 +277,25 @@ void  RenderTexture(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT& Sr
 	else
 		vPSParam[0].y = 0.f;
 	ModifyBuffer(pDevice,pDevice->hModiyCB,vPSParam);
-	SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hModiyCB);
+	SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hModiyCB);
 
 	SetVertexBuffer(pDevice,pDevice->hScreenVertex);
 	SetPrimitiveTopology(pDevice,TRIANGLELIST);
-	SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hScreenCB);
-	SetShader(pDevice,SYShaderType_VertexShader,pDevice->hScreenVS);
-	SetShader(pDevice,SYShaderType_GeometryShader,NULL);
-	if(nType == SYTexture_MS2DTex)
-		SetShader(pDevice,SYShaderType_PixelShader,pDevice->hScreenMSPS);
+	SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hScreenCB);
+	SetShader(pDevice,DXShaderType_VertexShader,pDevice->hScreenVS);
+	SetShader(pDevice,DXShaderType_GeometryShader,NULL);
+	if(nType == DXTexture_MS2DTex)
+		SetShader(pDevice,DXShaderType_PixelShader,pDevice->hScreenMSPS);
 	else
-		SetShader(pDevice,SYShaderType_PixelShader,bAdjustColor?pDevice->hScreenAdjustPS:pDevice->hScreenPS);
+		SetShader(pDevice,DXShaderType_PixelShader,bAdjustColor?pDevice->hScreenAdjustPS:pDevice->hScreenPS);
 	//pDevice->pDevice->PSSetShaderResources(0,1,&pTexture);
-	SetShaderTexture(pDevice,hTex,SYShaderType_PixelShader,0);
+	SetShaderTexture(pDevice,hTex,DXShaderType_PixelShader,0);
 
 	pDevice->pDevice->Draw(6,0);	
 }
 
 //////////////////////////////////////////////////////////////////////////
-inline int CreateBuffer(SY_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,SYBufferType nType,int nPriType = -1)
+inline int CreateBuffer(SY_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,DXBufferType nType,int nPriType = -1)
 {
 	SYBuffer* pVideoBuffer = new SYBuffer;
 	pVideoBuffer->nType = nType;
@@ -305,14 +305,14 @@ inline int CreateBuffer(SY_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,
 	D3D10_BUFFER_DESC desc;
 	switch (nType)
 	{
-	case SYVertexBuffer:
+	case DXVertexBuffer:
 		CreateVertexDesc(&desc,nSize * nNum);
 		pVideoBuffer->nPriType = nPriType;
 		break;
-	case SYIndexBuffer:
+	case DXIndexBuffer:
 		CreateIndexDesc(&desc,nSize * nNum);
 		break;
-	case SYConstBuffer:
+	case DXConstBuffer:
 		CreateConstDesc(&desc,nSize * nNum);
 		break;
 	}
@@ -337,7 +337,7 @@ inline int CreateBuffer(SY_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,
 	return hBuffer;
 }
 
-int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileName,SYShaderType nType,SYVertexType* pType)
+int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileName,DXShaderType nType,DXVertexType* pType)
 {
 	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(void *)shaderName);
 	if (pShaderHashValue)
@@ -349,13 +349,13 @@ int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileN
 	char* profile = NULL;
 	switch (nType)
 	{
-	case SYShaderType_VertexShader:
+	case DXShaderType_VertexShader:
 		profile = VSPROFILE;
 		break;
-	case SYShaderType_GeometryShader:
+	case DXShaderType_GeometryShader:
 		profile = GSPROFILE;
 		break;
-	case SYShaderType_PixelShader:
+	case DXShaderType_PixelShader:
 		profile = PSPROFILE;
 		break;
 	}
@@ -381,15 +381,15 @@ int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileN
 	pNewShader->nType = nType;
 	switch (nType)
 	{
-	case SYShaderType_VertexShader:
+	case DXShaderType_VertexShader:
 		pDevice->pDevice->CreateVertexShader(pShader->GetBufferPointer(),pShader->GetBufferSize(),(ID3D10VertexShader**)&pNewShader->pShader);
 		if (pType)
 			hr = pDevice->pDevice->CreateInputLayout( g_pLayout[*pType],g_pLayoutNum[*pType] , pShader->GetBufferPointer(), pShader->GetBufferSize(), &pNewShader->pLayout ) ;
 		break;
-	case SYShaderType_GeometryShader:
+	case DXShaderType_GeometryShader:
 		pDevice->pDevice->CreateGeometryShader(pShader->GetBufferPointer(),pShader->GetBufferSize(),(ID3D10GeometryShader**)&pNewShader->pShader);
 		break;
-	case SYShaderType_PixelShader:
+	case DXShaderType_PixelShader:
 		pDevice->pDevice->CreatePixelShader(pShader->GetBufferPointer(),pShader->GetBufferSize(),(ID3D10PixelShader**)&pNewShader->pShader);
 		break;
 	}
@@ -462,7 +462,7 @@ int Create2DVertex(SY_DeviceDX10* pDevice)
 	pSrceenVertex[5].tu    = 1;
 	pSrceenVertex[5].tv    = 0;
 
-	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,SYVertexBuffer,TRIANGLELIST);
+	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,DXVertexBuffer,TRIANGLELIST);
 }
 int CreateScreenVertex(SY_DeviceDX10* pDevice)
 {
@@ -504,12 +504,12 @@ int CreateScreenVertex(SY_DeviceDX10* pDevice)
 	pSrceenVertex[5].tu    = 1;
 	pSrceenVertex[5].tv    = 1;
 
-	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,SYVertexBuffer,TRIANGLELIST);
+	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,DXVertexBuffer,TRIANGLELIST);
 }
 
 void CreateBlendState(SY_DeviceDX10* pDevice)
 {
-	pDevice->pNowState[SYBlendState] = SYBlendState_Default;
+	pDevice->pNowState[DXBlendState] = DXBlendState_Default;
 	D3D10_BLEND_DESC blendDesc;
 	memset(&blendDesc,0,sizeof(blendDesc));
 	//////////////////////////////////////////////////////////////////////////
@@ -519,7 +519,7 @@ void CreateBlendState(SY_DeviceDX10* pDevice)
 		blendDesc.BlendEnable[i] = 0;
 		blendDesc.RenderTargetWriteMask[i] = D3D10_COLOR_WRITE_ENABLE_ALL;
 	}
-	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[SYBlendDisable]);
+	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlendDisable]);
 	
 	//////////////////////////////////////////////////////////////////////////
 	//SYBlendEnable,
@@ -535,12 +535,12 @@ void CreateBlendState(SY_DeviceDX10* pDevice)
 	blendDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD; 
 	blendDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
 	blendDesc.DestBlendAlpha = D3D10_BLEND_INV_SRC_ALPHA;
-	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[SYBlend_Mix]);
+	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Mix]);
 
 	//////////////////////////////////////////////////////////////////////////
 	//SYBlend_Trans_Mix,
 	blendDesc.AlphaToCoverageEnable = FALSE;
-	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[SYBlend_Trans_Mix]);
+	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Trans_Mix]);
 
 	//////////////////////////////////////////////////////////////////////////
 	//SYBlend_Enhance,
@@ -550,7 +550,7 @@ void CreateBlendState(SY_DeviceDX10* pDevice)
 	blendDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD; 
 	blendDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
 	blendDesc.DestBlendAlpha = D3D10_BLEND_INV_SRC_ALPHA;
-	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[SYBlend_Enhance]);
+	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Enhance]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYBlend_Add
 	blendDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
@@ -559,7 +559,7 @@ void CreateBlendState(SY_DeviceDX10* pDevice)
 	blendDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
 	blendDesc.DestBlendAlpha = D3D10_BLEND_INV_SRC_ALPHA;
 	blendDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
-	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[SYBlend_Add]);
+	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Add]);
 
 
 	//SYBlend_Effect_Fire1
@@ -569,7 +569,7 @@ void CreateBlendState(SY_DeviceDX10* pDevice)
 	blendDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
 	blendDesc.DestBlendAlpha = D3D10_BLEND_ONE;
 	blendDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
-	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[SYBlend_Effect_Fire1]);
+	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Effect_Fire1]);
 
 	//SYBlend_Effect_Fire2
 	blendDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
@@ -578,7 +578,7 @@ void CreateBlendState(SY_DeviceDX10* pDevice)
 	blendDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
 	blendDesc.DestBlendAlpha = D3D10_BLEND_ONE;
 	blendDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
-	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[SYBlend_Effect_Fire2]);
+	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Effect_Fire2]);
 
 	//Test
 	blendDesc.SrcBlend = D3D10_BLEND_ONE;
@@ -587,12 +587,12 @@ void CreateBlendState(SY_DeviceDX10* pDevice)
 	blendDesc.SrcBlendAlpha = D3D10_BLEND_ONE;
 	blendDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
 	blendDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
-	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[SYBlend_Test]);
+	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Test]);
 }
 
 void CreateDepthState(SY_DeviceDX10* pDevice)
 {
-	pDevice->pNowState[SYDepthState] = SYDepthState_Default;
+	pDevice->pNowState[DXDepthState] = DXDepthState_Default;
 	D3D10_DEPTH_STENCIL_DESC desc;
 	memset(&desc,0,sizeof(D3D10_DEPTH_STENCIL_DESC));
 	desc.StencilEnable = FALSE;
@@ -621,13 +621,13 @@ void CreateDepthState(SY_DeviceDX10* pDevice)
 	desc.DepthEnable = TRUE;
 	desc.DepthFunc = D3D10_COMPARISON_LESS_EQUAL;
 	desc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
-	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[SYDepthEnable_LessEqualPass]);
+	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[DXDepthEnable_LessEqualPass]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYDepthEnable_LessEqualPass_DepthNoWrite,
 	desc.DepthEnable = TRUE;
 	desc.DepthFunc = D3D10_COMPARISON_LESS_EQUAL;
 	desc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ZERO;
-	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[SYDepthEnable_LessEqualPass_DepthNoWrite]);
+	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[DXDepthEnable_LessEqualPass_DepthNoWrite]);
 	
 	//////////////////////////////////////////////////////////////////////////
 	//SYDepthLessEqual_Mask_01 - SYDepthLessEqual_Mask_FF
@@ -648,9 +648,9 @@ void CreateDepthState(SY_DeviceDX10* pDevice)
 	desc.BackFace.StencilPassOp = D3D10_STENCIL_OP_KEEP;
 	desc.BackFace.StencilFunc = D3D10_COMPARISON_EQUAL;
 
-	for (int i = SYDepthLessEqual_Mask_01; i <= SYDepthLessEqual_Mask_FF; i++ )
+	for (int i = DXDepthLessEqual_Mask_01; i <= DXDepthLessEqual_Mask_FF; i++ )
 	{
-		desc.StencilReadMask = 0x01 + i - SYDepthLessEqual_Mask_01;
+		desc.StencilReadMask = 0x01 + i - DXDepthLessEqual_Mask_01;
 		pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[i]);
 	}
 
@@ -673,9 +673,9 @@ void CreateDepthState(SY_DeviceDX10* pDevice)
 	desc.BackFace.StencilPassOp = D3D10_STENCIL_OP_KEEP;
 	desc.BackFace.StencilFunc = D3D10_COMPARISON_EQUAL;
 
-	for (int i = SYDepthLessEqual_NoWrite_Mask_01; i <= SYDepthLessEqual_NoWrite_Mask_FF; i++ )
+	for (int i = DXDepthLessEqual_NoWrite_Mask_01; i <= DXDepthLessEqual_NoWrite_Mask_FF; i++ )
 	{
-		desc.StencilReadMask = 0x01 + i - SYDepthLessEqual_NoWrite_Mask_01;
+		desc.StencilReadMask = 0x01 + i - DXDepthLessEqual_NoWrite_Mask_01;
 		pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[i]);
 	}
 
@@ -718,20 +718,20 @@ void CreateDepthState(SY_DeviceDX10* pDevice)
 	desc.BackFace.StencilPassOp = D3D10_STENCIL_OP_REPLACE;
 	desc.BackFace.StencilFunc = D3D10_COMPARISON_NEVER;
 
-	for (int i = SYDepthDisable_WriteMask_01; i <= SYDepthDisable_WriteMask_FF; i++ )
+	for (int i = DXDepthDisable_WriteMask_01; i <= DXDepthDisable_WriteMask_FF; i++ )
 	{
-		desc.StencilWriteMask = 0x01 + i - SYDepthDisable_WriteMask_01;
+		desc.StencilWriteMask = 0x01 + i - DXDepthDisable_WriteMask_01;
 		pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[i]);
 	}
 	//SYDepthDisable,
 	desc.DepthEnable = FALSE;
 	desc.StencilEnable = FALSE;
-	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[SYDepthDisable]);
+	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[DXDepthDisable]);
 }
 
 void CreateRasterizerState(SY_DeviceDX10* pDevice)
 {
-	pDevice->pNowState[SYRasterizerState] = SYRasterizer_Default;
+	pDevice->pNowState[DXRasterizerState] = DXRasterizer_Default;
 	D3D10_RASTERIZER_DESC desc;
 	memset(&desc,0,sizeof(D3D10_RASTERIZER_DESC));
 	desc.DepthClipEnable = TRUE;
@@ -743,74 +743,74 @@ void CreateRasterizerState(SY_DeviceDX10* pDevice)
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = TRUE;
 	desc.AntialiasedLineEnable = TRUE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_Line_MultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Line_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_Line_NoMultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = FALSE;
 	desc.AntialiasedLineEnable = FALSE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_Line_NoMultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Line_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_Solid_CullBack_MultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_BACK;
 	desc.MultisampleEnable = TRUE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_Solid_CullBack_MultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_CullBack_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_Solid_CullBack_NoMultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_BACK;
 	desc.MultisampleEnable = FALSE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_Solid_CullBack_NoMultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_CullBack_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_Solid_CullFront_MultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_FRONT;
 	desc.MultisampleEnable = TRUE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_Solid_CullFront_MultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_CullFront_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_Solid_CullFront_NoMultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_FRONT;
 	desc.MultisampleEnable = FALSE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_Solid_CullFront_NoMultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_CullFront_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_Solid_NoCullBack_MultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = TRUE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_Solid_NoCullBack_MultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_NoCullBack_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_Solid_NoCullBack_NoMultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = FALSE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_Solid_NoCullBack_NoMultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_NoCullBack_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_WireFrame_CullBack_MultiSample,
 	desc.FillMode = D3D10_FILL_WIREFRAME;
 	desc.CullMode = D3D10_CULL_BACK;
 	desc.MultisampleEnable = TRUE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_WireFrame_CullBack_MultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_WireFrame_CullBack_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_WireFrame_CullBack_NoMultiSample, 
 	desc.FillMode = D3D10_FILL_WIREFRAME;
 	desc.CullMode = D3D10_CULL_BACK;
 	desc.MultisampleEnable = FALSE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_WireFrame_CullBack_NoMultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_WireFrame_CullBack_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_WireFrame_NoCullBack_MultiSample,
 	desc.FillMode = D3D10_FILL_WIREFRAME;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = TRUE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_WireFrame_NoCullBack_MultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_WireFrame_NoCullBack_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYRas_WireFrame_NoCullBack_NoMultiSample,
 	desc.FillMode = D3D10_FILL_WIREFRAME;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = FALSE;
-	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[SYRas_WireFrame_NoCullBack_NoMultiSample]);
+	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_WireFrame_NoCullBack_NoMultiSample]);
 
 }
 
@@ -820,7 +820,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	{
 		for (int j = 0; j < 16; j++)
 		{
-			pDevice->pNowSamplerState[i][j] = SYSample_Default;
+			pDevice->pNowSamplerState[i][j] = DXSample_Default;
 		}
 	}
 	D3D10_SAMPLER_DESC dsec;
@@ -833,56 +833,56 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Point_Clamp]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Point_Clamp]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Point_Wrap,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_POINT ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Point_Wrap]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Point_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Point_Mirror,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_POINT ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_MIRROR;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Point_Mirror]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Point_Mirror]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Point_Border,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_POINT ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_BORDER;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Point_Border]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Point_Border]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Line_Clamp,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Line_Clamp]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Line_Clamp]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Line_Wrap,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Line_Wrap]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Line_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Line_Mirror,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_MIRROR;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Line_Mirror]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Line_Mirror]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Line_Border,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_BORDER;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Line_Border]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Line_Border]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Anisotropic_Clamp,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
@@ -890,7 +890,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Anisotropic_Clamp]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Anisotropic_Clamp]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Anisotropic_Wrap,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
@@ -898,7 +898,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Anisotropic_Wrap]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Anisotropic_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Anisotropic_Mirror,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
@@ -906,7 +906,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_MIRROR;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Anisotropic_Mirror]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Anisotropic_Mirror]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_Anisotropic_Border,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
@@ -914,7 +914,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_BORDER;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_Anisotropic_Border]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Anisotropic_Border]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_NoMipMap_Line_Clamp,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
@@ -923,7 +923,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_NoMipMap_Anisotropic_Clamp]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_NoMipMap_Anisotropic_Clamp]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_NoMipMap_Line_Wrap,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
@@ -932,7 +932,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_NoMipMap_Anisotropic_Wrap]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DX_NoMipMap_Anisotropic_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_NoMipMap_Line_Mirror,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
@@ -941,7 +941,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_MIRROR;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_NoMipMap_Anisotropic_Mirror]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_NoMipMap_Anisotropic_Mirror]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_NoMipMap_Line_Border,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
@@ -950,7 +950,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_BORDER;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[SYSample_NoMipMap_Anisotropic_Border]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_NoMipMap_Anisotropic_Border]);
 	//////////////////////////////////////////////////////////////////////////
 }
 
@@ -962,114 +962,114 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 	screenCB screen;
 	float4Set(&screen.texCoord,0,0,1,1);
 	matrix4f_identity(&screen.world_View_proj);
-	pDevice->hScreenCB = CreateBuffer(pDevice,sizeof(screenCB),1,&screen,SYConstBuffer);
-	pDevice->hClearCB = CreateBuffer(pDevice,2 * sizeof(float4),1,NULL,SYConstBuffer);
-	pDevice->hModiyCB = CreateBuffer(pDevice,3 * sizeof(float4),1,NULL,SYConstBuffer);
-	pDevice->hDynamicCB = CreateBuffer(pDevice,sizeof(DynamicPixCB),1,NULL,SYConstBuffer);
+	pDevice->hScreenCB = CreateBuffer(pDevice,sizeof(screenCB),1,&screen,DXConstBuffer);
+	pDevice->hClearCB = CreateBuffer(pDevice,2 * sizeof(float4),1,NULL,DXConstBuffer);
+	pDevice->hModiyCB = CreateBuffer(pDevice,3 * sizeof(float4),1,NULL,DXConstBuffer);
+	pDevice->hDynamicCB = CreateBuffer(pDevice,sizeof(DynamicPixCB),1,NULL,DXConstBuffer);
 
-	pDevice->hRenderTexCB = CreateBuffer(pDevice,sizeof(matrix4f),1,NULL,SYConstBuffer);
-	pDevice->hRenderTexCB5 = CreateBuffer(pDevice,sizeof(matrix4f) + sizeof(float4),1,NULL,SYConstBuffer);
+	pDevice->hRenderTexCB = CreateBuffer(pDevice,sizeof(matrix4f),1,NULL,DXConstBuffer);
+	pDevice->hRenderTexCB5 = CreateBuffer(pDevice,sizeof(matrix4f) + sizeof(float4),1,NULL,DXConstBuffer);
 
-	SYVertexType nType = SYVertex_POS_TEX;
+	DXVertexType nType = DXVertex_POS_TEX;
 
 	TCHAR filePath[512];
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\VS\\screen.VS"));
-	pDevice->hScreenVS = CreateShaderFromFile(pDevice,_T("screen_VS"),filePath,SYShaderType_VertexShader,&nType);
+	pDevice->hScreenVS = CreateShaderFromFile(pDevice,_T("screen_VS"),filePath,DXShaderType_VertexShader,&nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\3DVision.PS"));
-	pDevice->h3DVisionPS = CreateShaderFromFile(pDevice,_T("3DVison_PS"),filePath,SYShaderType_PixelShader,&nType);
+	pDevice->h3DVisionPS = CreateShaderFromFile(pDevice,_T("3DVison_PS"),filePath,DXShaderType_PixelShader,&nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\screen.PS"));
-	pDevice->hScreenPS = CreateShaderFromFile(pDevice,_T("screen_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hScreenPS = CreateShaderFromFile(pDevice,_T("screen_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\screenAdjustColor.PS"));
-	pDevice->hScreenAdjustPS = CreateShaderFromFile(pDevice,_T("screenAdjustColor_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hScreenAdjustPS = CreateShaderFromFile(pDevice,_T("screenAdjustColor_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\uyvy_bright.ps"));
-	pDevice->hUYVYBrightPS = CreateShaderFromFile(pDevice,_T("uyvy_bright_ps"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hUYVYBrightPS = CreateShaderFromFile(pDevice,_T("uyvy_bright_ps"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\field_add_key.PS"));
-	pDevice->hFieldAddKeyPS = CreateShaderFromFile(pDevice,_T("field_add_key_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hFieldAddKeyPS = CreateShaderFromFile(pDevice,_T("field_add_key_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\makeFrame.PS"));
-	pDevice->hRGBA_Frame = CreateShaderFromFile(pDevice,_T("makeFrame_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hRGBA_Frame = CreateShaderFromFile(pDevice,_T("makeFrame_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\rgba_to_yuayva4224.PS"));
-	pDevice->hRGBA_YUAYVA4224PS = CreateShaderFromFile(pDevice,_T("rgba_to_yuayva4224_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hRGBA_YUAYVA4224PS = CreateShaderFromFile(pDevice,_T("rgba_to_yuayva4224_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\uyvy_to_rgba_with_key0.PS"));
-	pDevice->hUYVY_RGBA_KeyPS0 = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba_with_key0_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_KeyPS0 = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba_with_key0_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\uyvy_to_rgba_with_key1.PS"));
-	pDevice->hUYVY_RGBA_KeyPS1 = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba_with_key1_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_KeyPS1 = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba_with_key1_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\uyvy_to_rgba0.PS"));
-	pDevice->hUYVY_RGBA_PS0 = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba0_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_PS0 = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba0_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\uyvy_to_rgba1.PS"));
-	pDevice->hUYVY_RGBA_PS1 = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba1_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_PS1 = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba1_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\uyvyframe_to_rgba.ps"));
-	pDevice->hUYVY_RGBA_Frame = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba_frame_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_Frame = CreateShaderFromFile(pDevice,_T("uyvy_to_rgba_frame_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\rgbaframe_to_uyvy.ps"));
-	pDevice->hRGBA_UYVY_Frame = CreateShaderFromFile(pDevice,_T("rgba_to_uyvy_frame_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hRGBA_UYVY_Frame = CreateShaderFromFile(pDevice,_T("rgba_to_uyvy_frame_PS"),filePath,DXShaderType_PixelShader,NULL);
 	
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\screenMS.PS"));
-	pDevice->hScreenMSPS = CreateShaderFromFile(pDevice,_T("screenMS_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hScreenMSPS = CreateShaderFromFile(pDevice,_T("screenMS_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\convert.PS"));
-	pDevice->hConvertFormatPS = CreateShaderFromFile(pDevice,_T("convert_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hConvertFormatPS = CreateShaderFromFile(pDevice,_T("convert_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\keyout.PS"));
-	pDevice->hOnlyKeyOutPS = CreateShaderFromFile(pDevice,_T("keyout_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hOnlyKeyOutPS = CreateShaderFromFile(pDevice,_T("keyout_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\DynamicTex.PS"));
-	pDevice->hDynamicPS = CreateShaderFromFile(pDevice,_T("dynamic_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hDynamicPS = CreateShaderFromFile(pDevice,_T("dynamic_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\blur.PS"));
-	pDevice->hBlur5PtPS = CreateShaderFromFile(pDevice,_T("blur_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hBlur5PtPS = CreateShaderFromFile(pDevice,_T("blur_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\blur9.PS"));
-	pDevice->hBlur9PtPS = CreateShaderFromFile(pDevice,_T("blur9_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hBlur9PtPS = CreateShaderFromFile(pDevice,_T("blur9_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\clearscreen.PS"));
-	pDevice->hClearScreenPS = CreateShaderFromFile(pDevice,_T("clearscreen_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hClearScreenPS = CreateShaderFromFile(pDevice,_T("clearscreen_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\RenderMask.PS"));
-	pDevice->hMaskRender = CreateShaderFromFile(pDevice,_T("RenderMask_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hMaskRender = CreateShaderFromFile(pDevice,_T("RenderMask_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\VS\\RenderTex.vs"));
 	 
-	nType = SYVertex_POS;
-	pDevice->hRenderTexVS = CreateShaderFromFile(pDevice,_T("RenderTex_VS"),filePath,SYShaderType_VertexShader,&nType);
+	nType = DXVertex_POS;
+	pDevice->hRenderTexVS = CreateShaderFromFile(pDevice,_T("RenderTex_VS"),filePath,DXShaderType_VertexShader,&nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\RenderTex.ps"));
-	pDevice->hRenderTexPS = CreateShaderFromFile(pDevice,_T("RenderTex_PS"),filePath,SYShaderType_PixelShader,NULL);
+	pDevice->hRenderTexPS = CreateShaderFromFile(pDevice,_T("RenderTex_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	CreateBlendState(pDevice);
 	CreateDepthState(pDevice);
@@ -1165,8 +1165,8 @@ void Render_ReleaseTexture(SYTexture* pWDTexture)
 	SAFEDELETE_ARRAY(pWDTexture->pTexFile);
 	switch (pWDTexture->nType)
 	{
-	case SYTexture_Depth:
-	case SYTexture_MSDepth:
+	case DXTexture_Depth:
+	case DXTexture_MSDepth:
 		{
 			ID3D10DepthStencilView* pRenderTarget = (ID3D10DepthStencilView*)(pWDTexture->pRenderTarget);
 			SAFE_RELEASE(pRenderTarget);
@@ -1177,8 +1177,8 @@ void Render_ReleaseTexture(SYTexture* pWDTexture)
 			return;
 		}
 		break;
-	case SYTexture_MemTexture:
-	case SYTexture_R16G16MemTexture: 
+	case DXTexture_MemTexture:
+	case DXTexture_R16G16MemTexture: 
 		{
 			ID3D10Texture2D* pTexture = (ID3D10Texture2D*)(pWDTexture->pTexture);
 			if(pWDTexture->pMemBuffer)
@@ -1438,7 +1438,7 @@ void CreateSwapChainBufferTex(int hDevice,int nWidth,int nHeight,SYSwapChain* pS
 		createTextureIn texIn;
 		texIn.nWidth = nWidth;
 		texIn.nHeight = nHeight;
-		texIn.nType = SYTexture_ShareBuffer;
+		texIn.nType = DXTexture_ShareBuffer;
 		texIn.pBuffer = NULL;
 		Render_CreateTexture(hDevice,&texIn,&pSwapChain->hShareTexture);
 		ID3D10Texture2D* pShareTex = getTexture(pDevice,pSwapChain->hShareTexture);
@@ -1460,7 +1460,7 @@ void CreateSwapChainBufferTex(int hDevice,int nWidth,int nHeight,SYSwapChain* pS
 	ID3D10RenderTargetView* pRenderTarget = NULL;
 	pDevice->pSwapChainDevice->CreateRenderTargetView(m_pTexture,NULL,&pRenderTarget);
 	pSwapChainBuffer->pRenderTarget = pRenderTarget;
-	pSwapChainBuffer->nType = SYTexture_Normal2DTex;
+	pSwapChainBuffer->nType = DXTexture_Normal2DTex;
 
 	pSwapChain->hBufferTexture = (int)SYHTable_Insert(&pDevice->httexture,pSwapChainBuffer);
 }
@@ -1520,8 +1520,8 @@ bool Render_UpdateSwapChain(int hDevice,int hSwapChain)
 	pDevice->pSwapChainDevice->CopySubresourceRegion(getTexture(pDevice,pTexture->hBufferTexture),0,0,0,0, pTexture->pShareTexture,0,&Box);
 	if(0)
 	{
-		SYDumpIn dump;
-		memset(&dump,0,sizeof(SYDumpIn));
+		DXDumpIn dump;
+		memset(&dump,0,sizeof(DXDumpIn));
 		dump.hTexture = pTexture->hBufferTexture;
 		dump.hTexture = pTexture->hShareTexture;
 		render_DumpTexture(hDevice,&dump,0);
@@ -1736,31 +1736,31 @@ bool Render_CreateTexture(int hDevice,void* paramin,void* paramout)
 	D3D10_TEXTURE2D_DESC* pDesc = NULL;
 	switch (param->nType)
 	{
-	case SYTexture_Depth:
+	case DXTexture_Depth:
 		pDesc = createDepthDesc(param->nWidth,param->nHeight);
 		break;
-	case SYTexture_MemTexture:
+	case DXTexture_MemTexture:
 		pDesc = createMemTexDesc(param->nWidth,param->nHeight);
 		break;
-	case SYTexture_Normal2DTex:
+	case DXTexture_Normal2DTex:
 		pDesc = createNormal2DTexDesc(param->nWidth,param->nHeight);
 		break;
-	case SYTexture_MS2DTex:
+	case DXTexture_MS2DTex:
 		pDesc = createMS2DTexDesc(param->nWidth,param->nHeight,pDevice->nMutiSampleCount, pDevice->nSampleQuality);
 		break;
-	case SYTexture_MSDepth:
+	case DXTexture_MSDepth:
 		pDesc = createMS2DDepthDesc(param->nWidth,param->nHeight,pDevice->nMutiSampleCount, pDevice->nSampleQuality);
 		break;
-	case SYTexture_MipMap:
+	case DXTexture_MipMap:
 		pDesc = createMipMapDesc(param->nWidth,param->nHeight);
 		break;
-	case SYTexture_ShareBuffer:
+	case DXTexture_ShareBuffer:
 		pDesc = createShareBufferDesc(param->nWidth,param->nHeight);
 		break;
-	case SYTexture_R16G16Tex:
+	case DXTexture_R16G16Tex:
 		pDesc = createR16G16TexDesc(param->nWidth,param->nHeight);
 		break;
-	case SYTexture_R16G16MemTexture:
+	case DXTexture_R16G16MemTexture:
 		pDesc = createR16G16MemTexDesc(param->nWidth,param->nHeight);
 		break;
 	}
@@ -1796,8 +1796,8 @@ bool Render_CreateTexture(int hDevice,void* paramin,void* paramout)
 	//创建renderTarget
 	switch (param->nType)
 	{
-	case SYTexture_Depth:
-	case SYTexture_MSDepth:
+	case DXTexture_Depth:
+	case DXTexture_MSDepth:
 		{
 			ID3D10DepthStencilView* pRenderTarget = NULL;
 
@@ -1806,8 +1806,8 @@ bool Render_CreateTexture(int hDevice,void* paramin,void* paramout)
 			pNewTex->pResourceView = NULL;
 		}
 		break;
-	case SYTexture_MemTexture:
-	case SYTexture_R16G16MemTexture:
+	case DXTexture_MemTexture:
+	case DXTexture_R16G16MemTexture:
 		pNewTex->pRenderTarget = NULL;
 		pNewTex->pResourceView = NULL;
 		break;
@@ -1839,18 +1839,18 @@ bool render_ClearTexture(int hDevice,void* paramin,void* paramout)
 
 	switch (pTexture->nType)
 	{
-	case SYTexture_Normal2DTex:
-	case SYTexture_MS2DTex:
-    case SYTexture_MipMap:
-    case SYTexture_ShareBuffer:
+	case DXTexture_Normal2DTex:
+	case DXTexture_MS2DTex:
+    case DXTexture_MipMap:
+    case DXTexture_ShareBuffer:
 		{
 			ID3D10RenderTargetView* pCurTargetView10 = (ID3D10RenderTargetView*)(pTexture->pRenderTarget);
 			D3DXCOLOR m_color(*(DWORD*)(param->pData)) ;
 			pDevice->pDevice->ClearRenderTargetView(pCurTargetView10,m_color);
 		}
 		break;
-	case SYTexture_MemTexture:
-	case SYTexture_R16G16MemTexture:
+	case DXTexture_MemTexture:
+	case DXTexture_R16G16MemTexture:
 		{
 			ID3D10Texture2D* pD3DTexture = (ID3D10Texture2D*)pTexture->pTexture;
 			D3D10_MAPPED_TEXTURE2D mapTex;
@@ -1862,8 +1862,8 @@ bool render_ClearTexture(int hDevice,void* paramin,void* paramout)
 
 		}
 		break;
-	case SYTexture_Depth:
-	case SYTexture_MSDepth:
+	case DXTexture_Depth:
+	case DXTexture_MSDepth:
 		{
 			ID3D10DepthStencilView* pCurDepth = (ID3D10DepthStencilView*)(pTexture->pRenderTarget);
 			float fDepth = *(float*)(param->pData);
@@ -1952,8 +1952,8 @@ bool Render_CopyTexture(int hDevice,void* paramin,void* paramout)
 	if (pSrcWDTexture && pDstWDTexture)
 	{
 		BOOL bCanCopy = (xScale == 1 && yScale == 1);
-		bCanCopy &= (pSrcWDTexture->nType != SYTexture_MS2DTex && pSrcWDTexture->nType != SYTexture_MSDepth);
-		bCanCopy &= (pDstWDTexture->nType != SYTexture_MS2DTex && pDstWDTexture->nType != SYTexture_MSDepth);
+		bCanCopy &= (pSrcWDTexture->nType != DXTexture_MS2DTex && pSrcWDTexture->nType != DXTexture_MSDepth);
+		bCanCopy &= (pDstWDTexture->nType != DXTexture_MS2DTex && pDstWDTexture->nType != DXTexture_MSDepth);
 		if (bCanCopy)
 		{
 			D3D10_BOX Box = {param->nSrcOffsetX*fSrcScale,param->nSrcOffsetY*fSrcScale,0,
@@ -1978,7 +1978,7 @@ bool Render_CopyTexture(int hDevice,void* paramin,void* paramout)
 			SetRenderTarget(pDevice,param->hDesTex,0);
 			SetScissor(pDevice,&pDevice->rtViewport);
 			BeginRenderTexture(pDevice);
-			SetRenderState(pDevice,SYBlendState,SYBlendDisable);
+			SetRenderState(pDevice,DXBlendState,DXBlendDisable);
 
 			RECT srcRt = {param->nSrcOffsetX,param->nSrcOffsetY,param->nSrcOffsetX + param->nSrcWidth,param->nSrcOffsetY + param->nSrcHeight};
 			RECT destRt = {param->nDesOffsetX,param->nDesOffsetY,param->nDesOffsetX + param->nDesWidth,param->nDesOffsetY + param->nDesHeight};
@@ -1997,20 +1997,20 @@ bool Render_CopyTexture(int hDevice,void* paramin,void* paramout)
 bool Render_ReleaseTexture(int hDevice,void* paramin,void* paramout);
 bool render_DumpTexture(int hDevice,void* paramin,void* paramout)
 {
-	LPCTSTR szFile = ((SYDumpIn*)paramin)->szFile;
-	int hTexture = ((SYDumpIn*)paramin)->hTexture;
+	LPCTSTR szFile = ((DXDumpIn*)paramin)->szFile;
+	int hTexture = ((DXDumpIn*)paramin)->hTexture;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	ID3D10Texture2D* pTexture = getTexture(pDevice,hTexture);
 
 	SYTexture* pSrcWDTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,*(int*)paramin);
-	if(pSrcWDTexture->nType == SYTexture_MS2DTex )
+	if(pSrcWDTexture->nType == DXTexture_MS2DTex )
 	{
 		int nSrcWidth = pSrcWDTexture->nNeedWidth;
 		int nSrcHeight = pSrcWDTexture->nNeedHeight;
 		createTextureIn param;
 		param.nWidth = nSrcWidth;
 		param.nHeight = nSrcHeight;
-		param.nType = SYTexture_Normal2DTex;
+		param.nType = DXTexture_Normal2DTex;
 		param.pBuffer = NULL;
 		int hTestTex;
 		Render_CreateTexture(hDevice,&param,&hTestTex);
@@ -2021,7 +2021,7 @@ bool render_DumpTexture(int hDevice,void* paramin,void* paramout)
 		Render_ReleaseTexture(hDevice,&hTestTex,NULL);
 		return true;
 	}
-	else if(pSrcWDTexture->nType == SYTexture_R16G16Tex)
+	else if(pSrcWDTexture->nType == DXTexture_R16G16Tex)
 	{
 		static const TCHAR* path = _T("e:\\testTex.dds");
 		HRESULT hr = D3DX10SaveTextureToFile(pTexture,D3DX10_IFF_DDS,szFile==NULL?path:szFile);
@@ -2080,9 +2080,9 @@ bool Render_ReleaseTexture(int hDevice,void* paramin,void* paramout)
 	if (pSrcWDTexture&&pSrcWDTexture->pTexFile)//有pSrcWDTexture == NULL的时候
 	{
 		SYHash*	pHash = NULL;		
-		if(pSrcWDTexture->nType == SYTexture_2DDumpReadOnly)
+		if(pSrcWDTexture->nType == DXTexture_2DDumpReadOnly)
 			pHash = pDevice->BumpTextureFromFileHash;
-		else if(pSrcWDTexture->nType == SYTexture_2DReadOnly)
+		else if(pSrcWDTexture->nType == DXTexture_2DReadOnly)
 			pHash = pDevice->TextureFromFileHash;
 
 		HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(void *)pSrcWDTexture->pTexFile);
@@ -2168,7 +2168,7 @@ bool Render_BeginTex(int hDevice,void* paramin,void* paramout)
 }
 
 bool Render_CascadeTex(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT& SrcRect,const RECT& DestRect,
-					 int nSrcBufferWidth,int nSrcBufferHeight,int nDstBufferWidth,int nDstBufferHeight,BOOL bAdjustColor,SYTextureType nType)
+					 int nSrcBufferWidth,int nSrcBufferHeight,int nDstBufferWidth,int nDstBufferHeight,BOOL bAdjustColor,DXTextureType nType)
 {
 	screenCB screen;
 	matrix4f matWorld;
@@ -2187,20 +2187,20 @@ bool Render_CascadeTex(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT&
 
 	SetVertexBuffer(pDevice,pDevice->hScreenVertex);
 	SetPrimitiveTopology(pDevice,TRIANGLELIST);
-	SetShader(pDevice,SYShaderType_VertexShader,pDevice->hScreenVS);
-	SetShader(pDevice,SYShaderType_GeometryShader,NULL);
+	SetShader(pDevice,DXShaderType_VertexShader,pDevice->hScreenVS);
+	SetShader(pDevice,DXShaderType_GeometryShader,NULL);
 
 	float4 vPSParam[3];
 	vPSParam[0].x = fAlpha;
 	ModifyBuffer(pDevice,pDevice->hModiyCB,vPSParam);
-	SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hModiyCB);
+	SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hModiyCB);
 
-	if(nType == SYTexture_MS2DTex)
-		SetShader(pDevice,SYShaderType_PixelShader,pDevice->hScreenMSPS);
+	if(nType == DXTexture_MS2DTex)
+		SetShader(pDevice,DXShaderType_PixelShader,pDevice->hScreenMSPS);
 	else
-		SetShader(pDevice,SYShaderType_PixelShader,bAdjustColor?pDevice->hScreenAdjustPS:pDevice->hScreenPS);
-	SetShaderTexture(pDevice,hTex,SYShaderType_PixelShader,0);
-	SetSamplerState(pDevice,SYSample_Point_Wrap,SYShaderType_PixelShader,0);
+		SetShader(pDevice,DXShaderType_PixelShader,bAdjustColor?pDevice->hScreenAdjustPS:pDevice->hScreenPS);
+	SetShaderTexture(pDevice,hTex,DXShaderType_PixelShader,0);
+	SetSamplerState(pDevice,DXSample_Point_Wrap,DXShaderType_PixelShader,0);
 //这个效率还可以优化
 	for(int nY = 0; nY < nDstHeight / nSrcHeight + 1; nY ++)
 	{
@@ -2219,7 +2219,7 @@ bool Render_CascadeTex(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT&
 			screen.texCoord.z = nSrcWidth / (float)nSrcBufferWidth;
 			screen.texCoord.w = nSrcHeight / (float)nSrcBufferHeight;
 			ModifyBuffer(pDevice,pDevice->hScreenCB,&screen);
-			SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hScreenCB);
+			SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hScreenCB);
 
 			pDevice->pDevice->Draw(6,0);	
 			pDevice->info.nRenderCount++ ;
@@ -2241,7 +2241,7 @@ bool Render_RenderTex(int hDevice,void* paramin,void* paramout)
 	getTextureInfo(pDevice,pDevice->hNowRenderTarget,&nRTWidth,&nRTHeight,NULL);
 
 	SYTexture* pTex = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,pIn->hTex);
-	SetRenderState(pDevice,SYDepthState,SYDepthDisable);
+	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
 	if(pIn->bStretch)
 	{
 		RenderTexture(pDevice,pIn->hTex,pIn->fAlpha,*pIn->pSrcRt,*pIn->pDstRt,
@@ -2463,7 +2463,7 @@ BOOL Render_CreateModelFromXFile(int hDevice,void* paramin,void* paramout)
 bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYCreateShadeIn* param = (SYCreateShadeIn*)paramin;
+	DXCreateShadeIn* param = (DXCreateShadeIn*)paramin;
 
 	if(param->bLock)
 		Render_EngineLock(hDevice,NULL,NULL);
@@ -2507,13 +2507,13 @@ bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 			char* profile = NULL;
 			switch (param->nType)
 			{
-			case SYShaderType_VertexShader:
+			case DXShaderType_VertexShader:
 				profile = VSPROFILE;
 				break;
-			case SYShaderType_GeometryShader:
+			case DXShaderType_GeometryShader:
 				profile = GSPROFILE;
 				break;
-			case SYShaderType_PixelShader:
+			case DXShaderType_PixelShader:
 				profile = PSPROFILE;
 				break;
 			}
@@ -2558,15 +2558,15 @@ bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 			pNewShader->nType = param->nType;
 			switch (param->nType)
 			{
-			case SYShaderType_VertexShader:
+			case DXShaderType_VertexShader:
 				pDevice->pDevice->CreateVertexShader(pCodeBin,nBinSize,(ID3D10VertexShader**)&pNewShader->pShader);
 				if (param->pType)
 					pDevice->pDevice->CreateInputLayout( g_pLayout[*param->pType],g_pLayoutNum[*param->pType] ,pCodeBin,nBinSize, &pNewShader->pLayout ) ;
 				break;
-			case SYShaderType_GeometryShader:
+			case DXShaderType_GeometryShader:
 				pDevice->pDevice->CreateGeometryShader(pCodeBin,nBinSize,(ID3D10GeometryShader**)&pNewShader->pShader);
 				break;
-			case SYShaderType_PixelShader:
+			case DXShaderType_PixelShader:
 				pDevice->pDevice->CreatePixelShader(pCodeBin,nBinSize,(ID3D10PixelShader**)&pNewShader->pShader);
 				break;
 			}
@@ -2631,11 +2631,11 @@ matrix4f __mRGBYUV601= {	0.2567880f	,	-0.1482230f/2	,	0.4392160f/2	,0.0f	,
 						};
 
 BOOL Render_SetShaderTexture(int hDevice,void* paramin,void* paramout);
-void TexProcessSetPixShader(SY_DeviceDX10* pDevice,SYTexProcessIn* param,int nSrcBufferWidth,int nSrcBufferHeight)
+void TexProcessSetPixShader(SY_DeviceDX10* pDevice,DXTexProcessIn* param,int nSrcBufferWidth,int nSrcBufferHeight)
 {
-	if(param->nType == SYTextureBlur_5Pt || param->nType == SYTextureBlur_9Pt)
+	if(param->nType == DXTextureBlur_5Pt || param->nType == DXTextureBlur_9Pt)
 	{
-		SYDistortionParam* pDistortion = (SYDistortionParam*)param->pData;
+		DXDistortionParam* pDistortion = (DXDistortionParam*)param->pData;
 		float4 buffer[3]; 
 		buffer[0].x = 1.0f / nSrcBufferWidth;
 		buffer[0].y = 1.0f / nSrcBufferHeight;
@@ -2649,28 +2649,28 @@ void TexProcessSetPixShader(SY_DeviceDX10* pDevice,SYTexProcessIn* param,int nSr
 		buffer[2].z = pDistortion->fPrism1;
 		buffer[2].w = pDistortion->fPrism2;
 		ModifyBuffer(pDevice,pDevice->hModiyCB,buffer);
-		SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hModiyCB);
-		SetShader(pDevice,SYShaderType_PixelShader,param->nType == SYTextureBlur_5Pt?pDevice->hBlur5PtPS : pDevice->hBlur9PtPS);
-		SetSamplerState(pDevice,SYSample_Anisotropic_Clamp,SYShaderType_PixelShader,0);
+		SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hModiyCB);
+		SetShader(pDevice,DXShaderType_PixelShader,param->nType == DXTextureBlur_5Pt?pDevice->hBlur5PtPS : pDevice->hBlur9PtPS);
+		SetSamplerState(pDevice,DXSample_Anisotropic_Clamp,DXShaderType_PixelShader,0);
 	}
-	else if(param->nType == SYTextureConvertFormat)
+	else if(param->nType == DXTextureConvertFormat)
 	{
-		SYConvertType* pType = (SYConvertType*)(param->pData);
-		if(*pType == SY_RGBA_To_BGRA)
+		ColorConvertType* pType = (ColorConvertType*)(param->pData);
+		if(*pType == Color_RGBA_To_BGRA)
 		{
-			SetShader(pDevice,SYShaderType_PixelShader,pDevice->hConvertFormatPS);
-			SetSamplerState(pDevice,SYSample_Line_Border,SYShaderType_PixelShader,0);
+			SetShader(pDevice,DXShaderType_PixelShader,pDevice->hConvertFormatPS);
+			SetSamplerState(pDevice,DXSample_Line_Border,DXShaderType_PixelShader,0);
 		}
-		else if(*pType == SYAdjustAlpha)
+		else if(*pType == ColorAdjustAlpha)
 		{
 			float4 vPSParam[3];
 			vPSParam[0].x = 1;
 			ModifyBuffer(pDevice,pDevice->hModiyCB,vPSParam);
-			SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hModiyCB);
-			SetShader(pDevice,SYShaderType_PixelShader,pDevice->hScreenAdjustPS);
-			SetSamplerState(pDevice,SYSample_Line_Border,SYShaderType_PixelShader,0);
+			SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hModiyCB);
+			SetShader(pDevice,DXShaderType_PixelShader,pDevice->hScreenAdjustPS);
+			SetSamplerState(pDevice,DXSample_Line_Border,DXShaderType_PixelShader,0);
 		}
-		else if(*pType == SY_UYVU_RGBA_Key)
+		else if(*pType == Color_UYVU_RGBA_Key)
 		{
 			BOOL bEnableKey = (param->hSrcKey != NULL);
 			int hShader = NULL;
@@ -2678,26 +2678,26 @@ void TexProcessSetPixShader(SY_DeviceDX10* pDevice,SYTexProcessIn* param,int nSr
 				hShader = (param->nDstField == SECOND_FIELD ? pDevice->hUYVY_RGBA_KeyPS0 : pDevice->hUYVY_RGBA_KeyPS1);
 			else
 				hShader = (param->nDstField == SECOND_FIELD ? pDevice->hUYVY_RGBA_PS0 : pDevice->hUYVY_RGBA_PS1);
-			SetShader(pDevice,SYShaderType_PixelShader,hShader);
+			SetShader(pDevice,DXShaderType_PixelShader,hShader);
 
 			int nWidth = param->pSrcRt->right - param->pSrcRt->left;
 			matrix4f* pPsParam = nWidth > 360 ? &__mYUVRGB709 : &__mYUVRGB601 ;
 			ModifyBuffer(pDevice,pDevice->hRenderTexCB,pPsParam);
-			SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hRenderTexCB); 
+			SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hRenderTexCB); 
 
 		}
-		else if (*pType == SY_UYVYFrame_RGBA)
+		else if (*pType == Color_UYVYFrame_RGBA)
 		{
 			int hShader = NULL;
 			hShader = pDevice->hUYVY_RGBA_Frame;
-			SetShader(pDevice,SYShaderType_PixelShader,hShader);
+			SetShader(pDevice,DXShaderType_PixelShader,hShader);
 
 			int nWidth = param->pSrcRt->right - param->pSrcRt->left;
 			matrix4f* pPsParam = nWidth > 360 ? &__mYUVRGB709 : &__mYUVRGB601 ;
 			ModifyBuffer(pDevice,pDevice->hRenderTexCB,pPsParam);
-			SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hRenderTexCB);
+			SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hRenderTexCB);
 		}
-		else if(*pType == SY_RGBA_YUAYVA4224)
+		else if(*pType == Color_RGBA_YUAYVA4224)
 		{
 			int nWidth = param->pSrcRt->right - param->pSrcRt->left;
 			float4 ShaderParam[5];
@@ -2705,56 +2705,56 @@ void TexProcessSetPixShader(SY_DeviceDX10* pDevice,SYTexProcessIn* param,int nSr
 			memcpy(ShaderParam,pPsParam,sizeof(matrix4f));
 			ShaderParam[4].x = param->nDstField == SECOND_FIELD ? 0.f : 1.0f;
 			ModifyBuffer(pDevice,pDevice->hRenderTexCB5,ShaderParam);
-			SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hRenderTexCB5);
-			SetShader(pDevice,SYShaderType_PixelShader,pDevice->hRGBA_YUAYVA4224PS);
+			SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hRenderTexCB5);
+			SetShader(pDevice,DXShaderType_PixelShader,pDevice->hRGBA_YUAYVA4224PS);
 		}
-		else if (*pType == SY_RGBA_UYVY)     
+		else if (*pType == Color_RGBA_UYVY)     
 		{
-			SetShader(pDevice,SYShaderType_PixelShader,pDevice->hRGBA_UYVY_Frame);
+			SetShader(pDevice,DXShaderType_PixelShader,pDevice->hRGBA_UYVY_Frame);
 			int nWidth = param->pSrcRt->right - param->pSrcRt->left;
 			float4 ShaderParam[5];
 			matrix4f* pPsParam = nWidth > 720 ? &__mRGBYUV709 : &__mRGBYUV601;
 			ShaderParam[4].x = float(nWidth);
 			memcpy(ShaderParam,pPsParam,sizeof(matrix4f));
 			ModifyBuffer(pDevice,pDevice->hRenderTexCB5,ShaderParam);
-			SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hRenderTexCB5);
+			SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hRenderTexCB5);
 		}
-		else if(*pType == SY_RGBA_To_FRAME)
+		else if(*pType == Color_RGBA_To_FRAME)
 		{
-			SetShader(pDevice,SYShaderType_PixelShader,pDevice->hRGBA_Frame);
+			SetShader(pDevice,DXShaderType_PixelShader,pDevice->hRGBA_Frame);
 
 			int nWidth = param->pSrcRt->right - param->pSrcRt->left;
 			matrix4f* pPsParam = nWidth > 360 ? &__mYUVRGB709 : &__mYUVRGB601 ;
 			ModifyBuffer(pDevice,pDevice->hRenderTexCB,pPsParam);
-			SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hRenderTexCB);
+			SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hRenderTexCB);
 		}
-		else if(*pType == SY_RGBA_TO_Alpha)
+		else if(*pType == Color_RGBA_TO_Alpha)
 		{
-			SetShader(pDevice,SYShaderType_PixelShader,pDevice->hOnlyKeyOutPS);
-			SetSamplerState(pDevice,SYSample_Point_Border,SYShaderType_PixelShader,0);
+			SetShader(pDevice,DXShaderType_PixelShader,pDevice->hOnlyKeyOutPS);
+			SetSamplerState(pDevice,DXSample_Point_Border,DXShaderType_PixelShader,0);
 		}
-		else if(*pType == SY_RGB_Alpha_To_Key)
+		else if(*pType == Color_RGB_Alpha_To_Key)
 		{
-			SetShader(pDevice,SYShaderType_PixelShader,pDevice->hFieldAddKeyPS);
-			SetSamplerState(pDevice,SYSample_Point_Border,SYShaderType_PixelShader,0);
+			SetShader(pDevice,DXShaderType_PixelShader,pDevice->hFieldAddKeyPS);
+			SetSamplerState(pDevice,DXSample_Point_Border,DXShaderType_PixelShader,0);
 		}
 	}
-	else if(param->nType == SY_UYVY_BRIGHT)
+	else if(param->nType == DX_UYVY_BRIGHT)
 	{
 		float* pGain = (float*)param->pData;
 		matrix4f PsParam;
 		PsParam._11 = *pGain;
 		ModifyBuffer(pDevice,pDevice->hRenderTexCB,&PsParam);
-		SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hRenderTexCB);
-		SetShader(pDevice,SYShaderType_PixelShader,pDevice->hUYVYBrightPS);
-		SetSamplerState(pDevice,SYSample_Point_Clamp,SYShaderType_PixelShader,0);
+		SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hRenderTexCB);
+		SetShader(pDevice,DXShaderType_PixelShader,pDevice->hUYVYBrightPS);
+		SetSamplerState(pDevice,DXSample_Point_Clamp,DXShaderType_PixelShader,0);
 		//SetBlendState(pDevice,SYBlendDisable);
 	}
 }
 bool Render_TexProcess(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYTexProcessIn* param = (SYTexProcessIn*)paramin;
+	DXTexProcessIn* param = (DXTexProcessIn*)paramin;
 	int oldRT = pDevice->hNowRenderTarget;
 	int oldDepth = pDevice->hNowDepth;
 	RECT oldRect = pDevice->rtViewport;
@@ -2802,22 +2802,22 @@ bool Render_TexProcess(int hDevice,void* paramin,void* paramout)
 	screen.texCoord.w = nSrcHeight / (float)nSrcBufferHeight;
 
 	ModifyBuffer(pDevice,pDevice->hScreenCB,&screen);
-	SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hScreenCB);
+	SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hScreenCB);
 
 	SetVertexBuffer(pDevice,pDevice->hScreenVertex);
 	SetPrimitiveTopology(pDevice,TRIANGLELIST);
 
-	SetShader(pDevice,SYShaderType_VertexShader,pDevice->hScreenVS);
-	SetShader(pDevice,SYShaderType_GeometryShader,NULL);
+	SetShader(pDevice,DXShaderType_VertexShader,pDevice->hScreenVS);
+	SetShader(pDevice,DXShaderType_GeometryShader,NULL);
 	TexProcessSetPixShader(pDevice,param,nSrcBufferWidth,nSrcBufferHeight);
 
-	SetRenderState(pDevice,SYDepthState,SYDepthDisable);
-	SetRenderState(pDevice,SYBlendState,SYBlendDisable);
-	SetRenderState(pDevice,SYRasterizerState,SYRas_Solid_NoCullBack_MultiSample);
+	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
+	SetRenderState(pDevice,DXBlendState,DXBlendDisable);
+	SetRenderState(pDevice,DXRasterizerState,DXRas_Solid_NoCullBack_MultiSample);
 
-	SetShaderTexture(pDevice,param->hSrcTex,SYShaderType_PixelShader,0);
+	SetShaderTexture(pDevice,param->hSrcTex,DXShaderType_PixelShader,0);
 	if(param->hSrcKey)
-		SetShaderTexture(pDevice,param->hSrcKey,SYShaderType_PixelShader,1);
+		SetShaderTexture(pDevice,param->hSrcKey,DXShaderType_PixelShader,1);
 
 	pDevice->pDevice->Draw(6,0);	
 	pDevice->info.nRenderCount++ ;
@@ -2851,7 +2851,7 @@ bool Render_GetViewPort(int hDevice,void* paramin,void* paramout)
 bool Render_CreateBuffer(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYCreateBufferIn* param = (SYCreateBufferIn*)paramin;
+	DXCreateBufferIn* param = (DXCreateBufferIn*)paramin;
 	*(int*)paramout = CreateBuffer(pDevice,param->nVertexSize,param->nVertexNum,param->pBuffer,param->nType,param->nPriType );
 	return true;
 }
@@ -2865,7 +2865,7 @@ bool Render_ReleaseBuffer(int hDevice,void* paramin,void* paramout)
 
 bool Render_ModifyBuffer(int hDevice,void* paramin,void* paramout)
 {
-	SYModifyBufferIn* param = (SYModifyBufferIn*)paramin;
+	DXModifyBufferIn* param = (DXModifyBufferIn*)paramin;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	ModifyBuffer(pDevice,param->hBuffer,param->pBuffer);
 	return true;
@@ -2888,7 +2888,7 @@ int CalVertexCountByPrimitiveCount(int nPrimitiveCount,int nType)
 
 bool Render_Render(int hDevice,void* paramin,void* paramout)
 {
-	SYRenderIn* param = (SYRenderIn*)paramin;
+	DXRenderIn* param = (DXRenderIn*)paramin;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 
 	if (param->hVertexBuffer)
@@ -2928,7 +2928,7 @@ bool Render_Render(int hDevice,void* paramin,void* paramout)
 }
 bool Render_InstanceRender(int hDevice,void* paramin,void* paramout)
 {
-	SYRenderInstanceIn* param = (SYRenderInstanceIn*)paramin;
+	DXRenderInstanceIn* param = (DXRenderInstanceIn*)paramin;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 
 	SYBuffer* pVB = (SYBuffer*)SYHTable_GetAt(&pDevice->htBuffer,param->RenderData.hVertexBuffer);
@@ -2963,7 +2963,7 @@ bool Render_InstanceRender(int hDevice,void* paramin,void* paramout)
 
 bool Render_EasyRender(int hDevice,void* paramin,void* paramout)
 {
-	SYEasyRenderIn* param = (SYEasyRenderIn*)paramin;
+	DXEasyRenderIn* param = (DXEasyRenderIn*)paramin;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 
 	if (param->hVertexBuffer)
@@ -2978,9 +2978,9 @@ bool Render_EasyRender(int hDevice,void* paramin,void* paramout)
 	}
 	assert(param->hVertexShader);
 	assert(param->hPixShader);
-	SetShader(pDevice,SYShaderType_VertexShader,param->hVertexShader);
-	SetShader(pDevice,SYShaderType_GeometryShader,param->hGeometryShader);
-	SetShader(pDevice,SYShaderType_PixelShader,param->hPixShader);
+	SetShader(pDevice,DXShaderType_VertexShader,param->hVertexShader);
+	SetShader(pDevice,DXShaderType_GeometryShader,param->hGeometryShader);
+	SetShader(pDevice,DXShaderType_PixelShader,param->hPixShader);
 
 	if(param->hIndexBuffer)
 	{
@@ -2999,7 +2999,7 @@ bool Render_EasyRender(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_SetConstBuffer(int hDevice,void* paramin,void* paramout)
 {
-	SYSetConstBufferIn* param = (SYSetConstBufferIn*)paramin;
+	DXSetConstBufferIn* param = (DXSetConstBufferIn*)paramin;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	return SetConstBuffer(pDevice,param->nShaderType,param->hRegIndex,param->hConstBuffer);
 }
@@ -3011,10 +3011,10 @@ bool Render_CreateTexFromFile(int hDevice,void* paramin,void* paramout)
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 
 	SYHash*	pHash = NULL;		
-	SYTextureType nType = param->bNormalMap ? SYTexture_2DDumpReadOnly : SYTexture_2DReadOnly;
-	if(nType == SYTexture_2DDumpReadOnly)
+	DXTextureType nType = param->bNormalMap ? DXTexture_2DDumpReadOnly : DXTexture_2DReadOnly;
+	if(nType == DXTexture_2DDumpReadOnly)
 		pHash = pDevice->BumpTextureFromFileHash;
-	else if(nType == SYTexture_2DReadOnly)
+	else if(nType == DXTexture_2DReadOnly)
 		pHash = pDevice->TextureFromFileHash;
 
 	HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(void *)pPath);
@@ -3108,7 +3108,7 @@ bool Render_CreateTexFromFile(int hDevice,void* paramin,void* paramout)
 bool Render_SetRenderState(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYRenderStateIn* param = (SYRenderStateIn*)paramin;
+	DXRenderStateIn* param = (DXRenderStateIn*)paramin;
 	SetRenderState(pDevice,param->nType,param->nValue);
 	return true;
 }
@@ -3122,20 +3122,20 @@ bool Render_CreateMipMap(int hDevice,void* paramin,void* paramout)
 bool Render_SetSamplerState(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYSampleStateIn* param = (SYSampleStateIn*)paramin;
+	DXSampleStateIn* param = (DXSampleStateIn*)paramin;
 	return SetSamplerState(pDevice,param->nState,param->nShaderType,param->nSampler);
 }
 BOOL Render_SetShaderTexture(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYSetShaderTexIn* param = (SYSetShaderTexIn*)paramin;
+	DXSetShaderTexIn* param = (DXSetShaderTexIn*)paramin;
 	return SetShaderTexture(pDevice,param->hConstBuffer,param->nShaderType,param->hRegIndex);
 }
 
 BOOL Render_SetShader(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYSetShaderIn* param = (SYSetShaderIn*)paramin;
+	DXSetShaderIn* param = (DXSetShaderIn*)paramin;
 	SetShader(pDevice,param->nShaderType,param->hShader);
 	return TRUE;
 
@@ -3145,7 +3145,7 @@ BOOL Render_SetDevCaps(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	int* nFlag = (int*)paramin;
-	if(*nFlag == SYDevice_AAFactor)
+	if(*nFlag == DXDevice_AAFactor)
 	{
 		pDevice->nAAFactor = *((int*)paramout);
 		return TRUE;
@@ -3157,7 +3157,7 @@ BOOL Render_GetDevCaps(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	int* nFlag = (int*)paramin;
-	if(*nFlag == SYDevice_AAFactor)
+	if(*nFlag == DXDevice_AAFactor)
 	{
 		*((int*)paramout) = pDevice->nAAFactor;
 		return TRUE;
@@ -3169,7 +3169,7 @@ BOOL Render_ClearScreen(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	clearScreenIn* pParam = (clearScreenIn*)paramin;
-	if(pParam->nType == SY_CLEAR_RENDERTARGET_ONLY || pParam->nType == SY_CLEAR_ALL)
+	if(pParam->nType == DX_CLEAR_RENDERTARGET_ONLY || pParam->nType == DX_CLEAR_ALL)
 	{
 		float4 clearBuffer[2];
 		clearBuffer[0].x = GetBGRA_R(pParam->nColor) / 255.f;
@@ -3186,27 +3186,27 @@ BOOL Render_ClearScreen(int hDevice,void* paramin,void* paramout)
 		buffer.texCoord.w = buffer.texCoord.z = 1;
 		ModifyBuffer(pDevice,pDevice->hScreenCB,&buffer);
 
-		SetShader(pDevice,SYShaderType_VertexShader,pDevice->hScreenVS);
-		SetShader(pDevice,SYShaderType_GeometryShader,NULL);
-		SetShader(pDevice,SYShaderType_PixelShader,pDevice->hClearScreenPS);
+		SetShader(pDevice,DXShaderType_VertexShader,pDevice->hScreenVS);
+		SetShader(pDevice,DXShaderType_GeometryShader,NULL);
+		SetShader(pDevice,DXShaderType_PixelShader,pDevice->hClearScreenPS);
 		SetVertexBuffer(pDevice,pDevice->hScreenVertex);
 		SetPrimitiveTopology(pDevice,TRIANGLELIST);
-		SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hClearCB);
-		SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hScreenCB);
-		int nRasterState = pDevice->pNowState[SYRasterizerState];
-		int nDepth = pDevice->pNowState[SYDepthState];
-		SetRenderState(pDevice,SYRasterizerState,SYRas_Solid_NoCullBack_MultiSample);
-		SetRenderState(pDevice,SYDepthState,SYDepthDisable);
-		SetRenderState(pDevice,SYBlendState,SYBlendDisable);
+		SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hClearCB);
+		SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hScreenCB);
+		int nRasterState = pDevice->pNowState[DXRasterizerState];
+		int nDepth = pDevice->pNowState[DXDepthState];
+		SetRenderState(pDevice,DXRasterizerState,DXRas_Solid_NoCullBack_MultiSample);
+		SetRenderState(pDevice,DXDepthState,DXDepthDisable);
+		SetRenderState(pDevice,DXBlendState,DXBlendDisable);
 		pDevice->pDevice->Draw(6,0);	
 
 		pDevice->info.nRenderCount++ ;
 		pDevice->info.nTriangleCount += 2 ;
 
-		SetRenderState(pDevice,SYRasterizerState,nRasterState);
-		SetRenderState(pDevice,SYDepthState,nDepth);
+		SetRenderState(pDevice,DXRasterizerState,nRasterState);
+		SetRenderState(pDevice,DXDepthState,nDepth);
 	}
-	if(pDevice->hNowDepth && (pParam->nType == SY_CLEAR_DEPTH_ONLY || pParam->nType == SY_CLEAR_ALL))
+	if(pDevice->hNowDepth && (pParam->nType == DX_CLEAR_DEPTH_ONLY || pParam->nType == DX_CLEAR_ALL))
 	{
 		clearTextureIn param = {pDevice->hNowDepth,&pParam->fZValue};
 		render_ClearTexture(hDevice,&param,NULL);
@@ -3216,8 +3216,8 @@ BOOL Render_ClearScreen(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_HitTestMesh(int hDevice,void* paramin,void* paramout)
 {
-	SYHitTestMeshIn* paramIn = (SYHitTestMeshIn*)paramin;
-	SYHitTestMeshOut* paramOut = (SYHitTestMeshOut*)paramout;
+	DXHitTestMeshIn* paramIn = (DXHitTestMeshIn*)paramin;
+	DXHitTestMeshOut* paramOut = (DXHitTestMeshOut*)paramout;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)SYHTable_GetAt(&pDevice->htModel,paramIn->hMesh);
@@ -3243,7 +3243,7 @@ BOOL Render_HitTestMesh(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_RenderMesh(int hDevice,void* paramin,void* paramout)
 {
-	SYRenderMeshIn* paramIn = (SYRenderMeshIn*)paramin;
+	DXRenderMeshIn* paramIn = (DXRenderMeshIn*)paramin;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)SYHTable_GetAt(&pDevice->htModel,paramIn->hMesh);
 	pDevice->hNowVertexBuffer = -1;
@@ -3269,7 +3269,7 @@ BOOL Render_RenderMesh(int hDevice,void* paramin,void* paramout)
 BOOL Render_GetMeshInfo( int hDevice, void* paramin,void* paramout )
 {
 	SYGetMeshInfoIn* paramIn = (SYGetMeshInfoIn*)paramin;
-	SYGetMeshInfoOut* paramOut = (SYGetMeshInfoOut*)paramout;
+	DXGetMeshInfoOut* paramOut = (DXGetMeshInfoOut*)paramout;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)SYHTable_GetAt(&pDevice->htModel,paramIn->hMesh);
 	UINT nSubSetCount = 0;
@@ -3287,7 +3287,7 @@ BOOL Render_GetRenderState(int hDevice,void* paramin,void* paramout)
 BOOL Render_GetMeshBox(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYGetMeshBoxIn* pParam = (SYGetMeshBoxIn*)paramin;
+	DXGetMeshBoxIn* pParam = (DXGetMeshBoxIn*)paramin;
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)SYHTable_GetAt(&pDevice->htModel,*(int*)paramin);
 	ID3DX10MeshBuffer* pBuffer;
 	pMesh10->GetVertexBuffer(0,&pBuffer);
@@ -3344,7 +3344,7 @@ BOOL Render_GenerateMipMap(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	SYTexture* pTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,*(int*)paramin);
-	if(pTexture->nType != SYTexture_MipMap)
+	if(pTexture->nType != DXTexture_MipMap)
 		return FALSE;
 	pDevice->pDevice->GenerateMips(pTexture->pResourceView);
 	return TRUE;
@@ -3379,7 +3379,7 @@ BOOL Render_RenderUnLock(int hDevice,void* paramin,void* paramout)
 BOOL Render_CreatEffectUnit(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYCreateEffectUnitIn* param = (SYCreateEffectUnitIn*)paramin;
+	DXCreateEffectUnitIn* param = (DXCreateEffectUnitIn*)paramin;
 	if(param)
 	{	
 		SYTechCreateParam* techs = new  SYTechCreateParam[param->nTechs];
@@ -3450,7 +3450,7 @@ BOOL Render_GetQuadVB(int hDevice,void* paramin,void* paramout)
 			{-0.5,0.5,0.5},
 			{0.5,0.5,0.5},
 		};
-		hVB = CreateBuffer(pDevice,sizeof(float3),6,vb,SYVertexBuffer,TRIANGLELIST);
+		hVB = CreateBuffer(pDevice,sizeof(float3),6,vb,DXVertexBuffer,TRIANGLELIST);
 		if(0 == hVB)
 			return FALSE;
 		pDevice->pEffectMan->SetQuadVB(hVB);
@@ -3461,7 +3461,7 @@ BOOL Render_GetQuadVB(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_EffectRender(int hDevice,void* paramin,void* paramout)
 {
-	SYEffectRenderIn* in_param = (SYEffectRenderIn*)paramin;
+	DXEffectRenderIn* in_param = (DXEffectRenderIn*)paramin;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 
 	if (in_param->hVertexBuffer)
@@ -3498,7 +3498,7 @@ BOOL Render_EffectRender(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_EffectRenderInstance(int hDevice,void* paramin,void* paramout)
 {
-	SYEffectRenderInstanceIn* in_param = (SYEffectRenderInstanceIn*)paramin;
+	DXEffectRenderInstanceIn* in_param = (DXEffectRenderInstanceIn*)paramin;
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	if (in_param->hVertexBuffer)
 	{
@@ -3534,7 +3534,7 @@ BOOL Render_EffectRenderInstance(int hDevice,void* paramin,void* paramout)
 BOOL Render_EffectSetTexture(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYEffectSetTextureIn* in_param = (SYEffectSetTextureIn*)paramin;
+	DXEffectSetTextureIn* in_param = (DXEffectSetTextureIn*)paramin;
 	CEffectUnit* pEU = (CEffectUnit*)SYHTable_GetAt(&(pDevice->htEffectUnit),in_param->hEffect);
 	ID3D10EffectShaderResourceVariable*	pTexVar = pEU->GetResourcePtr()->GetVariableByName(in_param->szTexName)->AsShaderResource();
 	assert(pTexVar);
@@ -3548,8 +3548,8 @@ BOOL Render_GetMemTexBuffer(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 	SYTexture* pTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,*(int*)paramin);
-	SYGetMemTexBufferOut* pBuffer = (SYGetMemTexBufferOut*)paramout;
-	if (pTexture->nType != SYTexture_MemTexture)
+	DXGetMemTexBufferOut* pBuffer = (DXGetMemTexBufferOut*)paramout;
+	if (pTexture->nType != DXTexture_MemTexture)
 	{
 		pBuffer->ptr = NULL;
 		pBuffer->pitch = 0;
@@ -3580,7 +3580,7 @@ BOOL Render_GetMemTexBuffer(int hDevice,void* paramin,void* paramout)
 BOOL Render_EffectSetConstBuffer(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYEffectSetConstBufferIn* in_param = (SYEffectSetConstBufferIn*)paramin;
+	DXEffectSetConstBufferIn* in_param = (DXEffectSetConstBufferIn*)paramin;
 	CEffectUnit* pEU = (CEffectUnit*)SYHTable_GetAt(&(pDevice->htEffectUnit),in_param->hEffect);
 	ID3D10EffectConstantBuffer*	pCBVar = pEU->GetResourcePtr()->GetVariableByName(in_param->szCBName)->AsConstantBuffer();
 	assert(pCBVar);
@@ -3599,104 +3599,104 @@ BOOL Render_EffectSetConstBuffer(int hDevice,void* paramin,void* paramout)
 BOOL Render_EffectSetVariable(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYEffectSetVariableIn* in_param = (SYEffectSetVariableIn*)paramin;
+	DXEffectSetVariableIn* in_param = (DXEffectSetVariableIn*)paramin;
 	CEffectUnit* pEU = (CEffectUnit*)SYHTable_GetAt(&(pDevice->htEffectUnit),in_param->hEffect);
 	HRESULT hr = S_OK;
 	D3D10_EFFECT_VARIABLE_DESC desc;
 	switch(in_param->nType)
 	{
-	case SYVar_BOOL:
+	case DXVar_BOOL:
 		{
 			ID3D10EffectScalarVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsScalar();
 			pVar->SetBool(*((BOOL*)in_param->pVariable));
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_INT:
+	case DXVar_INT:
 		{
 			ID3D10EffectScalarVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsScalar();
 			pVar->SetInt(*((int*)in_param->pVariable));
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_FLOAT:
+	case DXVar_FLOAT:
 		{
 			ID3D10EffectScalarVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsScalar();
 			pVar->SetFloat(*((float*)in_param->pVariable));
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_BOOL_Array:
+	case DXVar_BOOL_Array:
 		{
 			ID3D10EffectScalarVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsScalar();
 			pVar->SetBoolArray((BOOL*)in_param->pVariable,0,in_param->nCount);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_INT_Array:
+	case DX_INT_Array:
 		{
 			ID3D10EffectScalarVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsScalar();
 			pVar->SetIntArray((int*)in_param->pVariable,0,in_param->nCount);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_FLOAT_Array:
+	case DXVar_FLOAT_Array:
 		{
 			ID3D10EffectScalarVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsScalar();
 			pVar->SetFloatArray((float*)in_param->pVariable,0,in_param->nCount);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_BOOL_Vector:
+	case DXVar_BOOL_Vector:
 		{
 			ID3D10EffectVectorVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsVector();
 			pVar->SetBoolVector((BOOL*)in_param->pVariable);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_INT_Vector:
+	case DXVar_INT_Vector:
 		{
 			ID3D10EffectVectorVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsVector();
 			pVar->SetIntVector((int*)in_param->pVariable);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_FLOAT_Vector:
+	case DXVar_FLOAT_Vector:
 		{
 			ID3D10EffectVectorVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsVector();
 			pVar->SetFloatVector((float*)in_param->pVariable);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_BOOL_Vector_Array:
+	case DXVar_BOOL_Vector_Array:
 		{
 			ID3D10EffectVectorVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsVector();
 			pVar->SetBoolVectorArray((BOOL*)in_param->pVariable,0,in_param->nCount);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_INT_Vector_Array:
+	case DXVar_INT_Vector_Array:
 		{
 			ID3D10EffectVectorVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsVector();
 			pVar->SetIntVectorArray((int*)in_param->pVariable,0,in_param->nCount);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_FLOAT_Vector_Array:
+	case DXVar_FLOAT_Vector_Array:
 		{
 			ID3D10EffectVectorVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsVector();
 			pVar->SetFloatVectorArray((float*)in_param->pVariable,0,in_param->nCount);
 			pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_Matrix:
+	case DXVar_Matrix:
 		{
 			ID3D10EffectMatrixVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsMatrix();
 			pVar->SetMatrix((float*)in_param->pVariable);
 			hr  = pVar->GetDesc(&desc);
 			break;
 		}
-	case SYVar_Matrix_Array:
+	case DXVar_Matrix_Array:
 		{
 			ID3D10EffectMatrixVariable* pVar =   pEU->GetResourcePtr()->GetVariableByName(in_param->szVarName)->AsMatrix();
 			pVar->SetMatrixArray((float*)in_param->pVariable,0,in_param->nCount);
@@ -3715,7 +3715,7 @@ BOOL Render_EffectSetVariable(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_Render2D(int hDevice,void* paramin,void* paramout)
 {
-	SYRender2D* pIn = (SYRender2D*)paramin;
+	DXRender2D* pIn = (DXRender2D*)paramin;
 	//计算proj
 	float fLeft =	(float)pIn->pDstRt->left;
 	float fRight =	(float)pIn->pDstRt->right;
@@ -3755,12 +3755,12 @@ BOOL Render_Render2D(int hDevice,void* paramin,void* paramout)
 
 	ModifyBuffer(pDevice,pDevice->hScreenCB,&screen);
 
-	SetRenderState(pDevice,SYBlendState,SYBlend_Mix);
-	SetRenderState(pDevice,SYDepthState,SYDepthDisable);
-	SetRenderState(pDevice,SYRasterizerState,SYRas_Solid_NoCullBack_NoMultiSample);
+	SetRenderState(pDevice,DXBlendState,DXBlend_Mix);
+	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
+	SetRenderState(pDevice,DXRasterizerState,DXRas_Solid_NoCullBack_NoMultiSample);
 	SetVertexBuffer(pDevice,pDevice->h2DVertex);
 	SetPrimitiveTopology(pDevice,TRIANGLELIST);
-	SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hScreenCB);
+	SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hScreenCB);
 	float4 vPSParam[3];
 	vPSParam[0].x = pIn->fAlpha;
 	if (0)
@@ -3769,12 +3769,12 @@ BOOL Render_Render2D(int hDevice,void* paramin,void* paramout)
 		vPSParam[0].x = 0.2;
 	}
 	ModifyBuffer(pDevice,pDevice->hModiyCB,vPSParam);
-	SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hModiyCB);
-	SetShader(pDevice,SYShaderType_VertexShader,pDevice->hScreenVS);
-	SetShader(pDevice,SYShaderType_GeometryShader,NULL);
-	SetShader(pDevice,SYShaderType_PixelShader,pIn->bAdustColor?pDevice->hScreenAdjustPS:pDevice->hScreenPS);
-	SetSamplerState(pDevice,SYSample_Line_Clamp,SYShaderType_PixelShader,0);
-	SetShaderTexture(pDevice,pIn->pTex->m_hTex,SYShaderType_PixelShader,0);
+	SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hModiyCB);
+	SetShader(pDevice,DXShaderType_VertexShader,pDevice->hScreenVS);
+	SetShader(pDevice,DXShaderType_GeometryShader,NULL);
+	SetShader(pDevice,DXShaderType_PixelShader,pIn->bAdustColor?pDevice->hScreenAdjustPS:pDevice->hScreenPS);
+	SetSamplerState(pDevice,DXSample_Line_Clamp,DXShaderType_PixelShader,0);
+	SetShaderTexture(pDevice,pIn->pTex->m_hTex,DXShaderType_PixelShader,0);
 
 	pDevice->pDevice->Draw(6,0);	
 	pDevice->info.nRenderCount++ ;
@@ -3785,7 +3785,7 @@ BOOL Render_Render2D(int hDevice,void* paramin,void* paramout)
 BOOL Render_MaskRender(int hDevice,void* paramin,void* paramout)
 {
     SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-    SYMaskRenderIn* pIn = (SYMaskRenderIn*)paramin;
+    DXMaskRenderIn* pIn = (DXMaskRenderIn*)paramin;
 
 	int oldRT = pDevice->hNowRenderTarget;
 	int oldDepth = pDevice->hNowDepth;
@@ -3809,28 +3809,28 @@ BOOL Render_MaskRender(int hDevice,void* paramin,void* paramout)
 
 	ModifyBuffer(pDevice,pDevice->hScreenCB,&buffer);
 
-	SetShader(pDevice,SYShaderType_VertexShader,pDevice->hScreenVS);
-	SetShader(pDevice,SYShaderType_GeometryShader,NULL);
-	SetShader(pDevice,SYShaderType_PixelShader,pDevice->hMaskRender);
+	SetShader(pDevice,DXShaderType_VertexShader,pDevice->hScreenVS);
+	SetShader(pDevice,DXShaderType_GeometryShader,NULL);
+	SetShader(pDevice,DXShaderType_PixelShader,pDevice->hMaskRender);
 	SetVertexBuffer(pDevice,pDevice->hScreenVertex);
 	SetPrimitiveTopology(pDevice,TRIANGLELIST);
-	SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hScreenCB);
-	int nRasterState = pDevice->pNowState[SYRasterizerState];
-	int nDepth = pDevice->pNowState[SYDepthState];
-	SetRenderState(pDevice,SYRasterizerState,SYRas_Solid_NoCullBack_MultiSample);
-	SetRenderState(pDevice,SYDepthState,SYDepthDisable);
-	SetRenderState(pDevice,SYBlendState,SYBlendDisable);
+	SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hScreenCB);
+	int nRasterState = pDevice->pNowState[DXRasterizerState];
+	int nDepth = pDevice->pNowState[DXDepthState];
+	SetRenderState(pDevice,DXRasterizerState,DXRas_Solid_NoCullBack_MultiSample);
+	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
+	SetRenderState(pDevice,DXBlendState,DXBlendDisable);
 
-	SetSamplerState(pDevice,SYSample_Anisotropic_Border,SYShaderType_PixelShader,0);
+	SetSamplerState(pDevice,DXSample_Anisotropic_Border,DXShaderType_PixelShader,0);
 
-	SetShaderTexture(pDevice,pIn->hSrc,SYShaderType_PixelShader,0);
-	SetShaderTexture(pDevice,pIn->hMask,SYShaderType_PixelShader,1);
+	SetShaderTexture(pDevice,pIn->hSrc,DXShaderType_PixelShader,0);
+	SetShaderTexture(pDevice,pIn->hMask,DXShaderType_PixelShader,1);
 	pDevice->pDevice->Draw(6,0);	
 	pDevice->info.nRenderCount++ ;
 	pDevice->info.nTriangleCount += 2;
 
-	SetRenderState(pDevice,SYRasterizerState,nRasterState);
-	SetRenderState(pDevice,SYDepthState,nDepth);
+	SetRenderState(pDevice,DXRasterizerState,nRasterState);
+	SetRenderState(pDevice,DXDepthState,nDepth);
 
 	SetRenderTarget(pDevice,oldRT,oldDepth);
 	SetViewPort(pDevice,viewPort.left,viewPort.top,viewPort.right,viewPort.bottom);
@@ -3840,7 +3840,7 @@ BOOL Render_MaskRender(int hDevice,void* paramin,void* paramout)
 BOOL Render_RenderDynamicTex(int hDevice,void* paramin,void* paramout)
 {
     SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-    SYDynamicTextureIn* pIn = (SYDynamicTextureIn*)paramin;
+    DXDynamicTextureIn* pIn = (DXDynamicTextureIn*)paramin;
 
 	float fLeft =	(float)pIn->pTarget->m_rtBound.left;
 	float fRight =	(float)pIn->pTarget->m_rtBound.right;
@@ -3919,26 +3919,26 @@ BOOL Render_RenderDynamicTex(int hDevice,void* paramin,void* paramout)
 
 	if (pIn->bUseColorAlpha)
 	{
-		SetRenderState(pDevice,SYBlendState,SYBlend_Mix);
+		SetRenderState(pDevice,DXBlendState,DXBlend_Mix);
 	}
 	else
 	{
-		SetRenderState(pDevice,SYBlendState,SYBlendDisable);
+		SetRenderState(pDevice,DXBlendState,DXBlendDisable);
 	}
-	SetRenderState(pDevice,SYDepthState,SYDepthDisable);
-	SetRenderState(pDevice,SYRasterizerState,SYRas_Solid_NoCullBack_NoMultiSample);
+	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
+	SetRenderState(pDevice,DXRasterizerState,DXRas_Solid_NoCullBack_NoMultiSample);
 	SetVertexBuffer(pDevice,pDevice->h2DVertex);
 	SetPrimitiveTopology(pDevice,TRIANGLELIST);
-	SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hScreenCB);
-	SetConstBuffer(pDevice,SYShaderType_PixelShader,0,pDevice->hDynamicCB);
+	SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hScreenCB);
+	SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hDynamicCB);
 
-	SetShader(pDevice,SYShaderType_VertexShader,pDevice->hScreenVS);
-	SetShader(pDevice,SYShaderType_GeometryShader,NULL);
-	SetShader(pDevice,SYShaderType_PixelShader,pDevice->hDynamicPS);
-	SetSamplerState(pDevice,pIn->bRepeat?SYSample_Line_Wrap:SYSample_Line_Border,SYShaderType_PixelShader,0);
+	SetShader(pDevice,DXShaderType_VertexShader,pDevice->hScreenVS);
+	SetShader(pDevice,DXShaderType_GeometryShader,NULL);
+	SetShader(pDevice,DXShaderType_PixelShader,pDevice->hDynamicPS);
+	SetSamplerState(pDevice,pIn->bRepeat?DXSample_Line_Wrap:DXSample_Line_Border,DXShaderType_PixelShader,0);
 
-	SetShaderTexture(pDevice,pIn->pMask->m_hTex,SYShaderType_PixelShader,1);
-	SetShaderTexture(pDevice,pIn->pSrc->m_hTex,SYShaderType_PixelShader,0);
+	SetShaderTexture(pDevice,pIn->pMask->m_hTex,DXShaderType_PixelShader,1);
+	SetShaderTexture(pDevice,pIn->pSrc->m_hTex,DXShaderType_PixelShader,0);
 
 	pDevice->pDevice->Draw(6,0);	 
 	pDevice->info.nRenderCount++ ;
@@ -3951,7 +3951,7 @@ BOOL Render_RenderDynamicTex(int hDevice,void* paramin,void* paramout)
 
 	if(0)
 	{
-		SYDumpIn in;
+		DXDumpIn in;
 		in.hTexture = pIn->pTarget->m_hTex;//合成目标纹理
 		in.szFile = NULL;
 		render_DumpTexture(hDevice,&in,NULL);
@@ -3987,7 +3987,7 @@ BOOL Render_MultiToNormal(int hDevice,void* paramin,void* paramout)
 BOOL Render_Render3DVision(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SY3DVisionTex* param = (SY3DVisionTex*)paramin;
+	DX3DVisionTex* param = (DX3DVisionTex*)paramin;
 	int oldRT = pDevice->hNowRenderTarget;
 	int oldDepth = pDevice->hNowDepth;
 	RECT oldRect = pDevice->rtViewport;
@@ -4033,21 +4033,21 @@ BOOL Render_Render3DVision(int hDevice,void* paramin,void* paramout)
 	screen.texCoord.w = nSrcHeight / (float)nSrcBufferHeight;
 
 	ModifyBuffer(pDevice,pDevice->hScreenCB,&screen);
-	SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hScreenCB);
+	SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hScreenCB);
 
 	SetVertexBuffer(pDevice,pDevice->hScreenVertex);
 	SetPrimitiveTopology(pDevice,TRIANGLELIST);
 
-	SetShader(pDevice,SYShaderType_VertexShader,pDevice->hScreenVS);
-	SetShader(pDevice,SYShaderType_GeometryShader,NULL);
-	SetShader(pDevice,SYShaderType_PixelShader,pDevice->h3DVisionPS);
+	SetShader(pDevice,DXShaderType_VertexShader,pDevice->hScreenVS);
+	SetShader(pDevice,DXShaderType_GeometryShader,NULL);
+	SetShader(pDevice,DXShaderType_PixelShader,pDevice->h3DVisionPS);
 
-	SetRenderState(pDevice,SYDepthState,SYDepthDisable);
-	SetRenderState(pDevice,SYBlendState,SYBlendDisable);
-	SetRenderState(pDevice,SYRasterizerState,SYRas_Solid_NoCullBack_MultiSample);
+	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
+	SetRenderState(pDevice,DXBlendState,DXBlendDisable);
+	SetRenderState(pDevice,DXRasterizerState,DXRas_Solid_NoCullBack_MultiSample);
 
-	SetShaderTexture(pDevice,param->hLeftTex,SYShaderType_PixelShader,0);
-	SetShaderTexture(pDevice,param->hRightTex,SYShaderType_PixelShader,1);
+	SetShaderTexture(pDevice,param->hLeftTex,DXShaderType_PixelShader,0);
+	SetShaderTexture(pDevice,param->hRightTex,DXShaderType_PixelShader,1);
 
 	pDevice->pDevice->Draw(6,0);	
 	pDevice->info.nRenderCount++ ;
@@ -4068,7 +4068,7 @@ BOOL Render_RenderTex3D(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
 
-	SYRenderTex* param = (SYRenderTex*)paramin;
+	DXRenderTex* param = (DXRenderTex*)paramin;
 
 	if (pDevice->pEffectMan->GetQuadVB() == 0)
 	{
@@ -4082,7 +4082,7 @@ BOOL Render_RenderTex3D(int hDevice,void* paramin,void* paramout)
 			{-0.5,0.5,0.5},
 			{0.5,0.5,0.5},
 		};
-		int hVB = CreateBuffer(pDevice,sizeof(float3),6,vb,SYVertexBuffer,TRIANGLELIST);
+		int hVB = CreateBuffer(pDevice,sizeof(float3),6,vb,DXVertexBuffer,TRIANGLELIST);
 		if(0 == hVB)
 			return FALSE;
 		pDevice->pEffectMan->SetQuadVB(hVB);
@@ -4091,15 +4091,15 @@ BOOL Render_RenderTex3D(int hDevice,void* paramin,void* paramout)
 	SetVertexBuffer(pDevice,pDevice->pEffectMan->GetQuadVB());
 	SetPrimitiveTopology(pDevice,TRIANGLELIST);
 
-	SetRenderState(pDevice,SYBlendState,SYBlend_Mix);
-	SetShader(pDevice,SYShaderType_VertexShader,pDevice->hRenderTexVS);
-	SetShader(pDevice,SYShaderType_GeometryShader,NULL);
-	SetShader(pDevice,SYShaderType_PixelShader,pDevice->hRenderTexPS);
+	SetRenderState(pDevice,DXBlendState,DXBlend_Mix);
+	SetShader(pDevice,DXShaderType_VertexShader,pDevice->hRenderTexVS);
+	SetShader(pDevice,DXShaderType_GeometryShader,NULL);
+	SetShader(pDevice,DXShaderType_PixelShader,pDevice->hRenderTexPS);
 
 	ModifyBuffer(pDevice,pDevice->hRenderTexCB,(void*)param->pMatrix);
-	SetConstBuffer(pDevice,SYShaderType_VertexShader,0,pDevice->hRenderTexCB);
-	SetShaderTexture(pDevice,param->hSrcTex,SYShaderType_PixelShader,0);
-	SetSamplerState(pDevice,SYSample_Line_Border,SYShaderType_PixelShader,0);
+	SetConstBuffer(pDevice,DXShaderType_VertexShader,0,pDevice->hRenderTexCB);
+	SetShaderTexture(pDevice,param->hSrcTex,DXShaderType_PixelShader,0);
+	SetSamplerState(pDevice,DXSample_Line_Border,DXShaderType_PixelShader,0);
 	
 	pDevice->pDevice->Draw(6,0);
 	pDevice->info.nRenderCount++ ;
@@ -4111,7 +4111,7 @@ BOOL Render_RenderTex3D(int hDevice,void* paramin,void* paramout)
 BOOL Render_GetRenderInfo(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
-	SYRenderInfo* pOut = (SYRenderInfo*)paramout;
+	DXRenderInfo* pOut = (DXRenderInfo*)paramout;
 	*pOut = pDevice->info;
 	return TRUE;
 }

@@ -34,7 +34,7 @@
 //与管状体相交
 #define		RAY_TO_TUBE			11;
 BASEGRAPH_SCENE_RENDER_API int	GetPoint_Intersection(IN const void* paramin,OUT Point_Intersection* pOut,const int type);
-BASEGRAPH_SCENE_RENDER_API void	GetCubeIntersection(const vector3f* center,float fHeight,SY_QuadRang_Intersection* pInt,const matrix4f* pMatrix = NULL);
+BASEGRAPH_SCENE_RENDER_API void	GetCubeIntersection(const vector3f* center,float fHeight,DX_QuadRang_Intersection* pInt,const matrix4f* pMatrix = NULL);
 BASEGRAPH_SCENE_RENDER_API void	Generate_Quatn_BetweenDir( OUT SYQuatn* pqQuatn, IN vector3f* pvStartDir, IN vector3f* pvEndDir );
 BASEGRAPH_SCENE_RENDER_API BOOL	IntersectTriangle( const vector3f* orig,const vector3f* dir,const vector3f* v0,const vector3f* v1,const vector3f* v2, vector3f* pOutPt );
 class BASEGRAPH_SCENE_RENDER_API SYHitPoint
@@ -110,22 +110,22 @@ BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt(const SYRay* pRay,const float3* pC
 BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const SYRay* pRay,const float3* pCenter,const float3* pNormal,float Radius,SYHitPoint* pHitPoint );
 //射线与点相交
 BASEGRAPH_SCENE_RENDER_API BOOL GetPointInt( const SYRay* pRay,const float3* pPoint,float fDeviation = POINT_DEVIATION );
-BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const SY_Cone_Parameter* pCone,SYHitPoint* pHitPoint );
+BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const DX_Cone_Parameter* pCone,SYHitPoint* pHitPoint );
 BASEGRAPH_SCENE_RENDER_API int GetRayBoxInt( const SYRay* pRay,const float3* pMin,const float3* pMax,SYHitPoint* pHitPoint );
 
 BASEGRAPH_SCENE_RENDER_API BOOL GetTriangleInt( const SYRay* pRay, const float3*  v0, const float3*  v1, const float3*  v2, SYHitPoint* pHitPoint );
 BASEGRAPH_SCENE_RENDER_API BOOL GetRaySegment(const SYRay* pRay,const float3& v1,const float3& v2,const float3& v3,const float3& v4,SYHitPoint* pHitPoint);//顺时针
 BASEGRAPH_SCENE_RENDER_API int SY3DModelHitTest( int nSubModel,
-					  const SYRenderSubModel* pSubModelDes,
+					  const DXRenderSubModel* pSubModelDes,
 					  const DWORD* pIndex,
-					  const SYVertex3D* pVertex,          //物件顶点
+					  const DXVertex3D* pVertex,          //物件顶点
 					  const float3* pvScreenPt,	//屏幕坐标
 					  const SYSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 					  float3* pOutPt = NULL,BOOL isHitReturn = TRUE);
 BASEGRAPH_SCENE_RENDER_API int SY3DRayHitModel( int nSubModel,
-									const SYRenderSubModel* pSubModelDes,
+									const DXRenderSubModel* pSubModelDes,
 									const DWORD* pIndex,
-									const SYVertex3D* pVertex,          //物件顶点
+									const DXVertex3D* pVertex,          //物件顶点
 									const SYRay* pRay,	//屏幕坐标
 									const SYSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 									float3* pOutPt = NULL,BOOL isHitReturn = TRUE);

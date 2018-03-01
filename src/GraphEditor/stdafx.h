@@ -50,5 +50,6 @@
 #include "ExportDataBase.h"
 #include "ExportDataRender.h"
 #include "ExportUIControl.h"
+#include "ExportSceneRender.h"
 
 extern LPCTSTR g_ModuleName;

@@ -29,16 +29,16 @@ struct SY_DeviceDX10
 	SYHash*			BumpTextureFromFileHash;
 	htable			htBuffer;
 	//state
-	ID3D10DepthStencilState* pDepthState[SYDepthStateCount];
-	ID3D10BlendState*		pBlendState[SYBlendStateCount];
-	ID3D10RasterizerState*	pRasterizerState[SYRasStateCount];
-	ID3D10SamplerState*		pSamplerState[SYSampleStateCount] ;
+	ID3D10DepthStencilState* pDepthState[DXDepthStateCount];
+	ID3D10BlendState*		pBlendState[DXBlendStateCount];
+	ID3D10RasterizerState*	pRasterizerState[DXRasStateCount];
+	ID3D10SamplerState*		pSamplerState[DXSampleStateCount] ;
 
 	//state
 	int			hNowRenderTarget;
 	int			hNowDepth;
-	int			pNowState[SYRenderState_Count];
-	int			pSpritState[SYRenderState_Count];
+	int			pNowState[DXRenderState_Count];
+	int			pSpritState[DXRenderState_Count];
 	int			pNowSamplerState[3][16];//vs,ps,gs
 	int			nNowPriType;
 	int			pShader[3];
@@ -95,7 +95,7 @@ struct SY_DeviceDX10
 ////////////////////////////////////////////////////////////////////////////////
 //render info
 ////////////////////////////////////////////////////////////////////////////////
-	SYRenderInfo		info;
+	DXRenderInfo		info;
 };
 
 struct SYGetMeshInfoIn
@@ -105,7 +105,7 @@ struct SYGetMeshInfoIn
 
 struct SYShader
 {
-	SYShaderType	nType;
+	DXShaderType	nType;
 	void*		pShader;
 	ID3D10InputLayout* pLayout;//for vs
 	TCHAR*		pShaderName;
@@ -115,7 +115,7 @@ struct SYTexture
 {
 	TCHAR*		pTexFile;
 	void*		pTexture;
-	SYTextureType	nType;
+	DXTextureType	nType;
 	void*		pRenderTarget;
 	ID3D10ShaderResourceView*	pResourceView;
 
@@ -139,7 +139,7 @@ struct SYSwapChain
 
 struct SYBuffer
 {
-	SYBufferType nType;
+	DXBufferType nType;
 	int			nVertexSize;
 	int			nBufferSize;
 	ID3D10Buffer* pBuffer;
@@ -169,7 +169,7 @@ inline bool ModifyBuffer(SY_DeviceDX10* pDevice,int hBuffer,void* pMemBuffer)
 {
 	SYBuffer* pBuffer = (SYBuffer*) SYHTable_GetAt(&pDevice->htBuffer,hBuffer);
 	//从效率考虑,暂不支持indexbuffer的更新
-	if(pBuffer->nType == SYIndexBuffer)
+	if(pBuffer->nType == DXIndexBuffer)
 		return false;
 	void* pMapBuffer = NULL;
 	pBuffer->pBuffer->Map(D3D10_MAP_WRITE_DISCARD ,0,&pMapBuffer);
@@ -219,7 +219,7 @@ inline void SetPrimitiveTopology(SY_DeviceDX10* pDevice,int nType)
 		break;
 	}
 	pDevice->pDevice->IASetPrimitiveTopology(d3dPriType);
-	pDevice->nNowPriType = (SYPrimitiveTypes)nType;
+	pDevice->nNowPriType = (DXPrimitiveTypes)nType;
 }
 inline void ReleaseBuffer(SY_DeviceDX10* pDevice,int hBuffer)
 {
@@ -231,13 +231,13 @@ inline void ReleaseBuffer(SY_DeviceDX10* pDevice,int hBuffer)
 	
 	switch(pBuffer->nType)
 	{
-	case SYVertexBuffer:
+	case DXVertexBuffer:
 		pDevice->hNowVertexBuffer = (pDevice->hNowVertexBuffer == hBuffer) ? 0 : pDevice->hNowVertexBuffer;
 		break;
-	case SYIndexBuffer:
+	case DXIndexBuffer:
 		pDevice->hNowIndexBuffer = (pDevice->hNowIndexBuffer == hBuffer) ? 0 : pDevice->hNowIndexBuffer;
 		break;
-	case SYConstBuffer:
+	case DXConstBuffer:
 		for(int i = 0; i < 3; i++)
 		{
 			for(int j = 0; j < 14; j++)
@@ -264,19 +264,19 @@ inline void ReleaseShader(SY_DeviceDX10* pDevice,int hShader)
 	SAFEDELETE_ARRAY(pShader->pShaderName);
 	switch (pShader->nType)
 	{
-	case SYShaderType_VertexShader:
+	case DXShaderType_VertexShader:
 		{
 			ID3D10VertexShader * pPixShader = (ID3D10VertexShader *)pShader->pShader;
 			SAFE_RELEASE(pPixShader);
 		}
 		break;
-	case SYShaderType_GeometryShader:
+	case DXShaderType_GeometryShader:
 		{
 			ID3D10GeometryShader * pPixShader = (ID3D10GeometryShader*)pShader->pShader;
 			SAFE_RELEASE(pPixShader);
 		}
 		break;
-	case SYShaderType_PixelShader:
+	case DXShaderType_PixelShader:
 		{
 			ID3D10PixelShader* pPixShader = (ID3D10PixelShader*)pShader->pShader;
 			SAFE_RELEASE(pPixShader);
@@ -410,7 +410,7 @@ inline void SetRenderTarget(SY_DeviceDX10* pDevice,int hRT,int hDepth)
 }
 
 inline BOOL SetShader(SY_DeviceDX10* pDevice,int nShaderType,int hShader);
-inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,SYShaderType nShaderType,int nRegIndex);
+inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,DXShaderType nShaderType,int nRegIndex);
 inline void  BeginRenderTexture(SY_DeviceDX10* pDevice)
 {
 	int nWidth,nHeight;
@@ -424,16 +424,16 @@ inline void  BeginRenderTexture(SY_DeviceDX10* pDevice)
 		pDevice->rtViewport.right - halfWidth ,
 		halfHeight - pDevice->rtViewport.bottom ,
 		halfHeight - pDevice->rtViewport.top,0.1f,10,SY_ORTHO_PROJ);
-	memcpy(pDevice->pSpritState,pDevice->pNowState,SYRenderState_Count * sizeof(int));
-	SetRenderState(pDevice,SYBlendState,SYBlend_Mix);
-	SetRenderState(pDevice,SYDepthState,SYDepthDisable);
-	SetRenderState(pDevice,SYRasterizerState,SYRas_Solid_NoCullBack_NoMultiSample);
-	SetSamplerState(pDevice,SYSample_Line_Clamp,SYShaderType_PixelShader,0);
+	memcpy(pDevice->pSpritState,pDevice->pNowState,DXRenderState_Count * sizeof(int));
+	SetRenderState(pDevice,DXBlendState,DXBlend_Mix);
+	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
+	SetRenderState(pDevice,DXRasterizerState,DXRas_Solid_NoCullBack_NoMultiSample);
+	SetSamplerState(pDevice,DXSample_Line_Clamp,DXShaderType_PixelShader,0);
 }
 
 inline void  EndRenderTexture(SY_DeviceDX10* pDevice)
 {
-	for (int i = 0; i < SYRenderState_Count; i++)
+	for (int i = 0; i < DXRenderState_Count; i++)
 	{
 		SetRenderState(pDevice,i,pDevice->pSpritState[i]);
 	}
@@ -441,10 +441,10 @@ inline void  EndRenderTexture(SY_DeviceDX10* pDevice)
 
 inline bool SetDepthState(SY_DeviceDX10* pDevice,int nState)
 {
-	if (nState == SYDepthState_Default)
+	if (nState == DXDepthState_Default)
 		pDevice->pDevice->OMSetDepthStencilState(NULL,0);
-	else if(nState >= SYDepthDisable_WriteMask_01 && nState <= SYDepthDisable_WriteMask_FF)
-		pDevice->pDevice->OMSetDepthStencilState(pDevice->pDepthState[nState],nState - SYDepthDisable_WriteMask_01 + 1);
+	else if(nState >= DXDepthDisable_WriteMask_01 && nState <= DXDepthDisable_WriteMask_FF)
+		pDevice->pDevice->OMSetDepthStencilState(pDevice->pDepthState[nState],nState - DXDepthDisable_WriteMask_01 + 1);
 	else
 		pDevice->pDevice->OMSetDepthStencilState(pDevice->pDepthState[nState],0);
 	return true;
@@ -452,7 +452,7 @@ inline bool SetDepthState(SY_DeviceDX10* pDevice,int nState)
 inline bool SetBlendState(SY_DeviceDX10* pDevice,int nState)
 {
 	static float blend[4];
-	if(nState == SYBlendState_Default)
+	if(nState == DXBlendState_Default)
 		pDevice->pDevice->OMSetBlendState(NULL,blend,0xffffffff);
 	else
 		pDevice->pDevice->OMSetBlendState(pDevice->pBlendState[nState],blend,0xffffffff);
@@ -460,7 +460,7 @@ inline bool SetBlendState(SY_DeviceDX10* pDevice,int nState)
 }
 inline bool SetRasterizerState(SY_DeviceDX10* pDevice,int nState)
 {
-	if(nState == SYRasterizer_Default)
+	if(nState == DXRasterizer_Default)
 		pDevice->pDevice->RSSetState(NULL);
 	else
 		pDevice->pDevice->RSSetState(pDevice->pRasterizerState[nState]);
@@ -474,13 +474,13 @@ inline bool SetRenderState(SY_DeviceDX10* pDevice,int nStateType,int nState)
 	}
 	switch(nStateType)
 	{
-	case SYDepthState:
+	case DXDepthState:
 		SetDepthState(pDevice,nState);
 		break;
-	case SYBlendState:
+	case DXBlendState:
 		SetBlendState(pDevice,nState);
 		break;
-	case SYRasterizerState:
+	case DXRasterizerState:
 		SetRasterizerState(pDevice,nState);
 		break;
 	default:
@@ -497,19 +497,19 @@ inline bool SetSamplerState(SY_DeviceDX10* pDevice,int nState,int nType,int nSam
 		return true;
 	}
 	ID3D10SamplerState* pSampleState;
-	if(nState == SYSample_Default)
+	if(nState == DXSample_Default)
 		pSampleState = NULL;
 	else
 		pSampleState = pDevice->pSamplerState[nState];
 	switch(nType)
 	{
-	case SYShaderType_VertexShader:
+	case DXShaderType_VertexShader:
 		pDevice->pDevice->VSSetSamplers(nSampler,1,&pSampleState);
 		break;;
-	case SYShaderType_GeometryShader:
+	case DXShaderType_GeometryShader:
 		pDevice->pDevice->GSSetSamplers(nSampler,1,&pSampleState);
 		break;;
-	case SYShaderType_PixelShader:
+	case DXShaderType_PixelShader:
 		pDevice->pDevice->PSSetSamplers(nSampler,1,&pSampleState);
 		break;
 	default:
@@ -528,14 +528,14 @@ inline BOOL SetShader(SY_DeviceDX10* pDevice,int nShaderType,int hShader)
 	SYShader* pShader = (SYShader*)SYHTable_GetAt(&pDevice->htShaderTable,hShader);
 	switch(nShaderType)
 	{
-	case SYShaderType_VertexShader:
+	case DXShaderType_VertexShader:
 		pDevice->pDevice->VSSetShader(pShader ? (ID3D10VertexShader*)pShader->pShader : NULL);
 		pDevice->pDevice->IASetInputLayout(pShader->pLayout);
 		break;
-	case SYShaderType_GeometryShader:
+	case DXShaderType_GeometryShader:
 		pDevice->pDevice->GSSetShader(pShader ? (ID3D10GeometryShader*)pShader->pShader : NULL);
 		break;
-	case SYShaderType_PixelShader:
+	case DXShaderType_PixelShader:
 		pDevice->pDevice->PSSetShader(pShader ? (ID3D10PixelShader*)pShader->pShader : NULL);
 		break;
 	default:
@@ -585,7 +585,7 @@ inline BOOL SetVertexInstanceBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer,int
 	return TRUE;
 }
 
-inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,SYShaderType nShaderType,int nRegIndex)
+inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,DXShaderType nShaderType,int nRegIndex)
 {
 	SYTexture* pTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,hTex);
 	ID3D10ShaderResourceView* pView = NULL;
@@ -597,13 +597,13 @@ inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,SYShaderType nShade
 
 	switch(nShaderType)
 	{
-	case SYShaderType_VertexShader:
+	case DXShaderType_VertexShader:
 		pDevice->pDevice->VSSetShaderResources(nRegIndex,1,&pView);
 		break;
-	case SYShaderType_GeometryShader:
+	case DXShaderType_GeometryShader:
 		pDevice->pDevice->GSSetShaderResources(nRegIndex,1,&pView);
 		break;  
-	case SYShaderType_PixelShader:
+	case DXShaderType_PixelShader:
 		pDevice->pDevice->PSSetShaderResources(nRegIndex,1,&pView);
 		break;
 	}

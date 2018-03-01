@@ -1,95 +1,95 @@
 #pragma once
 //宏定义
-enum SYDeviceType
+enum DXDeviceType
 {
-	SY_Soft_Device,
-	SY_DX10_Device,
-	SY_Device_Count,	
+	DX_Soft_Device,
+	DX_DX10_Device,
+	DX_Device_Count,	
 };
-enum SYDeviceCaps
+enum DXDeviceCaps
 {
-	SYDevice_AAFactor,
+	DXDevice_AAFactor,
 };
-enum SYPrimitiveTypes
+enum DXPrimitiveTypes
 {
 	LINE_LIST,
 	TRIANGLELIST,
 	TRIANGLESTRIP,
 };
-enum SYConvertType
+enum ColorConvertType
 {
-	SY_RGBA_To_BGRA,
-	SYAdjustAlpha,
-	SY_UYVU_RGBA_Key,
-	SY_UYVYFrame_RGBA,   
-	SY_RGBA_YUAYVA4224,
-	SY_RGBA_UYVY,
-	SY_RGBA_TO_Alpha,
-	SY_RGB_Alpha_To_Key,
-	SY_RGBA_To_FRAME,
+	Color_RGBA_To_BGRA,
+	ColorAdjustAlpha,
+	Color_UYVU_RGBA_Key,
+	Color_UYVYFrame_RGBA,   
+	Color_RGBA_YUAYVA4224,
+	Color_RGBA_UYVY,
+	Color_RGBA_TO_Alpha,
+	Color_RGB_Alpha_To_Key,
+	Color_RGBA_To_FRAME,
 };
 
-enum SYVertexType
+enum DXVertexType
 {
-	SYVertex_POS_TEX,
-	SYVertex_POS_COLOR_TEX,
-	SYVertex_POS_NORMAL_TEX,
-	SYVertex_POS_NORMAL_TEX_TANG_BI,
-	SYVertex_POS,
-	SYVertex_Vertex_Instance_Mat_TexOffset,
-	SYVertex_Effect_Explode,
-	SYVertex_TEX,
-	SYVertex_Effect_Tile,
+	DXVertex_POS_TEX,
+	DXVertex_POS_COLOR_TEX,
+	DXVertex_POS_NORMAL_TEX,
+	DXVertex_POS_NORMAL_TEX_TANG_BI,
+	DXVertex_POS,
+	DXVertex_Vertex_Instance_Mat_TexOffset,
+	DXVertex_Effect_Explode,
+	DXVertex_TEX,
+	DXVertex_Effect_Tile,
 };
-enum SYShaderType
+enum DXShaderType
 {
-	SYShaderType_VertexShader,
-	SYShaderType_GeometryShader,
-	SYShaderType_PixelShader,	
+	DXShaderType_VertexShader,
+	DXShaderType_GeometryShader,
+	DXShaderType_PixelShader,	
 };
-enum SYBufferType
+enum DXBufferType
 {
-	SYVertexBuffer,
-	SYIndexBuffer,
-	SYConstBuffer,
+	DXVertexBuffer,
+	DXIndexBuffer,
+	DXConstBuffer,
 };
-enum SYClearRTType
+enum DXClearRTType
 {
-	SY_CLEAR_RENDERTARGET_ONLY,
-	SY_CLEAR_DEPTH_ONLY,
-	SY_CLEAR_ALL,
-};
-
-enum SYTextureType
-{
-	SYTexture_MemTexture,	//gpu和cpu都能访问的buffer
-	SYTexture_Normal2DTex,	//普通的二维纹理
-	SYTexture_MS2DTex,		//超采样二维纹理;
-	SYTexture_Depth,		//深度buffer;
-	SYTexture_MSDepth,		//超采样深度buffer;
-	SYTexture_2DReadOnly,
-	SYTexture_2DDumpReadOnly,
-	SYTexture_MipMap,
-	SYTexture_ShareBuffer,
-	SYTexture_R16G16Tex,
-	SYTexture_R16G16MemTexture,//gpu和cpu都能访问的buffer
+	DX_CLEAR_RENDERTARGET_ONLY,
+	DX_CLEAR_DEPTH_ONLY,
+	DX_CLEAR_ALL,
 };
 
-enum	SYRenderState
+enum DXTextureType
 {
-	SYDepthState,
-	SYBlendState,
-	SYRasterizerState,
-	SYRenderState_Count,
+	DXTexture_MemTexture,	//gpu和cpu都能访问的buffer
+	DXTexture_Normal2DTex,	//普通的二维纹理
+	DXTexture_MS2DTex,		//超采样二维纹理;
+	DXTexture_Depth,		//深度buffer;
+	DXTexture_MSDepth,		//超采样深度buffer;
+	DXTexture_2DReadOnly,
+	DXTexture_2DDumpReadOnly,
+	DXTexture_MipMap,
+	DXTexture_ShareBuffer,
+	DXTexture_R16G16Tex,
+	DXTexture_R16G16MemTexture,//gpu和cpu都能访问的buffer
 };
 
-struct SY_Ray_Parameter
+enum DXRenderState
+{
+	DXDepthState,
+	DXBlendState,
+	DXRasterizerState,
+	DXRenderState_Count,
+};
+
+struct DX_Ray_Parameter
 {
 	vector3f	startPoint;
 	vector3f	Direction;//必须是归一化过的
 };
 
-struct SY_QuadRang_Intersection
+struct DX_QuadRang_Intersection
 {
 	vector3f		firstPoint;
 	vector3f		secondPoint;
@@ -99,7 +99,7 @@ struct SY_QuadRang_Intersection
 	vector3f		sixthPoint;
 	vector3f		seventhPoint;
 	vector3f		eighthPoint;
-	SY_Ray_Parameter Ray;
+	DX_Ray_Parameter Ray;
 };
 
 struct Point_Intersection
@@ -108,80 +108,80 @@ struct Point_Intersection
 	vector3f		farPoint;
 };
 
-struct SY_Triangle_Param
+struct DX_Triangle_Param
 {
 	vector3f		v0;
 	vector3f		v1;
 	vector3f		v2;
 };
 
-struct SY_Triangle_Intersection
+struct DX_Triangle_Intersection
 {
-	SY_Triangle_Param	triangle;
-	SY_Ray_Parameter	ray;
+	DX_Triangle_Param	triangle;
+	DX_Ray_Parameter	ray;
 };
 
-struct SY_Plane_Parameter
+struct DX_Plane_Parameter
 {
 	vector3f point;
 	vector3f normal;
 };
-struct SY_Plane_Intersection
+struct DX_Plane_Intersection
 {
-	SY_Plane_Parameter	Plane;
-	SY_Ray_Parameter	Ray;
+	DX_Plane_Parameter	Plane;
+	DX_Ray_Parameter	Ray;
 };
-struct SY_3DCircle_Parameter
+struct DX_3DCircle_Parameter
 {
 	vector3f Normal;
 	vector3f Centre;
 	float Radius;
 };
-struct SY_3DCircle_Intersection
+struct DX_3DCircle_Intersection
 {
-	SY_3DCircle_Parameter Circle;
-	SY_Ray_Parameter Ray;
+	DX_3DCircle_Parameter Circle;
+	DX_Ray_Parameter Ray;
 };
-struct SY_LineSeg_Parameter
+struct DX_LineSeg_Parameter
 {
 	vector3f start;
 	vector3f end;
 };
-struct SY_LineSeg_Intersection
+struct DX_LineSeg_Intersection
 {
-	SY_LineSeg_Parameter line;
-	SY_Ray_Parameter Ray;
+	DX_LineSeg_Parameter line;
+	DX_Ray_Parameter Ray;
 };
-struct SY_Sphere_Intersection
+struct DX_Sphere_Intersection
 {
 	float		fSphereRadius;
-	SY_Ray_Parameter		Ray;
+	DX_Ray_Parameter		Ray;
 };
 //四面体结构，四个顶点
-struct SY_Tetrahedron_Intersection
+struct DX_Tetrahedron_Intersection
 {
 	vector3f			firstPoint;
 	vector3f			secondPoint;
 	vector3f			thirdPoint;
 	vector3f			forthPoint;
-	SY_Ray_Parameter	Ray;
+	DX_Ray_Parameter	Ray;
 };
-struct SY_Segment_Intersection
+struct DX_Segment_Intersection
 {
 	vector3f			firstPoint;
 	vector3f			secondPoint;
 	vector3f			thirdPoint;
 	vector3f			forthPoint;
-	SY_Ray_Parameter	Ray;
+	DX_Ray_Parameter	Ray;
 };
 
-struct SY_3DPoint_Intersection
+struct DX_3DPoint_Intersection
 {
 	vector3f			vPoint;
-	SY_Ray_Parameter	ray;
+	DX_Ray_Parameter	ray;
 };
 
-struct SY_Cone_Parameter//圆锥特征参数
+struct DX_Cone_Parameter//圆锥特征参数
 {
 	float fBaseRadius;
 	float fHeight;
@@ -190,25 +190,25 @@ struct SY_Cone_Parameter//圆锥特征参数
 	float fEndAngle;//when begin end angle = 2pi
 };
 
-enum SYTriType
+enum DXTriType
 {
-	SY_TRIANGLE_LIST = 1,
-	SY_TRIANGLE_STRIP,
-	SY_TRIANGLE_FAN,
-	SY_TRI_TYPE_NO_USE = 0xffffffff,
+	DX_TRIANGLE_LIST = 1,
+	DX_TRIANGLE_STRIP,
+	DX_TRIANGLE_FAN,
+	DX_TRI_TYPE_NO_USE = 0xffffffff,
 };
 
-enum SY_POST_PROCESS_TYPE
+enum DX_POST_PROCESS_TYPE
 {
-	SY_POST_DEFAULT_PROCESS,
-	SY_POST_NORMAL_PROCESS,
-	SY_POST_POSITION_PROCESS,
-	SY_POST_DEPTH_PROCESS,
-	SY_POST_TRANSPARENT_PROCESS,
-	SY_POST_PROCESS_COUNT,
+	DX_POST_DEFAULT_PROCESS,
+	DX_POST_NORMAL_PROCESS,
+	DX_POST_POSITION_PROCESS,
+	DX_POST_DEPTH_PROCESS,
+	DX_POST_TRANSPARENT_PROCESS,
+	DX_POST_PROCESS_COUNT,
 };
 
-typedef struct tag_sy_render_submodel
+typedef struct tag_dx_render_submodel
 {
 	DWORD	vstart;
 	DWORD	vcount;
@@ -218,11 +218,11 @@ typedef struct tag_sy_render_submodel
 	int		nTri_Num;
 	void*	pVideoMaterial;
 	BOOL		bShaderChange;
-	int	    hPixShader[SY_POST_PROCESS_COUNT];
+	int	    hPixShader[DX_POST_PROCESS_COUNT];
 	bool		bSharedMaterial; //标志是否是共享的材质
-}SYRenderSubModel;
+}DXRenderSubModel;
 
-typedef struct tag_syvertex3d		// 3d vertex declaration
+typedef struct tag_dxvertex3d		// 3d vertex declaration
 {
 	union
 	{
@@ -239,127 +239,127 @@ typedef struct tag_syvertex3d		// 3d vertex declaration
 
 	vector3f tangent;
 	vector3f binormal;
-} syvertex3d, SYVertex3D, *LPSYVERTEX3D;
+} dxvertex3d, DXVertex3D, *LPDXVERTEX3D;
 
-enum SYDepthStateType
+enum DXDepthStateType
 {
-	SYDepthState_Default = 0,
-	SYDepthEnable_LessEqualPass,
-	SYDepthEnable_LessEqualPass_DepthNoWrite,
-	SYDepthLessEqual_Mask_01,
-	SYDepthLessEqual_Mask_FF = SYDepthLessEqual_Mask_01 + 0xfe,
+	DXDepthState_Default = 0,
+	DXDepthEnable_LessEqualPass,
+	DXDepthEnable_LessEqualPass_DepthNoWrite,
+	DXDepthLessEqual_Mask_01,
+	DXDepthLessEqual_Mask_FF = DXDepthLessEqual_Mask_01 + 0xfe,
 
-	SYDepthLessEqual_NoWrite_Mask_01,
-	SYDepthLessEqual_NoWrite_Mask_FF = SYDepthLessEqual_NoWrite_Mask_01 + 0xfe,
+	DXDepthLessEqual_NoWrite_Mask_01,
+	DXDepthLessEqual_NoWrite_Mask_FF = DXDepthLessEqual_NoWrite_Mask_01 + 0xfe,
 
-	SYDepthDisable_WriteMask_01,
-	SYDepthDisable_WriteMask_FF = SYDepthDisable_WriteMask_01 + 0xfe,
+	DXDepthDisable_WriteMask_01,
+	DXDepthDisable_WriteMask_FF = DXDepthDisable_WriteMask_01 + 0xfe,
 
-	SYDepthDisable,
-	SYDepthStateCount,
+	DXDepthDisable,
+	DXDepthStateCount,
 };
 
-enum SYBlendStateType
+enum DXBlendStateType
 {
-	SYBlendState_Default = 0,
-	SYBlendDisable,
-	SYBlend_Mix,
-	SYBlend_Trans_Mix,
-	SYBlend_Add,
-	SYBlend_Enhance,
+	DXBlendState_Default = 0,
+	DXBlendDisable,
+	DXBlend_Mix,
+	DXBlend_Trans_Mix,
+	DXBlend_Add,
+	DXBlend_Enhance,
 
-	SYBlend_Effect_Fire1,
-	SYBlend_Effect_Fire2,
-	SYBlend_Test,
+	DXBlend_Effect_Fire1,
+	DXBlend_Effect_Fire2,
+	DXBlend_Test,
 
-	SYBlendStateCount,
+	DXBlendStateCount,
 };
 
-enum SYRasterizerStateType
+enum DXRasterizerStateType
 {
-	SYRasterizer_Default = 0,
-	SYRas_Line_MultiSample,
-	SYRas_Line_NoMultiSample,
-	SYRas_Solid_CullBack_MultiSample,
-	SYRas_Solid_CullBack_NoMultiSample,
-	SYRas_Solid_CullFront_MultiSample,
-	SYRas_Solid_CullFront_NoMultiSample,
-	SYRas_Solid_NoCullBack_MultiSample,
-	SYRas_Solid_NoCullBack_NoMultiSample,
-	SYRas_WireFrame_CullBack_MultiSample,
-	SYRas_WireFrame_CullBack_NoMultiSample,
-	SYRas_WireFrame_NoCullBack_MultiSample,
-	SYRas_WireFrame_NoCullBack_NoMultiSample,
-	SYRasStateCount,
+	DXRasterizer_Default = 0,
+	DXRas_Line_MultiSample,
+	DXRas_Line_NoMultiSample,
+	DXRas_Solid_CullBack_MultiSample,
+	DXRas_Solid_CullBack_NoMultiSample,
+	DXRas_Solid_CullFront_MultiSample,
+	DXRas_Solid_CullFront_NoMultiSample,
+	DXRas_Solid_NoCullBack_MultiSample,
+	DXRas_Solid_NoCullBack_NoMultiSample,
+	DXRas_WireFrame_CullBack_MultiSample,
+	DXRas_WireFrame_CullBack_NoMultiSample,
+	DXRas_WireFrame_NoCullBack_MultiSample,
+	DXRas_WireFrame_NoCullBack_NoMultiSample,
+	DXRasStateCount,
 };
 
-enum SYSampleStateType
+enum DXSampleStateType
 {
-	SYSample_Default = 0,
-	SYSample_Point_Clamp,
-	SYSample_Point_Wrap,
-	SYSample_Point_Mirror,
-	SYSample_Point_Border,
+	DXSample_Default = 0,
+	DXSample_Point_Clamp,
+	DXSample_Point_Wrap,
+	DXSample_Point_Mirror,
+	DXSample_Point_Border,
 
-	SYSample_Line_Clamp,
-	SYSample_Line_Wrap,
-	SYSample_Line_Mirror,
-	SYSample_Line_Border,
+	DXSample_Line_Clamp,
+	DXSample_Line_Wrap,
+	DXSample_Line_Mirror,
+	DXSample_Line_Border,
 
-	SYSample_Anisotropic_Clamp,
-	SYSample_Anisotropic_Wrap,
-	SYSample_Anisotropic_Mirror,
-	SYSample_Anisotropic_Border,
+	DXSample_Anisotropic_Clamp,
+	DXSample_Anisotropic_Wrap,
+	DXSample_Anisotropic_Mirror,
+	DXSample_Anisotropic_Border,
 
-	SYSample_NoMipMap_Anisotropic_Clamp,
-	SYSample_NoMipMap_Anisotropic_Wrap,
-	SYSample_NoMipMap_Anisotropic_Mirror,
-	SYSample_NoMipMap_Anisotropic_Border,
-	SYSampleStateCount,
+	DXSample_NoMipMap_Anisotropic_Clamp,
+	DX_NoMipMap_Anisotropic_Wrap,
+	DXSample_NoMipMap_Anisotropic_Mirror,
+	DXSample_NoMipMap_Anisotropic_Border,
+	DXSampleStateCount,
 };
 
 
-enum SYEffectVariableType
+enum DXEffectVariableType
 {
-	SYVar_BOOL = 0,
-	SYVar_INT,
-	SYVar_FLOAT,
+	DXVar_BOOL = 0,
+	DXVar_INT,
+	DXVar_FLOAT,
 
-	SYVar_BOOL_Array,
-	SYVar_INT_Array,
-	SYVar_FLOAT_Array,
+	DXVar_BOOL_Array,
+	DX_INT_Array,
+	DXVar_FLOAT_Array,
 
-	SYVar_BOOL_Vector,
-	SYVar_INT_Vector,
-	SYVar_FLOAT_Vector,
+	DXVar_BOOL_Vector,
+	DXVar_INT_Vector,
+	DXVar_FLOAT_Vector,
 
-	SYVar_BOOL_Vector_Array,
-	SYVar_INT_Vector_Array,
-	SYVar_FLOAT_Vector_Array,
+	DXVar_BOOL_Vector_Array,
+	DXVar_INT_Vector_Array,
+	DXVar_FLOAT_Vector_Array,
 
-	SYVar_Matrix,
-	SYVar_Matrix_Array,
+	DXVar_Matrix,
+	DXVar_Matrix_Array,
 };
 
-struct SYHalDef32
+struct DXHalDef32
 {
 	int		m_hTex;
 	RECT	m_rtBound;
 	int		m_nOriginX;
 	int		m_nOriginY;
 	BOOL 	m_bRelease;
-	SYHalDef32()
+	DXHalDef32()
 	{
-		memset(this, 0, sizeof(SYHalDef32));
+		memset(this, 0, sizeof(DXHalDef32));
 	}
 };
-struct SYEffectTechDesc
+struct DXEffectTechDesc
 {
 	LPCTSTR pstrName;
 	int vertexType;
 };
 
-struct SYDistortionParam
+struct DXDistortionParam
 {
 	float fRadial;//径向畸变系数
 	float fCentrifugal1;//离心畸变系数
@@ -370,7 +370,7 @@ struct SYDistortionParam
 	float fCenterY;//中心偏移[0-1]
 };
 
-struct SYRenderInfo
+struct DXRenderInfo
 {
 	size_t				nRenderCount;
 	size_t				nTriangleCount;
@@ -500,7 +500,7 @@ struct createTextureIn
 {
 	int nWidth;
 	int nHeight;
-	SYTextureType nType;
+	DXTextureType nType;
 	DWORD* pBuffer;
 };
 struct createSwapChainIn
@@ -524,7 +524,7 @@ struct copyTexture
 	int nDesHeight;
 	int eMode;
 };
-struct SYDumpIn
+struct DXDumpIn
 {
 	int		hTexture;
 	LPCTSTR szFile;
@@ -561,13 +561,13 @@ struct getTextureInfoOut
 	int* nType;
 	int* nMipMap;
 };
-struct SYCreateShadeIn
+struct DXCreateShadeIn
 {
 	LPCTSTR		shaderName;
 	LPCSTR		shaderCode;
 	LPCTSTR		shaderFile;
-	SYShaderType	nType;
-	SYVertexType*	pType;
+	DXShaderType	nType;
+	DXVertexType*	pType;
 	BOOL			bLock;
 	BOOL			bComplied;
 	size_t		compliedBinSize;
@@ -582,22 +582,22 @@ struct clearScreenIn
 { 
 	DWORD		nColor;
 	float		fZValue;
-	SYClearRTType	nType;
+	DXClearRTType	nType;
 };
 struct getRenderTargetIn
 {
 	int* phRT;
 	int* phDepth;
 };
-enum SYTextureProcessType
+enum DXTextureProcessType
 {
-	SYTextureConvertFormat,
-	SYTextureBlur_5Pt,
-	SYTextureBlur_9Pt,
-	SY_FIRST_KEY_MIX,
-	SY_UYVY_BRIGHT,
+	DXTextureConvertFormat,
+	DXTextureBlur_5Pt,
+	DXTextureBlur_9Pt,
+	DX_FIRST_KEY_MIX,
+	DX_UYVY_BRIGHT,
 };
-struct SYTexProcessIn
+struct DXTexProcessIn
 {
 	int			hSrcTex;
 	int			hSrcKey;
@@ -605,7 +605,7 @@ struct SYTexProcessIn
 	const RECT*	pSrcRt;
 	const RECT*	pDstRt;
 	void*		pData;
-	SYTextureProcessType nType;
+	DXTextureProcessType nType;
 	FIELD		nSrcField;
 	FIELD		nDstField;
 };
@@ -635,7 +635,7 @@ struct renderTextureIn
 	float		fAlpha;
 	FIELD		nField;
 };
-struct SYEasyRenderIn
+struct DXEasyRenderIn
 {
 	int hVertexBuffer;
 	int hIndexBuffer;
@@ -645,7 +645,7 @@ struct SYEasyRenderIn
 	int nStart;
 	int nVertexCount;
 };
-struct SYRenderIn
+struct DXRenderIn
 {
 	int hVertexBuffer;
 	int hIndexBuffer;
@@ -654,43 +654,43 @@ struct SYRenderIn
 	int PrimitiveCount;
 	int nVertexCount;
 };
-struct SYRenderInstanceIn
+struct DXRenderInstanceIn
 {
-	SYRenderIn RenderData;
+	DXRenderIn RenderData;
 	int hInstanceBuffer;
 	int nInstanceCount;
 };
-struct SYModifyBufferIn
+struct DXModifyBufferIn
 {
 	int hBuffer;
 	void* pBuffer;
 };
-struct SYSetShaderIn
+struct DXSetShaderIn
 {
-	SYShaderType nShaderType;
+	DXShaderType nShaderType;
 	int hShader;
 };
-struct SYRenderMeshIn
+struct DXRenderMeshIn
 {
 	int hMesh;
 	int nDrawCount;//-1为全部
 	const unsigned int* pnSubset;
 };
-struct SYGetMeshInfoOut
+struct DXGetMeshInfoOut
 {
 	int nSubSetCount;
 };
-struct SYHitTestMeshOut
+struct DXHitTestMeshOut
 {
 	float	fDist;
 	int		nHitPart;
 };
-struct SYRenderStateIn
+struct DXRenderStateIn
 {
 	int nType;
 	int nValue;
 };
-struct SYSampleStateIn
+struct DXSampleStateIn
 {
 	int nSampler;
 	int nState;
@@ -701,60 +701,60 @@ struct createTextureFromFileIn
 	TCHAR* pPath;
 	BOOL bNormalMap;
 };
-struct SYSetConstBufferIn
+struct DXSetConstBufferIn
 {
 	int hConstBuffer;
 	int hRegIndex;
-	SYShaderType nShaderType;
+	DXShaderType nShaderType;
 };
-typedef struct SYSetConstBufferIn SYSetShaderTexIn;
+typedef struct DXSetConstBufferIn DXSetShaderTexIn;
 
-struct SYHitTestMeshIn
+struct DXHitTestMeshIn
 {
 	int hMesh;
 	const float3* pStart;
 	const float3* pDir;
 };
-struct SYGetMeshBoxIn
+struct DXGetMeshBoxIn
 {
 	int hMesh;
 	float3* pMin;
 	float3* pMax;
 };
-struct SYTextOutIn
+struct DXTextOutIn
 {
 	LPCTSTR strText;
 	RECT* rtText;
 	DWORD dwColor;
 };
-struct SYRender2D
+struct DXRender2D
 {
-	SYHalDef32* pTex;
+	DXHalDef32* pTex;
 	const matrix4f* pWorldMatrix;
 	const RECT* pDstRt;
 	BOOL bAdustColor;
 	float fAlpha;
 };
-struct SYGetMemTexBufferOut
+struct DXGetMemTexBufferOut
 {
 	void* ptr;
 	DWORD pitch;
 };
-struct SYCreateEffectUnitIn
+struct DXCreateEffectUnitIn
 {
 	LPCTSTR			pEffectName;
-	SYEffectTechDesc* pTechDesc;
+	DXEffectTechDesc* pTechDesc;
 	int				nTechs;
 };
-struct SYCreateBufferIn
+struct DXCreateBufferIn
 { 
 	int nVertexSize;
 	int nVertexNum;
 	void* pBuffer;
-	SYBufferType nType;
+	DXBufferType nType;
 	int nPriType; 
 };
-struct SYEffectRenderIn
+struct DXEffectRenderIn
 {
 	int		hEffect;
 	LPCTSTR	techName;
@@ -766,7 +766,7 @@ struct SYEffectRenderIn
 	int		nVertexCount;
 	int		nIndexCount;
 };
-struct SYEffectRenderInstanceIn
+struct DXEffectRenderInstanceIn
 {
 	int		hEffect;
 	LPCTSTR techName;
@@ -780,27 +780,27 @@ struct SYEffectRenderInstanceIn
 	int		hInstanceBuf;
 	int		nInstanceCount;
 };
-struct SYEffectSetTextureIn
+struct DXEffectSetTextureIn
 {
 	int			hEffect;
 	int			hTex;
 	const char*	szTexName;
 };
-struct SYEffectSetConstBufferIn
+struct DXEffectSetConstBufferIn
 {
 	int			hEffect;
 	int			hConstBuffer;
 	const char*	szCBName;
 };
-struct SYDynamicTextureIn
+struct DXDynamicTextureIn
 {
-	SYHalDef32*	pTarget;
-	SYHalDef32*	pMask;
-	SYHalDef32*	pSrc;
+	DXHalDef32*	pTarget;
+	DXHalDef32*	pMask;
+	DXHalDef32*	pSrc;
 	matrix4f*	pSrcMat;
 	BOOL		bRepeat;
 	BOOL		bUseColorAlpha;//动态贴图是否使用颜色属性的透明度
-	SYDynamicTextureIn()
+	DXDynamicTextureIn()
 	{
 		pTarget = NULL;
 		pMask = NULL;
@@ -810,13 +810,13 @@ struct SYDynamicTextureIn
 		bUseColorAlpha = FALSE;
 	}
 };
-struct SYRenderTex
+struct DXRenderTex
 {
 	int				hSrcTex;
 	int				hMaskTex;
 	const matrix4f*	pMatrix;
 };
-struct SY3DVisionTex
+struct DX3DVisionTex
 {
 	int			hDstTex;
 	const RECT*	pDstRt;
@@ -824,7 +824,7 @@ struct SY3DVisionTex
 	int			hRightTex;
 	const RECT*	pSrcRt;
 };
-struct SYMaskRenderIn
+struct DXMaskRenderIn
 {
 	int		hTarget;
 	int		hSrc;
@@ -832,12 +832,12 @@ struct SYMaskRenderIn
 	rectf*	pCutRt;
 	RECT*	pDstRt;
 };
-struct SYEffectSetVariableIn
+struct DXEffectSetVariableIn
 {
 	int			hEffect;
 	const void*	pVariable;
 	int			nCount;
-	SYEffectVariableType nType;
+	DXEffectVariableType nType;
 	const char*	szVarName;
 };
 typedef struct shaderhash

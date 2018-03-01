@@ -117,7 +117,7 @@ public:
 	BOOL SetIndexBuffer(int hIndexBuffer);
 	bool	SetRenderState(int nStateType,int nState);
 	bool SetSamplerState(int nState,int nType,int nSampler);
-	BOOL SetShaderTexture(int hTex,SYShaderType nShaderType,int nRegIndex);
+	BOOL SetShaderTexture(int hTex,DXShaderType nShaderType,int nRegIndex);
 	BOOL SetShader(int nShaderType,int hShader);
 	int	SetConstBuffer(size_t nType,size_t  nIndex,int hBuffer){return pConstBuffer[nType][nIndex] = hBuffer;}
 
@@ -137,8 +137,8 @@ protected:
 	//state
 	int						hNowRenderTarget;
 	int						hNowDepth;
-	int						pNowState[SYRenderState_Count];
-	int						pSpritState[SYRenderState_Count];
+	int						pNowState[DXRenderState_Count];
+	int						pSpritState[DXRenderState_Count];
 	int						pNowSamplerState[3][16];//vs,ps,gs
 	int						nNowPriType;
 	int						pShader[3];
@@ -172,14 +172,14 @@ struct SY_DeviceSoft
 	SYDeviceContex  defaultContext;
 ////////////////////////////////////////////////////////////////////////////////
 //render info
-	SYRenderInfo			info;
+	DXRenderInfo			info;
 ////////////////////////////////////////////////////////////////////////////////
 };
 
 struct SYSoftTexture 
 {
 	TCHAR*						pTexFile;
-	SYTextureType				nType;
+	DXTextureType				nType;
 	BOOL						bRecentRT;
 	CSYBuffer*					pTexture;
 };
@@ -187,7 +187,7 @@ struct SYSoftTexture
 typedef SYSoftTexture SYSoftSwapChain ;
 struct SYSoftBuffer
 {
-	SYBufferType nType;
+	DXBufferType nType;
 	int			nVertexSize;
 	int			nBufferSize;
 	char*    	pBuffer;
@@ -207,13 +207,13 @@ inline void ReleaseBuffer(SY_DeviceSoft* pDevice,int hBuffer)
 	SYSoftBuffer* pBuffer = (SYSoftBuffer*)SYHTable_RemoveAt(&pDevice->htBuffer,hBuffer);
 	switch(pBuffer->nType)
 	{
-	case SYVertexBuffer:
+	case DXVertexBuffer:
 		pDevice->defaultContext.SetVertexBuffer((pDevice->defaultContext.GetVertexBuffer() == hBuffer) ? 0 : pDevice->defaultContext.GetVertexBuffer());
 		break;
-	case SYIndexBuffer:
+	case DXIndexBuffer:
 		pDevice->defaultContext.SetIndexBuffer((pDevice->defaultContext.GetIndexBuffer() == hBuffer) ? 0 : pDevice->defaultContext.GetIndexBuffer());
 		break;
-	case SYConstBuffer:
+	case DXConstBuffer:
 		for(int i = 0; i < 3; i++)
 		{
 			for(int j = 0; j < 14; j++)

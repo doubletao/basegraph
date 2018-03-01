@@ -4,7 +4,7 @@
 #define LINE_CIRCLE_DEVIATION	6.f
 
 BOOL IntersectTriangle( const vector3f* orig,const vector3f* dir,const vector3f* v0,const vector3f* v1,const vector3f* v2, vector3f* pOutPt );
-int Intersect_Triangle(IN const SY_Triangle_Intersection* pIn , OUT Point_Intersection* pOutPt )
+int Intersect_Triangle(IN const DX_Triangle_Intersection* pIn , OUT Point_Intersection* pOutPt )
 {
 	vector3f orig = pIn->ray.startPoint;
 	vector3f dir = pIn->ray.Direction;
@@ -68,7 +68,7 @@ bool PointInCone(IN const vector3f& snapPoint,IN float heightMax, IN float heigh
 }
 
 //int Intersection_Cone(IN const SY_Cone_Intersection* pIn,OUT Point_Intersection* pOut)
-BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const SY_Cone_Parameter* pCone,SYHitPoint* pHitPoint )
+BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const DX_Cone_Parameter* pCone,SYHitPoint* pHitPoint )
 {
 	int return_result=0;
 	const float Radius_max=pCone->fBaseRadius > pCone->fTopRadius ? pCone->fBaseRadius : pCone->fTopRadius;
@@ -126,7 +126,7 @@ BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const SY_Cone_Pa
 	return return_result;
 }
 
-int Intersection_Plane(IN const SY_Plane_Intersection* pIn, OUT Point_Intersection* pOut)
+int Intersection_Plane(IN const DX_Plane_Intersection* pIn, OUT Point_Intersection* pOut)
 {
 	int return_result = 0;
 	float IsIntersec = float3DotProduct(&(pIn->Plane.normal), &(pIn->Ray.Direction));
@@ -149,10 +149,10 @@ int Intersection_Plane(IN const SY_Plane_Intersection* pIn, OUT Point_Intersecti
 	return return_result;
 }
 
-int Intersection_3DCircle(IN const SY_3DCircle_Intersection* pIn, OUT Point_Intersection* pOut)
+int Intersection_3DCircle(IN const DX_3DCircle_Intersection* pIn, OUT Point_Intersection* pOut)
 {
 	int return_result = NO_INTERSECTION;
-	SY_Plane_Intersection CirclePlane;
+	DX_Plane_Intersection CirclePlane;
 	CirclePlane.Plane.normal = pIn->Circle.Normal;
 	CirclePlane.Plane.point = pIn->Circle.Centre;
 	CirclePlane.Ray = pIn->Ray;
@@ -189,10 +189,10 @@ int Intersection_3DCircle(IN const SY_3DCircle_Intersection* pIn, OUT Point_Inte
 	return return_result;
 }
 
-int Intersection_LineSeg(IN const SY_LineSeg_Intersection* pIn,OUT Point_Intersection* pOut)
+int Intersection_LineSeg(IN const DX_LineSeg_Intersection* pIn,OUT Point_Intersection* pOut)
 {
 	int return_result = NO_INTERSECTION;
-	SY_LineSeg_Intersection Int = *pIn;
+	DX_LineSeg_Intersection Int = *pIn;
 	vector3f v ;
 	vector3f lineDir, rayDir;
 	vector3f vRay = Int.line.start - Int.line.end;
@@ -221,10 +221,10 @@ int Intersection_LineSeg(IN const SY_LineSeg_Intersection* pIn,OUT Point_Interse
 	return return_result;
 }
 
-int Intersection_RaySeg( IN const SY_LineSeg_Intersection* pIn, OUT Point_Intersection* pOut )
+int Intersection_RaySeg( IN const DX_LineSeg_Intersection* pIn, OUT Point_Intersection* pOut )
 {	
 	int return_result = NO_INTERSECTION;
-	SY_LineSeg_Intersection Int = *pIn;
+	DX_LineSeg_Intersection Int = *pIn;
 	vector3f v ;
 	vector3f lineDir, rayDir;
 	vector3f vRay = Int.line.start - Int.line.end;
@@ -254,10 +254,10 @@ int Intersection_RaySeg( IN const SY_LineSeg_Intersection* pIn, OUT Point_Inters
 	return return_result;
 }
 
-int Intersection_Sphere(IN const SY_Sphere_Intersection* pIn, OUT Point_Intersection* pOut)
+int Intersection_Sphere(IN const DX_Sphere_Intersection* pIn, OUT Point_Intersection* pOut)
 {
 	int return_result = NO_INTERSECTION;
-	SY_Sphere_Intersection Int = *pIn;
+	DX_Sphere_Intersection Int = *pIn;
 	vector3f rayDir = pIn->Ray.Direction;
 	vector3f stPointToCenter;
 	stPointToCenter = - Int.Ray.startPoint;
@@ -276,9 +276,9 @@ int Intersection_Sphere(IN const SY_Sphere_Intersection* pIn, OUT Point_Intersec
 	return return_result;
 }
 
-int Intersection_3DPoint(IN const SY_3DPoint_Intersection* pIn)
+int Intersection_3DPoint(IN const DX_3DPoint_Intersection* pIn)
 {
-	SY_3DPoint_Intersection Int = *pIn;
+	DX_3DPoint_Intersection Int = *pIn;
 	vector3f pointToStart = Int.vPoint - Int.ray.startPoint;
 	float projection = float3DotProduct(&pointToStart,&Int.ray.Direction);
 	float length = float3DotProduct(&pointToStart, &pointToStart);
@@ -289,10 +289,10 @@ int Intersection_3DPoint(IN const SY_3DPoint_Intersection* pIn)
 	return NO_INTERSECTION;
 }
 
-int Intersection_Tetrahedron(IN const SY_Tetrahedron_Intersection* pIn,OUT Point_Intersection* pOut)
+int Intersection_Tetrahedron(IN const DX_Tetrahedron_Intersection* pIn,OUT Point_Intersection* pOut)
 {
 	int return_result = NO_INTERSECTION; 
-	SY_Triangle_Intersection triangle_Int;
+	DX_Triangle_Intersection triangle_Int;
 	triangle_Int.triangle.v0 = pIn->firstPoint;
 	triangle_Int.triangle.v1 = pIn->secondPoint;
 	triangle_Int.triangle.v2 = pIn->forthPoint;
@@ -341,10 +341,10 @@ BOOL GetRaySegment(const SYRay* pRay,const float3& v1,const float3& v2,const flo
 	}
 	return TRUE;
 }
-int Intersection_Segment(IN const SY_Segment_Intersection* pIn,OUT Point_Intersection* pOut)
+int Intersection_Segment(IN const DX_Segment_Intersection* pIn,OUT Point_Intersection* pOut)
 {
 	int return_result = NO_INTERSECTION; 
-	SY_Triangle_Intersection triangle_Int;
+	DX_Triangle_Intersection triangle_Int;
 	triangle_Int.triangle.v0 = pIn->firstPoint;
 	triangle_Int.triangle.v1 = pIn->secondPoint;
 	triangle_Int.triangle.v2 = pIn->forthPoint;
@@ -360,10 +360,10 @@ int Intersection_Segment(IN const SY_Segment_Intersection* pIn,OUT Point_Interse
 	return return_result;
 }
 
-int Intersection_Quad(IN const SY_QuadRang_Intersection* pIn)
+int Intersection_Quad(IN const DX_QuadRang_Intersection* pIn)
 {
 	int return_result = NO_INTERSECTION; 
-	SY_Segment_Intersection segmentInt;
+	DX_Segment_Intersection segmentInt;
 	segmentInt.firstPoint	= pIn->firstPoint	;
 	segmentInt.secondPoint	= pIn->secondPoint	;
 	segmentInt.thirdPoint	= pIn->thirdPoint	;
@@ -433,34 +433,34 @@ int GetPoint_Intersection(IN const void* paramin,OUT Point_Intersection* pOut,co
 	switch(type) 
 	{
 	case RAY_TO_3DCIRCLE:
-		return_result = Intersection_3DCircle((SY_3DCircle_Intersection*)paramin, pOut);
+		return_result = Intersection_3DCircle((DX_3DCircle_Intersection*)paramin, pOut);
 		break;
 	case RAY_TO_LINE_SEG:
-		return_result = Intersection_LineSeg((SY_LineSeg_Intersection*)paramin,pOut);
+		return_result = Intersection_LineSeg((DX_LineSeg_Intersection*)paramin,pOut);
 		break;
 	case RAY_TO_SPHERA:
-		return_result = Intersection_Sphere((SY_Sphere_Intersection*)paramin,pOut);
+		return_result = Intersection_Sphere((DX_Sphere_Intersection*)paramin,pOut);
 		break;
 	case RAY_TO_PLANE:
-		return_result = Intersection_Plane((SY_Plane_Intersection*)paramin,pOut);
+		return_result = Intersection_Plane((DX_Plane_Intersection*)paramin,pOut);
 		break;
 	case RAY_TO_TRIANGLE:
-		return_result = Intersect_Triangle((SY_Triangle_Intersection*)paramin,pOut);
+		return_result = Intersect_Triangle((DX_Triangle_Intersection*)paramin,pOut);
 		break;
 	case RAY_TO_3DPOINT:
-		return_result = Intersection_3DPoint((SY_3DPoint_Intersection*)paramin);
+		return_result = Intersection_3DPoint((DX_3DPoint_Intersection*)paramin);
 		break;
 	case RAY_TO_RAY_SEG:
-		return_result = Intersection_RaySeg( (SY_LineSeg_Intersection*)paramin, pOut );
+		return_result = Intersection_RaySeg( (DX_LineSeg_Intersection*)paramin, pOut );
 		break;
 	case RAY_TO_QUADRANGULAR:
-		return_result = Intersection_Quad( (SY_QuadRang_Intersection*)paramin );
+		return_result = Intersection_Quad( (DX_QuadRang_Intersection*)paramin );
 		break;
 	case RAY_TO_SEGMENT:
-		return_result = Intersection_Segment((SY_Segment_Intersection*)paramin,pOut);
+		return_result = Intersection_Segment((DX_Segment_Intersection*)paramin,pOut);
 		break;
 	case RAY_TO_TETRAHEDRON:
-		return_result = Intersection_Tetrahedron((SY_Tetrahedron_Intersection*)paramin,pOut);
+		return_result = Intersection_Tetrahedron((DX_Tetrahedron_Intersection*)paramin,pOut);
 		break;
 	default:
 		break;
@@ -470,7 +470,7 @@ int GetPoint_Intersection(IN const void* paramin,OUT Point_Intersection* pOut,co
 
 BOOL IntersectTriangle( const vector3f* orig,const vector3f* dir,const vector3f* v0,const vector3f* v1,const vector3f* v2, vector3f* pOutPt )
 {
-	SY_Triangle_Intersection Int;
+	DX_Triangle_Intersection Int;
 	Int.ray.startPoint = *orig;
 	Int.ray.Direction = *dir;
 	Int.triangle.v0 = *v0;
@@ -527,7 +527,7 @@ void Generate_Quatn_BetweenDir( OUT SYQuatn* pqQuatn, IN vector3f* pvStartDir, I
 	SYQuatn_FromAngleAxis( pqQuatn, &vAxis, (float)fAngle );
 }
 
-void GetCubeIntersection(const vector3f* center,float fHeight,SY_QuadRang_Intersection* pInt,const matrix4f* pMatrix /*= NULL*/)
+void GetCubeIntersection(const vector3f* center,float fHeight,DX_QuadRang_Intersection* pInt,const matrix4f* pMatrix /*= NULL*/)
 {
 	matrix4f worldMatrix = *pMatrix;
 	pInt->firstPoint.x = center->x - fHeight / 2; //0:x- y+ z-
@@ -715,9 +715,9 @@ BASEGRAPH_SCENE_RENDER_API int GetRaySphereInt( const SYRay* pRay,float fRadius,
 }
 
 int SY3DModelHitTest( int nSubModel,
-					  const SYRenderSubModel* pSubModelDes,
+					  const DXRenderSubModel* pSubModelDes,
 					  const DWORD* pIndex,
-					  const SYVertex3D* pVertex,          //物件顶点
+					  const DXVertex3D* pVertex,          //物件顶点
 					  const float3* pvScreenPt,	//屏幕坐标
 					  const SYSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 					  float3* pOutPt,BOOL isHitReturn)
@@ -730,9 +730,9 @@ int SY3DModelHitTest( int nSubModel,
 
 
  BASEGRAPH_SCENE_RENDER_API int SY3DRayHitModel( int nSubModel,
-						  const SYRenderSubModel* pSubModelDes,
+						  const DXRenderSubModel* pSubModelDes,
 						  const DWORD* pIndex,
-						  const SYVertex3D* pVertex,          //物件顶点
+						  const DXVertex3D* pVertex,          //物件顶点
 						  const SYRay* pRay,	
 						  const SYSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 						  float3* pOutPt,BOOL isHitReturn)
@@ -749,7 +749,7 @@ int SY3DModelHitTest( int nSubModel,
 		 DWORD dwStartIndex = pSubModelDes[j].istart;
 		 int nFirPtIndex = 0, nSedPtIndex = 0, nThrPtIndex = 0;
 		 float3 FirstPoint = { 0, 0, 0 }, SecondPoint = { 0, 0, 0 }, ThirdPoint = { 0, 0, 0 };
-		 if ( pSubModelDes[j].nTri_Type == SY_TRIANGLE_LIST )
+		 if ( pSubModelDes[j].nTri_Type == DX_TRIANGLE_LIST )
 		 {
 			 for ( int i = 0; i < nTri_Num; i++ )
 			 {
@@ -769,7 +769,7 @@ int SY3DModelHitTest( int nSubModel,
 				 }
 			 }
 		 }
-		 else if ( pSubModelDes[j].nTri_Type == SY_TRIANGLE_FAN )
+		 else if ( pSubModelDes[j].nTri_Type == DX_TRIANGLE_FAN )
 		 {
 			 nFirPtIndex   = pIndex[dwStartIndex];
 			 for ( int i = 0; i < nTri_Num; i++ )
@@ -787,7 +787,7 @@ int SY3DModelHitTest( int nSubModel,
 				 }
 			 }
 		 }
-		 else if ( pSubModelDes[j].nTri_Type == SY_TRIANGLE_STRIP )
+		 else if ( pSubModelDes[j].nTri_Type == DX_TRIANGLE_STRIP )
 		 {
 			 for ( int i = 0; i < nTri_Num; i++ )
 			 {

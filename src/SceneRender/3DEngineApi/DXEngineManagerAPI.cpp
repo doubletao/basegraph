@@ -11,7 +11,7 @@
 CSY3DLineManager* pLineManager = NULL;
 TCHAR g_szPathShader[MAX_PATH] = {0};	
 
-SYDeviceType g_dRenderType;
+DXDeviceType g_dRenderType;
 //////////////////////////////////////////////////////////////////////////
 //CTextureSet封装类
 CTextureSet::CTextureSet()
@@ -171,13 +171,13 @@ void CSY3DLineManager::InitialManager(int hDevice)
 {
 	m_hDevice = hDevice;
 	m_pLineVertex = new SYEasyVertex[m_MaxVertexSize];
-	m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_MaxVertexSize,m_pLineVertex,SYVertexBuffer,LINE_LIST);
+	m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_MaxVertexSize,m_pLineVertex,DXVertexBuffer,LINE_LIST);
 	m_nVedioVertexNum = m_MaxVertexSize;
 	{
 		matrix4f temp;
 		matrix4f_identity(&temp);
 
-		m_hMatrixBuffer = DX3DEngine_CreateBuffer(hDevice,sizeof(matrix4f),1,&temp,SYConstBuffer);
+		m_hMatrixBuffer = DX3DEngine_CreateBuffer(hDevice,sizeof(matrix4f),1,&temp,DXConstBuffer);
 
 		LPCTSTR strPath = g_szPathShader;
 		size_t nCount = _tcsclen(VS_FILE) + _tcsclen(g_szPathShader) + 1;
@@ -196,8 +196,8 @@ void CSY3DLineManager::InitialManager(int hDevice)
 		fclose(pVSFile);
 		vsStr[len] = 0;
 
-		SYVertexType nType = SYVertex_POS_COLOR_TEX;
-		m_hVertexShader = DX3DEngine_CreateShaderFromString(hDevice,FALSE,_T("Easy_VS"),vsStr,SYShaderType_VertexShader,&nType);
+		DXVertexType nType = DXVertex_POS_COLOR_TEX;
+		m_hVertexShader = DX3DEngine_CreateShaderFromString(hDevice,FALSE,_T("Easy_VS"),vsStr,DXShaderType_VertexShader,&nType);
 		SAFEDELETE_ARRAY(vsPath);
 		SAFEDELETE_ARRAY(vsStr);
 
@@ -217,7 +217,7 @@ void CSY3DLineManager::InitialManager(int hDevice)
 		fclose(pPSFile);
 		psStr[len] = 0;
 
-		m_hPixShader = DX3DEngine_CreateShaderFromString(hDevice,FALSE,_T("Easy_PS"),psStr,SYShaderType_PixelShader);
+		m_hPixShader = DX3DEngine_CreateShaderFromString(hDevice,FALSE,_T("Easy_PS"),psStr,DXShaderType_PixelShader);
 		SAFEDELETE_ARRAY(psPath);
 		SAFEDELETE_ARRAY(psStr);
 	}
@@ -226,7 +226,7 @@ void CSY3DLineManager::InitialManager(int hDevice)
 		matrix4f_identity(&temp[0]);
 		matrix4f_identity(&temp[1]);
 
-		m_hMatrixBufferfog = DX3DEngine_CreateBuffer(hDevice,sizeof(matrix4f)*2,1,temp,SYConstBuffer);
+		m_hMatrixBufferfog = DX3DEngine_CreateBuffer(hDevice,sizeof(matrix4f)*2,1,temp,DXConstBuffer);
 
 		LPCTSTR strPath = g_szPathShader;
 		size_t nCount = _tcsclen(VS_FILE_FOG) + _tcsclen(g_szPathShader) + 1;
@@ -245,8 +245,8 @@ void CSY3DLineManager::InitialManager(int hDevice)
 		fclose(pVSFile);
 		vsStr[len] = 0;
 
-		SYVertexType nType = SYVertex_POS_COLOR_TEX;
-		m_hVertexShaderfog = DX3DEngine_CreateShaderFromString(hDevice,FALSE,_T("Easy2_VS"),vsStr,SYShaderType_VertexShader,&nType);
+		DXVertexType nType = DXVertex_POS_COLOR_TEX;
+		m_hVertexShaderfog = DX3DEngine_CreateShaderFromString(hDevice,FALSE,_T("Easy2_VS"),vsStr,DXShaderType_VertexShader,&nType);
 		SAFEDELETE_ARRAY(vsPath);
 		SAFEDELETE_ARRAY(vsStr);
 
@@ -266,7 +266,7 @@ void CSY3DLineManager::InitialManager(int hDevice)
 		fclose(pPSFile);
 		psStr[len] = 0;
 
-		m_hPixShaderfog = DX3DEngine_CreateShaderFromString(hDevice,FALSE,_T("Easy2_PS"),psStr,SYShaderType_PixelShader);
+		m_hPixShaderfog = DX3DEngine_CreateShaderFromString(hDevice,FALSE,_T("Easy2_PS"),psStr,DXShaderType_PixelShader);
 		SAFEDELETE_ARRAY(psPath);
 		SAFEDELETE_ARRAY(psStr);
 	}
@@ -330,15 +330,15 @@ void CSY3DLineManager::Render(int hDevice,matrix4f* pViewPorjMat)
 		if (m_NumVertex > m_nVedioVertexNum)
 		{
 			DX3DEngine_ReleaseBuffer(hDevice,m_hLineVertex);
-			m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_NumVertex,m_pLineVertex,SYVertexBuffer,LINE_LIST);
+			m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_NumVertex,m_pLineVertex,DXVertexBuffer,LINE_LIST);
 			m_nVedioVertexNum = m_NumVertex;
 		}
 		else
 			DX3DEngine_ModifyBuffer(hDevice,m_hLineVertex,m_pLineVertex);
 		DX3DEngine_ModifyBuffer(hDevice,m_hMatrixBuffer,pViewPorjMat);
-		DX3DEngine_SetConstBuffer(hDevice,m_hMatrixBuffer,0,SYShaderType_VertexShader);
-		DX3DEngine_SetRenderState(hDevice,SYRasterizerState,SYRas_Solid_NoCullBack_MultiSample);
-		DX3DEngine_SetRenderState(hDevice,SYBlendState,SYBlend_Mix);
+		DX3DEngine_SetConstBuffer(hDevice,m_hMatrixBuffer,0,DXShaderType_VertexShader);
+		DX3DEngine_SetRenderState(hDevice,DXRasterizerState,DXRas_Solid_NoCullBack_MultiSample);
+		DX3DEngine_SetRenderState(hDevice,DXBlendState,DXBlend_Mix);
 		DX3DEngine_Render(hDevice,m_hLineVertex,0,m_hVertexShader,0,m_hPixShader,0,m_NumVertex);
 	}
 }
@@ -349,7 +349,7 @@ void CSY3DLineManager::RenderFog(int hDevice,matrix4f* pViewMat,matrix4f* pProjM
 		if (m_NumVertex > m_nVedioVertexNum)
 		{
 			DX3DEngine_ReleaseBuffer(hDevice,m_hLineVertex);
-			m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_NumVertex,m_pLineVertex,SYVertexBuffer,LINE_LIST);
+			m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_NumVertex,m_pLineVertex,DXVertexBuffer,LINE_LIST);
 			m_nVedioVertexNum = m_NumVertex;
 		}
 		else
@@ -362,9 +362,9 @@ void CSY3DLineManager::RenderFog(int hDevice,matrix4f* pViewMat,matrix4f* pProjM
 
 
 		DX3DEngine_ModifyBuffer(hDevice,m_hMatrixBufferfog,mat);
-		DX3DEngine_SetConstBuffer(hDevice,m_hMatrixBufferfog,0,SYShaderType_VertexShader);
-		DX3DEngine_SetRenderState(hDevice,SYRasterizerState,SYRas_Solid_NoCullBack_MultiSample);
-		DX3DEngine_SetRenderState(hDevice,SYBlendState,SYBlend_Mix);
+		DX3DEngine_SetConstBuffer(hDevice,m_hMatrixBufferfog,0,DXShaderType_VertexShader);
+		DX3DEngine_SetRenderState(hDevice,DXRasterizerState,DXRas_Solid_NoCullBack_MultiSample);
+		DX3DEngine_SetRenderState(hDevice,DXBlendState,DXBlend_Mix);
 		DX3DEngine_Render(hDevice,m_hLineVertex,0,m_hVertexShaderfog,0,m_hPixShaderfog,0,m_NumVertex);
 	}
 }
@@ -646,7 +646,7 @@ BOOL DXTextureManager_Release()
 	return TRUE;
 }
 
-int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nWidth,int nHeight, SYTextureType nTexType)
+int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nWidth,int nHeight, DXTextureType nTexType)
 {
 	pTexture->Lock();
 	int nCount = pTexture->GetCount();
@@ -675,7 +675,7 @@ int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nWidth,int nHeight, SYT
 	return -1;
 }
 
-int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nAAFactor, SYTextureType nTexType,BOOL bForce = TRUE)
+int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nAAFactor, DXTextureType nTexType,BOOL bForce = TRUE)
 {
 	pTexture->Lock();
 	int nCount = pTexture->GetCount();
@@ -725,7 +725,7 @@ int SYTexture_GetTexture(CTextureSet* pTexture, int hTexture)
 	return -1;
 }
 
-int DXTextureManager_QueryTexture( IN SYTextureType nTexType,int nFactor)
+int DXTextureManager_QueryTexture( IN DXTextureType nTexType,int nFactor)
 {
 	g_TexSet->Lock();
 	int nIndex = SYTexture_GetUnUsedTexture(g_TexSet,nFactor,nTexType);
@@ -735,7 +735,7 @@ int DXTextureManager_QueryTexture( IN SYTextureType nTexType,int nFactor)
 	return nRes;
 }
 
-int DXTextureManager_QueryTexture( IN SYTextureType nTexType,int nWidth,int nHeight )
+int DXTextureManager_QueryTexture( IN DXTextureType nTexType,int nWidth,int nHeight )
 {
 	g_TexSet->Lock();
 	int nBaseWidth = DXTMGetTexBufferWidth();
@@ -780,18 +780,18 @@ int DXTMGetTexBufferHeight()
 	return g_TexSet->GetHeight();
 }
 //////////////////////////////////////////////////////////////////////////
-BOOL DX3DEngine_Init(SYDeviceType nType,LPCTSTR lpPathShader)
+BOOL DX3DEngine_Init(DXDeviceType nType,LPCTSTR lpPathShader)
 {
 	_tcscpy_s(g_szPathShader,lpPathShader);
 	g_dRenderType = nType;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		if (RenderEngineDX10_Main(RENDERENGINE_INIT, 0, (void*)lpPathShader, NULL ) == FALSE )
 		{
 			return FALSE;
 		}
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		if (RenderSoftEngine_Main(RENDERENGINE_INIT, 0, (void*)lpPathShader, NULL ) == FALSE )
 		{
@@ -809,22 +809,22 @@ int DX3DEngine_GetType()
 void DX3DEngine_Release()
 {
 	DXTextureManager_Release();
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RELEASE,0,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RELEASE,0,NULL,NULL);
 	}	
 }
 BOOL DX3DEngine_Lock(int hDevice)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_ENGINE_LOCK,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_ENGINE_LOCK,hDevice,NULL,NULL);
 	}	
@@ -832,11 +832,11 @@ BOOL DX3DEngine_Lock(int hDevice)
 }
 BOOL DX3DEngine_UnLock(int hDevice)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_ENGINE_UNLOCK,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_ENGINE_UNLOCK,hDevice,NULL,NULL);
 	}
@@ -844,11 +844,11 @@ BOOL DX3DEngine_UnLock(int hDevice)
 }
 BOOL DX3DEngine_ResLock(int hDevice)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_ENGINE_RES_LOCK,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_ENGINE_RES_LOCK,hDevice,NULL,NULL);
 	}
@@ -856,11 +856,11 @@ BOOL DX3DEngine_ResLock(int hDevice)
 }
 BOOL DX3DEngine_ResUnLock(int hDevice)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_ENGINE_RES_UNLOCK,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_ENGINE_RES_UNLOCK,hDevice,NULL,NULL);
 	}
@@ -869,11 +869,11 @@ BOOL DX3DEngine_ResUnLock(int hDevice)
 
 BOOL DX3DEngine_RenderLock(int hDevice)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RENDER_LOCK,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RENDER_LOCK,hDevice,NULL,NULL);
 	}
@@ -881,11 +881,11 @@ BOOL DX3DEngine_RenderLock(int hDevice)
 }
 BOOL DX3DEngine_RenderUnLock(int hDevice)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RENDER_UNLOCK,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RENDER_UNLOCK,hDevice,NULL,NULL);
 	}
@@ -896,11 +896,11 @@ int DX3DEngine_CreateSwapChain( int hDevice,HWND hWnd,int nWidth,int nHeight,BOO
 {
 	createSwapChainIn In = {hWnd,nWidth,nHeight,bWindowed};
 	int hSwapChain = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATESWAPCHAIN,hDevice,&In,&hSwapChain);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATESWAPCHAIN,hDevice,&In,&hSwapChain);
 	}
@@ -911,11 +911,11 @@ int DX3DEngine_GetSwapChainDesc(int hDevice,int nSwapchain,int& nWidth,int& nHei
 {
 	createSwapChainIn In = {(HWND)nSwapchain,nWidth,nHeight,bWindowed};
 	createSwapChainIn Out = {NULL,nWidth,nHeight,bWindowed};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_SWAPCHAINDESC,hDevice,&In,&Out);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_SWAPCHAINDESC,hDevice,&In,&Out);
 	}
@@ -930,11 +930,11 @@ int DX3DEngine_CreateDevice(int nScreenWidth,int nScreenHeight,BOOL bDoubleDevic
 {
 	int hNewDeivce = 0;
 //	bDoubleDevice = FALSE;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATEDEVICE,0,&bDoubleDevice,&hNewDeivce);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATEDEVICE,0,&bDoubleDevice,&hNewDeivce);
 	}
@@ -952,11 +952,11 @@ void DX3DEngine_ReleaseDevice(int hDevice)
 		delete pLineManager;
 		pLineManager=NULL;
 	}
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RELEASEDEVICE,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RELEASEDEVICE,hDevice,NULL,NULL);
 	}
@@ -974,11 +974,11 @@ void DX3DEngine_MuliSampleTexToNormalTex(int hDevice,int hMultiSampleTex,int hNo
 		DX3DEngine_CopyTexture(hDevice,hNormalTex,0,0,nSrcWidth,nSrcHeight,hMultiSampleTex,0,0,nSrcWidth,nSrcHeight);
 	else
 	{
-		if (g_dRenderType==SY_DX10_Device)
+		if (g_dRenderType==DX_DX10_Device)
 		{
 			RenderEngineDX10_Main(RENDERENGINE_MULTI_NORMAL,hDevice,&param,NULL);
 		}
-		else if(g_dRenderType==SY_Soft_Device)
+		else if(g_dRenderType==DX_Soft_Device)
 		{
 			RenderSoftEngine_Main(RENDERENGINE_MULTI_NORMAL,hDevice,&param,NULL);
 		}
@@ -1000,11 +1000,11 @@ BOOL DX3DEngine_CopyTexture( int hDevice,int hDesTexture,int nOffsetX,int nOffse
 	param.nSrcHeight = nSrcHeight;
 	param.nSrcOffsetX = nSrcOffsetX;
 	param.nSrcOffsetY = nSrcOffsetY;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_COPY_TEXTURE,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_COPY_TEXTURE,hDevice,&param,NULL);
 	}
@@ -1016,11 +1016,11 @@ BOOL DX3DEngine_SetRenderTarget( int hDevice,int hRenderTarget,int hDepth )
 	setRenderTarget param;
 	param.hDepth = hDepth;
 	param.hRenderTarget = hRenderTarget;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_SET_RENDERTARGET,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_SET_RENDERTARGET,hDevice,&param,NULL);
 	}
@@ -1033,11 +1033,11 @@ BOOL DX3DEngine_ClearDepth(int hDevice,int hTexture,float depth)
 		return FALSE;
 
 	clearTextureIn param = {hTexture,&depth};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_CLEAR_TEXTURE,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_CLEAR_TEXTURE,hDevice,&param,NULL);
 	}
@@ -1049,11 +1049,11 @@ BOOL DX3DEngine_ClearTexture(int hDevice,int hTexture,DWORD color)
 		return FALSE;
 
 	clearTextureIn param = {hTexture,&color};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_CLEAR_TEXTURE,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_CLEAR_TEXTURE,hDevice,&param,NULL);
 	}
@@ -1062,29 +1062,29 @@ BOOL DX3DEngine_ClearTexture(int hDevice,int hTexture,DWORD color)
 
 int DX3DEngine_Present(int hDevice,int hSwapChain,int nTimeSyn /*= 0*/)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_PRESENT,hDevice,&hSwapChain,&nTimeSyn);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_PRESENT,hDevice,&hSwapChain,&nTimeSyn);
 	}
 	return FALSE;
 }
 
-int DX3DEngine_CreateTexture( int hDevice,int nWidth,int nHeight,SYTextureType nType )
+int DX3DEngine_CreateTexture( int hDevice,int nWidth,int nHeight,DXTextureType nType )
 {
 	if(nWidth <= 0 ||nHeight <= 0)
 		return NULL;
 	createTextureIn param = {nWidth,nHeight,nType};
 	param.pBuffer = NULL;
 	int hTexture = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATE_TEXTURE,hDevice,&param,&hTexture);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATE_TEXTURE,hDevice,&param,&hTexture);
 	}
@@ -1094,11 +1094,11 @@ int DX3DEngine_CreateTexture( int hDevice,int nWidth,int nHeight,SYTextureType n
 void* DX3DEngine_GetTexture( int hDevice,int hTexture )
 {
 	void* pTexture = NULL;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_TEXTURE,hDevice,&hTexture,&pTexture);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_TEXTURE,hDevice,&hTexture,&pTexture);
 	}
@@ -1109,14 +1109,14 @@ void DX3DEngine_DumpTexture(int hDevice, int hTexture,LPCTSTR szFile )
 {
 	if(hTexture == 0)
 		return;
-	SYDumpIn paramIn;
+	DXDumpIn paramIn;
 	paramIn.hTexture = hTexture;
 	paramIn.szFile = szFile;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_DUMP_TEXTURE,hDevice,&paramIn,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_DUMP_TEXTURE,hDevice,&paramIn,NULL);
 	}
@@ -1127,11 +1127,11 @@ void DX3DEngine_GetTextureInfo( int hDevice,int hTexture,int* nWidth, int* nHeig
 	if(hTexture == 0)
 		return;
 	getTextureInfoOut param = {nWidth,nHeight,nType,NULL};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_TEXTURE_INFO,hDevice,&hTexture,&param);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_TEXTURE_INFO,hDevice,&hTexture,&param);
 	}
@@ -1141,11 +1141,11 @@ bool DX3DEngine_ReleaseTexture( int hDevice,int hTexture )
 {
 	if(hTexture <= 0)
 		return TRUE;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RELEASE_TEXTURE,hDevice,&hTexture,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RELEASE_TEXTURE,hDevice,&hTexture,NULL);
 	}
@@ -1155,11 +1155,11 @@ bool DX3DEngine_ReleaseTexture( int hDevice,int hTexture )
 BOOL DX3DEngine_ResizeSwapChain( int hDevice,int hSwapChain,int nWidth,int nHeight )
 {
 	ResizeSwapChainIn In = {hSwapChain,nWidth,nHeight};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_RESIZE_SWAPCHAIN,hDevice,&In,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_RESIZE_SWAPCHAIN,hDevice,&In,NULL);
 	}
@@ -1175,7 +1175,7 @@ BOOL DX3DEngine_Download( OUT DWORD* pDesBuffer,
 	bool isUnquery = false;
 	if(nSrcWidth != nDesWidth || nSrcHeight != nDesHeight)
 	{
-		int hScaleTex = DXTextureManager_QueryTexture(SYTexture_Normal2DTex,nDesWidth,nDesHeight);
+		int hScaleTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex,nDesWidth,nDesHeight);
 		DX3DEngine_CopyTexture(hDevice,hScaleTex,nSrcOffestX,nSrcOffestY,nDesWidth,nDesHeight,
 				hSrcTex,nSrcOffestX,nSrcOffestY,nSrcWidth,nSrcHeight);
 		hSrcTex = hScaleTex;
@@ -1196,11 +1196,11 @@ BOOL DX3DEngine_Download( OUT DWORD* pDesBuffer,
 	param.hTransTex = hTransTex;
 	param.eMode = eMode;
 	BOOL rt=FALSE;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		rt=RenderEngineDX10_Main(RENDERENGINE_DOWNLOAD,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		rt=RenderSoftEngine_Main(RENDERENGINE_DOWNLOAD,hDevice,&param,NULL);
 	}
@@ -1236,14 +1236,14 @@ BOOL DX3DEngine_UpLoad(OUT int hTex, IN int hDevice,int hTransTex,/*用于下行的中
 
 	if(nSrcWidth != nDesWidth || nSrcHeight != nDesHeight)
 	{
-		int hScaleTex = DXTextureManager_QueryTexture(SYTexture_Normal2DTex,nSrcWidth,nSrcHeight);
+		int hScaleTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex,nSrcWidth,nSrcHeight);
 		param.hDestTex = hScaleTex;
 		BOOL rt=FALSE;
-		if (g_dRenderType==SY_DX10_Device)
+		if (g_dRenderType==DX_DX10_Device)
 		{
 			rt=RenderEngineDX10_Main(RENDERENGINE_UPLOAD,hDevice,&param,NULL);
 		}
-		else if(g_dRenderType==SY_Soft_Device)
+		else if(g_dRenderType==DX_Soft_Device)
 		{
 			rt=RenderSoftEngine_Main(RENDERENGINE_UPLOAD,hDevice,&param,NULL);
 		}
@@ -1255,11 +1255,11 @@ BOOL DX3DEngine_UpLoad(OUT int hTex, IN int hDevice,int hTransTex,/*用于下行的中
 	else
 	{
 		param.hDestTex = hTex;
-		if (g_dRenderType==SY_DX10_Device)
+		if (g_dRenderType==DX_DX10_Device)
 		{
 			return RenderEngineDX10_Main(RENDERENGINE_UPLOAD,hDevice,&param,NULL);
 		}
-		else if(g_dRenderType==SY_Soft_Device)
+		else if(g_dRenderType==DX_Soft_Device)
 		{
 			return RenderSoftEngine_Main(RENDERENGINE_UPLOAD,hDevice,&param,NULL);
 		}
@@ -1270,11 +1270,11 @@ BOOL DX3DEngine_UpLoad(OUT int hTex, IN int hDevice,int hTransTex,/*用于下行的中
 
 BOOL DX3DEngine_ComputeNormalMap(int hDevice,int hDestTex,int hSrcTex)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_NORMAL_MAP,hDevice,&hSrcTex,&hDestTex);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_NORMAL_MAP,hDevice,&hSrcTex,&hDestTex);
 	}
@@ -1283,11 +1283,11 @@ BOOL DX3DEngine_ComputeNormalMap(int hDevice,int hDestTex,int hSrcTex)
 void DX3DEngine_BeginRenderTexture(int hDevice)
 {
 	DX3DEngine_RenderLock(hDevice);
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_BEGIN_RENDER_TEXTURE,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_BEGIN_RENDER_TEXTURE,hDevice,NULL,NULL);
 	}
@@ -1299,11 +1299,11 @@ void DX3DEngine_RenderTexture( int hDevice,int hTex,float fAlpha,const RECT* pSr
 	int nWidth,nHeight,nType = 0;
 	DX3DEngine_GetTextureInfo(hDevice,hTex,&nWidth,&nHeight,&nType);
 	int hTransTex = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RENDER_TEXTURE,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RENDER_TEXTURE,hDevice,&param,NULL);
 	}
@@ -1314,24 +1314,24 @@ void DX3DEngine_RenderTexture( int hDevice,int hTex,float fAlpha,const RECT* pSr
 void DX3DEngine_EndRenderTexture(int hDevice)
 {
 	DX3DEngine_RenderUnLock(hDevice);
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_END_RENDER_TEXTURE,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_END_RENDER_TEXTURE,hDevice,NULL,NULL);
 	}
 }
 
-BOOL DX3DEngine_ClearScreen( int hDevice, DWORD nColor, float fZValue, SYClearRTType nClearTarget )
+BOOL DX3DEngine_ClearScreen( int hDevice, DWORD nColor, float fZValue, DXClearRTType nClearTarget )
 {
 	clearScreenIn param = {nColor,fZValue,nClearTarget};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_CLEAR_SCREEN,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_CLEAR_SCREEN,hDevice,&param,NULL);
 	}
@@ -1341,11 +1341,11 @@ BOOL DX3DEngine_ClearScreen( int hDevice, DWORD nColor, float fZValue, SYClearRT
 void DX3DEngine_GetRenderTarget( int hDevice,int* phRenderTarget,int* phDepth )
 {
 	getRenderTargetIn param = {phRenderTarget,phDepth};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_RENDERTARGET,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_RENDERTARGET,hDevice,&param,NULL);
 	}
@@ -1354,21 +1354,21 @@ void DX3DEngine_GetRenderTarget( int hDevice,int* phRenderTarget,int* phDepth )
 int DX3DEngine_CreateMeshFromXFile( int hDevice,LPCTSTR lpszFileName )
 {
 	int hModel = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATE_MODEL_FROM_X_FILE,hDevice,(void*)lpszFileName,&hModel);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATE_MODEL_FROM_X_FILE,hDevice,(void*)lpszFileName,&hModel);
 	}
 	return hModel;
 }
 
-int DX3DEngine_CreateShaderFromString( int hDevice,BOOL bEngineLock,LPCTSTR shaderName,LPCSTR shaderCode,SYShaderType nType ,SYVertexType* pVertexType)
+int DX3DEngine_CreateShaderFromString( int hDevice,BOOL bEngineLock,LPCTSTR shaderName,LPCSTR shaderCode,DXShaderType nType ,DXVertexType* pVertexType)
 {
 	int hShader = 0;
-	SYCreateShadeIn param;
+	DXCreateShadeIn param;
 	param.shaderFile = NULL;
 	param.shaderCode = shaderCode;
 	param.nType = nType;
@@ -1377,11 +1377,11 @@ int DX3DEngine_CreateShaderFromString( int hDevice,BOOL bEngineLock,LPCTSTR shad
 	param.bLock = bEngineLock;
 	param.bComplied = FALSE;
 
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATESHADER,hDevice,&param,&hShader);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATESHADER,hDevice,&param,&hShader);
 	}
@@ -1390,7 +1390,7 @@ int DX3DEngine_CreateShaderFromString( int hDevice,BOOL bEngineLock,LPCTSTR shad
 
 int DX3DEngine_GetShader(int hDevice,LPCTSTR shaderName)//会增加引用计数，需要release;
 {
-	return DX3DEngine_CreateShaderFromString(hDevice,FALSE,shaderName,NULL,SYShaderType_PixelShader,NULL);
+	return DX3DEngine_CreateShaderFromString(hDevice,FALSE,shaderName,NULL,DXShaderType_PixelShader,NULL);
 }
 
 void DX3DEngine_ReleaseShader( int hDevice,int hShader )
@@ -1399,30 +1399,30 @@ void DX3DEngine_ReleaseShader( int hDevice,int hShader )
 	{
 		return;
 	}
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RELEASESHADER,hDevice,&hShader,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RELEASESHADER,hDevice,&hShader,NULL);
 	}
 }
 
-BOOL CheckForFieldAndRect(FIELD srcField,FIELD dstField,SYConvertType nType,const RECT& srcRt,RECT& dstRt)
+BOOL CheckForFieldAndRect(FIELD srcField,FIELD dstField,ColorConvertType nType,const RECT& srcRt,RECT& dstRt)
 {
 	switch(nType)
 	{
-	case SY_RGBA_To_BGRA:
-	case SY_RGBA_TO_Alpha:
-	case SY_RGB_Alpha_To_Key:
-	case SYAdjustAlpha:
+	case Color_RGBA_To_BGRA:
+	case Color_RGBA_TO_Alpha:
+	case Color_RGB_Alpha_To_Key:
+	case ColorAdjustAlpha:
 		if(srcField != dstField)
 			return FALSE;
 		dstRt = srcRt;
 		break;
-	case SY_UYVYFrame_RGBA:
-	case SY_UYVU_RGBA_Key:
+	case Color_UYVYFrame_RGBA:
+	case Color_UYVU_RGBA_Key:
 		if(dstField != BOTH_FIELD)
 			return FALSE;
 		dstRt.left = srcRt.left * 2;
@@ -1430,7 +1430,7 @@ BOOL CheckForFieldAndRect(FIELD srcField,FIELD dstField,SYConvertType nType,cons
 		dstRt.top = srcRt.top * 2;
 		dstRt.bottom = srcRt.bottom * 2;
 		break;
-	case SY_RGBA_YUAYVA4224:
+	case Color_RGBA_YUAYVA4224:
 		if(srcField != BOTH_FIELD)
 			return FALSE;
 		dstRt.left = srcRt.left * 3 / 4;
@@ -1438,7 +1438,7 @@ BOOL CheckForFieldAndRect(FIELD srcField,FIELD dstField,SYConvertType nType,cons
 		dstRt.top = srcRt.top / 2;
 		dstRt.bottom = srcRt.bottom / 2;
 		break;
-	case SY_RGBA_UYVY:
+	case Color_RGBA_UYVY:
 		dstRt.left = srcRt.left ;
 		dstRt.right = srcRt.right ;
 		dstRt.top = srcRt.top / 2;
@@ -1450,7 +1450,7 @@ BOOL CheckForFieldAndRect(FIELD srcField,FIELD dstField,SYConvertType nType,cons
 	return TRUE;
 }
 
-void DX3DEngine_ConvertFormatWithKey(int hDevice,int hSrcTex,int hSrcKey,FIELD srcField,const RECT* pSrcRt,int hDestTex,FIELD dstField,SYConvertType nType)
+void DX3DEngine_ConvertFormatWithKey(int hDevice,int hSrcTex,int hSrcKey,FIELD srcField,const RECT* pSrcRt,int hDestTex,FIELD dstField,ColorConvertType nType)
 {
 	RECT dstRT;
 	if(!CheckForFieldAndRect(srcField,dstField,nType,*pSrcRt,dstRT))
@@ -1458,26 +1458,26 @@ void DX3DEngine_ConvertFormatWithKey(int hDevice,int hSrcTex,int hSrcKey,FIELD s
 		ASSERT(0);
 		return;
 	}
-	SYTexProcessIn param;
+	DXTexProcessIn param;
 	param.hDestTex = hDestTex;
 	param.hSrcTex = hSrcTex;
 	param.pDstRt = &dstRT;
 	param.pSrcRt = pSrcRt;
-	param.nType = SYTextureConvertFormat;
+	param.nType = DXTextureConvertFormat;
 	param.pData = &nType;
 	param.hSrcKey = hSrcKey;
 	param.nSrcField = srcField;
 	param.nDstField = dstField;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
 }
-void DX3DEngine_ConvertFormat(int hDevice,int hSrcTex,FIELD srcField,const RECT* pSrcRt,int hDestTex,FIELD dstField,SYConvertType nType)
+void DX3DEngine_ConvertFormat(int hDevice,int hSrcTex,FIELD srcField,const RECT* pSrcRt,int hDestTex,FIELD dstField,ColorConvertType nType)
 {
 	RECT dstRT;
 	if(!CheckForFieldAndRect(srcField,dstField,nType,*pSrcRt,dstRT))
@@ -1485,21 +1485,21 @@ void DX3DEngine_ConvertFormat(int hDevice,int hSrcTex,FIELD srcField,const RECT*
 		ASSERT(0);
 		return;
 	}
-	SYTexProcessIn param;
+	DXTexProcessIn param;
 	param.hDestTex = hDestTex;
 	param.hSrcTex = hSrcTex;
 	param.pDstRt = &dstRT;
 	param.pSrcRt = pSrcRt;
-	param.nType = SYTextureConvertFormat;
+	param.nType = DXTextureConvertFormat;
 	param.pData = &nType;
 	param.hSrcKey = 0;
 	param.nDstField = dstField;
 	param.nSrcField = srcField;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
@@ -1508,19 +1508,19 @@ void DX3DEngine_ConvertFormat(int hDevice,int hSrcTex,FIELD srcField,const RECT*
 void DX3DEngine_SetViewPort( int hDevice, const RECT* pRect )
 {
 	RECT rt = *pRect;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_SETVIEWPORT,hDevice,(void*)&rt,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_SETVIEWPORT,hDevice,(void*)&rt,NULL);
 	}
 }
 
-int DX3DEngine_CreateBuffer( int hDevice,int nVertexSize,int nVertexNum,void* pBuffer,SYBufferType nType,int nPriType /*= -1*/ )
+int DX3DEngine_CreateBuffer( int hDevice,int nVertexSize,int nVertexNum,void* pBuffer,DXBufferType nType,int nPriType /*= -1*/ )
 {
-	SYCreateBufferIn param;
+	DXCreateBufferIn param;
 	param.nVertexNum = nVertexNum;
 	param.nPriType = nPriType;
 	param.nVertexSize = nVertexSize;
@@ -1528,11 +1528,11 @@ int DX3DEngine_CreateBuffer( int hDevice,int nVertexSize,int nVertexNum,void* pB
 	param.nType = nType;
 
 	int hBuffer = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATE_BUFFER,hDevice,&param,&hBuffer);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATE_BUFFER,hDevice,&param,&hBuffer);
 	}
@@ -1543,11 +1543,11 @@ BOOL DX3DEngine_ReleaseBuffer( int hDevice,int hBuffer )
 {
 	if (hBuffer <= 0)
 		return FALSE;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_RELEASE_BUFFER,hDevice,&hBuffer,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_RELEASE_BUFFER,hDevice,&hBuffer,NULL);
 	}
@@ -1556,14 +1556,14 @@ BOOL DX3DEngine_ReleaseBuffer( int hDevice,int hBuffer )
 
 BOOL DX3DEngine_ModifyBuffer( int hDevice,int hBuffer,void* pBuffer )
 {
-	SYModifyBufferIn param;
+	DXModifyBufferIn param;
 	param.hBuffer = hBuffer;
 	param.pBuffer = pBuffer;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_MODIFY_BUFFER,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_MODIFY_BUFFER,hDevice,&param,NULL);
 	}
@@ -1572,11 +1572,11 @@ BOOL DX3DEngine_ModifyBuffer( int hDevice,int hBuffer,void* pBuffer )
 BOOL DX3DEngine_BeginRender( IN int hDevice, IN BOOL bAntiAlias/* = FALSE*/ )
 {
 	DX3DEngine_RenderLock(hDevice);
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_BEGIN_RENDER,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_BEGIN_RENDER,hDevice,NULL,NULL);
 	}
@@ -1586,11 +1586,11 @@ BOOL DX3DEngine_BeginRender( IN int hDevice, IN BOOL bAntiAlias/* = FALSE*/ )
 BOOL DX3DEngine_EndRender(IN int hDevice)
 {
 	DX3DEngine_RenderUnLock(hDevice);
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_END_RENDER,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_END_RENDER,hDevice,NULL,NULL);
 	}
@@ -1598,12 +1598,12 @@ BOOL DX3DEngine_EndRender(IN int hDevice)
 }
 BOOL DX3DEngine_SetVertexShader(int hDevice,int hVertexShader)
 {
-	SYSetShaderIn param = {SYShaderType_VertexShader,hVertexShader};
-	if (g_dRenderType==SY_DX10_Device)
+	DXSetShaderIn param = {DXShaderType_VertexShader,hVertexShader};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_SET_SHADER,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_SET_SHADER,hDevice,&param,NULL);
 	}
@@ -1611,12 +1611,12 @@ BOOL DX3DEngine_SetVertexShader(int hDevice,int hVertexShader)
 }
 BOOL DX3DEngine_SetGeometreShader(int hDevice,int hVertexShader)
 {
-	SYSetShaderIn param = {SYShaderType_GeometryShader,hVertexShader};
-	if (g_dRenderType==SY_DX10_Device)
+	DXSetShaderIn param = {DXShaderType_GeometryShader,hVertexShader};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_SET_SHADER,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_SET_SHADER,hDevice,&param,NULL);
 	}
@@ -1624,12 +1624,12 @@ BOOL DX3DEngine_SetGeometreShader(int hDevice,int hVertexShader)
 }
 BOOL DX3DEngine_SetPixShader(int hDevice,int hVertexShader)
 {
-	SYSetShaderIn param = {SYShaderType_PixelShader,hVertexShader};
-	if (g_dRenderType==SY_DX10_Device)
+	DXSetShaderIn param = {DXShaderType_PixelShader,hVertexShader};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_SET_SHADER,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_SET_SHADER,hDevice,&param,NULL);
 	}
@@ -1637,12 +1637,12 @@ BOOL DX3DEngine_SetPixShader(int hDevice,int hVertexShader)
 }
 BOOL DX3DEngine_Render(int hDevice,int hVertexBuffer,int hIndexBuffer,int nVertexType ,int nStart,int PrimitiveCount,int nVertexCount)
 {
-	SYRenderIn param = {hVertexBuffer,hIndexBuffer,nVertexType,nStart,PrimitiveCount,nVertexCount};
-	if (g_dRenderType==SY_DX10_Device)
+	DXRenderIn param = {hVertexBuffer,hIndexBuffer,nVertexType,nStart,PrimitiveCount,nVertexCount};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_RENDER,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_RENDER,hDevice,&param,NULL);
 	}
@@ -1650,7 +1650,7 @@ BOOL DX3DEngine_Render(int hDevice,int hVertexBuffer,int hIndexBuffer,int nVerte
 }
 BOOL DX3DEngine_Render(int hDevice,int hVertexBuffer,int hIndexBuffer,int hVertexShader,int hGeometryShader,int hPixShader,int nStart,int nVertexCount)
 {
-	SYEasyRenderIn param;
+	DXEasyRenderIn param;
 	param.hVertexBuffer = hVertexBuffer;
 	param.hIndexBuffer = hIndexBuffer;
 
@@ -1661,11 +1661,11 @@ BOOL DX3DEngine_Render(int hDevice,int hVertexBuffer,int hIndexBuffer,int hVerte
 	param.nStart = nStart;
 	param.nVertexCount = nVertexCount;
 
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_EASY_RENDER,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_EASY_RENDER,hDevice,&param,NULL);
 	}
@@ -1673,7 +1673,7 @@ BOOL DX3DEngine_Render(int hDevice,int hVertexBuffer,int hIndexBuffer,int hVerte
 }
 BOOL DX3DEngine_RenderInstance(int hDevice,int hVertexBuffer,int hInstanceBuffer,int hIndexBuffer,int nVertexType ,int nStart,int PrimitiveCount,int nVertexCount,int nInstanceCount)//nVertexCount兼容dx9
 {
-	SYRenderInstanceIn param;
+	DXRenderInstanceIn param;
 	param.RenderData.hVertexBuffer = hVertexBuffer;
 	param.RenderData.hIndexBuffer = hIndexBuffer;
 
@@ -1684,38 +1684,38 @@ BOOL DX3DEngine_RenderInstance(int hDevice,int hVertexBuffer,int hInstanceBuffer
 	param.RenderData.nVertexType = nVertexType;
 	param.RenderData.PrimitiveCount = PrimitiveCount;
 
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_RENDER_INSTANCE,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_RENDER_INSTANCE,hDevice,&param,NULL);
 	}
 	return FALSE;
 }
 
-BOOL DX3DEngine_SetShaderTexture(int hDevice,int hTexture,int nRegisterIndex,SYShaderType nShaderType)
+BOOL DX3DEngine_SetShaderTexture(int hDevice,int hTexture,int nRegisterIndex,DXShaderType nShaderType)
 {
-	SYSetShaderTexIn param = {hTexture,nRegisterIndex,nShaderType};
-	if (g_dRenderType==SY_DX10_Device)
+	DXSetShaderTexIn param = {hTexture,nRegisterIndex,nShaderType};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_SET_SHADER_TEXTURE,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_SET_SHADER_TEXTURE,hDevice,&param,NULL);
 	}
 	return FALSE;
 }
-BOOL DX3DEngine_SetConstBuffer(int hDevice,int hBuffer,int nRegisterIndex,SYShaderType nShaderType)
+BOOL DX3DEngine_SetConstBuffer(int hDevice,int hBuffer,int nRegisterIndex,DXShaderType nShaderType)
 {
-	SYSetConstBufferIn param = {hBuffer,nRegisterIndex,nShaderType};
-	if (g_dRenderType==SY_DX10_Device)
+	DXSetConstBufferIn param = {hBuffer,nRegisterIndex,nShaderType};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_SET_CONST_BUFFER,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_SET_CONST_BUFFER,hDevice,&param,NULL);
 	}
@@ -1752,11 +1752,11 @@ int DX3DEngine_CreateTextureFromFile(int hDevice,TCHAR* pPath,BOOL bNormalMap)
 {
 	int hTexture;
 	createTextureFromFileIn param = {pPath,bNormalMap};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATE_TEXTURE_FROM_FILE,hDevice,&param,&hTexture);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATE_TEXTURE_FROM_FILE,hDevice,&param,&hTexture);
 	}
@@ -1765,11 +1765,11 @@ int DX3DEngine_CreateTextureFromFile(int hDevice,TCHAR* pPath,BOOL bNormalMap)
 
 void DX3DEngine_GetViewPort( int hDevice, RECT* pRect )
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GETVIEWPORT,hDevice,NULL,pRect);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GETVIEWPORT,hDevice,NULL,pRect);
 	}
@@ -1793,11 +1793,11 @@ void DX3DEngine_ReleaseLineManage(int hDevice)
 int	DX3DEngine_GetRenderState(int hDevice,int nType)
 {
 	int nValue = -1;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_RENDER_STATE,hDevice,&nType,&nValue);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_RENDER_STATE,hDevice,&nType,&nValue);
 	}
@@ -1806,12 +1806,12 @@ int	DX3DEngine_GetRenderState(int hDevice,int nType)
 
 BOOL DX3DEngine_SetRenderState(int hDevice,int nType,int nValue)
 {
-	SYRenderStateIn param = {nType,nValue};
-	if (g_dRenderType==SY_DX10_Device)
+	DXRenderStateIn param = {nType,nValue};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_SET_RENDER_STATE,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_SET_RENDER_STATE,hDevice,&param,NULL);
 	}
@@ -1820,12 +1820,12 @@ BOOL DX3DEngine_SetRenderState(int hDevice,int nType,int nValue)
 
 BOOL DX3DEngine_SetSampleState(int hDevice,int nSampler,int nState,int nShaderType)
 {
-	SYSampleStateIn param = {nSampler,nState,nShaderType};
-	if (g_dRenderType==SY_DX10_Device)
+	DXSampleStateIn param = {nSampler,nState,nShaderType};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_SET_SAMPLER_STATE,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_SET_SAMPLER_STATE,hDevice,&param,NULL);
 	}
@@ -1835,11 +1835,11 @@ BOOL DX3DEngine_SetSampleState(int hDevice,int nSampler,int nState,int nShaderTy
 void* DX3DEngine_GetTextureView( int hDevice,int hTexture )
 {
 	void* pTextureView = NULL;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_TEXTURE_VIEW,hDevice,&hTexture,&pTextureView);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_TEXTURE_VIEW,hDevice,&hTexture,&pTextureView);
 	}
@@ -1850,24 +1850,24 @@ void DX3DEngine_GenerateMip(int hDevice,int hTexture)
 {
 	if(hTexture <= 0)
 		return;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GENERATE_MIPMAP,hDevice,&hTexture,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GENERATE_MIPMAP,hDevice,&hTexture,NULL);
 	}
 }
 
-int DX3DEngine_CreateShaderFromFile( int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,SYShaderType nType,SYVertexType* pVertexType /*= NULL/*FOR VS*/ )
+int DX3DEngine_CreateShaderFromFile( int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,DXShaderType nType,DXVertexType* pVertexType /*= NULL/*FOR VS*/ )
 {
 	if (!CommonFunction::IsFileExists(shaderFilePath))
 	{
 		return 0;
 	}
 	int hShader = 0;
-	SYCreateShadeIn param;
+	DXCreateShadeIn param;
 	param.shaderFile = shaderFilePath;
 	param.shaderCode = NULL;
 	param.nType = nType;
@@ -1876,18 +1876,18 @@ int DX3DEngine_CreateShaderFromFile( int hDevice,LPCTSTR shaderName,LPCTSTR shad
 	param.bLock = FALSE;
 	param.bComplied = FALSE;
 
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATESHADER,hDevice,&param,&hShader);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATESHADER,hDevice,&param,&hShader);
 	}
 	return hShader;
 }
 
-int	DX3DEngine_CreateShaderFromCompliedFile(int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,SYShaderType nType,SYVertexType* pVertexType)
+int	DX3DEngine_CreateShaderFromCompliedFile(int hDevice,LPCTSTR shaderName,LPCTSTR shaderFilePath,DXShaderType nType,DXVertexType* pVertexType)
 {
 	std::ifstream s_stream;
 	size_t s_size;
@@ -1915,7 +1915,7 @@ int	DX3DEngine_CreateShaderFromCompliedFile(int hDevice,LPCTSTR shaderName,LPCTS
 
 
 	int hShader = 0;
-	SYCreateShadeIn param;
+	DXCreateShadeIn param;
 	param.shaderFile = NULL;
 	param.shaderCode = s_data;
 	param.nType = nType;
@@ -1925,11 +1925,11 @@ int	DX3DEngine_CreateShaderFromCompliedFile(int hDevice,LPCTSTR shaderName,LPCTS
 	param.bComplied = TRUE;
 	param.compliedBinSize = s_size;
 
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATESHADER,hDevice,&param,&hShader);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATESHADER,hDevice,&param,&hShader);
 	}
@@ -1942,13 +1942,13 @@ int	DX3DEngine_CreateShaderFromCompliedFile(int hDevice,LPCTSTR shaderName,LPCTS
 
 int DX3DEngine_HitMesh( int hDevice,int hMesh,const float3* pStart,const float3* pDir,float3* pHitPoint ,float* pfDist)
 {
-	SYHitTestMeshIn param = {hMesh,pStart,pDir};
-	SYHitTestMeshOut paramOut;
-	if (g_dRenderType==SY_DX10_Device)
+	DXHitTestMeshIn param = {hMesh,pStart,pDir};
+	DXHitTestMeshOut paramOut;
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_HITTEST_MESH,hDevice,&param,&paramOut);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_HITTEST_MESH,hDevice,&param,&paramOut);
 	}
@@ -1961,12 +1961,12 @@ int DX3DEngine_HitMesh( int hDevice,int hMesh,const float3* pStart,const float3*
 
 BOOL DX3DEngine_RenderMesh(int hDevice,int hMesh, int nDrawCount/* = -1*/, unsigned int* nSubset /*= NULL*/)
 {
-	SYRenderMeshIn param = {hMesh, nDrawCount,nSubset};
-	if (g_dRenderType==SY_DX10_Device)
+	DXRenderMeshIn param = {hMesh, nDrawCount,nSubset};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_RENDER_MESH,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_RENDER_MESH,hDevice,&param,NULL);
 	}
@@ -1977,19 +1977,19 @@ BOOL DX3DEngine_RenderMesh(int hDevice,int hMesh, int nDrawCount/* = -1*/, unsig
 int DX3DEngine_RenderEasyMesh( int hDevice,DWORD color,int hVertex,int hIndex, int nVertexType ,int nStrart,int PrimitiveCount,int nVertexCount )
 {
 	static int hPixShader = 0;
-	static int hPSParam = DX3DEngine_CreateBuffer(hDevice,sizeof(float4),1,NULL,SYConstBuffer);
+	static int hPSParam = DX3DEngine_CreateBuffer(hDevice,sizeof(float4),1,NULL,DXConstBuffer);
 	if(!hPixShader)
 	{
 		size_t nCount = _tcsclen(PS_FILE) + _tcsclen(g_szPathShader) + 1;
 		TCHAR psPath[1024];
 		_tcscpy_s(psPath,g_szPathShader);
 		_tcscat_s(psPath,PS_FILE);
-		hPixShader = DX3DEngine_CreateShaderFromFile(hDevice,_T("pos_normal_tex_tang_bi_PS"),psPath,SYShaderType_PixelShader);
+		hPixShader = DX3DEngine_CreateShaderFromFile(hDevice,_T("pos_normal_tex_tang_bi_PS"),psPath,DXShaderType_PixelShader);
 	}
 	float4 vColor;
 	DWORDColorToFloat4(&vColor,color);
 	DX3DEngine_ModifyBuffer(hDevice,hPSParam,&vColor);
-	DX3DEngine_SetConstBuffer(hDevice,hPSParam,0,SYShaderType_PixelShader);
+	DX3DEngine_SetConstBuffer(hDevice,hPSParam,0,DXShaderType_PixelShader);
 	DX3DEngine_SetPixShader(hDevice,hPixShader);
 	DX3DEngine_Render(hDevice,hVertex,hIndex,nVertexType,nStrart,PrimitiveCount,nVertexCount);
 	return TRUE;
@@ -1997,14 +1997,14 @@ int DX3DEngine_RenderEasyMesh( int hDevice,DWORD color,int hVertex,int hIndex, i
 
 BOOL DX3DEngine_GetMeshInfo(int hDevice,int hMesh, int* nSubsetCount )
 {
-	SYRenderMeshIn param = {hMesh};
-	SYGetMeshInfoOut paramOut; 
+	DXRenderMeshIn param = {hMesh};
+	DXGetMeshInfoOut paramOut; 
 	BOOL bRet=FALSE;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		bRet=RenderEngineDX10_Main(RENDERENGINE_GET_MESH_INFO, hDevice, &param, &paramOut);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		bRet=RenderSoftEngine_Main(RENDERENGINE_GET_MESH_INFO, hDevice, &param, &paramOut);
 	}
@@ -2013,11 +2013,11 @@ BOOL DX3DEngine_GetMeshInfo(int hDevice,int hMesh, int* nSubsetCount )
 }
 int DX3DEngine_ReleaseMesh( int hDevice,int hMesh )
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_RELEASE_MESH,hDevice,&hMesh,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_RELEASE_MESH,hDevice,&hMesh,NULL);
 	}
@@ -2025,12 +2025,12 @@ int DX3DEngine_ReleaseMesh( int hDevice,int hMesh )
 }
 int DX3DEngine_GetMeshBox(int hDevice,int hMesh,float3* pMin,float3* pMax)
 {
-	SYGetMeshBoxIn param = {hMesh,pMin,pMax};
-	if (g_dRenderType==SY_DX10_Device)
+	DXGetMeshBoxIn param = {hMesh,pMin,pMax};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		return RenderEngineDX10_Main(RENDERENGINE_GET_MESH_BOX,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		return RenderSoftEngine_Main(RENDERENGINE_GET_MESH_BOX,hDevice,&param,NULL);
 	}
@@ -2040,22 +2040,22 @@ int DX3DEngine_GetMeshBox(int hDevice,int hMesh,float3* pMin,float3* pMax)
 void DX3DEngine_SetScissor(int hDevice, const RECT* pRect)
 {
 	RECT rt = *pRect;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_SET_SCISSOR,hDevice,(void*)&rt,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_SET_SCISSOR,hDevice,(void*)&rt,NULL);
 	}
 }
 void	DX3DEngine_GetScissor(int hDevice, RECT* pRect)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_SCISSOR,hDevice,NULL,pRect);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_SCISSOR,hDevice,NULL,pRect);
 	}
@@ -2082,19 +2082,19 @@ void DX3DEngine_Square( int hDevice, const vector3f* center, float length,const 
 }
 
 //PlayEffectSupport
-int DX3DEngine_CreateEffectUnit(int hDevice,LPCTSTR EffectName,SYEffectTechDesc* techDesc,int nTechs)
+int DX3DEngine_CreateEffectUnit(int hDevice,LPCTSTR EffectName,DXEffectTechDesc* techDesc,int nTechs)
 {	
 	int hEffectUnit = 0;
-	SYCreateEffectUnitIn in_param;
+	DXCreateEffectUnitIn in_param;
 	in_param.pEffectName = EffectName;
 	in_param.nTechs = nTechs;
 	in_param.pTechDesc = techDesc;
 
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATE_EFFECTUNIT,hDevice,&in_param,&hEffectUnit);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATE_EFFECTUNIT,hDevice,&in_param,&hEffectUnit);
 	}
@@ -2102,11 +2102,11 @@ int DX3DEngine_CreateEffectUnit(int hDevice,LPCTSTR EffectName,SYEffectTechDesc*
 }
 void DX3DEngine_ReleaseEffectUnit(int hDevice,int hEffect)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RELEASE_EFFECTUNIT,hDevice,&hEffect,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RELEASE_EFFECTUNIT,hDevice,&hEffect,NULL);
 	}
@@ -2114,11 +2114,11 @@ void DX3DEngine_ReleaseEffectUnit(int hDevice,int hEffect)
 int DX3DEngine_GetQuadVB(int hDevice)
 {
 	int hVB = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_EFFECT_GET_QUADVB,hDevice,NULL,&hVB);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_EFFECT_GET_QUADVB,hDevice,NULL,&hVB);
 	}
@@ -2127,12 +2127,12 @@ int DX3DEngine_GetQuadVB(int hDevice)
 
 void DX3DEngine_EffectSetTexture(int hDevice,int hEffect,int hTex,const char* texName)
 {
-	SYEffectSetTextureIn parmin = {hEffect, hTex, texName};
-	if (g_dRenderType==SY_DX10_Device)
+	DXEffectSetTextureIn parmin = {hEffect, hTex, texName};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_EFFECT_SET_TEXTURE,hDevice,&parmin, NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_EFFECT_SET_TEXTURE,hDevice,&parmin, NULL);
 	}
@@ -2140,25 +2140,25 @@ void DX3DEngine_EffectSetTexture(int hDevice,int hEffect,int hTex,const char* te
 
 void DX3DEngine_EffectSetConstBuffer(int hDevice,int hEffect,int hCB,const char* bufName)
 {
-	SYEffectSetConstBufferIn parmin = {hEffect, hCB, bufName};
-	if (g_dRenderType==SY_DX10_Device)
+	DXEffectSetConstBufferIn parmin = {hEffect, hCB, bufName};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_EFFECT_SET_CONST_BUFFER,hDevice,&parmin,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_EFFECT_SET_CONST_BUFFER,hDevice,&parmin,NULL);
 	}
 }
 
-void DX3DEngine_EffectSetVariable(int hDevice,int hEffect,void* pVariable, int nCount, SYEffectVariableType nType,const char* varName)
+void DX3DEngine_EffectSetVariable(int hDevice,int hEffect,void* pVariable, int nCount, DXEffectVariableType nType,const char* varName)
 {
-	SYEffectSetVariableIn parmin = {hEffect, pVariable, nCount, nType,varName};
-	if (g_dRenderType==SY_DX10_Device)
+	DXEffectSetVariableIn parmin = {hEffect, pVariable, nCount, nType,varName};
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_EFFECT_SET_VARIABLE,hDevice,&parmin, NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_EFFECT_SET_VARIABLE,hDevice,&parmin, NULL);
 	}
@@ -2176,7 +2176,7 @@ BOOL DX3DEngine_EffectRender(int hDevice,
 							int nVertexCount,
 							int nIndexCount)
 {
-	SYEffectRenderIn in_param =
+	DXEffectRenderIn in_param =
 	{
 		hEffect,
 		TechniqueName,
@@ -2188,11 +2188,11 @@ BOOL DX3DEngine_EffectRender(int hDevice,
 		nVertexCount,
 		nIndexCount,
 	};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_EFFECT_RENDER,hDevice,&in_param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_EFFECT_RENDER,hDevice,&in_param,NULL);
 	}
@@ -2213,7 +2213,7 @@ BOOL DX3DEngine_EffectRenderInstance(int hDevice,
 									int hInstanceBuffer,
 									int nInstanceCount)	
 {
-	SYEffectRenderInstanceIn in_param =
+	DXEffectRenderInstanceIn in_param =
 	{
 		hEffect,
 		TechniqueName,
@@ -2227,28 +2227,28 @@ BOOL DX3DEngine_EffectRenderInstance(int hDevice,
 		hInstanceBuffer,
 		nInstanceCount,
 	};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_EFFECT_RENDER_INSTANCE,hDevice,&in_param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_EFFECT_RENDER_INSTANCE,hDevice,&in_param,NULL);
 	}
 	return TRUE;
 }
-int DX3DEngine_CreateTexFromBuffer(int hDevice,DWORD* pBuffer,int nWidth,int nHeight,SYTextureType nType)
+int DX3DEngine_CreateTexFromBuffer(int hDevice,DWORD* pBuffer,int nWidth,int nHeight,DXTextureType nType)
 {
 
 	if(nWidth <= 0 ||nHeight <= 0 || pBuffer == NULL)
 		return NULL;
 	createTextureIn param = {nWidth,nHeight,nType,pBuffer}; 
 	int hTexture = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATE_TEXTURE,hDevice,&param,&hTexture);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATE_TEXTURE,hDevice,&param,&hTexture);
 	}
@@ -2257,14 +2257,14 @@ int DX3DEngine_CreateTexFromBuffer(int hDevice,DWORD* pBuffer,int nWidth,int nHe
 
 void* DX3DEngine_GetMemTexBufferPtr( int hDevice, int hTex ,DWORD* pPitch)
 {
-	SYGetMemTexBufferOut out;
+	DXGetMemTexBufferOut out;
 	if(hTex == 0)
 		return NULL;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_MESYEX_BUFFER,hDevice,&hTex,&out);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_MESYEX_BUFFER,hDevice,&hTex,&out);
 	}
@@ -2274,19 +2274,19 @@ void* DX3DEngine_GetMemTexBufferPtr( int hDevice, int hTex ,DWORD* pPitch)
 }
 
 
-void DX3DEngine_RenderTexture( int hDevice,SYHalDef32* pTex,const matrix4f* pWorldMatrix,const RECT* prtClip ,BOOL bAdjustColor,float fAlpha)
+void DX3DEngine_RenderTexture( int hDevice,DXHalDef32* pTex,const matrix4f* pWorldMatrix,const RECT* prtClip ,BOOL bAdjustColor,float fAlpha)
 {
-	SYRender2D in;
+	DXRender2D in;
 	in.pDstRt = prtClip;
 	in.pTex = pTex;
 	in.pWorldMatrix = pWorldMatrix;
 	in.bAdustColor = bAdjustColor;
 	in.fAlpha=fAlpha;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RENDER_2D,hDevice,&in,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RENDER_2D,hDevice,&in,NULL);
 	}
@@ -2294,101 +2294,101 @@ void DX3DEngine_RenderTexture( int hDevice,SYHalDef32* pTex,const matrix4f* pWor
 
 void DX3DEngine_TextOut(int hDevice,LPCTSTR strText,RECT* rtText,DWORD dwColor)
 {
-    SYTextOutIn in;
+    DXTextOutIn in;
     in.strText = strText;
     in.rtText = rtText;
     in.dwColor = dwColor;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTOUT,hDevice,&in,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTOUT,hDevice,&in,NULL);
 	}
 }   
 
-void DX3DEngine_RenderMask(int hDevice,int hSrcTex,rectf& cutRt,int hMaskTex,SYHalDef32* pTargetTex)
+void DX3DEngine_RenderMask(int hDevice,int hSrcTex,rectf& cutRt,int hMaskTex,DXHalDef32* pTargetTex)
 {
 	RECT bound = pTargetTex->m_rtBound;
 	OffsetRect(&bound,pTargetTex->m_nOriginX,pTargetTex->m_nOriginY);
-	SYMaskRenderIn in;
+	DXMaskRenderIn in;
 	in.hMask = hMaskTex;
 	in.hSrc = hSrcTex;
 	in.hTarget = pTargetTex->m_hTex;
 	in.pCutRt = &cutRt;
 	in.pDstRt = &bound;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RENDER_MASK,hDevice,&in,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RENDER_MASK,hDevice,&in,NULL);
 	}
 }
 
-void DX3DEngine_Blur_5Pt(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt,const SYDistortionParam* pParam)
+void DX3DEngine_Blur_5Pt(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt,const DXDistortionParam* pParam)
 {
-	SYDistortionParam DistortionParam = {0};
-	SYTexProcessIn param;
+	DXDistortionParam DistortionParam = {0};
+	DXTexProcessIn param;
 	param.hDestTex = hDestTex;
 	param.hSrcTex = hSrcTex;
 	param.hSrcKey = 0;
 	param.pDstRt = pDesRt;
 	param.pSrcRt = pSrcRt;
-	param.nType = SYTextureBlur_5Pt;
+	param.nType = DXTextureBlur_5Pt;
 	if(pParam)
 		DistortionParam = *pParam;
 	param.pData = &DistortionParam;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
 }
-void DX3DEngine_Blur_9Pt(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt,const SYDistortionParam* pParam)
+void DX3DEngine_Blur_9Pt(int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt,const DXDistortionParam* pParam)
 {
-	SYDistortionParam DistortionParam = {0};
-	SYTexProcessIn param;
+	DXDistortionParam DistortionParam = {0};
+	DXTexProcessIn param;
 	param.hDestTex = hDestTex;
 	param.hSrcTex = hSrcTex;
 	param.pDstRt = pDesRt;
 	param.pSrcRt = pSrcRt;
-	param.nType = SYTextureBlur_9Pt;
+	param.nType = DXTextureBlur_9Pt;
 	if(pParam)
 		DistortionParam = *pParam;
 	param.hSrcKey = 0;
 	param.pData = &DistortionParam;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
 }
 void DX3DEngine_FrontKeyOut(int hDevice,int hFrontTex,int hBackTex,const RECT* pSrcRt,int hDestTex,const RECT* pDestRt)
 {
-	SYTexProcessIn param;
+	DXTexProcessIn param;
 	param.hDestTex = hDestTex;
 	param.hSrcKey = hFrontTex;
 	param.hSrcTex = hBackTex;
 	param.pDstRt = pDestRt;
 	param.nSrcField = BOTH_FIELD;
 	param.nDstField = BOTH_FIELD;
-	param.nType = SY_FIRST_KEY_MIX;
+	param.nType = DX_FIRST_KEY_MIX;
 	param.pData = NULL;
 	param.pSrcRt = pSrcRt;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
@@ -2399,20 +2399,20 @@ void DX3DEngine_DrawBox( int hDevice, const float3& vMin,const float3& vMax,cons
 	pLineManager->DrawBox(hDevice,vMin,vMax,pMatrix,pcolor);
 }
 
-void DX3DEngine_RenderDynamicTex( int hDevice,matrix4f* pMat,BOOL bRepeat,BOOL bUseColorAlpha,SYHalDef32* pSrcTex,SYHalDef32* pMaskTex,SYHalDef32* pTargetTex )
+void DX3DEngine_RenderDynamicTex( int hDevice,matrix4f* pMat,BOOL bRepeat,BOOL bUseColorAlpha,DXHalDef32* pSrcTex,DXHalDef32* pMaskTex,DXHalDef32* pTargetTex )
 {
-	SYDynamicTextureIn in;
+	DXDynamicTextureIn in;
 	in.pMask = pMaskTex;
 	in.pSrc = pSrcTex;
 	in.pTarget = pTargetTex;
 	in.pSrcMat = pMat;
 	in.bRepeat = bRepeat;
 	in.bUseColorAlpha = bUseColorAlpha;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 	    RenderEngineDX10_Main(RENDERENGINE_RENDER_DYNAMIC_TEX,hDevice,&in,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RENDER_DYNAMIC_TEX,hDevice,&in,NULL);
 	}
@@ -2425,17 +2425,17 @@ void DX3DEngine_DrawCone( int hDevice,float fUpRad,float fDownRad,float fHeight,
 
 void DX3DEngine_Render3DVisionTex(int hDevice,int hDstTex,const RECT* pDstRt,int hLeftTex,int hRightTex,const RECT* pSrcRt)
 {
-	SY3DVisionTex param;
+	DX3DVisionTex param;
 	param.hDstTex = hDstTex;
 	param.hLeftTex = hLeftTex;
 	param.hRightTex = hRightTex;
 	param.pDstRt = pDstRt;
 	param.pSrcRt = pSrcRt;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RENDER_3DVISION,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RENDER_3DVISION,hDevice,&param,NULL);
 	}
@@ -2445,11 +2445,11 @@ void DX3DEngine_ReleaseSwapChain( int hDevice,int hSwapChain )
 {
 	if(!hSwapChain)
 		return;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RELEASE_SWAPCHAIN,hDevice,&hSwapChain,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RELEASE_SWAPCHAIN,hDevice,&hSwapChain,NULL);
 	}
@@ -2460,11 +2460,11 @@ int DX3DEngine_GetSwapChainBuffer( int hDevice,int hSwapChain )
 	if(!hSwapChain)
 		return 0;
 	int hBuffer = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_SWAPCHAIN_BUFFER_TEX,hDevice,&hSwapChain,&hBuffer);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_SWAPCHAIN_BUFFER_TEX,hDevice,&hSwapChain,&hBuffer);
 	}
@@ -2473,28 +2473,28 @@ int DX3DEngine_GetSwapChainBuffer( int hDevice,int hSwapChain )
 
 void DX3DEngine_RenderTexture( int hDevice, int hTex, matrix4f* pMatrix)										 
 {
-	SYRenderTex in;
+	DXRenderTex in;
 	in.hSrcTex = hTex;
 	in.pMatrix = pMatrix;
 	in.hMaskTex = 0;
 
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RENDER_TEXTURE_3D,hDevice,&in,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RENDER_TEXTURE_3D,hDevice,&in,NULL);
 	}
 }
  
-void DX3DEngine_GetRenderInfo( int hDevice, SYRenderInfo* pInfo)
+void DX3DEngine_GetRenderInfo( int hDevice, DXRenderInfo* pInfo)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_RENDER_INFO,hDevice,NULL,pInfo);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_RENDER_INFO,hDevice,NULL,pInfo);
 	}
@@ -2502,11 +2502,11 @@ void DX3DEngine_GetRenderInfo( int hDevice, SYRenderInfo* pInfo)
 
 void DX3DEngine_ClearRenderInfo( int hDevice)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CLEAR_RENDER_INFO,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CLEAR_RENDER_INFO,hDevice,NULL,NULL);
 	}
@@ -2523,11 +2523,11 @@ int DX3DEngine_GetTextureMipMap( int hDevice,int hTexture )
 {
 	int nMipMap = 1;
 	getTextureInfoOut param = {NULL,NULL,NULL,&nMipMap};
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_TEXTURE_INFO,hDevice,&hTexture,&param);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_TEXTURE_INFO,hDevice,&hTexture,&param);
 	}
@@ -2541,7 +2541,7 @@ size_t DX3DEngine_GetTextureMemSize( int hDevice,int hTexture )
 	int nWidth,nHeight,nType;
 	DX3DEngine_GetTextureInfo(hDevice,hTexture,&nWidth,&nHeight,&nType);
 	int nScale = 1;
-	if(nType == SYTexture_MS2DTex || nType == SYTexture_MSDepth)
+	if(nType == DXTexture_MS2DTex || nType == DXTexture_MSDepth)
 		nScale = 4;
 	int nMipMap = DX3DEngine_GetTextureMipMap(hDevice,hTexture);
 
@@ -2552,21 +2552,21 @@ size_t DX3DEngine_GetTextureMemSize( int hDevice,int hTexture )
 
 void DX3DEngine_ProcessBright( int hDevice,int eTexType,int hTex,const RECT* pSrcRt,int hDestTex,const RECT* pDestRt,float fBrightGain )
 {
-	SYTexProcessIn param;
+	DXTexProcessIn param;
 	param.hDestTex = hDestTex;
 	param.hSrcKey = NULL;
 	param.hSrcTex = hTex;
 	param.pDstRt = pDestRt;
 	param.nSrcField = BOTH_FIELD;
 	param.nDstField = BOTH_FIELD;
-	param.nType = SY_UYVY_BRIGHT;
+	param.nType = DX_UYVY_BRIGHT;
 	param.pData = &fBrightGain;
 	param.pSrcRt = pSrcRt;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
@@ -2574,11 +2574,11 @@ void DX3DEngine_ProcessBright( int hDevice,int eTexType,int hTex,const RECT* pSr
 
 BOOL		DX3DEngine_GetDeviceRemoveReason(int hDevice)
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_GET_REMOVE_REASON,hDevice,NULL,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_GET_REMOVE_REASON,hDevice,NULL,NULL);
 	}
@@ -2588,11 +2588,11 @@ BOOL		DX3DEngine_GetDeviceRemoveReason(int hDevice)
 int DX3DEngine_CreateContext( int hDevice )
 {
 	int hContext = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_CREATE_CONTEXT,hDevice,NULL,&hContext);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_CREATE_CONTEXT,hDevice,NULL,&hContext);
 	}
@@ -2601,11 +2601,11 @@ int DX3DEngine_CreateContext( int hDevice )
 
 void DX3DEngine_ReleaseContext( int hDevice,int hContext )
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_RELEASE_CONTEXT,hDevice,&hContext,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_RELEASE_CONTEXT,hDevice,&hContext,NULL);
 	}
@@ -2613,11 +2613,11 @@ void DX3DEngine_ReleaseContext( int hDevice,int hContext )
 
 void DX3DEngine_SetContext( int hDevice,int hContext )
 {
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_SET_CONTEXT,hDevice,&hContext,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_SET_CONTEXT,hDevice,&hContext,NULL);
 	}
@@ -2625,20 +2625,20 @@ void DX3DEngine_SetContext( int hDevice,int hContext )
 
 void DX3DEngine_RGBA_To_BGRA( int hDevice,int hSrcTex,const RECT* pSrcRt,int hDestTex,const RECT* pDesRt )
 {
-	int nType = SY_RGBA_To_BGRA;
-	SYTexProcessIn param;
+	int nType = Color_RGBA_To_BGRA;
+	DXTexProcessIn param;
 	param.hDestTex = hDestTex;
 	param.hSrcTex = hSrcTex;
 	param.pDstRt = pDesRt;
 	param.pSrcRt = pSrcRt;
-	param.nType = SYTextureConvertFormat;
+	param.nType = DXTextureConvertFormat;
 	param.pData = &nType;
 	param.hSrcKey = 0;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
@@ -2646,20 +2646,20 @@ void DX3DEngine_RGBA_To_BGRA( int hDevice,int hSrcTex,const RECT* pSrcRt,int hDe
 
 void DX3DEngine_MakeFrame( int hDevice,int hFirstTex,int hSecondTex,const RECT* pRect,int hDestTex )
 {
-	int nType = SY_RGBA_To_FRAME;
-	SYTexProcessIn param;
+	int nType = Color_RGBA_To_FRAME;
+	DXTexProcessIn param;
 	param.hDestTex = hDestTex;
 	param.hSrcTex = hFirstTex;
 	param.hSrcKey = hSecondTex;
 	param.pDstRt = pRect;
 	param.pSrcRt = pRect;
-	param.nType = SYTextureConvertFormat;
+	param.nType = DXTextureConvertFormat;
 	param.pData = &nType;
-	if (g_dRenderType==SY_DX10_Device)
+	if (g_dRenderType==DX_DX10_Device)
 	{
 		RenderEngineDX10_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
-	else if(g_dRenderType==SY_Soft_Device)
+	else if(g_dRenderType==DX_Soft_Device)
 	{
 		RenderSoftEngine_Main(RENDERENGINE_TEXTURE_PROCESS,hDevice,&param,NULL);
 	}
