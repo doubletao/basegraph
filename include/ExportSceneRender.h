@@ -13,4 +13,10 @@
 #endif // BASEGRAPH_AUTO_LOAD
 #endif // BASEGRAPH_SCENE_RENDER_EXPORTS
 
-//#include "SceneRender\SkinDlgWnd.h"
+#include "SceneRender\3DInterSection.h"
+#include "SceneRender\3DSpaceConvert.h"
+#include "SceneRender\DXEffectManager.h"
+#include "SceneRender\DXEngineDataDef.h"
+#include "SceneRender\DXEngineManagerAPI.h"
+#include "SceneRender\DXRenderEngineDX10Api.h"
+#include "SceneRender\DXRenderEngineSoftAPI.h"
