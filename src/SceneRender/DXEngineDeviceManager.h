@@ -12,5 +12,6 @@ public:
 	static DXEngineDeviceManager & Instance();
 	int Initialize3D(int nWidth, int nHeight);//¸ø¿í¸ß£¬·µ»Ødevice
 	int GetMainDevice();
+	void ReleaseMainDevice();
 };
 

@@ -9,9 +9,9 @@ DXEngineDeviceManager::DXEngineDeviceManager()
 {
 }
 
-
 DXEngineDeviceManager::~DXEngineDeviceManager()
 {
+	ReleaseMainDevice();
 }
 
 DXEngineDeviceManager & DXEngineDeviceManager::Instance()
@@ -35,4 +35,15 @@ int DXEngineDeviceManager::Initialize3D(int nWidth, int nHeight)
 int DXEngineDeviceManager::GetMainDevice()
 {
 	return m_nDevice;
+}
+
+void DXEngineDeviceManager::ReleaseMainDevice()
+{
+	if (m_nDevice > 0)
+	{
+		DX3DEngine_ReleaseDevice(m_nDevice);
+		m_nDevice = 0;
+		m_nSceneWidth = 0;
+		m_nSceneHeight = 0;
+	}
 }

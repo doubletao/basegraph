@@ -96,6 +96,8 @@ struct SY_DeviceDX10
 //render info
 ////////////////////////////////////////////////////////////////////////////////
 	DXRenderInfo		info;
+	SY_DeviceDX10();
+	void Reset();
 };
 
 struct SYGetMeshInfoIn

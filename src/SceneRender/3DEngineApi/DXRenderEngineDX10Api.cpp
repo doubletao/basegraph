@@ -1301,7 +1301,6 @@ bool Render_CreateDevice(int hDevice,void* paramin,void* paramout)
 
 	SY_DeviceDX10* pNewDevice = NULL;
 	pNewDevice = new SY_DeviceDX10;
-	memset(pNewDevice,0,sizeof(SY_DeviceDX10));
 	D3D10_DRIVER_TYPE driverType = D3D10_DRIVER_TYPE_HARDWARE;
 
 	IDXGIAdapter* selectedAdapter = g_pAdapter;
@@ -4302,4 +4301,75 @@ BOOL RenderEngineDX10_Main( int ncmd, int hDevice, void* paramin, void* paramout
 void RenderEngineDX10SetOptimal(BOOL bOptimal/* =TRUE */)
 {
 	g_bOptimal=bOptimal;
+}
+
+SY_DeviceDX10::SY_DeviceDX10()
+{
+	Reset();
+}
+
+void SY_DeviceDX10::Reset()
+{
+	pDevice = 0;
+	pSwapChainDevice = 0;
+	nAAFactor = 0;
+	nMutiSampleCount = 0;
+	nSampleQuality = 0;
+	memset(&spriteProj, 0, sizeof(matrix4f));
+	ShaderHash = 0;
+	TextureFromFileHash = nullptr;
+	BumpTextureFromFileHash = nullptr;
+	memset(pDepthState, 0, DXDepthStateCount * sizeof(ID3D10DepthStencilState*));
+	memset(pBlendState, 0, DXBlendStateCount * sizeof(ID3D10BlendState*));
+	memset(pRasterizerState, 0, DXRasStateCount * sizeof(ID3D10RasterizerState*));
+	memset(pSamplerState, 0, DXSampleStateCount * sizeof(ID3D10SamplerState*));
+	hNowRenderTarget = 0;
+	hNowDepth = 0;
+	nNowPriType = 0;
+	hNowIndexBuffer = 0;
+	hNowVertexBuffer = 0;
+	memset(pNowState, 0, DXRenderState_Count * sizeof(int));
+	memset(pSpritState, 0, DXRenderState_Count * sizeof(int));
+	memset(pNowSamplerState, 0, 3 * 16 * sizeof(int));
+	memset(pShader, 0, 3 * sizeof(int));
+	memset(pConstBuffer, 0, 3 * 14 * sizeof(int));
+	memset(nShaderTexstate, 0, 3 * 128 * sizeof(int));
+	memset(&rtViewport, 0, sizeof(RECT));
+	memset(&rtScissor, 0, sizeof(RECT));
+	hScreenVertex = 0;
+	h2DVertex = 0;
+	hScreenVS = 0;
+	h3DVisionPS = 0;
+	hScreenCB = 0;
+	hDynamicCB = 0;
+	hClearCB = 0;
+	hModiyCB = 0;
+	hConvertFormatPS = 0;
+	hOnlyKeyOutPS = 0;
+	hDynamicPS = 0;
+	hBlur5PtPS = 0;
+	hBlur9PtPS = 0;
+	hClearScreenPS = 0;
+	hMaskRender = 0;
+	hScreenPS = 0;
+	hScreenAdjustPS = 0;
+	hScreenMSPS = 0;
+	hUYVYBrightPS = 0;
+	hFieldAddKeyPS = 0;
+	hRGBA_Frame = 0;
+	hRGBA_YUAYVA4224PS = 0;
+	hUYVY_RGBA_PS0 = 0;
+	hUYVY_RGBA_PS1 = 0;
+	hUYVY_RGBA_KeyPS0 = 0;
+	hUYVY_RGBA_KeyPS1 = 0;
+	hUYVY_RGBA_Frame = 0;
+	hRGBA_UYVY_Frame = 0;
+	hRenderTexVS = 0;
+	hRenderTexPS = 0;
+	hRenderTexCB = 0;
+	hRenderTexCB5 = 0;
+	pEffectMan = nullptr;
+	memset(&EngineLock, 0, sizeof(CRITICAL_SECTION));
+	memset(&RenderLock, 0, sizeof(CRITICAL_SECTION));
+	memset(&info, 0, sizeof(DXRenderInfo));
 }

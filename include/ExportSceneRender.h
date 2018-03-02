@@ -20,3 +20,7 @@
 #include "SceneRender\DXEngineManagerAPI.h"
 #include "SceneRender\DXRenderEngineDX10Api.h"
 #include "SceneRender\DXRenderEngineSoftAPI.h"
+
+BASEGRAPH_SCENE_RENDER_API int DX3DEngine_Initialize3DDevice(int nWidth, int nHeight);
+BASEGRAPH_SCENE_RENDER_API int DX3DEngine_GetMainDevice();
+BASEGRAPH_SCENE_RENDER_API void DX3DEngine_ReleaseMainDevice();

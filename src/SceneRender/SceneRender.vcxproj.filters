@@ -16,6 +16,24 @@
     <Filter Include="3DEngineApi">
       <UniqueIdentifier>{43f61201-a7fd-4032-af2d-38a0b9ead824}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{3080664f-6cc3-463c-8c66-4aacea391392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\GS">
+      <UniqueIdentifier>{5a91bcb1-13b1-4a7a-a8be-6d84a098eed6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\PS">
+      <UniqueIdentifier>{4dfb6bd4-dc5c-49c6-ba97-a05f8ec255c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\VS">
+      <UniqueIdentifier>{aa439f08-89df-4f83-b6a7-7e87b00457df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\PS\color">
+      <UniqueIdentifier>{5b3ba38b-3c9b-49ea-9448-e5eb44e13be3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\PS\materialPS">
+      <UniqueIdentifier>{7afe27e6-1e4d-4773-81dd-d4467287cb4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -46,6 +64,9 @@
       <Filter>3DEngineApi</Filter>
     </ClCompile>
     <ClCompile Include="DXEngineDeviceManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportSceneRender.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,6 +117,135 @@
     </None>
     <None Include="res\SceneRender.rc2">
       <Filter>资源文件</Filter>
+    </None>
+    <None Include="shader\GS\WidthLine.GS">
+      <Filter>Shader\GS</Filter>
+    </None>
+    <None Include="shader\VS\Cloud2D.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\Cloud3D.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\Easy.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\Easy2.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\EasyTex.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\LineWithGS.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\pie.vs">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\pos_normal_tex.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\pos_normal_tex_tang_bi.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\pos_normal_tex_tang_bi_Instance.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\RenderTex.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\VS\screen.VS">
+      <Filter>Shader\VS</Filter>
+    </None>
+    <None Include="shader\PS\color\field_add_key.PS">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\keyout.PS">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\makeFrame.PS">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\rgba_to_yuayva4224.ps">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\rgbaframe_to_uyvy.ps">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\uyvy_bright.ps">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\uyvy_to_rgba_with_key0.ps">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\uyvy_to_rgba_with_key1.ps">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\uyvy_to_rgba0.ps">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\uyvy_to_rgba1.ps">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\color\uyvyframe_to_rgba.ps">
+      <Filter>Shader\PS\color</Filter>
+    </None>
+    <None Include="shader\PS\3DVision.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\blur.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\blur9.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\BoardMaskDepth.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\clearscreen.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\convert.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\COORD.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\DynamicTex.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\Easy.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\Easy2.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\MaskShader.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\pos_normal_mask_tex.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\pos_normal_tex_tang_bi.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\RenderMask.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\RenderTex.ps">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\screen.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\screenAdjustColor.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\screenMS.PS">
+      <Filter>Shader\PS</Filter>
+    </None>
+    <None Include="shader\PS\WidthLineNoTex.PS">
+      <Filter>Shader\PS</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -124,6 +124,7 @@
     <ClCompile Include="3DEngineApi\DXRenderEngineDX10Api.cpp" />
     <ClCompile Include="3DEngineApi\DXRenderEngineSoftAPI.cpp" />
     <ClCompile Include="DXEngineDeviceManager.cpp" />
+    <ClCompile Include="ExportSceneRender.cpp" />
     <ClCompile Include="SceneRender.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -148,6 +149,49 @@
   <ItemGroup>
     <None Include="res\SceneRender.rc2" />
     <None Include="SceneRender.def" />
+    <None Include="shader\GS\WidthLine.GS" />
+    <None Include="shader\PS\3DVision.PS" />
+    <None Include="shader\PS\blur.PS" />
+    <None Include="shader\PS\blur9.PS" />
+    <None Include="shader\PS\BoardMaskDepth.PS" />
+    <None Include="shader\PS\clearscreen.PS" />
+    <None Include="shader\PS\color\field_add_key.PS" />
+    <None Include="shader\PS\color\keyout.PS" />
+    <None Include="shader\PS\color\makeFrame.PS" />
+    <None Include="shader\PS\color\rgbaframe_to_uyvy.ps" />
+    <None Include="shader\PS\color\rgba_to_yuayva4224.ps" />
+    <None Include="shader\PS\color\uyvyframe_to_rgba.ps" />
+    <None Include="shader\PS\color\uyvy_bright.ps" />
+    <None Include="shader\PS\color\uyvy_to_rgba0.ps" />
+    <None Include="shader\PS\color\uyvy_to_rgba1.ps" />
+    <None Include="shader\PS\color\uyvy_to_rgba_with_key0.ps" />
+    <None Include="shader\PS\color\uyvy_to_rgba_with_key1.ps" />
+    <None Include="shader\PS\convert.PS" />
+    <None Include="shader\PS\COORD.PS" />
+    <None Include="shader\PS\DynamicTex.PS" />
+    <None Include="shader\PS\Easy.PS" />
+    <None Include="shader\PS\Easy2.PS" />
+    <None Include="shader\PS\MaskShader.PS" />
+    <None Include="shader\PS\pos_normal_mask_tex.PS" />
+    <None Include="shader\PS\pos_normal_tex_tang_bi.PS" />
+    <None Include="shader\PS\RenderMask.PS" />
+    <None Include="shader\PS\RenderTex.ps" />
+    <None Include="shader\PS\screen.PS" />
+    <None Include="shader\PS\screenAdjustColor.PS" />
+    <None Include="shader\PS\screenMS.PS" />
+    <None Include="shader\PS\WidthLineNoTex.PS" />
+    <None Include="shader\VS\Cloud2D.VS" />
+    <None Include="shader\VS\Cloud3D.VS" />
+    <None Include="shader\VS\Easy.VS" />
+    <None Include="shader\VS\Easy2.VS" />
+    <None Include="shader\VS\EasyTex.VS" />
+    <None Include="shader\VS\LineWithGS.VS" />
+    <None Include="shader\VS\pie.vs" />
+    <None Include="shader\VS\pos_normal_tex.VS" />
+    <None Include="shader\VS\pos_normal_tex_tang_bi.VS" />
+    <None Include="shader\VS\pos_normal_tex_tang_bi_Instance.VS" />
+    <None Include="shader\VS\RenderTex.VS" />
+    <None Include="shader\VS\screen.VS" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SceneRender.rc" />
