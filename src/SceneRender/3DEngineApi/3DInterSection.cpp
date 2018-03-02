@@ -3,6 +3,12 @@
 #define LINE_SEG_DEVIATION	2.f
 #define LINE_CIRCLE_DEVIATION	6.f
 
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
+
 BOOL IntersectTriangle( const vector3f* orig,const vector3f* dir,const vector3f* v0,const vector3f* v1,const vector3f* v2, vector3f* pOutPt );
 int Intersect_Triangle(IN const DX_Triangle_Intersection* pIn , OUT Point_Intersection* pOutPt )
 {

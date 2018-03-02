@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "Common/CommonDataContainer.h"
 
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //hashtable
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +31,9 @@ BASEGRAPH_COMMON_API void * SYHTable_RemoveAt(phtable pHT, UINT nIndex)
 {
 	if (pHT && pHT->m_mapContainer.count(nIndex) > 0)
 	{
+		void * pRet = pHT->m_mapContainer[nIndex];
 		pHT->m_mapContainer.erase(nIndex);
+		return pRet;
 	}
 	return nullptr;
 }
@@ -67,11 +75,15 @@ BASEGRAPH_COMMON_API void * SYHTable_GetNextValid(phtable pHT, UINT * pnIndex)
 			}
 			if (bFind)
 			{
-				it = it++;
+				it++;
 				if (it != pHT->m_mapContainer.end())
 				{
 					*pnIndex = it->first;
 					return it->second;
+				}
+				else
+				{
+					break;
 				}
 			}
 		}
@@ -104,10 +116,6 @@ BASEGRAPH_COMMON_API void SYHTable_Release(phtable pHT)
 {
 	if (pHT)
 	{
-		for (std::map<int, void *>::iterator it = pHT->m_mapContainer.begin(); it != pHT->m_mapContainer.end(); it++)
-		{
-			SAFE_DELETE(it->second);
-		}
 		pHT->m_mapContainer.clear();
 	}
 }

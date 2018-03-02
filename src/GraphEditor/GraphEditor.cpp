@@ -55,6 +55,11 @@ CGraphEditorApp::~CGraphEditorApp()
 
 BOOL CGraphEditorApp::InitInstance()
 {
+	//初始化3D环境
+	DX3DEngine_Init(DX_DX10_Device, _T("temporary"));
+	//初始化主device
+	DX3DEngine_Initialize3DDevice(1920, 1080);
+
 	if (nullptr != m_pMainFrame)
 	{
 		BOOL bRet = m_pMainFrame->Create(nullptr, _T("BaseGraphEditor"));
@@ -62,10 +67,6 @@ BOOL CGraphEditorApp::InitInstance()
 		{
 			return FALSE;
 		}
-		//初始化3D环境
-		DX3DEngine_Init(DX_DX10_Device, _T("temporary"));
-		//初始化主device
-		DX3DEngine_Initialize3DDevice(1920, 1080);
 	}
 
 	return TRUE;

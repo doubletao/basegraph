@@ -1,4 +1,6 @@
 #pragma once
+#include "C3DViewInfo.h"
+#include "C3DViewBufferInfo.h"
 /*
 * 回显窗视图子窗口，分布在回显窗视图主窗口中
 */
@@ -7,6 +9,17 @@ class C3DSceneViewWnd : public CWnd
 {
 	DECLARE_DYNCREATE(C3DSceneViewWnd)
 	DECLARE_MESSAGE_MAP()
+protected:
+	C3DViewInfo m_ViewInfo;
+	C3DViewBufferInfo m_BufferInfo;
+protected:
+	//渲染触发线程管理相关
+	int m_nRenderCount;//待渲染次数
+	CRITICAL_SECTION m_lockRendCount;//待渲染次数锁
+	void RenderCountLock();
+	void RenderCountUnlock();
+	LRESULT AddOneRenderTask(WPARAM, LPARAM);//启动（如果已有则不启动）
+	static DWORD WINAPI PreDecoderThread(LPVOID pParam);//解码线程
 public:
 	C3DSceneViewWnd();
 	~C3DSceneViewWnd();

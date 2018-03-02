@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "SceneRender\DXRenderEngineDX10Api.h"
 
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
+
 htable g_deviceHT;
 IDXGIFactory*	g_pDXFactory = NULL;
 IDXGIAdapter* g_pAdapter = NULL;
@@ -957,6 +963,8 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 int hTestPs = 0;
 bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 {
+	//TODO djt: 这里边的shader用到哪个加载哪个，不再一次性加载了
+	return true;
 	pDevice->hScreenVertex = CreateScreenVertex(pDevice);
 	pDevice->h2DVertex = Create2DVertex(pDevice);
 	screenCB screen;
@@ -1081,6 +1089,8 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 
 bool ReleaseDeviceResource(SY_DeviceDX10* pDevice)
 {
+	//TODO djt: 这里边的shader用到哪个加载哪个，不再一次性加载了
+#if 0
 	ReleaseBuffer(pDevice,pDevice->hScreenVertex);
 	ReleaseBuffer(pDevice,pDevice->h2DVertex);
 
@@ -1116,6 +1126,7 @@ bool ReleaseDeviceResource(SY_DeviceDX10* pDevice)
 
 	ReleaseShader(pDevice,pDevice->hRenderTexVS);
 	ReleaseShader(pDevice,pDevice->hRenderTexPS);
+#endif
 
 	//play effect support
 	if(pDevice->pEffectMan)

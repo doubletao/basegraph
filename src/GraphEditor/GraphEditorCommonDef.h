@@ -38,4 +38,7 @@ enum UIElementMsgDef
 	UIElementMsg_TimeLineObjectLeftArea,
 	UIElementMsg_TimeLineObjectRightArea,
 	UIElementMsg_TimeLineRuler,
+
+	WM_MSG_BEGIN = WM_USER + 1,
+	WM_EXCUTE_RENDERTASK,//窗口的刷新消息
 };

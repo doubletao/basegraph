@@ -256,37 +256,40 @@ inline void ReleaseBuffer(SY_DeviceDX10* pDevice,int hBuffer)
 inline void ReleaseShader(SY_DeviceDX10* pDevice,int hShader)
 {
 	SYShader* pShader = (SYShader*)SYHTable_GetAt(&pDevice->htShaderTable,hShader);
-	assert(pShader);
-	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash,(void *)pShader->pShaderName);
-	--(pShaderHashValue->nCount);
-	if (pShaderHashValue->nCount != 0)
-		return;
-
-	SYHash_RemoveAt(pDevice->ShaderHash,(void *)pShader->pShaderName,TRUE);
-	SAFEDELETE_ARRAY(pShader->pShaderName);
-	switch (pShader->nType)
+	if (pShader)
 	{
-	case DXShaderType_VertexShader:
+		assert(pShader);
+		shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash, (void *)pShader->pShaderName);
+		--(pShaderHashValue->nCount);
+		if (pShaderHashValue->nCount != 0)
+			return;
+
+		SYHash_RemoveAt(pDevice->ShaderHash, (void *)pShader->pShaderName, TRUE);
+		SAFEDELETE_ARRAY(pShader->pShaderName);
+		switch (pShader->nType)
+		{
+		case DXShaderType_VertexShader:
 		{
 			ID3D10VertexShader * pPixShader = (ID3D10VertexShader *)pShader->pShader;
 			SAFE_RELEASE(pPixShader);
 		}
 		break;
-	case DXShaderType_GeometryShader:
+		case DXShaderType_GeometryShader:
 		{
 			ID3D10GeometryShader * pPixShader = (ID3D10GeometryShader*)pShader->pShader;
 			SAFE_RELEASE(pPixShader);
 		}
 		break;
-	case DXShaderType_PixelShader:
+		case DXShaderType_PixelShader:
 		{
 			ID3D10PixelShader* pPixShader = (ID3D10PixelShader*)pShader->pShader;
 			SAFE_RELEASE(pPixShader);
 		}
 		break;
+		}
+		SAFE_DELETE(pShader);
+		SYHTable_RemoveAt(&pDevice->htShaderTable, hShader);
 	}
-	SAFE_DELETE(pShader);
-	SYHTable_RemoveAt(&pDevice->htShaderTable,hShader);
 }
 
 inline BOOL IsNeedScaleTexParam(SY_DeviceDX10* pDevice,int hTex,float& fScale)

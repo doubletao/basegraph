@@ -16,6 +16,8 @@ public:
 	int m_nScrollY;
 
 	float m_fScale;
+
+	int m_hSwapChain;
 public:
 	C3DViewInfo();
 	~C3DViewInfo();
