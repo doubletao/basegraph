@@ -15,16 +15,19 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetBuffer(IN CString strID, OUT StuSimp
 
 BASEGRAPH_DATARENDER_API bool DataRender_GetTexture(IN CString strID, OUT int & nTexture)
 {
+	nTexture = CalculatorManager::Instance().GetTexture(strID);
 	return true;
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_GetDesHalDef(IN CString strID, OUT DXHalDef32 *& pHalDef)
 {
+	pHalDef = CalculatorManager::Instance().GetDesHalDef(strID);
 	return true;
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_Get2DRenderMatrix(IN CString strID, IN float fScale, OUT matrix4f & matWorld)
 {
+	matWorld = CalculatorManager::Instance().Get2DRenderMatrix(strID, fScale);
 	return true;
 }
 

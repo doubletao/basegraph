@@ -23,6 +23,7 @@ protected:
 	int m_nObjBufferID;
 	bool m_bSelected;
 	EmObjectChgLevel m_emChgLevel;
+	DXHalDef32 m_HalDes;
 public:
 	ObjectCalculator(CString strObjID);
 	virtual ~ObjectCalculator();
@@ -32,6 +33,7 @@ public:
 	bool GetObjBuffer(StuSimpleBuffer & pBuf);
 	bool SetSelected(bool bSel);//返回原来的状态
 	bool GetSelected();
+	DXHalDef32 * GetHalDes();
 protected:
 	virtual bool NeedRenderBuffer();
 public:

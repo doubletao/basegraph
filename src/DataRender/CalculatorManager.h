@@ -12,6 +12,10 @@ private:
 public:
 	static CalculatorManager & Instance();
 
+	int GetTexture(IN CString strID);
+	DXHalDef32 * GetDesHalDef(IN CString strID);
+	matrix4f Get2DRenderMatrix(IN CString strID, IN float fScale);
+
 	ObjectCalculator * GetObjCalculator(CString strObjID);
 	bool ReleaseCalculator(CString strObjID);
 	bool ReleaseCalculator(ObjectCalculator * pCalc);

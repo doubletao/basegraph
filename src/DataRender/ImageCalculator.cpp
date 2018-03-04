@@ -27,6 +27,7 @@ bool ImageCalculator::UpdateRenderBuffer()
 				{
 					if (StretchImage())
 					{
+						//创建3D buffer并将2D buffer作为纹理贴上去
 						return true;
 					}
 				}

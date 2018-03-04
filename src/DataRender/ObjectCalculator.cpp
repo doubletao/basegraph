@@ -58,6 +58,11 @@ bool ObjectCalculator::GetSelected()
 	return m_bSelected;
 }
 
+DXHalDef32 * ObjectCalculator::GetHalDes()
+{
+	return &m_HalDes;
+}
+
 bool ObjectCalculator::NeedRenderBuffer()
 {
 	//如果连bufer都还没有呢，必然需要render

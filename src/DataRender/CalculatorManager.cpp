@@ -24,6 +24,38 @@ CalculatorManager & CalculatorManager::Instance()
 	return inst;
 }
 
+int CalculatorManager::GetTexture(IN CString strID)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strID);
+	if (pCalc)
+	{
+		DXHalDef32 * pHalDes = pCalc->GetHalDes();
+		if (pHalDes)
+		{
+			return pHalDes->m_hTex;
+		}
+	}
+	return 0;
+}
+
+DXHalDef32 * CalculatorManager::GetDesHalDef(IN CString strID)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strID);
+	if (pCalc)
+	{
+		DXHalDef32 * pHalDes = pCalc->GetHalDes();
+		return pHalDes;
+	}
+	return nullptr;
+}
+
+matrix4f CalculatorManager::Get2DRenderMatrix(IN CString strID, IN float fScale)
+{
+	matrix4f matRet;
+	matrix4f_identity(&matRet);
+	return matRet;
+}
+
 ObjectCalculator * CalculatorManager::GetObjCalculator(CString strObjID)
 {
 	if (m_mapObjCalculator.count(strObjID) > 0)
