@@ -1,4 +1,5 @@
 #pragma once
+
 //∫Í∂®“Â
 enum DXDeviceType
 {
@@ -353,6 +354,7 @@ struct DXHalDef32
 		memset(this, 0, sizeof(DXHalDef32));
 	}
 };
+
 struct DXEffectTechDesc
 {
 	LPCTSTR pstrName;

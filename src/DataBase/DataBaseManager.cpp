@@ -6,6 +6,7 @@
 
 DataBaseManager::DataBaseManager()
 {
+	InitializeCriticalSection(&m_lockData);
 }
 
 
@@ -18,12 +19,42 @@ DataBaseManager::~DataBaseManager()
 		pObj = nullptr;
 	}
 	m_vecObject.clear();
+	DeleteCriticalSection(&m_lockData);
 }
 
 DataBaseManager & DataBaseManager::Instance()
 {
 	static DataBaseManager inst;
 	return inst;
+}
+
+void DataBaseManager::Lock()
+{
+#ifdef DEBUG
+	if (true)
+	{
+		CString strDebug;
+		strDebug.Format(_T("%s, DataBaseManager::Lock() ask\n"));
+		OutputDebugString(strDebug);
+	}
+#endif // DEBUG
+	EnterCriticalSection(&m_lockData);
+#ifdef DEBUG
+	if (true)
+	{
+		CString strDebug;
+		strDebug.Format(_T("%s, DataBaseManager::Lock() locked\n"));
+		OutputDebugString(strDebug);
+	}
+#endif // DEBUG
+}
+
+void DataBaseManager::Unlock()
+{
+	LeaveCriticalSection(&m_lockData);
+#ifdef DEBUG
+	OutputDebugString(_T("DataBaseManager::Unlock()\n"));
+#endif // DEBUG
 }
 
 bool DataBaseManager::CheckItemID(CString strID)

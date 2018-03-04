@@ -963,8 +963,6 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 int hTestPs = 0;
 bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 {
-	//TODO djt: 这里边的shader用到哪个加载哪个，不再一次性加载了
-	return true;
 	pDevice->hScreenVertex = CreateScreenVertex(pDevice);
 	pDevice->h2DVertex = Create2DVertex(pDevice);
 	screenCB screen;
@@ -977,6 +975,14 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 
 	pDevice->hRenderTexCB = CreateBuffer(pDevice,sizeof(matrix4f),1,NULL,DXConstBuffer);
 	pDevice->hRenderTexCB5 = CreateBuffer(pDevice,sizeof(matrix4f) + sizeof(float4),1,NULL,DXConstBuffer);
+
+	CreateBlendState(pDevice);
+	CreateDepthState(pDevice);
+	CreateRasterizerState(pDevice);
+	CreateSampleState(pDevice);
+
+	//TODO djt: 这里边的shader用到哪个加载哪个，不再一次性加载了
+	return true;
 
 	DXVertexType nType = DXVertex_POS_TEX;
 
@@ -1078,11 +1084,6 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\RenderTex.ps"));
 	pDevice->hRenderTexPS = CreateShaderFromFile(pDevice,_T("RenderTex_PS"),filePath,DXShaderType_PixelShader,NULL);
-
-	CreateBlendState(pDevice);
-	CreateDepthState(pDevice);
-	CreateRasterizerState(pDevice);
-	CreateSampleState(pDevice);
 
 	return true;
 }
@@ -1264,7 +1265,6 @@ void Render_ReleaseDevice(SY_DeviceDX10* pDevice)
 	UINT firstBuf = SYHTable_GetFirstValid(&pDevice->htBuffer);		
 	while(firstBuf)
 	{
-		int a = 0;
 		ReleaseBuffer(pDevice,firstBuf);
 		SYHTable_GetNextValid(&pDevice->htBuffer,&firstBuf);
 	}

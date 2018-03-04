@@ -13,6 +13,21 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetBuffer(IN CString strID, OUT StuSimp
 	return CalculatorManager::Instance().GetBuffer(strID, stuBuf);
 }
 
+BASEGRAPH_DATARENDER_API bool DataRender_GetTexture(IN CString strID, OUT int & nTexture)
+{
+	return true;
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_GetDesHalDef(IN CString strID, OUT DXHalDef32 *& pHalDef)
+{
+	return true;
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_Get2DRenderMatrix(IN CString strID, IN float fScale, OUT matrix4f & matWorld)
+{
+	return true;
+}
+
 BASEGRAPH_DATARENDER_API bool Query2DBuffer(IN int nWidth, IN int nHeight, OUT int nBufID)
 {
 	nBufID = DataBufferManager::Instance().Query2DBuffer(nWidth, nHeight);
@@ -77,4 +92,16 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, OPTIO
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, IN const bool &  bSel)
 {
 	return CalculatorManager::Instance().SetItemSelected(strID, bSel);
+}
+
+BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame()
+{
+	//暂不实现
+	return 0;
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame)
+{
+	//暂不实现
+	return false;
 }

@@ -48,3 +48,6 @@ bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile);
 //...
 //工具/其他
 std::map<BaseGraph_DataBase::ParamValueDef, Value> BASEGRAPH_DATABASE_API DataBase_GetDefaultParam(IN BaseGraph_DataBase::ObjectType emType);
+//锁
+bool BASEGRAPH_DATABASE_API DataBase_LockData();
+bool BASEGRAPH_DATABASE_API DataBase_UnlockData();

@@ -12,6 +12,8 @@ BEGIN_MESSAGE_MAP(C3DSceneViewWnd, CWnd)
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
+	ON_MESSAGE(WM_SET_RENDERTASK, AddOneRenderTask)
+	ON_MESSAGE(WM_EXCUTE_RENDERTASK, OnSetRenderTask)
 END_MESSAGE_MAP()
 
 void C3DSceneViewWnd::RenderCountLock()
@@ -22,6 +24,12 @@ void C3DSceneViewWnd::RenderCountLock()
 void C3DSceneViewWnd::RenderCountUnlock()
 {
 	LeaveCriticalSection(&m_lockRendCount);
+}
+
+LRESULT C3DSceneViewWnd::OnSetRenderTask(WPARAM wParam, LPARAM lParam)
+{
+	SetEvent(m_hSeekReadyEvent);
+	return 1L;
 }
 
 LRESULT C3DSceneViewWnd::AddOneRenderTask(WPARAM, LPARAM)
@@ -37,10 +45,21 @@ LRESULT C3DSceneViewWnd::AddOneRenderTask(WPARAM, LPARAM)
 	return 0;
 }
 
+struct DataBaseLocker
+{
+	DataBaseLocker()
+	{
+		DataBase_LockData();
+	}
+	~DataBaseLocker()
+	{
+		DataBase_UnlockData();
+	}
+};
+
 DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 {
-#if 0
-	CSYCGSceneView* pThis = (CSYCGSceneView*)pParam;
+	C3DSceneViewWnd * pThis = (C3DSceneViewWnd*)pParam;
 	if (pThis)
 	{
 		//执行
@@ -57,117 +76,94 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 			}
 			else if (dwObjectStart == WAIT_OBJECT_0 + 1)
 			{
-				//seek逻辑
-				CSYCGDocment* pDoc = SYCGEditorApp::GetInstance()->GetDocument();
-				int hDevice = SYCGEditorApp::GetInstance()->GetDocument()->GetMainDevice();
+				//拿到默认设备
+				int hDevice = DX3DEngine_GetMainDevice();
 				if (!hDevice)
 					continue;
 
-				pDoc->Lock();
-				MAC_STARTTIME_TEST();
-				int projectWidth = pDoc->GetProjectWidth();
-				int projectHeigth = pDoc->GetProjectHeight();
+				//数据锁起来，要绘制了
+				DataBaseLocker locker;
 
-				CSYCGSceneEnv* pSceneEnv = pDoc->GetCurSceneEnv();
-				if (!pSceneEnv)
+				//取物件列表来
+				std::vector<CString> vecObjID;
+				if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
 				{
-					SY3DEngine_Lock(hDevice);
-					for (ViewCallBackData *data = (ViewCallBackData*)g_viewlist.first; data; data = data->next)
+					//如果没有物件，则清屏
+					if (vecObjID.size() < 1)
 					{
-						int hSwapChainBuffer = SY3DEngine_GetSwapChainBuffer(hDevice, data->m_hSwapChain);
-						SY3DEngine_ClearTexture(hDevice, hSwapChainBuffer, 0);
-						SY3DEngine_Present(hDevice, data->m_hSwapChain);
-					}
-					SY3DEngine_UnLock(hDevice);
-					pDoc->UnLock();
-					continue;
-				}
-				double dCurFrame = pDoc->GetCurFrame();
-				if (!m_pRenderParam)
-				{
-					m_pRenderParam = SYRenderer_Create(g_bGpuRender2D, pDoc->GetRenderPrecision());
-					m_pRenderParam->RenderCallback.pRenderParam = m_pRenderParam;
-				}
-				//设置动静态方式
-				if (pDoc->IsModifyStatic())
-				{
-					m_pRenderParam->bStaticRener = TRUE;
-				}
-				else
-				{
-					m_pRenderParam->bStaticRener = FALSE;
-				}
-
-				if (pDoc->IsModifyStaticChanged())
-				{
-					//如果动静态变化，需要强迫物件刷新
-					pSceneEnv->SetAllChildChangeLevel(CSYCGEnv::Envchg_MaterialAnim);
-					pDoc->ResetModifyStaticChanged();
-				}
-
-				//////////////////////////////////////////////////////////////////////////
-				SYRenderer_SetCallbacks(m_pRenderParam, m_pRenderCallback, (UINT_PTR)&g_viewlist);
-				SYRenderer_SetConfig(m_pRenderParam, pSceneEnv->GetDevice(), pSceneEnv, TRUE, 0);
-				SYRenderer_SetFrame(m_pRenderParam, SY_DToI(dCurFrame), SY_DToI(dCurFrame));
-				SYRenderer_CalcScene(m_pRenderParam); //仅仅根据当前设定的数据执行一次渲染，渲染完成后返回
-				SYRenderParam* p = m_pRenderParam;
-				int hDepth = SYTextureManager_QueryTexture(SYTexture_Depth, 1);
-				for (ViewCallBackData *data = (ViewCallBackData*)g_viewlist.first; data; data = data->next)
-				{
-					//渲染场景
-					if (!::IsWindowVisible(data->hViewWnd) || ::IsIconic(data->hViewWnd))
+						DX3DEngine_Lock(hDevice);
+						int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);
+						DX3DEngine_ClearTexture(hDevice, hSwapChainBuffer, 0);
+						DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain);
+						DX3DEngine_UnLock(hDevice);
 						continue;
-					FillViewRenderParam(p, data);
-					int nRenderType = SYCameraNormal;
-					if (data->m_nWndIndex == SYWND_3DSCENEVIEW)
-						nRenderType = pDoc->GetCameraType();
-					pSceneEnv->SetRenderCameraEnv(data->m_nCameraMode);
-					SY3DVisionCameraType nType = SY3DVison_NormalCamera;
-					if (nRenderType == SYCameraLeftRight)
-					{
-						RenderSceneView_3DEyes(p, data, hDepth, 0);
 					}
-					else
+
+					//设置帧号SetFrame
+					int nCurFrame = DataRender_GetCurFrame();
+					DataRender_SetFrame(nCurFrame);
+
+					//准备渲染参数
+					RECT viewPort;
+					DX3DEngine_GetViewPort(hDevice, &viewPort);
+
+					//遍历物件拿到bufer
+					for (size_t i = 0; i < vecObjID.size(); i++)
 					{
-						CString viewName = data->szName;
-						if (nRenderType == SYCameraNormal)
+						CString strObjID = vecObjID[i];
+						DataRender_UpdateRender(strObjID);
+						if (false)
 						{
-							viewName += '0';
-							nType = SY3DVison_NormalCamera;
+							StuSimpleBuffer stuSimpleBuf;
+							if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
+							{
+								BufferFunction::WriteBitmap(_T("e:\\test.bmp"), stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
+							}
 						}
-						else if (nRenderType == SYCameraLeft)
+						DXHalDef32 * pHalDef = nullptr;
+						matrix4f worldMat;
+						if (DataRender_Get2DRenderMatrix(strObjID, pThis->m_ViewInfo.m_fScale, worldMat))
 						{
-							viewName += '1';
-							nType = SY3DVison_LeftCamera;
-						}
-						else if (nRenderType == SYCameraRight)
-						{
-							viewName += '2';
-							nType = SY3DVison_RightCamera;
-						}
-						RenderSceneView_Normal(p, data, viewName, nType, hDepth, 0);
-					}
-				}
-				SYTextureManager_UnQueryTexture(hDepth);
-				pDoc->UnLock();
-				for (ViewCallBackData *data = (ViewCallBackData*)g_viewlist.first; data; data = data->next)
-				{
-					data->bViewInfoChange = FALSE;
-					if (!::IsWindowVisible(data->hViewWnd) || ::IsIconic(data->hViewWnd))
-						continue;
-					SY3DEngine_Present(hDevice, data->m_hSwapChain, 0);
-					//全部做完后，存一份窗口bmp
-					if (data->hViewWnd && ::IsWindow(data->hViewWnd))
-					{
-						DeleteObject(pSceneEnv->m_hDupmedBmp);
-						pSceneEnv->m_hDupmedBmp = SYCGlobalFunction::GetWndImage(data->hViewWnd);
-						//然后通知工具背景变化了
-						CSYBaseTool * pTool = SYTool_GetCurTool();
-						if (pTool)
-						{
-							pTool->UpdateEditor(eUpdateEditorReason_BkImageRefresh, SYWND_3DSCENEVIEW, NULL, p->szViewName, 0, (LPARAM)data->hViewWnd);
+							if (DataRender_GetDesHalDef(strObjID, pHalDef))
+							{
+								if (pHalDef)
+								{
+									//渲染bufer到3D
+									DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, TRUE, 1.0f);
+									if (false)
+									{
+										DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));
+										DX3DEngine_DumpRenderTarget(hDevice);
+									}
+								}
+							}
 						}
 					}
+
+					//刷新SwapChain
+					int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
+					int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
+					DX3DEngine_ClearTexture(hDevice, hTex, 0);
+					DX3DEngine_ClearDepth(hDevice, hDepth, 1);
+					if (false)
+						DX3DEngine_DumpTexture(hDevice, hTex);
+					int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);
+					CRect rtClient;
+					pThis->GetClientRect(rtClient);
+					CRect rtDes = rtClient;
+					//rtDes.OffsetRect(100, 0);
+
+					if (rtClient.Width()>0)
+					{
+						if (0)
+							DX3DEngine_DumpTexture(hDevice, hTex);
+					}
+
+					DX3DEngine_RGBA_To_BGRA(hDevice, hTex, &rtClient, hSwapChainBuffer, &rtDes);
+					if (false)
+						DX3DEngine_DumpTexture(hDevice, hSwapChainBuffer);
+					DXTextureManager_UnQueryTexture(hTex);
+					DXTextureManager_UnQueryTexture(hDepth);
 				}
 				pThis->RenderCountLock();
 				//待刷新数自减
@@ -182,7 +178,6 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				}
 				pThis->RenderCountUnlock();
 			}
-			//
 		}
 		return TRUE;
 	}
@@ -190,7 +185,6 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 	{
 		return 0;
 	}
-#endif
 	return 0;
 }
 
@@ -198,11 +192,22 @@ C3DSceneViewWnd::C3DSceneViewWnd()
 	: m_nRenderCount(0)
 {
 	InitializeCriticalSection(&m_lockRendCount);
+	m_thPreDecoderThread = NULL;
+	m_hExitPreDecoderEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	m_hSeekReadyEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 C3DSceneViewWnd::~C3DSceneViewWnd()
 {
 	DeleteCriticalSection(&m_lockRendCount);
+	SetEvent(m_hExitPreDecoderEvent);
+	WaitForSingleObject(m_thPreDecoderThread, INFINITE);
+	if (m_thPreDecoderThread)
+		CloseHandle(m_thPreDecoderThread);
+	if (m_hExitPreDecoderEvent)
+		CloseHandle(m_hExitPreDecoderEvent);
+	if (m_hSeekReadyEvent)
+		CloseHandle(m_hSeekReadyEvent);
 }
 
 void C3DSceneViewWnd::RecalcLayout()
@@ -212,14 +217,17 @@ void C3DSceneViewWnd::RecalcLayout()
 void C3DSceneViewWnd::OnPaint()
 {
 	CPaintDC dc(this);
-	CRect rtClient;
-	GetClientRect(rtClient);
-	dc.FillSolidRect(rtClient, RGB(255, 0, 0));
+	PostMessage(WM_SET_RENDERTASK);
 }
 
 int C3DSceneViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	return CWnd::OnCreate(lpCreateStruct);
+	CWnd::OnCreate(lpCreateStruct);
+
+	m_thPreDecoderThread = CreateThread(NULL, 0, PreDecoderThread, this, 0, NULL);
+	::SetThreadPriority(m_thPreDecoderThread, THREAD_PRIORITY_TIME_CRITICAL);
+
+	return 0;
 }
 
 void C3DSceneViewWnd::OnDestroy()

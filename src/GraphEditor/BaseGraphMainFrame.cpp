@@ -342,7 +342,10 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 			StuSimpleBuffer stuSimpleBuf;
 			if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
 			{
-				BufferFunction::WriteBitmap(strDebugPath, stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
+				if (false)
+				{
+					BufferFunction::WriteBitmap(strDebugPath, stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
+				}
 			}
 		}
 	};

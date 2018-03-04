@@ -117,3 +117,15 @@ std::map<BaseGraph_DataBase::ParamValueDef, Value> BASEGRAPH_DATABASE_API DataBa
 {
 	return ObjectFactory::GetDefaultParam(emType);
 }
+
+bool BASEGRAPH_DATABASE_API DataBase_LockData()
+{
+	DataBaseManager::Instance().Lock();
+	return true;
+}
+
+bool BASEGRAPH_DATABASE_API DataBase_UnlockData()
+{
+	DataBaseManager::Instance().Unlock();
+	return false;
+}

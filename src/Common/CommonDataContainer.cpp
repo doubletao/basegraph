@@ -64,30 +64,44 @@ BASEGRAPH_COMMON_API UINT SYHTable_GetFirstValid(phtable pHT)
 
 BASEGRAPH_COMMON_API void * SYHTable_GetNextValid(phtable pHT, UINT * pnIndex)
 {
-	if (pHT && pnIndex && pHT->m_mapContainer.count(*pnIndex) > 0)
+	if (pHT && pnIndex)
 	{
-		bool bFind = false;
-		for (std::map<int, void *>::iterator it = pHT->m_mapContainer.begin(); it != pHT->m_mapContainer.end(); it++)
+		if (pHT->m_mapContainer.count(*pnIndex) > 0)
 		{
-			if (it->first == * pnIndex)
+			bool bFind = false;
+			for (std::map<int, void *>::iterator it = pHT->m_mapContainer.begin(); it != pHT->m_mapContainer.end(); it++)
 			{
-				bFind = true;
-			}
-			if (bFind)
-			{
-				it++;
-				if (it != pHT->m_mapContainer.end())
+				if (it->first == *pnIndex)
 				{
-					*pnIndex = it->first;
-					return it->second;
+					bFind = true;
 				}
-				else
+				if (bFind)
 				{
-					break;
+					it++;
+					if (it != pHT->m_mapContainer.end())
+					{
+						*pnIndex = it->first;
+						return it->second;
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 		}
+		else
+		{
+			//没找到，则试着返回第一个
+			if (pHT->m_mapContainer.size() > 0)
+			{
+				*pnIndex = pHT->m_mapContainer.begin()->first;
+				return pHT->m_mapContainer.begin()->second;
+			}
+		}
 	}
+	//都不行也得返回一个0出去
+	*pnIndex = 0;
 	return nullptr;
 }
 

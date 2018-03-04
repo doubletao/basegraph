@@ -40,5 +40,6 @@ enum UIElementMsgDef
 	UIElementMsg_TimeLineRuler,
 
 	WM_MSG_BEGIN = WM_USER + 1,
+	WM_SET_RENDERTASK,//触发一次刷新
 	WM_EXCUTE_RENDERTASK,//窗口的刷新消息
 };

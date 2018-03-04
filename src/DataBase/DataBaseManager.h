@@ -14,8 +14,13 @@ private:
 	~DataBaseManager();
 private:
 	vector<BaseObject *> m_vecObject;
+	//锁
+	CRITICAL_SECTION m_lockData;
 public:
 	static DataBaseManager & Instance();
+	//锁
+	void Lock();
+	void Unlock();
 	//重复检测
 	bool CheckItemID(CString strID);
 	//取得列表

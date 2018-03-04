@@ -16,9 +16,14 @@ protected:
 	//渲染触发线程管理相关
 	int m_nRenderCount;//待渲染次数
 	CRITICAL_SECTION m_lockRendCount;//待渲染次数锁
+	HANDLE	m_thPreDecoderThread;//渲染线程
+	HANDLE  m_hExitPreDecoderEvent;//渲染线程退出事件
+	HANDLE  m_hSeekReadyEvent;//单次渲染进行中
+
 	void RenderCountLock();
 	void RenderCountUnlock();
-	LRESULT AddOneRenderTask(WPARAM, LPARAM);//启动（如果已有则不启动）
+	afx_msg LRESULT OnSetRenderTask(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT AddOneRenderTask(WPARAM, LPARAM);
 	static DWORD WINAPI PreDecoderThread(LPVOID pParam);//解码线程
 public:
 	C3DSceneViewWnd();
