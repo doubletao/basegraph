@@ -1,5 +1,6 @@
 #pragma once
 #include "ObjectCalculator.h"
+
 class ImageCalculator :
 	public ObjectCalculator
 {

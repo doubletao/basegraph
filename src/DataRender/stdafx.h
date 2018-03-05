@@ -50,3 +50,4 @@
 #include "ExportCommon.h"
 #include "ExportDataBase.h"
 #include "ExportBaseCodec.h"
+#include "ExportSceneRender.h"

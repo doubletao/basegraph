@@ -81,6 +81,20 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				if (!hDevice)
 					continue;
 
+				//创建纹理及深度buf
+				int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
+				int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
+				DX3DEngine_ClearTexture(hDevice, hTex, 0);
+				DX3DEngine_ClearDepth(hDevice, hDepth, 1);
+
+				//设定渲染目标
+				DX3DEngine_SetRenderTarget(hDevice, hTex, hDepth);
+
+				//设置好视窗
+				RECT viewPort;
+				pThis->GetClientRect(&viewPort);
+				DX3DEngine_SetViewPort(hDevice, &viewPort);
+
 				//数据锁起来，要绘制了
 				DataBaseLocker locker;
 
@@ -103,10 +117,6 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 					int nCurFrame = DataRender_GetCurFrame();
 					DataRender_SetFrame(nCurFrame);
 
-					//准备渲染参数
-					RECT viewPort;
-					DX3DEngine_GetViewPort(hDevice, &viewPort);
-
 					//遍历物件拿到bufer
 					for (size_t i = 0; i < vecObjID.size(); i++)
 					{
@@ -122,6 +132,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 						}
 						DXHalDef32 * pHalDef = nullptr;
 						matrix4f worldMat;
+						pThis->m_ViewInfo.m_fScale = 1.0f;
 						if (DataRender_Get2DRenderMatrix(strObjID, pThis->m_ViewInfo.m_fScale, worldMat))
 						{
 							if (DataRender_GetDesHalDef(strObjID, pHalDef))
@@ -141,10 +152,6 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 					}
 
 					//刷新SwapChain
-					int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
-					int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
-					DX3DEngine_ClearTexture(hDevice, hTex, 0);
-					DX3DEngine_ClearDepth(hDevice, hDepth, 1);
 					if (false)
 						DX3DEngine_DumpTexture(hDevice, hTex);
 					int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);

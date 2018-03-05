@@ -206,12 +206,12 @@ BASEGRAPH_COMMON_API void __cdecl matrix4f_BetweenVectors(pmatrix4f pDesM,		// Ä
 //
 // ·µ»ØÖµ£º	ÎÞ
 //////////////////////////////////////////////////////////////////////////
-#define  SY_ROTATE_ORDER_XYZ 0
-#define  SY_ROTATE_ORDER_YXZ 1
-#define  SY_ROTATE_ORDER_XZY 2
-#define  SY_ROTATE_ORDER_YZX 3
-#define  SY_ROTATE_ORDER_ZXY 4
-#define  SY_ROTATE_ORDER_ZYX 5
+#define  ROTATE_ORDER_XYZ 0
+#define  ROTATE_ORDER_YXZ 1
+#define  ROTATE_ORDER_XZY 2
+#define  ROTATE_ORDER_YZX 3
+#define  ROTATE_ORDER_ZXY 4
+#define  ROTATE_ORDER_ZYX 5
 
 BASEGRAPH_COMMON_API void __cdecl matrix4f_from_euler(matrix4f* pDesM,float fAngleX,float fAngleY,float fAngleZ,int nOrder);
 BASEGRAPH_COMMON_API void __cdecl matrix4f_to_euler(matrix4f* pDesM,float* pAngleX,float* pAngleY,float* pAngleZ,int nOrder);
@@ -576,6 +576,10 @@ inline	BOOL operator != (matrix4f& m1,matrix4f& m2)
 {
 	return !matrix4f_isequal(&m1,&m2);
 }
+
+BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f& pvmatrix, const float3& vCenter, const float3& vScale, const float3& vAngle, const float3& vPos, int nRotateOrder);
+BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f* pvmatrix, const vector3f *pvpos, const vector3f *pvscale, const vector3f* pqangle, const vector3f* pvcenter, const matrix4f* pbasevmatrix, const matrix4f* prot_adjust, int	nRotateOrder);
+BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f* pvmatrix, vector3f *pvpos, vector3f *pvscale, SYQuatn* pqrotate, vector3f* pvcenter, matrix4f* pbasevmatrix = NULL, matrix4f* prot_adjust = NULL);
 #endif
 //////////////////////////////////////////////////////////////////////////
 // End of file.

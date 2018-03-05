@@ -63,6 +63,26 @@ bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, OUT std::
 	return DataBaseManager::Instance().GetItemProperty(strID, mapParam);
 }
 
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemPos(IN CString strID)
+{
+	return DataBaseManager::Instance().GetItemPos(strID);
+}
+
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemCenter(IN CString strID)
+{
+	return DataBaseManager::Instance().GetItemCenter(strID);
+}
+
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemAngle(IN CString strID)
+{
+	return DataBaseManager::Instance().GetItemCenter(strID);
+}
+
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID)
+{
+	return DataBaseManager::Instance().GetItemScale(strID);
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
 {
 	return DataBaseManager::Instance().SetItemProperty(strID, emParam, stuParam);

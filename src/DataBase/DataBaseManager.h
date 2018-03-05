@@ -47,6 +47,11 @@ public:
 	//属性获取
 	bool GetItemProperty(IN CString strID, IN ParamValueDef emParam, OUT Value & stuParam);
 	bool GetItemProperty(IN CString strID, OUT map<ParamValueDef, Value> & mapParam);
+
+	float3 GetItemPos(IN CString strID);
+	float3 GetItemCenter(IN CString strID);
+	float3 GetItemAngle(IN CString strID);
+	float3 GetItemScale(IN CString strID);
 	//属性设置
 	bool SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam);
 	bool SetItemProperty(IN CString strID, IN const map<ParamValueDef, Value> & mapParam);

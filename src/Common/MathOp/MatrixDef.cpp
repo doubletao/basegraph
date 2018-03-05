@@ -1256,14 +1256,14 @@ void __cdecl matrix4f_from_euler( matrix4f* pDesM,float fAngleX,float fAngleY,fl
 	switch(nOrder)
 	{
 
-	case SY_ROTATE_ORDER_YXZ:
+	case ROTATE_ORDER_YXZ:
 		matrix4f_fromeuler_lyxz(pDesM,fAngleY,fAngleX,fAngleZ);
 		break;
-	case SY_ROTATE_ORDER_XYZ:
+	case ROTATE_ORDER_XYZ:
 		matrix4f_fromeuler_lxyz(pDesM,fAngleX,fAngleY,fAngleZ);
 		break;
 
-	case  SY_ROTATE_ORDER_XZY:
+	case  ROTATE_ORDER_XZY:
 		{
 			matrix4f xzRot,yRot;
 			matrix4f_fromeuler_lyxz(&xzRot,0,fAngleX,fAngleZ);
@@ -1271,7 +1271,7 @@ void __cdecl matrix4f_from_euler( matrix4f* pDesM,float fAngleX,float fAngleY,fl
 			*pDesM = xzRot * yRot;
 		}
 		break;
-	case SY_ROTATE_ORDER_YZX:
+	case ROTATE_ORDER_YZX:
 		{
 			matrix4f yzRot,xRot;
 			matrix4f_fromeuler_lxyz(&yzRot,0,fAngleY,fAngleZ);
@@ -1279,7 +1279,7 @@ void __cdecl matrix4f_from_euler( matrix4f* pDesM,float fAngleX,float fAngleY,fl
 			*pDesM = yzRot*xRot;
 		}
 		break;
-	case SY_ROTATE_ORDER_ZXY:
+	case ROTATE_ORDER_ZXY:
 		{
 			matrix4f xyRot,zRot;
 			matrix4f_fromeuler_lxyz(&xyRot,fAngleX,fAngleY,0);
@@ -1287,7 +1287,7 @@ void __cdecl matrix4f_from_euler( matrix4f* pDesM,float fAngleX,float fAngleY,fl
 			*pDesM = zRot*xyRot;			
 		}
 		break;
-	case SY_ROTATE_ORDER_ZYX:
+	case ROTATE_ORDER_ZYX:
 		{
 			matrix4f yxRot,zRot;
 			matrix4f_fromeuler_lyxz(&yxRot,fAngleY,fAngleX,0);
@@ -1384,6 +1384,47 @@ void __cdecl matrix4f_decompose( const matrix4f* pSrcMat,float3* pScale,float3* 
 		float3Set(pPos,pSrcMat->_41,pSrcMat->_42,pSrcMat->_43);
 }
 
+BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f & pvmatrix, const float3 & vCenter, const float3 & vScale, const float3 & vAngle, const float3 & vPos, int nRotateOrder)
+{
+	calc_trans_vector_tomatrix(&pvmatrix, &vPos, &vScale, &vAngle, &vCenter, NULL, NULL, nRotateOrder);
+}
+
+BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f * pvmatrix, const vector3f * pvpos, const vector3f * pvscale, const vector3f * pqangle, const vector3f * pvcenter, const matrix4f * pbasevmatrix, const matrix4f * prot_adjust, int nRotateOrder)
+{
+	matrix4f mattrans, matrot, matscale, matcenterneg;
+	matrix4f_from_pos(&matcenterneg, -pvcenter->x, -pvcenter->y, -pvcenter->z);
+	float3ToScaleMatQ(&matscale, pvscale);
+	matrix4f_from_euler(&matrot, pqangle->x, pqangle->y, pqangle->z, nRotateOrder);
+	float3ToTransMatQ(&mattrans, pvpos);
+
+	*pvmatrix = matcenterneg * matscale * matrot;
+	if (prot_adjust)
+		*pvmatrix *= *prot_adjust;
+
+	if (pbasevmatrix)
+		*pvmatrix *= *pbasevmatrix;
+	*pvmatrix *= mattrans;
+}
+
+BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f * pvmatrix, vector3f * pvpos, vector3f * pvscale, SYQuatn * pqrotate, vector3f * pvcenter, matrix4f * pbasevmatrix, matrix4f * prot_adjust)
+{
+	matrix4f mattrans, matrot, matscale, matcenterneg;
+	matrix4f_identity(&matcenterneg);
+	matcenterneg._41 = -pvcenter->x;
+	matcenterneg._42 = -pvcenter->y;
+	matcenterneg._43 = -pvcenter->z;
+	float3ToScaleMatQ(&matscale, pvscale);
+	SYQuatn_ToMatrix4(&matrot, pqrotate);
+	float3ToTransMatQ(&mattrans, pvpos);
+	*pvmatrix = matcenterneg * matscale * matrot;
+	if (prot_adjust)
+		*pvmatrix *= *prot_adjust;
+
+	if (pbasevmatrix)
+		*pvmatrix *= *pbasevmatrix;
+	*pvmatrix *= mattrans;
+}
+
 void __cdecl matrix4f_issolvesrp(const matrix4f* pM,matrix4f* pScale,matrix4f* pRotate,matrix4f* pTranslate)
 {
 	if (pTranslate != 0)
@@ -1419,10 +1460,10 @@ void __cdecl matrix4f_to_euler( matrix4f* pDesM,float* pAngleX,float* pAngleY,fl
 {
 	switch(nOrder)
 	{
-	case SY_ROTATE_ORDER_XYZ:
+	case ROTATE_ORDER_XYZ:
 		matrix4f_toeuler_lxyz(pDesM,pAngleX,pAngleY,pAngleZ);
 		break;
-	case SY_ROTATE_ORDER_YXZ:
+	case ROTATE_ORDER_YXZ:
 		matrix4f_toeuler_lyxz(pDesM,pAngleY,pAngleX,pAngleZ);
 		break;
 	}

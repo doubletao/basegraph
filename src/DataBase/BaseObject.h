@@ -28,13 +28,13 @@ namespace BaseGraph_DataBase
 		CString GetItemID();
 		ObjectType GetItemType();
 
-		point3 GetItemPos();
-		void SetItemPos(point3 ptValue);
-		point3 GetItemRotate();
-		void SetItemRotate(point3 ptValue);
-		point3 GetItemScale();
-		void SetItemScale(point3 ptValue);
-		point3 GetItemCenter();
-		void SetItemCenter(point3 ptValue);
+		point3f GetItemPos();
+		void SetItemPos(point3f ptValue);
+		point3f GetItemRotate();
+		void SetItemRotate(point3f ptValue);
+		point3f GetItemScale();
+		void SetItemScale(point3f ptValue);
+		point3f GetItemCenter();
+		void SetItemCenter(point3f ptValue);
 	};
 };

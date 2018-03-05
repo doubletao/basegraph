@@ -133,84 +133,84 @@ namespace BaseGraph_DataBase
 		case SpacePosition_X:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("X");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(10.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpacePosition_Y:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("Y");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(20.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpacePosition_Z:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("Z");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(30.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpaceRotate_X:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("X");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(0.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3600, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3600, _T("最大值")));
 			break;
 		case SpaceRotate_Y:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("Y");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(0.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3600, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3600, _T("最大值")));
 			break;
 		case SpaceRotate_Z:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("Z");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(0.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3600, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3600, _T("最大值")));
 			break;
 		case SpaceScale_X:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("X");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(1.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
-			valueDesc.vecValueLimit.push_back(std::make_pair(100, _T("最大值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(1, _T("最大值")));
 			break;
 		case SpaceScale_Y:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("Y");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(1.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
-			valueDesc.vecValueLimit.push_back(std::make_pair(100, _T("最大值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(1, _T("最大值")));
 			break;
 		case SpaceScale_Z:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("Z");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(1.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
-			valueDesc.vecValueLimit.push_back(std::make_pair(100, _T("最大值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(1, _T("最大值")));
 			break;
 		case SpaceCenter_X:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("X");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(0.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpaceCenter_Y:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("Y");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(0.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpaceCenter_Z:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("Z");
-			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			valueDesc.stuDefault.SetValue(0.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;

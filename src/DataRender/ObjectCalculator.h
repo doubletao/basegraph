@@ -29,14 +29,16 @@ public:
 	virtual ~ObjectCalculator();
 	virtual int GetWidth();
 	virtual int GetHeight();
+	virtual bool UpdateRenderBuffer();
+	virtual bool PrepareItemHalBufer(int nDevice);
+
+	ObjectBuffer * GetObjectBuffer();
 	int GetObjBufferID();
-	bool GetObjBuffer(StuSimpleBuffer & pBuf);
+	bool GetObjSimpBuffer(StuSimpleBuffer & pBuf);
 	bool SetSelected(bool bSel);//返回原来的状态
 	bool GetSelected();
 	DXHalDef32 * GetHalDes();
 protected:
 	virtual bool NeedRenderBuffer();
-public:
-	virtual bool UpdateRenderBuffer();
 };
 

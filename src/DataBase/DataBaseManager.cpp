@@ -34,7 +34,7 @@ void DataBaseManager::Lock()
 	if (true)
 	{
 		CString strDebug;
-		strDebug.Format(_T("%s, DataBaseManager::Lock() ask\n"));
+		strDebug.Format(_T("DataBaseManager::Lock() ask\n"));
 		OutputDebugString(strDebug);
 	}
 #endif // DEBUG
@@ -43,7 +43,7 @@ void DataBaseManager::Lock()
 	if (true)
 	{
 		CString strDebug;
-		strDebug.Format(_T("%s, DataBaseManager::Lock() locked\n"));
+		strDebug.Format(_T("DataBaseManager::Lock() locked\n"));
 		OutputDebugString(strDebug);
 	}
 #endif // DEBUG
@@ -231,6 +231,54 @@ bool DataBaseManager::GetItemProperty(IN CString strID, OUT map<ParamValueDef, V
 		return true;
 	}
 	return false;
+}
+
+float3 DataBaseManager::GetItemPos(IN CString strID)
+{
+	float3 f3Pos = {0};
+	BaseObject * pObj = nullptr;
+	if (GetItem(strID, pObj)
+		&& pObj)
+	{
+		f3Pos = pObj->GetItemPos();
+	}
+	return f3Pos;
+}
+
+float3 DataBaseManager::GetItemCenter(IN CString strID)
+{
+	float3 f3Center = { 0 };
+	BaseObject * pObj = nullptr;
+	if (GetItem(strID, pObj)
+		&& pObj)
+	{
+		f3Center = pObj->GetItemCenter();
+	}
+	return f3Center;
+}
+
+float3 DataBaseManager::GetItemAngle(IN CString strID)
+{
+	float3 f3Angle = { 0 };
+	BaseObject * pObj = nullptr;
+	if (GetItem(strID, pObj)
+		&& pObj)
+	{
+		f3Angle = pObj->GetItemRotate();
+	}
+	return f3Angle;
+}
+
+float3 DataBaseManager::GetItemScale(IN CString strID)
+{
+	float3 f3Scale = { 0 };
+	BaseObject * pObj = nullptr;
+	if (GetItem(strID, pObj)
+		&& pObj)
+	{
+		f3Scale = pObj->GetItemScale();
+	}
+	return f3Scale;
 }
 
 bool DataBaseManager::SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam)

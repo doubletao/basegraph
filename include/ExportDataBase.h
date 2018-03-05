@@ -30,6 +30,11 @@ bool BASEGRAPH_DATABASE_API DataBase_MoveItemAfter(IN CString strSrcID, IN CStri
 //属性获取
 bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemPos(IN CString strID);
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemCenter(IN CString strID);
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemAngle(IN CString strID);
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID);
 //属性设置
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);

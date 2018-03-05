@@ -53,6 +53,10 @@ matrix4f CalculatorManager::Get2DRenderMatrix(IN CString strID, IN float fScale)
 {
 	matrix4f matRet;
 	matrix4f_identity(&matRet);
+	calc_trans_vector_tomatrix(matRet, DataBase_GetItemCenter(strID), DataBase_GetItemScale(strID), DataBase_GetItemAngle(strID), DataBase_GetItemPos(strID), ROTATE_ORDER_YXZ);
+	matRet._41 *= fScale;
+	matRet._42 *= fScale;
+	matRet._43 *= fScale;
 	return matRet;
 }
 
@@ -107,7 +111,7 @@ bool CalculatorManager::GetBuffer(IN CString strObjID, OUT StuSimpleBuffer & pBu
 	ObjectCalculator * pCalc = GetObjCalculator(strObjID);
 	if (pCalc)
 	{
-		return pCalc->GetObjBuffer(pBuf);
+		return pCalc->GetObjSimpBuffer(pBuf);
 	}
 	return false;
 }

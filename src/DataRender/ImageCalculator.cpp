@@ -27,7 +27,30 @@ bool ImageCalculator::UpdateRenderBuffer()
 				{
 					if (StretchImage())
 					{
-						//创建3D buffer并将2D buffer作为纹理贴上去
+						int nWidth = GetWidth();
+						int nHeight = GetHeight();
+						int nMainDevice = DX3DEngine_GetMainDevice();
+						//创建texture
+						PrepareItemHalBufer(nMainDevice);
+						ObjectBuffer * pImgBuf = GetObjectBuffer();
+						if (pImgBuf)
+						{
+							//将2D buffer传上去
+							int hTrans = DXTextureManager_QueryTexture(DXTexture_MemTexture, nWidth, nHeight);
+							int nOffsetX = 0;
+							int nOffsetY = 0;
+							assert(m_HalDes.m_hTex);
+							DX3DEngine_UpLoad(m_HalDes.m_hTex, nMainDevice, hTrans, nOffsetX, nOffsetY, nWidth, nHeight,
+								(DWORD *)pImgBuf->GetBuffer(), nOffsetX, nOffsetY, nWidth, nHeight, pImgBuf->GetWidth(), pImgBuf->GetHeight());
+
+							if (false)
+							{
+								pImgBuf->DebugWriteImage(_T("e:\\1.bmp"));
+								DX3DEngine_DumpTexture(nMainDevice, m_HalDes.m_hTex, _T("e:\\2.bmp"));
+							}
+
+							DXTextureManager_UnQueryTexture(hTrans, TRUE);
+						}
 						return true;
 					}
 				}
@@ -101,6 +124,7 @@ bool ImageCalculator::StretchImage()
 			{
 				pObjBuf->DebugWriteImage(_T("e:\\1.bmp"));
 			}
+			return true;
 		}
 	}
 	return false;

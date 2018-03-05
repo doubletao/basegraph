@@ -161,64 +161,64 @@ ObjectType BaseGraph_DataBase::BaseObject::GetItemType()
 	return emRet;
 }
 
-point3 BaseGraph_DataBase::BaseObject::GetItemPos()
+point3f BaseGraph_DataBase::BaseObject::GetItemPos()
 {
-	point3 ptRet = {0};
-	ptRet.x = GetValue(SpacePosition_X).ToInt();
-	ptRet.y = GetValue(SpacePosition_Y).ToInt();
-	ptRet.z = GetValue(SpacePosition_Z).ToInt();
+	point3f ptRet = {0};
+	ptRet.x = GetValue(SpacePosition_X).ToFloat();
+	ptRet.y = GetValue(SpacePosition_Y).ToFloat();
+	ptRet.z = GetValue(SpacePosition_Z).ToFloat();
 	return ptRet;
 }
 
-void BaseGraph_DataBase::BaseObject::SetItemPos(point3 ptValue)
+void BaseGraph_DataBase::BaseObject::SetItemPos(point3f ptValue)
 {
 	SetValue(SpacePosition_X, ptValue.x);
 	SetValue(SpacePosition_Y, ptValue.y);
 	SetValue(SpacePosition_Z, ptValue.z);
 }
 
-point3 BaseGraph_DataBase::BaseObject::GetItemRotate()
+point3f BaseGraph_DataBase::BaseObject::GetItemRotate()
 {
-	point3 ptRet = { 0 };
-	ptRet.x = GetValue(SpaceRotate_X).ToInt();
-	ptRet.y = GetValue(SpaceRotate_Y).ToInt();
-	ptRet.z = GetValue(SpaceRotate_Z).ToInt();
+	point3f ptRet = { 0 };
+	ptRet.x = GetValue(SpaceRotate_X).ToFloat();
+	ptRet.y = GetValue(SpaceRotate_Y).ToFloat();
+	ptRet.z = GetValue(SpaceRotate_Z).ToFloat();
 	return ptRet;
 }
 
-void BaseGraph_DataBase::BaseObject::SetItemRotate(point3 ptValue)
+void BaseGraph_DataBase::BaseObject::SetItemRotate(point3f ptValue)
 {
 	SetValue(SpaceRotate_X, ptValue.x);
 	SetValue(SpaceRotate_Y, ptValue.y);
 	SetValue(SpaceRotate_Z, ptValue.z);
 }
 
-point3 BaseGraph_DataBase::BaseObject::GetItemScale()
+point3f BaseGraph_DataBase::BaseObject::GetItemScale()
 {
-	point3 ptRet = { 0 };
-	ptRet.x = GetValue(SpaceScale_X).ToInt();
-	ptRet.y = GetValue(SpaceScale_Y).ToInt();
-	ptRet.z = GetValue(SpaceScale_Z).ToInt();
+	point3f ptRet = { 0 };
+	ptRet.x = GetValue(SpaceScale_X).ToFloat();
+	ptRet.y = GetValue(SpaceScale_Y).ToFloat();
+	ptRet.z = GetValue(SpaceScale_Z).ToFloat();
 	return ptRet;
 }
 
-void BaseGraph_DataBase::BaseObject::SetItemScale(point3 ptValue)
+void BaseGraph_DataBase::BaseObject::SetItemScale(point3f ptValue)
 {
 	SetValue(SpaceScale_X, ptValue.x);
 	SetValue(SpaceScale_Y, ptValue.y);
 	SetValue(SpaceScale_Z, ptValue.z);
 }
 
-point3 BaseGraph_DataBase::BaseObject::GetItemCenter()
+point3f BaseGraph_DataBase::BaseObject::GetItemCenter()
 {
-	point3 ptRet = { 0 };
-	ptRet.x = GetValue(SpaceCenter_X).ToInt();
-	ptRet.y = GetValue(SpaceCenter_Y).ToInt();
-	ptRet.z = GetValue(SpaceCenter_Z).ToInt();
+	point3f ptRet = { 0 };
+	ptRet.x = GetValue(SpaceCenter_X).ToFloat();
+	ptRet.y = GetValue(SpaceCenter_Y).ToFloat();
+	ptRet.z = GetValue(SpaceCenter_Z).ToFloat();
 	return ptRet;
 }
 
-void BaseGraph_DataBase::BaseObject::SetItemCenter(point3 ptValue)
+void BaseGraph_DataBase::BaseObject::SetItemCenter(point3f ptValue)
 {
 	SetValue(SpaceCenter_X, ptValue.x);
 	SetValue(SpaceCenter_Y, ptValue.y);
