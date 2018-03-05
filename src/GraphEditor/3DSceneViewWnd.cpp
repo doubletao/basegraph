@@ -57,6 +57,20 @@ struct DataBaseLocker
 	}
 };
 
+struct DXEngineLocker
+{
+	int m_nDevice;
+	DXEngineLocker(int nDevice)
+		: m_nDevice(nDevice)
+	{
+		DX3DEngine_Lock(nDevice);
+	}
+	~DXEngineLocker()
+	{
+		DX3DEngine_UnLock(m_nDevice);
+	}
+};
+
 DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 {
 	C3DSceneViewWnd * pThis = (C3DSceneViewWnd*)pParam;
@@ -84,7 +98,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				//创建纹理及深度buf
 				int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
 				int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
-				DX3DEngine_ClearTexture(hDevice, hTex, 0);
+				DX3DEngine_ClearTexture(hDevice, hTex, RGBA(255, 125, 125, 255));
 				DX3DEngine_ClearDepth(hDevice, hDepth, 1);
 
 				//设定渲染目标
@@ -95,8 +109,9 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				pThis->GetClientRect(&viewPort);
 				DX3DEngine_SetViewPort(hDevice, &viewPort);
 
-				//数据锁起来，要绘制了
-				DataBaseLocker locker;
+				//上锁，要绘制了
+				DataBaseLocker DataLocker;
+				//DXEngineLocker EngineLocker(hDevice);
 
 				//取物件列表来
 				std::vector<CString> vecObjID;
@@ -107,7 +122,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 					{
 						DX3DEngine_Lock(hDevice);
 						int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);
-						DX3DEngine_ClearTexture(hDevice, hSwapChainBuffer, 0);
+						DX3DEngine_ClearTexture(hDevice, hSwapChainBuffer, RGBA(255, 125, 125, 255));
 						DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain);
 						DX3DEngine_UnLock(hDevice);
 						continue;

@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "SceneRender\DXRenderEngineDX10Api.h"
+#include <string>
+#include <iostream>
+#include <fstream>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -341,6 +344,59 @@ inline int CreateBuffer(SY_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,
 	int hBuffer = (int)SYHTable_Insert(&pDevice->htBuffer,pVideoBuffer);
 
 	return hBuffer;
+}
+
+bool Render_CreateShader(int hDevice, void* paramin, void* paramout);
+bool Render_CreateShader(SY_DeviceDX10* pDevice, void* paramin, void* paramout);
+
+int CreateShaderFromCompiledFile(SY_DeviceDX10* pDevice, LPCTSTR shaderName, LPCTSTR fileName, DXShaderType nType, DXVertexType* pType)
+{
+	std::ifstream s_stream;
+	size_t s_size;
+	char* s_data;
+
+	s_stream.open(fileName, std::ifstream::in | std::ifstream::binary);
+
+	if (s_stream.good())
+	{
+		s_stream.seekg(0, std::ios::end);
+		s_size = size_t(s_stream.tellg());
+		s_data = new char[s_size];
+		s_stream.seekg(0, std::ios::beg);
+		s_stream.read(&s_data[0], s_size);
+		s_stream.close();
+	}
+	else
+	{
+		return 0;
+	}
+
+
+	int hShader = 0;
+	DXCreateShadeIn param;
+	param.shaderFile = NULL;
+	param.shaderCode = s_data;
+	param.nType = nType;
+	param.shaderName = shaderName;
+	param.pType = pType;
+	param.bLock = FALSE;
+	param.bComplied = TRUE;
+	param.compliedBinSize = s_size;
+
+	Render_CreateShader(pDevice, &param, &hShader);
+	//if (g_dRenderType == DX_DX10_Device)
+	//{
+	//RenderEngineDX10_Main(RENDERENGINE_CREATESHADER, hDevice, &param, &hShader);
+	//}
+	//else if (g_dRenderType == DX_Soft_Device)
+	//{
+	//	RenderSoftEngine_Main(RENDERENGINE_CREATESHADER, hDevice, &param, &hShader);
+	//}
+
+	delete[] s_data;
+	s_data = NULL;
+
+	return hShader;
 }
 
 int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileName,DXShaderType nType,DXVertexType* pType)
@@ -981,27 +1037,28 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 	CreateRasterizerState(pDevice);
 	CreateSampleState(pDevice);
 
+	DXVertexType nType = DXVertex_POS_TEX;
+
 	//TODO djt: 这里边的shader用到哪个加载哪个，不再一次性加载了
 	return true;
 
-	DXVertexType nType = DXVertex_POS_TEX;
-
 	TCHAR filePath[512];
 	_tcscpy_s(filePath,g_szDX10PathShader);
-	_tcscat_s(filePath,_T("\\VS\\screen.VS"));
-	pDevice->hScreenVS = CreateShaderFromFile(pDevice,_T("screen_VS"),filePath,DXShaderType_VertexShader,&nType);
+	_tcscat_s(filePath,_T("screen.vso"));
+	pDevice->hScreenVS = CreateShaderFromCompiledFile(pDevice, _T("screen_VS"), filePath, DXShaderType_VertexShader, NULL);
 
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("screen.pso"));
+	pDevice->hScreenPS = CreateShaderFromCompiledFile(pDevice, _T("screen_PS"), filePath, DXShaderType_PixelShader, NULL);
+
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("screenAdjustColor.pso"));
+	pDevice->hScreenAdjustPS = CreateShaderFromCompiledFile(pDevice, _T("screenAdjustColor_PS"), filePath, DXShaderType_PixelShader, NULL);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\3DVision.PS"));
 	pDevice->h3DVisionPS = CreateShaderFromFile(pDevice,_T("3DVison_PS"),filePath,DXShaderType_PixelShader,&nType);
-
-	_tcscpy_s(filePath,g_szDX10PathShader);
-	_tcscat_s(filePath,_T("\\PS\\screen.PS"));
-	pDevice->hScreenPS = CreateShaderFromFile(pDevice,_T("screen_PS"),filePath,DXShaderType_PixelShader,NULL);
-
-	_tcscpy_s(filePath,g_szDX10PathShader);
-	_tcscat_s(filePath,_T("\\PS\\screenAdjustColor.PS"));
-	pDevice->hScreenAdjustPS = CreateShaderFromFile(pDevice,_T("screenAdjustColor_PS"),filePath,DXShaderType_PixelShader,NULL);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("\\PS\\color\\uyvy_bright.ps"));
@@ -1091,10 +1148,9 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 bool ReleaseDeviceResource(SY_DeviceDX10* pDevice)
 {
 	//TODO djt: 这里边的shader用到哪个加载哪个，不再一次性加载了
-#if 0
 	ReleaseBuffer(pDevice,pDevice->hScreenVertex);
 	ReleaseBuffer(pDevice,pDevice->h2DVertex);
-
+#if 0
 	ReleaseBuffer(pDevice,pDevice->hScreenCB);
 	ReleaseBuffer(pDevice,pDevice->hDynamicCB);
 	ReleaseBuffer(pDevice,pDevice->hClearCB);
@@ -2278,6 +2334,8 @@ bool Render_GetRenderTarget(int hDevice,void* paramin,void* paramout)
 }
 BOOL Render_EngineLock(int hDevice,void* paramin,void* paramout);
 BOOL Render_EngineUnLock(int hDevice,void* paramin,void* paramout);
+BOOL Render_EngineLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout);
+BOOL Render_EngineUnLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout);
 bool Render_UpLoad(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);
@@ -2602,6 +2660,145 @@ bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 	EngineThreadUnLock();
 	if(param->bLock)
 		Render_EngineUnLock(hDevice,NULL,NULL);
+	return false;
+
+}
+
+bool Render_CreateShader(SY_DeviceDX10* pDevice, void* paramin, void* paramout)
+{
+	if (!pDevice)
+	{
+		return false;
+	}
+	DXCreateShadeIn* param = (DXCreateShadeIn*)paramin;
+
+	if (param->bLock)
+		Render_EngineLock(pDevice, NULL, NULL);
+	EngineThreadLock();
+
+	shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash, (void *)param->shaderName);
+
+	if (pShaderHashValue)
+	{
+		++(pShaderHashValue->nCount);
+		*(int*)paramout = pShaderHashValue->hHandle;
+		EngineThreadUnLock();
+		if (param->bLock)
+			Render_EngineUnLock(pDevice, NULL, NULL);
+		return true;
+	}
+
+	if (param->shaderFile)
+	{
+		*(int*)paramout = CreateShaderFromFile(pDevice, param->shaderName, param->shaderFile, param->nType, param->pType);
+		EngineThreadUnLock();
+		if (param->bLock)
+			Render_EngineUnLock(pDevice, NULL, NULL);
+		return true;
+	}
+	else if (param->shaderCode)
+	{
+		int strLen = (int)strlen(param->shaderCode);
+
+		ID3D10Blob* pShader = 0;
+		LPVOID	pCodeBin = 0;
+		size_t  nBinSize = 0;
+
+		if (param->bComplied)
+		{
+			pCodeBin = (void*)param->shaderCode;
+			nBinSize = param->compliedBinSize;
+		}
+		else
+		{
+			char* profile = NULL;
+			switch (param->nType)
+			{
+			case DXShaderType_VertexShader:
+				profile = VSPROFILE;
+				break;
+			case DXShaderType_GeometryShader:
+				profile = GSPROFILE;
+				break;
+			case DXShaderType_PixelShader:
+				profile = PSPROFILE;
+				break;
+			}
+
+			EngineThreadUnLock();
+			if (param->bLock)
+				Render_EngineUnLock(pDevice, NULL, NULL);
+
+			ID3D10Blob** ppError = NULL;
+#ifdef _DEBUG
+			ID3D10Blob* pError;
+			ppError = &pError;
+#endif // _DEBUG
+			HRESULT hr = D3DX10CompileFromMemory(param->shaderCode, strLen, NULL, NULL, NULL, "main", profile, D3D10_SHADER_OPTIMIZATION_LEVEL3, 0, NULL, &pShader, ppError, NULL);
+#ifdef _DEBUG
+			if (hr != S_OK)
+			{
+				char* msg = (char*)pError->GetBufferPointer();
+				int nSize = (int)pError->GetBufferSize();
+				assert(0);
+			}
+#endif // _DEBUG
+
+			if (param->bLock)
+				Render_EngineLock(pDevice, NULL, NULL);
+			EngineThreadLock();
+
+			pCodeBin = pShader->GetBufferPointer();
+			nBinSize = pShader->GetBufferSize();
+		}
+
+		shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash, (void *)param->shaderName);
+		if (pShaderHashValue)
+		{
+			++(pShaderHashValue->nCount);
+			*(int*)paramout = pShaderHashValue->hHandle;
+		}
+		else
+		{
+			SYShader* pNewShader = new SYShader;
+			pNewShader->pLayout = NULL;
+			pNewShader->nType = param->nType;
+			switch (param->nType)
+			{
+			case DXShaderType_VertexShader:
+				pDevice->pDevice->CreateVertexShader(pCodeBin, nBinSize, (ID3D10VertexShader**)&pNewShader->pShader);
+				if (param->pType)
+					pDevice->pDevice->CreateInputLayout(g_pLayout[*param->pType], g_pLayoutNum[*param->pType], pCodeBin, nBinSize, &pNewShader->pLayout);
+				break;
+			case DXShaderType_GeometryShader:
+				pDevice->pDevice->CreateGeometryShader(pCodeBin, nBinSize, (ID3D10GeometryShader**)&pNewShader->pShader);
+				break;
+			case DXShaderType_PixelShader:
+				pDevice->pDevice->CreatePixelShader(pCodeBin, nBinSize, (ID3D10PixelShader**)&pNewShader->pShader);
+				break;
+			}
+
+			int nNameLenth = (int)_tcsclen(param->shaderName) + 1;
+			pNewShader->pShaderName = new TCHAR[nNameLenth];
+			wcscpy_s(pNewShader->pShaderName, nNameLenth, param->shaderName);
+			int hShader = (int)SYHTable_Insert(&pDevice->htShaderTable, pNewShader);
+			pShaderHashValue = new shaderhash;
+			pShaderHashValue->hHandle = hShader;
+			pShaderHashValue->nCount = 1;
+			SYHash_Insert(pDevice->ShaderHash, pNewShader->pShaderName, pShaderHashValue);
+			*(int*)paramout = hShader;
+		}
+
+		if (pShader)
+			pShader->Release();
+		EngineThreadUnLock();
+		if (param->bLock)
+			Render_EngineUnLock(pDevice, NULL, NULL);
+		return true;
+	}
+	EngineThreadUnLock();
+	if (param->bLock)
+		Render_EngineUnLock(pDevice, NULL, NULL);
 	return false;
 
 }
@@ -3372,6 +3569,18 @@ BOOL Render_EngineUnLock(int hDevice,void* paramin,void* paramout)
 	LeaveCriticalSection(&pDevice->EngineLock);
 	return TRUE;
 }
+
+BOOL Render_EngineLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout)
+{
+	EnterCriticalSection(&pDevice->EngineLock);
+	return TRUE;
+}
+BOOL Render_EngineUnLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout)
+{
+	LeaveCriticalSection(&pDevice->EngineLock);
+	return TRUE;
+}
+
 BOOL Render_RenderLock(int hDevice,void* paramin,void* paramout)
 {
 	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)SYHTable_GetAt(&g_deviceHT,hDevice);

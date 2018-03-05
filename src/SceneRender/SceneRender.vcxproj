@@ -176,8 +176,20 @@
     <None Include="shader\PS\pos_normal_tex_tang_bi.PS" />
     <None Include="shader\PS\RenderMask.PS" />
     <None Include="shader\PS\RenderTex.ps" />
-    <None Include="shader\PS\screen.PS" />
-    <None Include="shader\PS\screenAdjustColor.PS" />
+    <CustomBuild Include="shader\PS\screen.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\screenAdjustColor.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
     <None Include="shader\PS\screenMS.PS" />
     <None Include="shader\PS\WidthLineNoTex.PS" />
     <None Include="shader\VS\Cloud2D.VS" />
@@ -191,7 +203,13 @@
     <None Include="shader\VS\pos_normal_tex_tang_bi.VS" />
     <None Include="shader\VS\pos_normal_tex_tang_bi_Instance.VS" />
     <None Include="shader\VS\RenderTex.VS" />
-    <None Include="shader\VS\screen.VS" />
+    <CustomBuild Include="shader\VS\screen.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SceneRender.rc" />

@@ -353,7 +353,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	vecImg.push_back(1);
 	vecImg.push_back(5);
 	vecImg.push_back(6);
-	for (int i = 0; i < 15; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		CString strName;
 		strName.Format(_T("ͼƬ%d"), i);

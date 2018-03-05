@@ -56,7 +56,8 @@ CGraphEditorApp::~CGraphEditorApp()
 BOOL CGraphEditorApp::InitInstance()
 {
 	//初始化3D环境
-	DX3DEngine_Init(DX_DX10_Device, _T("temporary"));
+	CString strBinPath = CommonFunction::GetBinPath();
+	DX3DEngine_Init(DX_DX10_Device, strBinPath + _T("\\FX\\"));
 	//初始化主device
 	DX3DEngine_Initialize3DDevice(1920, 1080);
 

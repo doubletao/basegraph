@@ -154,9 +154,6 @@
     <None Include="shader\VS\RenderTex.VS">
       <Filter>Shader\VS</Filter>
     </None>
-    <None Include="shader\VS\screen.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
     <None Include="shader\PS\color\field_add_key.PS">
       <Filter>Shader\PS\color</Filter>
     </None>
@@ -235,12 +232,6 @@
     <None Include="shader\PS\RenderTex.ps">
       <Filter>Shader\PS</Filter>
     </None>
-    <None Include="shader\PS\screen.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\screenAdjustColor.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
     <None Include="shader\PS\screenMS.PS">
       <Filter>Shader\PS</Filter>
     </None>
@@ -252,5 +243,16 @@
     <ResourceCompile Include="SceneRender.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="shader\VS\screen.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\screen.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\screenAdjustColor.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
