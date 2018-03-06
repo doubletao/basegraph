@@ -295,7 +295,7 @@ int UITLObjectArea::GetVScrollHeight()
 {
 	if (m_nVScrollHeight < m_nHeight)
 	{
-		m_nHeight;
+		m_nVScrollHeight = m_nHeight;
 	}
 	return m_nVScrollHeight;
 }
