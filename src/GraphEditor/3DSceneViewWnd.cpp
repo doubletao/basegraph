@@ -277,6 +277,8 @@ void C3DSceneViewWnd::OnSize(UINT nType, int cx, int cy)
 	{
 		DX3DEngine_ResizeSwapChain(DX3DEngine_GetMainDevice(), m_ViewInfo.m_hSwapChain, cx, cy);
 	}
+
+	OnPaint();
 }
 
 BOOL C3DSceneViewWnd::OnEraseBkgnd(CDC * pDC)
