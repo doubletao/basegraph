@@ -1033,6 +1033,7 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 
 	DXVertexType nType = DXVertex_POS_TEX;
 
+#if 0
 	TCHAR filePath[512];
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("screen.vso"));
@@ -1131,6 +1132,106 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("RenderTex.pso"));
 	pDevice->hRenderTexPS = CreateShaderFromCompiledFile(pDevice,_T("RenderTex_PS"),filePath,DXShaderType_PixelShader,NULL);
+#else
+	TCHAR filePath[512];
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\VS\\screen.VS"));
+	pDevice->hScreenVS = CreateShaderFromFile(pDevice, _T("screen_VS"), filePath, DXShaderType_VertexShader, &nType);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\3DVision.PS"));
+	pDevice->h3DVisionPS = CreateShaderFromFile(pDevice, _T("3DVison_PS"), filePath, DXShaderType_PixelShader, &nType);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\screen.PS"));
+	pDevice->hScreenPS = CreateShaderFromFile(pDevice, _T("screen_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\screenAdjustColor.PS"));
+	pDevice->hScreenAdjustPS = CreateShaderFromFile(pDevice, _T("screenAdjustColor_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\uyvy_bright.ps"));
+	pDevice->hUYVYBrightPS = CreateShaderFromFile(pDevice, _T("uyvy_bright_ps"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\field_add_key.PS"));
+	pDevice->hFieldAddKeyPS = CreateShaderFromFile(pDevice, _T("field_add_key_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\makeFrame.PS"));
+	pDevice->hRGBA_Frame = CreateShaderFromFile(pDevice, _T("makeFrame_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\rgba_to_yuayva4224.PS"));
+	pDevice->hRGBA_YUAYVA4224PS = CreateShaderFromFile(pDevice, _T("rgba_to_yuayva4224_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\uyvy_to_rgba_with_key0.PS"));
+	pDevice->hUYVY_RGBA_KeyPS0 = CreateShaderFromFile(pDevice, _T("uyvy_to_rgba_with_key0_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\uyvy_to_rgba_with_key1.PS"));
+	pDevice->hUYVY_RGBA_KeyPS1 = CreateShaderFromFile(pDevice, _T("uyvy_to_rgba_with_key1_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\uyvy_to_rgba0.PS"));
+	pDevice->hUYVY_RGBA_PS0 = CreateShaderFromFile(pDevice, _T("uyvy_to_rgba0_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\uyvy_to_rgba1.PS"));
+	pDevice->hUYVY_RGBA_PS1 = CreateShaderFromFile(pDevice, _T("uyvy_to_rgba1_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\uyvyframe_to_rgba.ps"));
+	pDevice->hUYVY_RGBA_Frame = CreateShaderFromFile(pDevice, _T("uyvy_to_rgba_frame_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\rgbaframe_to_uyvy.ps"));
+	pDevice->hRGBA_UYVY_Frame = CreateShaderFromFile(pDevice, _T("rgba_to_uyvy_frame_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\screenMS.PS"));
+	pDevice->hScreenMSPS = CreateShaderFromFile(pDevice, _T("screenMS_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\convert.PS"));
+	pDevice->hConvertFormatPS = CreateShaderFromFile(pDevice, _T("convert_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\color\\keyout.PS"));
+	pDevice->hOnlyKeyOutPS = CreateShaderFromFile(pDevice, _T("keyout_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\DynamicTex.PS"));
+	pDevice->hDynamicPS = CreateShaderFromFile(pDevice, _T("dynamic_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\blur.PS"));
+	pDevice->hBlur5PtPS = CreateShaderFromFile(pDevice, _T("blur_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\blur9.PS"));
+	pDevice->hBlur9PtPS = CreateShaderFromFile(pDevice, _T("blur9_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\clearscreen.PS"));
+	pDevice->hClearScreenPS = CreateShaderFromFile(pDevice, _T("clearscreen_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\RenderMask.PS"));
+	pDevice->hMaskRender = CreateShaderFromFile(pDevice, _T("RenderMask_PS"), filePath, DXShaderType_PixelShader, NULL);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\VS\\RenderTex.vs"));
+	
+	nType = DXVertex_POS;
+	pDevice->hRenderTexVS = CreateShaderFromFile(pDevice, _T("RenderTex_VS"), filePath, DXShaderType_VertexShader, &nType);
+	
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("\\PS\\RenderTex.ps"));
+	pDevice->hRenderTexPS = CreateShaderFromFile(pDevice, _T("RenderTex_PS"), filePath, DXShaderType_PixelShader, NULL);
+#endif
 
 	return true;
 }
@@ -1496,11 +1597,18 @@ void CreateSwapChainBufferTex(int hDevice,int nWidth,int nHeight,SYSwapChain* pS
 		Render_CreateTexture(hDevice,&texIn,&pSwapChain->hShareTexture);
 		ID3D10Texture2D* pShareTex = getTexture(pDevice,pSwapChain->hShareTexture);
 
-		IDXGIResource* pOtherResource(NULL);
-		pShareTex->QueryInterface( __uuidof(IDXGIResource), (void**)&pOtherResource );
-		HANDLE sharedHandle;
-		pOtherResource->GetSharedHandle(&sharedHandle);
-		pDevice->pSwapChainDevice->OpenSharedResource(sharedHandle,__uuidof(ID3D10Texture2D),(void**)&pSwapChain->pShareTexture);
+		if (pShareTex)
+		{
+			IDXGIResource* pOtherResource(NULL);
+			pShareTex->QueryInterface(__uuidof(IDXGIResource), (void**)&pOtherResource);
+			HANDLE sharedHandle;
+			pOtherResource->GetSharedHandle(&sharedHandle);
+			pDevice->pSwapChainDevice->OpenSharedResource(sharedHandle, __uuidof(ID3D10Texture2D), (void**)&pSwapChain->pShareTexture);
+		}
+		else
+		{
+			OutputDebugString(_T("CreateSwapChainBufferTex err!!!!!To be settled!!!\n"));
+		}
 	}
 
 	SYTexture* pSwapChainBuffer = new SYTexture;

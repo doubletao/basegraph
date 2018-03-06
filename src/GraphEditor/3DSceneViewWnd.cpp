@@ -108,10 +108,11 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				RECT viewPort;
 				pThis->GetClientRect(&viewPort);
 				DX3DEngine_SetViewPort(hDevice, &viewPort);
+				OffsetRect(&viewPort, -viewPort.left / 2, -viewPort.top / 2);
 
 				//上锁，要绘制了
 				DataBaseLocker DataLocker;
-				//DXEngineLocker EngineLocker(hDevice);
+				DXEngineLocker EngineLocker(hDevice);
 
 				//取物件列表来
 				std::vector<CString> vecObjID;
@@ -155,7 +156,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 								if (pHalDef)
 								{
 									//渲染bufer到3D
-									DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, TRUE, 1.0f);
+									DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
 									if (false)
 									{
 										DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));
@@ -186,6 +187,10 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 						DX3DEngine_DumpTexture(hDevice, hSwapChainBuffer);
 					DXTextureManager_UnQueryTexture(hTex);
 					DXTextureManager_UnQueryTexture(hDepth);
+
+					DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain, 0);
+
+					OutputDebugString(_T("C3DSceneViewWnd::PreDecoderThread\n"));
 				}
 				pThis->RenderCountLock();
 				//待刷新数自减
@@ -260,6 +265,10 @@ void C3DSceneViewWnd::OnDestroy()
 void C3DSceneViewWnd::OnSize(UINT nType, int cx, int cy)
 {
 	CWnd::OnSize(nType, cx, cy);
+
+	if (cx <= 0 || cy <= 0)
+		return;
+
 	if (!m_ViewInfo.m_hSwapChain)
 	{
 		m_ViewInfo.m_hSwapChain = DX3DEngine_CreateSwapChain(DX3DEngine_GetMainDevice(), m_hWnd, cx, cy);
