@@ -1035,17 +1035,14 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 
 #if 0
 	TCHAR filePath[512];
-	_tcscpy_s(filePath,g_szDX10PathShader);
-	_tcscat_s(filePath,_T("screen.vso"));
-	pDevice->hScreenVS = CreateShaderFromCompiledFile(pDevice, _T("screen_VS"), filePath, DXShaderType_VertexShader, NULL);
 
 	_tcscpy_s(filePath, g_szDX10PathShader);
 	_tcscat_s(filePath, _T("screen.pso"));
-	pDevice->hScreenPS = CreateShaderFromCompiledFile(pDevice, _T("screen_PS"), filePath, DXShaderType_PixelShader, NULL);
+	pDevice->hScreenPS = CreateShaderFromCompiledFile(pDevice, _T("screen_PS"), filePath, DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath, g_szDX10PathShader);
 	_tcscat_s(filePath, _T("screenAdjustColor.pso"));
-	pDevice->hScreenAdjustPS = CreateShaderFromCompiledFile(pDevice, _T("screenAdjustColor_PS"), filePath, DXShaderType_PixelShader, NULL);
+	pDevice->hScreenAdjustPS = CreateShaderFromCompiledFile(pDevice, _T("screenAdjustColor_PS"), filePath, DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("3DVision.pso"));
@@ -1053,85 +1050,89 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("uyvy_bright.pso"));
-	pDevice->hUYVYBrightPS = CreateShaderFromCompiledFile(pDevice,_T("uyvy_bright_ps"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hUYVYBrightPS = CreateShaderFromCompiledFile(pDevice,_T("uyvy_bright_ps"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("field_add_key.pso"));
-	pDevice->hFieldAddKeyPS = CreateShaderFromCompiledFile(pDevice,_T("field_add_key_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hFieldAddKeyPS = CreateShaderFromCompiledFile(pDevice,_T("field_add_key_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("makeFrame.pso"));
-	pDevice->hRGBA_Frame = CreateShaderFromCompiledFile(pDevice,_T("makeFrame_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hRGBA_Frame = CreateShaderFromCompiledFile(pDevice,_T("makeFrame_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("rgba_to_yuayva4224.pso"));
-	pDevice->hRGBA_YUAYVA4224PS = CreateShaderFromCompiledFile(pDevice,_T("rgba_to_yuayva4224_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hRGBA_YUAYVA4224PS = CreateShaderFromCompiledFile(pDevice,_T("rgba_to_yuayva4224_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("uyvy_to_rgba_with_key0.pso"));
-	pDevice->hUYVY_RGBA_KeyPS0 = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba_with_key0_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_KeyPS0 = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba_with_key0_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("uyvy_to_rgba_with_key1.pso"));
-	pDevice->hUYVY_RGBA_KeyPS1 = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba_with_key1_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_KeyPS1 = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba_with_key1_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("uyvy_to_rgba0.pso"));
-	pDevice->hUYVY_RGBA_PS0 = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba0_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_PS0 = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba0_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("uyvy_to_rgba1.pso"));
-	pDevice->hUYVY_RGBA_PS1 = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba1_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_PS1 = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba1_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("uyvyframe_to_rgba.pso"));
-	pDevice->hUYVY_RGBA_Frame = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba_frame_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hUYVY_RGBA_Frame = CreateShaderFromCompiledFile(pDevice,_T("uyvy_to_rgba_frame_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("rgbaframe_to_uyvy.pso"));
-	pDevice->hRGBA_UYVY_Frame = CreateShaderFromCompiledFile(pDevice,_T("rgba_to_uyvy_frame_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hRGBA_UYVY_Frame = CreateShaderFromCompiledFile(pDevice,_T("rgba_to_uyvy_frame_PS"),filePath,DXShaderType_PixelShader, &nType);
 	
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("screenMS.pso"));
-	pDevice->hScreenMSPS = CreateShaderFromCompiledFile(pDevice,_T("screenMS_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hScreenMSPS = CreateShaderFromCompiledFile(pDevice,_T("screenMS_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("convert.pso"));
-	pDevice->hConvertFormatPS = CreateShaderFromCompiledFile(pDevice,_T("convert_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hConvertFormatPS = CreateShaderFromCompiledFile(pDevice,_T("convert_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("keyout.pso"));
-	pDevice->hOnlyKeyOutPS = CreateShaderFromCompiledFile(pDevice,_T("keyout_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hOnlyKeyOutPS = CreateShaderFromCompiledFile(pDevice,_T("keyout_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("DynamicTex.pso"));
-	pDevice->hDynamicPS = CreateShaderFromCompiledFile(pDevice,_T("dynamic_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hDynamicPS = CreateShaderFromCompiledFile(pDevice,_T("dynamic_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("blur.pso"));
-	pDevice->hBlur5PtPS = CreateShaderFromCompiledFile(pDevice,_T("blur_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hBlur5PtPS = CreateShaderFromCompiledFile(pDevice,_T("blur_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("blur9.pso"));
-	pDevice->hBlur9PtPS = CreateShaderFromCompiledFile(pDevice,_T("blur9_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hBlur9PtPS = CreateShaderFromCompiledFile(pDevice,_T("blur9_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("clearscreen.pso"));
-	pDevice->hClearScreenPS = CreateShaderFromCompiledFile(pDevice,_T("clearscreen_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hClearScreenPS = CreateShaderFromCompiledFile(pDevice,_T("clearscreen_PS"),filePath,DXShaderType_PixelShader, &nType);
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("RenderMask.pso"));
-	pDevice->hMaskRender = CreateShaderFromCompiledFile(pDevice,_T("RenderMask_PS"),filePath,DXShaderType_PixelShader,NULL);
+	pDevice->hMaskRender = CreateShaderFromCompiledFile(pDevice,_T("RenderMask_PS"),filePath,DXShaderType_PixelShader, &nType);
+
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("RenderTex.pso"));
+	pDevice->hRenderTexPS = CreateShaderFromCompiledFile(pDevice, _T("RenderTex_PS"), filePath, DXShaderType_PixelShader, &nType);
+
+	nType = DXVertex_POS;
 
 	_tcscpy_s(filePath,g_szDX10PathShader);
 	_tcscat_s(filePath,_T("RenderTex.vso"));
-	 
-	nType = DXVertex_POS;
 	pDevice->hRenderTexVS = CreateShaderFromCompiledFile(pDevice,_T("RenderTex_VS"),filePath,DXShaderType_VertexShader,&nType);
 
-	_tcscpy_s(filePath,g_szDX10PathShader);
-	_tcscat_s(filePath,_T("RenderTex.pso"));
-	pDevice->hRenderTexPS = CreateShaderFromCompiledFile(pDevice,_T("RenderTex_PS"),filePath,DXShaderType_PixelShader,NULL);
+	_tcscpy_s(filePath, g_szDX10PathShader);
+	_tcscat_s(filePath, _T("screen.vso"));
+	pDevice->hScreenVS = CreateShaderFromCompiledFile(pDevice, _T("screen_VS"), filePath, DXShaderType_VertexShader, &nType);
 #else
 	TCHAR filePath[512];
 	_tcscpy_s(filePath, g_szDX10PathShader);
