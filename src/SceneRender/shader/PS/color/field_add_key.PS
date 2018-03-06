@@ -1,0 +1,18 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+sampler texSample;
+Texture2D <float4> tex;
+Texture2D <float4> key;
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 texColor = tex.Sample(texSample,vIN.tex);
+	float4 texKey = key.Sample(texSample,vIN.tex);
+//	if(texKey.r ==0)
+//		discard;
+	return float4(texColor.rgb,texKey.g);
+}

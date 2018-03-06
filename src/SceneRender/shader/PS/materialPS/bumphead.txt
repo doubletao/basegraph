@@ -1,0 +1,8 @@
+cbuffer Bump : register(b4)
+{
+	float4x4 BumpMat;
+	float	BumpFactor;
+};
+
+sampler BumpSample : register(s4);
+Texture2D <float4> BumpTex : register(t4);

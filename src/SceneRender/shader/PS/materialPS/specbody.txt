@@ -1,0 +1,12 @@
+{
+	float3 vR = -reflect( ViewDir, Nn);
+	float4 uv = float4(0,0,0,1);
+	
+	uv.x = atan2(vR.x,vR.z)*RECI_TWOPAI + 0.5f;
+	uv.y = asin(vR.y)*RECI_PAI + 0.5f;
+	uv = mul(SpecMat,uv);
+
+	float4 c = SpecTex.Sample(SpecSample,uv.xy);
+	c.rgb *= SpecFactor ;
+	fSpecContrib = c * SpeculRef ;
+}

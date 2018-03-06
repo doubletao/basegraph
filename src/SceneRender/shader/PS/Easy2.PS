@@ -1,0 +1,19 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float4 color	: COLOR0;
+	float  fog_param: TEXCOORD0;
+};
+
+float4 color_fog = {0.5f,0.5f,0.5f,1};
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 color = vIN.color;
+	
+	float  fog_param = smoothstep(20,100000,vIN.fog_param);
+	color = lerp(color,color_fog,fog_param);
+
+	return color;
+}
+

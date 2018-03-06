@@ -1,0 +1,23 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+cbuffer cb0
+{
+	float fGain;
+};
+
+sampler texSample;
+Texture2D <float4> tex;
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 c_rgba	=	1.0f;
+	
+	float4 texColor = tex.Sample(texSample,vIN.tex);
+	texColor.ga = texColor.ga * fGain;
+	
+	return texColor;
+}

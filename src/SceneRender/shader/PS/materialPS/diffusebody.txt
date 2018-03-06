@@ -1,0 +1,6 @@
+{
+	float4 DiffuseTexcoord = float4(Input.Texcoord,0,1);
+	DiffuseTexcoord = mul(DiffuseMat,DiffuseTexcoord);
+	float4 DiffuseTexColor = diffuseTex.Sample(diffuseSample,DiffuseTexcoord.xy);
+	fDiffContrib *= DiffuseTexColor;
+}

@@ -1,0 +1,36 @@
+cbuffer cb0
+{
+	float4 DiffuseColor ;
+};
+
+struct PS_INPUT
+{
+	float4 Position : SV_Position;
+	float3 Normal   : NORMAL;
+	float2 tex		: TEXCOORD0;
+	float3 posWorld	: TEXCOORD1;
+};
+
+float4 main( PS_INPUT Input ) : SV_Target
+{
+ 
+  float3 Ln1 =  normalize( float3( 0,0,-1 ));
+  float3 Ln2 =  normalize( float3( 1,0.2f,0.1f));
+  float3 Ln3 =  normalize( float3( -1,0.2f,0.2f));  
+    
+  float3 Nn = normalize(Input.Normal);
+  
+  float3 View = ( 0.f, 0.f, -1.f );
+  float3 Hv1	= normalize(View + Ln1);
+  float3 Hv2	= normalize(View + Ln2);
+  float3 Hv3	= normalize(View + Ln3);
+  
+  float3 Lc = ( 0.5f, 0.5f, 0.5f);
+  
+  float4 light1 = lit(dot(Ln1, Nn),dot(Nn,Hv1),48);
+  float4 light2 = lit(dot(Ln2, Nn),dot(Nn,Hv2),64);
+  float4 light3 = lit(dot(Ln3, Nn),dot(Nn,Hv3),64);
+  
+  float3 fResult = (light1.y + light2.y +light3.y )* DiffuseColor.rgb + (light1.z + light2.z +light3.z) * Lc.rgb+ float3(0.15,0.15,0.15);
+  return float4( fResult.rgb, 1.f );
+}
