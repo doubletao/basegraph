@@ -63,11 +63,11 @@ struct DXEngineLocker
 	DXEngineLocker(int nDevice)
 		: m_nDevice(nDevice)
 	{
-		DX3DEngine_Lock(nDevice);
+		DX3DEngine_BeginRender(nDevice);
 	}
 	~DXEngineLocker()
 	{
-		DX3DEngine_UnLock(m_nDevice);
+		DX3DEngine_EndRender(m_nDevice);
 	}
 };
 
@@ -98,7 +98,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				//创建纹理及深度buf
 				int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
 				int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
-				DX3DEngine_ClearTexture(hDevice, hTex, RGBA(255, 125, 125, 255));
+				DX3DEngine_ClearTexture(hDevice, hTex, RGBA(0, 0, 0, 0));
 				DX3DEngine_ClearDepth(hDevice, hDepth, 1);
 
 				//设定渲染目标
@@ -108,6 +108,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				RECT viewPort;
 				pThis->GetClientRect(&viewPort);
 				DX3DEngine_SetViewPort(hDevice, &viewPort);
+				DX3DEngine_SetScissor(hDevice, &viewPort);
 				OffsetRect(&viewPort, -viewPort.left / 2, -viewPort.top / 2);
 
 				//上锁，要绘制了
@@ -157,6 +158,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 								{
 									//渲染bufer到3D
 									DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
+									//DX3DEngine_CopyTexture(hDevice, hTex, viewPort.left, viewPort.top, viewPort.right - viewPort.left, viewPort.bottom - viewPort.top, pHalDef->m_hTex, 0, 0, pHalDef->m_rtBound.right - pHalDef->m_rtBound.left, pHalDef->m_rtBound.bottom - pHalDef->m_rtBound.top);
 									if (false)
 									{
 										DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));

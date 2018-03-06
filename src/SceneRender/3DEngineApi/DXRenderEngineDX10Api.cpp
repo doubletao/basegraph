@@ -4030,6 +4030,16 @@ BOOL Render_EffectSetVariable(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_Render2D(int hDevice,void* paramin,void* paramout)
 {
+	if (false)
+	{
+		//DX3DEngine_DumpRenderTarget(hDevice);
+		int nRenderTarget = 0;
+		int nDepth = 0;
+		getRenderTargetIn paramIn = { &nRenderTarget, &nDepth };
+		Render_GetRenderTarget(hDevice, &paramIn, NULL);
+		int i = 0;
+		i++;
+	}
 	DXRender2D* pIn = (DXRender2D*)paramin;
 	//¼ÆËãproj
 	float fLeft =	(float)pIn->pDstRt->left;
