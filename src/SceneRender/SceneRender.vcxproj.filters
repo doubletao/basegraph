@@ -151,9 +151,6 @@
     <None Include="shader\VS\pos_normal_tex_tang_bi_Instance.VS">
       <Filter>Shader\VS</Filter>
     </None>
-    <None Include="shader\VS\RenderTex.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
     <None Include="shader\PS\color\field_add_key.PS">
       <Filter>Shader\PS\color</Filter>
     </None>
@@ -182,9 +179,6 @@
       <Filter>Shader\PS\color</Filter>
     </None>
     <None Include="shader\PS\color\uyvy_to_rgba1.ps">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\uyvyframe_to_rgba.ps">
       <Filter>Shader\PS\color</Filter>
     </None>
     <None Include="shader\PS\3DVision.PS">
@@ -235,9 +229,6 @@
     <None Include="shader\PS\screenMS.PS">
       <Filter>Shader\PS</Filter>
     </None>
-    <None Include="shader\PS\WidthLineNoTex.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SceneRender.rc">
@@ -253,6 +244,15 @@
     </CustomBuild>
     <CustomBuild Include="shader\PS\screenAdjustColor.PS">
       <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvyframe_to_rgba.ps">
+      <Filter>Shader\PS\color</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\WidthLineNoTex.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\RenderTex.VS">
+      <Filter>Shader\VS</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
