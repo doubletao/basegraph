@@ -177,7 +177,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 
 					if (rtClient.Width()>0)
 					{
-						if (0)
+						if (false)
 							DX3DEngine_DumpTexture(hDevice, hTex);
 					}
 

@@ -3022,7 +3022,7 @@ bool Render_TexProcess(int hDevice,void* paramin,void* paramout)
 	SetViewPort(pDevice,oldRect.left,oldRect.top,oldRect.right,oldRect.bottom);
 	SetScissor(pDevice,&oldScissor);
 
-	if(0)
+	if(false)
 		render_DumpTexture(hDevice,&param->hSrcTex,0);
 	return true;
 }
