@@ -6,7 +6,7 @@
 BaseGraph_DataBase::BaseObject::BaseObject()
 	: m_nParentID(_T(""))
 {
-	m_mapParam[ObjID].SetValue(CommonFunction::CreateGUID());
+	m_mapParam[ObjID_Str].SetValue(CommonFunction::CreateGUID());
 }
 
 
@@ -25,41 +25,24 @@ void BaseGraph_DataBase::BaseObject::InitialObjectParam()
 	};
 	
 	//物件属性
-	AddDefaultParam(ObjName);
-	AddDefaultParam(ObjActionBegin);
-	AddDefaultParam(ObjActionEnd);
+	AddDefaultParam(ObjName_Str);
+	AddDefaultParam(ObjActionBegin_Int);
+	AddDefaultParam(ObjActionEnd_Int);
 	//空间值
-	AddDefaultParam(SpacePosition_X);
-	AddDefaultParam(SpacePosition_Y);
-	AddDefaultParam(SpacePosition_Z);
-	AddDefaultParam(SpaceRotate_X);
-	AddDefaultParam(SpaceRotate_Y);
-	AddDefaultParam(SpaceRotate_Z);
-	AddDefaultParam(SpaceScale_X);
-	AddDefaultParam(SpaceScale_Y);
-	AddDefaultParam(SpaceScale_Z);
-	AddDefaultParam(SpaceCenter_X);
-	AddDefaultParam(SpaceCenter_Y);
-	AddDefaultParam(SpaceCenter_Z);
+	AddDefaultParam(SpacePosition_X_Float);
+	AddDefaultParam(SpacePosition_Y_Float);
+	AddDefaultParam(SpacePosition_Z_Float);
+	AddDefaultParam(SpaceRotate_X_Float);
+	AddDefaultParam(SpaceRotate_Y_Float);
+	AddDefaultParam(SpaceRotate_Z_Float);
+	AddDefaultParam(SpaceScale_X_Float);
+	AddDefaultParam(SpaceScale_Y_Float);
+	AddDefaultParam(SpaceScale_Z_Float);
+	AddDefaultParam(SpaceCenter_X_Float);
+	AddDefaultParam(SpaceCenter_Y_Float);
+	AddDefaultParam(SpaceCenter_Z_Float);
 
 	//颜色值
-	AddDefaultParam(ColorFace_Enable);
-	AddDefaultParam(ColorFace_Soft);
-	AddDefaultParam(ColorFace_EffectType);
-	AddDefaultParam(ColorFace_EffectWidth);
-	AddDefaultParam(ColorFace_AVColor);
-	AddDefaultParam(ColorFace_Art);
-	AddDefaultParam(ColorFace_Color);
-	AddDefaultParam(ColorBorder_Enable);
-	AddDefaultParam(ColorBorder_Soft);
-	AddDefaultParam(ColorBorder_LineStyle);
-	AddDefaultParam(ColorBorder_Width);
-	AddDefaultParam(ColorBorder_Interval);
-	AddDefaultParam(ColorBorder_EffectType);
-	AddDefaultParam(ColorBorder_EffectWidth);
-	AddDefaultParam(ColorBorder_AVColor);
-	AddDefaultParam(ColorBorder_Art);
-	AddDefaultParam(ColorBorder_Color);
 }
 
 bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
@@ -113,9 +96,9 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 BaseGraph_DataBase::ObjectType BaseGraph_DataBase::BaseObject::GetObjectType()
 {
 	BaseGraph_DataBase::ObjectType emObjType = BaseGraph_DataBase::ObjectType_Err;
-	if (m_mapParam.count(ObjType) > 0)
+	if (m_mapParam.count(ObjType_Enum) > 0)
 	{
-		emObjType = (BaseGraph_DataBase::ObjectType)m_mapParam[ObjType].ToInt();
+		emObjType = (BaseGraph_DataBase::ObjectType)m_mapParam[ObjType_Enum].ToInt();
 	}
 	return emObjType;
 }
@@ -150,77 +133,77 @@ void BaseGraph_DataBase::BaseObject::SetValue(ParamValueDef emValueDef, Value st
 CString BaseGraph_DataBase::BaseObject::GetItemID()
 {
 	CString strRet = 0;
-	strRet = GetValue(ObjID).ToCString();
+	strRet = GetValue(ObjID_Str).ToCString();
 	return strRet;
 }
 
 ObjectType BaseGraph_DataBase::BaseObject::GetItemType()
 {
 	ObjectType emRet = ObjectType_Err;
-	emRet = (ObjectType)GetValue(ObjType).ToInt();
+	emRet = (ObjectType)GetValue(ObjType_Enum).ToInt();
 	return emRet;
 }
 
 point3f BaseGraph_DataBase::BaseObject::GetItemPos()
 {
 	point3f ptRet = {0};
-	ptRet.x = GetValue(SpacePosition_X).ToFloat();
-	ptRet.y = GetValue(SpacePosition_Y).ToFloat();
-	ptRet.z = GetValue(SpacePosition_Z).ToFloat();
+	ptRet.x = GetValue(SpacePosition_X_Float).ToFloat();
+	ptRet.y = GetValue(SpacePosition_Y_Float).ToFloat();
+	ptRet.z = GetValue(SpacePosition_Z_Float).ToFloat();
 	return ptRet;
 }
 
 void BaseGraph_DataBase::BaseObject::SetItemPos(point3f ptValue)
 {
-	SetValue(SpacePosition_X, ptValue.x);
-	SetValue(SpacePosition_Y, ptValue.y);
-	SetValue(SpacePosition_Z, ptValue.z);
+	SetValue(SpacePosition_X_Float, ptValue.x);
+	SetValue(SpacePosition_Y_Float, ptValue.y);
+	SetValue(SpacePosition_Z_Float, ptValue.z);
 }
 
 point3f BaseGraph_DataBase::BaseObject::GetItemRotate()
 {
 	point3f ptRet = { 0 };
-	ptRet.x = GetValue(SpaceRotate_X).ToFloat();
-	ptRet.y = GetValue(SpaceRotate_Y).ToFloat();
-	ptRet.z = GetValue(SpaceRotate_Z).ToFloat();
+	ptRet.x = GetValue(SpaceRotate_X_Float).ToFloat();
+	ptRet.y = GetValue(SpaceRotate_Y_Float).ToFloat();
+	ptRet.z = GetValue(SpaceRotate_Z_Float).ToFloat();
 	return ptRet;
 }
 
 void BaseGraph_DataBase::BaseObject::SetItemRotate(point3f ptValue)
 {
-	SetValue(SpaceRotate_X, ptValue.x);
-	SetValue(SpaceRotate_Y, ptValue.y);
-	SetValue(SpaceRotate_Z, ptValue.z);
+	SetValue(SpaceRotate_X_Float, ptValue.x);
+	SetValue(SpaceRotate_Y_Float, ptValue.y);
+	SetValue(SpaceRotate_Z_Float, ptValue.z);
 }
 
 point3f BaseGraph_DataBase::BaseObject::GetItemScale()
 {
 	point3f ptRet = { 0 };
-	ptRet.x = GetValue(SpaceScale_X).ToFloat();
-	ptRet.y = GetValue(SpaceScale_Y).ToFloat();
-	ptRet.z = GetValue(SpaceScale_Z).ToFloat();
+	ptRet.x = GetValue(SpaceScale_X_Float).ToFloat();
+	ptRet.y = GetValue(SpaceScale_Y_Float).ToFloat();
+	ptRet.z = GetValue(SpaceScale_Z_Float).ToFloat();
 	return ptRet;
 }
 
 void BaseGraph_DataBase::BaseObject::SetItemScale(point3f ptValue)
 {
-	SetValue(SpaceScale_X, ptValue.x);
-	SetValue(SpaceScale_Y, ptValue.y);
-	SetValue(SpaceScale_Z, ptValue.z);
+	SetValue(SpaceScale_X_Float, ptValue.x);
+	SetValue(SpaceScale_Y_Float, ptValue.y);
+	SetValue(SpaceScale_Z_Float, ptValue.z);
 }
 
 point3f BaseGraph_DataBase::BaseObject::GetItemCenter()
 {
 	point3f ptRet = { 0 };
-	ptRet.x = GetValue(SpaceCenter_X).ToFloat();
-	ptRet.y = GetValue(SpaceCenter_Y).ToFloat();
-	ptRet.z = GetValue(SpaceCenter_Z).ToFloat();
+	ptRet.x = GetValue(SpaceCenter_X_Float).ToFloat();
+	ptRet.y = GetValue(SpaceCenter_Y_Float).ToFloat();
+	ptRet.z = GetValue(SpaceCenter_Z_Float).ToFloat();
 	return ptRet;
 }
 
 void BaseGraph_DataBase::BaseObject::SetItemCenter(point3f ptValue)
 {
-	SetValue(SpaceCenter_X, ptValue.x);
-	SetValue(SpaceCenter_Y, ptValue.y);
-	SetValue(SpaceCenter_Z, ptValue.z);
+	SetValue(SpaceCenter_X_Float, ptValue.x);
+	SetValue(SpaceCenter_Y_Float, ptValue.y);
+	SetValue(SpaceCenter_Z_Float, ptValue.z);
 }

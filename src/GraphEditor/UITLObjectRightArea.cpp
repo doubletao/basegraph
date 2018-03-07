@@ -53,8 +53,8 @@ int UITLObjectRightArea::DrawItemRight(CDC * pDC, CString strID, int nCurrentY)
 			{
 				BaseGraph_Common::Value stuValueActionBegin;
 				BaseGraph_Common::Value stuValueActionEnd;
-				if (DataBase_GetItemProperty(strID, BaseGraph_DataBase::ObjActionBegin, stuValueActionBegin)
-					&& DataBase_GetItemProperty(strID, BaseGraph_DataBase::ObjActionEnd, stuValueActionEnd))
+				if (DataBase_GetItemProperty(strID, BaseGraph_DataBase::ObjActionBegin_Int, stuValueActionBegin)
+					&& DataBase_GetItemProperty(strID, BaseGraph_DataBase::ObjActionEnd_Int, stuValueActionEnd))
 				{
 					//属性中取出来的是场,需要换算成帧
 					int nObjActionBegin = stuValueActionBegin.ToInt() / 2;

@@ -90,6 +90,9 @@
     <ClCompile Include="ColorAPI.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ColorDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">

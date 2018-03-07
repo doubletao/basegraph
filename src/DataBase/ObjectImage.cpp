@@ -5,7 +5,7 @@ using namespace BaseGraph_DataBase;
 
 ObjectImage::ObjectImage()
 {
-	SetValue(ObjType, Value(ObjectType_Image, BaseGraph_Common::ValueType_ENUM));
+	SetValue(ObjType_Enum, Value(ObjectType_Image, BaseGraph_Common::ValueType_ENUM));
 }
 
 ObjectImage::~ObjectImage()
@@ -24,23 +24,23 @@ void ObjectImage::InitialObjectParam()
 		}
 	};
 
-	AddDefaultParam(Image_Path);
-	AddDefaultParam(Image_SrcWidth);
-	AddDefaultParam(Image_SrcHeight);
-	AddDefaultParam(Image_DispWidth);
-	AddDefaultParam(Image_DispHeight);
+	AddDefaultParam(Image_Path_Str);
+	AddDefaultParam(Image_SrcWidth_Int);
+	AddDefaultParam(Image_SrcHeight_Int);
+	AddDefaultParam(Image_DispWidth_Int);
+	AddDefaultParam(Image_DispHeight_Int);
 }
 
 std::map<BaseGraph_DataBase::ParamValueDef, Value> ObjectImage::GetProperty()
 {
 	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = m_mapParam;
-	mapParam[BaseGraph_DataBase::Image_Path] = GetImagePath();
+	mapParam[BaseGraph_DataBase::Image_Path_Str] = GetImagePath();
 	return mapParam;
 }
 
 Value ObjectImage::GetValue(BaseGraph_DataBase::ParamValueDef emValueDef)
 {
-	if (emValueDef == BaseGraph_DataBase::Image_Path)
+	if (emValueDef == BaseGraph_DataBase::Image_Path_Str)
 	{
 		return GetImagePath();
 	}
@@ -49,7 +49,7 @@ Value ObjectImage::GetValue(BaseGraph_DataBase::ParamValueDef emValueDef)
 
 void ObjectImage::SetValue(BaseGraph_DataBase::ParamValueDef emValueDef, Value stuValue)
 {
-	if (emValueDef == BaseGraph_DataBase::Image_Path)
+	if (emValueDef == BaseGraph_DataBase::Image_Path_Str)
 	{
 		return SetImagePath(stuValue.ToCString());
 	}
@@ -58,9 +58,9 @@ void ObjectImage::SetValue(BaseGraph_DataBase::ParamValueDef emValueDef, Value s
 
 CString ObjectImage::GetImagePath()
 {
-	if (m_mapParam.count(Image_Path) > 0)
+	if (m_mapParam.count(Image_Path_Str) > 0)
 	{
-		CString strResGUID = m_mapParam[Image_Path].ToCString();
+		CString strResGUID = m_mapParam[Image_Path_Str].ToCString();
 		return DataResourceManager::Instance().GetResource(strResGUID);
 	}
 	return _T("");
@@ -69,45 +69,45 @@ CString ObjectImage::GetImagePath()
 void ObjectImage::SetImagePath(CString strPath)
 {
 	DataResourceManager::Instance().DelResource(GetImagePath());
-	m_mapParam[Image_Path] = DataResourceManager::Instance().AddResource(strPath);
+	m_mapParam[Image_Path_Str] = DataResourceManager::Instance().AddResource(strPath);
 }
 
 int ObjectImage::GetSrcWidth()
 {
-	return GetValue(Image_SrcWidth).ToInt();
+	return GetValue(Image_SrcWidth_Int).ToInt();
 }
 
 void ObjectImage::SetSrcWidth(int nValue)
 {
-	SetValue(Image_SrcWidth, nValue);
+	SetValue(Image_SrcWidth_Int, nValue);
 }
 
 int ObjectImage::GetSrcHeight()
 {
-	return GetValue(Image_SrcHeight).ToInt();
+	return GetValue(Image_SrcHeight_Int).ToInt();
 }
 
 void ObjectImage::SetSrcHeight(int nValue)
 {
-	SetValue(Image_SrcHeight, nValue);
+	SetValue(Image_SrcHeight_Int, nValue);
 }
 
 int ObjectImage::GetDispWidth()
 {
-	return GetValue(Image_DispWidth).ToInt();
+	return GetValue(Image_DispWidth_Int).ToInt();
 }
 
 void ObjectImage::SetDispWidth(int nValue)
 {
-	SetValue(Image_DispWidth, nValue);
+	SetValue(Image_DispWidth_Int, nValue);
 }
 
 int ObjectImage::GetDispHeight()
 {
-	return GetValue(Image_DispHeight).ToInt();
+	return GetValue(Image_DispHeight_Int).ToInt();
 }
 
 void ObjectImage::SetDispHeight(int nValue)
 {
-	SetValue(Image_DispHeight, nValue);
+	SetValue(Image_DispHeight_Int, nValue);
 }

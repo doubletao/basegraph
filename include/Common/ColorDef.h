@@ -1,6 +1,7 @@
 #pragma once
-///颜色定义，黄太红，20141223///////////////////////////////////////////////////////////////////////
+#include "DataDef.h"
 // 颜色种类
+
 enum SYCOLOR_TYPE
 {
 	SYCOLOR_HOMO = 0,				// 单色
@@ -200,7 +201,7 @@ enum GRAD_ANI_PARAM
 
 //////////////////////////////////////////////////////////////////////////
 // 颜色结构定义，采用联合的方式做到对所有种类颜色的兼容
-typedef   struct tag_sycolor
+typedef   struct tag_sycolor : public BaseGraph_Common::ValueAbleInterface
 {
 	unsigned long type;				// 颜色种类
 									// 按分类定义
@@ -307,6 +308,9 @@ typedef   struct tag_sycolor
 	{
 		memset(this, 0, sizeof(tag_sycolor));
 	}
+	virtual int GetSerializeSize() const;
+	virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
+	virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 }sycolor;
 
 typedef sycolor SYColor, *LPSYCOLOR;

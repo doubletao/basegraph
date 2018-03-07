@@ -119,6 +119,7 @@
     <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="DataBaseManager.cpp" />
     <ClCompile Include="DataResourceManager.cpp" />
+    <ClCompile Include="DataTypeDef.cpp" />
     <ClCompile Include="ExportDataBase.cpp" />
     <ClCompile Include="IntIDGenerator.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />

@@ -329,12 +329,12 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		CString strObjID = _T("");
 		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Image);
-		mapParam[BaseGraph_DataBase::Image_Path].SetValue(strImgPath);
-		mapParam[BaseGraph_DataBase::ObjName].SetValue(strName);
-		mapParam[BaseGraph_DataBase::Image_DispWidth].SetValue(800, BaseGraph_Common::ValueType_INT);
-		mapParam[BaseGraph_DataBase::Image_DispHeight].SetValue(600, BaseGraph_Common::ValueType_INT);
-		mapParam[BaseGraph_DataBase::ObjActionBegin].SetValue(nBegin, BaseGraph_Common::ValueType_INT);
-		mapParam[BaseGraph_DataBase::ObjActionEnd].SetValue(nEnd, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Image_Path_Str].SetValue(strImgPath);
+		mapParam[BaseGraph_DataBase::ObjName_Str].SetValue(strName);
+		mapParam[BaseGraph_DataBase::Image_DispWidth_Int].SetValue(800, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Image_DispHeight_Int].SetValue(600, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::ObjActionBegin_Int].SetValue(nBegin, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::ObjActionEnd_Int].SetValue(nEnd, BaseGraph_Common::ValueType_INT);
 		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Image, mapParam, strObjID);
 		if (!strObjID.IsEmpty())
 		{

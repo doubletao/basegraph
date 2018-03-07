@@ -17,7 +17,7 @@ bool ImageCalculator::UpdateRenderBuffer()
 	if (NeedRenderBuffer())
 	{
 		BaseGraph_Common::Value stuValue;
-		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_Path, stuValue))
+		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_Path_Str, stuValue))
 		{
 			//创建物件buf
 			if (PrepareObjBuffer())
@@ -79,8 +79,8 @@ bool ImageCalculator::UpdateImage(CString &strImgPath)
 				{
 					if (BaseCodec_ReadImage(strImgPath, nImageWidth, nImageHeight, pImgBuf->GetBuffer()))
 					{
-						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcWidth, nImageWidth);
-						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcHeight, nImageHeight);
+						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcWidth_Int, nImageWidth);
+						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcHeight_Int, nImageHeight);
 						if (false)
 						{
 							pImgBuf->DebugWriteImage(_T("e:\\2.bmp"));
@@ -141,8 +141,8 @@ bool ImageCalculator::PrepareObjBuffer()
 		}
 		return 0;
 	};
-	int nObjWidth = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Image_DispWidth).ToInt();
-	int nObjHeight = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Image_DispHeight).ToInt();
+	int nObjWidth = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Image_DispWidth_Int).ToInt();
+	int nObjHeight = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Image_DispHeight_Int).ToInt();
 	if (nObjWidth > 0
 		&& nObjHeight > 0)
 	{
@@ -160,7 +160,7 @@ int ImageCalculator::GetWidth()
 {
 	int nRet = 0;
 	BaseGraph_Common::Value stuValue;
-	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_DispWidth, stuValue))
+	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_DispWidth_Int, stuValue))
 	{
 		nRet = stuValue.ToInt();
 	}
@@ -171,7 +171,7 @@ int ImageCalculator::GetHeight()
 {
 	int nRet = 0;
 	BaseGraph_Common::Value stuValue;
-	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_DispHeight, stuValue))
+	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_DispHeight_Int, stuValue))
 	{
 		nRet = stuValue.ToInt();
 	}

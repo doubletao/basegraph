@@ -118,6 +118,7 @@
     <ClCompile Include="BufferMemSSE.cpp" />
     <ClCompile Include="BufferSSE2.cpp" />
     <ClCompile Include="ColorAPI.cpp" />
+    <ClCompile Include="ColorDef.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CommonFunction.cpp" />
     <ClCompile Include="CommonDataContainer.cpp" />

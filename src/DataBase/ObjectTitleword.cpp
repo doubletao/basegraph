@@ -4,7 +4,7 @@ using namespace BaseGraph_DataBase;
 
 ObjectTitleword::ObjectTitleword()
 {
-	m_mapParam[ObjType].SetValue(ObjectType_Title, BaseGraph_Common::ValueType_ENUM);
+	m_mapParam[ObjType_Enum].SetValue(ObjectType_Title, BaseGraph_Common::ValueType_ENUM);
 }
 
 

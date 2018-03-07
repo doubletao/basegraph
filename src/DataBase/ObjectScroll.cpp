@@ -4,7 +4,7 @@ using namespace BaseGraph_DataBase;
 
 ObjectScroll::ObjectScroll()
 {
-	m_mapParam[ObjType].SetValue(ObjectType_Scroll, BaseGraph_Common::ValueType_ENUM);
+	m_mapParam[ObjType_Enum].SetValue(ObjectType_Scroll, BaseGraph_Common::ValueType_ENUM);
 }
 
 

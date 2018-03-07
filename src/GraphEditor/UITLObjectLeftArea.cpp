@@ -55,7 +55,7 @@ int UITLObjectLeftArea::DrawItemLeft(CDC * pDC, CString strID, int nCol, int nCu
 			//绘制文本
 			CString strText = _T("未命名");
 			BaseGraph_Common::Value stuNameValue;
-			if (DataBase_GetItemProperty(strID, BaseGraph_DataBase::ObjName, stuNameValue))
+			if (DataBase_GetItemProperty(strID, BaseGraph_DataBase::ObjName_Str, stuNameValue))
 			{
 				strText = stuNameValue.ToCString();
 			}
