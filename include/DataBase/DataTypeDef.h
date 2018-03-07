@@ -53,7 +53,7 @@ namespace BaseGraph_DataBase
 		ColorParam_Appendmaterial_Stu,
 		ColorParam_Dyntex_Stu,
 		ColorParam_Renderline_Int,
-		ColorParam_Fwidth_Float,
+		ColorParam_Width_Float,
 		ColorParam_Index_Int,
 		ColorParam_End,
 
@@ -260,6 +260,81 @@ namespace BaseGraph_DataBase
 			valueDesc.stuDefault.SetValue(0.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
+			break;
+		case ColorParam_Face_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("面");
+			valueDesc.stuDefault.SetValue(faceinfo());
+			break;
+		case ColorParam_Border_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("周边");
+			valueDesc.stuDefault.SetValue(borderinfo());
+			break;
+		case ColorParam_Shadow_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("阴影");
+			valueDesc.stuDefault.SetValue(shadowinfo());
+			break;
+		case ColorParam_Cube_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("立体边");
+			valueDesc.stuDefault.SetValue(cubeinfo());
+			break;
+		case ColorParam_Bordercube_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("周边立体边");
+			valueDesc.stuDefault.SetValue(cubeinfo());
+			break;
+		case ColorParam_Bordershadow_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("周边阴影");
+			valueDesc.stuDefault.SetValue(shadowinfo());
+			break;
+		case ColorParam_Facelight_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("面光照效果");
+			valueDesc.stuDefault.SetValue(lightinfo());
+			break;
+		case ColorParam_Cubelight_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("立体边光照");
+			valueDesc.stuDefault.SetValue(lightinfo());
+			break;
+		case ColorParam_Channel_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("通道");
+			valueDesc.stuDefault.SetValue(channelinfo());
+			break;
+		case ColorParam_Material_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("材质");
+			valueDesc.stuDefault.SetValue(materialinfo());
+			break;
+		case ColorParam_Appendmaterial_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("材质扩展");
+			valueDesc.stuDefault.SetValue(materialinfo());
+			break;
+		case ColorParam_Dyntex_Stu:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("动态纹理");
+			valueDesc.stuDefault.SetValue(dynamictexture());
+			break;
+		case ColorParam_Renderline_Int:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("不确定");
+			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
+			break;
+		case ColorParam_Width_Float:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("不确定");
+			valueDesc.stuDefault.SetValue(0.0f);
+			break;
+		case ColorParam_Index_Int:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("不确定");
+			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
 			break;
 		case Image_Path_Str:
 			valueDesc.nDispIndex = 0;

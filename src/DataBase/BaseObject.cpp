@@ -43,6 +43,21 @@ void BaseGraph_DataBase::BaseObject::InitialObjectParam()
 	AddDefaultParam(SpaceCenter_Z_Float);
 
 	//ÑÕÉ«Öµ
+	AddDefaultParam(ColorParam_Face_Stu);
+	AddDefaultParam(ColorParam_Border_Stu);
+	AddDefaultParam(ColorParam_Shadow_Stu);
+	AddDefaultParam(ColorParam_Cube_Stu);
+	AddDefaultParam(ColorParam_Bordercube_Stu);
+	AddDefaultParam(ColorParam_Bordershadow_Stu);
+	AddDefaultParam(ColorParam_Facelight_Stu);
+	AddDefaultParam(ColorParam_Cubelight_Stu);
+	AddDefaultParam(ColorParam_Channel_Stu);
+	AddDefaultParam(ColorParam_Material_Stu);
+	AddDefaultParam(ColorParam_Appendmaterial_Stu);
+	AddDefaultParam(ColorParam_Dyntex_Stu);
+	AddDefaultParam(ColorParam_Renderline_Int);
+	AddDefaultParam(ColorParam_Width_Float);
+	AddDefaultParam(ColorParam_Index_Int);
 }
 
 bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
