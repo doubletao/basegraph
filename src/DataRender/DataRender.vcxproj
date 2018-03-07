@@ -118,7 +118,7 @@
     <ClCompile Include="DataBufferManager.cpp" />
     <ClCompile Include="DataRender.cpp" />
     <ClCompile Include="ExportDataRender.cpp" />
-    <ClCompile Include="ImageCalculator.cpp" />
+    <ClCompile Include="CalculatorImage.cpp" />
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="ObjectCalculator.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -132,7 +132,7 @@
     <ClInclude Include="CalculatorManager.h" />
     <ClInclude Include="DataBufferManager.h" />
     <ClInclude Include="DataRender.h" />
-    <ClInclude Include="ImageCalculator.h" />
+    <ClInclude Include="CalculatorImage.h" />
     <ClInclude Include="ObjectBuffer.h" />
     <ClInclude Include="ObjectCalculator.h" />
     <ClInclude Include="Resource.h" />

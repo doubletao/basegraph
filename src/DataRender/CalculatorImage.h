@@ -1,14 +1,14 @@
 #pragma once
 #include "ObjectCalculator.h"
 
-class ImageCalculator :
+class CalculatorImage :
 	public ObjectCalculator
 {
 private:
 	int m_nImageBufferID;
 public:
-	ImageCalculator(CString strObjID);
-	virtual ~ImageCalculator();
+	CalculatorImage(CString strObjID);
+	virtual ~CalculatorImage();
 protected:
 	bool UpdateImage(CString &strImgPath);
 	bool StretchImage();

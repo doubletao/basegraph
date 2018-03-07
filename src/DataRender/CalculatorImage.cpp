@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "ImageCalculator.h"
+#include "CalculatorImage.h"
 
-ImageCalculator::ImageCalculator(CString strObjID)
+CalculatorImage::CalculatorImage(CString strObjID)
 	: ObjectCalculator(strObjID)
 	, m_nImageBufferID(0)
 {
 }
 
 
-ImageCalculator::~ImageCalculator()
+CalculatorImage::~CalculatorImage()
 {
 }
 
-bool ImageCalculator::UpdateRenderBuffer()
+bool CalculatorImage::UpdateRenderBuffer()
 {
 	if (NeedRenderBuffer())
 	{
@@ -61,7 +61,7 @@ bool ImageCalculator::UpdateRenderBuffer()
 	return true;
 }
 
-bool ImageCalculator::UpdateImage(CString &strImgPath)
+bool CalculatorImage::UpdateImage(CString &strImgPath)
 {
 	if (BaseCodec_QueryImageSupport(strImgPath))
 	{
@@ -94,7 +94,7 @@ bool ImageCalculator::UpdateImage(CString &strImgPath)
 	return false;
 }
 
-bool ImageCalculator::StretchImage()
+bool CalculatorImage::StretchImage()
 {
 	auto BuferValid = [](ObjectBuffer * pBuf)->bool
 	{
@@ -130,7 +130,7 @@ bool ImageCalculator::StretchImage()
 	return false;
 }
 
-bool ImageCalculator::PrepareObjBuffer()
+bool CalculatorImage::PrepareObjBuffer()
 {
 	auto GetPropertyValue = [](CString strObjID, BaseGraph_DataBase::ParamValueDef emValueDef)->BaseGraph_Common::Value
 	{
@@ -156,7 +156,7 @@ bool ImageCalculator::PrepareObjBuffer()
 	return false;
 }
 
-int ImageCalculator::GetWidth()
+int CalculatorImage::GetWidth()
 {
 	int nRet = 0;
 	BaseGraph_Common::Value stuValue;
@@ -167,7 +167,7 @@ int ImageCalculator::GetWidth()
 	return nRet;
 }
 
-int ImageCalculator::GetHeight()
+int CalculatorImage::GetHeight()
 {
 	int nRet = 0;
 	BaseGraph_Common::Value stuValue;

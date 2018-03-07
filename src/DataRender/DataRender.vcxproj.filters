@@ -33,9 +33,6 @@
     <ClCompile Include="DataBufferManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ImageCalculator.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CalculatorFactory.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -43,6 +40,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CalculatorManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatorImage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,9 +68,6 @@
     <ClInclude Include="DataBufferManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ImageCalculator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CalculatorFactory.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -78,6 +75,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CalculatorManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
