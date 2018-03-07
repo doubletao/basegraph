@@ -123,10 +123,13 @@
     <ClCompile Include="CommonFunction.cpp" />
     <ClCompile Include="CommonDataContainer.cpp" />
     <ClCompile Include="DataDef.cpp" />
+    <ClCompile Include="MathOp\BezierDef.cpp" />
+    <ClCompile Include="MathOp\CommonUtility.cpp" />
     <ClCompile Include="MathOp\MatrixDef.cpp" />
     <ClCompile Include="MathOp\PlaneDef.cpp" />
     <ClCompile Include="MathOp\QuatnDef.cpp" />
     <ClCompile Include="MathOp\VectorDef.cpp" />
+    <ClCompile Include="MathOp\VectorGraph.cpp" />
     <ClCompile Include="ResourceLock.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -140,12 +143,14 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\Common\2DBuffer.h" />
     <ClInclude Include="..\..\include\Common\2DBufferAPI.h" />
+    <ClInclude Include="..\..\include\Common\BezierDef.h" />
     <ClInclude Include="..\..\include\Common\BufferCommonDef.h" />
     <ClInclude Include="..\..\include\Common\BufferFunction.h" />
     <ClInclude Include="..\..\include\Common\ColorAPI.h" />
     <ClInclude Include="..\..\include\Common\ColorDef.h" />
     <ClInclude Include="..\..\include\Common\CommonFunction.h" />
     <ClInclude Include="..\..\include\Common\CommonDataContainer.h" />
+    <ClInclude Include="..\..\include\Common\CommonUtility.h" />
     <ClInclude Include="..\..\include\Common\DataDef.h" />
     <ClInclude Include="..\..\include\Common\MathDef.h" />
     <ClInclude Include="..\..\include\Common\MatrixDef.h" />
@@ -155,6 +160,7 @@
     <ClInclude Include="..\..\include\Common\tinystr.h" />
     <ClInclude Include="..\..\include\Common\tinyxml.h" />
     <ClInclude Include="..\..\include\Common\VectorDef.h" />
+    <ClInclude Include="..\..\include\Common\VectorGraph.h" />
     <ClInclude Include="..\..\include\ExportCommon.h" />
     <ClInclude Include="BufferColorSpaceConv.h" />
     <ClInclude Include="BufferMemSSE.h" />

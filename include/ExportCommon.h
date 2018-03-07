@@ -41,3 +41,6 @@
 #include "Common\2DBufferApi.h"
 #include "Common\ColorDef.h"
 #include "Common\ColorAPI.h"
+#include "Common\BezierDef.h"
+#include "Common\CommonUtility.h"
+#include "Common\vectorgraph.h"

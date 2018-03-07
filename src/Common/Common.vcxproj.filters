@@ -93,6 +93,15 @@
     <ClCompile Include="ColorDef.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MathOp\BezierDef.cpp">
+      <Filter>MathOp</Filter>
+    </ClCompile>
+    <ClCompile Include="MathOp\CommonUtility.cpp">
+      <Filter>MathOp</Filter>
+    </ClCompile>
+    <ClCompile Include="MathOp\VectorGraph.cpp">
+      <Filter>MathOp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -991,6 +1000,15 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Common\ColorAPI.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\BezierDef.h">
+      <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\CommonUtility.h">
+      <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\VectorGraph.h">
+      <Filter>MathOp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

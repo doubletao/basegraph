@@ -36,9 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="SceneRender.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -121,114 +118,6 @@
     <None Include="shader\GS\WidthLine.GS">
       <Filter>Shader\GS</Filter>
     </None>
-    <None Include="shader\VS\Cloud2D.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\Cloud3D.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\Easy.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\Easy2.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\EasyTex.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\LineWithGS.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\pie.vs">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\pos_normal_tex.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\pos_normal_tex_tang_bi.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\VS\pos_normal_tex_tang_bi_Instance.VS">
-      <Filter>Shader\VS</Filter>
-    </None>
-    <None Include="shader\PS\color\field_add_key.PS">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\keyout.PS">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\makeFrame.PS">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\rgba_to_yuayva4224.ps">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\rgbaframe_to_uyvy.ps">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\uyvy_bright.ps">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\uyvy_to_rgba_with_key0.ps">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\uyvy_to_rgba_with_key1.ps">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\uyvy_to_rgba0.ps">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\color\uyvy_to_rgba1.ps">
-      <Filter>Shader\PS\color</Filter>
-    </None>
-    <None Include="shader\PS\3DVision.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\blur.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\blur9.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\BoardMaskDepth.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\clearscreen.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\convert.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\COORD.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\DynamicTex.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\Easy.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\Easy2.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\MaskShader.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\pos_normal_mask_tex.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\pos_normal_tex_tang_bi.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\RenderMask.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\RenderTex.ps">
-      <Filter>Shader\PS</Filter>
-    </None>
-    <None Include="shader\PS\screenMS.PS">
-      <Filter>Shader\PS</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SceneRender.rc">
@@ -254,5 +143,116 @@
     <CustomBuild Include="shader\VS\RenderTex.VS">
       <Filter>Shader\VS</Filter>
     </CustomBuild>
+    <CustomBuild Include="shader\PS\3DVision.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\blur.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\blur9.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\BoardMaskDepth.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\clearscreen.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\convert.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\COORD.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\DynamicTex.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\Easy.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\Easy2.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\field_add_key.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\keyout.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\makeFrame.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\MaskShader.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\pos_normal_mask_tex.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\pos_normal_tex_tang_bi.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\RenderMask.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\RenderTex.ps">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\rgba_to_yuayva4224.ps">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\rgbaframe_to_uyvy.ps">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\screenMS.PS">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_bright.ps">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_to_rgba_with_key0.ps">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_to_rgba_with_key1.ps">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_to_rgba0.ps">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_to_rgba1.ps">
+      <Filter>Shader\PS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\Cloud2D.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\Cloud3D.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\Easy.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\Easy2.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\EasyTex.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\LineWithGS.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\pie.vs">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\pos_normal_tex.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\pos_normal_tex_tang_bi.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\pos_normal_tex_tang_bi_Instance.VS">
+      <Filter>Shader\VS</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>

@@ -115,21 +115,33 @@
   <ItemGroup>
     <ClCompile Include="CalculatorFactory.cpp" />
     <ClCompile Include="CalculatorManager.cpp" />
+    <ClCompile Include="CalculatorTitleWord.cpp" />
     <ClCompile Include="DataBufferManager.cpp" />
     <ClCompile Include="DataRender.cpp" />
+    <ClCompile Include="DataRenderDataDef.cpp" />
+    <ClCompile Include="DrawTextDef.cpp" />
     <ClCompile Include="ExportDataRender.cpp" />
     <ClCompile Include="CalculatorImage.cpp" />
+    <ClCompile Include="MaterialDef.cpp" />
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="ObjectCalculator.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Typeset\TextParagraph.cpp" />
+    <ClCompile Include="Typeset\TextTypeset.cpp" />
+    <ClCompile Include="Typeset\TextTypesetDataAPI.cpp" />
+    <ClCompile Include="Typeset\TextUsp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\DataRender\DataRenderDataDef.h" />
+    <ClInclude Include="..\..\include\DataRender\DrawTextDef.h" />
+    <ClInclude Include="..\..\include\DataRender\MaterialDef.h" />
     <ClInclude Include="..\..\include\ExportDataRender.h" />
     <ClInclude Include="CalculatorFactory.h" />
     <ClInclude Include="CalculatorManager.h" />
+    <ClInclude Include="CalculatorTitleWord.h" />
     <ClInclude Include="DataBufferManager.h" />
     <ClInclude Include="DataRender.h" />
     <ClInclude Include="CalculatorImage.h" />
@@ -138,6 +150,10 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Typeset\TextParagraph.h" />
+    <ClInclude Include="Typeset\TextTypeset.h" />
+    <ClInclude Include="Typeset\TextTypesetDataAPI.h" />
+    <ClInclude Include="Typeset\TextUsp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DataRender.def" />

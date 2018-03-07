@@ -450,7 +450,8 @@ inline TYPE CSYArray<TYPE, ARG_TYPE>::SetAt(INT_PTR nIndex, ARG_TYPE newElement)
 {
 	//assert((nIndex >= 0) && (nIndex < m_nSize));
 
-	TYPE tmpData = 0;
+	TYPE tmpData;
+	memset(&tmpData, 0, sizeof(TYPE));
 
 	if ((nIndex >= 0) && (nIndex < m_nSize))
 	{

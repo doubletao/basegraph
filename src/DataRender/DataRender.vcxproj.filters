@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Image">
+      <UniqueIdentifier>{9ca61d38-22cc-4354-b438-0f4d0abbfa05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TitleWord">
+      <UniqueIdentifier>{15c2b1cd-80c4-4390-8c03-6e160e735c7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -43,6 +49,30 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CalculatorImage.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatorTitleWord.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextParagraph.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextTypeset.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextTypesetDataAPI.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextUsp.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRenderDataDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawTextDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialDef.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -78,6 +108,30 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CalculatorImage.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorTitleWord.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="Typeset\TextParagraph.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="Typeset\TextTypeset.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="Typeset\TextTypesetDataAPI.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="Typeset\TextUsp.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\DrawTextDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\DataRenderDataDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\MaterialDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

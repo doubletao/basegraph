@@ -313,7 +313,7 @@ enum DXSampleStateType
 	DXSample_Anisotropic_Border,
 
 	DXSample_NoMipMap_Anisotropic_Clamp,
-	DX_NoMipMap_Anisotropic_Wrap,
+	DXSample_NoMipMap_Anisotropic_Wrap,
 	DXSample_NoMipMap_Anisotropic_Mirror,
 	DXSample_NoMipMap_Anisotropic_Border,
 	DXSampleStateCount,
