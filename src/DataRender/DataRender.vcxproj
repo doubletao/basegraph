@@ -119,6 +119,7 @@
     <ClCompile Include="Algorithm\Arc2BezierAPI.cpp" />
     <ClCompile Include="Algorithm\BevelPoly.cpp" />
     <ClCompile Include="Algorithm\OffsetCurve.cpp" />
+    <ClCompile Include="Algorithm\ShapeForm.cpp" />
     <ClCompile Include="Algorithm\TriangulateApp.cpp" />
     <ClCompile Include="CalculatorFactory.cpp" />
     <ClCompile Include="CalculatorManager.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="..\..\include\DataRender\MaterialDef.h" />
     <ClInclude Include="..\..\include\DataRender\OffsetCurve.h" />
     <ClInclude Include="..\..\include\DataRender\RipRender.h" />
+    <ClInclude Include="..\..\include\DataRender\ShapeForm.h" />
     <ClInclude Include="..\..\include\DataRender\TriangulateApp.h" />
     <ClInclude Include="..\..\include\ExportDataRender.h" />
     <ClInclude Include="CalculatorFactory.h" />

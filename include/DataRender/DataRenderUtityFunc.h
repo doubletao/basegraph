@@ -8,6 +8,9 @@ BASEGRAPH_DATARENDER_API int sy_init_unit(SYUnit* punit, BOOL  b3D);
 BASEGRAPH_DATARENDER_API int sy_copy_unit(SYUnit* pdes, SYUnit* psrc);
 BASEGRAPH_DATARENDER_API void		sy_set_unit_material(SYUnit* p3DUnit, int nSubModelIndex, void* pMaterial);
 BASEGRAPH_DATARENDER_API void*	sy_get_unit_material(SYUnit* p3DUnit, int nSubModelIndex);
+BASEGRAPH_DATARENDER_API void		sy_release_unit_material(SYUnit* p3DUnit);
+BASEGRAPH_DATARENDER_API void		sy_set_unit_material_diffuse(SYUnit* p3DUnit, DWORD dwColor);
+BASEGRAPH_DATARENDER_API SYUnit*	sy_create_3dunit_from_2dunit(SYUnit* punit2d, SYUnit* pUnit3D);
 //Effect
 BASEGRAPH_DATARENDER_API void SYStaticEffect_Init(static_effect* pEffect);
 BASEGRAPH_DATARENDER_API void SYStaticEffect_Release(static_effect* pEffect);
@@ -23,6 +26,8 @@ BASEGRAPH_DATARENDER_API void sy_special_effect_release(syspecial_effect* pEffec
 BASEGRAPH_DATARENDER_API int sy_release_vectorgraph(vectorgraph* pgraph);
 BASEGRAPH_DATARENDER_API int  SYCopy_VectorGraph(vectorgraph* pdesgraph, vectorgraph* psrcgraph);
 BASEGRAPH_DATARENDER_API void graph_release(vectorgraph* graph);
+BASEGRAPH_DATARENDER_API void CopyVectorGraph(vectorgraph* pDesGraph, const vectorgraph* pSrcGraph);
+BASEGRAPH_DATARENDER_API BOOL CreateRegionVectorGraphFromPoints(vectorgraph* pGraph, point2f pt[], int nCount, BOOL bClockWise);
 //model
 BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel* pmod);
 BASEGRAPH_DATARENDER_API int sy_release_viewsub(int hDevice, SYSubModel* pSubModel);

@@ -116,6 +116,47 @@ BASEGRAPH_DATARENDER_API void * sy_get_unit_material(SYUnit * p3DUnit, int nSubM
 	return pmod->viewsub[nSubModelIndex].pMaterial;
 }
 
+BASEGRAPH_DATARENDER_API void sy_release_unit_material(SYUnit * p3DUnit)
+{
+	SYModel* pMod = p3DUnit->u.u3d.pmod;
+	if (pMod != NULL)
+	{
+		for (int m = 0; m < pMod->nviewsub; ++m)
+		{
+			SYMaterial_Release((SYMaterial*)pMod->viewsub[m].pMaterial);
+			pMod->viewsub[m].pMaterial = NULL;
+		}
+	}
+}
+
+BASEGRAPH_DATARENDER_API void sy_set_unit_material_diffuse(SYUnit * p3DUnit, DWORD dwColor)
+{
+	SYModel* pMod = p3DUnit->u.u3d.pmod;
+	if (pMod != NULL)
+	{
+		for (int i = 0; i < pMod->nviewsub; ++i)
+		{
+			SYMaterial* pMaterial = (SYMaterial*)pMod->viewsub[i].pMaterial;
+			if (pMaterial != NULL)
+			{
+				pMaterial->m_PhyData.Diffuse = dwColor;
+			}
+		}
+	}
+}
+
+BASEGRAPH_DATARENDER_API SYUnit * sy_create_3dunit_from_2dunit(SYUnit * punit2d, SYUnit * pUnit3D)
+{
+	if (pUnit3D == NULL)
+	{
+		pUnit3D = new SYUnit;
+	}
+	sy_init_unit(pUnit3D, TRUE);
+	pUnit3D->MatVToItem = punit2d->MatVToItem;
+	pUnit3D->dwUserID = punit2d->dwUserID;
+	return pUnit3D;
+}
+
 BASEGRAPH_DATARENDER_API void SYStaticEffect_Init(static_effect * pEffect)
 {
 	if (pEffect == NULL)
@@ -333,6 +374,72 @@ BASEGRAPH_DATARENDER_API void graph_release(vectorgraph * graph)
 		graph->cell = 0;
 	}
 	memset(graph, 0, sizeof(vectorgraph));
+}
+
+BASEGRAPH_DATARENDER_API void CopyVectorGraph(vectorgraph * pDesGraph, const vectorgraph * pSrcGraph)
+{
+	//ASSERT(pDesGraph != NULL);
+	//ASSERT(pSrcGraph != NULL);
+
+	// 先释放目标vectorgraph
+	graph_release(pDesGraph);
+
+	// 拷贝数据
+	memcpy(pDesGraph, pSrcGraph, sizeof(vectorgraph));
+	if (pDesGraph->ncell > 0)
+	{
+		pDesGraph->cell = new vectorcell[pDesGraph->ncell];
+		for (int i = 0; i<pDesGraph->ncell; i++)
+		{
+			memcpy(&pDesGraph->cell[i], &pSrcGraph->cell[i], sizeof(vectorcell));
+			if (pDesGraph->cell[i].npoint > 0)
+			{
+				pDesGraph->cell[i].point = new pointf[pDesGraph->cell[i].npoint];
+				memcpy(pDesGraph->cell[i].point, pSrcGraph->cell[i].point, sizeof(pointf)*pDesGraph->cell[i].npoint);
+				pDesGraph->cell[i].pttype = new unsigned long[pDesGraph->cell[i].npoint];
+				memcpy(pDesGraph->cell[i].pttype, pSrcGraph->cell[i].pttype, sizeof(unsigned long)*pDesGraph->cell[i].npoint);
+			}
+		}
+	}
+}
+
+BASEGRAPH_DATARENDER_API BOOL CreateRegionVectorGraphFromPoints(vectorgraph * pGraph, point2f pt[], int nCount, BOOL bClockWise)
+{
+	if (pGraph == NULL || nCount < 3)
+		return FALSE;
+
+	memset(pGraph, 0, sizeof(vectorgraph));
+	pGraph->ncell = 1;
+	pGraph->cell = new vectorcell[1];
+	pGraph->version = 1;
+	pGraph->bound.left = 65535;
+	pGraph->bound.right = -65535;
+	pGraph->bound.top = 65535;
+	pGraph->bound.bottom = -65535;
+
+	vectorcell* pCell = &(pGraph->cell[0]);
+	pCell->version = 1;
+	if (!bClockWise)
+		pCell->type = close_anticlockwise_region;
+	else
+		pCell->type = close_clockwise_region;
+	pCell->width = 1;
+	pCell->bound = pGraph->bound;
+	pCell->npoint = nCount;
+	pCell->point = new point2f[nCount];
+	pCell->pttype = new unsigned long[nCount];
+	for (int i = 0; i < nCount; i++)
+	{
+		pCell->point[i] = pt[i];
+		pCell->pttype[i] = point_line;
+		pCell->bound.left = min(pt[i].x, pCell->bound.left);
+		pCell->bound.right = max(pt[i].x, pCell->bound.right);
+		pCell->bound.top = min(pt[i].y, pCell->bound.top);
+		pCell->bound.bottom = max(pt[i].y, pCell->bound.bottom);
+	}
+
+	pGraph->bound = pCell->bound;
+	return TRUE;
 }
 
 BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel * pmod)

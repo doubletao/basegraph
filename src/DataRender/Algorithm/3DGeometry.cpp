@@ -5,6 +5,7 @@
 #include "DataRender\DataRenderDataDef.h"
 #include "DataRender\BevelPoly.h"
 #include "DataRender\DataRenderUtityFunc.h"
+#include "DataRender\TriangulateApp.h"
 #include <vector>
 #include <stdio.h>
 #include <atlstr.h>

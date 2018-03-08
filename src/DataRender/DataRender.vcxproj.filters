@@ -102,6 +102,9 @@
     <ClCompile Include="Algorithm\Arc2BezierAPI.cpp">
       <Filter>Algorithm</Filter>
     </ClCompile>
+    <ClCompile Include="Algorithm\ShapeForm.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataRender.h">
@@ -183,6 +186,9 @@
       <Filter>Algorithm</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\DataRender\Arc2BezierAPI.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\ShapeForm.h">
       <Filter>Algorithm</Filter>
     </ClInclude>
   </ItemGroup>
