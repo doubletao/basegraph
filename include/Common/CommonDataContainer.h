@@ -19,6 +19,8 @@ BASEGRAPH_COMMON_API void __cdecl SYHTable_Delete(phtable pHT);			// 表指针
 BASEGRAPH_COMMON_API void __cdecl SYHTable_Release(phtable pHT);			// 表指针
 BASEGRAPH_COMMON_API void __cdecl SYHTable_RemoveAll(phtable pHT);
 
+#define SYHTable_null		0						// 空句柄
+
 //用map模拟hash表
 typedef struct tag_hash
 {
@@ -43,6 +45,8 @@ BASEGRAPH_COMMON_API void __cdecl SYHash_Delete(PSYHash ph, BOOL bFreeValue);
 BASEGRAPH_COMMON_API void * __cdecl SYHash_Search(const SYHash* ph, void * pk);
 BASEGRAPH_COMMON_API void * __cdecl SYHash_RemoveAt(PSYHash ph, void * pk, BOOL bFreeValue);
 BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Insert(PSYHash ph, void * pk, void * pv);
+
+BASEGRAPH_COMMON_API void* __cdecl pool_malloc(unsigned char** pool, int size, BOOL bfromsystem);;
 
 //array相关，随后要干掉
 // 元素定义
@@ -856,4 +860,227 @@ typedef CSYArray<LPTSTR, LPTSTR>		CSYStrArray;
 typedef CSYArray<LPCTSTR, LPCTSTR>		CSYConstStrArray;
 
 BASEGRAPH_COMMON_API void __cdecl SYStrAR_Release(CSYStrArray& ary);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#define DSLT_NULL		-2						// 不存在的链表
+typedef void*			LT_DATA_PTR;			// 定义节点数据的类型
+typedef void*			LISTPOSITION;			// 链表遍历时节点的位置（LPDSLISTNODE）
+
+typedef struct tag_listnode
+{
+	LT_DATA_PTR				data;			// 数据指针
+	struct tag_listnode*	prev;			// 前一节点
+	struct tag_listnode*	next;			// 后一节点
+	int						needrelease;	//需要删除
+	BOOL					idelpool;
+#ifdef _DEBUG
+	void*					parent;		// 节点所在链表指针（调试用）
+#endif
+}listnode, *plistnode;
+
+typedef struct tag_list
+{
+	INT_PTR			count;				// 节点个数
+	plistnode		head;				// 头节点
+	plistnode		tail;				// 尾节点
+
+	plistnode		idelfirst;
+	plistnode		ideltail;
+	plistnode		idelpool;
+}SYList, *pSYList;
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	初始化链表
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYList_Init(pSYList pList);			// 链表指针
+BASEGRAPH_COMMON_API void __cdecl SYList_Release(pSYList pList);			// 链表指针
+
+																	///////////////////////////////////////////////////////////////////////////////
+																	// 描述：	设置空闲节点池
+																	//
+																	// 返回值:	无
+																	///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYList_SetIdelSize(pSYList pList, int nSize);			// 链表指针
+
+
+																					///////////////////////////////////////////////////////////////////////////////
+																					// 描述：	获取头节点位置
+																					//
+																					// 返回值:	LISTPOSITION
+																					///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_GetHeadPosition(SYList* pList);	// 链表指针
+
+																			///////////////////////////////////////////////////////////////////////////////
+																			// 描述：	获取尾节点位置
+																			//
+																			// 返回值:	LISTPOSITION
+																			///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_GetTailPosition(pSYList pList);	// 链表指针
+
+																			///////////////////////////////////////////////////////////////////////////////
+																			// 描述：	获取链表的节点个数
+																			//
+																			// 返回值:	INT_PTR			当前链表结点个数
+																			///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API INT_PTR	__cdecl SYList_GetCount(pSYList pList);		// 链表指针
+
+																	///////////////////////////////////////////////////////////////////////////////
+																	// 描述：	判断是否为空链表
+																	//
+																	// 返回值:	TRUE		为空
+																	//			FALSE		不为空
+																	///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API BOOL __cdecl SYList_IsEmpty(pSYList pList);			// 链表指针
+
+																	///////////////////////////////////////////////////////////////////////////////
+																	// 描述：	获取后一节点位置并返回原节点的数据
+																	//
+																	// 返回值:	LT_DATA_PTR
+																	///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetNext(const SYList* pList,	// 链表指针
+	LISTPOSITION* pPos);	// 当前节点的位置的指针
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	获取前一节点位置并返回原节点的数据
+							//
+							// 返回值:	LT_DATA_PTR
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetPrev(pSYList pList,		// 链表指针
+	LISTPOSITION* pPos);	// 当前节点的位置的指针
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	获取当前节点的数据
+							//
+							// 返回值:	LT_DATA_PTR
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetAt(pSYList pList,		// 链表指针
+	LISTPOSITION pos);		// 当前节点的位置
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	获取头节点的数据
+							//
+							// 返回值:	LT_DATA_PTR
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetHead(pSYList pList);		// 链表指针
+
+																		///////////////////////////////////////////////////////////////////////////////
+																		// 描述：	获取尾节点的数据
+																		//
+																		// 返回值:	LT_DATA_PTR
+																		///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetTail(pSYList pList);		// 链表指针
+
+																		///////////////////////////////////////////////////////////////////////////////
+																		// 描述：	设置某一节点的数据
+																		//
+																		// 返回值:	LT_DATA_PTR	原数据指针
+																		///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_SetAt(pSYList pList,			// 链表指针
+	LISTPOSITION pos,			// 设置数据的节点位置
+	LT_DATA_PTR pData);	// 数据指针
+
+						///////////////////////////////////////////////////////////////////////////////
+						// 描述：	在头节点前增加一个新的节点
+						//
+						// 返回值:	LISTPOSITION		新节点的位置
+						///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_AddHead(pSYList pList,			// 链表指针
+	LT_DATA_PTR pData, unsigned char** pool, unsigned char* poolend);		// 新节点的数据
+
+																			///////////////////////////////////////////////////////////////////////////////
+																			// 描述：	在尾节点后增加一个新的节点
+																			//
+																			// 返回值:	LISTPOSITION		新节点的位置
+																			///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_AddTail(pSYList pList,			// 链表指针
+	LT_DATA_PTR pData, unsigned char** pool, unsigned char* poolend);		// 新节点的数据
+
+																			///////////////////////////////////////////////////////////////////////////////
+																			// 描述：	在头节点前增加一个新的链表
+																			//
+																			// 返回值:	无
+																			///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYList_AddListHead(pSYList pList,			// 链表指针
+	pSYList pNewList);		// 新链表指针
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	在尾节点后增加一个新的链表
+							//
+							// 返回值:	无
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYList_AddListTail(pSYList pList,			// 链表指针
+	pSYList pNewList);		// 新链表指针
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	在某一节点前插一个新的节点
+							//
+							// 返回值:	LISTPOSITION		新节点的位置
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_InsertBefore(pSYList pList,		// 链表指针
+	LISTPOSITION pos,		// 被插节点的位置
+	LT_DATA_PTR pData);// 新节点数据
+
+					   ///////////////////////////////////////////////////////////////////////////////
+					   // 描述：	SYList_InsertAfter() 在某一节点后插一个新的节点
+					   //
+					   // 返回值:	LISTPOSITION		新节点的位置
+					   ///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_InsertAfter(pSYList pList,		// 链表指针
+	LISTPOSITION pos,		// 被插节点的位置
+	LT_DATA_PTR pData);	// 新节点数据
+
+						///////////////////////////////////////////////////////////////////////////////
+						// 描述：	删除某一节点并返回该节点的数据
+						//
+						// 返回值:	LT_DATA_PTR
+						///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_RemoveAt(pSYList pList,		// 链表指针
+	LISTPOSITION pos);		// 预删除节点的位置
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	删除头节点
+							//
+							// 返回值:	LT_DATA_PTR	原尾节点数据
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_RemoveHead(pSYList pList);		// 链表指针
+
+																			///////////////////////////////////////////////////////////////////////////////
+																			// 描述：	删除尾节点
+																			//
+																			// 返回值:	LT_DATA_PTR	原尾节点数据
+																			///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_RemoveTail(pSYList pList);	// 链表指针
+
+																		///////////////////////////////////////////////////////////////////////////////
+																		// 描述：	删除所有节点
+																		//
+																		// 返回值:	无
+																		///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYList_RemoveAll(pSYList pList);		// 链表指针
+
+																	///////////////////////////////////////////////////////////////////////////////
+																	// 描述：	从某一节点位置开始根据数据查找节点的位置
+																	//
+																	// 返回值:	LISTPOSITION
+																	///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_FindNode(pSYList pList,			// 链表指针
+	LT_DATA_PTR pData,		// 查找的数据
+	LISTPOSITION posStart);	// 查找起始位置
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	根据序号查找节点的位置
+							//
+							// 返回值:	LISTPOSITION
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_FindByIndex(pSYList pList,		// 链表指针
+	INT_PTR nIndex);		// 查找序号
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	翻转链表
+							//
+							// 返回值:	无
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYList_Reverse(pSYList pList);			// 链表指针
 #endif

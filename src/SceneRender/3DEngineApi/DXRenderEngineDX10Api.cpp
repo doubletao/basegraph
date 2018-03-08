@@ -988,7 +988,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
-	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DX_NoMipMap_Anisotropic_Wrap]);
+	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_NoMipMap_Anisotropic_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
 	//SYSample_NoMipMap_Line_Mirror,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;

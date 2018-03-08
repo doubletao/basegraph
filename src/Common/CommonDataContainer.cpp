@@ -314,6 +314,15 @@ BASEGRAPH_COMMON_API BOOL SYHash_Insert(PSYHash ph, void * pk, void * pv)
 	return TRUE;
 }
 
+void * pool_malloc(unsigned char ** pool, int size, BOOL bfromsystem)
+{
+	if (bfromsystem)
+		return new char[size];
+	unsigned char* p = *pool;
+	*pool += size;
+	return p;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //array
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1001,4 +1010,750 @@ void __cdecl SYStrAR_Release(CSYStrArray& ary)
 		}
 	}
 	ary.RemoveAll();
+}
+
+// 调试宏定义
+#ifdef _DEBUG
+#define SET_NODE_LIST_VALUE(pNode, pList)		(pNode)->parent = (pList)
+#define IS_NODE_IN_LIST(pNode, pList)			((pNode)->parent == (pList))
+#else
+#define SET_NODE_LIST_VALUE(pNode, pList)
+#define IS_NOED_IN_LIST(pNode, pList)			TRUE
+#endif
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	初始化链表
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYList_Init(pSYList pList)			// 链表指针
+{
+
+
+	if (pList != NULL)
+	{
+		pList->count = 0;
+		pList->head = NULL;
+		pList->tail = NULL;
+		pList->idelfirst = NULL;
+		pList->ideltail = NULL;
+		pList->idelpool = NULL;
+	}
+}
+void __cdecl SYList_SetIdelSize(pSYList pList, int nSize)			// 链表指针
+{
+	pList->idelpool = (listnode*)malloc(sizeof(listnode) * nSize);
+	pList->idelfirst = pList->idelpool;
+	pList->ideltail = &pList->idelpool[nSize - 1];
+	memset(pList->idelpool, 0, sizeof(listnode) * nSize);
+	for (int i = 0; i< nSize - 1; i++)
+	{
+		pList->idelpool[i].next = &pList->idelpool[i + 1];
+		pList->idelpool[i + 1].prev = &pList->idelpool[i];
+		pList->idelpool[i].idelpool = TRUE;
+		pList->idelpool[i + 1].idelpool = TRUE;
+	}
+}
+
+listnode* __cdecl _SYList_QueryIdelNode(pSYList pList)			// 链表指针
+{
+	if (!pList->idelfirst)
+		return NULL;
+
+	listnode* pnode = pList->idelfirst;
+	if (pList->idelfirst == pList->ideltail)
+	{
+		pList->idelfirst = NULL;
+		pList->ideltail = NULL;
+		pnode->next = NULL;
+		pnode->prev = NULL;
+	}
+	else
+	{
+		pnode->next->prev = NULL;
+		pList->idelfirst = pnode->next;
+	}
+	return pnode;
+}
+
+BOOL __cdecl _SYList_FreeIdelNode(pSYList pList, listnode* pnode)			// 链表指针
+{
+	if (!pnode->idelpool)
+		return FALSE;
+
+	if (!pList->idelfirst)
+	{
+		pnode->next = NULL;
+		pnode->prev = NULL;
+		pList->idelfirst = pnode;
+		pList->ideltail = pnode;
+	}
+	else
+	{
+		pList->ideltail->next = pnode;
+		pnode->prev = pList->ideltail;
+		pnode->next = NULL;
+		pList->ideltail = pnode;
+	}
+	return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取头节点位置
+//
+// 返回值:	LISTPOSITION
+///////////////////////////////////////////////////////////////////////////////
+LISTPOSITION __cdecl SYList_GetHeadPosition(SYList* pList)	// 链表指针
+{
+	if (pList == NULL)
+		return NULL;
+
+	return pList->head;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取尾节点位置
+//
+// 返回值:	LISTPOSITION
+///////////////////////////////////////////////////////////////////////////////
+LISTPOSITION __cdecl SYList_GetTailPosition(SYList* pList)	// 链表指针
+{
+	if (pList == NULL)
+		return NULL;
+
+	return pList->tail;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取链表的节点个数
+//
+// 返回值:	INT_PTR			当前链表结点个数
+///////////////////////////////////////////////////////////////////////////////
+INT_PTR	__cdecl SYList_GetCount(SYList* pList)		// 链表指针
+{
+
+
+	if (pList == NULL)
+		return DSLT_NULL;
+
+	return pList->count;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	判断是否为空链表
+//
+// 返回值:	TRUE		为空
+//			FALSE		不为空
+///////////////////////////////////////////////////////////////////////////////
+BOOL __cdecl SYList_IsEmpty(pSYList pList)			// 链表指针
+{
+
+
+	if (pList == NULL)
+		return FALSE;
+
+	return (pList->count <= 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取后一节点位置并返回原节点的数据
+//
+// 返回值:	LT_DATA_PTR
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_GetNext(const SYList* pList,	// 链表指针
+	LISTPOSITION* pPos)	// 当前节点的位置的指针
+{
+
+
+	if (pList == NULL || pPos == NULL || *pPos == NULL)
+		return NULL;
+
+	plistnode pNode = (plistnode)(*pPos);
+
+	*pPos = pNode->next;
+
+	return pNode->data;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取前一节点位置并返回原节点的数据
+//
+// 返回值:	LT_DATA_PTR
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_GetPrev(pSYList pList,		// 链表指针
+	LISTPOSITION* pPos)	// 当前节点的位置的指针
+{
+
+
+	if (pList == NULL || pPos == NULL || *pPos == NULL)
+		return NULL;
+
+	plistnode pNode = (plistnode)(*pPos);
+
+	*pPos = pNode->prev;
+
+	return pNode->data;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取当前节点的数据
+//
+// 返回值:	LT_DATA_PTR
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_GetAt(pSYList pList,		// 链表指针
+	LISTPOSITION pos)		// 当前节点的位置
+{
+	if (pList == NULL || pos == NULL)
+		return NULL;
+
+	return ((plistnode)pos)->data;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取头节点的数据
+//
+// 返回值:	LT_DATA_PTR
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_GetHead(pSYList pList)		// 链表指针
+{
+
+
+	if (pList == NULL || pList->head == NULL)
+		return NULL;
+
+	return pList->head->data;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取尾节点的数据
+//
+// 返回值:	LT_DATA_PTR
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_GetTail(pSYList pList)		// 链表指针
+{
+
+
+	if (pList == NULL || pList->tail == NULL)
+		return NULL;
+
+	return pList->tail->data;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	设置某一节点的数据
+//
+// 返回值:	LT_DATA_PTR	原数据指针
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_SetAt(pSYList pList,			// 链表指针
+	LISTPOSITION pos,			// 设置数据的节点位置
+	LT_DATA_PTR pData)		// 数据指针
+{
+	if (pList == NULL || pos == NULL)
+		return NULL;
+
+	plistnode pNode = (plistnode)pos;
+	LT_DATA_PTR pTempData = pNode->data;
+
+	pNode->data = pData;
+
+	return pTempData;
+}
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	在头节点前增加一个新的节点
+//
+// 返回值:	LISTPOSITION		新节点的位置
+///////////////////////////////////////////////////////////////////////////////
+LISTPOSITION __cdecl SYList_AddHead(pSYList pList,			// 链表指针
+	LT_DATA_PTR pData,
+	unsigned char** pool,
+	unsigned char* poolend)		// 新节点的数据
+{
+
+
+	if (pList == NULL)
+		return NULL;
+
+	int nsize = sizeof(listnode);
+	plistnode pNode = NULL;
+	BOOL bRelease = FALSE;
+	if (pool)
+		bRelease = (*pool + nsize >= poolend);
+	else
+		bRelease = TRUE;
+
+	if (!bRelease)
+		pNode = (plistnode)pool_malloc(pool, nsize, bRelease);
+	else
+	{
+		pNode = _SYList_QueryIdelNode(pList);			// 链表指针
+		if (pNode)
+		{
+			bRelease = FALSE;
+		}
+		else
+			pNode = (plistnode)malloc(sizeof(listnode));
+	}
+
+	pNode->needrelease = bRelease;
+	pNode->data = pData;
+	pNode->prev = NULL;
+	pNode->next = pList->head;
+	pNode->idelpool = (!bRelease && !pool);
+	SET_NODE_LIST_VALUE(pNode, pList);
+	// 存在头节点则必存在尾节点
+	if (pList->head != NULL)
+	{
+		pList->head->prev = pNode;
+	}
+	else
+	{
+		pList->tail = pNode;
+	}
+	pList->head = pNode;
+	pList->count++;
+
+	return pNode;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	在尾节点后增加一个新的节点
+//
+// 返回值:	LISTPOSITION		新节点的位置
+///////////////////////////////////////////////////////////////////////////////
+LISTPOSITION __cdecl SYList_AddTail(pSYList pList,			// 链表指针
+	LT_DATA_PTR pData,
+	unsigned char** pool,
+	unsigned char* poolend)		// 新节点的数据
+{
+
+
+	if (pList == NULL)
+		return NULL;
+
+	int nsize = sizeof(listnode);
+	plistnode pNode = NULL;
+	BOOL bRelease = FALSE;
+	if (pool)
+		bRelease = (*pool + nsize >= poolend);
+	else
+		bRelease = TRUE;
+
+	if (!bRelease)
+		pNode = (plistnode)pool_malloc(pool, nsize, bRelease);
+	else
+	{
+		pNode = _SYList_QueryIdelNode(pList);			// 链表指针
+		if (!pNode)
+			pNode = (plistnode)malloc(sizeof(listnode));
+		else
+			bRelease = FALSE;
+	}
+
+	pNode->needrelease = bRelease;
+	pNode->data = pData;
+	pNode->next = NULL;
+	pNode->prev = pList->tail;
+	pNode->idelpool = (!bRelease && !pool);
+	SET_NODE_LIST_VALUE(pNode, pList);
+	// 存在尾节点则必存在头节点
+	if (pList->tail != NULL)
+	{
+		pList->tail->next = pNode;
+	}
+	else
+	{
+		pList->head = pNode;
+	}
+	pList->tail = pNode;
+	pList->count++;
+
+	return pNode;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	在头节点前增加一个新的链表
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYList_AddListHead(pSYList pList,			// 链表指针
+	pSYList pNewList)		// 新链表指针
+{
+	if (pList != NULL && pNewList != NULL && pList != pNewList)
+	{
+		LISTPOSITION pos = pNewList->tail;
+
+		// 从新链表的尾节点开始向前一个一个加入
+		while (pos != NULL)
+		{
+			SYList_AddHead(pList, SYList_GetPrev(pNewList, &pos), NULL, NULL);
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	在尾节点后增加一个新的链表
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYList_AddListTail(pSYList pList,			// 链表指针
+	pSYList pNewList)		// 新链表指针
+{
+	if (pList != NULL && pNewList != NULL && pList != pNewList)
+	{
+		LISTPOSITION pos = pNewList->head;
+
+		// 从新链表的头节点开始向后一个一个加入
+		while (pos != NULL)
+		{
+			SYList_AddTail(pList, SYList_GetNext(pNewList, &pos), NULL, NULL);
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	在某一节点前插一个新的节点
+//
+// 返回值:	LISTPOSITION		新节点的位置
+///////////////////////////////////////////////////////////////////////////////
+LISTPOSITION __cdecl SYList_InsertBefore(pSYList pList,		// 链表指针
+	LISTPOSITION pos,		// 被插节点的位置
+	LT_DATA_PTR pData)	// 新节点数据
+{
+
+	if (pList == NULL)
+		return NULL;
+
+	plistnode pPosNode = (plistnode)pos;
+	plistnode pNode = (plistnode)malloc(sizeof(listnode));
+
+	pNode->needrelease = TRUE;
+	pNode->data = pData;
+	pNode->next = pPosNode;
+	pNode->prev = NULL;
+	pNode->idelpool = 0;
+	SET_NODE_LIST_VALUE(pNode, pList);
+	if (pos == NULL)
+	{
+		// 当插入位置不存在时判断头节点是否存在
+		if (pList->head == NULL)
+		{
+			pList->head = pNode;
+			pList->tail = pNode;
+		}
+		else
+		{
+			// 当头节点存在时在头节点前插入新节点
+			pList->head->prev = pNode;
+			pNode->next = pList->head;
+			pList->head = pNode;
+		}
+	}
+	else
+	{
+		// 当插入位置存在时判断其前一节点是否存在
+		if (pPosNode->prev != NULL)
+		{
+			pPosNode->prev->next = pNode;
+			pNode->prev = pPosNode->prev;
+			pPosNode->prev = pNode;
+		}
+		else
+		{
+			// 如果前一节点不存在则要注意该位置是否就是头节点
+			pList->head = pNode;
+			pPosNode->prev = pNode;
+		}
+	}
+	pList->count++;
+
+	return pNode;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	SYList_InsertAfter() 在某一节点后插一个新的节点
+//
+// 返回值:	LISTPOSITION		新节点的位置
+///////////////////////////////////////////////////////////////////////////////
+LISTPOSITION __cdecl SYList_InsertAfter(pSYList pList,		// 链表指针
+	LISTPOSITION pos,		// 被插节点的位置
+	LT_DATA_PTR pData)	// 新节点数据
+{
+
+	if (pList == NULL)
+		return NULL;
+
+	plistnode pPosNode = (plistnode)pos;
+	plistnode pNode = (plistnode)malloc(sizeof(listnode));
+
+	pNode->needrelease = TRUE;
+	pNode->data = pData;
+	pNode->next = NULL;
+	pNode->prev = pPosNode;
+	pNode->idelpool = 0;
+	SET_NODE_LIST_VALUE(pNode, pList);
+	if (pos == NULL)
+	{
+		// 当插入位置不存在时判断尾节点是否存在
+		if (pList->head == NULL)
+		{
+			pList->head = pNode;
+			pList->tail = pNode;
+		}
+		else
+		{
+			// 当头节点存在时在尾节点后插入新节点
+			pList->tail->next = pNode;
+			pNode->prev = pList->tail;
+			pList->tail = pNode;
+		}
+	}
+	else
+	{
+		// 当插入位置存在时判断其后一节点是否存在
+		if (pPosNode->next != NULL)
+		{
+			pNode->next = pPosNode->next;
+			pPosNode->next->prev = pNode;
+			pPosNode->next = pNode;
+		}
+		else
+		{
+			// 如果后一节点不存在则要注意该位置是否就是尾节点
+			pPosNode->next = pNode;
+			pList->tail = pNode;
+		}
+	}
+	pList->count++;
+
+	return pNode;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	删除某一节点并返回该节点的数据
+//
+// 返回值:	LT_DATA_PTR
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_RemoveAt(pSYList pList,		// 链表指针
+	LISTPOSITION pos)		// 预删除节点的位置
+{
+	if (pList == NULL || pos == NULL)
+		return NULL;
+
+	plistnode pNode = (plistnode)pos;
+	LT_DATA_PTR pData = pNode->data;
+
+	// 判断其前后节点是否存在
+	if (pNode->prev != NULL)
+	{
+		pNode->prev->next = pNode->next;
+	}
+	else
+	{
+		pList->head = pNode->next;
+	}
+	if (pNode->next != NULL)
+	{
+		pNode->next->prev = pNode->prev;
+	}
+	else
+	{
+		pList->tail = pNode->prev;
+	}
+	pList->count--;
+	if (!_SYList_FreeIdelNode(pList, pNode))
+	{
+		if (pNode->needrelease)
+			free(pos);
+	}
+	//delete pList->idelpool;
+	//pList->idelpool = NULL;
+	//pList->idelfirst = NULL;
+	//pList->ideltail = NULL;
+	return pData;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	删除头节点
+//
+// 返回值:	LT_DATA_PTR	原尾节点数据
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_RemoveHead(pSYList pList)		// 链表指针
+{
+
+
+	if (pList == NULL || pList->head == NULL)
+		return NULL;
+
+	plistnode pNode = pList->head;
+	LT_DATA_PTR pData = pNode->data;
+
+	// 判断是否只有一个节点
+	if (pNode->next == NULL)
+	{
+		pList->head = pList->tail = NULL;
+	}
+	else
+	{
+		pList->head = pNode->next;
+		pNode->next->prev = NULL;
+	}
+	if (!_SYList_FreeIdelNode(pList, pNode))
+	{
+		if (pNode->needrelease)
+			free(pNode);
+	}
+	pList->count--;
+
+	return pData;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	删除尾节点
+//
+// 返回值:	LT_DATA_PTR	原尾节点数据
+///////////////////////////////////////////////////////////////////////////////
+LT_DATA_PTR __cdecl SYList_RemoveTail(pSYList pList)		// 链表指针
+{
+
+
+	if (pList == NULL || pList->tail == NULL)
+		return NULL;
+
+	plistnode pNode = pList->tail;
+	LT_DATA_PTR pData = pNode->data;
+
+	// 判断是否只有一个节点
+	if (pNode->prev == NULL)
+	{
+		pList->head = pList->tail = NULL;
+	}
+	else
+	{
+		pList->tail = pNode->prev;
+		pNode->prev->next = NULL;
+	}
+	if (!_SYList_FreeIdelNode(pList, pNode))
+	{
+		if (pNode->needrelease)
+			free(pNode);
+	}
+	pList->count--;
+
+	return pData;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	删除所有节点
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYList_RemoveAll(pSYList pList)		// 链表指针
+{
+	if (pList == NULL)
+		return;
+
+	plistnode pNode = pList->head, pCurNode = NULL;
+
+	while (pNode != NULL)
+	{
+		pCurNode = pNode;
+		pNode = pNode->next;
+		if (!_SYList_FreeIdelNode(pList, pCurNode))
+		{
+			if (pCurNode->needrelease)
+				free(pCurNode);
+		}
+	}
+	pList->count = 0;
+	pList->head = NULL;
+	pList->tail = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	从某一节点位置开始根据数据查找节点的位置
+//
+// 返回值:	LISTPOSITION
+///////////////////////////////////////////////////////////////////////////////
+LISTPOSITION __cdecl SYList_FindNode(pSYList pList,			// 链表指针
+	LT_DATA_PTR pData,		// 查找的数据
+	LISTPOSITION posStart)		// 查找起始位置
+{
+
+	if (pList == NULL)
+		return NULL;
+
+	// 如果未指定查找起始位置则从头位置开始
+	if (posStart == NULL)
+	{
+		posStart = pList->head;
+	}
+	while (posStart != NULL)
+	{
+		LISTPOSITION posCur = posStart;
+
+		if (SYList_GetNext(pList, &posStart) == pData)
+			return posCur;
+	}
+	return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	根据序号查找节点的位置
+//
+// 返回值:	LISTPOSITION
+///////////////////////////////////////////////////////////////////////////////
+LISTPOSITION __cdecl SYList_FindByIndex(pSYList pList,		// 链表指针
+	INT_PTR nIndex)		// 查找序号
+{
+
+	plistnode pNode = NULL;
+
+	if (pList != NULL && nIndex >= 0 && nIndex < pList->count)
+	{
+		pNode = pList->head;
+		while (nIndex--)
+		{
+			pNode = pNode->next;
+		}
+	}
+	return pNode;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	翻转链表
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYList_Reverse(pSYList pList)			// 链表指针
+{
+
+
+	// 当节点数小于等于 1 时不需要翻转
+	if (pList == NULL || pList->count <= 1)
+		return;
+
+	plistnode pCurHeadNode = pList->head;
+	plistnode pMoveNode = pList->head->next;
+
+	// 从原头节点位置向后开始，将其后节点逐个移至前面
+	while (NULL != pMoveNode)
+	{
+		pList->head->next = pMoveNode->next;
+		pMoveNode->next = pCurHeadNode;
+		pCurHeadNode->prev = pMoveNode;
+		pCurHeadNode = pMoveNode;
+		pMoveNode = pList->head->next;
+	}
+	pList->tail = pList->head;
+	pCurHeadNode->prev = NULL;
+	pList->head = pCurHeadNode;
+}
+
+void __cdecl SYList_Release(pSYList pList)
+{
+	SYList_RemoveAll(pList);
+	if (pList->idelpool)
+		free(pList->idelpool);
+	pList->idelpool = NULL;
+	pList->idelfirst = NULL;
+	pList->ideltail = NULL;
 }

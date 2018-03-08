@@ -136,3 +136,33 @@ bool BaseGraph_DataBase::dynamictexture::RecoverFromBuf(byte * pBuf, int nBufSiz
 {
 	return false;
 }
+
+int BaseGraph_DataBase::metallight::GetSerializeSize() const
+{
+	return 0;
+}
+
+bool BaseGraph_DataBase::metallight::GetSerializeBuf(byte * pBuf, int nBufSize) const
+{
+	return false;
+}
+
+bool BaseGraph_DataBase::metallight::RecoverFromBuf(byte * pBuf, int nBufSize)
+{
+	return false;
+}
+
+int BaseGraph_DataBase::metalinfo::GetSerializeSize() const
+{
+	return 0;
+}
+
+bool BaseGraph_DataBase::metalinfo::GetSerializeBuf(byte * pBuf, int nBufSize) const
+{
+	return false;
+}
+
+bool BaseGraph_DataBase::metalinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
+{
+	return false;
+}

@@ -182,6 +182,7 @@ enum GRAD_ANI_PARAM
 // 获取单色信息中的分量值
 
 //#define COLORABGR_A(pcr)  *((BYTE*)pcr + 4)
+#define GetRGBA_A(cr)		((BYTE)(((DWORD)(cr)) >> 24))
 #define GetAValue(cr)		((BYTE)(((DWORD)(cr)) >> 24))
 #define GetBGRA_R(cr)		((BYTE)((((DWORD)(cr)) >> 16) & 0x000000ff))
 #define GetBGRA_G(cr)		((BYTE)((((DWORD)(cr)) >> 8) & 0x000000ff))
@@ -308,9 +309,9 @@ typedef   struct tag_sycolor : public BaseGraph_Common::ValueAbleInterface
 	{
 		memset(this, 0, sizeof(tag_sycolor));
 	}
-	virtual int GetSerializeSize() const;
-	virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
-	virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+	BASEGRAPH_COMMON_API virtual int GetSerializeSize() const;
+	BASEGRAPH_COMMON_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
+	BASEGRAPH_COMMON_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 }sycolor;
 
 typedef sycolor SYColor, *LPSYCOLOR;

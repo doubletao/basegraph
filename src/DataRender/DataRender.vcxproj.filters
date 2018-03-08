@@ -19,6 +19,9 @@
     <Filter Include="TitleWord">
       <UniqueIdentifier>{15c2b1cd-80c4-4390-8c03-6e160e735c7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Algorithm">
+      <UniqueIdentifier>{720b081a-83a3-4cba-b2c9-3b953e4edad3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -74,6 +77,30 @@
     </ClCompile>
     <ClCompile Include="MaterialDef.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRenderUtityFunc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\DataBase\DataTypeDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\AlgorithmRip.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\OffsetCurve.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\3DGeometry.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\BevelPoly.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\TriangulateApp.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\Arc2BezierAPI.cpp">
+      <Filter>Algorithm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,6 +161,30 @@
     <ClInclude Include="..\..\include\DataRender\MaterialDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\DataRenderUtityFunc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\AlgorithmRip.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\OffsetCurve.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\RipRender.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\3DGeometry.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\BevelPoly.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\TriangulateApp.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\Arc2BezierAPI.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DataRender.def">
@@ -147,5 +198,10 @@
     <ResourceCompile Include="DataRender.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Algorithm\RipRender.asm">
+      <Filter>Algorithm</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

@@ -113,12 +113,20 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\DataBase\DataTypeDef.cpp" />
+    <ClCompile Include="Algorithm\3DGeometry.cpp" />
+    <ClCompile Include="Algorithm\AlgorithmRip.cpp" />
+    <ClCompile Include="Algorithm\Arc2BezierAPI.cpp" />
+    <ClCompile Include="Algorithm\BevelPoly.cpp" />
+    <ClCompile Include="Algorithm\OffsetCurve.cpp" />
+    <ClCompile Include="Algorithm\TriangulateApp.cpp" />
     <ClCompile Include="CalculatorFactory.cpp" />
     <ClCompile Include="CalculatorManager.cpp" />
     <ClCompile Include="CalculatorTitleWord.cpp" />
     <ClCompile Include="DataBufferManager.cpp" />
     <ClCompile Include="DataRender.cpp" />
     <ClCompile Include="DataRenderDataDef.cpp" />
+    <ClCompile Include="DataRenderUtityFunc.cpp" />
     <ClCompile Include="DrawTextDef.cpp" />
     <ClCompile Include="ExportDataRender.cpp" />
     <ClCompile Include="CalculatorImage.cpp" />
@@ -135,9 +143,17 @@
     <ClCompile Include="Typeset\TextUsp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\DataRender\3DGeometry.h" />
+    <ClInclude Include="..\..\include\DataRender\AlgorithmRip.h" />
+    <ClInclude Include="..\..\include\DataRender\Arc2BezierAPI.h" />
+    <ClInclude Include="..\..\include\DataRender\BevelPoly.h" />
     <ClInclude Include="..\..\include\DataRender\DataRenderDataDef.h" />
+    <ClInclude Include="..\..\include\DataRender\DataRenderUtityFunc.h" />
     <ClInclude Include="..\..\include\DataRender\DrawTextDef.h" />
     <ClInclude Include="..\..\include\DataRender\MaterialDef.h" />
+    <ClInclude Include="..\..\include\DataRender\OffsetCurve.h" />
+    <ClInclude Include="..\..\include\DataRender\RipRender.h" />
+    <ClInclude Include="..\..\include\DataRender\TriangulateApp.h" />
     <ClInclude Include="..\..\include\ExportDataRender.h" />
     <ClInclude Include="CalculatorFactory.h" />
     <ClInclude Include="CalculatorManager.h" />
@@ -156,6 +172,13 @@
     <ClInclude Include="Typeset\TextUsp.h" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="Algorithm\RipRender.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ml64.exe /c  /nologo /Fo"$(IntDir)\%(Filename).obj" /W3 /Zi /errorReport:prompt  /Ta Algorithm/%(Filename)%(Extension)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64.exe /c  /nologo /Fo"$(IntDir)\%(Filename).obj" /W3 /Zi /errorReport:prompt  /Ta Algorithm/%(Filename)%(Extension)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+    </CustomBuild>
     <None Include="DataRender.def" />
     <None Include="res\DataRender.rc2" />
   </ItemGroup>
