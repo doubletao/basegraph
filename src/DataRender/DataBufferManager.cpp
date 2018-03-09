@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "DataBufferManager.h"
 #include <assert.h>
-
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 DataBufferManager::DataBufferManager()
 	: m_nWidthSeed(120)
 	, m_nHeightSeed(70)
@@ -49,7 +53,7 @@ int DataBufferManager::CreateBuffer(int nWidth, int nHeight)
 
 	int nReserveWidth = GetAdptValue(nWidth, m_nWidthSeed);
 	int nReserveHeight = GetAdptValue(nHeight, m_nHeightSeed);
-	ObjectBuffer * pBuffer = new ObjectBuffer();
+	ObjectBuffer * pBuffer = new ObjectBuffer;
 	if (pBuffer && pBuffer->InitializeBuffer(nReserveWidth, nReserveHeight))
 	{
 		if (pBuffer->FitIn(nWidth, nHeight))

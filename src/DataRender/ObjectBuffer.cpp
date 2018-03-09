@@ -1,11 +1,21 @@
 #include "stdafx.h"
 #include "ObjectBuffer.h"
 #include <assert.h>
-
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 static const int BUFFER_AREA_RATIO = 2;//面积系数，当前设为2，即reserve面积小于等于实际使用面积的2倍
 static const int BUFFER_DEPTH = 4;//默认未RGBA，4字节
 
 ObjectBuffer::ObjectBuffer()
+	: m_nWidth(0)
+	, m_nHeight(0)
+	, m_nReserveWidth(0)
+	, m_nReserveHeight(0)
+	, m_bUsed(false)
+	, m_pBuffer(nullptr)
 {
 	ReleaseBuffer();
 }

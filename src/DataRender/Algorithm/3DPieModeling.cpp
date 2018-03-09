@@ -2,7 +2,11 @@
 #include "DataRender\3DPieModeling.h"
 #define _USE_MATH_DEFINES
 #include "math.h"
-
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 CSYPieModeling::CSYPieModeling(void)
 {
 }

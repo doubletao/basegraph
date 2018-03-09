@@ -6,7 +6,11 @@
 using namespace std;
 
 #pragma comment( lib, "usp10.lib")
-
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 //Ç°ÖÃÉùÃ÷
 void		SYFont_Init(LPSYFont pFont);

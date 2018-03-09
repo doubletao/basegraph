@@ -9,7 +9,11 @@
 #include <fstream>
 #include <assert.h>
 using namespace std;
-
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 //////////////////////////////////////////////////////////////////////////
 //缺省字体、缺省中文字体、预制用字符。
 BASEGRAPH_DATARENDER_API TCHAR			g_strDefFontFacename[LF_FACESIZE] = _T("Arial");
