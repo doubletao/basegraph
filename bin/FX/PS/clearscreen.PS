@@ -1,0 +1,25 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+cbuffer cb0
+{
+	float4 color;
+	float	depth;
+}
+
+struct PS_OUTPUT
+{
+	float4 color : SV_Target;
+	float depth : SV_Depth;
+};
+
+PS_OUTPUT main(in VS_OUTPUT vIN) 
+{
+	PS_OUTPUT PsOut;
+	PsOut.color = color;
+	PsOut.depth = depth;
+	return PsOut;
+}

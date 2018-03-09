@@ -1,0 +1,10 @@
+cbuffer Spec : register(b1)
+{
+	float4x4 SpecMat;
+	float	SpecFactor;
+};
+
+sampler SpecSample : register(s1);
+Texture2D <float4> SpecTex : register(t1);
+#define    RECI_PAI  0.318309886183791
+#define  RECI_TWOPAI  0.159154943091895

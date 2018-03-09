@@ -1,0 +1,45 @@
+struct PS_INPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+	float2 OrginTex : TEXCOORD1;
+};
+
+sampler texSample;
+Texture2D <float4> src : register(t0);;
+Texture2D <float4> mask : register(t1);;
+
+cbuffer cb0
+{
+	float4 TexOffset ;
+	float4x4 TexMat ;
+	float   fUseColorAlpha;
+	float   fUnuse0;
+	float   fUnuse1;
+	float   fUnuse2;
+};
+
+float4 main( PS_INPUT vIN ):SV_Target
+{
+	float2 SrcTex = (vIN.OrginTex * TexOffset.zw) + TexOffset.xy;
+	SrcTex  = mul(TexMat,float4(SrcTex,0,1)).xy;
+	float4 srcC = src.Sample(texSample,SrcTex);
+	float4 maskC = mask.Sample(texSample,vIN.tex);
+
+	float4 ret;
+	if(fUseColorAlpha > 0.5f)
+	{
+		srcC.a *= maskC.a;
+	}
+	else
+	{
+		if(maskC.a < 0.001f)
+		{
+			srcC.a = 0.0f;
+		}
+	}
+	ret.a = srcC.a + (1 - srcC.a) * maskC.a;
+	ret.rgb = srcC.rgb * srcC.a + (1 - srcC.a) * maskC.a * maskC.rgb;
+	ret.rgb /= ret.a;
+	return ret;
+}

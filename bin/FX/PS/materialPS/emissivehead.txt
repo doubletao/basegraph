@@ -1,0 +1,8 @@
+cbuffer Emissive : register(b3)
+{
+	float4x4 EmissiveMat;
+	float	EmissiveFactor;
+};
+
+sampler EmissiveSample : register(s3);
+Texture2D <float4> EmissiveTex : register(t3);

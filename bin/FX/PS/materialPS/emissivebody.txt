@@ -1,0 +1,6 @@
+{
+	float2 uv =  float2( max(0,dot(Nn, ViewDir)),0.5f);
+	uv =  float2( dot(Nn, ViewDir),0.5f);
+	float4 c = EmissiveTex.Sample(EmissiveSample,uv);
+	fDiffContrib.rgb  = lerp( fDiffContrib.rgb, c.rgb, EmissiveFactor );
+}

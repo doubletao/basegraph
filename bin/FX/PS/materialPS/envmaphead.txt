@@ -1,0 +1,8 @@
+cbuffer EnvMap : register(b2)
+{
+	float4x4 EnvMapMat;
+	float	EnvMapFactor;
+};
+
+sampler EnvMapSample : register(s2);
+Texture2D <float4> EnvMapTex : register(t2);

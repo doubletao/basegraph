@@ -1,0 +1,19 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+sampler texSample;
+Texture2D <float4> tex;
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 texColor = tex.Sample(texSample,vIN.tex);
+	float4 outColor = texColor;
+	outColor.r = texColor.b ;
+	outColor.b = texColor.r ;
+	outColor.g = texColor.g ;
+
+	return outColor;
+}

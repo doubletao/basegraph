@@ -1,0 +1,86 @@
+struct lParam
+{
+	float  LightType ;
+	float3 LightPos;
+	float4 LightDiff;
+	float4 LightSpec;
+	float3 LightAtten;
+	float  fActor;
+	float3 LightDir  ;
+	float3 SpotParam ;
+};
+
+cbuffer cLightBuffer:register(b6)
+{
+	float4 LightAmbient ;
+	lParam lightParam[#1];
+};
+
+void Diffuse( out float diff, in float LdotN, in float Intensity )
+{
+	if( LdotN < 0 )
+		diff = 0; 
+	else
+		diff = LdotN * Intensity;
+}
+
+void Spec( out float spec, in float LdotN, in float Intensity, in float3 Hn, in float3 Nn )
+{
+	if( LdotN < 0 )
+		spec = 0;
+	else
+		spec = pow( dot( Hn, Nn ), fPower ) * Intensity;
+}
+
+void PointLight( in PS_INPUT Input, in float3 Vn, in float3 Nn, in int i, out float diff, out float spec )
+{
+	float3 Ln   = lightParam[i].LightPos - Input.RPosWorld;
+	float leng  = length(Ln);
+	Ln = Ln / leng;
+	leng = leng / lightParam[i].fActor;
+	float atten = 1.0 / ( lightParam[i].LightAtten.x +  leng * ( lightParam[i].LightAtten.y + leng * lightParam[i].LightAtten.z ) ); 
+	float3 Hn = normalize( Vn + Ln );
+//	float dot_v_l = dot(Vn,Ln);
+//	float dot_l_n = abs(dot(Nn,Ln)) * (dot_v_l < 0);
+//	float dot_n_h = abs(dot(Nn,Hn)) * (dot_v_l < 0);
+
+	float3 vlight = lit(dot(Nn,Ln),dot(Nn,Hn),fPower);
+	diff = vlight.y * atten;
+	spec = vlight.z * atten;
+}
+
+void LineLight( in float3 Vn, in float3 Nn, in int i, out float diff, out float spec )
+{
+	float3 Ln = (-lightParam[i].LightDir);
+	float3 Hn = normalize( Vn + Ln );
+	float LdotN = dot( Ln, Nn );
+	float3 vlight = lit(LdotN,dot(Nn,Hn),fPower);
+	diff = vlight.y ;
+	spec = vlight.z ;
+//	Diffuse( diff, LdotN, 1.f );
+//	Spec( spec, LdotN, 1.f, Hn, Nn );
+}
+
+void SpotLight( in PS_INPUT Input, in float3 Vn, in float3 Nn, in int i, out float diff, out float spec )
+{
+	//float3 Ln = normalize( lightParam[i].LightPos - Input.RPosWorld );
+	float3 Ln   = lightParam[i].LightPos - Input.RPosWorld;
+	float leng  = length(Ln);
+	Ln = Ln / leng;
+	leng = leng / lightParam[i].fActor;
+	float atten = 1.0 / ( lightParam[i].LightAtten.x +  leng * ( lightParam[i].LightAtten.y + leng * lightParam[i].LightAtten.z ) ); 
+
+	float3 Hn = normalize( Vn + Ln ); 
+	float3 Ldir = -lightParam[i].LightDir;
+	float rho = dot( Ln, Ldir ), Intensity = 0;
+	Intensity =  ( rho - cos( lightParam[i].SpotParam.y / 2 ) ) / ( cos( lightParam[i].SpotParam.x / 2 ) - cos( lightParam[i].SpotParam.y / 2 ) );
+	Intensity = smoothstep(0, 1, Intensity);
+	Intensity = pow(Intensity,lightParam[i].SpotParam.z);	
+
+	float LdotN = dot( Ldir, Nn );
+	float3 vlight = lit(LdotN,dot(Nn,Hn),fPower);
+
+	diff = vlight.y * Intensity * atten;
+	spec = vlight.z * Intensity * atten;
+}
+

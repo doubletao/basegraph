@@ -1,0 +1,35 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+
+sampler texSample;
+Texture2D <float4> left;
+Texture2D <float4> right;
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 leftColor = left.Sample(texSample,vIN.tex);
+	float4 rightColor = right.Sample(texSample,vIN.tex);
+	float4 outColor;  
+	outColor.r = leftColor.b ;
+	outColor.b = rightColor.r ;
+	outColor.g = rightColor.g ;
+	outColor.a = (rightColor.a + leftColor.a) / 2 ;
+
+	return outColor;
+}
+
+//float4 main(in VS_OUTPUT vIN) : SV_Target
+//{
+//	float4 texColor1 = tex.Sample(texSample,float2(vIN.tex.x  , vIN.tex.y ));
+//	float4 texColor2 = tex.Sample(texSample,float2(vIN.tex.x + PixelX , vIN.tex.y ));
+//	float4 texColor3 = tex.Sample(texSample,float2(vIN.tex.x - PixelX , vIN.tex.y ));
+//	float4 texColor4 = tex.Sample(texSample,float2(vIN.tex.x  , vIN.tex.y + PixelY));
+//	float4 texColor5 = tex.Sample(texSample,float2(vIN.tex.x , vIN.tex.y - PixelY));
+//	float4 outColor = (texColor1 + texColor2 + texColor3 + texColor4 + texColor5 ) / 5 ;
+//
+//	return outColor;
+//}
