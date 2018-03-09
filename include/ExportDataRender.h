@@ -14,6 +14,23 @@
 
 #include "ExportCommon.h"
 #include "ExportSceneRender.h"
+#include "ExportDataBase.h"
+
+#include "DataRender\3DGeometry.h"
+#include "DataRender\3DPieModeling.h"
+#include "DataRender\AlgorithmRip.h"
+#include "DataRender\Arc2BezierAPI.h"
+#include "DataRender\BevelPoly.h"
+#include "DataRender\DataRenderDataDef.h"
+#include "DataRender\DataRenderUtityFunc.h"
+#include "DataRender\DrawTextDef.h"
+#include "DataRender\LineAPI.h"
+#include "DataRender\MaterialDef.h"
+#include "DataRender\OffsetCurve.h"
+#include "DataRender\RipRender.h"
+#include "DataRender\ShapeForm.h"
+#include "DataRender\TextDrawer.h"
+#include "DataRender\TriangulateApp.h"
 
 struct StuSimpleBuffer
 {

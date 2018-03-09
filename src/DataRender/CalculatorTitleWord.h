@@ -1,15 +1,16 @@
 #pragma once
 #include "ObjectCalculator.h"
+#include "Typeset\TextTypeset.h"
 
-class CalculatorTitleWord :
+class CalculatorTitleword :
 	public ObjectCalculator
 {
 public:
-	CalculatorTitleWord(CString strObjID);
-	virtual ~CalculatorTitleWord();
+	CalculatorTitleword(CString strObjID);
+	virtual ~CalculatorTitleword();
 protected:
+	CSYTypeset m_TypeSet;
+	SYText m_text;
 public:
 	virtual bool UpdateRenderBuffer();
-	virtual int GetWidth();
-	virtual int GetHeight();
 };

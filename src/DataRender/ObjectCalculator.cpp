@@ -18,12 +18,22 @@ ObjectCalculator::~ObjectCalculator()
 int ObjectCalculator::GetWidth()
 {
 	int nRet = 0;
+	BaseGraph_Common::Value stuValue;
+	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Obj_Width_Int, stuValue))
+	{
+		nRet = stuValue.ToInt();
+	}
 	return nRet;
 }
 
 int ObjectCalculator::GetHeight()
 {
 	int nRet = 0;
+	BaseGraph_Common::Value stuValue;
+	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Obj_Height_Int, stuValue))
+	{
+		nRet = stuValue.ToInt();
+	}
 	return nRet;
 }
 

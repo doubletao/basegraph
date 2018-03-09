@@ -19,7 +19,7 @@ BaseObject * ObjectFactory::CreateObject(ObjectType emObjectType)
 	BaseObject * pObj = nullptr;
 	switch (emObjectType)
 	{
-	case BaseGraph_DataBase::ObjectType_Title:
+	case BaseGraph_DataBase::ObjectType_Titleword:
 		pObj = new ObjectTitleword;
 		break;
 	case BaseGraph_DataBase::ObjectType_Scroll:

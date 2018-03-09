@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CalculatorFactory.h"
 #include "CalculatorImage.h"
+#include "CalculatorTitleWord.h"
 
 CalculatorFactory::CalculatorFactory()
 {
@@ -19,6 +20,9 @@ ObjectCalculator * CalculatorFactory::CreateCalculator(ObjectType emObjectType, 
 		break;
 	case BaseGraph_DataBase::ObjectType_Image:
 		pCalc = new CalculatorImage(strObjID);
+		break;
+	case BaseGraph_DataBase::ObjectType_Titleword:
+		pCalc = new CalculatorTitleword(strObjID);
 		break;
 	default:
 		pCalc = new ObjectCalculator(strObjID);

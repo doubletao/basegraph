@@ -15,7 +15,5 @@ protected:
 	bool PrepareObjBuffer();
 public:
 	virtual bool UpdateRenderBuffer();
-	virtual int GetWidth();
-	virtual int GetHeight();
 };
 

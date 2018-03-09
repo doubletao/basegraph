@@ -8,7 +8,7 @@ namespace BaseGraph_DataBase
 	enum ObjectType
 	{
 		ObjectType_Err = -1,
-		ObjectType_Title,
+		ObjectType_Titleword,
 		ObjectType_Scroll,
 		ObjectType_Image,
 	};
@@ -17,11 +17,13 @@ namespace BaseGraph_DataBase
 	enum ParamValueDef
 	{
 		ObjParam = 0,
-		ObjID_Str,
-		ObjType_Enum,
-		ObjName_Str,
-		ObjActionBegin_Int,//使用场作为单位
-		ObjActionEnd_Int,//使用场作为单位
+		Obj_ID_Str,
+		Obj_Type_Enum,
+		Obj_Name_Str,
+		Obj_Width_Int,
+		Obj_Height_Int,
+		Obj_ActionBegin_Int,//使用场作为单位
+		Obj_ActionEnd_Int,//使用场作为单位
 		ObjParam_End,
 
 		SpaceParam = 100,
@@ -57,8 +59,13 @@ namespace BaseGraph_DataBase
 		ColorParam_Index_Int,
 		ColorParam_End,
 
-		TitleWordParam = 1000,
-		TitleWordParam_End,
+		TitlewordParam = 1000,
+		Titleword_Text_Str,
+		Titleword_FontName_Str,
+		Titleword_UnderLine_Bool,
+		Titleword_FontDistance_Int,
+		Titleword_Horizontal_Bool,
+		TitlewordParam_End,
 
 		ScrollParam = 2000,
 		ScrollParam_End,
@@ -67,8 +74,6 @@ namespace BaseGraph_DataBase
 		Image_Path_Str,
 		Image_SrcWidth_Int,
 		Image_SrcHeight_Int,
-		Image_DispWidth_Int,
-		Image_DispHeight_Int,
 		ImageParam_End,
 	};
 
@@ -255,29 +260,29 @@ namespace BaseGraph_DataBase
 		ValueDescriptor valueDesc;
 		switch (emParamValueDef)
 		{
-		case BaseGraph_DataBase::ObjID_Str:
+		case BaseGraph_DataBase::Obj_ID_Str:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("ID");
 			valueDesc.stuDefault.SetValue(_T("unknown"));
 			break;
-		case BaseGraph_DataBase::ObjType_Enum:
+		case BaseGraph_DataBase::Obj_Type_Enum:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("物件类型");
 			valueDesc.stuDefault.SetValue(ObjectType_Err, BaseGraph_Common::ValueType_ENUM);
 			break;
-		case BaseGraph_DataBase::ObjName_Str:
+		case BaseGraph_DataBase::Obj_Name_Str:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("物件名称");
 			valueDesc.stuDefault.SetValue(_T("未知物件"));
 			break;
-		case ObjActionBegin_Int:
+		case Obj_ActionBegin_Int:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("起始场");
 			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(INT32_MAX, _T("最大值")));
 			break;
-		case ObjActionEnd_Int:
+		case Obj_ActionEnd_Int:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("结束场");
 			valueDesc.stuDefault.SetValue(10 * 25 * 2, BaseGraph_Common::ValueType_INT);
@@ -443,6 +448,31 @@ namespace BaseGraph_DataBase
 			valueDesc.strDispName = _T("不确定");
 			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
 			break;
+		case Titleword_Text_Str:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("文本内容");
+			valueDesc.stuDefault.SetValue(_T(""));
+			break;
+		case Titleword_FontName_Str:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("字体名称");
+			valueDesc.stuDefault.SetValue(_T("宋体"));
+			break;
+		case Titleword_UnderLine_Bool:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("下划线");
+			valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+			break;
+		case Titleword_FontDistance_Int:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("字间距");
+			valueDesc.stuDefault.SetValue(0);
+			break;
+		case Titleword_Horizontal_Bool:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("水平");
+			valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+			break;
 		case Image_Path_Str:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("图片路径");
@@ -462,14 +492,14 @@ namespace BaseGraph_DataBase
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(8192, _T("最大值")));
 			break;
-		case Image_DispWidth_Int:
+		case Obj_Width_Int:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("展示宽");
 			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(8192, _T("最大值")));
 			break;
-		case Image_DispHeight_Int:
+		case Obj_Height_Int:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("展示高");
 			valueDesc.stuDefault.SetValue(0, BaseGraph_Common::ValueType_INT);

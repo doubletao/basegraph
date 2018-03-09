@@ -330,11 +330,11 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		CString strObjID = _T("");
 		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Image);
 		mapParam[BaseGraph_DataBase::Image_Path_Str].SetValue(strImgPath);
-		mapParam[BaseGraph_DataBase::ObjName_Str].SetValue(strName);
-		mapParam[BaseGraph_DataBase::Image_DispWidth_Int].SetValue(800, BaseGraph_Common::ValueType_INT);
-		mapParam[BaseGraph_DataBase::Image_DispHeight_Int].SetValue(600, BaseGraph_Common::ValueType_INT);
-		mapParam[BaseGraph_DataBase::ObjActionBegin_Int].SetValue(nBegin, BaseGraph_Common::ValueType_INT);
-		mapParam[BaseGraph_DataBase::ObjActionEnd_Int].SetValue(nEnd, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Obj_Name_Str].SetValue(strName);
+		mapParam[BaseGraph_DataBase::Obj_Width_Int].SetValue(800, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Obj_Height_Int].SetValue(600, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Obj_ActionBegin_Int].SetValue(nBegin, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Obj_ActionEnd_Int].SetValue(nEnd, BaseGraph_Common::ValueType_INT);
 		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Image, mapParam, strObjID);
 		if (!strObjID.IsEmpty())
 		{
@@ -365,6 +365,47 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		int nEnd = 500 + 100 * i;
 
 		CreateTestImgObj(strName, strImg, strDebug, nBegin, nEnd);
+	}
+
+	auto CreateTestTitlewordObj = [](CString strName, CString strText, CString strFontName, CString strDebugPath, int nBegin, int nEnd)
+	{
+		CString strObjID = _T("");
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Titleword);
+		mapParam[BaseGraph_DataBase::Obj_Name_Str].SetValue(strName);
+		mapParam[BaseGraph_DataBase::Obj_ActionBegin_Int].SetValue(nBegin, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Obj_ActionEnd_Int].SetValue(nEnd, BaseGraph_Common::ValueType_INT);
+		mapParam[BaseGraph_DataBase::Titleword_Text_Str].SetValue(strText);
+		mapParam[BaseGraph_DataBase::Titleword_FontName_Str].SetValue(strFontName);
+		mapParam[BaseGraph_DataBase::Titleword_Horizontal_Bool].SetValue(TRUE, BaseGraph_Common::ValueType_BOOL);
+		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Titleword, mapParam, strObjID);
+		if (!strObjID.IsEmpty())
+		{
+			DataRender_UpdateRender(strObjID);
+			StuSimpleBuffer stuSimpleBuf;
+			if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
+			{
+				if (false)
+				{
+					BufferFunction::WriteBitmap(strDebugPath, stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
+				}
+			}
+		}
+	};
+
+	std::map<CString, CString> mapText;
+	mapText[_T("宋体")] = _T("宋体");
+	mapText[_T("楷体")] = _T("楷体");
+	mapText[_T("华文行楷")] = _T("华文行楷");
+	for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)
+	{
+		CString strName;
+		strName.Format(_T("文本_%s"), it->first);
+		CString strDebug;
+		strDebug.Format(_T("e:\\%s.bmp"), it->first);
+		int nBegin = 100;
+		int nEnd = 500 + 100;
+
+		CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd);
 	}
 
 	//CEdit * m_pEdit = new CEdit;

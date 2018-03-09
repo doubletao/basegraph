@@ -6,7 +6,7 @@
 BaseGraph_DataBase::BaseObject::BaseObject()
 	: m_nParentID(_T(""))
 {
-	m_mapParam[ObjID_Str].SetValue(CommonFunction::CreateGUID());
+	m_mapParam[Obj_ID_Str].SetValue(CommonFunction::CreateGUID());
 }
 
 
@@ -25,9 +25,11 @@ void BaseGraph_DataBase::BaseObject::InitialObjectParam()
 	};
 	
 	//物件属性
-	AddDefaultParam(ObjName_Str);
-	AddDefaultParam(ObjActionBegin_Int);
-	AddDefaultParam(ObjActionEnd_Int);
+	AddDefaultParam(Obj_Name_Str);
+	AddDefaultParam(Obj_Width_Int);
+	AddDefaultParam(Obj_Height_Int);
+	AddDefaultParam(Obj_ActionBegin_Int);
+	AddDefaultParam(Obj_ActionEnd_Int);
 	//空间值
 	AddDefaultParam(SpacePosition_X_Float);
 	AddDefaultParam(SpacePosition_Y_Float);
@@ -111,9 +113,9 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 BaseGraph_DataBase::ObjectType BaseGraph_DataBase::BaseObject::GetObjectType()
 {
 	BaseGraph_DataBase::ObjectType emObjType = BaseGraph_DataBase::ObjectType_Err;
-	if (m_mapParam.count(ObjType_Enum) > 0)
+	if (m_mapParam.count(Obj_Type_Enum) > 0)
 	{
-		emObjType = (BaseGraph_DataBase::ObjectType)m_mapParam[ObjType_Enum].ToInt();
+		emObjType = (BaseGraph_DataBase::ObjectType)m_mapParam[Obj_Type_Enum].ToInt();
 	}
 	return emObjType;
 }
@@ -148,14 +150,14 @@ void BaseGraph_DataBase::BaseObject::SetValue(ParamValueDef emValueDef, Value st
 CString BaseGraph_DataBase::BaseObject::GetItemID()
 {
 	CString strRet = 0;
-	strRet = GetValue(ObjID_Str).ToCString();
+	strRet = GetValue(Obj_ID_Str).ToCString();
 	return strRet;
 }
 
 ObjectType BaseGraph_DataBase::BaseObject::GetItemType()
 {
 	ObjectType emRet = ObjectType_Err;
-	emRet = (ObjectType)GetValue(ObjType_Enum).ToInt();
+	emRet = (ObjectType)GetValue(Obj_Type_Enum).ToInt();
 	return emRet;
 }
 

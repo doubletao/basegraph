@@ -323,7 +323,7 @@ bool DataBaseManager::GetItemLength(IN const std::vector<CString>& vecID, OUT in
 	{
 		CString strID = vecID[i];
 		BaseGraph_Common::Value valueEndFrame;
-		if (GetItemProperty(strID, BaseGraph_DataBase::ObjActionEnd_Int, valueEndFrame))
+		if (GetItemProperty(strID, BaseGraph_DataBase::Obj_ActionEnd_Int, valueEndFrame))
 		{
 			int nEndFrame = valueEndFrame.ToInt();
 			if (nLength < nEndFrame)

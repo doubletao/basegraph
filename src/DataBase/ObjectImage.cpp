@@ -5,7 +5,7 @@ using namespace BaseGraph_DataBase;
 
 ObjectImage::ObjectImage()
 {
-	SetValue(ObjType_Enum, Value(ObjectType_Image, BaseGraph_Common::ValueType_ENUM));
+	SetValue(Obj_Type_Enum, Value(ObjectType_Image, BaseGraph_Common::ValueType_ENUM));
 }
 
 ObjectImage::~ObjectImage()
@@ -27,8 +27,6 @@ void ObjectImage::InitialObjectParam()
 	AddDefaultParam(Image_Path_Str);
 	AddDefaultParam(Image_SrcWidth_Int);
 	AddDefaultParam(Image_SrcHeight_Int);
-	AddDefaultParam(Image_DispWidth_Int);
-	AddDefaultParam(Image_DispHeight_Int);
 }
 
 std::map<BaseGraph_DataBase::ParamValueDef, Value> ObjectImage::GetProperty()
@@ -94,20 +92,20 @@ void ObjectImage::SetSrcHeight(int nValue)
 
 int ObjectImage::GetDispWidth()
 {
-	return GetValue(Image_DispWidth_Int).ToInt();
+	return GetValue(Obj_Width_Int).ToInt();
 }
 
 void ObjectImage::SetDispWidth(int nValue)
 {
-	SetValue(Image_DispWidth_Int, nValue);
+	SetValue(Obj_Width_Int, nValue);
 }
 
 int ObjectImage::GetDispHeight()
 {
-	return GetValue(Image_DispHeight_Int).ToInt();
+	return GetValue(Obj_Height_Int).ToInt();
 }
 
 void ObjectImage::SetDispHeight(int nValue)
 {
-	SetValue(Image_DispHeight_Int, nValue);
+	SetValue(Obj_Height_Int, nValue);
 }

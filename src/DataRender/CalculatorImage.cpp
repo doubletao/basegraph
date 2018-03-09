@@ -141,8 +141,8 @@ bool CalculatorImage::PrepareObjBuffer()
 		}
 		return 0;
 	};
-	int nObjWidth = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Image_DispWidth_Int).ToInt();
-	int nObjHeight = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Image_DispHeight_Int).ToInt();
+	int nObjWidth = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Obj_Width_Int).ToInt();
+	int nObjHeight = GetPropertyValue(m_strObjID, BaseGraph_DataBase::Obj_Height_Int).ToInt();
 	if (nObjWidth > 0
 		&& nObjHeight > 0)
 	{
@@ -154,26 +154,4 @@ bool CalculatorImage::PrepareObjBuffer()
 		}
 	}
 	return false;
-}
-
-int CalculatorImage::GetWidth()
-{
-	int nRet = 0;
-	BaseGraph_Common::Value stuValue;
-	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_DispWidth_Int, stuValue))
-	{
-		nRet = stuValue.ToInt();
-	}
-	return nRet;
-}
-
-int CalculatorImage::GetHeight()
-{
-	int nRet = 0;
-	BaseGraph_Common::Value stuValue;
-	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_DispHeight_Int, stuValue))
-	{
-		nRet = stuValue.ToInt();
-	}
-	return nRet;
 }
