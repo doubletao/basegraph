@@ -1,5 +1,5 @@
 #pragma once
-#include "DataDef.h"
+#include "Common\DataDef.h"
 // —’…´÷÷¿‡
 
 enum SYCOLOR_TYPE

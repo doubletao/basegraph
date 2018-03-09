@@ -3,6 +3,8 @@
 #include <math.h>
 #include "DataRender\OffsetCurve.h"
 #include "DataRender\RipRender.h"
+#include "DataRender\Arc2BezierAPI.h"
+#include "DataRender\LineAPI.h"
 #include <stdio.h>
 #include "..\..\..\include\DataRender\DataRenderUtityFunc.h"
 
@@ -352,6 +354,10 @@ void	rip_extend_fbound_long(rectf* prect,long* pleft,long* ptop,long* pright,lon
 	*ptop  -= nextend;
 	*pbottom += nextend;
 	*pright += nextend;
+}
+void BASEGRAPH_DATARENDER_API rip_figure_mul_matrix(vectorgraph, void * pmatrix)
+{
+	assert(false);
 }
 //得到
 int rip_getcellbound(IN	vectorcell* cell,
@@ -1499,6 +1505,533 @@ void	rip_mul_matrix(vectorgraph* pgraph,matrix4f* pmatrix)
 	}
 }
 
+int  cell_get_group_ptcount(vectorcell*	srccell, int nstart, int type)
+{
+	int nptcount = srccell->npoint;
+	int ncurvercount = 1;
+	int nend = 0;
+	for (int i = nstart + 1; i < nptcount; i++)
+	{
+		ncurvercount++;
+		if (srccell->pttype[i] != type)
+		{
+			nend = 1;
+			break;
+		}
+	}
+	if (!nend)
+	{
+		ncurvercount += 1;
+	}
+	return ncurvercount;
+}
+
+int  conic_extend(SYArray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf startoffset, pointf endoffset, float fwidth, int ndirect, SYArray* lenArray = NULL, float* fAllLen = NULL);
+
+int  conic_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, SYArray* plenArray, float* pfalllen)
+{
+
+	pointf pt1, pt2, pt3;
+	pointf ptstartoffset, ptendoffset, ptnormal;
+	int nindex = nstart;
+	int ncurvercount = cell_get_group_ptcount(cell, nstart, point_conic);
+	//first curver,for conic,the first curver is particular
+	//it need three point ,pt1,pt2,pt3,for the first ,pt1 is  the first pt,
+	//pt2 is the second point,pt3 is the mid of the second and third;
+	//for the mid curver,pt1 is the mid of the first and the second,the pt2 is
+	//the second ,the pt3 is the mid of the second and third;
+	//for the last curver ,pt1 is the mid of the first and the second,the pt2 is
+	//the second ,the pt3 is the last pt;
+
+	pt1 = cell->point[nindex];
+	pt2 = cell->point[nindex + 1];
+	if (ncurvercount == 3)
+	{
+		pt3 = cell->point[nindex + 2];
+	}
+	else
+		pt3 = (cell->point[nindex + 1] + cell->point[nindex + 2]) * 0.5f;
+
+	do {
+
+		//if(pt1 == pt2 || pt2 == pt3)
+		//{
+		//	pointf& 
+		//	line_extend(OUT pointf& ptoutstart,pointf& ptoutend,
+		//		IN pointf& ptinstart,pointf& ptinend,
+		//		IN int ndirect,IN float fwidth)
+		//}
+		//计算开始点和终止点的偏移
+		if (pt1 == pt2)
+		{
+			if (pt2 == pt3)
+			{
+				goto next_conic_loop;
+			}
+			line_vertical_normalizing(&ptnormal, &pt1, &pt3, ndirect);
+		}
+		else
+		{
+			line_vertical_normalizing(&ptnormal, &pt1, &pt2, ndirect);
+		}
+		ptstartoffset = pt1 + ptnormal * fwidth;
+
+
+		if (pt2 == pt3)
+		{
+			ptendoffset = pt3 + ptnormal * fwidth;
+		}
+		else
+		{
+			line_vertical_normalizing(&ptnormal, &pt2, &pt3, ndirect);
+			ptendoffset = pt3 + ptnormal * fwidth;
+		}
+
+		if (*(DWORD*)&ptstartoffset.x == 0xffc00000)
+		{
+			assert(FALSE);
+			//_asm int 3;
+		}
+		if (*(DWORD*)&ptendoffset.x == 0xffc00000)
+		{
+			assert(FALSE);
+			//_asm int 3;
+		}
+
+		//扩展
+		conic_extend(ptArray, pt1, pt2, pt3, ptstartoffset, ptendoffset, fwidth, ndirect, plenArray, pfalllen);
+
+
+
+		//下一组点
+	next_conic_loop:
+		nindex++;
+		if (nindex > nstart + ncurvercount - 3)
+			break;
+		pt1 = pt3;
+		pt2 = cell->point[(nindex + 1) % cell->npoint];
+		if (nindex > nstart + ncurvercount - 3)
+			break;
+		else if (nindex == nstart + ncurvercount - 3)
+			pt3 = cell->point[(nindex + 2) % cell->npoint];
+		else
+			pt3 = (cell->point[(nindex + 1) % cell->npoint] + cell->point[(nindex + 2) % cell->npoint]) * 0.5f;
+
+	} while (nindex <= nstart + ncurvercount - 3);
+
+
+	//if reach last,return -1;
+	if (nstart + ncurvercount >= cell->npoint)
+		return -1;
+
+	//else if not ,return the index of next point.
+	return nstart + ncurvercount - 1;
+}
+
+int  bezier_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, SYArray* lenArray, float* falllen, pointf* ptlast = NULL);
+
+int cell_makecell(LPSYARRAY ptarray, vectorcell* pcell)
+{
+	int narcount = (int)SYAR_GetSize(ptarray);
+	pcell->npoint = narcount;
+	pcell->point = new pointf[narcount];
+	pcell->pttype = new unsigned long[narcount];
+	pcell->bound.left = 65535.0f;
+	pcell->bound.top = 65535.0f;
+	pcell->bound.right = -65535.0f;
+	pcell->bound.bottom = -65535.0f;
+	for (int i = 0; i < pcell->npoint; i++)
+	{
+		pointf* ptresult = (pointf*)SYAR_GetAt(ptarray, i);
+		pcell->point[i] = *ptresult;
+		pcell->pttype[i] = point_line;
+		pcell->bound.left = min(pcell->bound.left, ptresult->x);
+		pcell->bound.top = min(pcell->bound.top, ptresult->y);
+		pcell->bound.right = max(pcell->bound.right, ptresult->x);
+		pcell->bound.bottom = max(pcell->bound.bottom, ptresult->y);
+		delete ptresult;
+	}
+	SYAR_RemoveAll(ptarray);
+	SYAR_Release(ptarray);
+	return 1;
+}
+
+int BASEGRAPH_DATARENDER_API cell_extend(OUT vectorcell * descell, IN vectorcell * srccell, IN int ndirect, IN float fwidth)
+{
+	pointf ptprvline[2];
+	BOOL	bPrvLine = FALSE;
+	if (fwidth <= 0)
+		fwidth = 1.0f;
+	//以下这几种情况退出
+	unsigned long pttype = point_line;
+	int nptcount = srccell->npoint;
+	if (nptcount <= 0)
+		return 0;
+	if (srccell->pttype[0] == point_conic_start && nptcount <= 3)
+	{
+		return 0;
+	}
+	else if (srccell->pttype[0] == point_curve && nptcount <= 3)
+	{
+		return 0;
+	}
+	else if (srccell->pttype[0] == point_line && nptcount <= 1)
+	{
+		return 0;
+	}
+
+
+	LPSYARRAY ptarray = SYAR_Create(); // 临时array, 用于保存偏移后的顶点, 最后再转化成cell
+	pointf ptend;
+
+	//cell's last offsetpt ,for calc last->start arc
+	pointf* ptlast = NULL;
+
+	pointf ptnormal;
+	pointf ptlastoffset;
+	if (srccell->type != uncloss_line) // 闭合情况下, 对闭合的最后一段线段进行偏移处理(其实是srccell->point[0]偏移后的点) 为做圆弧准备出ptlast点
+	{
+		// nprvindex指向最后一个点, 并且这个点不与起始点重合, 
+		int nprvindex = nptcount - 1;
+		while (srccell->point[0] == srccell->point[nprvindex])
+		{
+			nprvindex--;
+			if (nprvindex <= 0)
+				return 0;
+		}
+
+		// 终点与起点线段的垂线(已归一化)
+		line_vertical_normalizing
+		(&ptnormal, &srccell->point[nprvindex], &srccell->point[0], ndirect);
+		// 对起点进行偏移
+		ptlastoffset = srccell->point[0] + ptnormal * fwidth;
+		ptlast = &ptlastoffset;
+
+		ptprvline[0] = srccell->point[nprvindex] + ptnormal * fwidth;
+		ptprvline[1] = ptlastoffset;
+		/*pointf* pt = new pointf;
+		*pt = ptlastoffset;*/
+		//SYAR_Add(ptarray,pt);
+
+		bPrvLine = TRUE;
+
+	}
+	else // 非闭合
+	{
+		// 先找到第一段线段(起讫点不重合)
+		int nindex = 0;
+		pointf* ptin = &srccell->point[nindex];
+		while (srccell->point[nindex] == srccell->point[(nindex + 1) % nptcount])
+		{
+			nindex++;
+			continue;
+		}
+		// 对该线段进行偏移, 并将线段起点偏移后的点, 加入数组ptarray中
+		pointf* ptstart = new pointf;
+		pointf  ptuncloseend;
+		line_extend(*ptstart, ptuncloseend, srccell->point[nindex], srccell->point[(nindex + 1) % nptcount], ndirect, fwidth);
+		SYAR_Add(ptarray, ptstart);
+	}
+	int nprecount = nptcount;
+	if (srccell->type == uncloss_line)
+	{
+		nprecount = nptcount - 1;
+	}
+
+
+	for (int i = 0; i < nprecount;)
+	{
+		//make arc
+		if (ptlast)
+		{
+			pointf ptoffset;
+			if (srccell->point[i] == srccell->point[(i + 1) % nptcount] || bPrvLine)
+			{
+			}
+			else
+			{
+				int ncalcStart = i;
+				while (srccell->point[ncalcStart] == srccell->point[(ncalcStart + 1) % nptcount])
+				{
+					ncalcStart++;
+				}
+				line_vertical_normalizing(&ptnormal, &srccell->point[ncalcStart], &srccell->point[(ncalcStart + 1) % nptcount], ndirect);
+				ptoffset = srccell->point[ncalcStart] + ptnormal * fwidth;
+				float fdis1 = (ptlast->x - srccell->point[ncalcStart].x)*(ptlast->x - srccell->point[ncalcStart].x) + (ptlast->y - srccell->point[ncalcStart].y)*(ptlast->y - srccell->point[ncalcStart].y);
+				float fdis2 = (ptoffset.x - srccell->point[ncalcStart].x)*(ptoffset.x - srccell->point[ncalcStart].x) + (ptoffset.y - srccell->point[ncalcStart].y)*(ptoffset.y - srccell->point[ncalcStart].y);
+				if (fabs(1 - fdis1 / fdis2)>0.0005)
+				{
+					assert(FALSE);
+					//_asm int 3;
+				}
+				cell_makearc(ptarray, srccell->point[i], *ptlast, ptoffset, fwidth);
+			}
+		}
+		pttype = srccell->pttype[i];
+		if (pttype == point_line)				//如果是直线
+		{
+			pointf* ptin = &srccell->point[i];
+			if (srccell->point[i] == srccell->point[(i + 1) % nptcount])
+			{
+				i++;
+				continue;
+			}
+			pointf ptstart;
+			line_extend(ptstart, ptend, srccell->point[i], srccell->point[(i + 1) % nptcount], ndirect, fwidth);
+			if (bPrvLine)
+			{
+				pointf ptout;
+				if (IsSegmentIntersection(ptprvline[0], ptprvline[1], ptstart, ptend, &ptout))
+				{
+					pointf* ptnewout = new pointf;
+					*ptnewout = ptout;
+					SYAR_Add(ptarray, ptnewout);
+				}
+				else
+				{
+					cell_makearc(ptarray, srccell->point[i], ptprvline[1], ptstart, fwidth);
+				}
+			}
+			ptprvline[0] = ptstart;
+			ptprvline[1] = ptend;
+			bPrvLine = TRUE;
+			if (*(DWORD*)&ptend.x == 0xffc00000)
+			{
+				int a = 0;
+			}
+			i++;
+		}
+		else if (pttype == point_conic_start)			//如果是2次曲线
+		{
+			if (bPrvLine)
+			{
+				int ncalcStart = i;
+				while (srccell->point[ncalcStart] == srccell->point[(ncalcStart + 1) % nptcount])
+				{
+					ncalcStart++;
+				}
+				line_vertical_normalizing(&ptnormal, &srccell->point[ncalcStart], &srccell->point[(ncalcStart + 1) % nptcount], ndirect);
+				pointf ptoffset = srccell->point[i] + ptnormal * fwidth;
+				float fdis1 = (ptprvline[1].x - srccell->point[ncalcStart].x)*(ptprvline[1].x - srccell->point[ncalcStart].x) + (ptprvline[1].y - srccell->point[ncalcStart].y)*(ptprvline[1].y - srccell->point[ncalcStart].y);
+				float fdis2 = (ptoffset.x - srccell->point[ncalcStart].x)*(ptoffset.x - srccell->point[ncalcStart].x) + (ptoffset.y - srccell->point[ncalcStart].y)*(ptoffset.y - srccell->point[ncalcStart].y);
+				if (fabs(1 - fdis1 / fdis2)>0.0005)
+				{
+					assert(FALSE);
+					//_asm int 3;
+				}
+				cell_makearc(ptarray, srccell->point[i], ptprvline[1], ptoffset, fwidth);
+			}
+			i = conic_group_extend(ptarray, srccell, i, fwidth, ndirect, NULL, 0);
+			bPrvLine = FALSE;
+		}
+		else if (pttype == point_curve || pttype == point_curve_start)			//如果是3次曲线
+		{
+			if (bPrvLine)
+			{
+				int ncalcStart = i;
+				while (srccell->point[ncalcStart] == srccell->point[(ncalcStart + 1) % nptcount])
+				{
+					ncalcStart++;
+				}
+				line_vertical_normalizing(&ptnormal, &srccell->point[ncalcStart], &srccell->point[(ncalcStart + 1) % nptcount], ndirect);
+				pointf ptoffset = srccell->point[i] + ptnormal * fwidth;
+				float fdis1 = (ptprvline[1].x - srccell->point[ncalcStart].x)*(ptprvline[1].x - srccell->point[ncalcStart].x) + (ptprvline[1].y - srccell->point[ncalcStart].y)*(ptprvline[1].y - srccell->point[ncalcStart].y);
+				float fdis2 = (ptoffset.x - srccell->point[ncalcStart].x)*(ptoffset.x - srccell->point[ncalcStart].x) + (ptoffset.y - srccell->point[ncalcStart].y)*(ptoffset.y - srccell->point[ncalcStart].y);
+				if (fabs(1 - fdis1 / fdis2)>0.0005)
+				{
+					//2016.12.08，djt，此处含义不明，在导入svg物件时此处经常报错，暂时注释掉
+					//assert(FALSE);
+					//_asm int 3;
+				}
+				cell_makearc(ptarray, srccell->point[i], ptprvline[1], ptoffset, fwidth);
+			}
+			//			bezier_group_extend(OUT SYArray* ptArray,IN vectorcell* cell,IN  int nstart,float fwidth,int ndirect,SYArray* lenArray,float* falllen,pointf* ptlast = NULL)
+			//pointf ptemp = ptprvline[1];
+			i = bezier_group_extend(ptarray, srccell, i, fwidth, ndirect, NULL, NULL, NULL);
+			bPrvLine = FALSE;
+			int nCount = SYAR_GetSize(ptarray);
+			if (nCount >= 2)
+			{
+				ptprvline[0] = *(pointf*)SYAR_GetAt(ptarray, nCount - 2);
+				ptprvline[1] = *(pointf*)SYAR_GetAt(ptarray, nCount - 1);
+				bPrvLine = TRUE;
+			}
+
+		}
+		if (i < 0)
+			break;
+		ptlast = (pointf*)SYAR_GetAt(ptarray, SYAR_GetSize(ptarray) - 1);
+	}
+	if (srccell->type == uncloss_line && bPrvLine)
+	{
+		pointf* ptadd = new pointf;
+		*ptadd = ptprvline[1];
+		SYAR_Add(ptarray, ptadd);
+	}
+	// 格式转换:　array --> cell
+	cell_makecell(ptarray, descell);
+	//for(int i = 0;i < ptarray->m_nSize;i ++)
+	//{
+	//	delete (pointf * )SYAR_GetAt(ptarray,i);
+	//}
+	//SYAR_Release(ptarray);
+	descell->type = srccell->type;
+	descell->width = srccell->width;
+	return 1;
+}
+
+void BASEGRAPH_DATARENDER_API cell_reverse(vectorcell * pcell)
+{
+	pointf pttemp;
+	unsigned long* type = new unsigned long[pcell->npoint];
+	int reccount = pcell->npoint / 2;
+	for (int i = 0; i< reccount; i++)
+	{
+		pttemp = pcell->point[i];
+		pcell->point[i] = pcell->point[pcell->npoint - 1 - i];
+		pcell->point[pcell->npoint - 1 - i] = pttemp;
+
+		type[i] = pcell->pttype[(pcell->npoint + pcell->npoint - 1 - i - 1) % pcell->npoint];
+		type[pcell->npoint - i - 1] = pcell->pttype[(pcell->npoint + i - 1) % pcell->npoint];
+	}
+	for (int i = 0; i < reccount; i++)
+	{
+		pcell->pttype[i] = type[i];
+	}
+	delete[] type;
+	type = NULL;
+}
+
+void BASEGRAPH_DATARENDER_API cell_merge(vectorcell * descell, const vectorcell * srccell1, vectorcell * srccell2)
+{
+	descell->npoint = srccell1->npoint + srccell2->npoint;
+	descell->point = new pointf[descell->npoint];
+	descell->pttype = new unsigned long[descell->npoint];
+	memcpy(descell->point, srccell1->point, sizeof(pointf) * srccell1->npoint);
+
+	memcpy(descell->point + srccell1->npoint, srccell2->point, sizeof(pointf) * srccell2->npoint);
+	memcpy(descell->pttype, srccell1->pttype, sizeof(unsigned long) * srccell1->npoint);
+	memcpy(descell->pttype + srccell1->npoint, srccell2->pttype, sizeof(unsigned long) * srccell2->npoint);
+	descell->bound.left = min(srccell1->bound.left, srccell2->bound.left);
+	descell->bound.top = min(srccell1->bound.top, srccell2->bound.top);
+	descell->bound.right = max(srccell1->bound.right, srccell2->bound.right);
+	descell->bound.bottom = max(srccell1->bound.bottom, srccell2->bound.bottom);
+}
+
+//void BASEGRAPH_DATARENDER_API rip_draw_figure(IN vectorgraph * figure, IN float offsetx, IN float offsety, IN CSYBufferDC * bufferDC)
+//{
+//	vectorcell cellline;
+//	memset(&cellline, 0, sizeof(vectorcell));
+//	for (int k = 0; k < figure->ncell; k++)
+//	{
+//		vectorcell* cell = &figure->cell[k];
+//		if (cell->type == uncloss_line || cell->type == close_line)
+//		{
+//			// new code:
+//			int ndirect = 1;
+//			vectorcell firstCell, seccell;
+//			memset(&firstCell, 0, sizeof(vectorcell));
+//			memset(&seccell, 0, sizeof(vectorcell));
+//			SYOffsetCell(&figure->cell[k],  // 输入曲线
+//				NULL,
+//				figure->cell[k].width*0.5f,  // 偏移距离
+//				&firstCell, // 输出偏移曲线
+//				ndirect
+//			);
+//
+//			SYOffsetCell(&figure->cell[k],  // 输入曲线
+//				NULL,
+//				figure->cell[k].width*0.5f,  // 偏移距离
+//				&seccell, // 输出偏移曲线
+//				-ndirect
+//			);
+//
+//			cell_reverse(&seccell);
+//			cell_merge(&cellline, &firstCell, &seccell);
+//			cell = &cellline;
+//			SYReleaseOffsetCell(&firstCell);
+//			SYReleaseOffsetCell(&seccell);
+//			cell = &cellline;
+//			////////////////////////////////////////////////////////////////////////// end
+//		}
+//		for (int i = 0; i < cell->npoint;)
+//		{
+//			if (cell->pttype[i] == point_line)
+//			{
+//				//如果线段在一个像素内忽略
+//				if (cell->point[i].y == cell->point[(i + 1) % cell->npoint].y
+//					&& cell->point[i].x == cell->point[(i + 1) % cell->npoint].x)
+//				{
+//					i++;
+//					continue;
+//				}
+//				//rip_edge_node* pnode = rip_malloc_node(pool,pool_end);
+//				bufferDC->MoveTo(cell->point[i].x + offsetx, cell->point[i].y + offsety);
+//				bufferDC->LineTo(cell->point[(i + 1) % cell->npoint].x + offsetx, cell->point[(i + 1) % cell->npoint].y + offsety);
+//				i++;
+//			}
+//			else if (cell->pttype[i] == point_curve) //如果是3次Bezier,那么需要分割曲线为小的线段
+//			{
+//				//计算总共有多少个曲线节点，注意最后一个曲线节点的属性可能不是曲线
+//				//还要注意闭合情况
+//				int ncuvercount = 0;
+//				for (int n = i; n < cell->npoint; n++)
+//				{
+//					ncuvercount++;
+//					if (cell->pttype[n] != point_curve)
+//						break;
+//				}
+//				rip_draw_bezier(bufferDC, &cell->point[i], ncuvercount, offsetx, offsety);
+//				//依次插入
+//
+//				if (i + ncuvercount >= cell->npoint)
+//					i += ncuvercount;
+//				else
+//					i += (ncuvercount - 1);
+//			}
+//			else if (cell->pttype[i] == point_conic_start) //如果是2次Bezier,那么需要分割曲线为小的线段
+//			{
+//				int ncuvercount = 1;
+//				for (int n = i + 1; n < cell->npoint; n++)
+//				{
+//					ncuvercount++;
+//					if (cell->pttype[n] != point_conic)
+//						break;
+//				}
+//
+//				//把曲线分割为小直线段
+//				rip_draw_conic(bufferDC, IN &cell->point[i], ncuvercount, offsetx, offsety);
+//				DWORD dwOldColor = bufferDC->SetPenColor(0xffff0000);
+//				bufferDC->MoveTo(cell->point[i].x + offsetx, cell->point[i].y + offsety);
+//				bufferDC->DrawCircle(cell->point[i].x + offsetx, cell->point[i].y + offsety, 2);
+//				for (int kk = 0; kk < ncuvercount; kk++)
+//				{
+//					bufferDC->DrawCircle(cell->point[kk].x + offsetx, cell->point[kk].y + offsety, 2);
+//					//bufferDC->LineTo(cell->point[kk].x + offsetx,cell->point[kk].y + offsety);
+//				}
+//				bufferDC->SetPenColor(dwOldColor);
+//				//rip_conic_line(&cell->point[i],ncuvercount,&NodeList,ptOrigin,fscale,g_rip_nsubpixel,pool,pool_end);
+//				//rip_bezier_line
+//				if (i + ncuvercount >= cell->npoint)
+//				{
+//					//					bufferDC->DrawCircle(cell->point[i + ncuvercount -1].x,cell->point[i + ncuvercount -1].y,2);
+//					bufferDC->MoveTo(cell->point[i + ncuvercount - 1].x + offsetx, cell->point[i + ncuvercount - 1].y + offsety);
+//					bufferDC->LineTo(cell->point[(i + ncuvercount) % cell->npoint].x + offsetx, cell->point[(i + ncuvercount) % cell->npoint].y + offsety);
+//					i += ncuvercount;
+//
+//				}
+//				else
+//					i += (ncuvercount - 1);
+//			}
+//			else
+//			{
+//				//__asm int 3;
+//				assert(0);
+//			}
+//		}
+//	}
+//}
+
 rip_edge_node* rip_malloc_node(unsigned char*&	pool,unsigned char* poolend)
 {
 	rip_edge_node* pnode = 0;
@@ -1601,8 +2134,41 @@ rip_edge_node* rip_malloc_node(unsigned char*&	pool,unsigned char* poolend)
 //		nindex += 1;
 //	}
 //}
-int BASEGRAPH_DATARENDER_API cell_extend_close(OUT vectorcell* descell,IN vectorcell* srccell,
-								   IN vector2f* vOffset,IN int ndirect,IN float fwidth);
+int BASEGRAPH_DATARENDER_API cell_extend_close(OUT vectorcell* descell, IN vectorcell* srccell,
+	IN vector2f* vOffset, IN int ndirect, IN float fwidth)
+{
+	int nfirstsize = 0;
+	vectorcell dessrc;
+	memset(&dessrc, 0, sizeof(vectorcell));
+	//if(srccell->type == uncloss_line)
+	{
+		vectorcell firstCell, seccell;
+		memset(&firstCell, 0, sizeof(vectorcell));
+		memset(&seccell, 0, sizeof(vectorcell));
+
+		int nret = cell_extend(&firstCell,
+			srccell,
+			-ndirect,
+			srccell->width / 2.0f + fwidth);
+		nfirstsize = firstCell.npoint;
+		if (nret)
+		{
+			nret = cell_extend(&seccell,
+				srccell,
+				ndirect,
+				srccell->width / 2.0f + fwidth);
+
+			cell_reverse(&seccell);
+			cell_merge(descell, &firstCell, &seccell);
+			cell_release(&firstCell);
+			cell_release(&seccell);
+		}
+	}
+
+	descell->type = close_anticlockwise_region;
+	return nfirstsize;
+}
+
 //计算形变插值
 BASEGRAPH_DATARENDER_API void  rip_figure_X(IN vectorgraph* figure,IN OUT void*	buf,IN int bits,IN unsigned long color,IN int nwidth,
 					IN int nheight,IN	float fscale,IN pointf* ptOrigin,IN	unsigned char* pool,IN	unsigned int	poolsize)
@@ -2197,6 +2763,58 @@ BASEGRAPH_DATARENDER_API void  render_merge_bufalpha_not(IN OUT	unsigned long*	d
 		pTempDesBuffer += nbufwidth;
 		pTempMaskBuffer += nwidth;
 	}
+}
+
+int BASEGRAPH_DATARENDER_API cell_analyzedirect(vectorcell * cell)
+{
+	if (cell->npoint == 0)
+		return 0;
+	int nminyindex = 0;
+	float miny = 65535.0f;
+	for (int i = 0; i < cell->npoint; i++)
+	{
+		if (miny > cell->point[i].y)
+		{
+			miny = cell->point[i].y;
+			nminyindex = i;
+		}
+	}
+	pointf ptcur = cell->point[nminyindex];
+	//分析方向
+	int nprv = (nminyindex + cell->npoint - 1) % cell->npoint;
+	while (ptcur == cell->point[nprv])
+	{
+		nprv = (nprv + cell->npoint - 1) % cell->npoint;
+		if (nprv == nminyindex)
+			return 0;
+	}
+	int nnext = (nminyindex + 1) % cell->npoint;
+	while (ptcur == cell->point[nnext])
+	{
+		nnext = (nnext + 1) % cell->npoint;
+		if (nnext == nminyindex || nnext == nprv)
+			return 0;
+	}
+	pointf ptprv = cell->point[nprv];
+
+	pointf ptnext = cell->point[nnext];
+
+	pointf ptvector1 = ptcur - ptprv;
+	pointf ptvector2 = ptnext - ptcur;
+	pointf ptresult;
+	float2Cross(ptresult, ptvector1, ptvector2);
+	if (ptresult.y < 0)
+		return -1;
+	if (ptresult.y > 0)
+		return 1;
+	else if (ptresult.y == 0)
+	{
+		if (ptnext.x < ptcur.x)
+			return 1;
+		else
+			return -1;
+	}
+	return 0;
 }
 
 BASEGRAPH_DATARENDER_API void  get_buf_alpha(IN OUT	unsigned char*	alpha,

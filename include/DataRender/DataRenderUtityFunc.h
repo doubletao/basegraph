@@ -28,6 +28,7 @@ BASEGRAPH_DATARENDER_API int  SYCopy_VectorGraph(vectorgraph* pdesgraph, vectorg
 BASEGRAPH_DATARENDER_API void graph_release(vectorgraph* graph);
 BASEGRAPH_DATARENDER_API void CopyVectorGraph(vectorgraph* pDesGraph, const vectorgraph* pSrcGraph);
 BASEGRAPH_DATARENDER_API BOOL CreateRegionVectorGraphFromPoints(vectorgraph* pGraph, point2f pt[], int nCount, BOOL bClockWise);
+BASEGRAPH_DATARENDER_API void	SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph* pGraph, TTPOLYGONHEADER* pSrcOutline, int nSize);//取字模函数  HTH,目前采用的TURETYPE来取
 //model
 BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel* pmod);
 BASEGRAPH_DATARENDER_API int sy_release_viewsub(int hDevice, SYSubModel* pSubModel);

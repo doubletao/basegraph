@@ -442,6 +442,131 @@ BASEGRAPH_DATARENDER_API BOOL CreateRegionVectorGraphFromPoints(vectorgraph * pG
 	return TRUE;
 }
 
+// 把windows的TTPOLYGONHEADER结构转换成vectorgraph结构
+#define SYTTPDENOMINATOR ( double(1.0 / 65536.0) )
+BASEGRAPH_DATARENDER_API void SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph * pGraph, TTPOLYGONHEADER * pSrcOutline, int nSize)
+{
+	if (pGraph == NULL || pSrcOutline == NULL)
+		return;
+
+	// 得到点数
+	TTPOLYGONHEADER* pTempTT = pSrcOutline;
+	int nTempSize = nSize;
+
+	// 计算Cell数目
+	int nCellCount = 0;
+	while (nTempSize > 0)
+	{
+		nTempSize -= pTempTT->cb;
+		nCellCount++;
+		pTempTT = (TTPOLYGONHEADER*)((BYTE*)pTempTT + pTempTT->cb);
+	}
+
+	if (nCellCount == 0)
+		return;
+
+	pGraph->ncell = nCellCount;
+	pGraph->cell = new vectorcell[nCellCount];
+	memset(pGraph->cell, 0, sizeof(vectorcell) * nCellCount);
+
+	pGraph->bound.left = 65535.0f;
+	pGraph->bound.top = 65535.0f;
+	pGraph->bound.right = -65535.0f;
+	pGraph->bound.bottom = -65535.0f;
+
+	int nIndex = 0;
+	int nCellIndex = 0;
+	pTempTT = pSrcOutline;
+	nTempSize = nSize;
+	while (nTempSize > 0)
+	{
+		int nPointCount = 1;
+		int nCb = pTempTT->cb;
+		nCb = nCb - sizeof(TTPOLYGONHEADER);
+		TTPOLYCURVE* pSrcCurve = (TTPOLYCURVE*)((BYTE*)pTempTT + sizeof(TTPOLYGONHEADER));
+		while (nCb > 0)
+		{
+			nPointCount += pSrcCurve->cpfx;
+			int nCurLength = sizeof(TTPOLYCURVE) + (pSrcCurve->cpfx - 1) * sizeof(POINTFX);
+			pSrcCurve = (TTPOLYCURVE*)(((BYTE*)pSrcCurve) + nCurLength);
+			nCb -= nCurLength;
+		}
+
+		vectorcell* pCelln = &(pGraph->cell[nCellIndex]);
+		pCelln->type = close_anticlockwise_region;
+		pCelln->width = 0;
+		pCelln->npoint = nPointCount;
+		pCelln->point = new pointf[nPointCount];
+		pCelln->pttype = new unsigned long[nPointCount];
+
+		point2f*& pCellPt = pCelln->point;
+		pCellPt[0].x = (float)(*((long*)&pTempTT->pfxStart.x) * SYTTPDENOMINATOR);
+		pCellPt[0].y = -(float)(*((long*)&pTempTT->pfxStart.y) * SYTTPDENOMINATOR);
+		pCelln->pttype[0] = 0;
+
+		rectf* pCellRt = &pCelln->bound;
+		pCellRt->left = pCellPt[0].x;
+		pCellRt->right = pCellRt->left;
+		pCellRt->top = pCellPt[0].y;
+		pCellRt->bottom = pCellRt->top;
+		nIndex = 1;
+		nCb = pTempTT->cb;
+		nCb = nCb - sizeof(TTPOLYGONHEADER);
+		pSrcCurve = (TTPOLYCURVE*)((BYTE*)pTempTT + sizeof(TTPOLYGONHEADER));
+		while (nCb > 0)
+		{
+			switch (pSrcCurve->wType)
+			{
+			case TT_PRIM_LINE:
+				for (int i = 0; i<pSrcCurve->cpfx; i++)
+				{
+					pCellPt[nIndex].x = (float)(*((long*)&pSrcCurve->apfx[i].x) * SYTTPDENOMINATOR);
+					pCellPt[nIndex].y = -(float)(*((long*)&pSrcCurve->apfx[i].y) * SYTTPDENOMINATOR);
+					pCelln->pttype[nIndex - 1] = point_line;
+					pCelln->pttype[nIndex] = point_line;
+					pCellRt->left = min(pCellRt->left, pCellPt[nIndex].x);
+					pCellRt->right = max(pCellRt->right, pCellPt[nIndex].x);
+					pCellRt->top = min(pCellRt->top, pCellPt[nIndex].y);
+					pCellRt->bottom = max(pCellRt->bottom, pCellPt[nIndex].y);
+					nIndex++;
+				}
+				break;
+
+			case TT_PRIM_QSPLINE:
+				for (int i = 0; i<pSrcCurve->cpfx; i++)
+				{
+					pCellPt[nIndex].x = (float)(*((long*)&pSrcCurve->apfx[i].x) * SYTTPDENOMINATOR);
+					pCellPt[nIndex].y = -(float)(*((long*)&pSrcCurve->apfx[i].y) * SYTTPDENOMINATOR);
+					if (i == 0)
+						pCelln->pttype[nIndex - 1] = point_conic_start;
+					else
+						pCelln->pttype[nIndex - 1] = point_conic;
+					pCelln->pttype[nIndex] = point_conic;
+					pCellRt->left = min(pCellRt->left, pCellPt[nIndex].x);
+					pCellRt->right = max(pCellRt->right, pCellPt[nIndex].x);
+					pCellRt->top = min(pCellRt->top, pCellPt[nIndex].y);
+					pCellRt->bottom = max(pCellRt->bottom, pCellPt[nIndex].y);
+					nIndex++;
+				}
+				break;
+			}
+
+			int nCurLength = sizeof(TTPOLYCURVE) + (pSrcCurve->cpfx - 1) * sizeof(POINTFX);
+			pSrcCurve = (TTPOLYCURVE*)(((BYTE*)pSrcCurve) + nCurLength);
+			nCb -= nCurLength;
+		}
+		nTempSize -= pTempTT->cb;
+		pTempTT = (TTPOLYGONHEADER*)pSrcCurve;
+
+		pGraph->bound.left = min(pGraph->bound.left, pCellRt->left);
+		pGraph->bound.top = min(pGraph->bound.top, pCellRt->top);
+		pGraph->bound.right = max(pGraph->bound.right, pCellRt->right);
+		pGraph->bound.bottom = max(pGraph->bound.bottom, pCellRt->bottom);
+
+		nCellIndex++;
+	}
+}
+
 BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel * pmod)
 {
 	for (int i = 0; i < pmod->nviewsub; i++)
@@ -672,6 +797,7 @@ BASEGRAPH_DATARENDER_API int sy_release_bonedef(SYBoneDef * pbone)
 {
 	if (!pbone)
 		return 0;
+	return 1;
 }
 
 BASEGRAPH_DATARENDER_API void sy_copy_bone(SYBoneDef * pDesBone, SYBoneDef * pSrcBone)
@@ -851,7 +977,571 @@ BOOL SYRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChanne
 	//	}
 	//}
 	return TRUE;
+}
 
+void makemask_invert(unsigned char* pdesmask, unsigned char* psrcmask, int npitch, int nheight)
+{
+	unsigned long * tempdes = (unsigned long*)pdesmask;
+	unsigned long * tempsrc = (unsigned long*)psrcmask;
+	int nwidth = npitch >> 2;
+	for (int i = 0; i <nheight; i++)
+	{
+		for (int j = 0; j < nwidth; j++)
+			tempdes[j] = ~tempsrc[j];
+		tempdes += nwidth;
+		tempsrc += nwidth;
+	}
+}
+
+void makemask_sub(unsigned char* pdesmask,
+	int npitch,
+	int nheight,
+	unsigned char* psrcmask,
+	RECT bound,
+	int srcoffsetx,
+	int srcoffsety,
+	int type)
+{
+	//	if(srcoffsetx > 0 && srcoffsety > 0)
+	{
+		int srcx = bound.right - bound.left;
+		int srcy = bound.bottom - bound.top;
+		//		unsigned char * tempdes = (pdesmask + srcoffsetx + npitch * srcoffsety);
+		//		unsigned char * temporgsrc = (psrcorgmask + srcoffsetx + npitch * srcoffsety);
+		unsigned char * tempsrc = psrcmask - bound.left - bound.top * srcx;
+		unsigned char * tempdes = pdesmask;
+		unsigned char * tempclip = pdesmask;
+
+		int xoffset = srcoffsetx / 2;
+		int yoffset = srcoffsety / 2;
+		int noffset = (yoffset * srcx + xoffset);
+		int  factor = 1;
+
+
+		BYTE bs = 0, be = 0;
+		for (int i = 0; i < nheight; i++)
+		{
+			for (int k = 0; k < npitch; k++)
+			{
+				if (!tempclip[k])
+					continue;
+
+				if (i - yoffset  < bound.top || i - yoffset >= bound.bottom
+					|| k - xoffset   < bound.left || k - xoffset   > bound.right)
+					bs = 0;
+				else
+					bs = tempsrc[k - noffset];
+
+				if (i + yoffset >= bound.bottom || i + yoffset < bound.top
+					|| k + xoffset >= bound.right || k + xoffset < bound.left)
+					be = 0;
+				else
+					be = tempsrc[k + noffset];
+
+				int dif = be - bs;
+				int ndif = abs(dif);
+				factor = 1;
+				if (type != BRIGHT_EDGE && dif < 0) factor = -1;
+				tempdes[k] = 127 + factor * (((ndif >> 1) * tempclip[k] + 0xff) >> 8);
+			}
+			tempdes += npitch;
+			tempclip += npitch;
+			tempsrc += srcx;
+		}
+	}
+}
+
+void makemask_and(unsigned char* pdesmask, unsigned char* psrcorgmask, unsigned char* psrcmask, int srcoffsetx, int srcoffsety, int npitch, int nheight)
+{
+	if (srcoffsetx > 0 && srcoffsety > 0)
+	{
+		unsigned char * tempdes = (pdesmask + srcoffsetx + npitch * srcoffsety);
+		unsigned char * temporgsrc = (psrcorgmask + srcoffsetx + npitch * srcoffsety);
+		unsigned char * tempsrc = psrcmask;
+
+		int nbytewidth = npitch - srcoffsetx;
+		int nbyteheight = nheight - srcoffsety;
+		for (int i = 0; i <nbyteheight; i++)
+		{
+			for (int j = 0; j < nbytewidth; j++)
+				tempdes[j] = (temporgsrc[j] & tempsrc[j]);
+			tempdes += npitch;
+			temporgsrc += npitch;
+			tempsrc += npitch;
+		}
+	}
+	else
+	{
+		unsigned char * tempdes = (unsigned char *)pdesmask;
+		unsigned char * temporgsrc = (unsigned char *)psrcorgmask;
+		unsigned char * tempsrc = (unsigned char *)(psrcmask - srcoffsetx - npitch * srcoffsety);
+		int nbytewidth = npitch + srcoffsetx;
+		int nbyteheight = nheight + srcoffsety;
+		for (int i = 0; i <nbyteheight; i++)
+		{
+			for (int j = 0; j < nbytewidth; j++)
+				tempdes[j] = (temporgsrc[j] & tempsrc[j]);
+			tempdes += npitch;
+			temporgsrc += npitch;
+			tempsrc += npitch;
+		}
+	}
+}
+void makemask_up128(unsigned char* pdesmask, int npitch, int nheight)
+{
+	for (int i = 0; i < nheight; i++)
+	{
+		for (int j = 0; j < npitch; j++)
+		{
+			if (pdesmask[j])
+				pdesmask[j] = (pdesmask[j] >> 1) + 128;
+		}
+		pdesmask += npitch;
+	}
+
+}
+void makemask_down128(unsigned char* pdesmask, int npitch, int nheight)
+{
+	for (int i = 0; i < nheight; i++)
+	{
+		for (int j = 0; j < npitch; j++)
+		{
+			pdesmask[j] = (pdesmask[j] >> 1);
+		}
+		pdesmask += npitch;
+	}
+}
+
+void makemask_or(unsigned char* pdesmask, unsigned char* psrcorgmask, unsigned char* psrcmask, int npitch, int nheight)
+{
+	unsigned char * tempdes = pdesmask;
+	unsigned char * temporgsrc = psrcorgmask;
+	unsigned char * tempsrc = psrcmask;
+
+	int nbytewidth = npitch;
+	int nbyteheight = nheight;
+	for (int i = 0; i <nbyteheight; i++)
+	{
+		for (int j = 0; j < nbytewidth; j++)
+			tempdes[j] = (temporgsrc[j] | tempsrc[j]);
+		tempdes += npitch;
+		temporgsrc += npitch;
+		tempsrc += npitch;
+	}
+}
+
+void makemask_convex(unsigned long* buffer, int nwidth, int nheight, unsigned char* pmaskhighlight, int npitch, int ntype, unsigned long color)
+{
+	unsigned long* pdesbuf = buffer;
+	unsigned char* phmask = pmaskhighlight;
+	unsigned long dwColor;
+	long lrate;
+	int lrateR, lrateG, lrateB;
+	int R, G, B;
+	int cvR = GetRGBA_R(color);
+	int cvG = GetRGBA_G(color);
+	int cvB = GetRGBA_B(color);
+	for (int i = 0; i < nheight; i++)
+	{
+		for (int j = 0; j < nwidth; j++)
+		{
+			//if(phmask[j]==0 && plmask[j] == 0)
+			//	continue;
+			dwColor = buffer[j];
+			if ((dwColor & 0xff000000) == 0)
+				continue;
+			R = GetRGBA_R(dwColor);
+			G = GetRGBA_G(dwColor);
+			B = GetRGBA_B(dwColor);
+
+			//if(plmask[j])
+			{
+				lrate = (phmask[j] - 127) * 4 / 3;
+				lrateR = (lrate * cvR + 0xff) >> 8;
+				lrateG = (lrate * cvG + 0xff) >> 8;
+				lrateB = (lrate * cvB + 0xff) >> 8;
+				if (ntype == STATCEFFECT_TYPE_CONCAVE)
+				{
+					R -= lrateR;
+					G -= lrateG;
+					B -= lrateB;
+				}
+				else if (ntype == STATCEFFECT_TYPE_CONVEX)
+				{
+					R += lrateR;
+					G += lrateG;
+					B += lrateB;
+				}
+			}
+			//if(phmask[j])
+			//{
+			//	hrate = (phmask[j]>>2) * 3;//pdesmask[j] * 2;
+			//	//if(rate > 40)
+			//	//	rate = (255 >>2) *3;
+			//	//else
+			//	//	rate = rate * (((255 >>2) *3)/40);
+			//	if(ntype == STATCEFFECT_TYPE_CONVEX )
+			//	{
+			//		R += hrate;
+			//		G += hrate;
+			//		B += hrate;
+			//	}
+			//	else if(ntype == STATCEFFECT_TYPE_CONCAVE)
+			//	{
+			//		R -= hrate;
+			//		G -= hrate;
+			//		B -= hrate;
+			//	}
+			//	
+			//}
+			if (ntype == STATCEFFECT_TYPE_LIGHT)
+			{
+				R += abs((int)lrateR);
+				G += abs((int)lrateG);
+				B += abs((int)lrateB);
+			}
+			if (R < 0)
+				R = 0;
+			if (G < 0)
+				G = 0;
+			if (B < 0)
+				B = 0;
+
+			if (R > 255)
+				R = 255;
+			if (G > 255)
+				G = 255;
+			if (B > 255)
+				B = 255;
+			buffer[j] = RGBA(R, G, B, GetRGBA_A(dwColor));
+		}
+		phmask += npitch;
+		buffer += nwidth;
+
+
+	}
+}
+
+void _ausdilationcircletable(int* lptable, int nwidth)
+{
+	memset(lptable, 0, sizeof(int) *nwidth * nwidth);
+	float fRad = nwidth / 2.0 - 0.5;
+	int ndRad = SY_FToI(fRad * fRad);
+	int nindex = 0;
+	for (int i = 0; i < nwidth; i++)
+	{
+		for (int k = 0; k< nwidth; k++)
+		{
+			if ((k - fRad) * (k - fRad) + (i - fRad) * (i - fRad) <= ndRad)
+			{
+				lptable[nindex] = 1;
+			}
+			nindex++;
+		}
+	}
+}
+unsigned int _auxmaxmap(LPBYTE lpDes, LPSIZE pSize, int x, int y, int* lptable, int degrees)
+{
+	// 离边缘太远的地方不计算，减少工作量
+	BYTE	dwColor = *(lpDes + (pSize->cx * y + x));
+	if (dwColor != 0)
+	{
+		return dwColor;
+	}
+	int nmax = 0;
+	int nrad = degrees / 2;
+	int nxminoffset = -nrad;
+	if (x + nxminoffset < 0)
+		nxminoffset = -x;
+	int nxmaxoffset = nrad;
+	if (x + nxmaxoffset >= pSize->cx)
+	{
+		nxmaxoffset = pSize->cx - x;
+		return dwColor;
+	}
+	if (nxminoffset >= nxmaxoffset)
+	{
+		return dwColor;
+	}
+
+	int nyminoffset = -nrad;
+	if (y + nyminoffset < 0)
+		nyminoffset = -y;
+	int nymaxoffset = nrad;
+	if (y + nymaxoffset >= pSize->cy)
+	{
+		nymaxoffset = pSize->cy - y;
+		return dwColor;
+	}
+	if (nyminoffset >= nymaxoffset)
+	{
+		return dwColor;
+	}
+
+	unsigned int nmaxvalue = 0;
+	int* pTableline = lptable + (nyminoffset + nrad) * degrees;
+	LPBYTE pDesline = lpDes + (y + nyminoffset) * pSize->cx;
+	for (int i = nyminoffset; i < nymaxoffset; i++)
+	{
+		for (int k = nxminoffset; k < nxmaxoffset; k++)
+		{
+			nmaxvalue = max(nmaxvalue, pDesline[x + k] * pTableline[k + nrad]);
+		}
+		pTableline += degrees;
+		pDesline += pSize->cx;
+	}
+	return nmaxvalue;
+}
+void auxDilation(LPBYTE lpDes, LPSIZE pSize, float fdegrees)
+{
+	int degrees = SY_FToI(fdegrees);
+	if (degrees < 1)
+		degrees = 1;
+	degrees = degrees * 2;
+
+	BYTE* lpD = new BYTE[pSize->cx * pSize->cy];
+	memset(lpD, 0, pSize->cx * pSize->cy);
+	int* lptable = new int[(degrees + 1) * (degrees + 1)];
+	_ausdilationcircletable(lptable, degrees + 1);
+	BYTE* lptempdes = lpD;
+	for (int i = 0; i < pSize->cy; i++)
+	{
+		for (int k = 0; k < pSize->cx; k++)
+		{
+			lptempdes[k] = _auxmaxmap(lpDes, pSize, k, i, lptable, degrees + 1);
+		}
+		lptempdes += pSize->cx;
+	}
+	memcpy(lpDes, lpD, pSize->cx * pSize->cy);
+	delete[] lpD;
+	delete[] lptable;
+	lpD = NULL;
+	lptable = NULL;
+}
+int auxCreateFilterMap(int* pGuass, int degrees)
+{
+	//	1 - 32 ==> 4 - 256
+	{
+		degrees = 14 * degrees + 48;
+		degrees *= degrees;
+		degrees /= 31 * 31;
+	}
+	//	高斯分布函数表达式
+	//	
+	//	f(d) = (1/sqrt(2*PI*t)) * exp( -d2 / 2*t )
+	//	f( d1 + d2 ) = (sqrt(2*PI*t))( f(d1) + f(d2) )
+
+	double dGuass[101];
+	//	 计算高斯分布值
+	{
+		double dt = degrees / 2.0;		//	t
+		double dm = 1 / sqrt(2 * PAIF*dt);	//	1/sqrt(2*PI*t)
+		for (int d = 0; d <= 100; d++)
+		{
+			dGuass[d] = dm * exp(-d*d / (2 * dt));
+		}
+	}
+	//	 对高斯分布值求和
+	double dTotal = 0;
+	{
+		for (int x = 1; x <= 100; x++)
+			for (int y = 0; y <= 100; y++)
+			{
+				dTotal += dGuass[x] * dGuass[y];
+			}
+		dTotal = 1 / (dTotal * 4 + dGuass[0] * dGuass[0]);	//	(x+1)*(x+1) = 4*(x+1)*x+1
+	}
+	int i = 0;
+	for (i = 0; i <= 100; i++)
+	{
+		pGuass[i] = (int)(dGuass[i] * 0x100 / dTotal);
+		if (pGuass[i] == 0)break;
+	}
+	return i;
+}
+void auxExternFilterMap(LPBYTE lpDes, LPSIZE pSize, int* pGuass, int nSign)
+{
+	if (nSign > 2 * pSize->cx)nSign = pSize->cx / 2;
+	if (nSign == 0)return;
+
+	int nDataLength = pSize->cx*pSize->cy;
+	int* pTemp = new int[nDataLength * 2];
+	memset(pTemp, 0, nDataLength * 2 * sizeof(int));
+
+	//	水平方向BLUR
+	{
+		LPBYTE	pSrc = lpDes;
+		LPINT	pDes = pTemp + nDataLength;
+		int		nExt = nSign - 1;
+		int	x, y, xextl = nExt, xextr = pSize->cx - nExt;
+		for (y = 0; y < pSize->cy; y++, pSrc += pSize->cx, pDes += pSize->cx)
+		{
+			for (x = 0; x < pSize->cx; x++)
+			{
+				register int nSrc = pSrc[x];
+				if (nSrc)
+				{
+					int leftext = x < xextl ? x : nExt;
+					int rightext = x > xextr ? (pSize->cx - x) : nExt;
+					for (int i = -leftext; i < 0; i++)
+					{
+						pDes[x + i] += pGuass[-i] * nSrc;
+					}
+					for (int i = 0; i < rightext; i++)
+					{
+						pDes[x + i] += pGuass[i] * nSrc;
+					}
+				}
+			}
+		}
+	}
+
+	//	垂直方向BLUR
+	{
+		LPINT	pSrc = pTemp + nDataLength;
+		LPINT	pDes = pTemp;
+		int		nExt = nSign - 1;
+		int	x, y, yextt = nExt, yextb = pSize->cy - nExt;
+		for (x = 0; x < pSize->cx; x++, pSrc++, pDes++)
+		{
+			for (y = 0; y < pSize->cy; y++)
+			{
+				register int nSrc = pSrc[y*pSize->cx];
+				if (nSrc)
+				{
+					int topext = y < yextt ? y : nExt;
+					int bottomext = y > yextb ? (pSize->cy - y) : nExt;
+					LPINT pDesTemp = pDes + (y - topext)*pSize->cx;
+					for (int i = -topext; i < 0; i++, pDesTemp += pSize->cx)
+					{
+						*pDesTemp += pGuass[-i] * nSrc;
+					}
+					for (int i = 0; i < bottomext; i++, pDesTemp += pSize->cx)
+					{
+						*pDesTemp += pGuass[i] * nSrc;
+					}
+				}
+			}
+		}
+	}
+	{
+		register int nLength = nDataLength;
+		while (nLength--)
+		{
+			if (pTemp[nLength] > 0xFF0000)lpDes[nLength] = 0xFF;
+			else lpDes[nLength] = (BYTE)(pTemp[nLength] >> 16);
+		}
+	}
+	delete pTemp;
+}
+void auxGuassianBlur(LPBYTE lpDes, LPSIZE pSize, int degrees)
+{
+	//	ASSERT( lpDes != NULL && degrees > 0 && degrees <= 100 );
+
+	int nSide = degrees * 2 + 1;
+	int nGuass[101];
+
+	//	 由于计算中会有亮度损失,要恢复亮度	
+	int nTotalPre = 0, nTotalFex = 0;
+	int nLength = pSize->cx*pSize->cy;
+	while (nLength--)nTotalPre += lpDes[nLength];
+
+	int  nSign = auxCreateFilterMap(nGuass, degrees);
+
+	auxExternFilterMap(lpDes, pSize, nGuass, nSign);
+
+	nLength = pSize->cx*pSize->cy;
+	while (nLength--)nTotalFex += lpDes[nLength];
+
+	BYTE	LmulTable[256];
+	double dScales = nTotalPre / (double)nTotalFex;
+	for (int i = 0; i < 256; i++)
+	{
+		if (nTotalFex) {
+			int nLastL = (int)(i * dScales);
+			LmulTable[i] = nLastL > 255 ? 255 : (BYTE)nLastL;
+		}
+		else {
+			LmulTable[i] = i;
+		}
+	}
+	nLength = pSize->cx*pSize->cy;
+	while (nLength--)lpDes[nLength] = LmulTable[lpDes[nLength]];
+}
+void effect_convex(unsigned char* pmask,
+	int nmaskpitch,
+	unsigned long* pbuffer,
+	int nwidth,
+	int nheight,
+	int nborder,
+	int nsoft,
+	int ntype,
+	float fangle,
+	unsigned long color)
+{
+
+	int desx = nmaskpitch + nsoft * 2;
+	int desy = nheight + nsoft * 2;
+	RECT bound = { -nsoft,-nsoft,nmaskpitch + nsoft,nheight + nsoft };
+	//mask
+	unsigned char* pdesmask = new unsigned char[nmaskpitch * nheight];
+	unsigned char* popermask = new unsigned char[desx * desy];
+	memcpy(pdesmask, pmask, sizeof(unsigned char) * nmaskpitch * nheight);
+	memset(popermask, 0, sizeof(unsigned char) * desx * desy);
+
+	unsigned char* ptempsrc = pmask;
+	unsigned char* ptempdes = popermask + nsoft * desx + nsoft;
+	for (int i = 0; i < nheight; i++)
+	{
+		memcpy(ptempdes, ptempsrc, nmaskpitch);
+		ptempdes += desx;
+		ptempsrc += nmaskpitch;
+	}
+
+	SIZE size = { desx,desy };
+	int nOutX = 0;
+	int nOutY = 0;
+	int nOutWidth = desx;
+	int nOutHeight = desy;
+	Gauss_RLE(popermask,	// 目标缓冲区:包含输入缓冲区、输出缓冲区
+		1,		// 象素位数
+		0,		// 输入缓冲区起点坐标 
+		0,
+		desx,		// 输入缓冲区宽、高
+		desy,
+		desx,	// 目标缓冲区宽、高
+		desy,
+		1,
+		nOutX,		// 输出缓冲区起点坐标
+		nOutY,
+		nOutWidth,	// 输出缓冲区宽、高
+		nOutHeight,
+		(float)nsoft,
+		(float)nsoft, -1);
+
+	int nOffsetX, nOffsetY;
+	nOffsetX = nborder * cos(fangle * PAI / 180);
+	nOffsetY = nborder * sin(fangle * PAI / 180);
+	makemask_sub(pdesmask, nmaskpitch, nheight, popermask, bound, nOffsetX, nOffsetY, ntype);
+
+	if (FALSE)
+	{
+		DWORD* pdwBuffer = new DWORD[nmaskpitch * nheight];
+		for (int i = 0; i < nheight; i++)
+		{
+			for (int j = 0; j < nmaskpitch; j++)
+			{
+				BYTE b = pdesmask[i * nmaskpitch + j];
+				pdwBuffer[i * nmaskpitch + j] = 0xff000000 | b << 16 | b << 8 | b;
+			}
+		}
+		BufferFunction::WriteBitmap(_T("E:\\3.bmp"), nmaskpitch, nheight, 32, (BYTE*)pdwBuffer);
+	}
+	makemask_convex(pbuffer, nwidth, nheight, pdesmask, nmaskpitch, ntype, color);
+	delete[] pdesmask;
+	delete[] popermask;
+	pdesmask = NULL;
+	popermask = NULL;
 }
 
 BOOL SYRender_DrawShadow(CSYBuffer* pSrcPool,
@@ -963,7 +1653,6 @@ BOOL SYRender_DrawShadow(CSYBuffer* pSrcPool,
 
 	if (pinfo->soft)
 	{
-		void auxDilation(LPBYTE lpDes, LPSIZE pSize, float degrees);
 		void auxGuassianBlur(LPBYTE lpDes, LPSIZE pSize, int degrees);
 		SIZE size;
 		size.cx = nWidth;
@@ -2050,280 +2739,15 @@ BASEGRAPH_DATARENDER_API void SYRender_GenCubeGraph(vectorgraph * des, vectorgra
 	figure_cube_extend(des, src, voffset, pinfo->width, pinfo->angle, 0);
 }
 
-int  conic_getminpt(point2f* pt, float* t, float* miny, float* minx)
-{
-	float fBase = (pt[0].y - 2 * pt[1].y + pt[2].y);
-	if (abs(fBase) <ABS_FLOAT_0)
-	{
-		*t = 0.f;
-		*miny = -65535.0f;
-		*minx = -65535.0f;
-		return -1;
-	}
-	*t = (pt[0].y - pt[1].y) / fBase;
-	if (*t <= 0)
-	{
-		*miny = pt[0].x;
-		*miny = pt[0].y;
-	}
-	else if (*t >= 1.0f)
-	{
-		*miny = pt[1].x;
-		*miny = pt[1].y;
-	}
-	else
-	{
-		*miny = (1 - *t) * (1 - *t) * pt[0].y + 2 * *t * (1 - *t) * pt[1].y + *t * *t * pt[2].y;
-		*minx = (1 - *t) * (1 - *t) * pt[0].x + 2 * *t * (1 - *t) * pt[1].x + *t * *t * pt[2].x;
-	}
-	return 1;
-}
+int  conic_getminpt(point2f* pt, float* t, float* miny, float* minx);
 
-void  _curve_calcvalue(OUT point2f* ptout, point2f* pt, float t)
-{
-	ptout->y = (1 - t)*(1 - t)*(1 - t)* pt[0].y
-		+ 3 * t * (1 - t) * (1 - t) * pt[1].y
-		+ 3 * t * t * (1 - t) * pt[2].y
-		+ t * t * t * pt[3].y;
+void  _curve_calcvalue(OUT point2f* ptout, point2f* pt, float t);
 
-	ptout->x = (1 - t)*(1 - t)*(1 - t)* pt[0].x
-		+ 3 * t * (1 - t) * (1 - t) * pt[1].x
-		+ 3 * t * t * (1 - t) * pt[2].x
-		+ t * t * t * pt[3].x;
-	return;
-}
+int  curve_getminpt(point2f* pt, float* t, float* miny, float* minx);
 
-int  curve_getminpt(point2f* pt, float* t, float* miny, float* minx)
-{
-	*miny = pt[0].y;
-	*minx = pt[0].x;
-	*t = 0.0f;
-	if (pt[3].y < *miny)
-	{
-		*miny = pt[1].y;
-		*minx = pt[1].x;
-		*t = 1.f;
-	}
+int  cell_get_mindirect(vectorcell*	cell, float* fminy, float* fminx, int* ndirect);
 
-	float a = 3 * pt[1].y - 3 * pt[2].y + pt[3].y - pt[0].y;
-	float b = 2 * pt[0].y - 4 * pt[1].y + 2 * pt[2].y;
-	float c = pt[1].y - pt[0].y;
-
-	float fd = (b * b - 4 * a * c);
-	if (fd < 0)
-	{
-		return 1;
-	}
-	fd = sqrt(fd);
-
-	float mint = (-b + fd) / 2;
-	if (mint > 0 && mint < 1.0f)
-	{
-		point2f ptout;
-		_curve_calcvalue(&ptout, pt, mint);
-		if (ptout.y < *miny)
-		{
-			*miny = ptout.y;
-			*minx = ptout.x;
-			*t = mint;
-		}
-	}
-	mint = (-b - fd) / 2;
-	if (mint > 0 && mint < 1.0f)
-	{
-		point2f ptout;
-		_curve_calcvalue(&ptout, pt, mint);
-		if (ptout.y < *miny)
-		{
-			*miny = ptout.y;
-			*minx = ptout.x;
-			*t = mint;
-		}
-	}
-	return 1;
-}
-
-int  cell_get_mindirect(vectorcell*	cell, float* fminy, float* fminx, int* ndirect)
-{
-	if (cell->npoint == 0)
-		return 0;
-	*fminx = 65535.0f, *fminy = 65535.0f;
-	point2f pt[3];
-	int nindex;
-
-	for (int i = 0; i < cell->npoint; i++)
-	{
-		if (cell->pttype[i] == point_line)
-		{
-			if (*fminy > cell->point[i].y)
-			{
-				*fminy = cell->point[i].y;
-				nindex = i;
-				pt[1] = cell->point[i];
-				int nprv = (i - 1 + cell->npoint) % cell->npoint;
-				int nnext = (i + 1) % cell->npoint;
-				do
-				{
-					if (nprv == i)
-						return 0;
-					//_asm int 3;
-					pt[0] = cell->point[nprv];
-					nprv = (nprv - 1 + cell->npoint) % cell->npoint;
-				} while (float2Equal(&pt[1], &pt[0]));
-
-				do
-				{
-					if (nnext == i)
-						return 0;
-					//_asm int 3;
-					pt[2] = cell->point[nnext];
-					nnext = (nnext + 1) % cell->npoint;
-				} while (float2Equal(&pt[1], &pt[2]));
-
-				if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
-				{
-					*ndirect = -1;
-				}
-				else
-					*ndirect = 1;
-
-			}
-		}
-		else if (cell->pttype[i] == point_conic_start)
-		{
-			int nconiccount = 1;
-			for (int k = i + 1; k < cell->npoint; k++)
-			{
-				if (cell->pttype[k] == point_conic)
-					nconiccount++;
-			}
-			nconiccount += 1;
-
-
-			point2f pt[3];
-
-			for (int k = 1; k < nconiccount - 1; k++)
-			{
-				if (k == 0)
-					pt[0] = cell->point[i + k - 1];
-				else
-					pt[0] = (cell->point[i + k] + cell->point[(i + k - 1 + cell->npoint) % cell->npoint]) / 2;
-				pt[1] = cell->point[i + k];
-
-				if (k == nconiccount - 2)
-					pt[2] = cell->point[(i + k + 1) % cell->npoint];
-				else
-					pt[2] = (cell->point[i + k] + cell->point[(i + k + 1) % cell->npoint]) / 2;
-				float t, y, x;
-				conic_getminpt(pt, &t, &y, &x);
-				if (*fminy > y)
-				{
-					if (t < ABS_FLOAT_0)
-						*ndirect = -1;
-					//else if(abs(t - 1) < ABS_FLOAT_0)
-					//	*ndirect = -1;
-					else
-					{
-						if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
-							*ndirect = -1;
-						else
-							*ndirect = 1;
-					}
-
-
-					*fminy = y;
-					*fminx = x;
-					nindex = i + k;
-				}
-			}
-		}
-		else if (cell->pttype[i] == point_curve_start || cell->pttype[i] == point_curve)
-		{
-			int ncurvecount = 1;
-			for (int k = i + 1; k < cell->npoint; k++)
-			{
-				if (cell->pttype[k] == point_curve)
-				{
-					ncurvecount++;
-				}
-				else
-					break;
-			}
-			ncurvecount += 1;
-
-			point2f pt[4];
-			int nindex;
-			for (int k = 0; k < ncurvecount - 1; k += 3)
-			{
-				pt[0] = cell->point[(i + k) % cell->npoint];
-				pt[1] = cell->point[(i + k + 1) % cell->npoint];
-				pt[2] = cell->point[(i + k + 2) % cell->npoint];
-				pt[3] = cell->point[(i + k + 3) % cell->npoint];
-
-				float t, y, x;
-
-				curve_getminpt(pt, &t, &y, &x);
-				if (*fminy > y)
-				{
-					if (t < ABS_FLOAT_0)
-					{
-						*ndirect = -1;
-
-						if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
-							*ndirect = -1;
-						else
-							*ndirect = 1;
-					}
-					else if (abs(t - 1) < ABS_FLOAT_0)
-					{
-						*ndirect = 1;
-						if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
-							*ndirect = -1;
-						else
-							*ndirect = 1;
-						//if(SYOC_PtOnRight(pt[2],pt[3],cell->point[(i + k + 1) % cell->npoint]))
-						//	*ndirect = -1;
-						//else
-						//	*ndirect = -1;
-					}
-					else
-					{
-						if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
-							*ndirect = 1;
-						else
-							*ndirect = -1;
-
-					}
-
-					*fminy = y;
-					*fminx = x;
-					nindex = i + k;
-				}
-			}
-			i += ncurvecount - 1;
-		}
-	}
-	return 1;
-}
-
-int  figure_analyzedirect(vectorgraph* graph)
-{
-	float fminy = 65535.0f;
-	int nDirect = 0;
-	for (int i = 0; i < graph->ncell; i++)
-	{
-		vectorcell* pcell = &graph->cell[i];
-		float x, y;
-		int d;
-		cell_get_mindirect(pcell, &y, &x, &d);
-		if (y < fminy)
-		{
-			nDirect = d;
-			fminy = y;
-		}
-	}
-	return nDirect;
-}
+int  figure_analyzedirect(vectorgraph* graph);
 
 float GetCurveDistance(const CSYPoint2fPtrArray* pptrArr)
 {
@@ -4665,222 +5089,6 @@ BASEGRAPH_DATARENDER_API void CopyCell(vectorcell * pdescell, vectorcell * psrcc
 	}
 }
 
-void makemask_sub(unsigned char* pdesmask,
-	int npitch,
-	int nheight,
-	unsigned char* psrcmask,
-	RECT bound,
-	int srcoffsetx,
-	int srcoffsety,
-	int type)
-{
-	//	if(srcoffsetx > 0 && srcoffsety > 0)
-	{
-		int srcx = bound.right - bound.left;
-		int srcy = bound.bottom - bound.top;
-		//		unsigned char * tempdes = (pdesmask + srcoffsetx + npitch * srcoffsety);
-		//		unsigned char * temporgsrc = (psrcorgmask + srcoffsetx + npitch * srcoffsety);
-		unsigned char * tempsrc = psrcmask - bound.left - bound.top * srcx;
-		unsigned char * tempdes = pdesmask;
-		unsigned char * tempclip = pdesmask;
-
-		int xoffset = srcoffsetx / 2;
-		int yoffset = srcoffsety / 2;
-		int noffset = (yoffset * srcx + xoffset);
-		int  factor = 1;
-
-
-		BYTE bs = 0, be = 0;
-		for (int i = 0; i < nheight; i++)
-		{
-			for (int k = 0; k < npitch; k++)
-			{
-				if (!tempclip[k])
-					continue;
-
-				if (i - yoffset  < bound.top || i - yoffset >= bound.bottom
-					|| k - xoffset   < bound.left || k - xoffset   > bound.right)
-					bs = 0;
-				else
-					bs = tempsrc[k - noffset];
-
-				if (i + yoffset >= bound.bottom || i + yoffset < bound.top
-					|| k + xoffset >= bound.right || k + xoffset < bound.left)
-					be = 0;
-				else
-					be = tempsrc[k + noffset];
-
-				int dif = be - bs;
-				int ndif = abs(dif);
-				factor = 1;
-				if (type != BRIGHT_EDGE && dif < 0) factor = -1;
-				tempdes[k] = 127 + factor * (((ndif >> 1) * tempclip[k] + 0xff) >> 8);
-			}
-			tempdes += npitch;
-			tempclip += npitch;
-			tempsrc += srcx;
-		}
-	}
-}
-
-void makemask_convex(unsigned long* buffer, int nwidth, int nheight, unsigned char* pmaskhighlight, int npitch, int ntype, unsigned long color)
-{
-	unsigned long* pdesbuf = buffer;
-	unsigned char* phmask = pmaskhighlight;
-	unsigned long dwColor;
-	long lrate;
-	int lrateR, lrateG, lrateB;
-	int R, G, B;
-	int cvR = GetRGBA_R(color);
-	int cvG = GetRGBA_G(color);
-	int cvB = GetRGBA_B(color);
-	for (int i = 0; i < nheight; i++)
-	{
-		for (int j = 0; j < nwidth; j++)
-		{
-			//if(phmask[j]==0 && plmask[j] == 0)
-			//	continue;
-			dwColor = buffer[j];
-			if ((dwColor & 0xff000000) == 0)
-				continue;
-			R = GetRGBA_R(dwColor);
-			G = GetRGBA_G(dwColor);
-			B = GetRGBA_B(dwColor);
-
-			//if(plmask[j])
-			{
-				lrate = (phmask[j] - 127) * 4 / 3;
-				lrateR = (lrate * cvR + 0xff) >> 8;
-				lrateG = (lrate * cvG + 0xff) >> 8;
-				lrateB = (lrate * cvB + 0xff) >> 8;
-				if (ntype == STATCEFFECT_TYPE_CONCAVE)
-				{
-					R -= lrateR;
-					G -= lrateG;
-					B -= lrateB;
-				}
-				else if (ntype == STATCEFFECT_TYPE_CONVEX)
-				{
-					R += lrateR;
-					G += lrateG;
-					B += lrateB;
-				}
-			}
-			//if(phmask[j])
-			//{
-			//	hrate = (phmask[j]>>2) * 3;//pdesmask[j] * 2;
-			//	//if(rate > 40)
-			//	//	rate = (255 >>2) *3;
-			//	//else
-			//	//	rate = rate * (((255 >>2) *3)/40);
-			//	if(ntype == STATCEFFECT_TYPE_CONVEX )
-			//	{
-			//		R += hrate;
-			//		G += hrate;
-			//		B += hrate;
-			//	}
-			//	else if(ntype == STATCEFFECT_TYPE_CONCAVE)
-			//	{
-			//		R -= hrate;
-			//		G -= hrate;
-			//		B -= hrate;
-			//	}
-			//	
-			//}
-			if (ntype == STATCEFFECT_TYPE_LIGHT)
-			{
-				R += abs((int)lrateR);
-				G += abs((int)lrateG);
-				B += abs((int)lrateB);
-			}
-			if (R < 0)
-				R = 0;
-			if (G < 0)
-				G = 0;
-			if (B < 0)
-				B = 0;
-
-			if (R > 255)
-				R = 255;
-			if (G > 255)
-				G = 255;
-			if (B > 255)
-				B = 255;
-			buffer[j] = RGBA(R, G, B, GetRGBA_A(dwColor));
-		}
-		phmask += npitch;
-		buffer += nwidth;
-
-
-	}
-}
-
-BASEGRAPH_DATARENDER_API void effect_convex(unsigned char * pmask, int nmaskpitch, unsigned long * pbuffer, int nwidth, int nheight, int nborder, int nsoft, int ntype, float fangle, unsigned long color)
-{
-	int desx = nmaskpitch + nsoft * 2;
-	int desy = nheight + nsoft * 2;
-	RECT bound = { -nsoft,-nsoft,nmaskpitch + nsoft,nheight + nsoft };
-	//mask
-	unsigned char* pdesmask = new unsigned char[nmaskpitch * nheight];
-	unsigned char* popermask = new unsigned char[desx * desy];
-	memcpy(pdesmask, pmask, sizeof(unsigned char) * nmaskpitch * nheight);
-	memset(popermask, 0, sizeof(unsigned char) * desx * desy);
-
-	unsigned char* ptempsrc = pmask;
-	unsigned char* ptempdes = popermask + nsoft * desx + nsoft;
-	for (int i = 0; i < nheight; i++)
-	{
-		memcpy(ptempdes, ptempsrc, nmaskpitch);
-		ptempdes += desx;
-		ptempsrc += nmaskpitch;
-	}
-
-	SIZE size = { desx,desy };
-	int nOutX = 0;
-	int nOutY = 0;
-	int nOutWidth = desx;
-	int nOutHeight = desy;
-	Gauss_RLE(popermask,	// 目标缓冲区:包含输入缓冲区、输出缓冲区
-		1,		// 象素位数
-		0,		// 输入缓冲区起点坐标 
-		0,
-		desx,		// 输入缓冲区宽、高
-		desy,
-		desx,	// 目标缓冲区宽、高
-		desy,
-		1,
-		nOutX,		// 输出缓冲区起点坐标
-		nOutY,
-		nOutWidth,	// 输出缓冲区宽、高
-		nOutHeight,
-		(float)nsoft,
-		(float)nsoft, -1);
-
-	int nOffsetX, nOffsetY;
-	nOffsetX = nborder * cos(fangle * PAI / 180);
-	nOffsetY = nborder * sin(fangle * PAI / 180);
-	makemask_sub(pdesmask, nmaskpitch, nheight, popermask, bound, nOffsetX, nOffsetY, ntype);
-
-	if (FALSE)
-	{
-		DWORD* pdwBuffer = new DWORD[nmaskpitch * nheight];
-		for (int i = 0; i < nheight; i++)
-		{
-			for (int j = 0; j < nmaskpitch; j++)
-			{
-				BYTE b = pdesmask[i * nmaskpitch + j];
-				pdwBuffer[i * nmaskpitch + j] = 0xff000000 | b << 16 | b << 8 | b;
-			}
-		}
-		BufferFunction::WriteBitmap(_T("E:\\3.bmp"), nmaskpitch, nheight, 32, (BYTE*)pdwBuffer);
-	}
-	makemask_convex(pbuffer, nwidth, nheight, pdesmask, nmaskpitch, ntype, color);
-	delete[] pdesmask;
-	delete[] popermask;
-	pdesmask = NULL;
-	popermask = NULL;
-}
-
 void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3dcolor, int nSubFace, LPSYStretchParam pStretchParam)
 {
 	if (pStretchParam == NULL)
@@ -4960,26 +5168,7 @@ void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3
 	vg_release(&NewFigure);
 }
 
-int  cell_get_group_ptcount(vectorcell*	srccell, int nstart, int type)
-{
-	int nptcount = srccell->npoint;
-	int ncurvercount = 1;
-	int nend = 0;
-	for (int i = nstart + 1; i < nptcount; i++)
-	{
-		ncurvercount++;
-		if (srccell->pttype[i] != type)
-		{
-			nend = 1;
-			break;
-		}
-	}
-	if (!nend)
-	{
-		ncurvercount += 1;
-	}
-	return ncurvercount;
-}
+int  cell_get_group_ptcount(vectorcell*	srccell, int nstart, int type);
 
 //单条二次曲线的扩展
 int  conic_extend(SYArray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf startoffset, pointf endoffset, float fwidth, int ndirect, SYArray* lenArray = NULL, float* fAllLen = NULL)
@@ -5028,105 +5217,7 @@ int  conic_extend(SYArray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf s
 	return 1;
 }
 
-int  conic_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, SYArray* plenArray, float* pfalllen)
-{
-
-	pointf pt1, pt2, pt3;
-	pointf ptstartoffset, ptendoffset, ptnormal;
-	int nindex = nstart;
-	int ncurvercount = cell_get_group_ptcount(cell, nstart, point_conic);
-	//first curver,for conic,the first curver is particular
-	//it need three point ,pt1,pt2,pt3,for the first ,pt1 is  the first pt,
-	//pt2 is the second point,pt3 is the mid of the second and third;
-	//for the mid curver,pt1 is the mid of the first and the second,the pt2 is
-	//the second ,the pt3 is the mid of the second and third;
-	//for the last curver ,pt1 is the mid of the first and the second,the pt2 is
-	//the second ,the pt3 is the last pt;
-
-	pt1 = cell->point[nindex];
-	pt2 = cell->point[nindex + 1];
-	if (ncurvercount == 3)
-	{
-		pt3 = cell->point[nindex + 2];
-	}
-	else
-		pt3 = (cell->point[nindex + 1] + cell->point[nindex + 2]) * 0.5f;
-
-	do {
-
-		//if(pt1 == pt2 || pt2 == pt3)
-		//{
-		//	pointf& 
-		//	line_extend(OUT pointf& ptoutstart,pointf& ptoutend,
-		//		IN pointf& ptinstart,pointf& ptinend,
-		//		IN int ndirect,IN float fwidth)
-		//}
-		//计算开始点和终止点的偏移
-		if (pt1 == pt2)
-		{
-			if (pt2 == pt3)
-			{
-				goto next_conic_loop;
-			}
-			line_vertical_normalizing(&ptnormal, &pt1, &pt3, ndirect);
-		}
-		else
-		{
-			line_vertical_normalizing(&ptnormal, &pt1, &pt2, ndirect);
-		}
-		ptstartoffset = pt1 + ptnormal * fwidth;
-
-
-		if (pt2 == pt3)
-		{
-			ptendoffset = pt3 + ptnormal * fwidth;
-		}
-		else
-		{
-			line_vertical_normalizing(&ptnormal, &pt2, &pt3, ndirect);
-			ptendoffset = pt3 + ptnormal * fwidth;
-		}
-
-		if (*(DWORD*)&ptstartoffset.x == 0xffc00000)
-		{
-			assert(FALSE);
-			//_asm int 3;
-		}
-		if (*(DWORD*)&ptendoffset.x == 0xffc00000)
-		{
-			assert(FALSE);
-			//_asm int 3;
-		}
-
-		//扩展
-		conic_extend(ptArray, pt1, pt2, pt3, ptstartoffset, ptendoffset, fwidth, ndirect, plenArray, pfalllen);
-
-
-
-		//下一组点
-	next_conic_loop:
-		nindex++;
-		if (nindex > nstart + ncurvercount - 3)
-			break;
-		pt1 = pt3;
-		pt2 = cell->point[(nindex + 1) % cell->npoint];
-		if (nindex > nstart + ncurvercount - 3)
-			break;
-		else if (nindex == nstart + ncurvercount - 3)
-			pt3 = cell->point[(nindex + 2) % cell->npoint];
-		else
-			pt3 = (cell->point[(nindex + 1) % cell->npoint] + cell->point[(nindex + 2) % cell->npoint]) * 0.5f;
-
-	} while (nindex <= nstart + ncurvercount - 3);
-
-
-	//if reach last,return -1;
-	if (nstart + ncurvercount >= cell->npoint)
-		return -1;
-
-	//else if not ,return the index of next point.
-	return nstart + ncurvercount - 1;
-}
+int  conic_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, SYArray* plenArray, float* pfalllen);
 
 int  bezier_extend(OUT SYArray* ptArray,
 	IN pointf pt1,

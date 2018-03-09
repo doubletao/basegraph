@@ -4203,24 +4203,26 @@ void SYText_CopySymbol(LPSYTextSymbol pDes, LPSYTextSymbol pSrc)
 	pDes->hHandle = pSrc->hHandle;
 	pDes->lpParam = pSrc->lpParam;
 }
-//////////////////////////////////////////////////////////////////////////
-//void TypesetInterface_Lock(LPVOID pInterfaceParam)
-//{
-//	if (pInterfaceParam != NULL)
-//	{
-//		CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-//		pEnv->GetBaseObject()->Lock();
-//	}
-//}
-//
-//void TypesetInterface_UnLock(LPVOID pInterfaceParam)
-//{
-//	if (pInterfaceParam != NULL)
-//	{
-//		CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-//		pEnv->GetBaseObject()->UnLock();
-//	}
-//}
+////////////////////////////////////////////////////////////////////////
+void TypesetInterface_Lock(LPVOID pInterfaceParam)
+{
+	assert(false);
+	//if (pInterfaceParam != NULL)
+	//{
+	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
+	//	pEnv->GetBaseObject()->Lock();
+	//}
+}
+
+void TypesetInterface_UnLock(LPVOID pInterfaceParam)
+{
+	assert(false);
+	//if (pInterfaceParam != NULL)
+	//{
+	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
+	//	pEnv->GetBaseObject()->UnLock();
+	//}
+}
 
 void TypesetInterface_OnAddUnit(BOOL bKeepBalance, LPVOID pInterfaceParam)
 {

@@ -99,3 +99,18 @@ BOOL CommonFunction::IsFileExists(const CString & strSrcFilePath)
 
 	return  (_taccess(strSrcFilePath, 00) == 0);
 }
+
+CString CommonFunction::GetFilePath(LPCTSTR szFullPathFileName)
+{
+	CString strPath(szFullPathFileName);
+	int nPos = strPath.ReverseFind(_T('\\'));
+	if (nPos<0)
+		nPos = strPath.ReverseFind(_T('/'));
+
+	if (nPos >= 0)
+		strPath = strPath.Left(nPos + 1);
+	else
+		strPath.Empty();
+
+	return strPath;
+}

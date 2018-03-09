@@ -3,9 +3,9 @@
 
 //////////////////////////////////////////////////////////////////////////
 //缺省字体、缺省中文字体、预制用字符。
-BASEGRAPH_DATARENDER_API TCHAR			g_strDefFontFacename[LF_FACESIZE] = _T("Arial");
-BASEGRAPH_DATARENDER_API TCHAR			g_strDefChnFontFacename[LF_FACESIZE] = _T("宋体");
-BASEGRAPH_DATARENDER_API TCHAR			g_strPredefSample[8] = _T("A");
+extern TCHAR g_strDefFontFacename[LF_FACESIZE];
+extern TCHAR g_strDefChnFontFacename[LF_FACESIZE];
+extern TCHAR g_strPredefSample[8];
 LPCTSTR	GetDefaultFontFaceName()
 {
 	return g_strDefFontFacename;

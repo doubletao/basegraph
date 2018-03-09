@@ -31,3 +31,8 @@ BASEGRAPH_DATARENDER_API void tag_sybonedef::Reset()
 	memset(name, 0, 128 * sizeof(TCHAR));
 	memset(&pboneoffVMatrix, 0, sizeof(matrix4f));
 }
+
+BASEGRAPH_DATARENDER_API void tag_symodel::Reset()
+{
+	memset(this, 0, sizeof(SYModel));
+}

@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <map>
-#include "Common\ColorDef.h"
 using BaseGraph_Common::Value;
 
 namespace BaseGraph_DataBase

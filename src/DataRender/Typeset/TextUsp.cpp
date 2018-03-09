@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "TextUsp.h"
+#include "DataRender\TextDrawer.h"
 #include <algorithm>
 #include <functional>
 using namespace std;

@@ -6,10 +6,13 @@
 #include "DataRender\BevelPoly.h"
 #include "DataRender\DataRenderUtityFunc.h"
 #include "DataRender\TriangulateApp.h"
+#include "DataRender\3DPieModeling.h"
 #include <vector>
 #include <stdio.h>
 #include <atlstr.h>
 #include <list>
+#include <algorithm>
+using std::vector;
 
 struct SYTriangle
 {
@@ -11130,7 +11133,7 @@ BOOL GetKey(CString& szText,LPCTSTR szKey)
 	return TRUE;
 }
 
-BOOL GetKey(CString& szText,LPCTSTR szKey,vector<CString>& ArgList)
+BOOL GetKey(CString& szText,LPCTSTR szKey,std::vector<CString>& ArgList)
 {
 	szText = szText.Right(szText.GetLength() - _tcslen(szKey));
 	szText.Trim();
@@ -11150,7 +11153,7 @@ BOOL GetKey(CString& szText,LPCTSTR szKey,vector<CString>& ArgList)
 
 	return TRUE;
 }
-BOOL GetFace(CString& szText,vector<int>& ArgList)
+BOOL GetFace(CString& szText, std::vector<int>& ArgList)
 {
 	ArgList.clear();
 	CString szArg;
@@ -11264,13 +11267,13 @@ SYVertex3D TransFace(vector<int>& FaceList,
 BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 {
 	FILE* pLibFile = NULL;
-	pLibFile = _tfopen(szLibFile,_T("r"));
+	_tfopen_s(&pLibFile,szLibFile,_T("r"));
 	if(!pLibFile)
 		return FALSE;
 
 	OBJMATLIB* pLastMATLIB = NULL;
 	BOOL bUseSpecular = TRUE;
-	CString szPath = SYGetFilePath(szLibFile);
+	CString szPath = CommonFunction::GetFilePath(szLibFile);
 	vector<CString> ArgList;
 	TCHAR szLine[2048];
 	while(_fgetts(szLine,1024,pLibFile))
@@ -11479,13 +11482,4 @@ SYModel* MakeModel( SYModel* pNewModel,
 	}
 	//SYCreateTangent(pNewModel->v,nV,pNewModel->indecs,pNewModel->icount,0,SY_TRIANGLE_LIST);
 	return pNewModel;
-}
-
-static void Float4ToDWORDColor(DWORD* pColorOut , const float4& ColorIn)
-{
-	int b = (int)(ColorIn.z * 255) & 0xff;
-	int g = (int)(ColorIn.y * 255) & 0xff;
-	int r = (int)(ColorIn.x * 255) & 0xff;
-	int a = (int)(ColorIn.w * 255) & 0xff;
-	*pColorOut = BGRA(b,g,r,a);
 }

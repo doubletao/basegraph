@@ -113,11 +113,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\DataBase\DataTypeDef.cpp" />
     <ClCompile Include="Algorithm\3DGeometry.cpp" />
+    <ClCompile Include="Algorithm\3DPieModeling.cpp" />
     <ClCompile Include="Algorithm\AlgorithmRip.cpp" />
     <ClCompile Include="Algorithm\Arc2BezierAPI.cpp" />
     <ClCompile Include="Algorithm\BevelPoly.cpp" />
+    <ClCompile Include="Algorithm\LineAPI.cpp" />
     <ClCompile Include="Algorithm\OffsetCurve.cpp" />
     <ClCompile Include="Algorithm\ShapeForm.cpp" />
     <ClCompile Include="Algorithm\TriangulateApp.cpp" />
@@ -138,6 +139,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Typeset\TextDrawer.cpp" />
     <ClCompile Include="Typeset\TextParagraph.cpp" />
     <ClCompile Include="Typeset\TextTypeset.cpp" />
     <ClCompile Include="Typeset\TextTypesetDataAPI.cpp" />
@@ -145,16 +147,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\DataRender\3DGeometry.h" />
+    <ClInclude Include="..\..\include\DataRender\3DPieModeling.h" />
     <ClInclude Include="..\..\include\DataRender\AlgorithmRip.h" />
     <ClInclude Include="..\..\include\DataRender\Arc2BezierAPI.h" />
     <ClInclude Include="..\..\include\DataRender\BevelPoly.h" />
     <ClInclude Include="..\..\include\DataRender\DataRenderDataDef.h" />
     <ClInclude Include="..\..\include\DataRender\DataRenderUtityFunc.h" />
     <ClInclude Include="..\..\include\DataRender\DrawTextDef.h" />
+    <ClInclude Include="..\..\include\DataRender\LineAPI.h" />
     <ClInclude Include="..\..\include\DataRender\MaterialDef.h" />
     <ClInclude Include="..\..\include\DataRender\OffsetCurve.h" />
     <ClInclude Include="..\..\include\DataRender\RipRender.h" />
     <ClInclude Include="..\..\include\DataRender\ShapeForm.h" />
+    <ClInclude Include="..\..\include\DataRender\TextDrawer.h" />
     <ClInclude Include="..\..\include\DataRender\TriangulateApp.h" />
     <ClInclude Include="..\..\include\ExportDataRender.h" />
     <ClInclude Include="CalculatorFactory.h" />

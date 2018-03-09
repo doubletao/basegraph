@@ -11,4 +11,5 @@ public:
 	static void GetPathAndName(const CString &strSrcFilePath, CString &strPath, CString &strName);//根据文件全名获取文件路径及文件名
 	static CString ConverFrameToText(int nFrame, float fFPS = 25.0);
 	static BOOL IsFileExists(const CString &strSrcFilePath);//判定文件是否存在
+	static CString GetFilePath(LPCTSTR szFullPathFileName);
 };

@@ -81,9 +81,6 @@
     <ClCompile Include="DataRenderUtityFunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\DataBase\DataTypeDef.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Algorithm\AlgorithmRip.cpp">
       <Filter>Algorithm</Filter>
     </ClCompile>
@@ -104,6 +101,15 @@
     </ClCompile>
     <ClCompile Include="Algorithm\ShapeForm.cpp">
       <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\3DPieModeling.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\LineAPI.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextDrawer.cpp">
+      <Filter>TitleWord</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +196,15 @@
     </ClInclude>
     <ClInclude Include="..\..\include\DataRender\ShapeForm.h">
       <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\3DPieModeling.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\LineAPI.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\TextDrawer.h">
+      <Filter>TitleWord</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
