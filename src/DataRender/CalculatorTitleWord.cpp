@@ -401,6 +401,7 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 		if (pHalBuffer)
 		{		
 				int hTransTex = DXTextureManager_QueryTexture(DXTexture_MemTexture, facew, faceh);
+				//djt 这里的pos计算有问题，待纠正
 				DX3DEngine_UpLoad(pHalBuffer->m_hTex, nDevice, hTransTex,
 					pRenderUnit->pos.x, 60 * i/*pRenderUnit->pos.x*/, facew, faceh, pBufferPool->m_dwBuffer, 0, 0, facew, faceh, facew, faceh);
 				if (0)
