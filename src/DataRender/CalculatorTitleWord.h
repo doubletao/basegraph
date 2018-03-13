@@ -12,6 +12,8 @@ protected:
 	CSYTypeset m_TypeSet;
 	SYText m_text;
 	rectf m_rtUnitBound;//根据unit算出来的静态bound
+protected:
+	bool PrepareObjBuffer(int nWidth, int nHeight);
 public:
 	virtual bool UpdateRenderBuffer();
 	virtual rectf CalUnitBound();
@@ -21,4 +23,5 @@ public:
 	virtual SYText * GetText();
 	virtual SYArray * Get2DTextRenderUnitArray();
 	virtual void DeleteRenderUnitView(LPCTSTR szUnitID);
+	virtual void RenderUnitBufferForGpu();
 };

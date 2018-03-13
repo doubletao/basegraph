@@ -61,6 +61,16 @@ BOOL CDataRenderApp::InitInstance()
 	CWinApp::InitInstance();
 	//初始化typeset
 	SYTypeset_InitInterfaceEnv();
+	//初始化栅格化表
+	rip_init_table();
 
 	return TRUE;
+}
+
+int CDataRenderApp::ExitInstance()
+{
+	//释放栅格化表
+	rip_release_table();
+	int nRet = CWinApp::ExitInstance();
+	return nRet;
 }

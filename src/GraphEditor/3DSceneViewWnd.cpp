@@ -127,6 +127,9 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 						DX3DEngine_ClearTexture(hDevice, hSwapChainBuffer, RGBA(255, 125, 125, 255));
 						DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain);
 						DX3DEngine_UnLock(hDevice);
+						DXTextureManager_UnQueryTexture(hTex);
+						DXTextureManager_UnQueryTexture(hDepth);
+						ResetEvent(pThis->m_hSeekReadyEvent);
 						continue;
 					}
 

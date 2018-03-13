@@ -6,6 +6,8 @@ class CalculatorManager
 {
 private:
 	std::map<CString, ObjectCalculator * > m_mapObjCalculator;//物件ID和物件计算器的键值对
+	float m_fScale;
+	int m_nFrame;
 private:
 	CalculatorManager();
 	~CalculatorManager();
@@ -27,5 +29,8 @@ public:
 	bool SetItemSelected(IN CString strID, OPTIONAL bool & bSel);//bSel会返回之前的状态
 	bool SetItemSelected(IN CString strID, IN const bool &  bSel);
 	bool ClearAllSelect();
+
+	float GetScale();
+	int GetFrame();
 };
 

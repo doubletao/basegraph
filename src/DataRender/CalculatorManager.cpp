@@ -8,6 +8,8 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 CalculatorManager::CalculatorManager()
+	: m_fScale(1.0f)
+	, m_nFrame(0)
 {
 }
 
@@ -164,4 +166,14 @@ bool CalculatorManager::ClearAllSelect()
 		}
 	}
 	return true;
+}
+
+float CalculatorManager::GetScale()
+{
+	return m_fScale;
+}
+
+int CalculatorManager::GetFrame()
+{
+	return m_nFrame;
 }

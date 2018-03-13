@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CalculatorTitleWord.h"
+#include "CalculatorManager.h"
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
@@ -12,6 +13,21 @@ CalculatorTitleword::CalculatorTitleword(CString strObjID)
 
 CalculatorTitleword::~CalculatorTitleword()
 {
+}
+
+bool CalculatorTitleword::PrepareObjBuffer(int nWidth, int nHeight)
+{
+	if (nWidth > 0
+		&& nHeight > 0)
+	{
+		DataBufferManager::Instance().UnQuery2DBuffer(m_nObjBufferID);
+		m_nObjBufferID = DataBufferManager::Instance().Query2DBuffer(nWidth, nHeight);
+		if (m_nObjBufferID > 0)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 bool CalculatorTitleword::UpdateRenderBuffer()
@@ -69,6 +85,17 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 			//拿到宽高
 			int nWidth = GetWidth();
 			int nHeight = GetHeight();
+
+			m_emChgLevel = ChgLevel_Create;
+
+			if (nWidth > 0 && nHeight > 0)
+			{
+				//准备buf
+				if (PrepareItemHalBufer(DX3DEngine_GetMainDevice()))
+				{
+					RenderUnitBufferForGpu();
+				}
+			}
 		}
 	}
 	return false;
@@ -88,10 +115,10 @@ rectf CalculatorTitleword::CalUnitBound()
 	vector3f v3d[4] = { 0 };
 	for (int i = 0; i<nRenderCount; i++)
 	{
-		SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(&arRenderUnitArray, i);
+		SYUnit* pRenderUnit = (SYUnit*)SYAR_GetAt(&arRenderUnitArray, i);
 		
 		vector3f v = { 0,0,0 };
-		v *= pRenderUnit->m_VSelfMatrix;
+		v *= pRenderUnit->MatVToItem;
 		POINT ptPos;
 		//djt 暂时不往上追父矩阵
 		//pEnv->ItemToScene(v);
@@ -117,17 +144,17 @@ rectf CalculatorTitleword::CalUnitBound()
 		//计算每一个Unit的矩形
 		matrix4f matBuffer;
 		SceneToBufferMat(&matBuffer, 0, 0);
-		matBuffer = pRenderUnit->m_VSelfMatrix * matBuffer;
-		CalcBufferProjectSize(pRenderUnit->m_frtBound,
+		matBuffer = pRenderUnit->MatVToItem * matBuffer;
+		CalcBufferProjectSize(pRenderUnit->u.u2d.graph.bound,
 			v3d,
 			fbound,
 			&matBuffer);
 
 		//计算总体的矩形
-		m_rtUnitBound.left = min(m_rtUnitBound.left, pRenderUnit->m_frtBound.left);
-		m_rtUnitBound.right = max(m_rtUnitBound.right, pRenderUnit->m_frtBound.right);
-		m_rtUnitBound.top = min(m_rtUnitBound.top, pRenderUnit->m_frtBound.top);
-		m_rtUnitBound.bottom = max(m_rtUnitBound.bottom, pRenderUnit->m_frtBound.bottom);
+		m_rtUnitBound.left = min(m_rtUnitBound.left, pRenderUnit->u.u2d.graph.bound.left);
+		m_rtUnitBound.right = max(m_rtUnitBound.right, pRenderUnit->u.u2d.graph.bound.right);
+		m_rtUnitBound.top = min(m_rtUnitBound.top, pRenderUnit->u.u2d.graph.bound.top);
+		m_rtUnitBound.bottom = max(m_rtUnitBound.bottom, pRenderUnit->u.u2d.graph.bound.bottom);
 	}
 	return m_rtUnitBound;
 }
@@ -135,35 +162,35 @@ rectf CalculatorTitleword::CalUnitBound()
 void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 {
 	SYArray* pRenderUnitArray = &m_text.ar2DUnit;
-	SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(pRenderUnitArray, nIndex);
-	if (!pRenderUnit->graph || !pRenderUnit->m_pUnit)
+	SYUnit* pRenderUnit = (SYUnit*)SYAR_GetAt(pRenderUnitArray, nIndex);
+	if (!pRenderUnit)
 	{
 		memset(&rtBoundf, 0, sizeof(rtBoundf));
 		return;
 	}
-	rectf rtface = pRenderUnit->graph->bound;
+	rectf rtface = pRenderUnit->u.u2d.graph.bound;
 	rtBoundf = rtface;
 	float fcubedeltX = 0;
 	float fcubedeltY = 0;
-	if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.disable && pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.width)
+	if (!pRenderUnit->u.u2d.staticeffect.cube.disable && pRenderUnit->u.u2d.staticeffect.cube.width)
 	{
-		fcubedeltX = pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.width * cos(pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.angle);
-		fcubedeltY = pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.width * sin(pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.angle);
+		fcubedeltX = pRenderUnit->u.u2d.staticeffect.cube.width * cos(pRenderUnit->u.u2d.staticeffect.cube.angle);
+		fcubedeltY = pRenderUnit->u.u2d.staticeffect.cube.width * sin(pRenderUnit->u.u2d.staticeffect.cube.angle);
 
 		rectf rtcubef = rtBoundf;
 		//SYRectf_OffsetRect1(&rtcubef,fcubedeltX,fcubedeltY);
 		SYRectf_InflateRect1(&rtcubef, abs(fcubedeltX), abs(fcubedeltY));
 		SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtcubef);
 	}
-	if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.disable &&
-		(pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.offsetx
-			|| pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft
-			|| pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.offsety
-			|| pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.effect_fxtitle
-			|| pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.effect_fyscale))
+	if (!pRenderUnit->u.u2d.staticeffect.shadow.disable &&
+		(pRenderUnit->u.u2d.staticeffect.shadow.offsetx
+			|| pRenderUnit->u.u2d.staticeffect.shadow.soft
+			|| pRenderUnit->u.u2d.staticeffect.shadow.offsety
+			|| pRenderUnit->u.u2d.staticeffect.shadow.effect_fxtitle
+			|| pRenderUnit->u.u2d.staticeffect.shadow.effect_fyscale))
 	{
 		rectf rtShadow = rtface;
-		BaseGraph_DataBase::shadowinfo* pinfo = &pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow;
+		BaseGraph_DataBase::shadowinfo* pinfo = &pRenderUnit->u.u2d.staticeffect.shadow;
 		float fheight = rtBoundf.bottom - rtBoundf.top;
 		float fwidth = rtBoundf.right - rtBoundf.left;
 		float bottom = rtBoundf.bottom;
@@ -197,17 +224,17 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 			rtShadow.right = max(vVector[i].x, rtShadow.right);
 			rtShadow.bottom = max(vVector[i].y, rtShadow.bottom);
 		}
-		if (pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft)
+		if (pRenderUnit->u.u2d.staticeffect.shadow.soft)
 		{
 			SYRectf_InflateRect1(&rtShadow,
-				(float)pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft,
-				(float)pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft);
+				(float)pRenderUnit->u.u2d.staticeffect.shadow.soft,
+				(float)pRenderUnit->u.u2d.staticeffect.shadow.soft);
 		}
 		SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtShadow);
 	}
-	if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.border.disable)
+	if (!pRenderUnit->u.u2d.staticeffect.border.disable)
 	{
-		int nRadWidth = SY_FToI(pRenderUnit->m_pUnit->u.u2d.staticeffect.border.width) + pRenderUnit->m_pUnit->u.u2d.staticeffect.border.soft;
+		int nRadWidth = SY_FToI(pRenderUnit->u.u2d.staticeffect.border.width) + pRenderUnit->u.u2d.staticeffect.border.soft;
 		rectf rtborder = rtface;
 		SYRectf_InflateRect1(&rtborder, (float)nRadWidth, (float)nRadWidth);
 		//SYRectf_OffsetRect1(&rtborder,fcubedeltX,fcubedeltY);
@@ -215,25 +242,25 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 
 		float fdeltX = 0;
 		float fdeltY = 0;
-		if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.disable && pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.width)
+		if (!pRenderUnit->u.u2d.staticeffect.bordercube.disable && pRenderUnit->u.u2d.staticeffect.bordercube.width)
 		{
-			fdeltX = pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.width * cos(pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.angle);
-			fdeltY = pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.width * sin(pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.angle);
+			fdeltX = pRenderUnit->u.u2d.staticeffect.bordercube.width * cos(pRenderUnit->u.u2d.staticeffect.bordercube.angle);
+			fdeltY = pRenderUnit->u.u2d.staticeffect.bordercube.width * sin(pRenderUnit->u.u2d.staticeffect.bordercube.angle);
 
 			rectf rtbordercubef = rtborder;
 			SYRectf_InflateRect1(&rtbordercubef, abs(fdeltX), abs(fdeltY));
 			SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtbordercubef);
 		}
 
-		if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.disable &&
-			(pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.offsetx
-				|| pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.soft
-				|| pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.offsety
-				|| pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.effect_fxtitle
-				|| pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.effect_fyscale))
+		if (!pRenderUnit->u.u2d.staticeffect.bordershadow.disable &&
+			(pRenderUnit->u.u2d.staticeffect.bordershadow.offsetx
+				|| pRenderUnit->u.u2d.staticeffect.bordershadow.soft
+				|| pRenderUnit->u.u2d.staticeffect.bordershadow.offsety
+				|| pRenderUnit->u.u2d.staticeffect.bordershadow.effect_fxtitle
+				|| pRenderUnit->u.u2d.staticeffect.bordershadow.effect_fyscale))
 		{
 			rectf rtBorderShadow = rtborder;
-			BaseGraph_DataBase::shadowinfo* pinfo = &pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow;
+			BaseGraph_DataBase::shadowinfo* pinfo = &pRenderUnit->u.u2d.staticeffect.bordershadow;
 			float fheight = rtBoundf.bottom - rtBoundf.top;
 			float fwidth = rtBoundf.right - rtBoundf.left;
 			float bottom = rtBoundf.bottom;
@@ -265,7 +292,7 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 				rtBorderShadow.right = max(vVector[i].x, rtBorderShadow.right);
 				rtBorderShadow.bottom = max(vVector[i].y, rtBorderShadow.bottom);
 			}
-			if (pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft)
+			if (pRenderUnit->u.u2d.staticeffect.shadow.soft)
 			{
 				SYRectf_InflateRect1(&rtBorderShadow,
 					(float)pinfo->soft,
@@ -305,5 +332,127 @@ void CalculatorTitleword::DeleteRenderUnitView(LPCTSTR szUnitID)
 		{
 			assert(false);
 		}
+	}
+}
+
+void CalculatorTitleword::RenderUnitBufferForGpu()
+{
+	if (m_emChgLevel < ChgLevel_Figure)
+		return;
+
+	int nDevice = DX3DEngine_GetMainDevice();
+	SYArray* pUnitArray = &m_text.ar2DUnit;
+	int nUnitCnt = SYAR_GetCount(pUnitArray);
+	for (int i = 0; i < nUnitCnt; i++)
+	{
+		SYUnit* pRenderUnit = (SYUnit*)SYAR_GetAt(pUnitArray, i);
+		//计算原始buffer
+		DWORD *pBuffer = NULL;
+		int facew = 0, faceh = 0, pitch = 0;
+		pointf ptOrg;
+		RECT rtResultBound;// = pRenderUnit->unit2D.bound; 
+
+		if (!pRenderUnit || pRenderUnit->u.u2d.graph.ncell == 0)
+		{
+			//清空原来的Buf
+			if (m_HalDes.m_hTex != NULL)
+				DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
+			continue;
+		}
+
+		CSYBuffer* pBufferPool = NULL;
+		//MAC_STARTTIME_TEST();
+		SYRenderGraphToOpBuff(&pRenderUnit->u.u2d.graph,
+			&pRenderUnit->u.u2d.staticeffect,
+			pBufferPool,
+			rtResultBound,
+			facew,
+			faceh,
+			pitch,
+			CalculatorManager::Instance().GetScale(),
+			ptOrg,
+			CalculatorManager::Instance().GetFrame());
+
+		if (0)
+		{
+			BufferFunction::WriteBitmap(_T("e:\\8.bmp"), facew, faceh, 32, (BYTE*)pBufferPool->m_dwBuffer);
+		}
+		if (!pBufferPool)
+		{
+			//清空原来的Buf
+			if (m_HalDes.m_hTex != NULL)
+				DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
+			continue;
+		}
+#if 0
+		if (!pUnitView)
+		{
+			pUnitView = new SYRenderUnitView;
+			pUnitView->pUnitBuffer = NULL;
+			pUnitView->pUnitDymHalBuffer = NULL;
+			pUnitView->pUnitHalBuf = new SYHalDef32;
+			pUnitView->bChanged = TRUE;
+			memset(pUnitView->pUnitHalBuf, 0, sizeof(SYHalDef32));
+			RenderView_AddResource(pView, pRenderUnit->szID, pUnitView);
+		}
+
+		if (pRenderUnit->m_pUnit->u.u2d.staticeffect.dyntex.disable == FALSE &&
+			pRenderUnit->m_pUnit->u.u2d.staticeffect.dyntex.szPath[0] != NULL)
+		{
+			if (!pUnitView->pUnitDymHalBuffer)
+			{
+				pUnitView->pUnitDymHalBuffer = new SYHalDef32;
+				memset(pUnitView->pUnitDymHalBuffer, 0, sizeof(SYHalDef32));
+			}
+			TCHAR szRealPath[MAX_PATH];
+			memset(szRealPath, 0, sizeof(TCHAR) * MAX_PATH);
+			GetFileManager()->TagPathTrans(pRenderUnit->m_pUnit->u.u2d.staticeffect.dyntex.szPath, szRealPath, GetFileManager()->lpParam);
+			CreateDynBuffer(nDevice, pUnitView->pUnitDymHalBuffer, szRealPath);
+			pUnitView->bUseColorAlpha = pRenderUnit->m_pUnit->u.u2d.staticeffect.dyntex.bUseAlpha;
+		}
+		else if (pUnitView && pUnitView->pUnitDymHalBuffer)
+		{
+			if (pUnitView->pUnitDymHalBuffer->m_bRelease)
+				SY3DEngine_ReleaseTexture(nDevice, pUnitView->pUnitDymHalBuffer->m_hTex);
+			SAFE_DELETE(pUnitView->pUnitDymHalBuffer);
+		}
+
+		SYHalDef32* pUnitHalBuffer = pUnitView->pUnitHalBuf;
+		if (pUnitHalBuffer)
+		{
+			if (pUnitHalBuffer->m_hTex)
+			{
+				int nTexWidth = 0, nTexHeight = 0;
+				SY3DEngine_GetTextureInfo(nDevice, pUnitHalBuffer->m_hTex, &nTexWidth, &nTexHeight, NULL);
+				if (nTexWidth < facew || nTexHeight < faceh)
+				{
+					if (pUnitHalBuffer->m_bRelease)
+						SY3DEngine_ReleaseTexture(nDevice, pUnitHalBuffer->m_hTex);
+					pUnitHalBuffer->m_hTex = NULL;
+				}
+			}
+
+			if (!pUnitHalBuffer->m_hTex)
+			{
+				pUnitHalBuffer->m_hTex = SY3DEngine_CreateTexture(nDevice, facew, faceh, SYTexture_Normal2DTex);
+				pUnitHalBuffer->m_bRelease = TRUE;
+			}
+			SY3DEngine_ClearTexture(nDevice, pUnitHalBuffer->m_hTex, 0);
+
+			pUnitHalBuffer->m_rtBound = rtResultBound;
+			pUnitHalBuffer->m_nOriginX = -rtResultBound.left;
+			pUnitHalBuffer->m_nOriginY = -rtResultBound.top;
+
+			int hTransTex = SYTextureManager_QueryTexture(SYTexture_MemTexture, facew, faceh);
+			SY3DEngine_UpLoad(pUnitHalBuffer->m_hTex, nDevice, hTransTex,
+				0, 0, facew, faceh, pBufferPool->m_dwBuffer, 0, 0, facew, faceh, facew, faceh);
+			if (0)
+				SY3DEngine_DumpTexture(nDevice, pUnitHalBuffer->m_hTex, _T("C:\\123.bmp"));
+			SYTextureManager_UnQueryTexture(hTransTex);
+		}
+		if (pBufferPool)
+			SYData_ReleaseCalcBuffer(pBufferPool);
+		pBufferPool = NULL;
+#endif
 	}
 }
