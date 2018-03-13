@@ -4,6 +4,8 @@
 #include "TextTypeset.h"
 #include "TextParagraph.h"
 #include "DataRender\DataRenderUtityFunc.h"
+#include "..\ObjectCalculator.h"
+#include "..\CalculatorTitleWord.h"
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
@@ -224,430 +226,6 @@ unsigned int g_uCRC32Table[256] =
 		pText->pTypesetPath = NULL;
 	}
 }
-
-// int SYText_Save(LPCSYText pText, LPBYTE pBuffer, int nLen, LPSYFileInterface pFileInterface)
-//{
-//	if (pText == NULL)
-//		return 0;
-//
-//	int nBufferSize = 0;
-//	LPBYTE pCurBuf = pBuffer;
-//
-//	nBufferSize += sizeof(DWORD);
-//	if (pBuffer)
-//	{
-//		memcpy(pCurBuf, &pText->dwVersion, sizeof(DWORD));
-//		pCurBuf = pBuffer + nBufferSize;
-//	}
-//
-//	//dwLen 存储的是字符串的字节数，0表示为NULL字符串。
-//	DWORD dwLen = 0;
-//	if (pText->szText != NULL)
-//	{
-//		dwLen = (int)((_tcslen(pText->szText) + 1) * sizeof(TCHAR));
-//		nBufferSize += sizeof(DWORD);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &dwLen, sizeof(DWORD));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += dwLen;
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, pText->szText, dwLen);
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(rectf);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->rtBorder, sizeof(rectf));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(rectf);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->rtTypesetReal, sizeof(rectf));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(rectf);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->rtFixedFrame, sizeof(rectf));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bHorizontal, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bLeftInput, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bLineWrap, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bFixedFrame, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bUseBorderEditMode, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bOneClusterOneUnit, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(E_TextAlignVeritical);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->eAlignVertical, sizeof(E_TextAlignVeritical));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(int);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->nSmallFontFactor, sizeof(int));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(PI_Quality);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->nSmallFontQuality, sizeof(PI_Quality));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bSmallFontCalcBorder, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(point2f);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->vGraphScale, sizeof(point2f));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		//-- dwVersion >= 2
-//		nBufferSize += sizeof(int);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->nLinesLimit, sizeof(int));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bHideBorderCrosserC, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bHideBorderCrosserL, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//		//-- dwVersion >= 2
-//
-//		//属性
-//		nBufferSize += SYTextProp_Save(&pText->stuTextProp, pCurBuf, nLen - nBufferSize, pFileInterface);
-//		if (pBuffer)
-//			pCurBuf = pBuffer + nBufferSize;
-//
-//		int nParagCnt = SYAR_GetCount(&pText->arParagraph);
-//		nBufferSize += sizeof(int);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &nParagCnt, sizeof(int));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//		for (int i = 0; i < nParagCnt; ++i)
-//		{
-//			LPSYTextParagraph pParagraph = (LPSYTextParagraph)SYAR_GetAt(&pText->arParagraph, i);
-//			nBufferSize += SYText_SaveParagraph(pParagraph, pCurBuf, nLen - nBufferSize);
-//			if (pBuffer)
-//				pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		//艺术字
-//		BOOL bArtTypeset = pText->pArtWord != NULL;
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &bArtTypeset, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//		if (bArtTypeset)
-//		{
-//			nBufferSize += SYArtTypeset_Save(pText->pArtWord, pCurBuf, nLen - nBufferSize);
-//			if (pBuffer)
-//				pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		//排版路径
-//		bArtTypeset = pText->pTypesetPath != NULL;
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &bArtTypeset, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//		if (bArtTypeset)
-//		{
-//			nBufferSize += SYArtTypeset_Save(pText->pTypesetPath, pCurBuf, nLen - nBufferSize);
-//			if (pBuffer)
-//				pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		// 曲线文字结束时间
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bCurveFlow, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(double);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->dEndTime, sizeof(double));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		//-- dwVersion >= 3
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bVLeftTypeset, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		nBufferSize += sizeof(BOOL);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &pText->bPageMode, sizeof(BOOL));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		//预留
-//		BYTE bReserved[32] = {0};
-//		nBufferSize += sizeof(bReserved);
-//		if (pCurBuf)
-//		{
-//			memcpy(pCurBuf, &bReserved, sizeof(bReserved));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//		//-- dwVersion >= 3
-//	}
-//	else
-//	{
-//		nBufferSize += sizeof(DWORD);
-//		if (pBuffer)
-//		{
-//			memcpy(pCurBuf, &dwLen, sizeof(DWORD));
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//	}
-//
-//	return nBufferSize;
-//}
-//
-// int SYText_Load(LPSYText pText, LPBYTE pBuffer, int nLen, LPSYFileInterface pFileInterface)
-//{
-//	if (pText == NULL || pBuffer == NULL)
-//		return 0;
-//
-//	int nBufferSize = 0;
-//	LPBYTE pCurBuf = pBuffer;
-//
-//	memcpy(&pText->dwVersion, pCurBuf, sizeof(DWORD));
-//	nBufferSize += sizeof(DWORD);
-//	pCurBuf = pBuffer + nBufferSize;
-//
-//	DWORD dwLen;
-//	memcpy(&dwLen, pCurBuf, sizeof(DWORD));
-//	nBufferSize += sizeof(DWORD);
-//	pCurBuf = pBuffer + nBufferSize;
-//	if (dwLen > 0)
-//	{
-//		pText->szText = new TCHAR[dwLen / sizeof(TCHAR)];
-//		memset(pText->szText, 0, sizeof(TCHAR) * (dwLen / sizeof(TCHAR)));
-//		memcpy(pText->szText, pCurBuf, dwLen);
-//
-//		nBufferSize += dwLen;
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->rtBorder, pCurBuf, sizeof(rectf));
-//		nBufferSize += sizeof(rectf);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->rtTypesetReal, pCurBuf, sizeof(rectf));
-//		nBufferSize += sizeof(rectf);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->rtFixedFrame, pCurBuf, sizeof(rectf));
-//		nBufferSize += sizeof(rectf);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bHorizontal, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bLeftInput, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bLineWrap, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bFixedFrame, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bUseBorderEditMode, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bOneClusterOneUnit, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->eAlignVertical, pCurBuf, sizeof(E_TextAlignVeritical));
-//		nBufferSize += sizeof(E_TextAlignVeritical);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->nSmallFontFactor, pCurBuf, sizeof(int));
-//		nBufferSize += sizeof(int);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->nSmallFontQuality, pCurBuf, sizeof(PI_Quality));
-//		nBufferSize += sizeof(PI_Quality);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bSmallFontCalcBorder, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->vGraphScale, pCurBuf, sizeof(point2f));
-//		nBufferSize += sizeof(point2f);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->nLinesLimit, pCurBuf, sizeof(int));
-//		nBufferSize += sizeof(int);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bHideBorderCrosserC, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bHideBorderCrosserL, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		nBufferSize += SYTextProp_Load(&pText->stuTextProp, pCurBuf, nLen - nBufferSize, pFileInterface);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		int nParagCnt;
-//		memcpy(&nParagCnt, pCurBuf, sizeof(int));
-//		nBufferSize += sizeof(int);
-//		pCurBuf = pBuffer + nBufferSize;
-//		for (int i = 0; i < nParagCnt; ++i)
-//		{
-//			LPSYTextParagraph pParagraph = new SYTextParagraph;
-//			SYText_InitParagraph(pParagraph);
-//			nBufferSize += SYText_LoadParagraph(pParagraph, pCurBuf, nLen - nBufferSize);
-//			pCurBuf = pBuffer + nBufferSize;
-//			SYAR_Add(&pText->arParagraph, pParagraph);
-//		}
-//
-//		//艺术字
-//		BOOL bArtTypeset;
-//		memcpy(&bArtTypeset, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//		if (bArtTypeset)
-//		{
-//			pText->pArtWord = new SYArtTypeset;
-//			SYArtTypeset_Init(pText->pArtWord);
-//			nBufferSize += SYArtTypeset_Load(pText->pArtWord, pCurBuf, nLen - nBufferSize);
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		//排版路径
-//		memcpy(&bArtTypeset, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//		if (bArtTypeset)
-//		{
-//			pText->pTypesetPath = new SYArtTypeset;
-//			SYArtTypeset_Init(pText->pTypesetPath);
-//			nBufferSize += SYArtTypeset_Load(pText->pTypesetPath, pCurBuf, nLen - nBufferSize);
-//			pCurBuf = pBuffer + nBufferSize;
-//		}
-//
-//		// 曲线文字结束时间
-//		memcpy(&pText->bCurveFlow, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->dEndTime, pCurBuf, sizeof(double));
-//		nBufferSize += sizeof(double);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bVLeftTypeset, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		memcpy(&pText->bPageMode, pCurBuf, sizeof(BOOL));
-//		nBufferSize += sizeof(BOOL);
-//		pCurBuf = pBuffer + nBufferSize;
-//
-//		//预留
-//		BYTE bReserved[32] = {0};
-//		memcpy(&bReserved, pCurBuf, sizeof(bReserved));
-//		nBufferSize += sizeof(bReserved);
-//		pCurBuf = pBuffer + nBufferSize;
-//	}
-//	else
-//	{
-//		pText->szText = NULL;
-//	}
-//	pText->dwVersion = 3;
-//
-//	return nBufferSize;
-//}
 
  void SYText_Copy(LPSYText pDes, LPCSYText pSrc, BOOL bCopyNullText)
 {
@@ -4210,348 +3788,371 @@ void SYText_CopySymbol(LPSYTextSymbol pDes, LPSYTextSymbol pSrc)
 ////////////////////////////////////////////////////////////////////////
 void TypesetInterface_Lock(LPVOID pInterfaceParam)
 {
-	assert(false);
-	//if (pInterfaceParam != NULL)
-	//{
-	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-	//	pEnv->GetBaseObject()->Lock();
-	//}
+	if (pInterfaceParam != NULL)
+	{
+		ObjectCalculator * pCalc = (ObjectCalculator *)pInterfaceParam;
+		pCalc->Lock();
+	}
 }
 
 void TypesetInterface_UnLock(LPVOID pInterfaceParam)
 {
-	assert(false);
-	//if (pInterfaceParam != NULL)
-	//{
-	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-	//	pEnv->GetBaseObject()->UnLock();
-	//}
+	if (pInterfaceParam != NULL)
+	{
+		ObjectCalculator * pCalc = (ObjectCalculator *)pInterfaceParam;
+		pCalc->Unlock();
+	}
 }
 
 void TypesetInterface_OnAddUnit(BOOL bKeepBalance, LPVOID pInterfaceParam)
 {
-	//if (pInterfaceParam != NULL)
-	//{
-	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-	//	CSYCGBaseItem* pItem = pEnv->GetItem();
-	//	pItem->Lock();
+	if (pInterfaceParam != NULL)
+	{
+		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
+		pTitleCalc->Lock();
 
-	//	LPSYText pText = pItem->GetText();
-	//	SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
-	//	SYAR_Add(pEnv->Get2DTextRenderUnitArray(), pRenderUnit);
+		LPSYText pText = pTitleCalc->GetText();
+		SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
+		SYAR_Add(pTitleCalc->Get2DTextRenderUnitArray(), pRenderUnit);
 
-	//	if (pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
-	//	{
-	//		SYItemRenderUnit* pRenderUnit = CreateRenderUnit(TRUE);
-	//		int nIndex = pItem->Get3DTextUnitCount(pEnv) - 1;
-	//		if (nIndex >= 0)
-	//		{
-	//			SYUnit* pTextUnit = pItem->Get3DTextUnit(nIndex, pEnv);
-	//			pRenderUnit->m_pUnit = new SYUnit;
-	//			memset(pRenderUnit->m_pUnit,0,sizeof(SYUnit));
-	//			sy_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
-	//			CopyVertexFromItemToEnv(&pRenderUnit->unit3D, pEnv->GetDevice(), sizeof(SYVertex3D), pTextUnit->u.u3d.pmod, pEnv->GetChangedLevel());
+		if (pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
+		{
+			assert(false);
+			//djt 3D先不管
+			//SYItemRenderUnit* pRenderUnit = CreateRenderUnit(TRUE);
+			//int nIndex = pItem->Get3DTextUnitCount(pEnv) - 1;
+			//if (nIndex >= 0)
+			//{
+			//	SYUnit* pTextUnit = pItem->Get3DTextUnit(nIndex, pEnv);
+			//	pRenderUnit->m_pUnit = new SYUnit;
+			//	memset(pRenderUnit->m_pUnit,0,sizeof(SYUnit));
+			//	sy_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
+			//	CopyVertexFromItemToEnv(&pRenderUnit->unit3D, pEnv->GetDevice(), sizeof(SYVertex3D), pTextUnit->u.u3d.pmod, pEnv->GetChangedLevel());
 
-	//			SYAR_Add(pEnv->Get3DTextRenderUnitArray(), pRenderUnit);
-	//			RefreshUnitMaterial(pRenderUnit, pEnv->GetDevice(), pEnv, pEnv->m_dCurFrame, nIndex, FALSE);
-	//			pRenderUnit->m_bChanged = TRUE;
-	//		}
-	//	}
+			//	SYAR_Add(pEnv->Get3DTextRenderUnitArray(), pRenderUnit);
+			//	RefreshUnitMaterial(pRenderUnit, pEnv->GetDevice(), pEnv, pEnv->m_dCurFrame, nIndex, FALSE);
+			//	pRenderUnit->m_bChanged = TRUE;
+			//}
+		}
 
-	//	pItem->UnLock();
-	//}
+		pTitleCalc->Unlock();
+	}
 }
 
 void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LPVOID pInterfaceParam)
 {
-	//if (pInterfaceParam != NULL)
-	//{
-	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-	//	CSYCGBaseItem* pItem = pEnv->GetItem();
-	//	pItem->Lock();
+	if (pInterfaceParam != NULL)
+	{
+		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
+		pTitleCalc->Lock();
 
-	//	int i;
-	//	int nPreIndex = nIndex - 1;
-	//	LPSYText pText = pItem->GetText();
-	//	BOOL bStretch = pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0;
+		int i;
+		int nPreIndex = nIndex - 1;
+		LPSYText pText = pTitleCalc->GetText();
+		BOOL bStretch = pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0;
 
-	//	//Action维护
-	//	if (nPreIndex >= 0)
-	//	{
-	//		SYArray* paryActor = &(pItem->m_ClipInfo.ActorArray);
-	//		int nActorCnt = SYAR_GetCount(paryActor);
-	//		for (i=0; i<nActorCnt; ++i)
-	//		{
-	//			CSYCGActor* pActor = (CSYCGActor*)SYAR_GetAt(paryActor, i);
-	//			int nActSize = pActor->GetActionCount();
-	//			SYList* pactList = &(pActor->GetActorData()->actions);
+#if 0
+		//djt action先不管
+		//Action维护
+		if (nPreIndex >= 0)
+		{
+			SYArray* paryActor = &(pItem->m_ClipInfo.ActorArray);
+			int nActorCnt = SYAR_GetCount(paryActor);
+			for (i=0; i<nActorCnt; ++i)
+			{
+				CSYCGActor* pActor = (CSYCGActor*)SYAR_GetAt(paryActor, i);
+				int nActSize = pActor->GetActionCount();
+				SYList* pactList = &(pActor->GetActorData()->actions);
 
-	//			LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
-	//			while(cur_pos)
-	//			{
-	//				CSYAction* pAction = (CSYAction*)SYList_GetNext(pactList, &cur_pos);
-	//				SYUnitParam* pPreUnitParam = pAction->GetUnitParam(nPreIndex);
-	//				//如何区分这个Unit是属于哪种Unit的？
-	//				//插入位置的Unit有关键帧
-	//				if (pPreUnitParam != NULL)
-	//				{
-	//					//复制
-	//					if (bStretch)
-	//					{
-	//						SYArray* pary3DText = pItem->Get3DTextUnitArray();
-	//						for (int j=0; j<nCount; ++j)
-	//						{
-	//							SYUnitParam* param = new SYUnitParam;
-	//							pAction->CopyUnitParam(param, pPreUnitParam);
-	//							SYUnit* pTextUnit = (SYUnit*)SYAR_GetAt(pary3DText, nIndex + j);
-	//							SYGuid_To_Str(param->UnitID, pTextUnit->UnitID);
-	//							pAction->AddUnitParam(param, nIndex + j);
-	//						}
-	//					}
-	//					else
-	//					{
-	//						SYArray* pary2DText = pItem->Get2DTextUnitArray();
-	//						for (int j=0; j<nCount; ++j)
-	//						{
-	//							SYUnitParam* param = new SYUnitParam;
-	//							pAction->CopyUnitParam(param, pPreUnitParam);
-	//							SYUnit* pTextUnit = (SYUnit*)SYAR_GetAt(pary2DText, nIndex + j);
-	//							SYGuid_To_Str(param->UnitID, pTextUnit->UnitID);
-	//							pAction->AddUnitParam(param, nIndex + j);
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
+				LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
+				while(cur_pos)
+				{
+					CSYAction* pAction = (CSYAction*)SYList_GetNext(pactList, &cur_pos);
+					SYUnitParam* pPreUnitParam = pAction->GetUnitParam(nPreIndex);
+					//如何区分这个Unit是属于哪种Unit的？
+					//插入位置的Unit有关键帧
+					if (pPreUnitParam != NULL)
+					{
+						//复制
+						if (bStretch)
+						{
+							SYArray* pary3DText = pItem->Get3DTextUnitArray();
+							for (int j=0; j<nCount; ++j)
+							{
+								SYUnitParam* param = new SYUnitParam;
+								pAction->CopyUnitParam(param, pPreUnitParam);
+								SYUnit* pTextUnit = (SYUnit*)SYAR_GetAt(pary3DText, nIndex + j);
+								SYGuid_To_Str(param->UnitID, pTextUnit->UnitID);
+								pAction->AddUnitParam(param, nIndex + j);
+							}
+						}
+						else
+						{
+							SYArray* pary2DText = pItem->Get2DTextUnitArray();
+							for (int j=0; j<nCount; ++j)
+							{
+								SYUnitParam* param = new SYUnitParam;
+								pAction->CopyUnitParam(param, pPreUnitParam);
+								SYUnit* pTextUnit = (SYUnit*)SYAR_GetAt(pary2DText, nIndex + j);
+								SYGuid_To_Str(param->UnitID, pTextUnit->UnitID);
+								pAction->AddUnitParam(param, nIndex + j);
+							}
+						}
+					}
+				}
+			}
+		}
+#endif
 
-	//	SYArray* pary2DTextRenderUnit = pEnv->Get2DTextRenderUnitArray();
-	//	for (i = 0; i < nCount; i++)
-	//	{
-	//		SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
-	//		pRenderUnit->m_bChanged = TRUE;
-	//		SYAR_InsertAt(pary2DTextRenderUnit, nIndex + i, pRenderUnit, 1);
-	//	}
+		SYArray* pary2DTextRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		for (i = 0; i < nCount; i++)
+		{
+			SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
+			pRenderUnit->m_bChanged = TRUE;
+			SYAR_InsertAt(pary2DTextRenderUnit, nIndex + i, pRenderUnit, 1);
+		}
 
-	//	if (bStretch)
-	//	{
-	//		int nDevice = pEnv->GetDevice();
-	//		int nEnvChgLevel = pEnv->GetChangedLevel();
-	//		SYArray* pary3DTextRenderUnit = pEnv->Get3DTextRenderUnitArray();
-	//		for (i = 0; i < nCount; i++)
-	//		{
-	//			SYItemRenderUnit* pRenderUnit = CreateRenderUnit(TRUE);
-	//			SYUnit* pTextUnit = pItem->Get3DTextUnit(nIndex + i, pEnv);
-	//			if (pTextUnit != NULL)
-	//			{
-	//				pRenderUnit->m_pUnit = new SYUnit;
-	//				sy_init_unit(pRenderUnit->m_pUnit,TRUE);
-	//				sy_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
-	//				CopyVertexFromItemToEnv(&pRenderUnit->unit3D, nDevice, sizeof(SYVertex3D), pTextUnit->u.u3d.pmod, nEnvChgLevel);
+#if 0
+		//djt 3D先不管
+		if (bStretch)
+		{
+			int nDevice = pEnv->GetDevice();
+			int nEnvChgLevel = pEnv->GetChangedLevel();
+			SYArray* pary3DTextRenderUnit = pEnv->Get3DTextRenderUnitArray();
+			for (i = 0; i < nCount; i++)
+			{
+				SYItemRenderUnit* pRenderUnit = CreateRenderUnit(TRUE);
+				SYUnit* pTextUnit = pItem->Get3DTextUnit(nIndex + i, pEnv);
+				if (pTextUnit != NULL)
+				{
+					pRenderUnit->m_pUnit = new SYUnit;
+					sy_init_unit(pRenderUnit->m_pUnit,TRUE);
+					sy_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
+					CopyVertexFromItemToEnv(&pRenderUnit->unit3D, nDevice, sizeof(SYVertex3D), pTextUnit->u.u3d.pmod, nEnvChgLevel);
 
-	//				SYAR_InsertAt(pary3DTextRenderUnit, nIndex + i, pRenderUnit, 1);
-	//				RefreshUnitMaterial(pRenderUnit, nDevice, pEnv, pEnv->m_dCurFrame, nIndex + i, FALSE);
-	//				pRenderUnit->m_bChanged = TRUE;
-	//			}
-	//		}
-	//	}
+					SYAR_InsertAt(pary3DTextRenderUnit, nIndex + i, pRenderUnit, 1);
+					RefreshUnitMaterial(pRenderUnit, nDevice, pEnv, pEnv->m_dCurFrame, nIndex + i, FALSE);
+					pRenderUnit->m_bChanged = TRUE;
+				}
+			}
+		}
+#endif
 
-	//	pItem->UnLock();
-	//}
+		pTitleCalc->Unlock();
+	}
 }
 
 void TypesetInterface_OnDeleteUnit(int nIndex, int nCount, BOOL bKeepBalance, LPVOID pInterfaceParam)
 {
-	//if (pInterfaceParam != NULL)
-	//{
-	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-	//	CSYCGBaseItem* pItem = pEnv->GetItem();
-	//	pItem->Lock();
+	if (pInterfaceParam != NULL)
+	{
+		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
+		pTitleCalc->Lock();
 
-	//	int i, j;
-	//	//Action维护
-	//	SYArray* paryActor = &(pItem->m_ClipInfo.ActorArray);
-	//	int nActorCnt = SYAR_GetCount(paryActor);
-	//	for (i=0; i<nActorCnt; ++i)
-	//	{
-	//		CSYCGActor* pActor = (CSYCGActor*)SYAR_GetAt(paryActor, i);
-	//		int nActSize = pActor->GetActionCount();
-	//		SYList* pactList = &(pActor->GetActorData()->actions);
+		int i, j;
 
-	//		LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
-	//		while(cur_pos)
-	//		{
-	//			CSYAction* pAction = (CSYAction*)SYList_GetNext(pactList, &cur_pos);
-	//			//删除Action
-	//			for (j = nCount-1; j >= 0; --j)
-	//			{
-	//				pAction->DelUnitParam(nIndex + j);
-	//			}
-	//		}
-	//	}
+#if 0
+		//djt action先不管
+		//Action维护
+		SYArray* paryActor = &(pItem->m_ClipInfo.ActorArray);
+		int nActorCnt = SYAR_GetCount(paryActor);
+		for (i=0; i<nActorCnt; ++i)
+		{
+			CSYCGActor* pActor = (CSYCGActor*)SYAR_GetAt(paryActor, i);
+			int nActSize = pActor->GetActionCount();
+			SYList* pactList = &(pActor->GetActorData()->actions);
 
-	//	LPSYText pText = pItem->GetText();
-	//	SYArray* paryRenderUnit = pEnv->Get2DTextRenderUnitArray();
-	//	for (i = 0; i < nCount; i++)
-	//	{
-	//		SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, nIndex + i);
-	//		if (pRenderUnit)
-	//		{
-	//			ReleaseRenderUnit(pRenderUnit, FALSE, pEnv->GetDevice(), pEnv);
-	//			SAFE_DELETE(pRenderUnit);
-	//		}
-	//	}
-	//	SYAR_RemoveAt(paryRenderUnit, nIndex, nCount);
+			LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
+			while(cur_pos)
+			{
+				CSYAction* pAction = (CSYAction*)SYList_GetNext(pactList, &cur_pos);
+				//删除Action
+				for (j = nCount-1; j >= 0; --j)
+				{
+					pAction->DelUnitParam(nIndex + j);
+				}
+			}
+		}
+#endif
 
-	//	if (pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
-	//	{
-	//		paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
-	//		for (i = 0; i < nCount; i++)
-	//		{
-	//			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, nIndex + i);
-	//			ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(), pEnv);
-	//			delete pRenderUnit;
-	//		}
-	//		SYAR_RemoveAt(paryRenderUnit, nIndex, nCount);
-	//	}
+		LPSYText pText = pTitleCalc->GetText();
+		SYArray* paryRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		for (i = 0; i < nCount; i++)
+		{
+			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, nIndex + i);
+			if (pRenderUnit)
+			{
+				ReleaseRenderUnit(pRenderUnit, FALSE, DX3DEngine_GetMainDevice(), pTitleCalc);
+				SAFE_DELETE(pRenderUnit);
+			}
+		}
+		SYAR_RemoveAt(paryRenderUnit, nIndex, nCount);
 
-	//	pItem->UnLock();
-	//}
+		if (pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
+		{
+			assert(false);
+#if 0
+			//djt 3D先不管
+			paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
+			for (i = 0; i < nCount; i++)
+			{
+				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, nIndex + i);
+				ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(), pEnv);
+				delete pRenderUnit;
+			}
+			SYAR_RemoveAt(paryRenderUnit, nIndex, nCount);
+#endif
+		}
+
+		pTitleCalc->Unlock();
+	}
 }
 
 void TypesetInterface_OnDeleteAllUnit(LPVOID pInterfaceParam)
 {
-	//if (pInterfaceParam != NULL)
-	//{
-	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-	//	CSYCGBaseItem* pItem = pEnv->GetItem();
-	//	pItem->Lock();
+	if (pInterfaceParam != NULL)
+	{
+		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
+		pTitleCalc->Lock();
 
-	//	int i;
-	//	//Action维护
-	//	SYArray* paryActor = &(pItem->m_ClipInfo.ActorArray);
-	//	int nActorCnt = SYAR_GetCount(paryActor);
-	//	for (i=0; i<nActorCnt; ++i)
-	//	{
-	//		CSYCGActor* pActor = (CSYCGActor*)SYAR_GetAt(paryActor, i);
-	//		int nActSize = pActor->GetActionCount();
-	//		SYList* pactList = &(pActor->GetActorData()->actions);
+		int i;
+#if 0
+		//djt
+		//Action维护
+		SYArray* paryActor = &(pItem->m_ClipInfo.ActorArray);
+		int nActorCnt = SYAR_GetCount(paryActor);
+		for (i=0; i<nActorCnt; ++i)
+		{
+			CSYCGActor* pActor = (CSYCGActor*)SYAR_GetAt(paryActor, i);
+			int nActSize = pActor->GetActionCount();
+			SYList* pactList = &(pActor->GetActorData()->actions);
 
-	//		LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
-	//		while(cur_pos)
-	//		{
-	//			CSYAction* pAction = (CSYAction*)SYList_GetNext(pactList, &cur_pos);
-	//			//删除Action
-	//			pAction->DelAllUnitParam();
-	//		}
-	//	}
+			LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
+			while(cur_pos)
+			{
+				CSYAction* pAction = (CSYAction*)SYList_GetNext(pactList, &cur_pos);
+				//删除Action
+				pAction->DelAllUnitParam();
+			}
+		}
+#endif
 
-	//	LPSYText pText = pItem->GetText();
-	//	SYArray* paryRenderUnit = pEnv->Get2DTextRenderUnitArray();
-	//	int nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
-	//	for (i = 0; i < nRenderUnitCount; i++)
-	//	{
-	//		SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
-	//		ReleaseRenderUnit(pRenderUnit, FALSE, pEnv->GetDevice(), pEnv);
-	//		delete pRenderUnit;
-	//	}
-	//	SYAR_RemoveAll(paryRenderUnit);
+		LPSYText pText = pTitleCalc->GetText();
+		SYArray* paryRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		int nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
+		for (i = 0; i < nRenderUnitCount; i++)
+		{
+			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
+			ReleaseRenderUnit(pRenderUnit, FALSE, DX3DEngine_GetMainDevice(), pTitleCalc);
+			delete pRenderUnit;
+		}
+		SYAR_RemoveAll(paryRenderUnit);
 
-	//	if (pText->pStretch  && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
-	//	{
-	//		paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
-	//		nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
-	//		for (i = 0; i < nRenderUnitCount; i++)
-	//		{
-	//			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
-	//			ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(), pEnv);
-	//			delete pRenderUnit;
-	//		}
-	//		SYAR_RemoveAll(paryRenderUnit);
-	//	}
+		if (pText->pStretch  && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
+		{
+			assert(false);
+#if 0
+			//djt
+			paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
+			nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
+			for (i = 0; i < nRenderUnitCount; i++)
+			{
+				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
+				ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(), pEnv);
+				delete pRenderUnit;
+			}
+			SYAR_RemoveAll(paryRenderUnit);
+#endif
+		}
 
-	//	pItem->UnLock();
-	//}
+		pTitleCalc->Unlock();
+	}
 }
 
 void TypesetInterface_OnRefreshUnit(int nIndex, int nCount, LPVOID pInterfaceParam)
 {
-	//if (pInterfaceParam != NULL)
-	//{
-	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-	//	CSYCGBaseItem* pItem = pEnv->GetItem();
-	//	pItem->Lock();
+	if (pInterfaceParam != NULL)
+	{
+		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
+		pTitleCalc->Lock();
 
-	//	int nEndIdx = nIndex + nCount;
-	//	LPSYText pText = pItem->GetText();
-	//	SYArray* paryRenderUnit = pEnv->Get2DTextRenderUnitArray();
-	//	for (int i = nIndex; i < nEndIdx; ++i)
-	//	{
-	//		SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
-	//		if (pRenderUnit != NULL)
-	//			pRenderUnit->m_bChanged = TRUE;
-	//	}
+		int nEndIdx = nIndex + nCount;
+		LPSYText pText = pTitleCalc->GetText();
+		SYArray* paryRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		for (int i = nIndex; i < nEndIdx; ++i)
+		{
+			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
+			if (pRenderUnit != NULL)
+				pRenderUnit->m_bChanged = TRUE;
+		}
 
-	//	if (pText->pStretch != NULL  && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
-	//	{
-	//		paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
-	//		for (int i = nIndex; i < nEndIdx; ++i)
-	//		{
-	//			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
-	//			if (pRenderUnit != NULL)
-	//			{
-	//				pRenderUnit->m_bChanged = TRUE;
+		if (pText->pStretch != NULL  && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
+		{
+			assert(false);
+#if 0
+			//djt
+			paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
+			for (int i = nIndex; i < nEndIdx; ++i)
+			{
+				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
+				if (pRenderUnit != NULL)
+				{
+					pRenderUnit->m_bChanged = TRUE;
 
-	//				int nModelCnt = pRenderUnit->unit3D.nSubModelCount;
-	//				for(int nSub = 0; nSub < nModelCnt; nSub++)
-	//				{
-	//					SYVideoMaterial* pVideoMat = (SYVideoMaterial*)pRenderUnit->unit3D.pSubModel[nSub].pVideoMaterial;
-	//					SYMaterial_SetChangeType(pVideoMat, SYMaterial_PhyDataChange);
-	//				}
-	//			}
-	//		}
-	//	}
+					int nModelCnt = pRenderUnit->unit3D.nSubModelCount;
+					for(int nSub = 0; nSub < nModelCnt; nSub++)
+					{
+						SYVideoMaterial* pVideoMat = (SYVideoMaterial*)pRenderUnit->unit3D.pSubModel[nSub].pVideoMaterial;
+						SYMaterial_SetChangeType(pVideoMat, SYMaterial_PhyDataChange);
+					}
+				}
+			}
+#endif
+		}
 
-	//	pItem->UnLock();
-	//}
+		pTitleCalc->Unlock();
+	}
 }
 
 void TypesetInterface_OnRefreshAllUnit(LPVOID pInterfaceParam, int nLevel)
 {
-	//if (pInterfaceParam != NULL)
-	//{
-	//	CSYCGEnv* pEnv = (CSYCGEnv*)pInterfaceParam;
-	//	CSYCGBaseItem* pItem = pEnv->GetItem();
-	//	pItem->Lock();
+	if (pInterfaceParam != NULL)
+	{
+		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
+		pTitleCalc->Lock();
 
-	//	LPSYText pText = pItem->GetText();
-	//	SYArray* paryRenderUnit = pEnv->Get2DTextRenderUnitArray();
-	//	int nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
+		LPSYText pText = pTitleCalc->GetText();
+		SYArray* paryRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		int nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
 
-	//	for (int i = 0; i < nRenderUnitCount; i++)
-	//	{
-	//		SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
-	//		if (pRenderUnit != NULL)
-	//		{
-	//			pRenderUnit->m_bChanged = TRUE;
-	//			ReleaseRenderUnit(pRenderUnit, FALSE, pEnv->GetDevice(),pEnv);
-	//		}
-	//	}
+		for (int i = 0; i < nRenderUnitCount; i++)
+		{
+			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
+			if (pRenderUnit != NULL)
+			{
+				pRenderUnit->m_bChanged = TRUE;
+				ReleaseRenderUnit(pRenderUnit, FALSE, DX3DEngine_GetMainDevice(), pTitleCalc);
+			}
+		}
 
-	//	if (pText->pStretch != NULL && pText->pStretch->fThick > ABS_FLOAT_0)
-	//	{
-	//		paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
-	//		nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
-	//		for (int i = 0; i < nRenderUnitCount; i++)
-	//		{
-	//			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
-	//			ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(),pEnv);
-	//			pRenderUnit->m_bChanged = TRUE;
-	//		}
-	//	}
+		if (pText->pStretch != NULL && pText->pStretch->fThick > ABS_FLOAT_0)
+		{
+			assert(false);
+#if 0
+			//djt
+			paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
+			nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
+			for (int i = 0; i < nRenderUnitCount; i++)
+			{
+				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
+				ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(),pEnv);
+				pRenderUnit->m_bChanged = TRUE;
+			}
+#endif
+		}
 
-	//	pItem->UnLock();
-	//}
+		pTitleCalc->Unlock();
+	}
 }
 
 void SYTypesetInterface_InitItemInterface()

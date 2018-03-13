@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "DataRender.h"
+#include "Typeset\TextTypesetDataAPI.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -58,6 +59,8 @@ CDataRenderApp theApp;
 BOOL CDataRenderApp::InitInstance()
 {
 	CWinApp::InitInstance();
+	//≥ı ºªØtypeset
+	SYTypeset_InitInterfaceEnv();
 
 	return TRUE;
 }

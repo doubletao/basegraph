@@ -153,8 +153,6 @@ typedef CSYArray<curCtrl*,curCtrl*> CurveAr;
  void	SYArtTypeset_Create(LPSYArtTypeset pArt, eSYArtTypesetPath ePath);
  void	SYArtTypeset_Create(LPSYArtTypeset pPath, CurveAr* pCurveAry, BOOL bRotate = TRUE);
  void	SYArtTypeset_Release(LPSYArtTypeset pArt);
- int	SYArtTypeset_Save(LPCSYArtTypeset pArt, LPBYTE pBuffer, int nLen);
- int	SYArtTypeset_Load(LPSYArtTypeset pArt, LPBYTE pBuffer, int nLen);
  void	SYArtTypeset_Copy(LPSYArtTypeset pDes, LPCSYArtTypeset pSrc);
  BOOL	SYArtTypeset_Compare(LPCSYArtTypeset pArt1, LPCSYArtTypeset pArt2);
 

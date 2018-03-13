@@ -11,6 +11,8 @@ BASEGRAPH_DATARENDER_API void*	sy_get_unit_material(SYUnit* p3DUnit, int nSubMod
 BASEGRAPH_DATARENDER_API void		sy_release_unit_material(SYUnit* p3DUnit);
 BASEGRAPH_DATARENDER_API void		sy_set_unit_material_diffuse(SYUnit* p3DUnit, DWORD dwColor);
 BASEGRAPH_DATARENDER_API SYUnit*	sy_create_3dunit_from_2dunit(SYUnit* punit2d, SYUnit* pUnit3D);
+BASEGRAPH_DATARENDER_API SYItemRenderUnit * CreateRenderUnit(BOOL b3dtype);
+BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(SYItemRenderUnit* pRenderUnit, BOOL b3dType, int hDevice, void* lpCalc);
 //Effect
 BASEGRAPH_DATARENDER_API void SYStaticEffect_Init(static_effect* pEffect);
 BASEGRAPH_DATARENDER_API void SYStaticEffect_Release(static_effect* pEffect);
@@ -92,3 +94,17 @@ BASEGRAPH_DATARENDER_API void  effect_convex(unsigned char* pmask,
 	float fangle,
 	unsigned long color);
 void	Modify3DUnitFrom2DUnit(SYUnit* punit3d, SYUnit* punit2d, SYMaterial** p3dcolor, int nSubFace, LPSYStretchParam pStretch);
+
+/************************************************************************/
+/*rectf& rtDes目标矩形                                                  */
+/*pDesVector4D 目标顶点                                                 */
+/*rtSrc 源矩形													*/
+/*pTransMatrix变换矩阵												*/
+/*pCenterMatrix中心变换矩阵										*/
+/*pProjectMatrix投影矩阵											*/
+/*int nSrcWidth,int nSrcHeight目标大小								*/
+/*dwProjectType投影种类											*/
+/************************************************************************/
+BASEGRAPH_DATARENDER_API void CalcBufferProjectSize(rectf& rtDes, vector3f* pDesVector3D, RECT& rtSrc, matrix4f* pTransMatrix);
+BASEGRAPH_DATARENDER_API void CalcBufferProjectSize(rectf& rtDes, vector3f* pDesVector3D, rectf& rtSrc, matrix4f* pTransMatrix);
+BASEGRAPH_DATARENDER_API void CalcPointProject(vector4f* pV4D, matrix4f* pTransMatrix, matrix4f* pProjectMatrix, vector4f* pvCenter);

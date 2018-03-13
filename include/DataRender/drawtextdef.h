@@ -27,7 +27,7 @@ typedef BOOL(*SYTypesetInterface_GetPropFromPropPage)(LPVOID pFont, LPVOID pPara
 #define SYCHARSCRIPT_TOP	3		//顶对齐
 #define SYCHARSCRIPT_BOT	4		//底对齐
 #define SYCHARSCRIPT_OFF	5		//自定义脚注偏移
-#define RENDERUNITIDLENGTH	4
+#define RENDERUNITIDLENGTH	64
 #define SYTEXT_SUBFACE_CNT	3		//3D文字子面个数
 #define SYTEXT_DIMENSION_MIN			60		//文字排版矩形最小值
 #define SYTEXT_TEMPFLAG_EMPTYTEXT		0x01		//空标题字

@@ -13,11 +13,13 @@ ObjectCalculator::ObjectCalculator(CString strObjID)
 	, m_emChgLevel(ChgLevel_NULL)
 	, m_bSelected(false)
 {
+	InitializeCriticalSection(&m_Lock);
 }
 
 
 ObjectCalculator::~ObjectCalculator()
 {
+	DeleteCriticalSection(&m_Lock);
 }
 
 int ObjectCalculator::GetWidth()
@@ -82,6 +84,16 @@ bool ObjectCalculator::GetSelected()
 DXHalDef32 * ObjectCalculator::GetHalDes()
 {
 	return &m_HalDes;
+}
+
+void ObjectCalculator::Lock()
+{
+	EnterCriticalSection(&m_Lock);
+}
+
+void ObjectCalculator::Unlock()
+{
+	LeaveCriticalSection(&m_Lock);
 }
 
 bool ObjectCalculator::NeedRenderBuffer()

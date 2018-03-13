@@ -3,6 +3,9 @@
 #include <vector>
 #include "DataBufferManager.h"
 
+#define EFFECT_CALC_CONDITIONS_OVERALL	0
+#define EFFECT_CALC_CONDITIONS_PER		1
+
 /*
 物件计算器
 用于物件的中间计算过程，包括建模，矩阵，关键字，2D自绘等
@@ -24,6 +27,7 @@ protected:
 	bool m_bSelected;
 	EmObjectChgLevel m_emChgLevel;
 	DXHalDef32 m_HalDes;
+	CRITICAL_SECTION m_Lock;
 public:
 	ObjectCalculator(CString strObjID);
 	virtual ~ObjectCalculator();
@@ -38,6 +42,8 @@ public:
 	bool SetSelected(bool bSel);//返回原来的状态
 	bool GetSelected();
 	DXHalDef32 * GetHalDes();
+	void Lock();
+	void Unlock();
 protected:
 	virtual bool NeedRenderBuffer();
 };

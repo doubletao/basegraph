@@ -4,6 +4,7 @@
 #include "DataRender\OffsetCurve.h"
 #include "DataRender\3DGeometry.h"
 #include "DataRender\Arc2BezierAPI.h"
+#include "CalculatorTitleWord.h"
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
@@ -160,6 +161,51 @@ BASEGRAPH_DATARENDER_API SYUnit * sy_create_3dunit_from_2dunit(SYUnit * punit2d,
 	pUnit3D->MatVToItem = punit2d->MatVToItem;
 	pUnit3D->dwUserID = punit2d->dwUserID;
 	return pUnit3D;
+}
+
+BASEGRAPH_DATARENDER_API SYItemRenderUnit * CreateRenderUnit(BOOL b3dtype)
+{
+	SYItemRenderUnit* pRenderUnit = new SYItemRenderUnit;
+	memset(pRenderUnit, 0, sizeof(SYItemRenderUnit));
+	pRenderUnit->m_bChanged = TRUE;
+	pRenderUnit->m_bNotRender = FALSE;
+	matrix4f_identity(&pRenderUnit->m_VSelfMatrix);
+	if (!b3dtype)
+		pRenderUnit->graph = NULL;
+	else
+		matrix4f_identity(&pRenderUnit->unit3D.Mat_RenderV);
+
+	CString strGUID = CommonFunction::CreateGUID();
+	memcpy(pRenderUnit->szID, strGUID.GetBuffer(), strGUID.GetLength() * sizeof(TCHAR));
+	return pRenderUnit;
+}
+
+BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(SYItemRenderUnit * pRenderUnit, BOOL b3dType, int hDevice, void * lpCalc)
+{
+	CalculatorTitleword * pCalc = (CalculatorTitleword *)lpCalc;
+	pCalc->DeleteRenderUnitView(pRenderUnit->szID);
+	if ((pRenderUnit->m_pUnit != NULL && pRenderUnit->m_pUnit->type) || b3dType)
+	{
+		assert(false);
+		//djt 3D先不管
+		//Release3DRenderUnit(hDevice, &pRenderUnit->unit3D);
+	}
+	else
+	{
+		if (pRenderUnit->graph)
+		{
+			sy_release_vectorgraph(pRenderUnit->graph);
+			delete pRenderUnit->graph;
+			pRenderUnit->graph = NULL;
+		}
+		if (pRenderUnit->unit2D.buffer)
+		{
+			delete[] pRenderUnit->unit2D.buffer;
+			pRenderUnit->unit2D.buffer = NULL;
+		}
+	}
+	sy_release_unit(pRenderUnit->m_pUnit);
+	SAFE_DELETE(pRenderUnit->m_pUnit);
 }
 
 BASEGRAPH_DATARENDER_API void SYStaticEffect_Init(static_effect * pEffect)
@@ -5171,6 +5217,57 @@ void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3
 	}
 	punit3d->u.u3d.pmod = pMod;
 	vg_release(&NewFigure);
+}
+
+BASEGRAPH_DATARENDER_API void CalcBufferProjectSize(rectf & rtDes, vector3f * pDesVector3D, RECT & rtSrc, matrix4f * pTransMatrix)
+{
+	rectf rt = { rtSrc.left,rtSrc.top,rtSrc.right,rtSrc.bottom };
+	CalcBufferProjectSize(rtDes, pDesVector3D, rt, pTransMatrix);
+}
+
+BASEGRAPH_DATARENDER_API void CalcBufferProjectSize(rectf & rtDes, vector3f * pDesVector3D, rectf & rtSrc, matrix4f * pTransMatrix)
+{
+	rtDes.left = 65535.0f;
+	rtDes.top = 65535.0f;
+	rtDes.right = -65535.0f;
+	rtDes.bottom = -65535.0f;
+	float3Set(pDesVector3D + 0, rtSrc.left, -rtSrc.top, 0);
+	float3Set(pDesVector3D + 1, rtSrc.right, -rtSrc.top, 0);
+	float3Set(pDesVector3D + 2, rtSrc.right, -rtSrc.bottom, 0);
+	float3Set(pDesVector3D + 3, rtSrc.left, -rtSrc.bottom, 0);
+
+	for (int i = 0; i < 4; i++)
+	{
+		pDesVector3D[i] *= *pTransMatrix;
+		rtDes.left = min(rtDes.left, pDesVector3D[i].x);
+		rtDes.top = min(rtDes.top, pDesVector3D[i].y);
+		rtDes.right = max(rtDes.right, pDesVector3D[i].x);
+		rtDes.bottom = max(rtDes.bottom, pDesVector3D[i].y);
+	}
+}
+
+BASEGRAPH_DATARENDER_API void CalcPointProject(vector4f * pV4D, matrix4f * pTransMatrix, matrix4f * pProjectMatrix, vector4f * pvCenter)
+{
+	matrix4f	vCenterMatrix;
+	vector4f vDes;
+	float4MulMatQ(&vDes,			// 目标向量指针
+		pV4D,			// 源向量指针
+		pTransMatrix);	// 矩阵指针
+	*pV4D = vDes;
+	//calc_trans_point4D(pV4D,pTransMatrix);
+	pV4D->x -= pvCenter->x;
+	pV4D->y -= pvCenter->y;
+	pV4D->z -= pvCenter->z;
+
+	matrix4f_identity(&vCenterMatrix);
+	vCenterMatrix._41 = pvCenter->x;
+	vCenterMatrix._42 = pvCenter->y;
+	vCenterMatrix._43 = pvCenter->z;
+
+	float4MulMatQ(&vDes,			// 目标向量指针
+		pV4D,			// 源向量指针
+		&vCenterMatrix);	// 矩阵指针
+	*pV4D = vDes;
 }
 
 int  cell_get_group_ptcount(vectorcell*	srccell, int nstart, int type);
