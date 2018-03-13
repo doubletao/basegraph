@@ -3813,7 +3813,7 @@ void TypesetInterface_OnAddUnit(BOOL bKeepBalance, LPVOID pInterfaceParam)
 
 		LPSYText pText = pTitleCalc->GetText();
 		SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
-		SYAR_Add(pTitleCalc->Get2DTextRenderUnitArray(), pRenderUnit);
+		SYAR_Add(pTitleCalc->Get2DTextUnit(), pRenderUnit);
 
 		if (pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
 		{
@@ -3904,7 +3904,7 @@ void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 		}
 #endif
 
-		SYArray* pary2DTextRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		SYArray* pary2DTextRenderUnit = pTitleCalc->Get2DTextUnit();
 		for (i = 0; i < nCount; i++)
 		{
 			SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
@@ -3976,7 +3976,7 @@ void TypesetInterface_OnDeleteUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 #endif
 
 		LPSYText pText = pTitleCalc->GetText();
-		SYArray* paryRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		SYArray* paryRenderUnit = pTitleCalc->Get2DTextUnit();
 		for (i = 0; i < nCount; i++)
 		{
 			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, nIndex + i);
@@ -4038,7 +4038,7 @@ void TypesetInterface_OnDeleteAllUnit(LPVOID pInterfaceParam)
 #endif
 
 		LPSYText pText = pTitleCalc->GetText();
-		SYArray* paryRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		SYArray* paryRenderUnit = pTitleCalc->Get2DTextUnit();
 		int nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
 		for (i = 0; i < nRenderUnitCount; i++)
 		{
@@ -4078,7 +4078,7 @@ void TypesetInterface_OnRefreshUnit(int nIndex, int nCount, LPVOID pInterfacePar
 
 		int nEndIdx = nIndex + nCount;
 		LPSYText pText = pTitleCalc->GetText();
-		SYArray* paryRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		SYArray* paryRenderUnit = pTitleCalc->Get2DTextUnit();
 		for (int i = nIndex; i < nEndIdx; ++i)
 		{
 			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, i);
@@ -4122,7 +4122,7 @@ void TypesetInterface_OnRefreshAllUnit(LPVOID pInterfaceParam, int nLevel)
 		pTitleCalc->Lock();
 
 		LPSYText pText = pTitleCalc->GetText();
-		SYArray* paryRenderUnit = pTitleCalc->Get2DTextRenderUnitArray();
+		SYArray* paryRenderUnit = pTitleCalc->Get2DTextUnit();
 		int nRenderUnitCount = SYAR_GetCount(paryRenderUnit);
 
 		for (int i = 0; i < nRenderUnitCount; i++)

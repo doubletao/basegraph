@@ -13,6 +13,7 @@ CalculatorTitleword::CalculatorTitleword(CString strObjID)
 
 CalculatorTitleword::~CalculatorTitleword()
 {
+	SYText_Release(&m_text);
 }
 
 bool CalculatorTitleword::PrepareObjBuffer(int nWidth, int nHeight)
@@ -90,9 +91,10 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 
 			if (nWidth > 0 && nHeight > 0)
 			{
-				//准备buf
-				if (PrepareItemHalBufer(DX3DEngine_GetMainDevice()))
+				int nDevice = DX3DEngine_GetMainDevice();
+				if (PrepareItemHalBufer(nDevice))
 				{
+					DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
 					RenderUnitBufferForGpu();
 				}
 			}
@@ -117,19 +119,19 @@ rectf CalculatorTitleword::CalUnitBound()
 	{
 		SYUnit* pRenderUnit = (SYUnit*)SYAR_GetAt(&arRenderUnitArray, i);
 		
-		vector3f v = { 0,0,0 };
-		v *= pRenderUnit->MatVToItem;
-		POINT ptPos;
-		//djt 暂时不往上追父矩阵
-		//pEnv->ItemToScene(v);
-		ptPos.x = (LONG)v.x;
-		ptPos.y = (LONG)v.y;
-
 		//得到每一个Unit的边界(包括面边体影信息)在这个层面图形特技已经完成，RenderUnit单元中已经包含了图形特技的因素
 		GetRenderUnitBound(i, fbound);
 		rip_extend_fbound_long(&fbound, &rtTemp.left, &rtTemp.top, &rtTemp.right, &rtTemp.bottom);
 #if 0
 		//djt 特技size计算暂时不考虑
+		//vector3f v = { 0,0,0 };
+		//v *= pRenderUnit->MatVToItem;
+		//POINT ptPos;
+		//pEnv->ItemToScene(v);
+		//ptPos.x = (LONG)v.x;
+		//ptPos.y = (LONG)v.y;
+
+
 		BOOL bRet = pEnv->CalcEffectSize(pEnv->m_dCurFrame, i, nRenderCount, 0.0, &rtTemp, EFFECT_CALC_CONDITIONS_PER, rtScene, ptPos);
 
 		if (bRet)//如果有逐字特技需要计算
@@ -150,11 +152,21 @@ rectf CalculatorTitleword::CalUnitBound()
 			fbound,
 			&matBuffer);
 
+		//总体矩形的计算需要考虑位置信息
+		matrix4f matItem;
+		matrix4f_from_pos(&matItem, pRenderUnit->pos.x, pRenderUnit->pos.y, pRenderUnit->pos.z);
+		rectf bound;
+		matBuffer = matItem * matBuffer;
+		CalcBufferProjectSize(bound,
+			v3d,
+			fbound,
+			&matBuffer);
+
 		//计算总体的矩形
-		m_rtUnitBound.left = min(m_rtUnitBound.left, pRenderUnit->u.u2d.graph.bound.left);
-		m_rtUnitBound.right = max(m_rtUnitBound.right, pRenderUnit->u.u2d.graph.bound.right);
-		m_rtUnitBound.top = min(m_rtUnitBound.top, pRenderUnit->u.u2d.graph.bound.top);
-		m_rtUnitBound.bottom = max(m_rtUnitBound.bottom, pRenderUnit->u.u2d.graph.bound.bottom);
+		m_rtUnitBound.left = min(m_rtUnitBound.left, bound.left);
+		m_rtUnitBound.right = max(m_rtUnitBound.right, bound.right);
+		m_rtUnitBound.top = min(m_rtUnitBound.top, bound.top);
+		m_rtUnitBound.bottom = max(m_rtUnitBound.bottom, bound.bottom);
 	}
 	return m_rtUnitBound;
 }
@@ -318,7 +330,7 @@ SYText * CalculatorTitleword::GetText()
 	return &m_text;
 }
 
-SYArray * CalculatorTitleword::Get2DTextRenderUnitArray()
+SYArray * CalculatorTitleword::Get2DTextUnit()
 {
 	return &m_text.ar2DUnit;
 }
@@ -384,75 +396,19 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 				DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
 			continue;
 		}
-#if 0
-		if (!pUnitView)
-		{
-			pUnitView = new SYRenderUnitView;
-			pUnitView->pUnitBuffer = NULL;
-			pUnitView->pUnitDymHalBuffer = NULL;
-			pUnitView->pUnitHalBuf = new SYHalDef32;
-			pUnitView->bChanged = TRUE;
-			memset(pUnitView->pUnitHalBuf, 0, sizeof(SYHalDef32));
-			RenderView_AddResource(pView, pRenderUnit->szID, pUnitView);
-		}
 
-		if (pRenderUnit->m_pUnit->u.u2d.staticeffect.dyntex.disable == FALSE &&
-			pRenderUnit->m_pUnit->u.u2d.staticeffect.dyntex.szPath[0] != NULL)
-		{
-			if (!pUnitView->pUnitDymHalBuffer)
-			{
-				pUnitView->pUnitDymHalBuffer = new SYHalDef32;
-				memset(pUnitView->pUnitDymHalBuffer, 0, sizeof(SYHalDef32));
-			}
-			TCHAR szRealPath[MAX_PATH];
-			memset(szRealPath, 0, sizeof(TCHAR) * MAX_PATH);
-			GetFileManager()->TagPathTrans(pRenderUnit->m_pUnit->u.u2d.staticeffect.dyntex.szPath, szRealPath, GetFileManager()->lpParam);
-			CreateDynBuffer(nDevice, pUnitView->pUnitDymHalBuffer, szRealPath);
-			pUnitView->bUseColorAlpha = pRenderUnit->m_pUnit->u.u2d.staticeffect.dyntex.bUseAlpha;
-		}
-		else if (pUnitView && pUnitView->pUnitDymHalBuffer)
-		{
-			if (pUnitView->pUnitDymHalBuffer->m_bRelease)
-				SY3DEngine_ReleaseTexture(nDevice, pUnitView->pUnitDymHalBuffer->m_hTex);
-			SAFE_DELETE(pUnitView->pUnitDymHalBuffer);
-		}
-
-		SYHalDef32* pUnitHalBuffer = pUnitView->pUnitHalBuf;
-		if (pUnitHalBuffer)
-		{
-			if (pUnitHalBuffer->m_hTex)
-			{
-				int nTexWidth = 0, nTexHeight = 0;
-				SY3DEngine_GetTextureInfo(nDevice, pUnitHalBuffer->m_hTex, &nTexWidth, &nTexHeight, NULL);
-				if (nTexWidth < facew || nTexHeight < faceh)
-				{
-					if (pUnitHalBuffer->m_bRelease)
-						SY3DEngine_ReleaseTexture(nDevice, pUnitHalBuffer->m_hTex);
-					pUnitHalBuffer->m_hTex = NULL;
-				}
-			}
-
-			if (!pUnitHalBuffer->m_hTex)
-			{
-				pUnitHalBuffer->m_hTex = SY3DEngine_CreateTexture(nDevice, facew, faceh, SYTexture_Normal2DTex);
-				pUnitHalBuffer->m_bRelease = TRUE;
-			}
-			SY3DEngine_ClearTexture(nDevice, pUnitHalBuffer->m_hTex, 0);
-
-			pUnitHalBuffer->m_rtBound = rtResultBound;
-			pUnitHalBuffer->m_nOriginX = -rtResultBound.left;
-			pUnitHalBuffer->m_nOriginY = -rtResultBound.top;
-
-			int hTransTex = SYTextureManager_QueryTexture(SYTexture_MemTexture, facew, faceh);
-			SY3DEngine_UpLoad(pUnitHalBuffer->m_hTex, nDevice, hTransTex,
-				0, 0, facew, faceh, pBufferPool->m_dwBuffer, 0, 0, facew, faceh, facew, faceh);
-			if (0)
-				SY3DEngine_DumpTexture(nDevice, pUnitHalBuffer->m_hTex, _T("C:\\123.bmp"));
-			SYTextureManager_UnQueryTexture(hTransTex);
+		DXHalDef32* pHalBuffer = &m_HalDes;
+		if (pHalBuffer)
+		{		
+				int hTransTex = DXTextureManager_QueryTexture(DXTexture_MemTexture, facew, faceh);
+				DX3DEngine_UpLoad(pHalBuffer->m_hTex, nDevice, hTransTex,
+					pRenderUnit->pos.x, 60 * i/*pRenderUnit->pos.x*/, facew, faceh, pBufferPool->m_dwBuffer, 0, 0, facew, faceh, facew, faceh);
+				if (0)
+					DX3DEngine_DumpTexture(nDevice, pHalBuffer->m_hTex, _T("E:\\123.bmp"));
+				DXTextureManager_UnQueryTexture(hTransTex);
 		}
 		if (pBufferPool)
 			SYData_ReleaseCalcBuffer(pBufferPool);
 		pBufferPool = NULL;
-#endif
 	}
 }

@@ -353,7 +353,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	vecImg.push_back(1);
 	vecImg.push_back(5);
 	vecImg.push_back(6);
-	for (int i = 0; i < 0; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		CString strName;
 		strName.Format(_T("图片%d"), i);
@@ -395,7 +395,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	std::map<CString, CString> mapText;
 	//mapText[_T("宋体")] = _T("宋体");
 	//mapText[_T("楷体")] = _T("楷体");
-	//mapText[_T("华文行楷")] = _T("华文行楷");
+	mapText[_T("华文行楷")] = _T("华文行楷");
 	for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)
 	{
 		CString strName;

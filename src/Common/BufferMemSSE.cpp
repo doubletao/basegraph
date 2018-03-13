@@ -93,7 +93,8 @@ BOOL BufferMemSSE::Buffer_BGRA_Fix_SSE(OUT DWORD * pDes, IN int nDesX, IN int nD
 	case BUFFER_MIX:			// Alpha »ìµþ
 		for (int i = nDesY - srcDesY; i<nDesHeight; i += nLineInc)
 		{
-			bgra32_line_mix(pDesLine, pSrcLine, na16, nm16, g_pdwMixGainTable);
+			//bgra32_line_mix(pDesLine, pSrcLine, na16, nm16, g_pdwMixGainTable);
+			bgra32_line_alpha_blend(pDesLine, pSrcLine, na16, nm16);
 			pDesLine += nDesAddWidth;
 			pSrcLine += nSrcAddWidth;
 		}
