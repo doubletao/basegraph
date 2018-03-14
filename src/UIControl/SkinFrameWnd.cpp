@@ -536,6 +536,7 @@ void CSkinFrameWnd::OnSize(UINT nType, int cx, int cy)
 	{
 		int nBtnWidth = pImg->GetWidth();
 		int nBtnHeight = pImg->GetHeight();
+		int nBtnGap = ThemeManager::Instance().GetIntValue(ThemeInt_SkinWndFrameSysBtnGap);
 		int nTitleHeight = ThemeManager::Instance().GetIntValue(ThemeInt_SkinWndTitleHeight);
 		int nFrameWidth = ThemeManager::Instance().GetIntValue(ThemeInt_SkinWndFrameWidth);
 		int nY = (nTitleHeight - nBtnHeight) / 2;
@@ -567,11 +568,11 @@ void CSkinFrameWnd::OnSize(UINT nType, int cx, int cy)
 		}
 		if (pMaxBtn)
 		{
-			pMaxBtn->MoveTo(rcWnd.Width() - nBtnWidth * 2 - nX, nY);
+			pMaxBtn->MoveTo(rcWnd.Width() - nBtnWidth * 2 - nX - nBtnGap, nY);
 		}
 		if (pMinBtn)
 		{
-			pMinBtn->MoveTo(rcWnd.Width() - nBtnWidth * 3 - nX, nY);
+			pMinBtn->MoveTo(rcWnd.Width() - nBtnWidth * 3 - nX - nBtnGap * 2, nY);
 		}
 	}
 

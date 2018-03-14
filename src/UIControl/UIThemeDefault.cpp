@@ -62,6 +62,7 @@ bool UIThemeDefault::Initialize()
 	//ÕûÊý
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleHeight, 29));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndFrameWidth, 3));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndFrameSysBtnGap, 3));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleObjectBarX, 150));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_ActionBarWidth, 36));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineHeight, 300));

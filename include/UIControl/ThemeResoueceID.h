@@ -3,6 +3,7 @@ enum ThemeIntValueDef
 {
 	ThemeInt_SkinWndTitleHeight,
 	ThemeInt_SkinWndFrameWidth,
+	ThemeInt_SkinWndFrameSysBtnGap,
 	ThemeInt_SkinWndTitleObjectBarX,
 	ThemeInt_ActionBarWidth,
 	ThemeInt_TimeLineHeight,
