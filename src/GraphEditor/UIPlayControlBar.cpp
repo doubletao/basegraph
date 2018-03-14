@@ -13,21 +13,24 @@ UIPlayControlBar::~UIPlayControlBar()
 
 void UIPlayControlBar::InitializeObject()
 {
-	int nImgSize = 0;
+	int nImgWidth = 0;
+	int nImgHeight = 0;
 	auto AddOneObjectBtn = [&](UIElementMsgDef emMsg, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX)
 	{
-		if (0 == nImgSize)
+		if (0 == nImgWidth
+			|| 0 == nImgHeight)
 		{
 			CImage * pImg = UIControl_GetImage(nBKImgN);
 			if (pImg)
 			{
-				nImgSize = pImg->GetWidth();
+				nImgWidth = pImg->GetWidth();
+				nImgHeight = pImg->GetHeight();
 			}
 		}
 		UIButton * pCheck = new UIButton;
-		int nXPos = (m_nWidth - 5 * (nImgSize + 1)) / 2 + (int)m_vecChildElement.size() * (nImgSize + 1);
-		int nYPos = (m_nHeight - nImgSize) / 2;
-		pCheck->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
+		int nXPos = (m_nWidth - 5 * (nImgWidth + 1)) / 2 + (int)m_vecChildElement.size() * (nImgWidth + 1);
+		int nYPos = (m_nHeight - nImgHeight) / 2;
+		pCheck->Create(nXPos, nYPos, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
 		m_vecChildElement.push_back(pCheck);
 	};
 

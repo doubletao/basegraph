@@ -17,7 +17,7 @@ void UIImageDrawer::Draw(CDC * pDC, int nX, int nY, int nWidth, int nHeight, LPC
 	CImage * pImg = ThemeManager::Instance().GetImage(GetResID());
 	if (pImg)
 	{
-		//pImg->AlphaBlend(pDC->GetSafeHdc(), nX, nY, nWidth, nHeight, 0, 0, pImg->GetWidth(), pImg->GetHeight(), );
-		pImg->TransparentBlt(pDC->GetSafeHdc(), nX, nY, nWidth, nHeight, 0, 0, pImg->GetWidth(), pImg->GetHeight(), RGB(255, 255, 255));
+		CRect rcImg(nX, nY, nX + nWidth, nY + nHeight);
+		BufferFunction::DrawImageWithAplha(pDC, pImg, rcImg, rcImg, CRect(0, 0, nWidth, nHeight), CRect(), TRUE, 255, FALSE);
 	}
 }

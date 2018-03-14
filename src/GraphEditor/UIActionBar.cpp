@@ -13,15 +13,18 @@ UIActionBar::~UIActionBar()
 
 void UIActionBar::InitializeObject()
 {
-	int nImgSize = 0;
+	int nImgWidth = 0;
+	int nImgHeight = 0;
 	auto AddOneObjectBtn = [&](bool bButton, UIElementMsgDef emMsg, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX)
 	{
-		if (0 == nImgSize)
+		if (0 == nImgWidth
+			|| 0 == nImgHeight)
 		{
 			CImage * pImg = UIControl_GetImage(nBKImgN);
 			if (pImg)
 			{
-				nImgSize = pImg->GetWidth();
+				nImgWidth = pImg->GetWidth();
+				nImgHeight = pImg->GetHeight();
 			}
 		}
 		UIButton * pButton = nullptr;
@@ -33,9 +36,9 @@ void UIActionBar::InitializeObject()
 		{
 			pButton = new UICheckBtn;
 		}
-		int nXPos = (m_nWidth - nImgSize) / 2; 
-		int nYPos = (int)m_vecChildElement.size() * (nImgSize + 1);
-		pButton->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
+		int nXPos = (m_nWidth - nImgWidth) / 2; 
+		int nYPos = (int)m_vecChildElement.size() * (nImgHeight + 1);
+		pButton->Create(nXPos, nYPos, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
 		m_vecChildElement.push_back(pButton);
 	};
 

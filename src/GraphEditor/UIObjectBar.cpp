@@ -13,21 +13,24 @@ UIObjectBar::~UIObjectBar()
 
 void UIObjectBar::InitializeObject()
 {
-	int nImgSize = 0;
+	int nImgWidth = 0;
+	int nImgHeight = 0;
 	auto AddOneObjectBtn = [&](UIElementMsgDef emMsg, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX)
 	{
-		if (0 == nImgSize)
+		if (0 == nImgWidth
+			|| 0== nImgHeight)
 		{
 			CImage * pImg = UIControl_GetImage(nBKImgN);
 			if (pImg)
 			{
-				nImgSize = pImg->GetWidth();
+				nImgWidth = pImg->GetWidth();
+				nImgHeight = pImg->GetHeight();
 			}
 		}
 		UICheckBtn * pCheck = new UICheckBtn;
-		int nXPos = (int)m_vecChildElement.size() * (nImgSize + 1);
-		int nYPos = (m_nHeight - nImgSize) / 2;
-		pCheck->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
+		int nXPos = (int)m_vecChildElement.size() * (nImgWidth + 1);
+		int nYPos = (m_nHeight - nImgHeight) / 2;
+		pCheck->Create(nXPos, nYPos, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
 		m_vecChildElement.push_back(pCheck);
 	};
 
@@ -35,7 +38,7 @@ void UIObjectBar::InitializeObject()
 	AddOneObjectBtn(UIElementMsg_CreateScroll, ThemeImage_BtnObjScroll_N, ThemeImage_BtnObjScroll_F, ThemeImage_BtnObjScroll_D, ThemeImage_BtnObjScroll_X);
 	AddOneObjectBtn(UIElementMsg_CreateImage, ThemeImage_BtnObjImage_N, ThemeImage_BtnObjImage_F, ThemeImage_BtnObjImage_D, ThemeImage_BtnObjImage_X);
 
-	m_nWidth = (int)m_vecChildElement.size() * (nImgSize + 1);
+	m_nWidth = (int)m_vecChildElement.size() * (nImgWidth + 1);
 }
 
 void UIObjectBar::RearrangeChildPos()
