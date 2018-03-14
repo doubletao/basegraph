@@ -14,7 +14,6 @@ enum UIElementMsgDef
 	UIElementMsg_SaveAs,
 
 	UIElementMsg_DefaultAction,
-	UIElementMsg_MoveAction,
 	UIElementMsg_ZoomAction,
 	UIElementMsg_RotateAction,
 

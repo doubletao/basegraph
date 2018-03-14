@@ -28,7 +28,7 @@ bool UIPropertyTabBar::Create(int nX, int nY, int nWidth, int nHeight, HWND hPar
 void UIPropertyTabBar::InitializeObject()
 {
 	int nImgSize = 0;
-	auto AddOneObjectBtn = [&](UIElementMsgDef emMsg, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, LPCTSTR strText, COLORREF nTextColor)
+	auto AddOneObjectBtn = [&](UIElementMsgDef emMsg, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX)
 	{
 		if (0 == nImgSize)
 		{
@@ -41,15 +41,15 @@ void UIPropertyTabBar::InitializeObject()
 		UICheckBtn * pCheck = new UICheckBtn;
 		int nXPos = (m_nWidth - nImgSize) / 2;
 		int nYPos = (int)m_vecChildElement.size() * (nImgSize + 1);
-		pCheck->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this, strText, ThemeFont_SkinWndTitleText, nTextColor);
+		pCheck->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
 		m_vecChildElement.push_back(pCheck);
 	};
 
-	AddOneObjectBtn(UIElementMsg_PropertyTabColor, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("颜色"), RGB(255, 255, 255));
-	AddOneObjectBtn(UIElementMsg_PropertyTabObject, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("物件"), RGB(255, 255, 255));
-	AddOneObjectBtn(UIElementMsg_PropertyTabSpace, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("空间"), RGB(255, 255, 255));
-	AddOneObjectBtn(UIElementMsg_PropertyTabFx, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("特技"), RGB(255, 255, 255));
-	AddOneObjectBtn(UIElementMsg_PropertyTabText, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("文本"), RGB(255, 255, 255));
+	AddOneObjectBtn(UIElementMsg_PropertyTabColor, ThemeImage_TabBtnColor_N, ThemeImage_TabBtnColor_F, ThemeImage_TabBtnColor_D, ThemeImage_TabBtnColor_X);
+	AddOneObjectBtn(UIElementMsg_PropertyTabObject, ThemeImage_TabBtnObject_N, ThemeImage_TabBtnObject_F, ThemeImage_TabBtnObject_D, ThemeImage_TabBtnObject_X);
+	AddOneObjectBtn(UIElementMsg_PropertyTabSpace, ThemeImage_TabBtnSpace_N, ThemeImage_TabBtnSpace_F, ThemeImage_TabBtnSpace_D, ThemeImage_TabBtnSpace_X);
+	AddOneObjectBtn(UIElementMsg_PropertyTabFx, ThemeImage_TabBtnEffect_N, ThemeImage_TabBtnEffect_F, ThemeImage_TabBtnEffect_D, ThemeImage_TabBtnEffect_X);
+	AddOneObjectBtn(UIElementMsg_PropertyTabText, ThemeImage_TabBtnText_N, ThemeImage_TabBtnText_F, ThemeImage_TabBtnText_D, ThemeImage_TabBtnText_X);
 }
 
 void UIPropertyTabBar::RearrangeChildPos()

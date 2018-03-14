@@ -14,7 +14,7 @@ UIActionBar::~UIActionBar()
 void UIActionBar::InitializeObject()
 {
 	int nImgSize = 0;
-	auto AddOneObjectBtn = [&](bool bButton, UIElementMsgDef emMsg, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, LPCTSTR strText, COLORREF nTextColor)
+	auto AddOneObjectBtn = [&](bool bButton, UIElementMsgDef emMsg, int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX)
 	{
 		if (0 == nImgSize)
 		{
@@ -35,18 +35,17 @@ void UIActionBar::InitializeObject()
 		}
 		int nXPos = (m_nWidth - nImgSize) / 2; 
 		int nYPos = (int)m_vecChildElement.size() * (nImgSize + 1);
-		pButton->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this, strText, ThemeFont_SkinWndTitleText, nTextColor);
+		pButton->Create(nXPos, nYPos, nImgSize, nImgSize, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
 		m_vecChildElement.push_back(pButton);
 	};
 
-	AddOneObjectBtn(true, UIElementMsg_NewFile, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("新建"), RGB(255, 255, 255));
-	AddOneObjectBtn(true, UIElementMsg_SaveFile, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("保存"), RGB(255, 255, 255));
-	AddOneObjectBtn(true, UIElementMsg_SaveAs, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("另存"), RGB(255, 255, 255));
-	AddOneObjectBtn(false, UIElementMsg_DefaultAction, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("默认"), RGB(255, 255, 255));
-	AddOneObjectBtn(false, UIElementMsg_MoveAction, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("移动"), RGB(255, 255, 255));
-	AddOneObjectBtn(false, UIElementMsg_ZoomAction, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("缩放"), RGB(255, 255, 255));
-	AddOneObjectBtn(false, UIElementMsg_RotateAction, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("旋转"), RGB(255, 255, 255));
-	AddOneObjectBtn(true, UIElementMsg_SystemSetting, ThemeImage_ObjectBtnBKImg_N, ThemeImage_ObjectBtnBKImg_F, ThemeImage_ObjectBtnBKImg_D, ThemeImage_ObjectBtnBKImg_X, _T("设置"), RGB(255, 255, 255));
+	AddOneObjectBtn(true, UIElementMsg_NewFile, ThemeImage_BtnNewFile_N, ThemeImage_BtnNewFile_F, ThemeImage_BtnNewFile_D, ThemeImage_BtnNewFile_X);
+	AddOneObjectBtn(true, UIElementMsg_SaveFile, ThemeImage_BtnSave_N, ThemeImage_BtnSave_F, ThemeImage_BtnSave_D, ThemeImage_BtnSave_X);
+	AddOneObjectBtn(true, UIElementMsg_SaveAs, ThemeImage_BtnSaveAs_N, ThemeImage_BtnSaveAs_F, ThemeImage_BtnSaveAs_D, ThemeImage_BtnSaveAs_X);
+	AddOneObjectBtn(false, UIElementMsg_DefaultAction, ThemeImage_BtnDefaultAction_N, ThemeImage_BtnDefaultAction_F, ThemeImage_BtnDefaultAction_D, ThemeImage_BtnDefaultAction_X);
+	AddOneObjectBtn(false, UIElementMsg_ZoomAction, ThemeImage_BtnScaleAction_N, ThemeImage_BtnScaleAction_F, ThemeImage_BtnScaleAction_D, ThemeImage_BtnScaleAction_X);
+	AddOneObjectBtn(false, UIElementMsg_RotateAction, ThemeImage_BtnRotateAction_N, ThemeImage_BtnRotateAction_F, ThemeImage_BtnRotateAction_D, ThemeImage_BtnRotateAction_X);
+	AddOneObjectBtn(true, UIElementMsg_SystemSetting, ThemeImage_BtnSysSetting_N, ThemeImage_BtnSysSetting_F, ThemeImage_BtnSysSetting_D, ThemeImage_BtnSysSetting_X);
 }
 
 void UIActionBar::RearrangeChildPos()

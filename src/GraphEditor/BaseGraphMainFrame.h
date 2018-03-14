@@ -48,7 +48,6 @@ public:
 	void OnBtnSaveFile();
 	void OnBtnSaveAs();
 	void OnBtnDefaultAction();
-	void OnBtnMoveAction();
 	void OnBtnZoomAction();
 	void OnBtnRotateAction();
 	void OnBtnSystemSetting();

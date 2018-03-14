@@ -537,9 +537,6 @@ LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
 	case UIElementMsg_DefaultAction:
 		OnBtnDefaultAction();
 		break;
-	case UIElementMsg_MoveAction:
-		OnBtnMoveAction();
-		break;
 	case UIElementMsg_ZoomAction:
 		OnBtnZoomAction();
 		break;
@@ -601,13 +598,6 @@ void BaseGraphMainFrame::OnBtnDefaultAction()
 {
 	OutputDebugString(_T("Ä¬ÈÏ\n"));
 	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_DefaultAction);
-	m_uiActionBar.UpdateStatus();
-}
-
-void BaseGraphMainFrame::OnBtnMoveAction()
-{
-	OutputDebugString(_T("ÒÆ¶¯\n"));
-	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_MoveAction);
 	m_uiActionBar.UpdateStatus();
 }
 
