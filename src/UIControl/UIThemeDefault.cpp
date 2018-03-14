@@ -36,7 +36,7 @@ bool UIThemeDefault::Initialize()
 	{
 		LOGFONT lfFont;
 		memset(&lfFont, 0, sizeof(lfFont));
-		lfFont.lfHeight = -20;
+		lfFont.lfHeight = -26;
 		lfFont.lfWeight = 700;
 		lstrcpy(lfFont.lfFaceName, _T("微软雅黑"));
 		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineTimeCode, lfFont));
@@ -45,7 +45,7 @@ bool UIThemeDefault::Initialize()
 	{
 		LOGFONT lfFont;
 		memset(&lfFont, 0, sizeof(lfFont));
-		lfFont.lfHeight = -16;
+		lfFont.lfHeight = -14;
 		lstrcpy(lfFont.lfFaceName, _T("微软雅黑"));
 		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineObjectTrackText, lfFont));
 	}
@@ -53,7 +53,7 @@ bool UIThemeDefault::Initialize()
 	{
 		LOGFONT lfFont;
 		memset(&lfFont, 0, sizeof(lfFont));
-		lfFont.lfHeight = -10;
+		lfFont.lfHeight = -14;
 		lstrcpy(lfFont.lfFaceName, _T("微软雅黑"));
 		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineRuler, lfFont));
 	}
@@ -70,28 +70,29 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarHeight, 40));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 300));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 400));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 35));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionHeight, 20));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTrackHeight, 20));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeScrollHeight, 8));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionHeight, 28));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTrackHeight, 28));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeTabWidth, 30));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeWidth, 400));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePixelPerFrameMax, 1000));//每帧最多对应10像素(放大一百倍)
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePixelPerFrameMin, 5));//每帧最少对应0.05像素（放大一百倍）
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineAdjustPreservePercent, 10));//时间线adjust横向滚动条后预留的空间百分比
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerShortLineLength, 5));//时间线刻度尺短线长
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerLongLineLength, 10));//时间线刻度尺长线长
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerShortLineLength, 10));//时间线刻度尺短线长
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerLongLineLength, 14));//时间线刻度尺长线长
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerGapMinPixel, 20));//时间线刻度尺每刻度的最小像素数
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerGapMaxPixel, 35));//时间线刻度尺每刻度的最大像素数
 
 	/////////////////////////////////////////////////////////////////////
 	//颜色
-	m_mapColorList.insert(std::make_pair(ThemeColor_SkinWndTitleText, RGB(233, 233, 233)));
-	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineTimeCodeText, RGB(233, 233, 0)));
-	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Nor, RGB(233, 233, 0)));
-	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Sel, RGB(233, 233, 233)));
-	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerLine, RGB(233, 233, 0)));
-	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerText, RGB(233, 233, 0)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_SkinWndTitleText, RGB(255, 255, 255)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineTimeCodeText, RGB(12, 168, 4)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Nor, RGB(255, 255, 255)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Sel, RGB(0x0a, 0xa9, 0x01)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerLine, RGB(112, 112, 112)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerText, RGB(255, 255, 255)));
 
 	/////////////////////////////////////////////////////////////////////
 	//图片

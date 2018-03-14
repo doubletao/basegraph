@@ -128,7 +128,7 @@ void UITLObjectLeftArea::DrawElement(CDC * pDC)
 	CFont font;
 	font.CreateFontIndirect(&logFont);
 	CFont * pOldFont = pDC->SelectObject(&font);
-	pDC->SetTextColor(nGraListTextColorSel);
+	pDC->SetTextColor(nGraListTextColorNor);
 	int nOldBkMode = pDC->SetBkMode(TRANSPARENT);
 	CSize sizText = pDC->GetTextExtent(strText);
 	CRect rtText(nXStart + nItemTabWidth * nCol, nYStart, nXStart + nItemTabWidth * nCol + sizText.cx, nYStart + nItemHeight);

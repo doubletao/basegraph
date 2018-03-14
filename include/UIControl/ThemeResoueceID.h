@@ -13,6 +13,7 @@ enum ThemeIntValueDef
 	ThemeInt_PropretyViewTabWidth,
 	ThemeInt_TimeLineTimeCodeWidth,
 	ThemeInt_TimeLineTimeCodeHeight,
+	ThemeInt_TimeLineTimeScrollHeight,
 	ThemeInt_TimeLineItemActionHeight,//时间线物件条高度
 	ThemeInt_TimeLineItemTrackHeight,//时间线物件关键帧轨道高度
 	ThemeInt_TimeLineItemTreeTabWidth,//时间线物件tree的tab宽度
