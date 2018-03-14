@@ -41,6 +41,7 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 		BOOL bUnderline = FALSE;
 		int nFontDistance = 0;
 		BOOL bHorizontal = FALSE;
+		BOOL bLineWrap = FALSE;
 		bool bContinue = false;
 		BaseGraph_Common::Value stuValue;
 		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_Text_Str, stuValue))
@@ -58,7 +59,11 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 						if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_Horizontal_Bool, stuValue))
 						{
 							bHorizontal = stuValue.ToBOOL();
-							bContinue = true;
+							if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_LineWrap_Bool, stuValue))
+							{
+								bLineWrap = stuValue.ToBOOL();
+								bContinue = true;
+							}
 						}
 					}
 				}
@@ -76,6 +81,7 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 			newFont.lfDistance = 0;
 			_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, strFontName.GetBuffer());
 			strFontName.ReleaseBuffer();
+			m_text.bLineWrap = bLineWrap;
 			m_text.bHorizontal = bHorizontal;
 
 			m_TypeSet.SetFont(&newFont);
@@ -402,13 +408,13 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 		DXHalDef32* pHalBuffer = &m_HalDes;
 		if (pHalBuffer)
 		{		
-				int hTransTex = DXTextureManager_QueryTexture(DXTexture_MemTexture, facew, faceh);
-				//djt 这里的pos计算有问题，待纠正
-				DX3DEngine_UpLoad(pHalBuffer->m_hTex, nDevice, hTransTex,
-					pRenderUnit->pos.x, 60 * i/*pRenderUnit->pos.x*/, facew, faceh, pBufferPool->m_dwBuffer, 0, 0, facew, faceh, facew, faceh);
-				if (0)
-					DX3DEngine_DumpTexture(nDevice, pHalBuffer->m_hTex, _T("E:\\123.bmp"));
-				DXTextureManager_UnQueryTexture(hTransTex);
+			int hTransTex = DXTextureManager_QueryTexture(DXTexture_MemTexture, facew, faceh);
+			//djt 这里的pos计算有问题，待纠正
+			DX3DEngine_UpLoad(pHalBuffer->m_hTex, nDevice, hTransTex,
+				pRenderUnit->pos.x - rtResultBound.left, rtResultBound.top - pRenderUnit->pos.y, facew, faceh, pBufferPool->m_dwBuffer, 0, 0, facew, faceh, facew, faceh);
+			if (0)
+				DX3DEngine_DumpTexture(nDevice, pHalBuffer->m_hTex, _T("E:\\123.bmp"));
+			DXTextureManager_UnQueryTexture(hTransTex);
 		}
 		if (pBufferPool)
 			SYData_ReleaseCalcBuffer(pBufferPool);

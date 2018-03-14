@@ -27,6 +27,7 @@ void ObjectTitleword::InitialObjectParam()
 	AddDefaultParam(Titleword_Text_Str);
 	AddDefaultParam(Titleword_FontName_Str);
 	AddDefaultParam(Titleword_UnderLine_Bool);
+	AddDefaultParam(Titleword_LineWrap_Bool);
 	AddDefaultParam(Titleword_FontDistance_Int);
 	AddDefaultParam(Titleword_Horizontal_Bool);
 }

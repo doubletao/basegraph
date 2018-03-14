@@ -63,6 +63,7 @@ namespace BaseGraph_DataBase
 		Titleword_Text_Str,
 		Titleword_FontName_Str,
 		Titleword_UnderLine_Bool,
+		Titleword_LineWrap_Bool,
 		Titleword_FontDistance_Int,
 		Titleword_Horizontal_Bool,
 		TitlewordParam_End,
@@ -461,6 +462,11 @@ namespace BaseGraph_DataBase
 		case Titleword_UnderLine_Bool:
 			valueDesc.nDispIndex = 0;
 			valueDesc.strDispName = _T("下划线");
+			valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+			break;
+		case Titleword_LineWrap_Bool:
+			valueDesc.nDispIndex = 0;
+			valueDesc.strDispName = _T("自动折行");
 			valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
 			break;
 		case Titleword_FontDistance_Int:
