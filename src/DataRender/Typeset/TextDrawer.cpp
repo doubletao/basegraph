@@ -882,6 +882,7 @@ BOOL SYWordInfoFill(HDC hDC,
 
 	//是否使用字形索引
 	BOOL bGlyphIndex = pWordInfo->bVisible ? pWordInfo->bGlyphIndex : FALSE;
+	bGlyphIndex = TRUE;
 
 	HFONT hFont;
 	hFont = SYFont_CreateFont(pFont, wChar, bGlyphIndex ? pWordInfo->szFontName : NULL, FALSE);

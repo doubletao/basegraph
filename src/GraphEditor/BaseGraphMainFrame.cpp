@@ -394,8 +394,8 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	std::map<CString, CString> mapText;
 	//mapText[_T("宋体")] = _T("宋体");
-	//mapText[_T("楷体")] = _T("楷体");
-	mapText[_T("华文行楷")] = _T("华文行楷");
+	//mapText[_T("微软雅黑")] = _T("宋体");
+	mapText[_T("微软雅黑")] = _T("微软雅黑");
 	for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)
 	{
 		CString strName;

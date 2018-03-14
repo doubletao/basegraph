@@ -74,9 +74,11 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 			newFont.lfWidth = 35;
 			newFont.lfHeight = 40;
 			newFont.lfDistance = 0;
-			SYTextProp_SetFont(&m_text.stuTextProp, 0, 1, &newFont);
-
+			_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, strFontName.GetBuffer());
+			strFontName.ReleaseBuffer();
 			m_text.bHorizontal = bHorizontal;
+
+			m_TypeSet.SetFont(&newFont);
 			m_TypeSet.Attach(&m_text, this);
 			m_TypeSet.ReplaceString(strText, TRUE);
 
