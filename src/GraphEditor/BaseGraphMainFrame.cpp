@@ -468,6 +468,8 @@ void BaseGraphMainFrame::OnPaint()
 	dcMem.CreateCompatibleDC(NULL);
 	bmpMem.CreateCompatibleBitmap(&dc, rcClient.Width(), rcClient.Height());
 	dcMem.SelectObject(&bmpMem);
+	dcMem.FillSolidRect(rcClient, RGB(0, 0, 0));
+
 	dcMem.SetBkMode(TRANSPARENT);
 
 	//绘制物件条

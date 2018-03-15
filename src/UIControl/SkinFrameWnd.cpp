@@ -544,8 +544,8 @@ void CSkinFrameWnd::OnSize(UINT nType, int cx, int cy)
 		DWORD	dwStyle = GetStyle();
 		if (dwStyle & WS_MAXIMIZE)
 		{
-			nY += nFrameWidth;
-			nX += nFrameWidth;
+			nY += nFrameWidth + 1;
+			nX += nFrameWidth * 2 + 1;
 		}
 		UIButton * pCloseBtn = nullptr;
 		UIButton * pMaxBtn = nullptr;
