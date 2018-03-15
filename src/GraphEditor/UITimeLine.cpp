@@ -71,7 +71,7 @@ void UITimeLine::RearrangeChildPos()
 	}
 	if (m_pScrollVer)
 	{
-		m_pScrollVer->MoveTo(m_nWidth - nScrollHeight - nGap, nTimeCodeHeight, nScrollHeight, m_nHeight - nTimeCodeHeight);
+		m_pScrollVer->MoveTo(m_nWidth - nScrollHeight - nGap, nTimeCodeHeight + nGap, nScrollHeight, m_nHeight - nTimeCodeHeight - nGap);
 	}
 	if (m_pObjectArea)
 	{

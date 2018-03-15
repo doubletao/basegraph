@@ -26,7 +26,6 @@ int UITLObjectLeftArea::DrawItemLeft(CDC * pDC, CString strID, int nCol, int nCu
 			int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
 			int nItemTabWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeTabWidth);
 			LOGFONT logFont = UIControl_GetFont(ThemeFont_TimeLineObjectTrackText);
-			CImage * pLeftAreaBkImage = UIControl_GetImage(ThemeImage_TimeLineObjectLeftAreaBk);
 
 			CImage * pImgBk = nullptr; 
 			int nGraListTextColor = 0;
