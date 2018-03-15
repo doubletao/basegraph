@@ -15,6 +15,7 @@ BEGIN_MESSAGE_MAP(BaseGraphMainFrame, CSkinFrameWnd)
 	ON_WM_NCLBUTTONDBLCLK()
 	ON_WM_NCLBUTTONUP()
 	ON_WM_NCMOUSEMOVE()
+	ON_WM_NCCALCSIZE()
 	ON_WM_NCCREATE()
 	ON_WM_CREATE()
 	ON_WM_TIMER()
@@ -163,17 +164,6 @@ void BaseGraphMainFrame::OnNcPaint()
 		BufferFunction::DrawImageWithAplha(&MemDC, pImgIcon, m_rcIcon, m_rcIcon,
 			CRect(0, 0, nIconWidth, nIconHeight), CRect(), TRUE, 255, FALSE);
 
-		//沿着窗口四周画一圈一个像素宽的蓝色矩形
-		int nSavedDC = MemDC.SaveDC();
-		COLORREF col = RGB(142, 170, 195);
-		CPen pen(PS_SOLID, 1, col);
-		MemDC.SelectObject(&pen);
-		(CBrush*)MemDC.SelectStockObject(NULL_BRUSH);//空心的笔
-		MemDC.RoundRect(&rcWindow, CPoint(6, 6));
-		MemDC.RoundRect(&rcWindow, CPoint(8, 8));
-		pen.DeleteObject();
-		MemDC.RestoreDC(nSavedDC);
-
 		//绘制标题栏按钮
 		CRect rcPaint;
 		dc.GetClipBox(&rcPaint);
@@ -207,6 +197,17 @@ void BaseGraphMainFrame::OnNcPaint()
 		//绘制物件条
 		m_uiObjectBar.DrawElement(&MemDC);
 
+		//沿着窗口四周画一圈一个像素宽的蓝色矩形
+		int nSavedDC = MemDC.SaveDC();
+		COLORREF col = RGB(142, 170, 195);
+		CPen pen(PS_SOLID, 1, col);
+		MemDC.SelectObject(&pen);
+		(CBrush*)MemDC.SelectStockObject(NULL_BRUSH);//空心的笔
+		MemDC.RoundRect(&rcWindow, CPoint(6, 6));
+		MemDC.RoundRect(&rcWindow, CPoint(8, 8));
+		pen.DeleteObject();
+		MemDC.RestoreDC(nSavedDC);
+
 		dc.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), &MemDC, 0, 0, SRCCOPY);
 
 		dc.SelectClipRgn(NULL);
@@ -214,6 +215,26 @@ void BaseGraphMainFrame::OnNcPaint()
 		MemDC.DeleteDC();
 		bmp.DeleteObject();
 	}
+}
+
+void BaseGraphMainFrame::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpncsp)
+{
+	CSkinFrameWnd::OnNcCalcSize(bCalcValidRects, lpncsp);
+	CRect rcWnd;
+	GetWindowRect(&rcWnd);
+	rcWnd.OffsetRect(-rcWnd.left, -rcWnd.top);
+
+	int nTitleHeight = UIControl_GetIntValue(ThemeInt_SkinWndTitleHeight);
+	int nFrameWidth = UIControl_GetIntValue(ThemeInt_SkinWndFrameWidth);
+	int nY = 0;
+	int nX = UIControl_GetIntValue(ThemeInt_SkinWndTitleObjectBarX);
+	DWORD	dwStyle = GetStyle();
+	if (dwStyle & WS_MAXIMIZE)
+	{
+		nY += nFrameWidth * 3;
+		nX += nFrameWidth;
+	}
+	m_uiObjectBar.MoveTo(nX, nY);
 }
 
 void BaseGraphMainFrame::OnNcLButtonDblClk(UINT nHitTest, CPoint point)
@@ -301,7 +322,7 @@ BOOL BaseGraphMainFrame::OnNcCreate(LPCREATESTRUCT lpCreateStruct)
 		nY += nFrameWidth;
 		nX += nFrameWidth;
 	}
-	m_uiObjectBar.Create(nX, nY, rcWnd.Width(), nTitleHeight, GetSafeHwnd());
+	m_uiObjectBar.Create(nX, nY, rcWnd.Width(), nTitleHeight - nY, GetSafeHwnd());
 
 	return TRUE;
 }

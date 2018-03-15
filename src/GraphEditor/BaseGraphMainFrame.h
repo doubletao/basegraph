@@ -26,6 +26,7 @@ public:
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg virtual void OnNcPaint();
+	afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp);
 	afx_msg virtual void OnNcLButtonDblClk(UINT nHitTest, CPoint point);
 	afx_msg virtual void OnNcLButtonDown(UINT nHitTest, CPoint point);
 	afx_msg virtual void OnNcLButtonUp(UINT nHitTest, CPoint point);

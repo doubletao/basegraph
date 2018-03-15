@@ -155,17 +155,6 @@ void CSkinFrameWnd::OnNcPaint()
 		BufferFunction::DrawImageWithAplha(&MemDC, pImgIcon, m_rcIcon, m_rcIcon,
 			CRect(0, 0, nIconWidth, nIconHeight), CRect(), TRUE, 255, FALSE);
 
-		//沿着窗口四周画一圈一个像素宽的蓝色矩形
-		int nSavedDC = MemDC.SaveDC();
-		COLORREF col = RGB(142, 170, 195);
-		CPen pen(PS_SOLID, 1, col);
-		MemDC.SelectObject(&pen);
-		(CBrush*)MemDC.SelectStockObject(NULL_BRUSH);//空心的笔
-		MemDC.RoundRect(&rcWindow, CPoint(6, 6));
-		MemDC.RoundRect(&rcWindow, CPoint(8, 8));
-		pen.DeleteObject();
-		MemDC.RestoreDC(nSavedDC);
-
 		//绘制标题栏按钮
 		CRect rcPaint;
 		dc.GetClipBox(&rcPaint);
@@ -195,6 +184,17 @@ void CSkinFrameWnd::OnNcPaint()
 		MemDC.SetTextColor(nFontColor);
 		CRect rtTitle(xIconPos + nIconWidth + nFrameWidth + nXOffset, 0, rcWindow.Width(), nTitleHeight + nYOffset);
 		MemDC.DrawText(strTitle, rtTitle, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
+
+		//沿着窗口四周画一圈一个像素宽的蓝色矩形
+		int nSavedDC = MemDC.SaveDC();
+		COLORREF col = RGB(142, 170, 195);
+		CPen pen(PS_SOLID, 1, col);
+		MemDC.SelectObject(&pen);
+		(CBrush*)MemDC.SelectStockObject(NULL_BRUSH);//空心的笔
+		MemDC.RoundRect(&rcWindow, CPoint(6, 6));
+		MemDC.RoundRect(&rcWindow, CPoint(8, 8));
+		pen.DeleteObject();
+		MemDC.RestoreDC(nSavedDC);
 
 		dc.BitBlt(0, 0, rcWindow.Width(), rcWindow.Height(), &MemDC, 0, 0, SRCCOPY);
 
