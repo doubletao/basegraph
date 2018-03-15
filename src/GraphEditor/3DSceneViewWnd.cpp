@@ -109,7 +109,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				pThis->GetClientRect(&viewPort);
 				DX3DEngine_SetViewPort(hDevice, &viewPort);
 				DX3DEngine_SetScissor(hDevice, &viewPort);
-				OffsetRect(&viewPort, -viewPort.left / 2, -viewPort.top / 2);
+				OffsetRect(&viewPort, -viewPort.right / 2, -viewPort.bottom / 2);
 
 				//上锁，要绘制了
 				DataBaseLocker DataLocker;
@@ -160,8 +160,8 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 								if (pHalDef)
 								{
 									//渲染bufer到3D
-									//DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
-									DX3DEngine_CopyTexture(hDevice, hTex, viewPort.left, viewPort.top, pHalDef->m_rtBound.right - pHalDef->m_rtBound.left, pHalDef->m_rtBound.bottom - pHalDef->m_rtBound.top, pHalDef->m_hTex, 0, 0, pHalDef->m_rtBound.right - pHalDef->m_rtBound.left, pHalDef->m_rtBound.bottom - pHalDef->m_rtBound.top);
+									DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
+									//DX3DEngine_CopyTexture(hDevice, hTex, viewPort.left, viewPort.top, pHalDef->m_rtBound.right - pHalDef->m_rtBound.left, pHalDef->m_rtBound.bottom - pHalDef->m_rtBound.top, pHalDef->m_hTex, 0, 0, pHalDef->m_rtBound.right - pHalDef->m_rtBound.left, pHalDef->m_rtBound.bottom - pHalDef->m_rtBound.top);
 									if (false)
 									{
 										DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));

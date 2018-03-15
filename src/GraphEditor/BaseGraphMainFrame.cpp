@@ -374,7 +374,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	vecImg.push_back(1);
 	vecImg.push_back(5);
 	vecImg.push_back(6);
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 0; i++)
 	{
 		CString strName;
 		strName.Format(_T("图片%d"), i);
@@ -388,7 +388,8 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		CreateTestImgObj(strName, strImg, strDebug, nBegin, nEnd);
 	}
 
-	auto CreateTestTitlewordObj = [](CString strName, CString strText, CString strFontName, CString strDebugPath, int nBegin, int nEnd)
+	auto CreateTestTitlewordObj = [](CString strName, CString strText, CString strFontName, CString strDebugPath, int nBegin, int nEnd,
+		float fXPos, float fYPos, float fZPos)
 	{
 		CString strObjID = _T("");
 		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Titleword);
@@ -398,6 +399,9 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		mapParam[BaseGraph_DataBase::Titleword_Text_Str].SetValue(strText);
 		mapParam[BaseGraph_DataBase::Titleword_FontName_Str].SetValue(strFontName);
 		mapParam[BaseGraph_DataBase::Titleword_Horizontal_Bool].SetValue(TRUE, BaseGraph_Common::ValueType_BOOL);
+		mapParam[BaseGraph_DataBase::SpacePosition_X_Float].SetValue(fXPos);
+		mapParam[BaseGraph_DataBase::SpacePosition_Y_Float].SetValue(fYPos);
+		mapParam[BaseGraph_DataBase::SpacePosition_Z_Float].SetValue(fYPos);
 		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Titleword, mapParam, strObjID);
 		if (!strObjID.IsEmpty())
 		{
@@ -414,19 +418,39 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	};
 
 	std::map<CString, CString> mapText;
-	//mapText[_T("宋体")] = _T("宋体");
-	//mapText[_T("微软雅黑")] = _T("宋体");
-	mapText[_T("微软雅黑")] = _T("微软雅黑");
-	for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)
+	mapText[_T("宋体_文本样例")] = _T("宋体");
+	mapText[_T("楷体_文本样例")] = _T("楷体");
+	mapText[_T("微软雅黑_文本样例")] = _T("微软雅黑");
+	mapText[_T("黑体_文本样例")] = _T("黑体");
+	mapText[_T("仿宋_文本样例")] = _T("仿宋");
+	mapText[_T("新宋体_文本样例")] = _T("新宋体");
 	{
-		CString strName;
-		strName.Format(_T("文本_%s"), it->first);
-		CString strDebug;
-		strDebug.Format(_T("e:\\%s.bmp"), it->first);
-		int nBegin = 100;
-		int nEnd = 500 + 100;
+		int i = 0;
+		for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++, i++)
+		{
+			CString strName;
+			strName.Format(_T("文本_%s"), it->first);
+			CString strDebug;
+			strDebug.Format(_T("e:\\%s.bmp"), it->first);
+			int nBegin = 100 * i;
+			int nEnd = 500 * i + 100;
 
-		CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd);
+			float fXPos = 0.0f;
+			float fYPos = 0.0f;
+			float fZPos = 0.0f;
+			if (i % 2)
+			{
+				fXPos = 100.0f * i / 2;
+				fYPos = 100.0f * i / 2;
+			}
+			else
+			{
+				fXPos = -100.0f * i / 2;
+				fYPos = -100.0f * i / 2;
+			}
+
+			CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd, fXPos, fYPos, fZPos);
+		}
 	}
 
 	//CEdit * m_pEdit = new CEdit;

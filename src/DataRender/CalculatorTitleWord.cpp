@@ -74,19 +74,51 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 			//造一个Text并由此对象生成一个排版器并排版
 			m_text.Reset();
 			SYText_Init(&m_text);
-
+			
+			//字体
 			SYFont newFont;
 			newFont.lfWidth = 35;
 			newFont.lfHeight = 40;
 			newFont.lfDistance = 0;
 			_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, strFontName.GetBuffer());
 			strFontName.ReleaseBuffer();
-			m_text.bLineWrap = bLineWrap;
-			m_text.bHorizontal = bHorizontal;
 
-			m_TypeSet.SetFont(&newFont);
+			//字色
+			SYStaticEffect staitcEffect;
+			SYStaticEffect_Init(&staitcEffect);
+			staitcEffect.face.color.color = 0xFFF7007F;
+			staitcEffect.border.disable = 0;
+			staitcEffect.border.color.color = 0xFFF7FF7F;
+			staitcEffect.border.width = 5;
+
+			//下划线
+			SYUnderLine underLine;
+
+			//其他属性
+			E_TextAlignHorizontal alignH = TEXT_ALIGN_H_LEFT;
+			E_TextAlignVeritical alignV = TEXT_ALIGN_V_TOP;
+			BOOL bLeftInput = TRUE;
+			BOOL bVLeftTypeset = FALSE;
+			BOOL bFixedFrame = FALSE;
+
+			SYText_Create(&m_text,
+				strText,
+				rectf(),
+				&newFont,
+				&staitcEffect,
+				nullptr,//3D颜色先不使用
+				&underLine,
+				alignH,
+				alignV,
+				bHorizontal,
+				bLeftInput,
+				bVLeftTypeset,
+				bLineWrap,
+				bFixedFrame
+			);
+
 			m_TypeSet.Attach(&m_text, this);
-			m_TypeSet.ReplaceString(strText, TRUE);
+			m_TypeSet.ReplaceString(strText, FALSE);
 
 			//计算出bound
 			CalUnitBound();
