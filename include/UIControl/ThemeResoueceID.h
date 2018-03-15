@@ -16,6 +16,7 @@ enum ThemeIntValueDef
 	ThemeInt_TimeLineTimeCodeHeight,
 	ThemeInt_TimeLineTimeScrollHeight,
 	ThemeInt_TimeLineItemActionHeight,//时间线物件条高度
+	ThemeInt_TimeLineItemActionGap,//时间线物件条缝隙
 	ThemeInt_TimeLineItemTrackHeight,//时间线物件关键帧轨道高度
 	ThemeInt_TimeLineItemTreeTabWidth,//时间线物件tree的tab宽度
 	ThemeInt_TimeLineItemTreeWidth,//时间线物件tree的宽度
@@ -44,6 +45,11 @@ enum ThemeColorValueDef
 	ThemeColor_TimeLineObjectTrackText_Sel,
 	ThemeColor_TimeLineRulerLine,
 	ThemeColor_TimeLineRulerText,
+	ThemeColor_ScrollThumbColor_N,
+	ThemeColor_ScrollThumbColor_F,
+	ThemeColor_ScrollThumbColor_D,
+	ThemeColor_ScrollThumbColor_X,
+	ThemeColor_ScrollBkColor,
 };
 
 enum ThemeImageValueDef
@@ -154,21 +160,6 @@ enum ThemeImageValueDef
 	ThemeImage_ElementArea,
 
 	ThemeImage_TimeLineTimeCodeBk,
-
-	ThemeImage_ScrollLeftTopBtn_N,
-	ThemeImage_ScrollLeftTopBtn_F,
-	ThemeImage_ScrollLeftTopBtn_D,
-	ThemeImage_ScrollLeftTopBtn_X,
-
-	ThemeImage_ScrollRightBottomBtn_N,
-	ThemeImage_ScrollRightBottomBtn_F,
-	ThemeImage_ScrollRightBottomBtn_D,
-	ThemeImage_ScrollRightBottomBtn_X,
-
-	ThemeImage_ScrollThumbBtn_N,
-	ThemeImage_ScrollThumbBtn_F,
-	ThemeImage_ScrollThumbBtn_D,
-	ThemeImage_ScrollThumbBtn_X,
 
 	ThemeImage_TimeLineLeftObjectBkGnd_Nor,
 	ThemeImage_TimeLineLeftObjectBkGnd_Sel,

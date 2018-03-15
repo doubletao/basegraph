@@ -2,12 +2,11 @@
 #include "UIControl\UIScrollBar.h"
 #include "UIControl\ThemeResoueceID.h"
 #include "UIControl\UIControlDef.h"
+#include "ThemeManager.h"
 
 
 UIScrollBar::UIScrollBar()
-	: m_pBtnLeftTop(nullptr)
-	, m_pBtnRightBottom(nullptr)
-	, m_pBtnThumb(nullptr)
+	: m_pBtnThumb(nullptr)
 	, m_bHorScroll(false)
 	, m_nWholeLength(0)
 	, m_nPageLength(0)
@@ -48,14 +47,10 @@ void UIScrollBar::Recalculate(bool bRefresh/* = true*/)
 	//两个按钮一个thumb
 	if (m_bHorScroll)
 	{
-		m_pBtnLeftTop->MoveTo(0, 0, m_nHeight, m_nHeight, bRefresh);
-		m_pBtnRightBottom->MoveTo(m_nWidth - m_nHeight, 0, m_nHeight, m_nHeight, bRefresh);
 		m_pBtnThumb->MoveTo(GetThumbRect(), bRefresh);
 	}
 	else
 	{
-		m_pBtnLeftTop->MoveTo(0, 0, m_nWidth, m_nWidth, bRefresh);
-		m_pBtnRightBottom->MoveTo(0, m_nHeight - m_nWidth, m_nWidth, m_nWidth, bRefresh);
 		m_pBtnThumb->MoveTo(GetThumbRect(), bRefresh);
 	}
 }
@@ -182,11 +177,11 @@ CRect UIScrollBar::GetThumbAreaRect()
 	CRect rtRet = { 0 };
 	if (m_bHorScroll)
 	{
-		rtRet.SetRect(m_nHeight, 0, m_nWidth - m_nHeight, m_nHeight);
+		rtRet.SetRect(0, 0, m_nWidth, m_nHeight);
 	}
 	else
 	{
-		rtRet.SetRect(0, m_nWidth, m_nWidth, m_nHeight - m_nWidth);
+		rtRet.SetRect(0, 0, m_nWidth, m_nHeight);
 	}
 	return rtRet;
 }
@@ -196,13 +191,13 @@ CRect UIScrollBar::GetThumbRect()
 	CRect rtRet = {0};
 	if (m_bHorScroll)
 	{
-		float fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
-		rtRet.SetRect((int)(m_nHeight + m_nPos * fRatio), 0, (int)(m_nHeight + (m_nPos + m_nPageLength) * fRatio), m_nHeight);
+		float fRatio = m_nWidth * 1.0f / m_nWholeLength;
+		rtRet.SetRect((int)(m_nPos * fRatio), 0, (int)((m_nPos + m_nPageLength) * fRatio), m_nHeight);
 	}
 	else
 	{
-		float fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
-		rtRet.SetRect(0, (int)(m_nWidth + m_nPos * fRatio), m_nWidth, (int)(m_nWidth + (m_nPos + m_nPageLength) * fRatio));
+		float fRatio = m_nHeight * 1.0f / m_nWholeLength;
+		rtRet.SetRect(0, (int)(m_nPos * fRatio), m_nWidth, (int)((m_nPos + m_nPageLength) * fRatio));
 	}
 	return rtRet;
 }
@@ -217,18 +212,10 @@ bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLeng
 		m_nPageLength = nPageLength;
 		m_bHorScroll = bHorizon;
 
-		//创建按钮及thumb
-		m_pBtnLeftTop = new UIButton;
-		m_pBtnLeftTop->Create(0, 0, 10, 10, EmLeftTopButton, m_hParentWnd, ThemeImage_ScrollLeftTopBtn_N, ThemeImage_ScrollLeftTopBtn_F, ThemeImage_ScrollLeftTopBtn_D, ThemeImage_ScrollLeftTopBtn_X, this);
+		//创建thumb
+		m_pBtnThumb = new UIScrollThumbButton;
+		m_pBtnThumb->Create(0, 0, 10, 10, EmThumbButton, bHorizon, hParentWnd, this);
 
-		m_pBtnRightBottom = new UIButton;
-		m_pBtnRightBottom->Create(0, 0, 10, 10, EmRightBottomButton, m_hParentWnd, ThemeImage_ScrollRightBottomBtn_N, ThemeImage_ScrollRightBottomBtn_F, ThemeImage_ScrollRightBottomBtn_D, ThemeImage_ScrollRightBottomBtn_X, this);
-
-		m_pBtnThumb = new UIButton;
-		m_pBtnThumb->Create(0, 0, 10, 10, EmThumbButton, m_hParentWnd, ThemeImage_ScrollThumbBtn_N, ThemeImage_ScrollThumbBtn_F, ThemeImage_ScrollThumbBtn_D, ThemeImage_ScrollThumbBtn_X, this);
-
-		m_vecChildElement.push_back(m_pBtnLeftTop);
-		m_vecChildElement.push_back(m_pBtnRightBottom);
 		m_vecChildElement.push_back(m_pBtnThumb);
 		return true;
 	}
@@ -263,27 +250,6 @@ EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam
 	};
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
-		switch (nMsg)
-		{
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-			BtnHandleMsg(m_pBtnLeftTop);
-			if (bContinue)
-			{
-				BtnHandleMsg(m_pBtnRightBottom);
-			}
-			break;
-		case WM_MOUSEMOVE:
-			BtnEnterLeaveMsg(m_pBtnLeftTop);
-			BtnEnterLeaveMsg(m_pBtnRightBottom);
-			if (!m_bMoving)
-			{
-				BtnEnterLeaveMsg(m_pBtnThumb);
-			}
-			break;
-		default:
-			break;
-		}
 		if (bContinue)
 		{
 			ThumbAreaMsgHandler(nMsg, lParam, wParam);
@@ -405,4 +371,84 @@ float UIScrollBar::GetPagePercent()
 		return m_nPageLength * 1.0f / m_nWholeLength;
 	}
 	return 1.0f;
+}
+
+void UIScrollBar::DrawElement(CDC * pDC)
+{
+	COLORREF clScrollBkColor = ThemeManager::Instance().GetColor(ThemeColor_ScrollBkColor);
+	int nX = GetRealX();
+	int nY = GetRealY();
+	pDC->FillSolidRect(nX, nY, m_nWidth, m_nHeight, clScrollBkColor);
+
+	if (m_pBtnThumb)
+	{
+		m_pBtnThumb->DrawElement(pDC);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool UIScrollThumbButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, bool bHorScroll, HWND hParentWnd, UIElement * pParent)
+{
+	if (!m_bCreated)
+	{
+		m_bHorScroll = bHorScroll;
+		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
+		return true;
+	}
+	return false;
+}
+
+void UIScrollThumbButton::DrawElement(CDC * pDC)
+{
+	COLORREF clThumb_N = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_N);
+	COLORREF clThumb_F = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_F);
+	COLORREF clThumb_D = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_D);
+	COLORREF clThumb_X = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_X);
+	//根据状态变换颜色
+	COLORREF clThumb = clThumb_N;
+	switch (m_nState)
+	{
+	case UIElement_BtnNormal:
+		clThumb = clThumb_N;
+		break;
+	case UIElement_BtnFloat:
+		clThumb = clThumb_F;
+		break;
+	case UIElement_BtnDown:
+		clThumb = clThumb_D;
+		break;
+	case UIElement_BtnXable:
+		clThumb = clThumb_X;
+		break;
+	default:
+		break;
+	}
+
+	//绘制方式是两个圆一个矩形
+	int nX = GetRealX();
+	int nY = GetRealY();
+	HBRUSH hBrush = CreateSolidBrush(clThumb);
+	HPEN hPen = CreatePen(PS_NULL, 0, 0);
+	HGDIOBJ hOldBrush = pDC->SelectObject(hBrush);
+	HGDIOBJ hOldPen = pDC->SelectObject(hPen);
+	//圆的直径根据横纵不同
+	if (m_bHorScroll)
+	{
+		int nR = m_nHeight;
+		pDC->Ellipse(nX, nY, nX + nR, nY + nR);
+		pDC->FillSolidRect(nX + nR / 2, nY, m_nWidth - nR, m_nHeight, clThumb);
+		pDC->Ellipse(nX + m_nWidth - nR, nY, nX + m_nWidth, nY + nR);
+	}
+	else
+	{
+		int nR = m_nWidth;
+		pDC->Ellipse(nX, nY, nX + nR, nY + nR);
+		pDC->FillSolidRect(nX, nY + nR / 2, m_nWidth, m_nHeight - nR, clThumb);
+		pDC->Ellipse(nX, nY + m_nHeight - nR, nX + nR, nY + m_nHeight);
+	}
+	pDC->SelectObject(hOldPen);
+	pDC->SelectObject(hOldBrush);
+	DeleteObject(hBrush);
+	DeleteObject(hPen);
 }

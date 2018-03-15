@@ -73,8 +73,9 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeScrollHeight, 8));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeScrollHeight, 10));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionHeight, 28));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionGap, 1));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTrackHeight, 28));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeTabWidth, 30));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTreeWidth, 449));
@@ -94,6 +95,11 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Sel, RGB(0x0a, 0xa9, 0x01)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerLine, RGB(112, 112, 112)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerText, RGB(255, 255, 255)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_N, RGB(0x70, 0x70, 0x70)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_F, RGB(0x60, 0x60, 0x60)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_D, RGB(0x4b, 0x4b, 0x4b)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_X, RGB(0x54, 0x54, 0x54)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollBkColor, RGB(0x2c, 0x2c, 0x2c)));
 
 	/////////////////////////////////////////////////////////////////////
 	//ͼƬ
@@ -230,18 +236,6 @@ bool UIThemeDefault::Initialize()
 
 		LoadOneImg(ThemeImage_TimeLineTimeCodeBk, strThemePath + _T("TimeLine\\TimeLineTimeCodeBk.png"));
 
-		LoadOneImg(ThemeImage_ScrollLeftTopBtn_N, strThemePath + _T("TimeLine\\TimeLineLeftTopBtn_N.png"));
-		LoadOneImg(ThemeImage_ScrollLeftTopBtn_F, strThemePath + _T("TimeLine\\TimeLineLeftTopBtn_F.png"));
-		LoadOneImg(ThemeImage_ScrollLeftTopBtn_D, strThemePath + _T("TimeLine\\TimeLineLeftTopBtn_D.png"));
-		LoadOneImg(ThemeImage_ScrollLeftTopBtn_X, strThemePath + _T("TimeLine\\TimeLineLeftTopBtn_X.png"));
-		LoadOneImg(ThemeImage_ScrollRightBottomBtn_N, strThemePath + _T("TimeLine\\TimeLineRightBottomBtn_N.png"));
-		LoadOneImg(ThemeImage_ScrollRightBottomBtn_F, strThemePath + _T("TimeLine\\TimeLineRightBottomBtn_F.png"));
-		LoadOneImg(ThemeImage_ScrollRightBottomBtn_D, strThemePath + _T("TimeLine\\TimeLineRightBottomBtn_D.png"));
-		LoadOneImg(ThemeImage_ScrollRightBottomBtn_X, strThemePath + _T("TimeLine\\TimeLineRightBottomBtn_X.png"));
-		LoadOneImg(ThemeImage_ScrollThumbBtn_N, strThemePath + _T("TimeLine\\TimeLineThumbBtn_N.png"));
-		LoadOneImg(ThemeImage_ScrollThumbBtn_F, strThemePath + _T("TimeLine\\TimeLineThumbBtn_F.png"));
-		LoadOneImg(ThemeImage_ScrollThumbBtn_D, strThemePath + _T("TimeLine\\TimeLineThumbBtn_D.png"));
-		LoadOneImg(ThemeImage_ScrollThumbBtn_X, strThemePath + _T("TimeLine\\TimeLineThumbBtn_X.png"));
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Nor.png"));
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Sel, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Sel.png"));
 		LoadOneImg(ThemeImage_TimeLineRightObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineRightObjectBkGnd_Nor.png"));

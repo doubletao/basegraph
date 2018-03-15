@@ -148,14 +148,15 @@ void UITLObjectRightArea::DrawElement(CDC * pDC)
 	}
 
 	//»æÖÆÎï¼þ
-	int nCurentY = nYStart + nItemHeight - m_nScrollY;
+	int nItemGap = UIControl_GetIntValue(ThemeInt_TimeLineItemActionGap);
+	int nCurentY = nYStart + nItemHeight - m_nScrollY + nItemGap;
 	std::vector<CString> vecObjID;
 	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
 	{
 		for (size_t i = 0; i < vecObjID.size(); i++)
 		{
 			CString strID = vecObjID[i];
-			nCurentY = DrawItemRight(pDC, strID, nCurentY);
+			nCurentY = DrawItemRight(pDC, strID, nCurentY) + nItemGap;
 		}
 	}
 

@@ -98,6 +98,7 @@ void UITLObjectLeftArea::DrawElement(CDC * pDC)
 	pDC->SelectClipRgn(&rgnDC);
 
 	int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
+	int nItemGap = UIControl_GetIntValue(ThemeInt_TimeLineItemActionGap);
 	int nItemTabWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeTabWidth);
 	LOGFONT logFont = UIControl_GetFont(ThemeFont_TimeLineObjectTrackText);
 	CImage * pLeftAreaBkImage = UIControl_GetImage(ThemeImage_TimeLineObjectLeftAreaBk);
@@ -137,14 +138,14 @@ void UITLObjectLeftArea::DrawElement(CDC * pDC)
 	pDC->SetBkMode(nOldBkMode);
 
 	//»æÖÆÎï¼þ
-	int nCurentY = nYStart + nItemHeight - m_nScrollY;
+	int nCurentY = nYStart + nItemHeight - m_nScrollY + nItemGap;
 	std::vector<CString> vecObjID;
 	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
 	{
 		for (size_t i = 0; i < vecObjID.size(); i++)
 		{
 			CString strID = vecObjID[i];
-			nCurentY = DrawItemLeft(pDC, strID, nCol + 1, nCurentY);
+			nCurentY = DrawItemLeft(pDC, strID, nCol + 1, nCurentY) + nItemGap;
 		}
 	}
 

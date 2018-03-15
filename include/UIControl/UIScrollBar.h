@@ -2,6 +2,16 @@
 #include "UIControl\UIElement.h"
 #include "UIControl\UIButton.h"
 
+class BASEGRAPH_UICONTROL_API UIScrollThumbButton :
+	public UIButton
+{
+protected:
+	bool m_bHorScroll;
+public:
+	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, bool bHorScroll, HWND hParentWnd, UIElement * pParent);
+	virtual void DrawElement(CDC * pDC);
+};
+
 class BASEGRAPH_UICONTROL_API UIScrollBar :
 	public UIElement
 {
@@ -16,9 +26,7 @@ protected:
 	CPoint m_ptBegin;
 	CPoint m_ptEnd;
 protected:
-	UIButton * m_pBtnLeftTop;
-	UIButton * m_pBtnRightBottom;
-	UIButton * m_pBtnThumb;
+	UIScrollThumbButton * m_pBtnThumb;
 public:
 	UIScrollBar();
 	virtual ~UIScrollBar();
@@ -46,4 +54,5 @@ public:
 	void SetPageLength(int nPageLength, bool bRefresh = true);
 	int GetPageLength();
 	float GetPagePercent();
+	virtual void DrawElement(CDC * pDC);
 };
