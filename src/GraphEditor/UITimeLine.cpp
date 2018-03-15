@@ -60,25 +60,26 @@ void UITimeLine::RearrangeChildPos()
 	int nTimeCodeWidth = UIControl_GetIntValue(ThemeInt_TimeLineTimeCodeWidth);
 	int nTimeCodeHeight = UIControl_GetIntValue(ThemeInt_TimeLineTimeCodeHeight);
 	int nScrollHeight = UIControl_GetIntValue(ThemeInt_TimeLineTimeScrollHeight);
+	int nGap = UIControl_GetIntValue(ThemeInt_UIModualGap);
 	if (m_pTimeCode)
 	{
 		m_pTimeCode->MoveTo(0, 0, nTimeCodeWidth, nTimeCodeHeight);
 	}
 	if (m_pScrollHor)
 	{
-		m_pScrollHor->MoveTo(nTimeCodeWidth, 0, m_nWidth - nTimeCodeWidth, nScrollHeight);
+		m_pScrollHor->MoveTo(nTimeCodeWidth + nGap, 0, m_nWidth - nTimeCodeWidth - nGap * 2, nScrollHeight);
 	}
 	if (m_pScrollVer)
 	{
-		m_pScrollVer->MoveTo(m_nWidth - nScrollHeight, nTimeCodeHeight, nScrollHeight, m_nHeight - nTimeCodeHeight);
+		m_pScrollVer->MoveTo(m_nWidth - nScrollHeight - nGap, nTimeCodeHeight, nScrollHeight, m_nHeight - nTimeCodeHeight);
 	}
 	if (m_pObjectArea)
 	{
-		m_pObjectArea->MoveTo(0, nTimeCodeHeight, m_nWidth - nScrollHeight, m_nHeight - nTimeCodeHeight);
+		m_pObjectArea->MoveTo(0, nTimeCodeHeight, m_nWidth - nScrollHeight - nGap, m_nHeight - nTimeCodeHeight);
 		m_pObjectArea->SetScrollInfo();
 	}
 
-	UITLRuler::Instance().MoveTo(nTimeCodeWidth, nScrollHeight, m_nWidth - nTimeCodeWidth, nTimeCodeHeight - nScrollHeight);
+	UITLRuler::Instance().MoveTo(nTimeCodeWidth + 1, nScrollHeight, m_nWidth - nTimeCodeWidth - nGap * 2, nTimeCodeHeight - nScrollHeight);
 }
 
 bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)

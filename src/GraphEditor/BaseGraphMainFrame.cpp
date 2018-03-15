@@ -226,12 +226,12 @@ void BaseGraphMainFrame::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * 
 
 	int nTitleHeight = UIControl_GetIntValue(ThemeInt_SkinWndTitleHeight);
 	int nFrameWidth = UIControl_GetIntValue(ThemeInt_SkinWndFrameWidth);
-	int nY = 0;
+	int nY = (nTitleHeight - m_uiObjectBar.GetHeight()) / 2;
 	int nX = UIControl_GetIntValue(ThemeInt_SkinWndTitleObjectBarX);
 	DWORD	dwStyle = GetStyle();
 	if (dwStyle & WS_MAXIMIZE)
 	{
-		nY += nFrameWidth * 3;
+		nY += nFrameWidth;
 		nX += nFrameWidth;
 	}
 	m_uiObjectBar.MoveTo(nX, nY);
@@ -518,17 +518,18 @@ void BaseGraphMainFrame::OnSize(UINT nType, int cx, int cy)
 	int nPlayControlBarWidth = UIControl_GetIntValue(ThemeInt_PlayControlBarWidth);
 	int nPlayControlBarHeight = UIControl_GetIntValue(ThemeInt_PlayControlBarHeight);
 	int nPropertyViewWidth = UIControl_GetIntValue(ThemeInt_PropretyViewWidth);
+	int nGap = UIControl_GetIntValue(ThemeInt_UIModualGap);
 
 	//action条在左上
-	m_uiActionBar.MoveTo(0, 0, nActionBarWidth, rtClient.Height() - nTimeLineHeight);
+	m_uiActionBar.MoveTo(0, nGap, nActionBarWidth, rtClient.Height() - nTimeLineHeight - nGap);
 	//playcontrol条在顶部
-	m_uiPlayControlBar.MoveTo(nActionBarWidth, 0, nPlayControlBarWidth, nPlayControlBarHeight);
+	m_uiPlayControlBar.MoveTo(nActionBarWidth + nGap, nGap, nPlayControlBarWidth, nPlayControlBarHeight);
 	//simpletimeline在顶部右侧
-	m_uiSimpleTimeLine.MoveTo(nActionBarWidth + nPlayControlBarWidth, 0, rtClient.Width() - nActionBarWidth - nPlayControlBarWidth - nPropertyViewWidth, nPlayControlBarHeight);
+	m_uiSimpleTimeLine.MoveTo(nActionBarWidth + nPlayControlBarWidth + nGap * 2, nGap, rtClient.Width() - nActionBarWidth - nPlayControlBarWidth - nPropertyViewWidth - nGap * 3, nPlayControlBarHeight);
 	//属性窗在整个窗口右侧
-	m_uiPropertyView.MoveTo(rtClient.Width() - nPropertyViewWidth, 0, nPropertyViewWidth, rtClient.Height());
+	m_uiPropertyView.MoveTo(rtClient.Width() - nPropertyViewWidth, nGap, nPropertyViewWidth, rtClient.Height());
 	//时间线在整个窗口底部
-	m_uiTimeLine.MoveTo(0, rtClient.Height() - nTimeLineHeight, rtClient.Width() - nPropertyViewWidth, nTimeLineHeight);
+	m_uiTimeLine.MoveTo(0, rtClient.Height() - nTimeLineHeight + nGap, rtClient.Width() - nPropertyViewWidth, nTimeLineHeight);
 	//回显窗在中间
 	m_pwndMainView.MoveWindow(nActionBarWidth, nPlayControlBarHeight, rtClient.Width() - nActionBarWidth - nPropertyViewWidth, rtClient.Height() - nPlayControlBarHeight - nTimeLineHeight);
 

@@ -49,7 +49,7 @@ void UIObjectBar::RearrangeChildPos()
 		if (m_pChild)
 		{
 			int nXPos = (int)i * (m_pChild->GetWidth() + 1); 
-			int nYPos = (m_nHeight - m_pChild->GetWidth()) / 2;
+			int nYPos = (m_nHeight - m_pChild->GetHeight()) / 2;
 			m_pChild->MoveTo(nXPos, nYPos);
 		}
 	}

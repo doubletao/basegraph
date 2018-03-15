@@ -133,13 +133,14 @@ void UITLObjectArea::RearrangeChildPos()
 		AdjustScrollZoom(UITLRuler::Instance().GetHScrollBar()->GetPagePercent());
 	}
 	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
+	int nGap = UIControl_GetIntValue(ThemeInt_UIModualGap);
 	if (m_pLeftArea)
 	{
 		m_pLeftArea->MoveTo(0, 0, nItemTreeWidth, m_nHeight);
 	}
 	if (m_pRightArea)
 	{
-		m_pRightArea->MoveTo(nItemTreeWidth, 0, m_nWidth - nItemTreeWidth, m_nHeight);
+		m_pRightArea->MoveTo(nItemTreeWidth + nGap, 0, m_nWidth - nItemTreeWidth - nGap, m_nHeight);
 	}
 }
 

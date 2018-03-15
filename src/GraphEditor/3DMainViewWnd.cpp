@@ -49,7 +49,7 @@ int C3DMainViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	//目前暂时仅支持单视图，未来可以扩充多视图
 	C3DSceneViewWnd * pSceneView = new C3DSceneViewWnd;
-	if (pSceneView->Create(NULL, _T("主视图"), WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_BORDER, CRect(0, 0, 200, 400), this, 0, NULL) == -1)
+	if (pSceneView->Create(NULL, _T("主视图"), WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, CRect(0, 0, 200, 400), this, 0, NULL) == -1)
 	{
 		delete pSceneView;
 		pSceneView = nullptr;

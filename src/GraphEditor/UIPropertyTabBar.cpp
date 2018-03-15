@@ -63,7 +63,7 @@ void UIPropertyTabBar::RearrangeChildPos()
 		if (m_pChild)
 		{
 			int nXPos = (m_nWidth - m_pChild->GetWidth()) / 2;
-			int nYPos = (int)i * (m_pChild->GetHeight() + 1);
+			int nYPos = (int)i * (m_pChild->GetHeight() + 1) + 10;
 			m_pChild->MoveTo(nXPos, nYPos);
 		}
 	}

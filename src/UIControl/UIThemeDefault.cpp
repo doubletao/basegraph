@@ -60,14 +60,15 @@ bool UIThemeDefault::Initialize()
 
 	/////////////////////////////////////////////////////////////////////
 	//ÕûÊý
+	m_mapIntValue.insert(std::make_pair(ThemeInt_UIModualGap, 1));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleHeight, 29));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndFrameWidth, 3));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndFrameSysBtnGap, 3));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleObjectBarX, 150));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_ActionBarWidth, 36));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineHeight, 300));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarWidth, 260));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarHeight, 40));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarWidth, 412));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarHeight, 33));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 300));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));

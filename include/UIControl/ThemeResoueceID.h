@@ -5,6 +5,7 @@ enum ThemeIntValueDef
 	ThemeInt_SkinWndFrameWidth,
 	ThemeInt_SkinWndFrameSysBtnGap,
 	ThemeInt_SkinWndTitleObjectBarX,
+	ThemeInt_UIModualGap,
 	ThemeInt_ActionBarWidth,
 	ThemeInt_TimeLineHeight,
 	ThemeInt_PlayControlBarWidth,
