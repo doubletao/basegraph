@@ -66,13 +66,20 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndFrameSysBtnGap, 3));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SkinWndTitleObjectBarX, 150));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_ActionBarWidth, 36));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_ActionBarButtonGap, 10));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_ActionBarSplitWidth, 25));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_ActionBarSplitHeight, 1));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineHeight, 300));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarWidth, 412));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PlayControlBarHeight, 33));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 300));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 30));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 284));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 36));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabGap, 10));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitWidth, 22));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitHeight, 1));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeLeftGap, 10));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeScrollHeight, 10));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionHeight, 28));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionGap, 1));
@@ -90,6 +97,7 @@ bool UIThemeDefault::Initialize()
 	/////////////////////////////////////////////////////////////////////
 	//ÑÕÉ«
 	m_mapColorList.insert(std::make_pair(ThemeColor_SkinWndTitleText, RGB(255, 255, 255)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_ButtonBarSplitLine, RGB(0, 0, 0)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineTimeCodeText, RGB(12, 168, 4)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Nor, RGB(255, 255, 255)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Sel, RGB(0x0a, 0xa9, 0x01)));

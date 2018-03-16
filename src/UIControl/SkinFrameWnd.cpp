@@ -227,7 +227,7 @@ void CSkinFrameWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpncs
 		{
 			rc.left += nFrameWidth;
 			rc.right -= nFrameWidth;
-			rc.bottom -= nFrameWidth;
+			rc.bottom -= nFrameWidth * 2;
 		}
 	}
 }

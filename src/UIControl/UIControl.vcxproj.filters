@@ -90,6 +90,9 @@
     <ClCompile Include="UIScrollBar.cpp">
       <Filter>UIElementCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="UIRectDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -163,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\UIControlDef.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIRectDrawer.h">
+      <Filter>UIElementBase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
