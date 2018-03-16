@@ -425,6 +425,11 @@ void UIScrollThumbButton::DrawElement(CDC * pDC)
 		break;
 	}
 
+	//为了解决锯齿问题，两头的圆拿gdi+画
+	Gdiplus::Graphics graphics(pDC->GetSafeHdc());
+	graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+	Gdiplus::SolidBrush brush(Gdiplus::Color(255, GetRValue(clThumb), GetGValue(clThumb), GetBValue(clThumb)));
+
 	//绘制方式是两个圆一个矩形
 	int nX = GetRealX();
 	int nY = GetRealY();
@@ -436,16 +441,16 @@ void UIScrollThumbButton::DrawElement(CDC * pDC)
 	if (m_bHorScroll)
 	{
 		int nR = m_nHeight;
-		pDC->Ellipse(nX, nY, nX + nR, nY + nR);
+		graphics.FillEllipse(&brush, nX * 1.0f, nY - 0.5f, nR * 1.0f, nR * 1.0f);
+		graphics.FillEllipse(&brush, nX + m_nWidth - nR * 1.0f, nY - 0.5f, nR * 1.0f, nR * 1.0f);
 		pDC->FillSolidRect(nX + nR / 2, nY, m_nWidth - nR, m_nHeight, clThumb);
-		pDC->Ellipse(nX + m_nWidth - nR, nY, nX + m_nWidth, nY + nR);
 	}
 	else
 	{
 		int nR = m_nWidth;
-		pDC->Ellipse(nX, nY, nX + nR, nY + nR);
+		graphics.FillEllipse(&brush, nX - 0.5f, nY * 1.0f, nR * 1.0f, nR * 1.0f);
+		graphics.FillEllipse(&brush, nX - 0.5f, nY + m_nHeight - nR * 1.0f, nR * 1.0f, nR * 1.0f);
 		pDC->FillSolidRect(nX, nY + nR / 2, m_nWidth, m_nHeight - nR, clThumb);
-		pDC->Ellipse(nX, nY + m_nHeight - nR, nX + nR, nY + m_nHeight);
 	}
 	pDC->SelectObject(hOldPen);
 	pDC->SelectObject(hOldBrush);
