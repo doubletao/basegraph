@@ -19,6 +19,16 @@ enum EmObjectChgLevel
 	ChgLevel_Create,//最高级别，刚创建，什么都要从头
 };
 
+enum Matrix_type
+{
+	enum_Matrix_Identity = 0x00000000,
+	enum_Matrix_Offset = 0x00000001,
+	enum_Matrix_Zoom = 0x00000002,
+	enum_Matrix_Rotate = 0x00000004,
+	enum_Matrix_Title = 0x00000008,
+};
+
+
 class ObjectCalculator
 {
 protected:
@@ -28,13 +38,20 @@ protected:
 	EmObjectChgLevel m_emChgLevel;
 	DXHalDef32 m_HalDes;
 	CRITICAL_SECTION m_Lock;
+	int m_nLastFrame;
+	int m_nRotateOrder;
 public:
 	ObjectCalculator(CString strObjID);
 	virtual ~ObjectCalculator();
+	void Release();
 	virtual int GetWidth();
 	virtual int GetHeight();
 	virtual bool UpdateRenderBuffer();
 	virtual bool PrepareItemHalBufer(int nDevice);
+	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const SYArray& pUnitArray);
+
+	void SetChgLevel(EmObjectChgLevel emChgLevel);
+	EmObjectChgLevel GetChgLevel();
 
 	ObjectBuffer * GetObjectBuffer();
 	int GetObjBufferID();

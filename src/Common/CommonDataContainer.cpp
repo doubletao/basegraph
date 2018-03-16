@@ -10,317 +10,1046 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //hashtable
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void SYHTable_Init(phtable pHT)
+UINT64 __cdecl SYHash_HashStr(SYHash_key pk);			// key
+														// 素数表
+static const unsigned int PRIMES[] =
 {
-	if (pHT)
-	{
-		pHT->m_mapContainer.clear();
-	}
+	53, 97, 193, 389,
+	769, 1543, 3079, 6151,
+	12289, 24593, 49157, 98317,
+	196613, 393241, 786433, 1572869,
+	3145739, 6291469, 12582917, 25165843,
+	50331653, 100663319, 201326611, 402653189,
+	805306457, 1610612741
+};
+// 素数表大小
+const unsigned int PRIME_TABLE_LENGTH = (int)(sizeof(PRIMES) / sizeof(PRIMES[0]));
+const float MAX_LOAD_FACTOR = 0.65f;			// 最大负载因子
+const float MIN_LOAD_FACTOR = 0.15f;			// 最小负载因子
+BOOL SYHash_Init_Int(SYHash* ph, unsigned int minsize)
+{
+	return SYHash_Init(ph, minsize, SYHash_HashInt, SYHash_EqualInt, SYHash_DuplicateInt, SYHash_FreeKeyInt, SYHash_FreeValueInt);
 }
-
-BASEGRAPH_COMMON_API void * SYHTable_GetAt(phtable pHT, UINT nIndex)
+BOOL SYHash_Init(SYHash* ph,
+	unsigned int minsize,					// 表初始大小
+	UINT64(*SYHash_make)(SYHash_key),		// Hash值计算函函数
+	BOOL(*key_compare)(SYHash_key, SYHash_key),	// key 比较函数
+	SYHash_key(*key_dup)(SYHash_key),		// key 拷贝函数
+	void(*key_free)(SYHash_key),			// key 释放函数
+	void(*value_free)(SYHash_value))		// value 释放函数
 {
-	if (pHT && pHT->m_mapContainer.count(nIndex) > 0)
-	{
-		return pHT->m_mapContainer[nIndex];
-	}
-	return nullptr;
-}
+	// 确保表不要过大
+	if (minsize > (1U << 30))
+		return FALSE;
 
-BASEGRAPH_COMMON_API void * SYHTable_RemoveAt(phtable pHT, UINT nIndex)
-{
-	if (pHT && pHT->m_mapContainer.count(nIndex) > 0)
-	{
-		void * pRet = pHT->m_mapContainer[nIndex];
-		pHT->m_mapContainer.erase(nIndex);
-		return pRet;
-	}
-	return nullptr;
-}
+	unsigned int unPIndex(0), unSize = PRIMES[unPIndex];
 
-BASEGRAPH_COMMON_API UINT SYHTable_Insert(phtable pHT, void * e)
-{
-	if (pHT)
+	// 强制表的大小为素数
+	for (; unPIndex<PRIME_TABLE_LENGTH; unPIndex++)
 	{
-		UINT nID = 1;
-		if (pHT->m_mapContainer.size() > 0)
+		if (PRIMES[unPIndex] >= minsize)
 		{
-			nID = pHT->m_mapContainer.rbegin()->first + 1;
-		}
-		pHT->m_mapContainer.insert(std::make_pair(nID, e));
-		return nID;
-	}
-	return 0;
-}
-
-BASEGRAPH_COMMON_API UINT SYHTable_GetFirstValid(phtable pHT)
-{
-	if (pHT && pHT->m_mapContainer.size() > 0)
-	{
-		return pHT->m_mapContainer.begin()->first;
-	}
-	return 0;
-}
-
-BASEGRAPH_COMMON_API void * SYHTable_GetNextValid(phtable pHT, UINT * pnIndex)
-{
-	if (pHT && pnIndex)
-	{
-		if (pHT->m_mapContainer.count(*pnIndex) > 0)
-		{
-			bool bFind = false;
-			for (std::map<int, void *>::iterator it = pHT->m_mapContainer.begin(); it != pHT->m_mapContainer.end(); it++)
-			{
-				if (it->first == *pnIndex)
-				{
-					bFind = true;
-				}
-				if (bFind)
-				{
-					it++;
-					if (it != pHT->m_mapContainer.end())
-					{
-						*pnIndex = it->first;
-						return it->second;
-					}
-					else
-					{
-						break;
-					}
-				}
-			}
-		}
-		else
-		{
-			//没找到，则试着返回第一个
-			if (pHT->m_mapContainer.size() > 0)
-			{
-				*pnIndex = pHT->m_mapContainer.begin()->first;
-				return pHT->m_mapContainer.begin()->second;
-			}
+			unSize = PRIMES[unPIndex];
+			break;
 		}
 	}
-	//都不行也得返回一个0出去
-	*pnIndex = 0;
-	return nullptr;
-}
-
-BASEGRAPH_COMMON_API UINT SYHTable_GetCount(phtable pHT)
-{
-	if(pHT)
-	{
-		return (UINT)pHT->m_mapContainer.size();
-	}
-	return 0;
-}
-
-BASEGRAPH_COMMON_API void SYHTable_Delete(phtable pHT)
-{
-	if (pHT)
-	{
-		for (std::map<int, void *>::iterator it = pHT->m_mapContainer.begin(); it != pHT->m_mapContainer.end(); it++)
-		{
-			SAFE_DELETE(it->second);
-		}
-		delete pHT;
-	}
-}
-
-BASEGRAPH_COMMON_API void SYHTable_Release(phtable pHT)
-{
-	if (pHT)
-	{
-		pHT->m_mapContainer.clear();
-	}
-}
-
-BASEGRAPH_COMMON_API void SYHTable_RemoveAll(phtable pHT)
-{
-	if (pHT)
-	{
-		pHT->m_mapContainer.clear();
-	}
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//hash
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-BASEGRAPH_COMMON_API void SYHash_FreeKeyStr(void * pK)
-{
-	delete pK;
-}
-
-BASEGRAPH_COMMON_API void SYHash_FreeValueStr(void * pV)
-{
-	delete pV;
-}
-
-BASEGRAPH_COMMON_API PSYHash SYHash_Create(unsigned int minsize, UINT64(*hashF)(void *), BOOL(*keyEqF)(void *, void *), void *(*keyDupF)(void *), void(*keyFreeF)(void *), void(*valueFreeF)(void *))
-{
-	// 创建表结构
-	PSYHash ph = new SYHash;
 
 	if (NULL == ph)
 		return NULL;
 
-	ph->bKeyRelease = TRUE;
-	ph->bValueRelease = TRUE;
+	ph->pool = NULL;
+	ph->poolend = NULL;
+	ph->dupkey = TRUE;
+	// 创建表并初始化
+	ph->table = (pentrytable)malloc(sizeof(pentry) * unSize);
+	if (NULL == ph->table)
+	{
+		return FALSE;
+	}
+	memset(ph->table, 0, unSize * sizeof(pentry));
+	ph->tablelen = unSize;
+	ph->primeindex = unPIndex;
+	ph->count = 0;
+	ph->limit = (unsigned int)ceilf(unSize * MAX_LOAD_FACTOR);
+	ph->lower = (unsigned int)ceilf(unSize * MIN_LOAD_FACTOR);
 	// 初始化接口指针
-	ph->freekeyfn = (keyFreeF == NULL) ? SYHash_FreeKeyStr : keyFreeF;
-	ph->freevaluefn = (valueFreeF == NULL) ? SYHash_FreeValueStr : valueFreeF;
+	ph->hashfn = (SYHash_make == NULL) ? SYHash_HashStr : SYHash_make;
+	ph->eqfn = (key_compare == NULL) ? SYHash_EqualStr : key_compare;
+	ph->dupfn = (key_dup == NULL) ? SYHash_DuplicateStr : key_dup;
+	ph->freekeyfn = (key_free == NULL) ? SYHash_FreeKeyStr : key_free;
+	ph->freevaluefn = (value_free == NULL) ? SYHash_FreeValueStr : value_free;
+
+	return TRUE;
+}
+
+BOOL __cdecl SYHash_SetPool(SYHash* ph, unsigned char*  pool, unsigned char* poolend, BOOL dupKey)
+{
+	ph->pool = pool;
+	ph->poolend = poolend;
+	ph->dupkey = dupKey;
+	return TRUE;
+}
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	创建新 Hash 表
+//
+// 返回值:	PSYHash			新表指针
+///////////////////////////////////////////////////////////////////////////////
+PSYHash __cdecl SYHash_Create(unsigned int minsize,					// 表初始大小
+	UINT64(*SYHash_make)(SYHash_key),		// Hash值计算函函数
+	BOOL(*key_compare)(SYHash_key, SYHash_key),	// key 比较函数
+	SYHash_key(*key_dup)(SYHash_key),		// key 拷贝函数
+	void(*key_free)(SYHash_key),			// key 释放函数
+	void(*value_free)(SYHash_value))		// value 释放函数
+{
+	// 确保表不要过大
+	if (minsize > (1U << 30))
+		return NULL;
+
+	unsigned int unPIndex(0), unSize = PRIMES[unPIndex];
+
+	// 强制表的大小为素数
+	for (; unPIndex<PRIME_TABLE_LENGTH; unPIndex++)
+	{
+		if (PRIMES[unPIndex] >= minsize)
+		{
+			unSize = PRIMES[unPIndex];
+			break;
+		}
+	}
+	// 创建表结构
+	PSYHash ph = (PSYHash)malloc(sizeof(SYHash));
+
+	if (NULL == ph)
+		return NULL;
+
+	// 创建表并初始化
+	ph->table = (pentrytable)malloc(sizeof(pentry) * unSize);
+	if (NULL == ph->table)
+	{
+		free(ph);
+		return NULL;
+	}
+	memset(ph->table, 0, unSize * sizeof(pentry));
+	ph->tablelen = unSize;
+	ph->primeindex = unPIndex;
+	ph->count = 0;
+	ph->limit = (unsigned int)ceilf(unSize * MAX_LOAD_FACTOR);
+	ph->lower = (unsigned int)ceilf(unSize * MIN_LOAD_FACTOR);
+	ph->pool = NULL;
+	ph->poolend = NULL;
+	ph->dupkey = TRUE;
+	// 初始化接口指针
+	ph->hashfn = (SYHash_make == NULL) ? SYHash_HashStr : SYHash_make;
+	ph->eqfn = (key_compare == NULL) ? SYHash_EqualStr : key_compare;
+	ph->dupfn = (key_dup == NULL) ? SYHash_DuplicateStr : key_dup;
+	ph->freekeyfn = (key_free == NULL) ? SYHash_FreeKeyStr : key_free;
+	ph->freevaluefn = (value_free == NULL) ? SYHash_FreeValueStr : value_free;
 
 	return ph;
 }
 
-BASEGRAPH_COMMON_API void SYHash_Release(PSYHash ph, BOOL bFreeValue)
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	Hash 值求解
+//
+// 返回值:	unsigned int		key 对应的 Hash 值
+///////////////////////////////////////////////////////////////////////////////
+UINT64 __cdecl SYHash_Hash(const SYHash* ph,			// Hash 表指针
+	SYHash_key pk)			// key
+{
+
+
+	UINT64 i = ph->hashfn(pk);
+	// 防止用户使用过于简单的 Hash 函数，算法来源于 java 1.4
+	i += ~(i << 9);
+	i ^= ((i >> 14) | (i << 18));
+	i += (i << 4);
+	i ^= ((i >> 10) | (i << 22));
+
+	return i;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	缺省的 Hash 值求解函数（字符串）
+//
+// 返回值:	unsigned int		key 对应的 Hash 值
+///////////////////////////////////////////////////////////////////////////////
+UINT64 __cdecl SYHash_HashStr(SYHash_key pk)			// key
+{
+	unsigned int h(0);
+	LPTSTR p = (LPTSTR)pk;
+
+	for (; *p; p++)
+	{
+		h = 31 * h + (unsigned int)*p;
+	}
+	return h;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	缺省的 key 比较函数（字符串）
+//
+// 返回值:	TRUE		相等
+//			FALSE		不等
+///////////////////////////////////////////////////////////////////////////////
+BOOL __cdecl SYHash_EqualStr(SYHash_key pK1,				// key
+	SYHash_key pK2)				// key
+{
+	return (pK1 == pK2 || _tcscmp((LPTSTR)pK1, (LPTSTR)pK2) == 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	缺省的 key 拷贝函数（字符串）
+//
+// 返回值:	SYHash_key
+///////////////////////////////////////////////////////////////////////////////
+SYHash_key __cdecl SYHash_DuplicateStr(SYHash_key pk)		// key
+{
+	LPTSTR szKey = (LPTSTR)pk;
+
+	LPTSTR szNewKey = (LPTSTR)malloc(sizeof(TCHAR) * (_tcslen(szKey) + 1));
+
+	_tcscpy_s(szNewKey, _tcslen(szKey) + 1, szKey);
+
+	return (SYHash_key)szNewKey;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	缺省的 key 释放函数（字符串）
+//
+// 返回值:	void
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYHash_FreeKeyStr(SYHash_key pk)			// key
+{
+	free(pk);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	缺省的 value 释放函数（只能释放由 malloc 申请的内存空间）
+//
+// 返回值:	void
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYHash_FreeValueStr(SYHash_value pV)		// key
+{
+	free(pV);
+}
+UINT64 __cdecl SYHash_HashInt(SYHash_key pk)			// key
+{
+	return (UINT64)pk;
+}
+
+BOOL __cdecl SYHash_EqualInt(SYHash_key pK1,				// key
+	SYHash_key pK2)				// key
+{
+	return pK1 == pK2;
+}
+
+SYHash_key __cdecl SYHash_DuplicateInt(SYHash_key pk)		// key
+{
+	SYHash_key NewKey = pk;
+	return NewKey;
+}
+
+void __cdecl SYHash_FreeKeyInt(SYHash_key pk)			// key
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	缺省的 value 释放函数（只能释放由 malloc 申请的内存空间）
+//
+// 返回值:	void
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYHash_FreeValueInt(SYHash_value pV)		// key
+{
+	free(pV);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取入口点总数
+//
+// 返回值:	unsigned int
+///////////////////////////////////////////////////////////////////////////////
+unsigned int __cdecl SYHash_GetCount(PSYHash ph)		// Hash 表指针
+{
+
+
+	return ph->count;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 描述：	获取第一个入口点的位置
+//
+// 返回值：	SYHash_pos
+//////////////////////////////////////////////////////////////////////////
+SYHash_pos __cdecl SYHash_GetHeadPosition(PSYHash ph)		// Hash 表指针
+{
+
+
+	if (ph->count > 0)		// 至少有一个入口点
+	{
+		// 按桶从头开始搜索第一个入口点
+		for (unsigned int i = 0; i<ph->tablelen; i++)
+		{
+			if (ph->table[i] != NULL)
+			{
+				return ph->table[i];
+			}
+		}
+	}
+	return NULL;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 描述：	获取第一个入口点的数据
+//
+// 返回值：	SYHash_key / SYHash_value
+//////////////////////////////////////////////////////////////////////////
+SYHash_key __cdecl SYHash_GetHeadKey(PSYHash ph)		// Hash 表指针
+{
+
+
+	if (ph->count > 0)		// 至少有一个入口点
+	{
+		// 按桶从头开始搜索第一个入口点
+		for (unsigned int i = 0; i<ph->tablelen; i++)
+		{
+			if (ph->table[i] != NULL)
+			{
+				return ph->table[i]->pKey;
+			}
+		}
+	}
+	return NULL;
+}
+SYHash_value __cdecl SYHash_GetHeadValue(PSYHash ph)	// Hash 表指针
+{
+
+
+	if (ph->count > 0)		// 至少有一个入口点
+	{
+		// 按桶从头开始搜索第一个入口点
+		for (unsigned int i = 0; i<ph->tablelen; i++)
+		{
+			if (ph->table[i] != NULL)
+			{
+				return ph->table[i]->pValue;
+			}
+		}
+	}
+	return NULL;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 描述：	获取下个位置或当前位置数据，获取数据时会自动更新位置。
+//
+// 返回值：	SYHash_pos / SYHash_key / SYHash_value
+//////////////////////////////////////////////////////////////////////////
+SYHash_value __cdecl SYHash_GetNextPosition(PSYHash ph,			// Hash 表指针
+	SYHash_pos* pPos)		// 当前位置
+{
+
+
+	if (ph == NULL || pPos == NULL || *pPos == NULL)
+		return NULL;
+
+	pentry pEntry = (pentry)(*pPos);
+	pentry pNext = pEntry->pNextEntry;
+
+	if (pNext == NULL)		// 如果当前桶已到最后一个元素，则搜索后面的桶。
+	{
+		unsigned int unIndex = (pEntry->unHashValue % ph->tablelen) + 1;
+
+		for (; unIndex<ph->tablelen; unIndex++)
+		{
+			pNext = ph->table[unIndex];
+			if (pNext != NULL)	// 如果桶不为空，则取第一个元素。
+				break;
+			// 否则直接搜索下一桶
+		}
+	}
+
+	*pPos = pNext;
+	return pEntry->pValue;
+}
+SYHash_key __cdecl SYHash_GetPosKey(PSYHash ph,			// Hash 表指针
+	SYHash_pos pos)		// 当前位置
+{
+
+
+	if (ph == NULL || pos == NULL)
+		return NULL;
+
+	pentry pEntry = (pentry)pos;
+
+	return pEntry->pKey;
+}
+SYHash_value __cdecl SYHash_GetPosValue(PSYHash ph,			// Hash 表指针
+	SYHash_pos pos)		// 当前位置
+{
+
+
+	if (ph == NULL || pos == NULL)
+		return NULL;
+
+	pentry pEntry = (pentry)pos;
+
+	return pEntry->pValue;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	扩充 Hash 表容量为原来的两倍大小（实际上为最接近两倍大小的素数）
+//
+// 返回值:	TRUE			扩充成功
+//			FALSE			扩充失败
+///////////////////////////////////////////////////////////////////////////////
+static BOOL SYHash_expand(PSYHash ph)			// Hash 表指针
+{
+
+
+	pentrytable pNewTable = NULL;
+	pentry pE = NULL, pTmpE = NULL;
+	unsigned int unNewSize(0), i(0), unIndex(0);
+
+	// 确保未使用最大容量
+	if (ph->primeindex == (PRIME_TABLE_LENGTH - 1))
+		return FALSE;
+
+	unNewSize = PRIMES[++(ph->primeindex)];
+	pNewTable = (pentrytable)malloc(sizeof(pentry) * unNewSize);
+	if (NULL != pNewTable)
+	{
+		memset(pNewTable, 0, unNewSize * sizeof(pentry));
+		// 按桶一步一步移动入口点
+		for (i = 0; i<ph->tablelen; i++)
+		{
+			// 移动同一桶内的入口点并翻转了原来的顺序
+			while (NULL != (pE = ph->table[i]))
+			{
+				ph->table[i] = pE->pNextEntry;
+				unIndex = pE->unHashValue % unNewSize;
+				pE->pNextEntry = pNewTable[unIndex];
+				pNewTable[unIndex] = pE;
+			}
+		}
+		free(ph->table);
+		ph->table = pNewTable;
+	}
+	else		// 如果内存不足则采用 realloc
+	{
+		pNewTable = (pentrytable)realloc(ph->table,
+			unNewSize * sizeof(pentry));
+		if (NULL == pNewTable)
+		{
+			(ph->primeindex)--;
+			return FALSE;
+		}
+		ph->table = pNewTable;
+		memset(pNewTable[ph->tablelen], 0, unNewSize - ph->tablelen);
+		// 重新分配入口点到桶
+		for (i = 0; i<ph->tablelen; i++)
+		{
+			for (pE = pNewTable[i]; pE != NULL; pE = pTmpE)
+			{
+				unIndex = pE->unHashValue % unNewSize;
+				if (unIndex == i)
+				{
+					pTmpE = pE->pNextEntry;
+				}
+				else
+				{
+					pTmpE = pE->pNextEntry;
+					pE->pNextEntry = pNewTable[unIndex];
+					pNewTable[unIndex] = pE;
+				}
+			}
+		}
+	}
+	ph->tablelen = unNewSize;
+	ph->limit = (unsigned int)ceilf(unNewSize * MAX_LOAD_FACTOR);
+	ph->lower = (unsigned int)ceilf(unNewSize * MIN_LOAD_FACTOR);
+
+	return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	压缩 Hash 表容量为原来的一半大小
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+static void SYHash_compact(PSYHash ph)			// Hash 表指针
+{
+
+
+	pentrytable pNewTable = NULL;
+	pentry pE = NULL, pTmpE = NULL;
+	unsigned int unNewSize(0), i(0), unIndex(0);
+
+	// 确保未使用最小容量
+	if (ph->primeindex == 0)
+		return;
+
+	unNewSize = PRIMES[--(ph->primeindex)];
+	pNewTable = (pentrytable)malloc(sizeof(pentry) * unNewSize);
+	// 如果内存申请失败则不压缩
+	if (NULL == pNewTable)
+	{
+		ph->primeindex++;
+		return;
+	}
+	memset(pNewTable, 0, unNewSize * sizeof(pentry));
+	// 按桶一步一步移动入口点
+	for (; i<ph->tablelen; i++)
+	{
+		// 移动同一桶内的入口点并翻转了原来的顺序
+		while (NULL != (pE = ph->table[i]))
+		{
+			ph->table[i] = pE->pNextEntry;
+			unIndex = pE->unHashValue % unNewSize;
+			pE->pNextEntry = pNewTable[unIndex];
+			pNewTable[unIndex] = pE;
+		}
+	}
+	free(ph->table);
+	ph->table = pNewTable;
+	ph->tablelen = unNewSize;
+	ph->limit = (unsigned int)ceilf(unNewSize * MAX_LOAD_FACTOR);
+	ph->lower = (unsigned int)ceilf(unNewSize * MIN_LOAD_FACTOR);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	插入一个数据，允许重复插入同一个 key
+//
+// 返回值:	TRUE			插入成功
+//			FALSE			插入失败
+///////////////////////////////////////////////////////////////////////////////
+BOOL __cdecl SYHash_Insert(PSYHash ph,			// Hash 表指针
+	SYHash_key pk,		// key
+	SYHash_value pV)		// 绑定 key 的值
+{
+
+
+	unsigned int unIndex(0);
+	pentry pE = NULL;
+
+	// 当超过负载上限时扩充 Hash 表的容量
+	if ((++(ph->count)) > ph->limit)
+	{
+		// 如果扩充失败则下次插入时会重新扩充
+		SYHash_expand(ph);
+	}
+
+	int nsize = sizeof(entry);
+	BOOL bRelease = TRUE;
+	if (ph->pool)
+		bRelease = (ph->pool + nsize >= ph->poolend);
+
+	pE = (entry*)pool_malloc(&ph->pool, nsize, bRelease);
+	pE->needrelease = bRelease;
+
+	//pE = (pentry)malloc(sizeof(entry));
+	if (NULL == pE)
+	{
+		--(ph->count);
+		return FALSE;
+	}
+	// 计算 Hash 值及桶入口点
+	pE->unHashValue = SYHash_Hash(ph, pk);
+	unIndex = pE->unHashValue % ph->tablelen;
+	// 拷贝一份 key 进行保存，由外部释放
+	if (ph->dupkey)
+		pE->pKey = ph->dupfn(pk);
+	else
+		pE->pKey = pk;
+	pE->pValue = pV;
+	// 将该节点放在桶入口点的前面
+	pE->pNextEntry = ph->table[unIndex];
+	ph->table[unIndex] = pE;
+
+	return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	通过 key 查找数据
+//
+// 返回值:	SYHash_value
+///////////////////////////////////////////////////////////////////////////////
+SYHash_value SYHash_Search(const SYHash* ph,			// Hash 表指针
+	SYHash_key pk)		// key
+{
+	UINT64 unHashValue = SYHash_Hash(ph, pk);
+	pentry pE = ph->table[unHashValue % ph->tablelen];
+
+	while (NULL != pE)
+	{
+		// 从桶头开始比较，增加 Hash 值的比较以减少比较的消耗
+		// 如果使用同样的 key 保存不同的数据，将会得到离桶头最近的数据
+		if ((unHashValue == pE->unHashValue) && (ph->eqfn(pk, pE->pKey)))
+		{
+			return pE->pValue;
+		}
+		pE = pE->pNextEntry;
+	}
+	return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	删除为 key 的入口点并返回相应的数据，如有必要则压缩 Hash 表的容量
+//			允许释放数据，但使用缺省函数时要小心，释放后返回 NULL
+//
+// 返回值:	SYHash_value
+///////////////////////////////////////////////////////////////////////////////
+SYHash_value __cdecl SYHash_RemoveAt(PSYHash ph,			// Hash 表指针
+	SYHash_key pk,			// key
+	BOOL bFreeValue)		// 释放元素值内存的标志
+{
+
+
+	UINT64 unHashValue = SYHash_Hash(ph, pk);
+	pentry* pPE = ph->table + unHashValue % ph->tablelen;	// 记录可能发生匹配的入口点指针的地址
+	pentry pE = *pPE;
+	SYHash_value pV = NULL;
+
+	while (NULL != pE)
+	{
+		// 通过比较 Hash 值来减少比较次数
+		// 如果使用同样的 key 保存不同的数据，将会删除离桶头最近的节点
+		if ((unHashValue == pE->unHashValue) && (ph->eqfn(pk, pE->pKey)))
+		{
+			// 修改链条，并释放 key 与节点
+			*pPE = pE->pNextEntry;
+			ph->count--;
+			pV = pE->pValue;
+			if (bFreeValue)
+			{
+				ph->freevaluefn(pV);
+				pV = NULL;
+			}
+			if (ph->dupkey)
+				ph->freekeyfn(pE->pKey);
+			if (pE->needrelease)
+				free(pE);
+			if (ph->count < ph->lower)
+			{
+				SYHash_compact(ph);
+			}
+			return pV;
+		}
+		pPE = &(pE->pNextEntry);
+		pE = *pPE;
+	}
+	return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	删除所有的入口点，允许释放数据，但使用缺省函数时要小心
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYHash_RemoveAll(PSYHash ph,			// Hash 表指针
+	BOOL bFreeValue)		// 释放元素值内存的标志
 {
 	if (ph == NULL)
 		return;
 
+	pentry pE = NULL, pF = NULL;
+
 	// 分开写循环减少了判断次数
 	if (bFreeValue)
 	{
-		for (std::map<void *, void *>::iterator it = ph->m_mapContainer.begin(); it != ph->m_mapContainer.end();)
+		for (unsigned int i = 0; i<ph->tablelen; i++)
 		{
-			if (ph->bKeyRelease)
+			pE = ph->table[i];
+			while (NULL != pE)
 			{
-				if (ph->freekeyfn)
-				{
-					ph->freekeyfn(it->first);
-				}
-				else
-				{
-					delete it->first;
-				}
+				pF = pE;
+				pE = pE->pNextEntry;
+				if (ph->dupkey)
+					ph->freekeyfn(pF->pKey);
+				ph->freevaluefn(pF->pValue);
+
+				if (pF->needrelease)
+					free(pF);
 			}
-			if (ph->bValueRelease)
-			{
-				if (ph->freevaluefn)
-				{
-					ph->freevaluefn(it->second);
-				}
-				else
-				{
-					SAFE_DELETE(it->second);
-				}
-			}
-			it = ph->m_mapContainer.erase(it);
 		}
 	}
 	else
 	{
-		for (std::map<void *, void *>::iterator it = ph->m_mapContainer.begin(); it != ph->m_mapContainer.end();)
+		for (unsigned int i = 0; i<ph->tablelen; i++)
 		{
-			if (ph->bKeyRelease)
+			pE = ph->table[i];
+			while (NULL != pE)
 			{
-				if (ph->freekeyfn)
-				{
-					ph->freekeyfn(it->first);
-				}
-				else
-				{
-					delete it->first;
-				}
+				pF = pE;
+				pE = pE->pNextEntry;
+				if (ph->dupkey)
+					ph->freekeyfn(pF->pKey);
+				if (pF->needrelease)
+					free(pF);
 			}
-			it = ph->m_mapContainer.erase(it);
 		}
 	}
-	ph->m_mapContainer.clear();
+	memset(ph->table, 0, ph->tablelen * sizeof(pentry));
+	ph->count = 0;
 }
 
-BASEGRAPH_COMMON_API void SYHash_Delete(PSYHash ph, BOOL bFreeValue)
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	销除 Hash 表，允许释放数据，但使用缺省函数时要小心
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYHash_Release(PSYHash ph,				// Hash 表指针
+	BOOL bFreeValue)			// 释放元素值内存的标志
+{
+	if (ph == NULL)
+		return;
+
+	pentry pE = NULL, pF = NULL;
+
+	// 分开写循环减少了判断次数
+	if (bFreeValue)
+	{
+		for (unsigned int i = 0; i<ph->tablelen; i++)
+		{
+			pE = ph->table[i];
+			while (NULL != pE)
+			{
+				pF = pE;
+				pE = pE->pNextEntry;
+				ph->freevaluefn(pF->pValue);
+				if (ph->dupkey)
+					ph->freekeyfn(pF->pKey);
+				if (pF->needrelease)
+					free(pF);
+			}
+		}
+	}
+	else
+	{
+		for (unsigned int i = 0; i<ph->tablelen; i++)
+		{
+			pE = ph->table[i];
+			while (NULL != pE)
+			{
+				pF = pE;
+				pE = pE->pNextEntry;
+				if (ph->dupkey)
+					ph->freekeyfn(pF->pKey);
+				if (pF->needrelease)
+					free(pF);
+			}
+		}
+	}
+	free(ph->table);
+	ph->count = 0;
+	//free(ph);
+}
+
+void __cdecl SYHash_Delete(PSYHash ph,				// Hash 表指针
+	BOOL bFreeValue)			// 释放元素值内存的标志
 {
 	if (!ph)
 		return;
 	SYHash_Release(ph, bFreeValue);
 	free(ph);
 }
-
-BASEGRAPH_COMMON_API void * SYHash_Search(const SYHash * ph, void * pk)
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	更改绑定 key 的值并返回原值
+//			允许释放数据，但使用缺省函数时要小心，释放后返回 NULL
+//
+// 返回值:	SYHash_value
+///////////////////////////////////////////////////////////////////////////////
+SYHash_value __cdecl SYHash_ChangeValue(PSYHash ph,		// Hash 表指针
+	SYHash_key pk,		// key
+	SYHash_value pV,	// 欲更改的值
+	BOOL bFreeValue)	// 释放元素值内存的标志
 {
-	if (ph && ph->m_mapContainer.count(pk) > 0)
-	{
-		return ph->m_mapContainer.at(pk);
-	}
-	return nullptr;
-}
 
-BASEGRAPH_COMMON_API void * SYHash_RemoveAt(PSYHash ph, void * pk, BOOL bFreeValue)
-{
-	if (ph == NULL)
-		return nullptr;
 
-	// 分开写循环减少了判断次数
-	if (bFreeValue)
+	UINT64 unHashValue = SYHash_Hash(ph, pk);
+	pentry pE = ph->table[unHashValue % ph->tablelen];
+	SYHash_value pTmpV = NULL;
+
+	while (NULL != pE)
 	{
-		std::map<void *, void *>::iterator it = ph->m_mapContainer.find(pk);
-		if (it != ph->m_mapContainer.end())
+		// 通过比较 Hash 值来减少比较次数
+		// 如果使用同样的 key 保存不同的数据，将会更改离桶头最近的节点
+		if ((unHashValue == pE->unHashValue) && (ph->eqfn(pk, pE->pKey)))
 		{
-			if (ph->bKeyRelease)
+			if (bFreeValue)
 			{
-				if (ph->freekeyfn)
-				{
-					ph->freekeyfn(it->first);
-				}
-				else
-				{
-					delete it->first;
-				}
+				ph->freevaluefn(pE->pValue);
 			}
-			if (ph->bValueRelease)
+			else
 			{
-				if (ph->freevaluefn)
-				{
-					ph->freevaluefn(it->second);
-				}
-				else
-				{
-					SAFE_DELETE(it->second);
-				}
+				pTmpV = pE->pValue;
 			}
-			ph->m_mapContainer.erase(it);
-		}
-	}
-	else
-	{
-		std::map<void *, void *>::iterator it = ph->m_mapContainer.find(pk);
-		if (it != ph->m_mapContainer.end())
-		{
-			if (ph->bKeyRelease)
-			{
-				if (ph->freekeyfn)
-				{
-					ph->freekeyfn(it->first);
-				}
-				else
-				{
-					delete it->first;
-				}
-			}
-			ph->m_mapContainer.erase(it);
-		}
-	}
-	return nullptr;
-}
+			pE->pValue = pV;
 
-BASEGRAPH_COMMON_API BOOL SYHash_Insert(PSYHash ph, void * pk, void * pv)
-{
-	if (!ph)
-	{
-		return FALSE;
+			return pTmpV;
+		}
+		pE = pE->pNextEntry;
 	}
-	ph->m_mapContainer.insert(std::make_pair(pk, pv));
-	return TRUE;
-}
 
-void * pool_malloc(unsigned char ** pool, int size, BOOL bfromsystem)
+	return pTmpV;
+}
+void* __cdecl pool_malloc(unsigned char** pool, int size, BOOL bfromsystem)
 {
 	if (bfromsystem)
 		return new char[size];
 	unsigned char* p = *pool;
 	*pool += size;
 	return p;
+};
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//htable
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	创建新句柄管理表
+//
+// 返回值:	phtable			新表指针
+///////////////////////////////////////////////////////////////////////////////
+phtable __cdecl SYHTable_Create(UINT maxsize)		// 数组空间大小
+{
+	phtable p = (phtable)malloc(sizeof(htable));
+
+	if (p != NULL)
+	{
+		memset(p, 0, sizeof(htable));
+		if (maxsize > 0)
+		{
+			p->eles = (SYHTable_ele_ptr)malloc(sizeof(SYHTable_element) * maxsize);
+			if (NULL == p->eles)
+			{
+				free(p);
+				return NULL;
+			}
+			memset(p->eles, 0, sizeof(SYHTable_element) * maxsize);
+			p->maxsize = maxsize;
+		}
+	}
+	return p;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	释放句柄管理表
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYHTable_Delete(phtable pHT)
+{
+	if (pHT->eles != NULL)
+	{
+		free(pHT->eles);
+	}
+	free(pHT);
+}
+void __cdecl SYHTable_Release(phtable pHT)			// 表指针
+{
+	if (pHT->eles != NULL)
+	{
+		free(pHT->eles);
+	}
+	memset(pHT, 0, sizeof(htable));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	初始化句柄管理表
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYHTable_Init(phtable p)			// 表指针
+{
+	memset(p, 0, sizeof(htable));
+}
+
+void __cdecl SYHTable_SetSize(phtable p,		// 表指针
+	UINT nMaxSize)		// 数组大小
+{
+	if (p->maxsize == 0)	// 原来没有元素
+	{
+		p->eles = (SYHTable_ele_ptr)malloc(sizeof(SYHTable_element) * nMaxSize);
+		if (NULL == p->eles)
+			return;
+
+		memset(p->eles, 0, sizeof(SYHTable_element)*nMaxSize);
+		p->maxsize = nMaxSize;
+	}
+	else	// 扩充原来的数组
+	{
+		SYHTable_ele_ptr pTmpAr = (SYHTable_ele_ptr)malloc(sizeof(SYHTable_element) * nMaxSize);
+
+		if (NULL == pTmpAr)
+			return;
+
+		// 移动数据
+		memcpy(pTmpAr, p->eles, sizeof(SYHTable_element) * p->count);
+		memset((pTmpAr + p->count), 0, sizeof(SYHTable_element) * (nMaxSize - p->count));
+		free(p->eles);
+		p->eles = pTmpAr;
+		p->maxsize = nMaxSize;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	表是否已满
+//
+// 返回值:	TRUE			是
+//			FALSE			否
+///////////////////////////////////////////////////////////////////////////////
+BOOL __cdecl SYHTable_IsFull(phtable p)			// 表指针
+{
+	return (p->count == p->maxsize);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	是否空表
+//
+// 返回值:	TRUE			是
+//			FALSE			否
+///////////////////////////////////////////////////////////////////////////////
+BOOL __cdecl SYHTable_IsEmpty(phtable p)			// 表指针
+{
+	return (p->count == 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取句柄总数
+//
+// 返回值:	UINT
+///////////////////////////////////////////////////////////////////////////////
+UINT __cdecl SYHTable_GetCount(phtable p)			// 表指针
+{
+	return p->count;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	就近插入数据并返回句柄
+//
+// 返回值:	UINT
+///////////////////////////////////////////////////////////////////////////////
+UINT __cdecl SYHTable_Insert(phtable p,				// 表指针
+	SYHTable_element e)			// 待插入的数据
+{
+	if (p->count < p->maxsize)
+	{
+		for (UINT i = 0; i<p->maxsize; i++)
+		{
+			if (p->eles[i] == NULL)
+			{
+				p->eles[i] = e;
+				p->count++;
+
+				return (i + 1);			// 句柄从 1 开始，0 表示空句柄
+			}
+		}
+	}
+	else		// Expand the table size automatically.
+	{
+		UINT newMaxSize = p->maxsize > 0 ? (p->maxsize << 1) : 1;
+		SYHTable_SetSize(p, newMaxSize);
+		p->eles[p->count] = e;
+		p->count++;
+
+		return p->count;
+	}
+	return SYHTable_null;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取某个句柄的数据
+//
+// 返回值:	SYHTable_element
+///////////////////////////////////////////////////////////////////////////////
+SYHTable_element __cdecl SYHTable_GetAt(phtable p,			// 表指针
+	UINT nIndex)			// 句柄
+{
+	if ((p == NULL) || (p->eles == NULL) || (nIndex <= 0) || (nIndex > p->maxsize))
+		return NULL;
+
+	return p->eles[nIndex - 1];
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	删除某个句柄并返回数据
+//
+// 返回值:	SYHTable_element
+///////////////////////////////////////////////////////////////////////////////
+SYHTable_element __cdecl SYHTable_RemoveAt(phtable p,		// 表指针
+	UINT nIndex)		// 位置
+{
+	SYHTable_element e = p->eles[nIndex - 1];
+
+	p->eles[nIndex - 1] = NULL;
+	p->count--;
+
+	return e;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	删除所有的句柄
+//
+// 返回值:	无
+///////////////////////////////////////////////////////////////////////////////
+void __cdecl SYHTable_RemoveAll(phtable p)			// 表指针
+{
+	memset(p->eles, 0, sizeof(SYHTable_element)*p->maxsize);
+	p->count = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	设置某个句柄的数据值并返回原值
+//
+// 返回值:	SYHTable_element
+///////////////////////////////////////////////////////////////////////////////
+SYHTable_element __cdecl SYHTable_SetAt(phtable p,			// 表指针
+	UINT nIndex,			// 句柄
+	SYHTable_element e)		// 数据
+{
+	SYHTable_element tmpE = p->eles[nIndex - 1];
+	p->eles[nIndex - 1] = e;
+	return tmpE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	哈希表中的有效句柄遍历
+//
+// 返回值:	UINT / SYHTable_element
+///////////////////////////////////////////////////////////////////////////////
+// 得到第一个有效的句柄
+UINT __cdecl SYHTable_GetFirstValid(phtable p)		// 表指针
+{
+	if (p->count > 0)
+	{
+		for (UINT i = 0; i<p->maxsize; i++)
+		{
+			if (p->eles[i] != NULL)
+			{
+				return (i + 1);			// 句柄从 1 开始，0 表示空句柄
+			}
+		}
+	}
+	return SYHTable_null;
+}
+// 遍历下一个有效的句柄
+SYHTable_element __cdecl SYHTable_GetNextValid(phtable p,		// 表指针
+	UINT *pnIndex)	// 句柄
+{
+	UINT i = *pnIndex;
+
+	*pnIndex = SYHTable_null;
+	if (p->count > 0)
+	{
+		for (; i<p->maxsize; i++)
+		{
+			if (p->eles[i] != NULL)
+			{
+				*pnIndex = (i + 1);		// 句柄从 1 开始，0 表示空句柄
+
+				return p->eles[i];
+			}
+		}
+	}
+	return NULL;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////

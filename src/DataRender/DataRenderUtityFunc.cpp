@@ -183,7 +183,8 @@ BASEGRAPH_DATARENDER_API SYItemRenderUnit * CreateRenderUnit(BOOL b3dtype)
 BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(SYItemRenderUnit * pRenderUnit, BOOL b3dType, int hDevice, void * lpCalc)
 {
 	CalculatorTitleword * pCalc = (CalculatorTitleword *)lpCalc;
-	pCalc->DeleteRenderUnitView(pRenderUnit->szID);
+	//djt 暂时不引入renderview
+	//pCalc->DeleteRenderUnitView(pRenderUnit->szID);
 	if ((pRenderUnit->m_pUnit != NULL && pRenderUnit->m_pUnit->type) || b3dType)
 	{
 		assert(false);
@@ -454,6 +455,47 @@ BASEGRAPH_DATARENDER_API void CopyVectorGraph(vectorgraph * pDesGraph, const vec
 	}
 }
 
+BASEGRAPH_DATARENDER_API void SYVectorGraph_Offset(vectorgraph * pGraph, float nOffsetX, float nOffsetY)
+{
+	if (pGraph == NULL)
+		return;
+
+	int nCell = pGraph->ncell;
+	int nPoint = 0;
+	vectorcell* pCell = NULL;
+	for (int i = 0; i<nCell; i++)
+	{
+		pCell = &pGraph->cell[i];
+		nPoint = pCell->npoint;
+		for (int j = 0; j<nPoint; j++)
+		{
+			pCell->point[j].x += nOffsetX;
+			pCell->point[j].y += nOffsetY;
+		}
+		pCell->bound.left += nOffsetX;
+		pCell->bound.right += nOffsetX;
+		pCell->bound.top += nOffsetY;
+		pCell->bound.bottom += nOffsetY;
+	}
+
+	pGraph->bound.left += nOffsetX;
+	pGraph->bound.right += nOffsetX;
+	pGraph->bound.top += nOffsetY;
+	pGraph->bound.bottom += nOffsetY;
+}
+
+BASEGRAPH_DATARENDER_API void SYVectorGraph_Release(vectorgraph * pGraph)
+{
+	if (pGraph == NULL)
+		return;
+	for (int i = 0; i < pGraph->ncell; ++i)
+	{
+		SYCurveCell_Release(&pGraph->cell[i]);
+	}
+	delete[] pGraph->cell;
+	memset(pGraph, 0, sizeof(vectorgraph));
+}
+
 BASEGRAPH_DATARENDER_API BOOL CreateRegionVectorGraphFromPoints(vectorgraph * pGraph, point2f pt[], int nCount, BOOL bClockWise)
 {
 	if (pGraph == NULL || nCount < 3)
@@ -615,6 +657,60 @@ BASEGRAPH_DATARENDER_API void SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph * 
 		pGraph->bound.bottom = max(pGraph->bound.bottom, pCellRt->bottom);
 
 		nCellIndex++;
+	}
+}
+
+BASEGRAPH_DATARENDER_API void MergeVectorGraph(vectorgraph * pDesGraph, const vectorgraph * pSrcGraph1, vectorgraph * pSrcGraph2)
+{
+	// 先释放目标vectorgraph
+	graph_release(pDesGraph);
+
+	int ncellcount = pSrcGraph1->ncell + pSrcGraph2->ncell;
+	if (ncellcount < 0)
+		return;
+	// 拷贝数据
+	//memcpy(pDesGraph, pSrcGraph, sizeof(vectorgraph));
+	pDesGraph->cell = new vectorcell[ncellcount];
+	int i = 0;
+	for (; i < pSrcGraph1->ncell; i++)
+	{
+		CopyCell(&pDesGraph->cell[i], &pSrcGraph1->cell[i]);
+	}
+	for (; i < ncellcount; i++)
+	{
+		CopyCell(&pDesGraph->cell[i], &pSrcGraph2->cell[i - pSrcGraph1->ncell]);
+	}
+	pDesGraph->ncell = ncellcount;
+	pDesGraph->bound.left = min(pSrcGraph1->bound.left, pSrcGraph2->bound.left);
+	pDesGraph->bound.top = min(pSrcGraph1->bound.top, pSrcGraph2->bound.top);
+	pDesGraph->bound.right = max(pSrcGraph1->bound.right, pSrcGraph2->bound.right);
+	pDesGraph->bound.bottom = max(pSrcGraph1->bound.bottom, pSrcGraph2->bound.bottom);
+}
+
+BASEGRAPH_DATARENDER_API void ReverseVectorGraph(vectorgraph * pDesGraph)
+{
+	pointf pttemp;
+	int ncellcount = pDesGraph->ncell;
+	for (int i = 0; i < ncellcount; i++)
+	{
+		vectorcell* pcell = &pDesGraph->cell[i];
+		unsigned long* type = new unsigned long[pcell->npoint];
+		int reccount = pcell->npoint / 2;
+		for (int i = 0; i< reccount; i++)
+		{
+			pttemp = pcell->point[i];
+			pcell->point[i] = pcell->point[pcell->npoint - 1 - i];
+			pcell->point[pcell->npoint - 1 - i] = pttemp;
+
+			type[i] = pcell->pttype[(pcell->npoint + pcell->npoint - 1 - i - 1) % pcell->npoint];
+			type[pcell->npoint - i - 1] = pcell->pttype[(pcell->npoint + i - 1) % pcell->npoint];
+		}
+		for (int i = 0; i < reccount; i++)
+		{
+			pcell->pttype[i] = type[i];
+		}
+		delete[] type;
+		type = NULL;
 	}
 }
 
@@ -5270,6 +5366,30 @@ BASEGRAPH_DATARENDER_API void CalcPointProject(vector4f * pV4D, matrix4f * pTran
 	*pV4D = vDes;
 }
 
+BASEGRAPH_DATARENDER_API void calc_trans_group_tovector(OUT vector3f * pvpos, OUT vector3f * pvscale, OUT SYQuatn * pTcb, OUT vector3f * pEur, OUT vector3f * pcenter, IN double dframe, IN vector3f * pamendpos, IN vector3f * pamendscale, IN vector3f * pamendrotate)
+{
+	return;
+}
+
+BASEGRAPH_DATARENDER_API void calc_trans_group(OUT matrix4f * pvmatrix, OUT vector3f * pvpos, OUT vector3f * pvscale, OUT vector3f * pAngle, OUT vector3f * pcenter, IN double dFrame, IN vector3f * pivot, int nRotateOrder, IN vector3f * pamendpos, IN vector3f * pamendscale, IN vector3f * pamendrotate)
+{
+	//中心变换矩阵
+	matrix4f matpivotE;
+	matrix4f_identity(pvmatrix);
+
+	if (dFrame != -1)
+	{
+		calc_trans_group_tovector(pvpos, pvscale, NULL, pAngle, pcenter, dFrame, pamendpos, pamendscale, pamendrotate);
+		calc_trans_vector_tomatrix(pvmatrix, pvpos, pvscale, pAngle, pcenter, NULL, NULL, nRotateOrder);
+	}
+
+	if (pivot)
+	{
+		float3ToTransMatQ(&matpivotE, pivot);
+		matrix4f_mul(pvmatrix, pvmatrix, &matpivotE);
+	}
+}
+
 int  cell_get_group_ptcount(vectorcell*	srccell, int nstart, int type);
 
 //单条二次曲线的扩展
@@ -5640,4 +5760,28 @@ BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT SYArray * ptarray, OUT SYArray 
 	/*descell->type = srccell->type;
 	descell->width = srccell->width;*/
 	return 1;
+}
+
+BASEGRAPH_DATARENDER_API void SYCurveCell_Init(vectorcell * pCell)
+{
+	if (pCell == NULL)
+		return;
+	memset(pCell, 0, sizeof(vectorcell));
+}
+
+BASEGRAPH_DATARENDER_API void SYCurveCell_Release(vectorcell * pCell)
+{
+	if (pCell == NULL)
+		return;
+	if (pCell->point)
+	{
+		delete[] pCell->point;
+		pCell->point = NULL;
+	}
+	if (pCell->pttype)
+	{
+		delete[] pCell->pttype;
+		pCell->pttype = NULL;
+	}
+	SYCurveCell_Init(pCell);
 }

@@ -29,8 +29,12 @@ BASEGRAPH_DATARENDER_API int sy_release_vectorgraph(vectorgraph* pgraph);
 BASEGRAPH_DATARENDER_API int  SYCopy_VectorGraph(vectorgraph* pdesgraph, vectorgraph* psrcgraph);
 BASEGRAPH_DATARENDER_API void graph_release(vectorgraph* graph);
 BASEGRAPH_DATARENDER_API void CopyVectorGraph(vectorgraph* pDesGraph, const vectorgraph* pSrcGraph);
+BASEGRAPH_DATARENDER_API void SYVectorGraph_Offset(vectorgraph* pGraph, float nOffsetX, float nOffsetY);
+BASEGRAPH_DATARENDER_API void SYVectorGraph_Release(vectorgraph* pGraph);
 BASEGRAPH_DATARENDER_API BOOL CreateRegionVectorGraphFromPoints(vectorgraph* pGraph, point2f pt[], int nCount, BOOL bClockWise);
-BASEGRAPH_DATARENDER_API void	SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph* pGraph, TTPOLYGONHEADER* pSrcOutline, int nSize);//取字模函数  HTH,目前采用的TURETYPE来取
+BASEGRAPH_DATARENDER_API void SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph* pGraph, TTPOLYGONHEADER* pSrcOutline, int nSize);//取字模函数  HTH,目前采用的TURETYPE来取
+BASEGRAPH_DATARENDER_API void MergeVectorGraph(vectorgraph* pDesGraph, const vectorgraph* pSrcGraph1, vectorgraph* pSrcGraph2);
+BASEGRAPH_DATARENDER_API void ReverseVectorGraph(vectorgraph* pDesGraph);
 //model
 BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel* pmod);
 BASEGRAPH_DATARENDER_API int sy_release_viewsub(int hDevice, SYSubModel* pSubModel);
@@ -39,9 +43,11 @@ BASEGRAPH_DATARENDER_API void sy_init_moddef(SYModel* pmod);
 BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel* pDst, const SYModel* pSrc);
 //cell
 BASEGRAPH_DATARENDER_API int sy_release_cell(vectorcell* pcell);
-BASEGRAPH_DATARENDER_API int  cell_line_extend_close(OUT vectorcell* descell1, OUT vectorcell* descell2, IN vectorcell*	srccell, vector2f* vOffset, IN int ndirect, IN float fwidth);
-BASEGRAPH_DATARENDER_API int  cell_extend_tri(OUT SYArray*	ptarray, OUT SYArray*	lenarray, IN  vectorcell*	srccell, IN  int ndirect, IN  float fwidth);
-	//bone
+BASEGRAPH_DATARENDER_API int cell_line_extend_close(OUT vectorcell* descell1, OUT vectorcell* descell2, IN vectorcell*	srccell, vector2f* vOffset, IN int ndirect, IN float fwidth);
+BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT SYArray*	ptarray, OUT SYArray*	lenarray, IN  vectorcell*	srccell, IN  int ndirect, IN  float fwidth);
+BASEGRAPH_DATARENDER_API void SYCurveCell_Init(vectorcell* pCell);
+BASEGRAPH_DATARENDER_API void SYCurveCell_Release(vectorcell* pCell);
+//bone
 BASEGRAPH_DATARENDER_API int sy_release_bonedef(SYBoneDef* pbone);
 BASEGRAPH_DATARENDER_API void sy_copy_bone(SYBoneDef*	pDesBone, SYBoneDef*	pSrcBone);
 //color
@@ -108,3 +114,6 @@ void	Modify3DUnitFrom2DUnit(SYUnit* punit3d, SYUnit* punit2d, SYMaterial** p3dco
 BASEGRAPH_DATARENDER_API void CalcBufferProjectSize(rectf& rtDes, vector3f* pDesVector3D, RECT& rtSrc, matrix4f* pTransMatrix);
 BASEGRAPH_DATARENDER_API void CalcBufferProjectSize(rectf& rtDes, vector3f* pDesVector3D, rectf& rtSrc, matrix4f* pTransMatrix);
 BASEGRAPH_DATARENDER_API void CalcPointProject(vector4f* pV4D, matrix4f* pTransMatrix, matrix4f* pProjectMatrix, vector4f* pvCenter);
+//trans
+BASEGRAPH_DATARENDER_API void calc_trans_group_tovector(OUT vector3f *pvpos, OUT vector3f *pvscale, OUT SYQuatn* pTcb, OUT vector3f* pEur, OUT vector3f *pcenter, IN double dframe, IN vector3f* pamendpos = NULL, IN vector3f* pamendscale = NULL, IN vector3f* pamendrotate = NULL);
+BASEGRAPH_DATARENDER_API void calc_trans_group(OUT matrix4f* pvmatrix, OUT vector3f *pvpos, /*同时输出插值的向量 */ OUT vector3f *pvscale, OUT vector3f* pAngle, OUT vector3f *pcenter, IN double dFrame, IN vector3f* pivot, /*形变参考点坐标 */ int nRotateOrder = ROTATE_ORDER_YXZ, IN vector3f* pamendpos = NULL, IN vector3f* pamendscale = NULL, IN vector3f* pamendrotate = NULL);

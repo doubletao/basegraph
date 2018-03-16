@@ -100,7 +100,7 @@ BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const DX_Cone_Pa
 	double f_c=startPoint.x*startPoint.x+startPoint.z*startPoint.z-(f_C+f_k*startPoint.y)*(f_C+f_k*startPoint.y);
 	double discrim=f_b*f_b-f_a*f_c;
 	//在圆柱很大，离视线很远的时候，捕捉边缘比较困难
-	if (abs(discrim) <= 200) {
+	if (fabs(discrim) <= 200) {
 		double tmin = - f_b / f_a;
 		vector3f snapPoint=startPoint+direction*(float)tmin;
 		if (PointInCone(snapPoint,Height_max,Height_min,f_k,f_C,pCone->fStartAngle,pCone->fEndAngle))
@@ -138,7 +138,7 @@ int Intersection_Plane(IN const DX_Plane_Intersection* pIn, OUT Point_Intersecti
 	float IsIntersec = float3DotProduct(&(pIn->Plane.normal), &(pIn->Ray.Direction));
 	vector3f vDirect = pIn->Plane.point - pIn->Ray.startPoint;
 	float t = float3DotProduct(&pIn->Plane.normal,&vDirect) / IsIntersec;
-	if (abs(IsIntersec) < 0.02)
+	if (fabs(IsIntersec) < 0.02)
 	{
 		return_result = NO_INTERSECTION;
 	}
@@ -170,7 +170,7 @@ int Intersection_3DCircle(IN const DX_3DCircle_Intersection* pIn, OUT Point_Inte
 		vector3f DirPointToCentre;
 		float3Normalize(&DirPointToCentre,&vDirect);
 		float IsInt = float3DotProduct(&DirPointToCentre,&CirclePlane.Plane.normal);
-		if (abs(IsInt) < 0.02)
+		if (fabs(IsInt) < 0.02)
 		{
 			vector3f v;
 			float3CrossProduct( &v ,&(CirclePlane.Plane.normal), &(CirclePlane.Ray.Direction));
@@ -270,7 +270,7 @@ int Intersection_Sphere(IN const DX_Sphere_Intersection* pIn, OUT Point_Intersec
 	float projection=float3DotProduct(&stPointToCenter,&rayDir);
 	float length=float3DotProduct(&stPointToCenter,&stPointToCenter);
 	float radius_2 = pIn->fSphereRadius * pIn->fSphereRadius;
-	if (abs((length-projection*projection) - radius_2) < 50) 
+	if (fabs((length-projection*projection) - radius_2) < 50) 
 	{
 		pOut->nearPoint = Int.Ray.startPoint + rayDir * projection;
 		return_result = INTERSECTION_EDGE;
@@ -499,7 +499,7 @@ void Generate_Quatn_BetweenDir( OUT SYQuatn* pqQuatn, IN vector3f* pvStartDir, I
 {
 	vector3f vAxis = { 0.f, 0.f, 0.f };
 	float3CrossProduct( &vAxis, pvStartDir, pvEndDir );
-	if ( abs(vAxis.x) < ABS_FLOAT_0 && abs(vAxis.y) < ABS_FLOAT_0 && abs(vAxis.z) < ABS_FLOAT_0 ) 
+	if ( fabs(vAxis.x) < ABS_FLOAT_0 && fabs(vAxis.y) < ABS_FLOAT_0 && fabs(vAxis.z) < ABS_FLOAT_0 ) 
 	{
 	}
 	else
@@ -614,7 +614,7 @@ BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt( const SYRay* pRay,const float3* p
 	float IsIntersec = float3DotProduct(pNormal, &pRay->vDir);
 	float3 vDirect = *pCenter - pRay->vStart;
 	float t = float3DotProduct(pNormal,&vDirect) / IsIntersec;
-	if (abs(IsIntersec) < 1e-7)
+	if (fabs(IsIntersec) < 1e-7)
 	{
 		return_result = SY_NO_HIT;
 	}
@@ -928,7 +928,7 @@ BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const SYRay* pRay,const float3* pC
 		vector3f vDirect = pRay->vStart - *pCenter;
 		float3Normalize(&vDirect,&vDirect);
 		float IsInt = float3DotProduct(&vDirect,pNormal);
-		if (abs(IsInt) < ABS_FLOAT_0)
+		if (fabs(IsInt) < ABS_FLOAT_0)
 		{
 			vector3f v;
 			float3CrossProduct( &v ,pNormal, &pRay->vDir);

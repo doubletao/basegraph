@@ -1,52 +1,326 @@
 #pragma once
-#include <map>
-#include <set>
-//本文件将C风格一些存储容器如array及hash转为stl的array及hash，仅供过渡期使用，后期会逐渐丢弃
+/////////////////////////////hash////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+typedef void*		SYHash_key;			// Hash 表入口点 key 的类型
+typedef void*		SYHash_value;		// Hash 表绑定 key 的值的类型
+typedef void*		SYHash_pos;			// Hash 表遍历时的位置（LPDSENTRY）
 
-//用map模拟hash表
-typedef struct tag_htable 
+typedef struct tag_entry				// 存储数据的 Hash 表入口点
 {
-	std::map<int, void *> m_mapContainer;
-}htable, *phtable, *LPSYHTABLE;
-BASEGRAPH_COMMON_API void __cdecl SYHTable_Init(phtable pHT);
-BASEGRAPH_COMMON_API void * __cdecl SYHTable_GetAt(phtable pHT, UINT nIndex);
-BASEGRAPH_COMMON_API void * __cdecl SYHTable_RemoveAt(phtable pHT, UINT nIndex);
-BASEGRAPH_COMMON_API UINT __cdecl SYHTable_Insert(phtable pHT, void * e);
-BASEGRAPH_COMMON_API UINT __cdecl SYHTable_GetFirstValid(phtable pHT);
-BASEGRAPH_COMMON_API void * __cdecl SYHTable_GetNextValid(phtable pHT, UINT *pnIndex);
-BASEGRAPH_COMMON_API UINT __cdecl SYHTable_GetCount(phtable pHT);
-BASEGRAPH_COMMON_API void __cdecl SYHTable_Delete(phtable pHT);			// 表指针
-BASEGRAPH_COMMON_API void __cdecl SYHTable_Release(phtable pHT);			// 表指针
-BASEGRAPH_COMMON_API void __cdecl SYHTable_RemoveAll(phtable pHT);
+	SYHash_key			pKey;			// key
+	SYHash_value		pValue;			// 绑定 key 的值
+	UINT64				unHashValue;	// Hash 值
+	int					needrelease;
+	struct tag_entry*	pNextEntry;		// 下一个入口点
+}entry, *pentry;
+
+typedef pentry*	pentrytable;		// 定义桶表的类型
+
+typedef struct tag_hash				// 拉链法 Hash 表结构
+{
+	unsigned int	tablelen;								// 表长
+	pentrytable		table;									// 表头
+	unsigned int	count;									// 入口点总数
+	unsigned int	limit;									// 负载上限
+	unsigned int	lower;									// 负载过低下限
+	unsigned int	primeindex;							// 素数序号
+	unsigned char*  pool;
+	unsigned char*  poolend;
+	int				dupkey;
+	UINT64(*hashfn)(SYHash_key k);				// Hash 函数指针
+	BOOL(*eqfn)(SYHash_key k1, SYHash_key k2);	// key 比较函数指针
+	SYHash_key(*dupfn)(SYHash_key k);					// 拷贝一份 key
+	void(*freekeyfn)(SYHash_key k);				// 释放 key
+	void(*freevaluefn)(SYHash_value v);			// 释放 value
+}SYHash, *PSYHash, *LPSYHASH;
+BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Init_Int(SYHash* ph, unsigned int minsize);
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	初始化 Hash 表（函数指针为 NULL 时表示使用系统缺省函数）
+//
+// 返回值:	成功为TRUE，失败为FALSE
+///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Init(SYHash* ph,
+	unsigned int minsize,					// 表初始大小
+	UINT64(*SYHash_make)(SYHash_key),		// Hash值计算函函数
+	BOOL(*key_compare)(SYHash_key, SYHash_key),	// key 比较函数
+	SYHash_key(*key_dup)(SYHash_key),		// key 拷贝函数
+	void(*key_free)(SYHash_key),			// key 释放函数
+	void(*value_free)(SYHash_value));		// value 释放函数
+
+
+BASEGRAPH_COMMON_API BOOL __cdecl SYHash_SetPool(SYHash* ph, char*  pool, char* poolend, BOOL dupKey);
+
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	创建新 Hash 表（函数指针为 NULL 时表示使用系统缺省函数）
+//
+// 返回值:	PSYHash			新表指针
+///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API PSYHash __cdecl SYHash_Create(unsigned int unMinSize,					// 表初始大小
+	UINT64(*hashF)(SYHash_key),		// Hash 值计算函函数
+	BOOL(*keyEqF)(SYHash_key, SYHash_key),	// key 比较函数
+	SYHash_key(*keyDupF)(SYHash_key),		// key 拷贝函数
+	void(*keyFreeF)(SYHash_key),			// key 释放函数
+	void(*valueFreeF)(SYHash_value));		// value 释放函数
+
+
+BASEGRAPH_COMMON_API BOOL __cdecl SYHash_SetPool(SYHash* ph, unsigned char*  pool, unsigned char* poolend, BOOL bdupKey);
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	Hash 值求解
+//
+// 返回值:	unsigned int		key 对应的 Hash 值
+///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API UINT64 __cdecl SYHash_Hash(const SYHash* pH,			// Hash 表指针
+	SYHash_key pK);		// key
+
+						///////////////////////////////////////////////////////////////////////////////
+						// 描述：	缺省的 Hash 值求解函数（字符串）
+						//
+						// 返回值:	unsigned int		key 对应的 Hash 值
+						///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API UINT64 __cdecl SYHash_HashStr(SYHash_key pK);			// key
+
+																		///////////////////////////////////////////////////////////////////////////////
+																		// 描述：	缺省的 key 比较函数（字符串）
+																		//
+																		// 返回值:	TRUE		相等
+																		//			FALSE		不等
+																		///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API BOOL __cdecl SYHash_EqualStr(SYHash_key pK1,				// key
+	SYHash_key pK2);				// key
+
+									///////////////////////////////////////////////////////////////////////////////
+									// 描述：	缺省的 key 拷贝函数（字符串）
+									//
+									// 返回值:	SYHash_key
+									///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHash_key __cdecl SYHash_DuplicateStr(SYHash_key pK);		// key
+
+																			///////////////////////////////////////////////////////////////////////////////
+																			// 描述：	缺省的 key 释放函数（字符串）
+																			//
+																			// 返回值:	void
+																			///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYHash_FreeKeyStr(SYHash_key pK);			// key
+
+																		///////////////////////////////////////////////////////////////////////////////
+																		// 描述：	缺省的 value 释放函数（只能释放由 malloc 申请的内存空间）
+																		//
+																		// 返回值:	void
+																		///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYHash_FreeValueStr(SYHash_value pV);		// value
+
+UINT64 __cdecl SYHash_HashInt(SYHash_key pk);
+BOOL __cdecl SYHash_EqualInt(SYHash_key pK1, SYHash_key pK2);
+SYHash_key __cdecl SYHash_DuplicateInt(SYHash_key pk);
+void __cdecl SYHash_FreeKeyInt(SYHash_key pk);
+void __cdecl SYHash_FreeValueInt(SYHash_value pV);
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	获取入口点总数
+//
+// 返回值:	unsigned int
+///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API unsigned int __cdecl SYHash_GetCount(PSYHash pH);		// Hash 表指针
+
+																		//////////////////////////////////////////////////////////////////////////
+																		// 描述：	获取第一个入口点的位置
+																		//
+																		// 返回值：	SYHash_pos
+																		//////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHash_pos __cdecl SYHash_GetHeadPosition(PSYHash ph);		// Hash 表指针
+
+																			//////////////////////////////////////////////////////////////////////////
+																			// 描述：	获取第一个入口点的数据
+																			//
+																			// 返回值：	SYHash_key / SYHash_value
+																			//////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHash_key __cdecl SYHash_GetHeadKey(PSYHash ph);		// Hash 表指针
+BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_GetHeadValue(PSYHash ph);	// Hash 表指针
+
+																		//////////////////////////////////////////////////////////////////////////
+																		// 描述：	获取下个位置或当前位置数据，获取数据时不会自动更新位置。
+																		//
+																		// 返回值：	SYHash_pos / SYHash_key / SYHash_value
+																		//////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_GetNextPosition(PSYHash ph,		// Hash 表指针
+	SYHash_pos* ppos);	// 当前位置
+BASEGRAPH_COMMON_API SYHash_key __cdecl SYHash_GetPosKey(PSYHash ph,			// Hash 表指针
+	SYHash_pos pos);		// 当前位置
+BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_GetPosValue(PSYHash ph,		// Hash 表指针
+	SYHash_pos pos);	// 当前位置
+
+						///////////////////////////////////////////////////////////////////////////////
+						// 描述：	插入一个数据，允许重复插入同一个 key
+						//
+						// 返回值:	TRUE			插入成功
+						//			FALSE			插入失败
+						///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Insert(PSYHash ph,			// Hash 表指针
+	SYHash_key pk,		// key
+	SYHash_value pv);	// 绑定 key 的值
+
+						///////////////////////////////////////////////////////////////////////////////
+						// 描述：	通过 key 查找数据
+						//
+						// 返回值:	SYHash_value
+						///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_Search(const SYHash* ph,			// Hash 表指针
+	SYHash_key pk);		// key
+
+						///////////////////////////////////////////////////////////////////////////////
+						// 描述：	删除为 key 的入口点并返回相应的数据，如有必要则压缩 Hash 表的容量
+						//			允许释放数据，但使用缺省函数时要小心，释放后返回 NULL
+						//
+						// 返回值:	SYHash_value
+						///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_RemoveAt(PSYHash ph,			// Hash 表指针
+	SYHash_key pk,			// key
+	BOOL bFreeValue);		// 释放元素值内存的标志
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	删除所有的入口点，允许释放数据，但使用缺省函数时要小心
+							//
+							// 返回值:	无
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYHash_RemoveAll(PSYHash ph,			// Hash 表指针
+	BOOL bFreeValue);		// 释放元素值内存的标志
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	销除 Hash 表，允许释放数据，但使用缺省函数时要小心
+							//
+							// 返回值:	无
+							///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYHash_Release(PSYHash ph,				// Hash 表指针
+	BOOL bFreeValue);			// 释放元素值内存的标志
+
+BASEGRAPH_COMMON_API void __cdecl SYHash_Delete(PSYHash ph,				// Hash 表指针
+	BOOL bFreeValue);			// 释放元素值内存的标志
+								///////////////////////////////////////////////////////////////////////////////
+								// 描述：	更改绑定 key 的值并返回原值
+								//			允许释放数据，但使用缺省函数时要小心，释放后返回 NULL
+								//
+								// 返回值:	SYHash_value
+								///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_ChangeValue(PSYHash ph,		// Hash 表指针
+	SYHash_key pk,		// key
+	SYHash_value pnewv,	// 欲更改的值
+	BOOL bFreeValue);	// 释放元素值内存的标志
+
+
+BASEGRAPH_COMMON_API void* __cdecl pool_malloc(unsigned char** pool, int size, BOOL bfromsystem);
+
+/////////////////////////////htable////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define SYHTable_null		0						// 空句柄
+typedef void*				SYHTable_element;		// 元素类型
+typedef SYHTable_element*		SYHTable_ele_ptr;		// 元素指针
 
-//用map模拟hash表
-typedef struct tag_hash
-{
-	std::map<void *, void *> m_mapContainer;
-	bool bKeyRelease;
-	bool bValueRelease;
-	void(*freekeyfn)(void* k);				// 释放 key
-	void(*freevaluefn)(void* v);			// 释放 value
-}SYHash, *PSYHash, *LPSYHASH;
 
-BASEGRAPH_COMMON_API void __cdecl SYHash_FreeKeyStr(void * pK);
-BASEGRAPH_COMMON_API void __cdecl SYHash_FreeValueStr(void * pV);
+typedef struct tag_htable {
+	UINT				maxsize;			// 数组空间大小
+	UINT				count;			// 元素个数
+	SYHTable_ele_ptr		eles;		// 元素数组指针
+}htable, *phtable, *LPSYHTABLE;
 
-BASEGRAPH_COMMON_API PSYHash __cdecl SYHash_Create(unsigned int minsize,					// 表初始大小
-	UINT64(*hashF)(void *),		// Hash 值计算函函数
-	BOOL(*keyEqF)(void *, void *),	// key 比较函数
-	void *(*keyDupF)(void *),		// key 拷贝函数
-	void(*keyFreeF)(void *),			// key 释放函数
-	void(*valueFreeF)(void *));		// value 释放函数
-BASEGRAPH_COMMON_API void __cdecl SYHash_Release(PSYHash ph, BOOL bFreeValue);
-BASEGRAPH_COMMON_API void __cdecl SYHash_Delete(PSYHash ph, BOOL bFreeValue);
-BASEGRAPH_COMMON_API void * __cdecl SYHash_Search(const SYHash* ph, void * pk);
-BASEGRAPH_COMMON_API void * __cdecl SYHash_RemoveAt(PSYHash ph, void * pk, BOOL bFreeValue);
-BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Insert(PSYHash ph, void * pk, void * pv);
+///////////////////////////////////////////////////////////////////////////////
+// 描述：	创建新句柄管理表
+//
+// 返回值:	phtable			新表指针
+///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API phtable __cdecl SYHTable_Create(UINT nMaxSize);			// 数组空间大小
 
-BASEGRAPH_COMMON_API void* __cdecl pool_malloc(unsigned char** pool, int size, BOOL bfromsystem);;
+																		///////////////////////////////////////////////////////////////////////////////
+																		// 描述：	释放句柄管理表
+																		//
+																		// 返回值:	无
+																		///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYHTable_Delete(phtable pHT);			// 表指针
+BASEGRAPH_COMMON_API void __cdecl SYHTable_Release(phtable pHT);			// 表指针
+
+																	///////////////////////////////////////////////////////////////////////////////
+																	// 描述：	初始化句柄管理表
+																	//
+																	// 返回值:	无
+																	///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYHTable_Init(phtable pHT);			// 表指针
+
+BASEGRAPH_COMMON_API void __cdecl SYHTable_SetSize(phtable pHT,		// 表指针
+	UINT nMaxSize);	// 数组大小
+
+					///////////////////////////////////////////////////////////////////////////////
+					// 描述：	表是否已满
+					//
+					// 返回值:	TRUE			是
+					//			FALSE			否
+					///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API BOOL __cdecl SYHTable_IsFull(phtable pHT);			// 表指针
+
+																	///////////////////////////////////////////////////////////////////////////////
+																	// 描述：	是否空表
+																	//
+																	// 返回值:	TRUE			是
+																	//			FALSE			否
+																	///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API BOOL __cdecl SYHTable_IsEmpty(phtable pHT);			// 表指针
+
+																	///////////////////////////////////////////////////////////////////////////////
+																	// 描述：	获取句柄总数
+																	//
+																	// 返回值:	UINT
+																	///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API UINT __cdecl SYHTable_GetCount(phtable pHT);			// 表指针
+
+																	///////////////////////////////////////////////////////////////////////////////
+																	// 描述：	就近插入数据并返回句柄
+																	//
+																	// 返回值:	UINT
+																	///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API UINT __cdecl SYHTable_Insert(phtable pHT,				// 表指针
+	SYHTable_element e);		// 待插入的数据
+
+								///////////////////////////////////////////////////////////////////////////////
+								// 描述：	获取某个句柄的数据
+								//
+								// 返回值:	SYHTable_element
+								///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_GetAt(phtable pHT,			// 表指针
+	UINT nIndex);		// 句柄
+
+						///////////////////////////////////////////////////////////////////////////////
+						// 描述：	删除某个句柄并返回数据
+						//
+						// 返回值:	SYHTable_element
+						///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_RemoveAt(phtable pHT,		// 表指针
+	UINT nIndex);		// 句柄
+
+						///////////////////////////////////////////////////////////////////////////////
+						// 描述：	删除所有的句柄
+						//
+						// 返回值:	无
+						///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API void __cdecl SYHTable_RemoveAll(phtable pHT);			// 表指针
+
+																		///////////////////////////////////////////////////////////////////////////////
+																		// 描述：	设置某个句柄的数据值并返回原值
+																		//
+																		// 返回值:	SYHTable_element
+																		///////////////////////////////////////////////////////////////////////////////
+BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_SetAt(phtable pHT,			// 表指针
+	UINT nIndex,			// 句柄
+	SYHTable_element e);	// 数据
+
+							///////////////////////////////////////////////////////////////////////////////
+							// 描述：	哈希表中的有效句柄遍历
+							//
+							// 返回值:	UINT / SYHTable_element
+							///////////////////////////////////////////////////////////////////////////////
+							// 得到第一个有效的句柄
+BASEGRAPH_COMMON_API UINT __cdecl SYHTable_GetFirstValid(phtable pHT);		// 表指针
+																		// 遍历下一个有效的句柄
+BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_GetNextValid(phtable pHT,		// 表指针
+	UINT *pnIndex);	// 句柄
+
+
+/////////////////////////////array////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //array相关，随后要干掉
 // 元素定义

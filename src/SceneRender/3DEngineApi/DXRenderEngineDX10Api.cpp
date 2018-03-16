@@ -4642,7 +4642,7 @@ void SY_DeviceDX10::Reset()
 	nMutiSampleCount = 0;
 	nSampleQuality = 0;
 	memset(&spriteProj, 0, sizeof(matrix4f));
-	ShaderHash = 0;
+	ShaderHash = nullptr;
 	TextureFromFileHash = nullptr;
 	BumpTextureFromFileHash = nullptr;
 	memset(pDepthState, 0, DXDepthStateCount * sizeof(ID3D10DepthStencilState*));
@@ -4698,4 +4698,10 @@ void SY_DeviceDX10::Reset()
 	memset(&EngineLock, 0, sizeof(CRITICAL_SECTION));
 	memset(&RenderLock, 0, sizeof(CRITICAL_SECTION));
 	memset(&info, 0, sizeof(DXRenderInfo));
+	memset(&htEffectUnit, 0, sizeof(htable));
+	memset(&httexture, 0, sizeof(htable));
+	memset(&htSwapChain, 0, sizeof(htable));
+	memset(&htModel, 0, sizeof(htable));
+	memset(&htShaderTable, 0, sizeof(htable));
+	memset(&htBuffer, 0, sizeof(htable));
 }

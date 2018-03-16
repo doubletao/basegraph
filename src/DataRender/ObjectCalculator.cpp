@@ -10,8 +10,10 @@ static char THIS_FILE[] = __FILE__;
 ObjectCalculator::ObjectCalculator(CString strObjID)
 	: m_strObjID(strObjID)
 	, m_nObjBufferID(0)
-	, m_emChgLevel(ChgLevel_NULL)
+	, m_emChgLevel(ChgLevel_Create)
 	, m_bSelected(false)
+	, m_nLastFrame(-1)
+	, m_nRotateOrder(ROTATE_ORDER_YXZ)
 {
 	InitializeCriticalSection(&m_Lock);
 }
@@ -20,6 +22,11 @@ ObjectCalculator::ObjectCalculator(CString strObjID)
 ObjectCalculator::~ObjectCalculator()
 {
 	DeleteCriticalSection(&m_Lock);
+	Release();
+}
+
+void ObjectCalculator::Release()
+{
 }
 
 int ObjectCalculator::GetWidth()
@@ -151,4 +158,19 @@ bool ObjectCalculator::PrepareItemHalBufer(int nDevice)
 	m_HalDes.m_rtBound.bottom = nHeight / 2;
 	DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex);
 	return true;
+}
+
+SYItemRenderUnit * ObjectCalculator::GetRenderUnit(int nIndex, const SYArray & pUnitArray)
+{
+	return (SYItemRenderUnit*)SYAR_GetAt(&pUnitArray, nIndex);
+}
+
+void ObjectCalculator::SetChgLevel(EmObjectChgLevel emChgLevel)
+{
+	m_emChgLevel = emChgLevel;
+}
+
+EmObjectChgLevel ObjectCalculator::GetChgLevel()
+{
+	return m_emChgLevel;
 }

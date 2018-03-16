@@ -9,6 +9,8 @@ static char THIS_FILE[] = __FILE__;
 CalculatorTitleword::CalculatorTitleword(CString strObjID)
 	: ObjectCalculator(strObjID)
 {
+	memset(&m_2DTextRenderUnitArray, 0, sizeof(SYArray));
+	memset(&m_arWholeRenderTextGraph, 0, sizeof(SYArray));
 }
 
 CalculatorTitleword::~CalculatorTitleword()
@@ -120,6 +122,9 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 			m_TypeSet.Attach(&m_text, this);
 			m_TypeSet.ReplaceString(strText, FALSE);
 
+			//重要函数
+			RefreshRenderUnit(0, FALSE);
+
 			//计算出bound
 			CalUnitBound();
 
@@ -150,14 +155,14 @@ rectf CalculatorTitleword::CalUnitBound()
 	m_rtUnitBound.right = -65535.0f;
 	m_rtUnitBound.bottom = -65535.0f;
 
-	SYArray & arRenderUnitArray = m_text.ar2DUnit;
+	SYArray & arRenderUnitArray = m_2DTextRenderUnitArray;
 	int nRenderCount = (int)SYAR_GetSize(&arRenderUnitArray);
 	RECT rtTemp = { 0 };
 	rectf fbound = { 0 };
 	vector3f v3d[4] = { 0 };
 	for (int i = 0; i<nRenderCount; i++)
 	{
-		SYUnit* pRenderUnit = (SYUnit*)SYAR_GetAt(&arRenderUnitArray, i);
+		SYItemRenderUnit * pRenderUnit = (SYItemRenderUnit *)SYAR_GetAt(&arRenderUnitArray, i);
 		
 		//得到每一个Unit的边界(包括面边体影信息)在这个层面图形特技已经完成，RenderUnit单元中已经包含了图形特技的因素
 		GetRenderUnitBound(i, fbound);
@@ -186,63 +191,517 @@ rectf CalculatorTitleword::CalUnitBound()
 		//计算每一个Unit的矩形
 		matrix4f matBuffer;
 		SceneToBufferMat(&matBuffer, 0, 0);
-		matBuffer = pRenderUnit->MatVToItem * matBuffer;
-		CalcBufferProjectSize(pRenderUnit->u.u2d.graph.bound,
-			v3d,
-			fbound,
-			&matBuffer);
-
-		//总体矩形的计算需要考虑位置信息
-		matrix4f matItem;
-		matrix4f_from_pos(&matItem, pRenderUnit->pos.x, pRenderUnit->pos.y, pRenderUnit->pos.z);
-		rectf bound;
-		matBuffer = matItem * matBuffer;
-		CalcBufferProjectSize(bound,
+		matBuffer = pRenderUnit->m_VSelfMatrix * matBuffer;
+		CalcBufferProjectSize(pRenderUnit->m_frtBound,
 			v3d,
 			fbound,
 			&matBuffer);
 
 		//计算总体的矩形
-		m_rtUnitBound.left = min(m_rtUnitBound.left, bound.left);
-		m_rtUnitBound.right = max(m_rtUnitBound.right, bound.right);
-		m_rtUnitBound.top = min(m_rtUnitBound.top, bound.top);
-		m_rtUnitBound.bottom = max(m_rtUnitBound.bottom, bound.bottom);
+		m_rtUnitBound.left = min(m_rtUnitBound.left, pRenderUnit->m_frtBound.left);
+		m_rtUnitBound.right = max(m_rtUnitBound.right, pRenderUnit->m_frtBound.right);
+		m_rtUnitBound.top = min(m_rtUnitBound.top, pRenderUnit->m_frtBound.top);
+		m_rtUnitBound.bottom = max(m_rtUnitBound.bottom, pRenderUnit->m_frtBound.bottom);
 	}
 	return m_rtUnitBound;
 }
 
+bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
+{
+	if (m_emChgLevel == ChgLevel_NULL && nFrame == m_nLastFrame)//没有变化
+	{
+		return FALSE;
+	}
+#if 0
+	// 计算骨骼的变换矩阵
+	CalcBone(nFrame, pEnv);
+#endif
+	BOOL bChanged = FALSE;
+	// 计算每个单元的转换矩阵，把结果保存在RenderUnit中
+	int nRenderUnitCount = 0;
+	SYArray * pRenderArray = &m_2DTextRenderUnitArray;
+	nRenderUnitCount = (int)SYAR_GetSize(pRenderArray);
+
+	if (m_emChgLevel >= ChgLevel_Figure)
+	{
+		//如果不相等，需要释放并且重新计算
+		int nUnitCount = Get2DTextUnitCount();
+		if (nRenderUnitCount != nUnitCount)
+		{
+			for (int i = 0; i < nRenderUnitCount; i++)
+			{
+				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(pRenderArray, i);
+				ReleaseRenderUnit(pRenderUnit, FALSE, DX3DEngine_GetMainDevice(), this);
+				delete pRenderUnit;
+			}
+			SYAR_Clear(pRenderArray);
+
+#if 0
+			//djt 3D暂时不考虑
+			BOOL b3DUnit = (dwUnitType == SYITEM_UNITTYPE_3DTEXT || dwUnitType == SYITEM_UNITTYPE_3DSHAPE) ? TRUE : FALSE;
+#endif
+			BOOL b3DUnit = FALSE;
+			for (int i = 0; i< nUnitCount; i++)
+			{
+				SYItemRenderUnit* pRenderUnit = CreateRenderUnit(b3DUnit);
+				SYAR_Add(pRenderArray, pRenderUnit);
+			}
+			SetChgLevel(ChgLevel_Figure);
+			bChanged = TRUE;
+		}
+	}
+	//计算Unit参数
+	BOOL bUnitTrans = FALSE;
+	int nUnitCount = (int)SYAR_GetSize(pRenderArray);
+	if (!nUnitCount)
+		return bChanged;
+	CSYBuffer* pBuffer = SYData_QueryCalcBuffer(nUnitCount);
+	//初始化列表
+#if 0
+	//djt perunit暂时不考虑
+	CSYAction* pAction = pEnv->GetCurAction();
+	BOOL bPerUnit = IsPerUnit(pEnv, dwUnitType);
+	BOOL bPerUnitReverseOrder = bPerUnit && pAction->GetPerUnitInfo()->nOrder == SY_PER_UNIT_REVERSE_ORDER;
+	for (int i = 0; i < nUnitCount; i++)
+		pBuffer->m_dwBuffer[i] = bPerUnitReverseOrder ? nUnitCount - i - 1 : i;
+
+	if (bPerUnit && pAction->GetPerUnitInfo()->nOrder == SY_PER_UNIT_RAMDOM_ORDER)
+		SYShuffle((int*)pBuffer->m_dwBuffer, nUnitCount);
+#endif
+
+	for (int i = 0; i<nUnitCount; i++)
+	{
+		SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(pRenderArray, i);
+		if (pRenderUnit->m_bChanged || GetChgLevel() >= ChgLevel_Buffer || !pRenderUnit->m_pUnit) //材质发生改变时，也需要重新拷贝
+		{
+			SYUnit* pUnit = GetUnit(i);
+			if (pUnit)
+			{
+				if (!pRenderUnit->m_pUnit)
+				{
+
+					pRenderUnit->m_pUnit = new SYUnit;
+					sy_init_unit(pRenderUnit->m_pUnit, pUnit->type);
+					pRenderUnit->m_bChanged = TRUE;
+				}
+				sy_copy_unit(pRenderUnit->m_pUnit, pUnit);
+			}
+			else
+			{
+				//异常数据，直接返回
+				return FALSE;
+			}
+		}
+
+		SYUnit* punitin = pRenderUnit->m_pUnit;
+		if (!punitin)
+			continue;
+
+		if (pRenderUnit->m_bChanged || GetChgLevel() > ChgLevel_Matrix)
+		{
+			if (!pRenderUnit->graph)
+			{
+				pRenderUnit->graph = new vectorgraph;
+				memset(pRenderUnit->graph, 0, sizeof(vectorgraph));
+				pRenderUnit->m_bChanged = TRUE;
+				bChanged = TRUE;
+			}
+
+			if (pRenderUnit->m_pUnit && pRenderUnit->m_pUnit->u.u2d.staticeffect.renderline)
+			{
+				//////////////////////////////////////////////////////////////////////////
+				//标注：这里还需要修改。Unit和RenderUnit的graph不同步，会造出操作与显示不一致。
+				//////////////////////////////////////////////////////////////////////////
+				float fwidth = pRenderUnit->m_pUnit->u.u2d.staticeffect.fwidth;
+				vectorgraph	desfigure1, desfigure2;
+				memset(&desfigure1, 0, sizeof(vectorgraph));
+				memset(&desfigure2, 0, sizeof(vectorgraph));
+
+				figure_extend(&desfigure1, &punitin->u.u2d.graph, NULL, fwidth*0.5f, -1);
+				figure_extend(&desfigure2, &punitin->u.u2d.graph, NULL, fwidth*0.5f, 1);
+				ReverseVectorGraph(&desfigure2);
+				MergeVectorGraph(pRenderUnit->graph, &desfigure1, &desfigure2);
+				sy_release_vectorgraph(&desfigure2);
+				sy_release_vectorgraph(&desfigure1);
+				bChanged = TRUE;
+
+			}
+			else if (pRenderUnit->m_bChanged || GetChgLevel() >= ChgLevel_Figure)
+			{
+				CopyVectorGraph(pRenderUnit->graph, &punitin->u.u2d.graph);
+				bChanged = TRUE;
+			}
+			//整体渲染
+
+		}
+#if 0
+		//djt 3D
+		else if ((dwUnitType == SYITEM_UNITTYPE_3DTEXT || dwUnitType == SYITEM_UNITTYPE_3DSHAPE)
+			&& (pRenderUnit->m_bChanged || nChgLevel > CSYCGEnv::Envchg_UnitTrans /*|| pEnv->m_nRenderChangedLevel > CSYCGEnv::Envchg_RotateZoom*/))
+		{
+			FillRenderUnit(pEnv, pRenderUnit, punitin);
+			bChanged = TRUE;
+		}
+#endif
+		bUnitTrans = _trans_calcunit(nFrame, i, pBuffer->m_dwBuffer[i], bInherit);
+		bChanged = bUnitTrans || bChanged;
+	}
+	//djt 整体渲染暂时不考虑
+	if (/*IsWholeRender() && */(bChanged || GetChgLevel() >= ChgLevel_Figure))
+	{
+		bChanged |= UpdateWholeRenderGraph(pRenderArray);
+	}
+	if (bChanged)
+	{
+		SetChgLevel(ChgLevel_Figure);//todo:由于changedlevel改变，可能要设置为Envchg_UnitChange,现在还不确定
+	}
+	if (pBuffer)
+		SYData_ReleaseCalcBuffer(pBuffer);
+	return bChanged;
+}
+
+BOOL CalculatorTitleword::_trans_calcunit(int nFrame, int nUnitIndex, int nOrderIndex, BOOL bInherit)
+{
+	SYItemRenderUnit* prenderunit = ObjectCalculator::GetRenderUnit(nUnitIndex, *Get2DTextUnitArray());
+	SYUnit* punitin = prenderunit->m_pUnit;//GetUnit(dwUnitType,nUnitIndex,lpEnv);
+	if (!punitin)
+	{
+		//prenderunit->m_pUnit = punitin;//定义	
+		return FALSE;
+	}
+	//判断颜色是否需要动画
+	if (nFrame != m_nLastFrame)
+	{
+		if (punitin->u.u2d.staticeffect.face.color.gradual.animation != GRAD_ANI_NONE
+			|| punitin->u.u2d.staticeffect.border.color.gradual.animation != GRAD_ANI_NONE
+			|| punitin->u.u2d.staticeffect.shadow.color.gradual.animation != GRAD_ANI_NONE)
+		{
+			prenderunit->m_bChanged = TRUE;
+			//				 (pEnv,nIndex,TRUE);
+		}
+	}
+#if 0
+	//djt 活动纹理先后置
+	//计算2D活动纹理
+	if (punitin->u.u2d.staticeffect.dyntex.disable == FALSE)
+	{
+		if (punitin->u.u2d.staticeffect.dyntex.szPath[0])
+		{
+			dynamictexture* pDy = &punitin->u.u2d.staticeffect.dyntex;
+			float2	Offset = { 0,0 }, Scale = { 1,1 }, Center = { 0,0 };
+			float	Rotate = 0;
+			double dOffset = nFrame / 2 * pDy->speed * 0.01;
+			Offset.x = pDy->offsetx * 0.01 + cos(pDy->vRunDirx) * (float)dOffset;
+			Offset.y = pDy->offsety * 0.01 + sin(pDy->vRunDirx) * (float)dOffset;
+			prenderunit->unit2D.effect.fAlpha = pDy->alpha;
+			matrix4f_from_pos(&prenderunit->unit2D.effect.DynamicMat, Offset.x, Offset.y, 0);
+			matrix4f CenterMat, CenterMatInv, ScaleMat, RotateMat, TexMat;
+			matrix4f_from_scale(&ScaleMat, pDy->scalex, pDy->scaley, 1);
+			matrix4f_from_pos(&CenterMat, pDy->centerx * 0.01, pDy->centery * 0.01, 0);
+			matrix4f_from_pos(&CenterMatInv, -pDy->centerx * 0.01, -pDy->centery * 0.01, 0);
+			matrix4f_fromeuler_lyxz(&RotateMat, 0, 0, pDy->rotate);
+			prenderunit->unit2D.effect.DynamicMat = CenterMat * ScaleMat * RotateMat * CenterMatInv *prenderunit->unit2D.effect.DynamicMat;
+			prenderunit->unit2D.effect.bRepeat = pDy->bRepeat;
+			prenderunit->m_bChanged = TRUE;
+		}
+	}
+#endif
+	prenderunit->m_dwMatrixType = enum_Matrix_Identity;
+	int nRet = _trans_calcunit_matrix(&prenderunit->m_VSelfMatrix, &prenderunit->m_dwMatrixType, nFrame, nUnitIndex, nOrderIndex);
+
+	if (prenderunit->graph == 0)
+		prenderunit->m_bChanged = TRUE;
+	return (nRet || prenderunit->m_bChanged);
+}
+
+BOOL CalculatorTitleword::_trans_calcunit_matrix(matrix4f * pVMatrix, int * pdwMatrixType, double dFrame, int nUnitIndex, int nOrderIndex)
+{
+	BOOL bChanged = FALSE;
+#if 0
+	//djt
+	//得到当前的动作
+	CSYAction* pAction = pEnv->GetCurAction();
+	if (!pAction)
+		return FALSE;
+#endif
+	//得到单元
+	SYUnit* punitin = GetRenderUnit(nUnitIndex)->m_pUnit;//  GetUnit(dwUnitType,nUnitIndex,lpPlayEnv);
+																		   //位置
+	vector3f v = { punitin->pos.x, punitin->pos.y, punitin->pos.z };
+	/////////////////计算unit自身的形变/////////////////
+	////////////////////////2.计算形变/////////////////
+	vector3f vPosition = { 0.0f,0.0f,0.0f }, vScale = { 1.0f,1.0f,1.0f }, VCenter = { 0.0f,0.0f,0.0f }, vScale2 = { 1.0f,1.0f,1.0f };
+	SYQuatn Qrotate = { 0.0f,0.0f,0.0f,1.0f };
+	vector3f vAngle = { 0,0,0 };
+	matrix4f tempVMatrix;
+
+	//TODO:消除Scale
+#if 0
+	//djt
+	calc_trans_group(&tempVMatrix, &vPosition, &vScale, &vAngle, &VCenter, dFrame, pAction->GetUnitTrans(nUnitIndex), NULL, m_nRotateOrder, NULL, &vScale2);
+#endif
+	calc_trans_group(&tempVMatrix, &vPosition, &vScale, &vAngle, &VCenter, dFrame, NULL, m_nRotateOrder, NULL, &vScale2);
+
+	////////////////////////4.变化方式标识设置/////////////////
+	if (pdwMatrixType && (vPosition.x != 0.0f || vPosition.y != 0.0f || vPosition.z != 0.0f))
+		*pdwMatrixType |= enum_Matrix_Offset;
+	if (pdwMatrixType && (vScale.x != 1.0f || vScale.y != 1.0f || vScale.z != 1.0f))
+		*pdwMatrixType |= enum_Matrix_Zoom;
+	if (pdwMatrixType && (vAngle.x != 0.0f || vAngle.y != 0.0f || vAngle.z != 0.0f))
+		*pdwMatrixType |= enum_Matrix_Rotate;
+
+#if 0
+	//djt 先不考虑骨骼及3D的问题
+	////////////////////////5.骨骼叠加/////////////////
+	//5.1：如果有骨骼，乘上父骨骼的矩阵
+	if (punitin->parentbone > 0)
+	{
+		BoneEnvNode* pBoneEnv = (BoneEnvNode*)SYAR_GetAt(&pEnv->m_pBoneEnvData->BoneEnvArray, punitin->parentbone);
+		SYBoneDef* pBonedef = (SYBoneDef*)GetBone(punitin->parentbone);
+		vector3f vBone = { pBonedef->pivot.x, pBonedef->pivot.y, pBonedef->pivot.z };
+		matrix4f matpivotE;
+		float3ToTransMatQ(&matpivotE, &vBone);
+		tempVMatrix *= matpivotE;
+		tempVMatrix *= pBoneEnv->vMatrix;
+	}
+	else//5.2：如果没有骨骼，乘上到父物件的转换矩阵
+	{
+		//转换到Item空间
+		if (dwUnitType == SYITEM_UNITTYPE_3DSHAPE || dwUnitType == SYITEM_UNITTYPE_3DTEXT)
+			tempVMatrix *= punitin->MatVToItem;
+	}
+#endif
+#if 0
+	//djt 先不考虑逐字形变
+	//添加逐字形变
+	if (IsPerUnit(pEnv, dwUnitType))
+	{
+		double dPerUnitFrame = sy_get_real_frame(pAction->GetPerUnitInfo(), pAction->GetLength(), dFrame, nOrderIndex, GetUnitCount(dwUnitType, pEnv));
+		////////////////////////1.计算路径/////////////////
+		//
+		matrix4f matpivotR;//因路径引起的旋转
+		matrix4f_identity(&matpivotR);
+		_calc_path(pEnv, pAction->GetPathParam(), dPerUnitFrame, &v, &matpivotR);
+
+		float3 pos = { 0,0,0 }, scale = { 1,1,1 }, angle = { 0,0,0 }, center = { 0,0,0 };
+
+		calc_trans_group_tovector(&pos, &scale, NULL, &angle, &center, dPerUnitFrame, pAction->GetTrans());
+		DWORD dwMatrixType = 0;
+		if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
+			dwMatrixType |= enum_Matrix_Offset;
+		if (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f)
+			dwMatrixType |= enum_Matrix_Zoom;
+		if (angle.x != 0.0f || angle.y != 0.0f || angle.z != 0.0f)
+			dwMatrixType |= enum_Matrix_Rotate;
+		if (*pdwMatrixType)
+			*pdwMatrixType |= dwMatrixType;
+		matrix4f mat;
+		calc_trans_vector_tomatrix(&mat, &pos, &scale, &angle, &center, NULL, NULL, m_nRotateOrder);
+		////////////////////////3.叠加路径变化/////////////////
+		tempVMatrix *= mat * matpivotR;
+	}
+#endif
+	matrix4f matpivotE;
+	float3ToTransMatQ(&matpivotE, &v);
+	matrix4f_mul(&tempVMatrix, &tempVMatrix, &matpivotE);
+
+	////////////////////////5.如果有变化，输出，并且设置改变标志/////////////////
+	if (*pVMatrix != tempVMatrix)
+	{
+		*pVMatrix = tempVMatrix;
+		bChanged = TRUE;
+	}
+	return bChanged;
+}
+
+void CalculatorTitleword::GetRenderUnitOrder(CSYIntArray & arOrder)
+{
+	int nUnitCnt = SYAR_GetCount(&m_text.ar2DUnit);
+	//特殊效果
+	if (m_text.nSpecialUnitCnt > 0)
+	{
+		arOrder.Add(nUnitCnt - m_text.nSpecialUnitCnt);
+		arOrder.Add(nUnitCnt);
+	}
+	//下划线
+	if (m_text.nUnderlineUnitCnt > 0)
+	{
+		arOrder.Add(m_text.nTextUnitCnt);
+		arOrder.Add(m_text.nTextUnitCnt + m_text.nUnderlineUnitCnt);
+	}
+	//文字
+	arOrder.Add(0);
+	arOrder.Add(m_text.nTextUnitCnt);
+}
+
+void CalculatorTitleword::DeleteWholeRenderGraph()
+{
+	SYArray* parGraph = &m_arWholeRenderTextGraph;
+
+	if (parGraph != NULL)
+	{
+		int nGraphCnt = SYAR_GetCount(parGraph);
+		for (int i = 0; i < nGraphCnt; ++i)
+		{
+			vectorgraph* pSingleGraph = (vectorgraph*)SYAR_GetAt(parGraph, i);
+			SYVectorGraph_Release(pSingleGraph);
+			delete pSingleGraph;
+		}
+		SYAR_RemoveAll(parGraph);
+	}
+}
+
+BOOL CalculatorTitleword::UpdateWholeRenderGraph(SYArray * pRenderUnitArray)
+{
+	//本函数假设前提：已经准备好所有零散Unit和Graph。
+	INT_PTR nCount = SYAR_GetSize(pRenderUnitArray);
+	if (nCount <= 0)
+	{
+		DeleteWholeRenderGraph();
+		return TRUE;
+	}
+
+	DeleteWholeRenderGraph();
+	return TRUE;
+#if 0
+	//整体渲染暂时不考虑
+	if (!IsWholeRender())
+	{
+		return TRUE;
+	}
+#endif
+
+	SYArray* parSingleGraph = &m_arWholeRenderTextGraph;
+
+	CSYIntArray arOrder;
+	GetRenderUnitOrder(arOrder);
+
+	int nOrderCnt = arOrder.GetCount();
+	int nRenderUnitCnt = SYAR_GetCount(pRenderUnitArray);
+	int nOrderIdx = 0;
+	do
+	{
+		//左闭右开区间
+		int nOrderStart, nOrderEnd;
+		if (nOrderCnt > 1)
+		{
+			nOrderStart = arOrder.GetAt(nOrderIdx++);
+			nOrderEnd = arOrder.GetAt(nOrderIdx++);
+		}
+		else
+		{
+			nOrderStart = 0;
+			nOrderEnd = nRenderUnitCnt;
+		}
+
+		vectorgraph* pSingleGraph = new vectorgraph;
+		memset(pSingleGraph, 0, sizeof(vectorgraph));
+		SYAR_Add(parSingleGraph, pSingleGraph);
+
+		//合并Graph
+		vectorgraph* pGraphTemp;
+		int nCellCnt = 0;
+
+		int nStep = nOrderStart <= nOrderEnd ? 1 : -1;
+		int i = nOrderStart;
+		while (i != nOrderEnd)
+		{
+			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(pRenderUnitArray, i);
+			if (pRenderUnit)
+				nCellCnt += pRenderUnit->graph->ncell;
+			i += nStep;
+		}
+
+		if (nCellCnt > 0)
+		{
+			vectorgraph vgTemp;
+			memset(&vgTemp, 0, sizeof(vectorgraph));
+
+			i = nOrderStart;
+			vector3f pt1stUnit;
+			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(pRenderUnitArray, i);
+			pt1stUnit = pRenderUnit->m_pUnit->pos;
+
+			pSingleGraph->ncell = nCellCnt;
+			pSingleGraph->cell = new vectorcell[nCellCnt];
+			int nCellIdx = 0;
+			SYRectf_SetRectEmpty(&pSingleGraph->bound);
+			while (i != nOrderEnd)
+			{
+				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(pRenderUnitArray, i);
+				if (pRenderUnit)
+				{
+					pGraphTemp = pRenderUnit->graph;
+					CopyVectorGraph(&vgTemp, pGraphTemp);
+					SYVectorGraph_Offset(&vgTemp, pRenderUnit->m_pUnit->pos.x - pt1stUnit.x, -(pRenderUnit->m_pUnit->pos.y - pt1stUnit.y));
+					for (int nC = 0; nC<pGraphTemp->ncell; ++nC)
+					{
+						CopyCell(&(pSingleGraph->cell[nCellIdx]), &(vgTemp.cell[nC]));
+						++nCellIdx;
+					}
+
+					if (i != nOrderStart)
+					{
+						SYRectf_UnionRect(&pSingleGraph->bound, &pSingleGraph->bound, &vgTemp.bound);
+					}
+					else
+					{
+						pSingleGraph->bound = vgTemp.bound;
+					}
+
+					graph_release(&vgTemp);
+				}
+				i += nStep;
+			}
+		}
+	} while (nOrderIdx < nOrderCnt);
+
+	return TRUE;
+}
+
+SYItemRenderUnit * CalculatorTitleword::GetRenderUnit(int nIndex)
+{
+	SYArray* pRenderArray = &m_2DTextRenderUnitArray;
+	return (SYItemRenderUnit*)SYAR_GetAt(pRenderArray, nIndex);
+}
+
+int CalculatorTitleword::Get2DTextUnitCount()
+{
+	return (int)SYAR_GetSize(&m_text.ar2DUnit);
+}
+
 void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 {
-	SYArray* pRenderUnitArray = &m_text.ar2DUnit;
-	SYUnit* pRenderUnit = (SYUnit*)SYAR_GetAt(pRenderUnitArray, nIndex);
-	if (!pRenderUnit)
+	SYArray* pRenderUnitArray = &m_2DTextRenderUnitArray;
+	SYItemRenderUnit * pRenderUnit = (SYItemRenderUnit *)SYAR_GetAt(pRenderUnitArray, nIndex);
+	if (!pRenderUnit->graph || !pRenderUnit->m_pUnit)
 	{
 		memset(&rtBoundf, 0, sizeof(rtBoundf));
 		return;
 	}
-	rectf rtface = pRenderUnit->u.u2d.graph.bound;
+	rectf rtface = pRenderUnit->graph->bound;
 	rtBoundf = rtface;
 	float fcubedeltX = 0;
 	float fcubedeltY = 0;
-	if (!pRenderUnit->u.u2d.staticeffect.cube.disable && pRenderUnit->u.u2d.staticeffect.cube.width)
+	if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.disable && pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.width)
 	{
-		fcubedeltX = pRenderUnit->u.u2d.staticeffect.cube.width * cos(pRenderUnit->u.u2d.staticeffect.cube.angle);
-		fcubedeltY = pRenderUnit->u.u2d.staticeffect.cube.width * sin(pRenderUnit->u.u2d.staticeffect.cube.angle);
+		fcubedeltX = pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.width * cos(pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.angle);
+		fcubedeltY = pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.width * sin(pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.angle);
 
 		rectf rtcubef = rtBoundf;
 		//SYRectf_OffsetRect1(&rtcubef,fcubedeltX,fcubedeltY);
 		SYRectf_InflateRect1(&rtcubef, abs(fcubedeltX), abs(fcubedeltY));
 		SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtcubef);
 	}
-	if (!pRenderUnit->u.u2d.staticeffect.shadow.disable &&
-		(pRenderUnit->u.u2d.staticeffect.shadow.offsetx
-			|| pRenderUnit->u.u2d.staticeffect.shadow.soft
-			|| pRenderUnit->u.u2d.staticeffect.shadow.offsety
-			|| pRenderUnit->u.u2d.staticeffect.shadow.effect_fxtitle
-			|| pRenderUnit->u.u2d.staticeffect.shadow.effect_fyscale))
+	if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.disable &&
+		(pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.offsetx
+			|| pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft
+			|| pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.offsety
+			|| pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.effect_fxtitle
+			|| pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.effect_fyscale))
 	{
 		rectf rtShadow = rtface;
-		BaseGraph_DataBase::shadowinfo* pinfo = &pRenderUnit->u.u2d.staticeffect.shadow;
+		BaseGraph_DataBase::shadowinfo* pinfo = &pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow;
 		float fheight = rtBoundf.bottom - rtBoundf.top;
 		float fwidth = rtBoundf.right - rtBoundf.left;
 		float bottom = rtBoundf.bottom;
@@ -276,17 +735,17 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 			rtShadow.right = max(vVector[i].x, rtShadow.right);
 			rtShadow.bottom = max(vVector[i].y, rtShadow.bottom);
 		}
-		if (pRenderUnit->u.u2d.staticeffect.shadow.soft)
+		if (pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft)
 		{
 			SYRectf_InflateRect1(&rtShadow,
-				(float)pRenderUnit->u.u2d.staticeffect.shadow.soft,
-				(float)pRenderUnit->u.u2d.staticeffect.shadow.soft);
+				(float)pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft,
+				(float)pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft);
 		}
 		SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtShadow);
 	}
-	if (!pRenderUnit->u.u2d.staticeffect.border.disable)
+	if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.border.disable)
 	{
-		int nRadWidth = SY_FToI(pRenderUnit->u.u2d.staticeffect.border.width) + pRenderUnit->u.u2d.staticeffect.border.soft;
+		int nRadWidth = SY_FToI(pRenderUnit->m_pUnit->u.u2d.staticeffect.border.width) + pRenderUnit->m_pUnit->u.u2d.staticeffect.border.soft;
 		rectf rtborder = rtface;
 		SYRectf_InflateRect1(&rtborder, (float)nRadWidth, (float)nRadWidth);
 		//SYRectf_OffsetRect1(&rtborder,fcubedeltX,fcubedeltY);
@@ -294,25 +753,25 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 
 		float fdeltX = 0;
 		float fdeltY = 0;
-		if (!pRenderUnit->u.u2d.staticeffect.bordercube.disable && pRenderUnit->u.u2d.staticeffect.bordercube.width)
+		if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.disable && pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.width)
 		{
-			fdeltX = pRenderUnit->u.u2d.staticeffect.bordercube.width * cos(pRenderUnit->u.u2d.staticeffect.bordercube.angle);
-			fdeltY = pRenderUnit->u.u2d.staticeffect.bordercube.width * sin(pRenderUnit->u.u2d.staticeffect.bordercube.angle);
+			fdeltX = pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.width * cos(pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.angle);
+			fdeltY = pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.width * sin(pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.angle);
 
 			rectf rtbordercubef = rtborder;
 			SYRectf_InflateRect1(&rtbordercubef, abs(fdeltX), abs(fdeltY));
 			SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtbordercubef);
 		}
 
-		if (!pRenderUnit->u.u2d.staticeffect.bordershadow.disable &&
-			(pRenderUnit->u.u2d.staticeffect.bordershadow.offsetx
-				|| pRenderUnit->u.u2d.staticeffect.bordershadow.soft
-				|| pRenderUnit->u.u2d.staticeffect.bordershadow.offsety
-				|| pRenderUnit->u.u2d.staticeffect.bordershadow.effect_fxtitle
-				|| pRenderUnit->u.u2d.staticeffect.bordershadow.effect_fyscale))
+		if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.disable &&
+			(pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.offsetx
+				|| pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.soft
+				|| pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.offsety
+				|| pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.effect_fxtitle
+				|| pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.effect_fyscale))
 		{
 			rectf rtBorderShadow = rtborder;
-			BaseGraph_DataBase::shadowinfo* pinfo = &pRenderUnit->u.u2d.staticeffect.bordershadow;
+			BaseGraph_DataBase::shadowinfo* pinfo = &pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow;
 			float fheight = rtBoundf.bottom - rtBoundf.top;
 			float fwidth = rtBoundf.right - rtBoundf.left;
 			float bottom = rtBoundf.bottom;
@@ -344,7 +803,7 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 				rtBorderShadow.right = max(vVector[i].x, rtBorderShadow.right);
 				rtBorderShadow.bottom = max(vVector[i].y, rtBorderShadow.bottom);
 			}
-			if (pRenderUnit->u.u2d.staticeffect.shadow.soft)
+			if (pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft)
 			{
 				SYRectf_InflateRect1(&rtBorderShadow,
 					(float)pinfo->soft,
@@ -370,9 +829,17 @@ SYText * CalculatorTitleword::GetText()
 	return &m_text;
 }
 
-SYArray * CalculatorTitleword::Get2DTextUnit()
+SYArray * CalculatorTitleword::Get2DTextUnitArray()
 {
 	return &m_text.ar2DUnit;
+}
+
+SYUnit * CalculatorTitleword::GetUnit(int nIndex)
+{
+	SYArray* pAryUnit = Get2DTextUnitArray();
+	if (nIndex < 0 || nIndex >= SYAR_GetCount(pAryUnit))
+		return NULL;
+	return (SYUnit*)SYAR_GetAt(pAryUnit, nIndex);
 }
 
 void CalculatorTitleword::DeleteRenderUnitView(LPCTSTR szUnitID)
