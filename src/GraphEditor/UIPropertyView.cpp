@@ -43,22 +43,10 @@ void UIPropertyView::InitializeObject()
 
 bool UIPropertyView::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
 {
-	auto InsertOneDrawer = [&](int nStateValue, int nImgValue)
-	{
-		UIImageDrawer * pImgDrawer = new UIImageDrawer(nImgValue);
-		m_mapDrawer[nStateValue].push_back(pImgDrawer);
-
-		UITextDrawer * pTextDrawer = new UITextDrawer(ThemeFont_SkinWndTitleText);
-		pTextDrawer->SetColor(RGB(255, 255, 255));
-		m_mapDrawer[nStateValue].push_back(pTextDrawer);
-		m_strText = _T(" Ù–‘¥∞");
-	};
 	if (!m_bCreated)
 	{
 		Initialize(nX, nY, nWidth, nHeight, 0, hParentWnd);
 		InitializeObject();
-
-		InsertOneDrawer(0, ThemeImage_ElementArea);
 	}
 	return true;
 }

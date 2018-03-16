@@ -3,6 +3,7 @@
 #include "UIControl\UICheckBtn.h"
 #include "UIControl\UIImageDrawer.h"
 #include "UIControl\ThemeResoueceID.h"
+#include "UIControl\UIRectDrawer.h"
 
 UIButtonBar::UIButtonBar()
 {
@@ -19,6 +20,15 @@ void UIButtonBar::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, H
 	m_setMsgFilter.insert(WM_LBUTTONDOWN);
 	m_setMsgFilter.insert(WM_LBUTTONUP);
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
+}
+
+void UIButtonBar::AddSplitLine(int nWidth, int nHeight, COLORREF clColor)
+{
+	UIElement * pEleRect = new UIElement;
+	pEleRect->Initialize(0, 0, nWidth, nHeight, 0, m_hParentWnd, this);
+	UIRectDrawer * pRectDrawer = new UIRectDrawer(clColor);
+	pEleRect->InsertDrawer(0, pRectDrawer);
+	m_vecChildElement.push_back(pEleRect);
 }
 
 bool UIButtonBar::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)

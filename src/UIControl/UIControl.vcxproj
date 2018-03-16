@@ -131,6 +131,7 @@
     <ClCompile Include="UIDrawer.cpp" />
     <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UIImageDrawer.cpp" />
+    <ClCompile Include="UIRectDrawer.cpp" />
     <ClCompile Include="UIScrollBar.cpp" />
     <ClCompile Include="UIScrollElement.cpp" />
     <ClCompile Include="UITextDrawer.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="..\..\include\UIControl\UIDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIElement.h" />
     <ClInclude Include="..\..\include\UIControl\UIImageDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UIRectDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIScrollBar.h" />
     <ClInclude Include="..\..\include\UIControl\UIScrollElement.h" />
     <ClInclude Include="..\..\include\UIControl\UITextDrawer.h" />

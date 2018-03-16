@@ -7,13 +7,20 @@ enum ThemeIntValueDef
 	ThemeInt_SkinWndTitleObjectBarX,
 	ThemeInt_UIModualGap,
 	ThemeInt_ActionBarWidth,
+	ThemeInt_ActionBarButtonGap,
+	ThemeInt_ActionBarSplitWidth,
+	ThemeInt_ActionBarSplitHeight,
 	ThemeInt_TimeLineHeight,
 	ThemeInt_PlayControlBarWidth,
 	ThemeInt_PlayControlBarHeight,
 	ThemeInt_PropretyViewWidth,
 	ThemeInt_PropretyViewTabWidth,
+	ThemeInt_PropretyViewTabGap,
+	ThemeInt_PropretyViewTabSplitWidth,
+	ThemeInt_PropretyViewTabSplitHeight,
 	ThemeInt_TimeLineTimeCodeWidth,
 	ThemeInt_TimeLineTimeCodeHeight,
+	ThemeInt_TimeLineTimeCodeLeftGap,
 	ThemeInt_TimeLineTimeScrollHeight,
 	ThemeInt_TimeLineItemActionHeight,//时间线物件条高度
 	ThemeInt_TimeLineItemActionGap,//时间线物件条缝隙
@@ -40,6 +47,7 @@ enum ThemeFontValueDef
 enum ThemeColorValueDef
 {
 	ThemeColor_SkinWndTitleText,
+	ThemeColor_ButtonBarSplitLine,
 	ThemeColor_TimeLineTimeCodeText,
 	ThemeColor_TimeLineObjectTrackText_Nor,
 	ThemeColor_TimeLineObjectTrackText_Sel,

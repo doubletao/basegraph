@@ -44,7 +44,6 @@ public:
 	static bool NeedContinue(EmUIElementMsgRet emMsgRet);
 protected:
 	virtual void Release();
-	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
 	virtual void SetText(CString strText);
 	virtual void Refresh();
 	virtual void ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
@@ -54,6 +53,7 @@ public:
 	virtual ~UIElement();
 public:
 	virtual void RearrangeChildPos();
+	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	virtual inline bool HitTest(CPoint point);
 	virtual inline bool HitTest(int nX, int nY);
@@ -73,5 +73,6 @@ public:
 	int GetMsgID();
 	int GetWidth();
 	int GetHeight();
+	void InsertDrawer(int nState, UIDrawer * pDrawer);
 };
 

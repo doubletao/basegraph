@@ -278,6 +278,11 @@ int UIElement::GetHeight()
 	return m_nHeight;
 }
 
+void UIElement::InsertDrawer(int nState, UIDrawer * pDrawer)
+{
+	m_mapDrawer[m_nState].push_back(pDrawer);
+}
+
 CRect UIElement::GetRect()
 {
 	int nX = GetRealX();

@@ -28,9 +28,7 @@ void UIObjectBar::InitializeObject()
 			}
 		}
 		UICheckBtn * pCheck = new UICheckBtn;
-		int nXPos = (int)m_vecChildElement.size() * (nImgWidth + 1);
-		int nYPos = (m_nHeight - nImgHeight) / 2;
-		pCheck->Create(nXPos, nYPos, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
+		pCheck->Create(0, 0, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
 		m_vecChildElement.push_back(pCheck);
 	};
 

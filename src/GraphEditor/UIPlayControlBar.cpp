@@ -28,9 +28,7 @@ void UIPlayControlBar::InitializeObject()
 			}
 		}
 		UIButton * pCheck = new UIButton;
-		int nXPos = (m_nWidth - 5 * (nImgWidth + 1)) / 2 + (int)m_vecChildElement.size() * (nImgWidth + 1);
-		int nYPos = (m_nHeight - nImgHeight) / 2;
-		pCheck->Create(nXPos, nYPos, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
+		pCheck->Create(0, 0, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
 		m_vecChildElement.push_back(pCheck);
 	};
 
