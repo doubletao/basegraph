@@ -25,6 +25,8 @@ enum UIElementMsgDef
 	UIElementMsg_PlayCtrlNextFrame,
 	UIElementMsg_PlayCtrlLastFrame,
 
+	UIElementMsg_SimpleTimeLine,
+
 	UIElementMsg_PropertyTabColor,
 	UIElementMsg_PropertyTabObject,
 	UIElementMsg_PropertyTabSpace,

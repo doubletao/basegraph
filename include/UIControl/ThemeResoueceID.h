@@ -34,6 +34,8 @@ enum ThemeIntValueDef
 	ThemeInt_TimeLineRulerLongLineLength,//时间线刻度尺长线长
 	ThemeInt_TimeLineRulerGapMinPixel,//时间线刻度尺每刻度的最小像素数
 	ThemeInt_TimeLineRulerGapMaxPixel,//时间线刻度尺每刻度的最大像素数
+	ThemeInt_SimpleTimeLineHorGap,
+	ThemeInt_SimpleTimeLineHeight,
 };
 
 enum ThemeFontValueDef
@@ -59,7 +61,7 @@ enum ThemeColorValueDef
 	ThemeColor_ScrollThumbColor_X,
 	ThemeColor_ScrollBkColor,
 	ThemeColor_SliderLightArea,
-	ThemeColor_SliderDarkAre,
+	ThemeColor_SliderDarkArea,
 	ThemeColor_SliderButton_N,
 	ThemeColor_SliderButton_F,
 	ThemeColor_SliderButton_D,

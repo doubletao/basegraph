@@ -93,6 +93,8 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerLongLineLength, 14));//时间线刻度尺长线长
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerGapMinPixel, 20));//时间线刻度尺每刻度的最小像素数
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerGapMaxPixel, 35));//时间线刻度尺每刻度的最大像素数
+	m_mapIntValue.insert(std::make_pair(ThemeInt_SimpleTimeLineHorGap, 10));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_SimpleTimeLineHeight, 15));
 
 	/////////////////////////////////////////////////////////////////////
 	//颜色
@@ -108,6 +110,12 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_D, RGB(0x4b, 0x4b, 0x4b)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_X, RGB(0x54, 0x54, 0x54)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollBkColor, RGB(0x2c, 0x2c, 0x2c)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_SliderLightArea, RGB(0x78, 0xe3, 0x73)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_SliderDarkArea, RGB(0x44, 0x44, 0x44)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_N, RGB(0xf0, 0xf0, 0xf0)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_F, RGB(0xff, 0xff, 0xff)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_D, RGB(0x0f, 0x0f, 0x0f)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_X, RGB(0x0a, 0x0a, 0x0a)));
 
 	/////////////////////////////////////////////////////////////////////
 	//图片

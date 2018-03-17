@@ -32,11 +32,11 @@ void UISliderCtr::Recalculate(bool bRefresh)
 	{
 		if (m_bHorScroll)
 		{
-			m_pSliderBtn->MoveTo(nRealPos, 0, bRefresh);
+			m_pSliderBtn->MoveTo(nRealPos, 0, m_nHeight, m_nHeight, bRefresh);
 		}
 		else
 		{
-			m_pSliderBtn->MoveTo(0, nRealPos, bRefresh);
+			m_pSliderBtn->MoveTo(0, nRealPos, m_nWidth, m_nWidth, bRefresh);
 		}
 	}
 }
@@ -192,7 +192,7 @@ void UISliderCtr::DrawElement(CDC * pDC)
 {
 	//条的绘制分两部分，左（上）边绘制亮色，右（下）边绘制暗色，两头画两个圆
 	COLORREF clLightArea = ThemeManager::Instance().GetColor(ThemeColor_SliderLightArea);
-	COLORREF clDarkArea = ThemeManager::Instance().GetColor(ThemeColor_SliderDarkAre);
+	COLORREF clDarkArea = ThemeManager::Instance().GetColor(ThemeColor_SliderDarkArea);
 
 	Gdiplus::Graphics graphics(pDC->GetSafeHdc());
 	graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
@@ -208,18 +208,18 @@ void UISliderCtr::DrawElement(CDC * pDC)
 	if (m_bHorScroll)
 	{
 		int nR = m_nHeight;
-		graphics.FillEllipse(&brushLight, nX * 1.0f, nY - 0.5f, nR * 1.0f, nR * 1.0f);
-		graphics.FillEllipse(&brushDark, nX + m_nWidth - nR * 1.0f, nY - 0.5f, nR * 1.0f, nR * 1.0f);
+		graphics.FillEllipse(&brushLight, nX * 1.0f, nY * 1.0f, nR * 1.0f, nR * 1.0f);
+		graphics.FillEllipse(&brushDark, nX + m_nWidth - nR * 1.0f, nY * 1.0f, nR * 1.0f, nR * 1.0f);
 		graphics.FillRectangle(&brushLight, nX * 1.0f + nR / 2, nY * 1.0f, fRealPos, m_nHeight * 1.0f);
-		graphics.FillRectangle(&brushDark, nX * 1.0f + nR / 2 + fRealPos, nY * 1.0f, m_nWidth - fRealPos, m_nHeight * 1.0f);
+		graphics.FillRectangle(&brushDark, nX * 1.0f + nR / 2 + fRealPos, nY * 1.0f, m_nWidth - fRealPos - nR, m_nHeight * 1.0f);
 	}
 	else
 	{
 		int nR = m_nWidth;
-		graphics.FillEllipse(&brushLight, nX - 0.5f, nY * 1.0f, nR * 1.0f, nR * 1.0f);
-		graphics.FillEllipse(&brushDark, nX - 0.5f, nY + m_nHeight - nR * 1.0f, nR * 1.0f, nR * 1.0f);
+		graphics.FillEllipse(&brushLight, nX * 1.0f, nY * 1.0f, nR * 1.0f, nR * 1.0f);
+		graphics.FillEllipse(&brushDark, nX * 1.0f, nY + m_nHeight - nR * 1.0f, nR * 1.0f, nR * 1.0f);
 		graphics.FillRectangle(&brushLight, nX * 1.0f, nY * 1.0f + nR / 2, m_nWidth * 1.0f, fRealPos);
-		graphics.FillRectangle(&brushDark, nX * 1.0f, nY * 1.0f + nR / 2 + fRealPos, m_nWidth * 1.0f, m_nHeight * 1.0f - fRealPos);
+		graphics.FillRectangle(&brushDark, nX * 1.0f, nY * 1.0f + nR / 2 + fRealPos, m_nWidth * 1.0f, m_nHeight * 1.0f - fRealPos - nR);
 	}
 
 	//调button的绘制逻辑
@@ -241,9 +241,36 @@ UISliderButton::~UISliderButton()
 
 bool UISliderButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent)
 {
+	if (!m_bCreated)
+	{
+		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
+		return true;
+	}
 	return false;
 }
 
 void UISliderButton::DrawElement(CDC * pDC)
 {
+	COLORREF clBtn_N = ThemeManager::Instance().GetColor(ThemeColor_SliderButton_N);
+	COLORREF clBtn_F = ThemeManager::Instance().GetColor(ThemeColor_SliderButton_F);
+	COLORREF clBtn_D = ThemeManager::Instance().GetColor(ThemeColor_SliderButton_D);
+	COLORREF clBtn_X = ThemeManager::Instance().GetColor(ThemeColor_SliderButton_X);
+	COLORREF clBtn = clBtn_N;
+	switch (m_nState)
+	{
+	case UIElement_BtnNormal:
+		clBtn = clBtn_N;
+		break;
+	case UIElement_BtnFloat:
+		clBtn = clBtn_F;
+		break;
+	case UIElement_BtnDown:
+		clBtn = clBtn_D;
+		break;
+	case UIElement_BtnXable:
+		clBtn = clBtn_X;
+		break;
+	default:
+		break;
+	}
 }
