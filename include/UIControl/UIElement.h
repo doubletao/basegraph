@@ -11,6 +11,8 @@ enum EmUIElementMsg
 	EmUIElementMsg_SetCapture,//wParam为set和release，lParam为需要capture的element指针
 	EmUIElementMsg_OnHScroll,
 	EmUIElementMsg_OnVScroll,
+	EmUIElementMsg_OnSliderChanging,
+	EmUIElementMsg_OnSliderChanged,
 };
 
 enum EmUIElementMsgRet

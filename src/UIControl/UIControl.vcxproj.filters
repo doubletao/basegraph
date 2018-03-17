@@ -93,6 +93,9 @@
     <ClCompile Include="UIRectDrawer.cpp">
       <Filter>UIElementBase</Filter>
     </ClCompile>
+    <ClCompile Include="UISliderCtr.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\UIRectDrawer.h">
       <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UISliderCtr.h">
+      <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,7 +10,7 @@ UIScrollBar::UIScrollBar()
 	, m_bHorScroll(false)
 	, m_nWholeLength(0)
 	, m_nPageLength(0)
-	, m_nPos(0)
+	, m_nLogicPos(0)
 	, m_nStep(50)
 	, m_bMoving(false)
 	, m_ptBegin(0)
@@ -59,12 +59,12 @@ void UIScrollBar::MoveStep(bool bFore)
 {
 	if (!bFore)
 	{
-		int nPos = m_nPos - m_nStep;
+		int nPos = m_nLogicPos - m_nStep;
 		SetPos(nPos);
 	}
 	else
 	{
-		int nPos = m_nPos + m_nStep;
+		int nPos = m_nLogicPos + m_nStep;
 		SetPos(nPos);
 	}
 }
@@ -73,12 +73,12 @@ void UIScrollBar::MovePage(bool bFore)
 {
 	if (!bFore)
 	{
-		int nPos = m_nPos - m_nPageLength;
+		int nPos = m_nLogicPos - m_nPageLength;
 		SetPos(nPos);
 	}
 	else
 	{
-		int nPos = m_nPos + m_nPageLength;
+		int nPos = m_nLogicPos + m_nPageLength;
 		SetPos(nPos);
 	}
 }
@@ -151,14 +151,14 @@ bool UIScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
 			{
 				float fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
 				nOffset = ptMsg.x - m_ptBegin.x;
-				int nPos = m_nPos + int(nOffset / fRatio);
+				int nPos = m_nLogicPos + int(nOffset / fRatio);
 				SetPos(nPos);
 			}
 			else
 			{
 				float fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
 				nOffset = ptMsg.y - m_ptBegin.y;
-				int nPos = m_nPos + int(nOffset / fRatio);
+				int nPos = m_nLogicPos + int(nOffset / fRatio);
 				SetPos(nPos);
 			}
 			m_ptBegin = ptMsg;
@@ -192,12 +192,12 @@ CRect UIScrollBar::GetThumbRect()
 	if (m_bHorScroll)
 	{
 		float fRatio = m_nWidth * 1.0f / m_nWholeLength;
-		rtRet.SetRect((int)(m_nPos * fRatio), 0, (int)((m_nPos + m_nPageLength) * fRatio), m_nHeight);
+		rtRet.SetRect((int)(m_nLogicPos * fRatio), 0, (int)((m_nLogicPos + m_nPageLength) * fRatio), m_nHeight);
 	}
 	else
 	{
 		float fRatio = m_nHeight * 1.0f / m_nWholeLength;
-		rtRet.SetRect(0, (int)(m_nPos * fRatio), m_nWidth, (int)((m_nPos + m_nPageLength) * fRatio));
+		rtRet.SetRect(0, (int)(m_nLogicPos * fRatio), m_nWidth, (int)((m_nLogicPos + m_nPageLength) * fRatio));
 	}
 	return rtRet;
 }
@@ -289,7 +289,7 @@ void UIScrollBar::ResetScroll(int nWholeLength, int nPageLength, int nPos/* = -1
 	}
 	else
 	{
-		SetPos(m_nPos, false);
+		SetPos(m_nLogicPos, false);
 	}
 	Recalculate(bRefresh);
 	if (bRefresh)
@@ -309,11 +309,11 @@ void UIScrollBar::SetPos(int nPos, bool bRefresh/* = true*/)
 	{
 		nPos = m_nWholeLength - m_nPageLength;
 	}
-	if (m_nPos != nPos)
+	if (m_nLogicPos != nPos)
 	{
 		bMsg = true;
 	}
-	m_nPos = nPos;
+	m_nLogicPos = nPos;
 	if (bRefresh)
 	{
 		Refresh();
@@ -322,18 +322,18 @@ void UIScrollBar::SetPos(int nPos, bool bRefresh/* = true*/)
 	{
 		if (m_bHorScroll)
 		{
-			EmitMsg(EmUIElementMsg_OnHScroll, m_nID, m_nPos);
+			EmitMsg(EmUIElementMsg_OnHScroll, m_nID, m_nLogicPos);
 		}
 		else
 		{
-			EmitMsg(EmUIElementMsg_OnVScroll, m_nID, m_nPos);
+			EmitMsg(EmUIElementMsg_OnVScroll, m_nID, m_nLogicPos);
 		}
 	}
 }
 
 int UIScrollBar::GetPos()
 {
-	return m_nPos;
+	return m_nLogicPos;
 }
 
 void UIScrollBar::SetWholeLength(int nWholeLength, bool bRefresh/* = true*/)
@@ -387,6 +387,16 @@ void UIScrollBar::DrawElement(CDC * pDC)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+UIScrollThumbButton::UIScrollThumbButton()
+	: m_bHorScroll(false)
+{
+}
+
+UIScrollThumbButton::~UIScrollThumbButton()
+{
+	m_bHorScroll = false;
+}
 
 bool UIScrollThumbButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, bool bHorScroll, HWND hParentWnd, UIElement * pParent)
 {

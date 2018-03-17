@@ -58,6 +58,12 @@ enum ThemeColorValueDef
 	ThemeColor_ScrollThumbColor_D,
 	ThemeColor_ScrollThumbColor_X,
 	ThemeColor_ScrollBkColor,
+	ThemeColor_SliderLightArea,
+	ThemeColor_SliderDarkAre,
+	ThemeColor_SliderButton_N,
+	ThemeColor_SliderButton_F,
+	ThemeColor_SliderButton_D,
+	ThemeColor_SliderButton_X,
 };
 
 enum ThemeImageValueDef

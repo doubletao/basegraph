@@ -8,6 +8,9 @@ class BASEGRAPH_UICONTROL_API UIScrollThumbButton :
 protected:
 	bool m_bHorScroll;
 public:
+	UIScrollThumbButton();
+	~UIScrollThumbButton();
+public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, bool bHorScroll, HWND hParentWnd, UIElement * pParent);
 	virtual void DrawElement(CDC * pDC);
 };
@@ -19,7 +22,7 @@ protected:
 	bool m_bHorScroll;
 	int m_nWholeLength;
 	int m_nPageLength;
-	int m_nPos;
+	int m_nLogicPos;
 	int m_nStep;
 
 	bool m_bMoving;
