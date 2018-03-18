@@ -23,8 +23,6 @@ protected:
 	int m_nLogicPos;
 
 	bool m_bMoving;
-	CPoint m_ptBegin;
-	CPoint m_ptEnd;
 
 	UISliderButton * m_pSliderBtn;
 public:
@@ -36,6 +34,7 @@ protected:
 	virtual void Refresh();
 	int LogicToReal(int nLogicPos);
 	int RealToLogic(int nRealPos);
+	bool SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam);
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nMin, int nMax, int nID = 0, bool bHorizon = false, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);

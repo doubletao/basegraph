@@ -8,10 +8,8 @@ UISliderCtr::UISliderCtr()
 	: m_bHorScroll(true)
 	, m_nMin(0)
 	, m_nMax(0)
-	, m_nLogicPos(0)
+	, m_nLogicPos(50)
 	, m_bMoving(false)
-	, m_ptBegin(0)
-	, m_ptEnd(0)
 	, m_pSliderBtn(nullptr)
 {
 }
@@ -107,6 +105,81 @@ int UISliderCtr::RealToLogic(int nRealPos)
 	return (int)fLogicPos;
 }
 
+bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
+{
+	int nRealX = GetRealX();
+	int nRealY = GetRealY();
+	CRect rtCtrl = GetRect();
+	CRect rtBtn = 0;
+	if (m_pSliderBtn)
+	{
+		rtBtn = m_pSliderBtn->GetRect();
+	}
+	CPoint ptMsg(LOWORD(lParam), HIWORD(lParam));
+	switch (nMsg)
+	{
+	case WM_LBUTTONDOWN:
+		if (rtCtrl.PtInRect(ptMsg))
+		{
+			//控件范围内的单击都会导致滑块的按下效果
+			if (m_pSliderBtn)
+			{
+				m_pSliderBtn->SetState(UIButton::UIElement_BtnDown, true);
+			}
+			m_bMoving = true;
+			if (!rtBtn.PtInRect(ptMsg))
+			{
+				//如果按在了滑块内部，则滑块本身是不移动的，否则将滑块滑动到鼠标点下去的位置
+				if (m_bHorScroll)
+				{
+					int nReal = ptMsg.x - GetRealX();
+					int nLogicPos = RealToLogic(nReal);
+					SetPos(nLogicPos);
+				}
+				else
+				{
+					int nReal = ptMsg.y - GetRealY();
+					int nLogicPos = RealToLogic(nReal);
+					SetPos(nLogicPos);
+				}
+			}
+			return true;
+		}
+		break;
+	case WM_LBUTTONUP:
+		if (m_bMoving && m_pSliderBtn)
+		{
+			m_pSliderBtn->SetState(UIButton::UIElement_BtnFloat, true);
+			SetPos(m_nLogicPos, true, false);
+			m_bMoving = false;
+			return true;
+		}
+		break;
+	case WM_MOUSEMOVE:
+		if (m_bMoving)
+		{
+			if (m_bHorScroll)
+			{
+				int nReal = ptMsg.x - GetRealX();
+				int nLogicPos = RealToLogic(nReal);
+				SetPos(nLogicPos);
+			}
+			else
+			{
+				int nReal = ptMsg.y - GetRealY();
+				int nLogicPos = RealToLogic(nReal);
+				SetPos(nLogicPos);
+			}
+			Refresh();
+			return true;
+		}
+		break;
+	default:
+		break;
+	}
+	return false;
+}
+
 bool UISliderCtr::Create(int nX, int nY, int nWidth, int nHeight, int nMin, int nMax, int nID, bool bHorizon, HWND hParentWnd, UIElement * pParent)
 {
 	if (!m_bCreated)
@@ -131,7 +204,27 @@ bool UISliderCtr::Create(int nX, int nY, int nWidth, int nHeight, int nMin, int 
 
 EmUIElementMsgRet UISliderCtr::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 {
-	return EmUIElementMsgRet();
+	if (m_setMsgFilter.count(nMsg) > 0)
+	{
+		if (!SliderMsgHandle(nMsg, lParam, wParam))
+		{
+			if (nMsg == WM_MOUSEMOVE)
+			{
+				if (m_pSliderBtn)
+				{
+					if (HitTest(lParam))
+					{
+						m_pSliderBtn->OnMouseHover();
+					}
+					else
+					{
+						m_pSliderBtn->OnMouseLeave();
+					}
+				}
+			}
+		}
+	}
+	return UIElementMsgSuccContinue;
 }
 
 void UISliderCtr::SetPos(int nPos, bool bRefresh, bool bChanging)
@@ -273,4 +366,9 @@ void UISliderButton::DrawElement(CDC * pDC)
 	default:
 		break;
 	}
+
+	Gdiplus::Graphics graphics(pDC->GetSafeHdc());
+	graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+	Gdiplus::SolidBrush brush(Gdiplus::Color(255, GetRValue(clBtn), GetGValue(clBtn), GetBValue(clBtn)));
+	graphics.FillEllipse(&brush, GetRealX(), GetRealY(), m_nWidth, m_nHeight);
 }

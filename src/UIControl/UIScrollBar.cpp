@@ -239,13 +239,16 @@ EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam
 	};
 	auto BtnEnterLeaveMsg = [&](UIElement * pElement)
 	{
-		if (pElement && pElement->HitTest(lParam))
+		if (pElement)
 		{
-			pElement->OnMouseHover();
-		}
-		else
-		{
-			pElement->OnMouseLeave();
+			if (pElement->HitTest(lParam))
+			{
+				pElement->OnMouseHover();
+			}
+			else
+			{
+				pElement->OnMouseLeave();
+			}
 		}
 	};
 	if (m_setMsgFilter.count(nMsg) > 0)
