@@ -115,6 +115,21 @@ bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	{
 		rtBtn = m_pSliderBtn->GetRect();
 	}
+	auto MoveButton = [&](const CPoint & ptMsg)
+	{
+		if (m_bHorScroll)
+		{
+			int nReal = ptMsg.x - GetRealX() - m_nHeight / 2;
+			int nLogicPos = RealToLogic(nReal);
+			SetPos(nLogicPos);
+		}
+		else
+		{
+			int nReal = ptMsg.y - GetRealY() - m_nWidth / 2;
+			int nLogicPos = RealToLogic(nReal);
+			SetPos(nLogicPos);
+		}
+	};
 	CPoint ptMsg(LOWORD(lParam), HIWORD(lParam));
 	switch (nMsg)
 	{
@@ -130,18 +145,7 @@ bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
 			if (!rtBtn.PtInRect(ptMsg))
 			{
 				//如果按在了滑块内部，则滑块本身是不移动的，否则将滑块滑动到鼠标点下去的位置
-				if (m_bHorScroll)
-				{
-					int nReal = ptMsg.x - GetRealX();
-					int nLogicPos = RealToLogic(nReal);
-					SetPos(nLogicPos);
-				}
-				else
-				{
-					int nReal = ptMsg.y - GetRealY();
-					int nLogicPos = RealToLogic(nReal);
-					SetPos(nLogicPos);
-				}
+				MoveButton(ptMsg);
 			}
 			return true;
 		}
@@ -158,18 +162,7 @@ bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	case WM_MOUSEMOVE:
 		if (m_bMoving)
 		{
-			if (m_bHorScroll)
-			{
-				int nReal = ptMsg.x - GetRealX();
-				int nLogicPos = RealToLogic(nReal);
-				SetPos(nLogicPos);
-			}
-			else
-			{
-				int nReal = ptMsg.y - GetRealY();
-				int nLogicPos = RealToLogic(nReal);
-				SetPos(nLogicPos);
-			}
+			MoveButton(ptMsg);
 			Refresh();
 			return true;
 		}
@@ -254,6 +247,7 @@ void UISliderCtr::SetPos(int nPos, bool bRefresh, bool bChanging)
 	{
 		EmitMsg(EmUIElementMsg_OnSliderChanged, m_nID, m_nLogicPos);
 	}
+	TRACE(_T("UISliderCtr::SetPos %d\n"), m_nLogicPos);
 }
 
 int UISliderCtr::GetPos()

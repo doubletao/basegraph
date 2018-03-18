@@ -114,7 +114,7 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderDarkArea, RGB(0x44, 0x44, 0x44)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_N, RGB(0xf0, 0xf0, 0xf0)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_F, RGB(0xff, 0xff, 0xff)));
-	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_D, RGB(0x0f, 0x0f, 0x0f)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_D, RGB(0xaf, 0xaf, 0xaf)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_X, RGB(0x0a, 0x0a, 0x0a)));
 
 	/////////////////////////////////////////////////////////////////////
