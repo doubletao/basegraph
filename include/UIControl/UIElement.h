@@ -76,5 +76,7 @@ public:
 	int GetWidth();
 	int GetHeight();
 	void InsertDrawer(int nState, UIDrawer * pDrawer);
+	void SetCapture();//需要父窗口实现对应的消息接口
+	void ReleaseCapture();//需要父窗口实现对应的消息接口
 };
 

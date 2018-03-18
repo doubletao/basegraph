@@ -283,6 +283,14 @@ void UIElement::InsertDrawer(int nState, UIDrawer * pDrawer)
 	m_mapDrawer[m_nState].push_back(pDrawer);
 }
 
+void UIElement::SetCapture()
+{
+}
+
+void UIElement::ReleaseCapture()
+{
+}
+
 CRect UIElement::GetRect()
 {
 	int nX = GetRealX();
