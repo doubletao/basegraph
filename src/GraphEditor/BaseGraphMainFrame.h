@@ -18,6 +18,8 @@ private:
 	UIPropertyView m_uiPropertyView;
 	UITimeLine m_uiTimeLine;
 	C3DMainViewWnd m_pwndMainView;
+
+	UIElement * m_pCaptureElement;
 public:
 	BaseGraphMainFrame();
 	virtual ~BaseGraphMainFrame();
@@ -41,6 +43,7 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 protected:
 	afx_msg LRESULT OnUIElementBtnClicked(WPARAM wParam = 0, LPARAM lParam = 0);
+	afx_msg LRESULT OnUIElementSetCapture(WPARAM wParam = 0, LPARAM lParam = 0);
 public:
 	void OnBtnCreateTitle();
 	void OnBtnCreateScroll();

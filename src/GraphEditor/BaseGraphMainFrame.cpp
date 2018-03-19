@@ -25,9 +25,11 @@ BEGIN_MESSAGE_MAP(BaseGraphMainFrame, CSkinFrameWnd)
 	ON_WM_ERASEBKGND()
 	ON_WM_DESTROY()
 	ON_MESSAGE(EmUIElementMsg_BtnClick, BaseGraphMainFrame::OnUIElementBtnClicked)
+	ON_MESSAGE(EmUIElementMsg_SetCapture, BaseGraphMainFrame::OnUIElementSetCapture)
 END_MESSAGE_MAP()
 
 BaseGraphMainFrame::BaseGraphMainFrame()
+	: m_pCaptureElement(nullptr)
 {
 }
 
@@ -37,21 +39,37 @@ BaseGraphMainFrame::~BaseGraphMainFrame()
 
 BOOL BaseGraphMainFrame::PreTranslateMessage(MSG * pMsg)
 {
-	auto DealMsg = [&](UIElement & bar)->bool
+	auto DealMsg = [&](UIElement & elem)->bool
 	{
-		if (UIElement::NeedContinue(bar.HandleMsg(pMsg->message, pMsg->lParam, pMsg->wParam)))
+		if (UIElement::NeedContinue(elem.HandleMsg(pMsg->message, pMsg->lParam, pMsg->wParam)))
 		{
 			return false;
 		}
 		return true;
 	};
-	if (pMsg->hwnd == m_hWnd)//如果是子窗口的消息，UIElement不拦截
+	auto DealUIElementMsg = [&]()->bool
 	{
 		if (DealMsg(m_uiActionBar)
 			|| DealMsg(m_uiPlayControlBar)
 			|| DealMsg(m_uiSimpleTimeLine)
 			|| DealMsg(m_uiPropertyView)
 			|| DealMsg(m_uiTimeLine))
+		{
+			return true;
+		}
+		return false;
+	};
+	//如果当前是capture状态，则优先将消息给capture
+	if (m_pCaptureElement)
+	{
+		if (DealMsg(*m_pCaptureElement))
+		{
+			return TRUE;
+		}
+	}
+	if (pMsg->hwnd == m_hWnd)//如果是子窗口的消息，UIElement不拦截
+	{
+		if (DealUIElementMsg())
 		{
 			return TRUE;
 		}
@@ -596,6 +614,23 @@ LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
 		break;
 	default:
 		break;
+	}
+	return 0;
+}
+
+LRESULT BaseGraphMainFrame::OnUIElementSetCapture(WPARAM wParam, LPARAM lParam)
+{
+	BOOL bCapture = (BOOL)wParam;
+	UIElement * pElement = (UIElement *)lParam;
+	if (bCapture)
+	{
+		SetCapture();
+		m_pCaptureElement = pElement;
+	}
+	else
+	{
+		ReleaseCapture();
+		m_pCaptureElement = nullptr;
 	}
 	return 0;
 }

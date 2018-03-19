@@ -136,6 +136,7 @@ bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	case WM_LBUTTONDOWN:
 		if (rtCtrl.PtInRect(ptMsg))
 		{
+			SetElementCapture();
 			//控件范围内的单击都会导致滑块的按下效果
 			if (m_pSliderBtn)
 			{
@@ -153,6 +154,7 @@ bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	case WM_LBUTTONUP:
 		if (m_bMoving && m_pSliderBtn)
 		{
+			ReleaseElementCapture();
 			m_pSliderBtn->SetState(UIButton::UIElement_BtnFloat, true);
 			SetPos(m_nLogicPos, true, false);
 			m_bMoving = false;

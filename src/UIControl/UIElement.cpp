@@ -283,12 +283,20 @@ void UIElement::InsertDrawer(int nState, UIDrawer * pDrawer)
 	m_mapDrawer[m_nState].push_back(pDrawer);
 }
 
-void UIElement::SetCapture()
+void UIElement::SetElementCapture()
 {
+	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+	{
+		::SendMessage(m_hParentWnd, EmUIElementMsg_SetCapture, TRUE, (LPARAM)this);
+	}
 }
 
-void UIElement::ReleaseCapture()
+void UIElement::ReleaseElementCapture()
 {
+	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+	{
+		::SendMessage(m_hParentWnd, EmUIElementMsg_SetCapture, FALSE, (LPARAM)this);
+	}
 }
 
 CRect UIElement::GetRect()

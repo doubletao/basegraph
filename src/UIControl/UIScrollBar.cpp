@@ -99,6 +99,7 @@ bool UIScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
 		{
 			if (rtThumb.PtInRect(ptMsg))
 			{
+				SetElementCapture();
 				if (m_pBtnThumb)
 				{
 					m_pBtnThumb->SetState(UIButton::UIElement_BtnDown, true);
@@ -137,6 +138,7 @@ bool UIScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	case WM_LBUTTONUP:
 		if (m_bMoving && m_pBtnThumb)
 		{
+			ReleaseElementCapture();
 			m_pBtnThumb->SetState(UIButton::UIElement_BtnFloat, true);
 			m_ptBegin = 0;
 			m_bMoving = false;
