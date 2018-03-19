@@ -5,6 +5,8 @@
 #include <assert.h>
 
 DataBaseManager::DataBaseManager()
+	: m_nSceneWidth(1920)
+	, m_nSceneHeight(1080)
 {
 	InitializeCriticalSection(&m_lockData);
 }
@@ -334,6 +336,16 @@ bool DataBaseManager::GetItemLength(IN const std::vector<CString>& vecID, OUT in
 		}
 	}
 	return bRet;
+}
+
+int DataBaseManager::GetSceneWidth()
+{
+	return m_nSceneWidth;
+}
+
+int DataBaseManager::GetSceneHeight()
+{
+	return m_nSceneHeight;
 }
 
 bool DataBaseManager::SaveToFile(CString strFile)

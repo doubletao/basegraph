@@ -14,6 +14,8 @@ BEGIN_MESSAGE_MAP(C3DSceneViewWnd, CWnd)
 	ON_WM_ERASEBKGND()
 	ON_MESSAGE(WM_SET_RENDERTASK, AddOneRenderTask)
 	ON_MESSAGE(WM_EXCUTE_RENDERTASK, OnSetRenderTask)
+	ON_WM_MOUSEWHEEL()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 void C3DSceneViewWnd::RenderCountLock()
@@ -95,6 +97,10 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				if (!hDevice)
 					continue;
 
+				//设置视图缩放
+				float fScale = pThis->m_ViewInfo.m_fScale;
+				DataRender_SetScale(fScale);
+
 				//创建纹理及深度buf
 				int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
 				int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
@@ -152,8 +158,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 						}
 						DXHalDef32 * pHalDef = nullptr;
 						matrix4f worldMat;
-						pThis->m_ViewInfo.m_fScale = 1.0f;
-						if (DataRender_Get2DRenderMatrix(strObjID, pThis->m_ViewInfo.m_fScale, worldMat))
+						if (DataRender_Get2DRenderMatrix(strObjID, fScale, worldMat))
 						{
 							if (DataRender_GetDesHalDef(strObjID, pHalDef))
 							{
@@ -242,6 +247,29 @@ C3DSceneViewWnd::~C3DSceneViewWnd()
 		CloseHandle(m_hSeekReadyEvent);
 }
 
+void C3DSceneViewWnd::SetZoomScale(float fScale, CPoint ptCenter)
+{
+	//四倍是以1920  1080编辑为标准的，对于比这个更小的分辨率倍数可以不超过4*1920  4*1080的尺寸
+	int nSceneWidth = DataBase_GetSceneWidth();
+	int nSceneHeight = DataBase_GetSceneHeight();
+	float fMaxRate = 4 * min(1920.0f / (float)nSceneWidth, nSceneHeight * 1.0f / (float)nSceneHeight);
+	if (fScale > fMaxRate)
+	{
+		fScale = fMaxRate;
+	}
+	if (fScale < 0.25)
+	{
+		fScale = 0.25;
+	}
+	m_ViewInfo.m_fScale = fScale;
+	PostMessage(WM_SET_RENDERTASK);
+}
+
+float C3DSceneViewWnd::GetZoomScale()
+{
+	return m_ViewInfo.m_fScale;
+}
+
 void C3DSceneViewWnd::RecalcLayout()
 {
 }
@@ -289,4 +317,12 @@ void C3DSceneViewWnd::OnSize(UINT nType, int cx, int cy)
 BOOL C3DSceneViewWnd::OnEraseBkgnd(CDC * pDC)
 {
 	return TRUE;
+}
+
+BOOL C3DSceneViewWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	float fScale = GetZoomScale();
+	fScale += (float)zDelta / 2000;
+	SetZoomScale(fScale, CPoint(0, 0));
+	return 0;
 }

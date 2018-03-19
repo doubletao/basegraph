@@ -173,6 +173,11 @@ float CalculatorManager::GetScale()
 	return m_fScale;
 }
 
+void CalculatorManager::SetScale(const float & fScale)
+{
+	m_fScale = fScale;
+}
+
 int CalculatorManager::GetFrame()
 {
 	return m_nFrame;

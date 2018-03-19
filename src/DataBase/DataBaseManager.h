@@ -16,6 +16,8 @@ private:
 	vector<BaseObject *> m_vecObject;
 	//锁
 	CRITICAL_SECTION m_lockData;
+	int m_nSceneWidth;
+	int m_nSceneHeight;
 public:
 	static DataBaseManager & Instance();
 	//锁
@@ -58,6 +60,9 @@ public:
 	//统计
 	bool GetItemLength(OUT int & nLength);
 	bool GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);
+	//场景size
+	int GetSceneWidth();
+	int GetSceneHeight();
 	//序列化
 	bool SaveToFile(CString strFile);
 	bool LoadFromFile(CString strFile);

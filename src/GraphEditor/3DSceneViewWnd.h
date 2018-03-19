@@ -20,19 +20,25 @@ protected:
 	HANDLE  m_hExitPreDecoderEvent;//渲染线程退出事件
 	HANDLE  m_hSeekReadyEvent;//单次渲染进行中
 
+protected:
 	void RenderCountLock();
 	void RenderCountUnlock();
+
+	void RecalcLayout();
+
 	afx_msg LRESULT OnSetRenderTask(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT AddOneRenderTask(WPARAM, LPARAM);
-	static DWORD WINAPI PreDecoderThread(LPVOID pParam);//解码线程
-public:
-	C3DSceneViewWnd();
-	~C3DSceneViewWnd();
-protected:
-	void RecalcLayout();
 	afx_msg void OnPaint();
 	afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDestroy();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+	static DWORD WINAPI PreDecoderThread(LPVOID pParam);//解码线程
+public:
+	C3DSceneViewWnd();
+	~C3DSceneViewWnd();
+public:
+	void SetZoomScale(float fScale, CPoint ptCenter);
+	float GetZoomScale();
 };

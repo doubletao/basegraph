@@ -123,6 +123,16 @@ bool BASEGRAPH_DATABASE_API DataBase_GetParentItem(IN CString strSubID, OUT CStr
 	return DataBaseManager::Instance().GetParentItem(strSubID, strParentID);
 }
 
+int BASEGRAPH_DATABASE_API DataBase_GetSceneWidth()
+{
+	return DataBaseManager::Instance().GetSceneWidth();
+}
+
+int BASEGRAPH_DATABASE_API DataBase_GetSceneHeight()
+{
+	return DataBaseManager::Instance().GetSceneHeight();
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile)
 {
 	return DataBaseManager::Instance().SaveToFile(strFile);

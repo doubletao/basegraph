@@ -31,6 +31,7 @@ public:
 	bool ClearAllSelect();
 
 	float GetScale();
+	void SetScale(const float & fScale);
 	int GetFrame();
 };
 

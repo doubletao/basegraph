@@ -984,8 +984,9 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 			continue;
 		}
 
-		if (pUnitView != NULL && !pUnitView->bChanged)
-			continue;
+		//djt change level的问题后边再逐步考虑
+		//if (pUnitView != NULL && !pUnitView->bChanged)
+		//	continue;
 
 		CSYBuffer* pBufferPool = NULL;
 		//MAC_STARTTIME_TEST();

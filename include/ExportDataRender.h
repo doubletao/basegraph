@@ -62,3 +62,4 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, OPTIO
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, IN const bool & bSel);
 BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame();//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame);//注意，单位是场
+BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale);

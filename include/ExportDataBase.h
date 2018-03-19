@@ -46,6 +46,9 @@ bool BASEGRAPH_DATABASE_API DataBase_HasSubItem(IN CString strParentID);
 bool BASEGRAPH_DATABASE_API DataBase_GetSubItem(IN CString strParentID, OUT std::vector<CString> & vecSubID);
 bool BASEGRAPH_DATABASE_API DataBase_HasParentItem(IN CString strSubID);
 bool BASEGRAPH_DATABASE_API DataBase_GetParentItem(IN CString strSubID, OUT CString & strParentID);
+//≥°æ∞size
+int BASEGRAPH_DATABASE_API DataBase_GetSceneWidth();
+int BASEGRAPH_DATABASE_API DataBase_GetSceneHeight();
 //–Ú¡–ªØ
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile);
 bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile);

@@ -113,3 +113,9 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame)
 	//‘›≤ª µœ÷
 	return false;
 }
+
+BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale)
+{
+	CalculatorManager::Instance().SetScale(fScale);
+	return true;
+}
