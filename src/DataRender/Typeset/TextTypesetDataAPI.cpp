@@ -3948,9 +3948,6 @@ void TypesetInterface_OnDeleteUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 	{
 		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
 		pTitleCalc->Lock();
-
-		int i, j;
-
 #if 0
 		//djt action先不管
 		//Action维护
@@ -3977,7 +3974,7 @@ void TypesetInterface_OnDeleteUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 
 		LPSYText pText = pTitleCalc->GetText();
 		SYArray* paryRenderUnit = pTitleCalc->Get2DTextUnitArray();
-		for (i = 0; i < nCount; i++)
+		for (int i = 0; i < nCount; i++)
 		{
 			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(paryRenderUnit, nIndex + i);
 			if (pRenderUnit)

@@ -407,7 +407,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	auto CreateTestTitlewordObj = [](CString strName, CString strText, CString strFontName, CString strDebugPath, int nBegin, int nEnd,
-		float fXPos, float fYPos, float fZPos)
+		float fXPos, float fYPos, float fZPos, bool bHor)
 	{
 		CString strObjID = _T("");
 		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Titleword);
@@ -416,7 +416,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		mapParam[BaseGraph_DataBase::Obj_ActionEnd_Int].SetValue(nEnd, BaseGraph_Common::ValueType_INT);
 		mapParam[BaseGraph_DataBase::Titleword_Text_Str].SetValue(strText);
 		mapParam[BaseGraph_DataBase::Titleword_FontName_Str].SetValue(strFontName);
-		mapParam[BaseGraph_DataBase::Titleword_Horizontal_Bool].SetValue(TRUE, BaseGraph_Common::ValueType_BOOL);
+		mapParam[BaseGraph_DataBase::Titleword_Horizontal_Bool].SetValue(bHor, BaseGraph_Common::ValueType_BOOL);
 		mapParam[BaseGraph_DataBase::SpacePosition_X_Float].SetValue(fXPos);
 		mapParam[BaseGraph_DataBase::SpacePosition_Y_Float].SetValue(fYPos);
 		mapParam[BaseGraph_DataBase::SpacePosition_Z_Float].SetValue(fYPos);
@@ -456,18 +456,19 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 			float fXPos = 0.0f;
 			float fYPos = 0.0f;
 			float fZPos = 0.0f;
-			if (i % 2)
+			bool bHor = i % 2 == 0;
+			if (bHor)
 			{
-				fXPos = 100.0f * i / 2;
+				fXPos = 100.0f;
 				fYPos = 100.0f * i / 2;
 			}
 			else
 			{
 				fXPos = -100.0f * i / 2;
-				fYPos = -100.0f * i / 2;
+				fYPos = 300.0f;
 			}
 
-			CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd, fXPos, fYPos, fZPos);
+			CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd, fXPos, fYPos, fZPos, bHor);
 		}
 	}
 

@@ -27,6 +27,7 @@ ObjectCalculator::~ObjectCalculator()
 
 void ObjectCalculator::Release()
 {
+	ClearRenderUnitView();
 }
 
 int ObjectCalculator::GetWidth()
@@ -119,6 +120,34 @@ bool ObjectCalculator::NeedRenderBuffer()
 	return false;
 }
 
+SYRenderUnitView * ObjectCalculator::GetRenderUnitView(CString strUnitID)
+{
+	SYRenderUnitView * pRenderUnitView = nullptr;
+	if (m_mapRenderUnitView.count(strUnitID) > 0)
+	{
+		pRenderUnitView = m_mapRenderUnitView[strUnitID];
+	}
+	return pRenderUnitView;
+}
+
+void ObjectCalculator::AddRenderUnitView(CString strUnitID, SYRenderUnitView * pRenderUnitView)
+{
+	if (m_mapRenderUnitView.count(strUnitID) > 0)
+	{
+		SAFE_DELETE(m_mapRenderUnitView[strUnitID]);
+	}
+	m_mapRenderUnitView.insert(std::make_pair(strUnitID, pRenderUnitView));
+}
+
+void ObjectCalculator::ClearRenderUnitView()
+{
+	for (std::map<CString, SYRenderUnitView *>::iterator it = m_mapRenderUnitView.begin(); it != m_mapRenderUnitView.end(); it++)
+	{
+		SAFE_DELETE(it->second);
+	}
+	m_mapRenderUnitView.clear();
+}
+
 bool ObjectCalculator::UpdateRenderBuffer()
 {
 	return false;
@@ -173,4 +202,39 @@ void ObjectCalculator::SetChgLevel(EmObjectChgLevel emChgLevel)
 EmObjectChgLevel ObjectCalculator::GetChgLevel()
 {
 	return m_emChgLevel;
+}
+
+////////////////////////SYRenderUnitView//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+SYRenderUnitView::SYRenderUnitView()
+{
+	bChanged = FALSE;
+	pUnitBuffer = NULL;
+	pUnitHalBuf = NULL;
+	pUnitDymHalBuffer = NULL;
+	bUseColorAlpha = FALSE;
+}
+
+SYRenderUnitView::~SYRenderUnitView()
+{
+	bChanged = FALSE;
+	if (pUnitBuffer)
+	{
+		SYBufferDef32_Release(pUnitBuffer);
+	}
+	pUnitBuffer = nullptr;
+	int nDevice = DX3DEngine_GetMainDevice();
+	if (pUnitHalBuf && pUnitHalBuf->m_bRelease)
+	{
+		DX3DEngine_ReleaseTexture(nDevice, pUnitHalBuf->m_hTex);
+		memset(pUnitHalBuf, 0, sizeof(DXHalDef32));
+	}
+	pUnitHalBuf = nullptr;
+	if (pUnitDymHalBuffer && pUnitDymHalBuffer->m_bRelease)
+	{
+		DX3DEngine_ReleaseTexture(nDevice, pUnitDymHalBuffer->m_hTex);
+		memset(pUnitDymHalBuffer, 0, sizeof(DXHalDef32));
+	}
+	pUnitDymHalBuffer = nullptr;
+	bUseColorAlpha = FALSE;
 }

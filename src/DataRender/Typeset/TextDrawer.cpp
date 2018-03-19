@@ -549,12 +549,13 @@ bool VRollCharFinder::FindChar(WORD wChar)
 BASEGRAPH_DATARENDER_API BOOL SYIsNeedRollInVDisplay(TCHAR szCharName)
 {
 	//here we only support dbcs and unicode so we use a word
-	static VRollCharFinder VRollChar;
-	if(VRollChar.IsValid())
-	{
-		WORD w = (WORD)szCharName;
-		return VRollChar.FindChar(w);
-	}
+	//djt 可以从配置文件读取竖向排版时需要旋转的的字符
+	//static VRollCharFinder VRollChar;
+	//if(VRollChar.IsValid())
+	//{
+	//	WORD w = (WORD)szCharName;
+	//	return VRollChar.FindChar(w);
+	//}
 	if ((szCharName >= 0x30 && szCharName <=0x39)||	// 0-9
 		(szCharName >= 0x40 && szCharName <=0x5A)||	// A-Z
 		(szCharName >= 0x61 && szCharName <=0x7A)||	// a-z

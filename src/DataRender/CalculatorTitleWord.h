@@ -29,6 +29,7 @@ public:
 	virtual void GetRenderUnitOrder(CSYIntArray& arOrder);
 	virtual void DeleteWholeRenderGraph();
 	virtual BOOL UpdateWholeRenderGraph(SYArray* pRenderUnitArray);
+	virtual void UpdateItemGpuBuffer(BOOL bLock = FALSE);
 	SYItemRenderUnit * GetRenderUnit(int nIndex);
 	virtual int Get2DTextUnitCount();
 	virtual void GetRenderUnitBound(int nIndex, rectf& rtBoundf);
@@ -39,4 +40,5 @@ public:
 	virtual SYUnit*	GetUnit(int nIndex);
 	virtual void DeleteRenderUnitView(LPCTSTR szUnitID);
 	virtual void RenderUnitBufferForGpu();
+	virtual bool PrepareItemHalBufer(int nDevice);
 };

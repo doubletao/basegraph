@@ -141,6 +141,7 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 				{
 					DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
 					RenderUnitBufferForGpu();
+					UpdateItemGpuBuffer();
 				}
 			}
 		}
@@ -362,7 +363,7 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 
 BOOL CalculatorTitleword::_trans_calcunit(int nFrame, int nUnitIndex, int nOrderIndex, BOOL bInherit)
 {
-	SYItemRenderUnit* prenderunit = ObjectCalculator::GetRenderUnit(nUnitIndex, *Get2DTextUnitArray());
+	SYItemRenderUnit* prenderunit = ObjectCalculator::GetRenderUnit(nUnitIndex, m_2DTextRenderUnitArray);
 	SYUnit* punitin = prenderunit->m_pUnit;//GetUnit(dwUnitType,nUnitIndex,lpEnv);
 	if (!punitin)
 	{
@@ -659,6 +660,106 @@ BOOL CalculatorTitleword::UpdateWholeRenderGraph(SYArray * pRenderUnitArray)
 	return TRUE;
 }
 
+void CalculatorTitleword::UpdateItemGpuBuffer(BOOL bLock)
+{
+	int nDevice = DX3DEngine_GetMainDevice();
+	DXHalDef32* pHalBuffer = &m_HalDes;
+
+	SYArray* pRenderUnitArray = &m_2DTextRenderUnitArray;
+	int nUnitCnt = SYAR_GetCount(pRenderUnitArray);
+	//修订基于以下原因：
+	//1、某些物件需要多个Shape Unit；
+	//2、实际上，目前Shape和Text Unit仅支持其中之一；
+	//3、Text的buf会覆盖Shape的buf；
+	if (nUnitCnt <= 0)
+		return;
+
+	float fScale = CalculatorManager::Instance().GetScale();
+
+	int oldRT, oldDepth;
+	RECT oldView, oldScissor;
+
+	if (bLock) DX3DEngine_Lock(nDevice);
+	DX3DEngine_GetRenderTarget(nDevice, &oldRT, &oldDepth);
+	DX3DEngine_GetViewPort(nDevice, &oldView);
+	DX3DEngine_GetScissor(nDevice, &oldScissor);
+
+	DX3DEngine_SetRenderTarget(nDevice, pHalBuffer->m_hTex, 0);
+	DX3DEngine_SetRenderState(nDevice, DXDepthState, DXDepthDisable);
+	RECT newView = pHalBuffer->m_rtBound;
+	OffsetRect(&newView, pHalBuffer->m_nOriginX, pHalBuffer->m_nOriginY);
+	DX3DEngine_SetViewPort(nDevice, &newView);
+	DX3DEngine_SetScissor(nDevice, &newView);
+	CSYIntArray arOrder;
+	GetRenderUnitOrder(arOrder);
+	int nOrderCnt = arOrder.GetCount();
+
+	int nOrderIdx = 0;
+	do
+	{
+		//左闭右开区间
+		int nOrderStart, nOrderEnd;
+		if (nOrderCnt > 1)
+		{
+			nOrderStart = arOrder.GetAt(nOrderIdx++);
+			nOrderEnd = arOrder.GetAt(nOrderIdx++);
+		}
+		else
+		{
+			nOrderStart = 0;
+			nOrderEnd = nUnitCnt;
+		}
+
+		//一个RenderUnit段
+		int nStep = nOrderStart <= nOrderEnd ? 1 : -1;
+		int i = nOrderStart;
+		while (i != nOrderEnd)
+		{
+			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)SYAR_GetAt(pRenderUnitArray, i);;
+			if (!pRenderUnit)
+			{
+				i += nStep;
+				continue;
+			}
+			//计算原始buffer
+			DWORD *pBuffer = NULL;
+			int facew = 0, faceh = 0, pitch = 0;
+			SYRenderUnitView * pUnitView = GetRenderUnitView(pRenderUnit->szID);
+			if (!pUnitView)
+			{
+				i += nStep;
+				continue;
+			}
+
+			matrix4f matTrans;
+			matTrans = pRenderUnit->m_VSelfMatrix;
+			matTrans._41 *= fScale;
+			matTrans._42 *= fScale;
+			matTrans._43 *= fScale;
+
+			DX3DEngine_RenderTexture(nDevice, pUnitView->pUnitHalBuf, &matTrans, &pHalBuffer->m_rtBound, FALSE);
+			if (0)
+			{
+				DX3DEngine_DumpTexture(nDevice, pUnitView->pUnitHalBuf->m_hTex, _T("E:\\unit.bmp"));
+				DX3DEngine_DumpTexture(nDevice, pHalBuffer->m_hTex, _T("E:\\whole.bmp"));
+			}
+
+			if (pUnitView)
+				pUnitView->bChanged = FALSE;
+			i += nStep;
+		}
+	} while (nOrderIdx < nOrderCnt);
+
+	if (0)
+		DX3DEngine_DumpTexture(nDevice, pHalBuffer->m_hTex, _T("E:\\123.bmp"));
+	DX3DEngine_SetRenderTarget(nDevice, oldRT, oldDepth);
+	DX3DEngine_SetViewPort(nDevice, &oldView);
+	DX3DEngine_SetScissor(nDevice, &oldScissor);
+
+	if (bLock)
+		DX3DEngine_UnLock(nDevice);
+}
+
 SYItemRenderUnit * CalculatorTitleword::GetRenderUnit(int nIndex)
 {
 	SYArray* pRenderArray = &m_2DTextRenderUnitArray;
@@ -860,29 +961,36 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 		return;
 
 	int nDevice = DX3DEngine_GetMainDevice();
-	SYArray* pUnitArray = &m_text.ar2DUnit;
+	SYArray* pUnitArray = &m_2DTextRenderUnitArray;
 	int nUnitCnt = SYAR_GetCount(pUnitArray);
 	for (int i = 0; i < nUnitCnt; i++)
 	{
-		SYUnit* pRenderUnit = (SYUnit*)SYAR_GetAt(pUnitArray, i);
+		SYItemRenderUnit * pRenderUnit = (SYItemRenderUnit *)SYAR_GetAt(pUnitArray, i);
 		//计算原始buffer
 		DWORD *pBuffer = NULL;
 		int facew = 0, faceh = 0, pitch = 0;
 		pointf ptOrg;
 		RECT rtResultBound;// = pRenderUnit->unit2D.bound; 
 
-		if (!pRenderUnit || pRenderUnit->u.u2d.graph.ncell == 0)
+		SYRenderUnitView* pUnitView = GetRenderUnitView(pRenderUnit->szID);
+		if (!pRenderUnit || pRenderUnit->graph == 0 || pRenderUnit->graph->ncell == 0)
 		{
+			if (pUnitView)
+				pUnitView->bChanged = FALSE;
+
 			//清空原来的Buf
-			if (m_HalDes.m_hTex != NULL)
-				DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
+			if (pUnitView != NULL && pUnitView->pUnitHalBuf->m_hTex != NULL)
+				DX3DEngine_ClearTexture(nDevice, pUnitView->pUnitHalBuf->m_hTex, 0);
 			continue;
 		}
 
+		if (pUnitView != NULL && !pUnitView->bChanged)
+			continue;
+
 		CSYBuffer* pBufferPool = NULL;
 		//MAC_STARTTIME_TEST();
-		SYRenderGraphToOpBuff(&pRenderUnit->u.u2d.graph,
-			&pRenderUnit->u.u2d.staticeffect,
+		SYRenderGraphToOpBuff(pRenderUnit->graph,
+			&pRenderUnit->m_pUnit->u.u2d.staticeffect,
 			pBufferPool,
 			rtResultBound,
 			facew,
@@ -899,24 +1007,99 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 		if (!pBufferPool)
 		{
 			//清空原来的Buf
-			if (m_HalDes.m_hTex != NULL)
-				DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
+			if (pUnitView != NULL && pUnitView->pUnitHalBuf->m_hTex != NULL)
+				DX3DEngine_ClearTexture(nDevice, pUnitView->pUnitHalBuf->m_hTex, 0);
 			continue;
 		}
 
-		DXHalDef32* pHalBuffer = &m_HalDes;
-		if (pHalBuffer)
-		{		
+		if (!pUnitView)
+		{
+			pUnitView = new SYRenderUnitView;
+			pUnitView->pUnitBuffer = NULL;
+			pUnitView->pUnitDymHalBuffer = NULL;
+			pUnitView->pUnitHalBuf = new DXHalDef32;
+			pUnitView->bChanged = TRUE;
+			memset(pUnitView->pUnitHalBuf, 0, sizeof(DXHalDef32));
+			AddRenderUnitView(pRenderUnit->szID, pUnitView);
+		}
+
+		DXHalDef32* pUnitHalBuffer = pUnitView->pUnitHalBuf;
+		if (pUnitHalBuffer)
+		{
+			if (pUnitHalBuffer->m_hTex)
+			{
+				int nTexWidth = 0, nTexHeight = 0;
+				DX3DEngine_GetTextureInfo(nDevice, pUnitHalBuffer->m_hTex, &nTexWidth, &nTexHeight, NULL);
+				if (nTexWidth < facew || nTexHeight < faceh)
+				{
+					if (pUnitHalBuffer->m_bRelease)
+						DX3DEngine_ReleaseTexture(nDevice, pUnitHalBuffer->m_hTex);
+					pUnitHalBuffer->m_hTex = NULL;
+				}
+			}
+
+			if (!pUnitHalBuffer->m_hTex)
+			{
+				pUnitHalBuffer->m_hTex = DX3DEngine_CreateTexture(nDevice, facew, faceh, DXTexture_Normal2DTex);
+				pUnitHalBuffer->m_bRelease = TRUE;
+			}
+			DX3DEngine_ClearTexture(nDevice, pUnitHalBuffer->m_hTex, 0);
+
+			pUnitHalBuffer->m_rtBound = rtResultBound;
+			pUnitHalBuffer->m_nOriginX = -rtResultBound.left;
+			pUnitHalBuffer->m_nOriginY = -rtResultBound.top;
+
 			int hTransTex = DXTextureManager_QueryTexture(DXTexture_MemTexture, facew, faceh);
-			//djt 这里的pos计算有问题，待纠正
-			DX3DEngine_UpLoad(pHalBuffer->m_hTex, nDevice, hTransTex,
-				pRenderUnit->pos.x - rtResultBound.left, rtResultBound.top - pRenderUnit->pos.y, facew, faceh, pBufferPool->m_dwBuffer, 0, 0, facew, faceh, facew, faceh);
+			DX3DEngine_UpLoad(pUnitHalBuffer->m_hTex, nDevice, hTransTex,
+				0, 0, facew, faceh, pBufferPool->m_dwBuffer, 0, 0, facew, faceh, facew, faceh);
 			if (0)
-				DX3DEngine_DumpTexture(nDevice, pHalBuffer->m_hTex, _T("E:\\123.bmp"));
+				DX3DEngine_DumpTexture(nDevice, pUnitHalBuffer->m_hTex, _T("E:\\123.bmp"));
 			DXTextureManager_UnQueryTexture(hTransTex);
 		}
 		if (pBufferPool)
 			SYData_ReleaseCalcBuffer(pBufferPool);
 		pBufferPool = NULL;
 	}
+}
+
+bool CalculatorTitleword::PrepareItemHalBufer(int nDevice)
+{
+	int nTexWidth = 0;
+	int nTexHeight = 0;
+	rectf rtBoundf = m_rtUnitBound;
+	float fScale = CalculatorManager::Instance().GetScale();
+	SYRectf_Scale(&rtBoundf, fScale);
+	int nLeft = 0;
+	int nTop = 0;
+	int nRight = 0;
+	int nBottom = 0;
+	rip_extend_fbound(&rtBoundf, &nLeft, &nTop, &nRight, &nBottom);
+	int nWidth = nRight - nLeft;
+	int nHeight = nBottom - nTop;
+	m_HalDes.m_nOriginX = -nLeft;
+	m_HalDes.m_nOriginY = -nTop;
+	SetRect(&m_HalDes.m_rtBound, nLeft, nTop, nRight, nBottom);
+
+	DXTextureType emTexType = DXTexture_Normal2DTex;
+	if (m_HalDes.m_hTex)
+	{
+		DX3DEngine_GetTextureInfo(nDevice, m_HalDes.m_hTex, &nTexWidth, &nTexHeight, (int *)&emTexType);
+		BOOL bRelease = nTexWidth < nWidth || nTexHeight < nHeight
+			|| nWidth >= 8192 || nHeight >= 8192
+			|| ((nTexWidth > nWidth || nTexHeight > nHeight) && (nTexHeight > 8192 || nTexWidth > 8192));
+		// 8192以内，新的tex超过旧的，重新生成，新的tex超过8192，重新生成，新的tex正常旧的tex超过8192，重新生成
+		if (bRelease)
+		{
+			if (m_HalDes.m_bRelease)
+				DX3DEngine_ReleaseTexture(nDevice, m_HalDes.m_hTex);
+			m_HalDes.m_hTex = 0;
+		}
+	}
+	if (!m_HalDes.m_hTex)
+	{
+		m_HalDes.m_hTex = DX3DEngine_CreateTexture(nDevice, nWidth, nHeight, emTexType);
+		m_HalDes.m_bRelease = TRUE;
+	}
+	DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex);
+	return true;
 }

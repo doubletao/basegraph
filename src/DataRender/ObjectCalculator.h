@@ -28,6 +28,16 @@ enum Matrix_type
 	enum_Matrix_Title = 0x00000008,
 };
 
+struct SYRenderUnitView
+{
+	BOOL			bChanged;
+	SYBufferDef32*	pUnitBuffer;
+	DXHalDef32*		pUnitHalBuf;
+	DXHalDef32*		pUnitDymHalBuffer;
+	BOOL			bUseColorAlpha;
+	SYRenderUnitView();
+	~SYRenderUnitView();
+};
 
 class ObjectCalculator
 {
@@ -40,6 +50,7 @@ protected:
 	CRITICAL_SECTION m_Lock;
 	int m_nLastFrame;
 	int m_nRotateOrder;
+	std::map<CString, SYRenderUnitView *> m_mapRenderUnitView;
 public:
 	ObjectCalculator(CString strObjID);
 	virtual ~ObjectCalculator();
@@ -63,5 +74,8 @@ public:
 	void Unlock();
 protected:
 	virtual bool NeedRenderBuffer();
+	SYRenderUnitView * GetRenderUnitView(CString strUintID);
+	void AddRenderUnitView(CString strUnitID, SYRenderUnitView * pRenderUnitView);
+	void ClearRenderUnitView();
 };
 
