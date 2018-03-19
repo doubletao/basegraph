@@ -25,6 +25,8 @@ protected:
 	void RenderCountUnlock();
 
 	void RecalcLayout();
+	CPoint SceneToWnd(CPoint ptScene);
+	CPoint WndToScene(CPoint ptWnd);
 
 	afx_msg LRESULT OnSetRenderTask(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT AddOneRenderTask(WPARAM, LPARAM);
@@ -39,6 +41,8 @@ public:
 	C3DSceneViewWnd();
 	~C3DSceneViewWnd();
 public:
+	void AdjustViewFit();
 	void SetZoomScale(float fScale, CPoint ptCenter);
 	float GetZoomScale();
+	void ResetScaledViewInfo(CPoint ptCenter);
 };

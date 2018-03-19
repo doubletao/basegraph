@@ -247,6 +247,15 @@ C3DSceneViewWnd::~C3DSceneViewWnd()
 		CloseHandle(m_hSeekReadyEvent);
 }
 
+void C3DSceneViewWnd::AdjustViewFit()
+{
+	CRect rtClient;
+	GetClientRect(rtClient);
+	float fScale = rtClient.Width() / (float)DataBase_GetSceneWidth();
+	fScale = min(fScale, rtClient.Height() / (float)DataBase_GetSceneHeight());
+	SetZoomScale(fScale, CPoint(0, 0));
+}
+
 void C3DSceneViewWnd::SetZoomScale(float fScale, CPoint ptCenter)
 {
 	//四倍是以1920  1080编辑为标准的，对于比这个更小的分辨率倍数可以不超过4*1920  4*1080的尺寸
@@ -262,7 +271,8 @@ void C3DSceneViewWnd::SetZoomScale(float fScale, CPoint ptCenter)
 		fScale = 0.25;
 	}
 	m_ViewInfo.m_fScale = fScale;
-	PostMessage(WM_SET_RENDERTASK);
+
+	ResetScaledViewInfo(ptCenter);
 }
 
 float C3DSceneViewWnd::GetZoomScale()
@@ -270,8 +280,46 @@ float C3DSceneViewWnd::GetZoomScale()
 	return m_ViewInfo.m_fScale;
 }
 
+void C3DSceneViewWnd::ResetScaledViewInfo(CPoint ptCenter)
+{
+	//固定信息的计算
+	m_ViewInfo.m_nSceneWidth = DataBase_GetSceneWidth() * m_ViewInfo.m_fScale;
+	m_ViewInfo.m_nSceneHeight = DataBase_GetSceneHeight() * m_ViewInfo.m_fScale;
+	CRect rtClient;
+	GetClientRect(rtClient);
+	m_ViewInfo.m_nWndWidth = rtClient.Width();
+	m_ViewInfo.m_nWndHeight = rtClient.Height();
+
+	m_ViewInfo.m_nSceneOffsetX = (m_ViewInfo.m_nWndWidth - m_ViewInfo.m_nSceneWidth) / 2;
+	m_ViewInfo.m_nSceneOffsetY = (m_ViewInfo.m_nWndHeight - m_ViewInfo.m_nSceneHeight) / 2;
+
+	//通过调整滚动条来确保指定点尽量保持不动
+
+	//刷新
+	PostMessage(WM_SET_RENDERTASK);
+}
+
 void C3DSceneViewWnd::RecalcLayout()
 {
+}
+
+CPoint C3DSceneViewWnd::SceneToWnd(CPoint ptScene)
+{
+	CPoint ptWnd = ptScene;
+	ptWnd.x -= m_ViewInfo.m_nSceneOffsetX;
+	ptWnd.x = LONG(ptWnd.x / m_ViewInfo.m_fScale);
+
+	ptWnd.y -= m_ViewInfo.m_nSceneOffsetY;
+	ptWnd.y = LONG(ptWnd.y / m_ViewInfo.m_fScale);
+	return ptWnd;
+}
+
+CPoint C3DSceneViewWnd::WndToScene(CPoint ptWnd)
+{
+	CPoint ptScene = ptWnd;
+	ptScene.x = ptScene.x  * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetX;
+	ptScene.y = ptScene.y  * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetY;
+	return ptScene;
 }
 
 void C3DSceneViewWnd::OnPaint()
@@ -323,6 +371,10 @@ BOOL C3DSceneViewWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	float fScale = GetZoomScale();
 	fScale += (float)zDelta / 2000;
-	SetZoomScale(fScale, CPoint(0, 0));
+
+	ScreenToClient(&pt);
+	CPoint ptScene = WndToScene(pt);
+
+	SetZoomScale(fScale, ptScene);
 	return 0;
 }
