@@ -7,6 +7,34 @@
 #include "UITimeLine.h"
 #include "3DMainViewWnd.h"
 
+struct SafeLineSettingParam
+{
+	BOOL		bDrawSafeLine1;
+	float		fSafeLine1Percent;
+	DWORD		nColorSafeLine1;
+	BOOL		bDrawSafeLine2;
+	float		fSafeLine2Percent;
+	BOOL		bDrawCrossLine;
+	DWORD		nColorCrossLine;
+	BOOL		bUse4_3SafeLine;
+	DWORD		nColorSafeLine2;
+
+	SafeLineSettingParam()
+	{
+		bDrawSafeLine1 = TRUE;
+		fSafeLine1Percent = 0.8f;
+		nColorSafeLine1 = ABGR(255, 0, 255, 255);//»ÆÉ«¾¯¸æ
+
+		bDrawSafeLine2 = TRUE;
+		fSafeLine2Percent = 0.9f;
+		nColorSafeLine2 = ABGR(255, 0, 0, 255);//ºìÉ«½ûÖ¹
+
+		bDrawCrossLine = TRUE;
+		nColorCrossLine = ABGR(255, 70, 48, 37);
+		bUse4_3SafeLine = FALSE;
+	}
+};
+
 class BaseGraphMainFrame :
 	public CSkinFrameWnd
 {
@@ -20,6 +48,7 @@ private:
 	C3DMainViewWnd m_pwndMainView;
 
 	UIElement * m_pCaptureElement;
+	SafeLineSettingParam m_stuSafeLineParam;
 public:
 	BaseGraphMainFrame();
 	virtual ~BaseGraphMainFrame();
@@ -55,5 +84,6 @@ public:
 	void OnBtnZoomAction();
 	void OnBtnRotateAction();
 	void OnBtnSystemSetting();
+	SafeLineSettingParam & GetSafeLineSettingParam();
 };
 

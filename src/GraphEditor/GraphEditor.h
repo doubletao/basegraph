@@ -17,7 +17,7 @@
 class CGraphEditorApp
 {
 protected:
-	BaseGraphMainFrame * m_pMainFrame;
+	static BaseGraphMainFrame * m_pMainFrame;
 public:
 	CGraphEditorApp();
 	~CGraphEditorApp();
@@ -27,5 +27,5 @@ public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 
-	BaseGraphMainFrame * GetBaseGraphFrameWnd();
+	static BaseGraphMainFrame * GetBaseGraphFrameWnd();
 };

@@ -29,6 +29,7 @@ public:
 		int k = 1);
 
 	static BOOL WriteBitmap(LPCTSTR ptszFileName, int iWidth, int iHeight, int iDepth, BYTE* pData);
+	static BOOL WriteBitmap(LPCTSTR ptszFileName, int nDesX, int nDesY, int nDesWidth, int nDesHeight, int nSrcWidth, int nSrcHeight, DWORD * pData);
 
 	static void DrawImageWithAplha(CDC* pDC, HBITMAP hBitmap, const CRect& rc, const CRect& rcPaint,
 		const CRect& rcBmpPart, const CRect& rcCorners, BOOL alphaChannel,

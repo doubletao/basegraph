@@ -36,7 +36,7 @@ BASEGRAPH_DATARENDER_API bool DataRender_Get2DRenderMatrix(IN CString strID, IN 
 	return true;
 }
 
-BASEGRAPH_DATARENDER_API bool DataRender_Query2DBuffer(IN int nWidth, IN int nHeight, OUT int nBufID)
+BASEGRAPH_DATARENDER_API bool DataRender_Query2DBuffer(IN int nWidth, IN int nHeight, OUT int & nBufID)
 {
 	nBufID = DataBufferManager::Instance().Query2DBuffer(nWidth, nHeight);
 	if (nBufID > 0)
@@ -85,6 +85,17 @@ BASEGRAPH_DATARENDER_API bool DataRender_Get2DBuf(IN int nBufferID, OUT StuSimpl
 BASEGRAPH_DATARENDER_API bool DataRender_Clear2DBuf(IN int nBufferID, IN COLORREF color)
 {
 	return DataBufferManager::Instance().Clear(nBufferID, color);
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_DebugOutPut2DBuffer(IN int nBufferID, IN CString strPath)
+{
+	ObjectBuffer * pObjBuffer = DataBufferManager::Instance().Get2DBuf(nBufferID);
+	if (pObjBuffer)
+	{
+		pObjBuffer->DebugWriteImage(strPath);
+		return true;
+	}
+	return false;
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_IsItemSelected(IN CString strID, OUT bool & bSel)

@@ -704,3 +704,8 @@ void BaseGraphMainFrame::OnBtnSystemSetting()
 	OutputDebugString(_T("…Ë÷√\n"));
 	m_uiActionBar.UpdateStatus();
 }
+
+SafeLineSettingParam & BaseGraphMainFrame::GetSafeLineSettingParam()
+{
+	return m_stuSafeLineParam;
+}

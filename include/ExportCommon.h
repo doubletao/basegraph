@@ -44,3 +44,4 @@
 #include "Common\BezierDef.h"
 #include "Common\CommonUtility.h"
 #include "Common\vectorgraph.h"
+#include "Common\2DBufferDC.h"

@@ -102,6 +102,9 @@
     <ClCompile Include="MathOp\VectorGraph.cpp">
       <Filter>MathOp</Filter>
     </ClCompile>
+    <ClCompile Include="2DBuffer\2DBufferDC.cpp">
+      <Filter>2DBuffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -1009,6 +1012,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Common\VectorGraph.h">
       <Filter>MathOp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\2DBufferDC.h">
+      <Filter>2DBuffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

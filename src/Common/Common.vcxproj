@@ -113,6 +113,7 @@
   <ItemGroup>
     <ClCompile Include="2DBuffer\2DBuffer.cpp" />
     <ClCompile Include="2DBuffer\2DBufferAPI.cpp" />
+    <ClCompile Include="2DBuffer\2DBufferDC.cpp" />
     <ClCompile Include="BufferColorSpaceConv.cpp" />
     <ClCompile Include="BufferFunction.cpp" />
     <ClCompile Include="BufferMemSSE.cpp" />
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\Common\2DBuffer.h" />
     <ClInclude Include="..\..\include\Common\2DBufferAPI.h" />
+    <ClInclude Include="..\..\include\Common\2DBufferDC.h" />
     <ClInclude Include="..\..\include\Common\BezierDef.h" />
     <ClInclude Include="..\..\include\Common\BufferCommonDef.h" />
     <ClInclude Include="..\..\include\Common\BufferFunction.h" />

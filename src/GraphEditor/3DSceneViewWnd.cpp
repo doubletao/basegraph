@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "3DSceneViewWnd.h"
 #include "GraphEditorCommonDef.h"
+#include "GraphEditor.h"
 
 IMPLEMENT_DYNCREATE(C3DSceneViewWnd, CWnd)
 
@@ -127,6 +128,9 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 
 				//绘制周边黑场
 				pThis->RenderVirtualZone(hDevice, rtClient);
+
+				//绘制三个buffer
+				pThis->RenderTripleBuffer(hDevice);
 
 				//将画面刷到SwapChain上
 				if (false)
@@ -356,6 +360,173 @@ void C3DSceneViewWnd::RenderVirtualZone(int nDevice, const CRect& rtClient)
 	DXTextureManager_UnQueryTexture(hTex);
 }
 
+void C3DSceneViewWnd::RenderTripleBuffer(int nDevice)
+{
+	RECT oldViewPort;
+	DX3DEngine_GetViewPort(nDevice, &oldViewPort);
+
+	int hCtrlHal = m_BufferInfo.GetControlTexture();
+	int hEditHal = m_BufferInfo.GetEditTexture();
+	int hUIHal = m_BufferInfo.GetUITexture();
+
+	CRect rtClient;
+	GetClientRect(rtClient);
+
+	RenderCtrlBuffer(nDevice);//画安全框和选中框
+	UpdateBufferToHal(nDevice, hCtrlHal, rtClient, m_BufferInfo.GetControlMemBuffer());
+	RenderUIBuffer(nDevice);//画界面元素
+	UpdateBufferToHal(nDevice, hEditHal, rtClient, m_BufferInfo.GetEditMemBuffer());
+
+	RECT rtDst = rtClient;
+	RECT rtCtrlSrc = rtDst;
+
+	DX3DEngine_SetViewPort(nDevice, &rtCtrlSrc);
+	DX3DEngine_BeginRenderTexture(nDevice);
+	DX3DEngine_RenderTexture(nDevice, hCtrlHal, 1, &rtCtrlSrc, &rtDst, FALSE);
+	DX3DEngine_RenderTexture(nDevice, hEditHal, 1, &rtCtrlSrc, &rtDst, FALSE);
+	DX3DEngine_RenderTexture(nDevice, hUIHal, 1, &rtCtrlSrc, &rtDst, FALSE);
+	DX3DEngine_EndRenderTexture(nDevice);
+
+	if (0)
+	{
+		DX3DEngine_DumpRenderTarget(nDevice);
+		DX3DEngine_DumpTexture(nDevice, hCtrlHal);
+		DX3DEngine_DumpTexture(nDevice, hEditHal);
+		DX3DEngine_DumpTexture(nDevice, hUIHal);
+	}
+	DX3DEngine_SetViewPort(nDevice, &oldViewPort);
+
+	return;
+}
+
+void C3DSceneViewWnd::RenderCtrlBuffer(int nDevice)
+{
+	int nWidth = DataBase_GetSceneWidth();
+	int nHeight = DataBase_GetSceneHeight();
+	int nCtrlBuffer = m_BufferInfo.GetControlMemBuffer();
+	//准备好DC
+	CSYBufferDC bufferDC;
+	//清空画布
+	DataRender_Clear2DBuf(nCtrlBuffer, 0);
+	// 先画出编辑控制线，后画选中。
+	StuSimpleBuffer stuSimBuf;
+	DataRender_Get2DBuf(nCtrlBuffer, stuSimBuf);
+	bufferDC.AttachBuffer((DWORD *)stuSimBuf.pBuffer, stuSimBuf.nWidth, stuSimBuf.nHeight);
+	bufferDC.SetZoomRef(m_ViewInfo.m_fScale);
+	CPoint ptOffset(m_ViewInfo.m_nSceneOffsetX, m_ViewInfo.m_nSceneOffsetY);
+	bufferDC.SetOffsetRef(ptOffset.x, ptOffset.y);
+	//拿出安全框配置
+	SafeLineSettingParam & param = CGraphEditorApp::GetBaseGraphFrameWnd()->GetSafeLineSettingParam();
+	//画安全框
+	if (param.bUse4_3SafeLine)
+	{
+		if (param.bDrawSafeLine1)
+		{
+			bufferDC.SetPenColor(param.nColorSafeLine1);
+			float fRatio = param.fSafeLine1Percent;
+			int nWidthTmp = nWidth;
+			int nHeightTmp = nHeight;
+			if ((float)nWidth / nHeight > 4.0f / 3)
+			{
+				nWidthTmp = (float)nHeight * 4 / 3;
+			}
+			else
+			{
+				nHeightTmp = (float)nWidth * 3 / 4;
+			}
+			CRect rtSafe(0, 0, nWidthTmp, nHeightTmp);
+			rtSafe.right *= fRatio;
+			rtSafe.bottom *= fRatio;
+			rtSafe.OffsetRect((nWidth - rtSafe.Width()) / 2, (nHeight - rtSafe.Height()) / 2);
+			bufferDC.DrawRect(rtSafe);
+		}
+		if (param.bDrawSafeLine2)
+		{
+			bufferDC.SetPenColor(param.nColorSafeLine2);
+			float fRatio = param.fSafeLine2Percent;
+			int nWidthTmp = nWidth;
+			int nHeightTmp = nHeight;
+			if ((float)nWidth / nHeight > 4.0f / 3)
+			{
+				nWidthTmp = (float)nHeight * 4 / 3;
+			}
+			else
+			{
+				nHeightTmp = (float)nWidth * 3 / 4;
+			}
+			CRect rtSafe(0, 0, nWidthTmp, nHeightTmp);
+			rtSafe.right *= fRatio;
+			rtSafe.bottom *= fRatio;
+			rtSafe.OffsetRect((nWidth - rtSafe.Width()) / 2, (nHeight - rtSafe.Height()) / 2);
+			bufferDC.DrawRect(rtSafe);
+		}
+	}
+	else
+	{
+		if (param.bDrawSafeLine1)
+		{
+			bufferDC.SetPenColor(param.nColorSafeLine1);
+			float fRatio = param.fSafeLine1Percent;
+			CRect rtSafe(0, 0, nWidth, nHeight);
+			rtSafe.right *= fRatio;
+			rtSafe.bottom *= fRatio;
+			rtSafe.OffsetRect((nWidth - rtSafe.Width()) / 2, (nHeight - rtSafe.Height()) / 2);
+			bufferDC.DrawRect(rtSafe);
+		}
+		if (param.bDrawSafeLine2)
+		{
+			bufferDC.SetPenColor(param.nColorSafeLine2);
+			float fRatio = param.fSafeLine2Percent;
+			CRect rtSafe(0, 0, nWidth, nHeight);
+			rtSafe.right *= fRatio;
+			rtSafe.bottom *= fRatio;
+			rtSafe.OffsetRect((nWidth - rtSafe.Width()) / 2, (nHeight - rtSafe.Height()) / 2);
+			bufferDC.DrawRect(rtSafe);
+		}
+	}
+	//画十字基准线
+	if (param.bDrawCrossLine)
+	{
+		bufferDC.SetPenColor(param.nColorCrossLine);
+		bufferDC.MoveTo(nWidth / 2, 0);
+		bufferDC.LineTo(nWidth / 2, nHeight);
+		bufferDC.MoveTo(0, nHeight / 2);
+		bufferDC.LineTo(nWidth, nHeight / 2);
+	}
+}
+
+void C3DSceneViewWnd::RenderUIBuffer(int nDevice)
+{
+}
+
+BOOL C3DSceneViewWnd::UpdateBufferToHal(int hDevice, int hDesHal, RECT rtDirty, int n2DBufferID)
+{
+	if (false)
+	{
+		DataRender_DebugOutPut2DBuffer(n2DBufferID, _T("E:debug.bmp"));
+	}
+	StuSimpleBuffer stuBuffer;
+	DataRender_Get2DBuf(n2DBufferID, stuBuffer);
+	int hTrans = DXTextureManager_QueryTexture(DXTexture_MemTexture, 1);
+	DX3DEngine_UpLoad(
+		hDesHal,
+		hDevice,
+		hTrans,
+		rtDirty.left,
+		rtDirty.top,
+		rtDirty.right - rtDirty.left,
+		rtDirty.bottom - rtDirty.top,
+		(DWORD *)stuBuffer.pBuffer,
+		rtDirty.left,
+		rtDirty.top,
+		rtDirty.right - rtDirty.left,
+		rtDirty.bottom - rtDirty.top,
+		stuBuffer.nWidth,
+		stuBuffer.nHeight);
+	DXTextureManager_UnQueryTexture(hTrans);
+	return 1;
+}
+
 void C3DSceneViewWnd::DrawEditBackBuffer(int hDevice, const CRect & rtInValid, const CRect & rtValid, int nRTTex, int hTex, float fAlpha)
 {
 	if (false)
@@ -393,6 +564,8 @@ void C3DSceneViewWnd::OnPaint()
 int C3DSceneViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	CWnd::OnCreate(lpCreateStruct);
+
+	m_BufferInfo.Initialize(DataBase_GetSceneWidth(), DataBase_GetSceneHeight());
 
 	m_thPreDecoderThread = CreateThread(NULL, 0, PreDecoderThread, this, 0, NULL);
 	::SetThreadPriority(m_thPreDecoderThread, THREAD_PRIORITY_TIME_CRITICAL);

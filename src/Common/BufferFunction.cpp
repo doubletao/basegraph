@@ -81,6 +81,31 @@ BOOL BufferFunction::WriteBitmap(LPCTSTR ptszFileName, int iWidth, int iHeight, 
 	return TRUE;
 }
 
+BOOL BufferFunction::WriteBitmap(LPCTSTR ptszFileName, int nDesX, int nDesY, int nDesWidth, int nDesHeight, int nSrcWidth, int nSrcHeight, DWORD * pData)
+{
+	BITMAPFILEHEADER stFileHdr;
+	stFileHdr.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+	stFileHdr.bfSize = sizeof(BITMAPFILEHEADER);
+	stFileHdr.bfType = 0x4d42;
+	BITMAPINFOHEADER stInfoHdr;
+	memset(&stInfoHdr, 0, sizeof(BITMAPINFOHEADER));
+	stInfoHdr.biSize = sizeof(BITMAPINFOHEADER);
+	stInfoHdr.biPlanes = 1;
+	stInfoHdr.biWidth = nSrcWidth;
+	stInfoHdr.biHeight = nSrcHeight;
+	stInfoHdr.biBitCount = 4;
+	stInfoHdr.biSizeImage = stInfoHdr.biWidth * stInfoHdr.biHeight * stInfoHdr.biBitCount / 8;
+	FILE* fp = NULL;
+	_tfopen_s(&fp, ptszFileName, _T("wb"));
+	if (!fp)
+		return FALSE;
+	fwrite(&stFileHdr, 1, sizeof(BITMAPFILEHEADER), fp);
+	fwrite(&stInfoHdr, 1, sizeof(BITMAPINFOHEADER), fp);
+	size_t nSize = fwrite(pData, 1, stInfoHdr.biSizeImage, fp);
+	fclose(fp);
+	return TRUE;
+}
+
 void BufferFunction::DrawImageWithAplha(CDC * pDC, HBITMAP hBitmap, const CRect & rc, const CRect & rcPaint, const CRect & rcBmpPart, const CRect & rcCorners, BOOL alphaChannel, BYTE uFade, BOOL hole)
 {
 	if (hBitmap == NULL) return;
