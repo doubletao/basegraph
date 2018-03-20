@@ -20,12 +20,43 @@ C3DViewBufferInfo::~C3DViewBufferInfo()
 
 bool C3DViewBufferInfo::Initialize(int nScreenWidth, int nScreenHeight)
 {
-	return false;
+	m_nWidth = nScreenWidth;
+	m_nHeight = nScreenHeight;
+
+	assert(DataRender_Query2DBuffer(m_nWidth, m_nHeight, m_nEditBuffer));
+	DataRender_Clear2DBuf(m_nEditBuffer, 0);
+	assert(DataRender_Query2DBuffer(m_nWidth, m_nHeight, m_nUIBuffer));
+	DataRender_Clear2DBuf(m_nUIBuffer, 0);
+	assert(DataRender_Query2DBuffer(m_nWidth, m_nHeight, m_nCtrlBuffer));
+	DataRender_Clear2DBuf(m_nCtrlBuffer, 0);
+
+	m_hEditTexture = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
+	m_hUITexture = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
+	m_hCtrlTexture = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
+
+	return true;
 }
 
 bool C3DViewBufferInfo::Release()
 {
-	return false;
+	if (m_nEditBuffer)
+	{
+		assert(DataRender_UnQuery2DBuffer(m_nEditBuffer));
+	}
+	if (m_nUIBuffer)
+	{
+		DataRender_UnQuery2DBuffer(m_nUIBuffer);
+	}
+	if (m_nCtrlBuffer)
+	{
+		DataRender_UnQuery2DBuffer(m_nCtrlBuffer);
+	}
+
+	DXTextureManager_UnQueryTexture(m_hEditTexture);
+	DXTextureManager_UnQueryTexture(m_hUITexture);
+	DXTextureManager_UnQueryTexture(m_hCtrlTexture);
+
+	return true;
 }
 
 int C3DViewBufferInfo::GetControlMemBuffer()

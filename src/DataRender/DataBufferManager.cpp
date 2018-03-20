@@ -111,9 +111,12 @@ bool DataBufferManager::UnQuery2DBuffer(int & nBufferID)
 {
 	if (m_map2DBuffer.count(nBufferID) > 0)
 	{
-		m_map2DBuffer[nBufferID]->ReleaseUse();
-		nBufferID = 0;
-		return true;
+		if (m_map2DBuffer[nBufferID])
+		{
+			m_map2DBuffer[nBufferID]->ReleaseUse();
+			nBufferID = 0;
+			return true;
+		}
 	}
 	return false;
 }
@@ -150,4 +153,17 @@ ObjectBuffer * DataBufferManager::Get2DBuf(int nBufferID)
 		return m_map2DBuffer[nBufferID];
 	}
 	return nullptr;
+}
+
+bool DataBufferManager::Clear(int nBufferID, COLORREF color)
+{
+	if (m_map2DBuffer.count(nBufferID) > 0)
+	{
+		if (m_map2DBuffer[nBufferID])
+		{
+			m_map2DBuffer[nBufferID]->Clear(color);
+			return true;
+		}
+	}
+	return false;
 }

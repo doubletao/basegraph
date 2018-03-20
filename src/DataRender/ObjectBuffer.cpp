@@ -112,6 +112,12 @@ int ObjectBuffer::GetHeight()
 	return m_nHeight;
 }
 
+void ObjectBuffer::Clear(COLORREF color)
+{
+	DWORD * pBuf = (DWORD *)m_pBuffer;
+	std::fill(pBuf, pBuf + m_nWidth * m_nHeight, color);
+}
+
 void ObjectBuffer::DebugWriteImage(CString strPath)
 {
 	BufferFunction::WriteBitmap(strPath, GetWidth(), GetHeight(), 32, GetBuffer());

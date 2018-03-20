@@ -34,6 +34,8 @@ public:
 	int GetWidth();
 	int GetHeight();
 
+	void Clear(COLORREF color);
+
 	void DebugWriteImage(CString strPath);
 };
 
