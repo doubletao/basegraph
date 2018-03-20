@@ -75,7 +75,7 @@ float3 BASEGRAPH_DATABASE_API DataBase_GetItemCenter(IN CString strID)
 
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemAngle(IN CString strID)
 {
-	return DataBaseManager::Instance().GetItemCenter(strID);
+	return DataBaseManager::Instance().GetItemAngle(strID);
 }
 
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID)

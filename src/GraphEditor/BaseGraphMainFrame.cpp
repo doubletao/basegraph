@@ -407,7 +407,9 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	auto CreateTestTitlewordObj = [](CString strName, CString strText, CString strFontName, CString strDebugPath, int nBegin, int nEnd,
-		float fXPos, float fYPos, float fZPos, bool bHor)
+		float fXPos, float fYPos, float fZPos,
+		float fXRorate, float fYRorate, float fZRorate,
+		bool bHor)
 	{
 		CString strObjID = _T("");
 		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = DataBase_GetDefaultParam(BaseGraph_DataBase::ObjectType_Titleword);
@@ -420,6 +422,9 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		mapParam[BaseGraph_DataBase::SpacePosition_X_Float].SetValue(fXPos);
 		mapParam[BaseGraph_DataBase::SpacePosition_Y_Float].SetValue(fYPos);
 		mapParam[BaseGraph_DataBase::SpacePosition_Z_Float].SetValue(fYPos);
+		mapParam[BaseGraph_DataBase::SpaceRotate_X_Float].SetValue(fXRorate);
+		mapParam[BaseGraph_DataBase::SpaceRotate_Y_Float].SetValue(fYRorate);
+		mapParam[BaseGraph_DataBase::SpaceRotate_Z_Float].SetValue(fZRorate);
 		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Titleword, mapParam, strObjID);
 		if (!strObjID.IsEmpty())
 		{
@@ -444,31 +449,53 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mapText[_T("新宋体_文本样例")] = _T("新宋体");
 	{
 		int i = 0;
-		for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++, i++)
+		for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)
 		{
-			CString strName;
-			strName.Format(_T("文本_%s"), it->first);
-			CString strDebug;
-			strDebug.Format(_T("e:\\%s.bmp"), it->first);
-			int nBegin = 100 * i;
-			int nEnd = 500 * i + 100;
-
-			float fXPos = 0.0f;
-			float fYPos = 0.0f;
-			float fZPos = 0.0f;
-			bool bHor = i % 2 == 0;
-			if (bHor)
+			for (size_t loop = 0; loop < 2; loop++, i++)
 			{
-				fXPos = 100.0f;
-				fYPos = 100.0f * i / 2;
-			}
-			else
-			{
-				fXPos = -100.0f * i / 2;
-				fYPos = 300.0f;
-			}
+				CString strName;
+				strName.Format(_T("文本_%s"), it->first);
+				CString strDebug;
+				strDebug.Format(_T("e:\\%s.bmp"), it->first);
+				int nBegin = 100 * i;
+				int nEnd = 500 * i + 100;
 
-			CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd, fXPos, fYPos, fZPos, bHor);
+				float fXPos = 0.0f;
+				float fYPos = 0.0f;
+				float fZPos = 0.0f;
+
+				float fXRotate = 0.0f;
+				float fYRotate = 0.0f;
+				float fZRotate = 0.0f;
+
+				bool bHor = i % 2 == 0;
+				if (bHor)
+				{
+					fXPos = 100.0f;
+					fYPos = 100.0f * i / 2;
+					fXRotate = i * 3.14f / 6;
+				}
+				else
+				{
+					fXPos = -100.0f * i / 2;
+					fYPos = 300.0f;
+					fYRotate = i * 3.14f / 6;
+				}
+				fZRotate = i * 3.14f / 6;
+
+				if (i % 3)
+				{
+					CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd, fXPos, fYPos, fZPos,
+						fXRotate, fYRotate, fZRotate,
+						bHor);
+				}
+				else
+				{
+					CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd, fXPos, fYPos, fZPos,
+						0.0f, 0.0f, 0.0f,
+						bHor);
+				}
+			}
 		}
 	}
 
