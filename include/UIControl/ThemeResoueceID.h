@@ -190,4 +190,6 @@ enum ThemeImageValueDef
 	ThemeImage_TimeLineObjectLeftAreaBk,
 	ThemeImage_TimeLineObjectRightAreaBk,
 	ThemeImage_TimeLineRulerBk,
+
+	ThemeImage_SceneLayoutBk,
 };

@@ -111,8 +111,9 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				DX3DEngine_SetRenderTarget(hDevice, hTex, hDepth);
 
 				//设置好视窗
-				RECT viewPort;
-				pThis->GetClientRect(&viewPort);
+				CRect rtClient;
+				pThis->GetClientRect(rtClient);
+				RECT viewPort = { rtClient.left, rtClient.top, rtClient.right, rtClient.bottom };
 				DX3DEngine_SetViewPort(hDevice, &viewPort);
 				DX3DEngine_SetScissor(hDevice, &viewPort);
 				OffsetRect(&viewPort, -viewPort.right / 2, -viewPort.bottom / 2);
@@ -121,89 +122,40 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				DataBaseLocker DataLocker;
 				DXEngineLocker EngineLocker(hDevice);
 
-				//取物件列表来
-				std::vector<CString> vecObjID;
-				if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
+				//绘制物件
+				pThis->RenderAllItem(hDevice, hTex, hDepth, fScale, viewPort);
+
+				//绘制周边黑场
+				pThis->RenderVirtualZone(hDevice, rtClient);
+
+				//将画面刷到SwapChain上
+				if (false)
+					DX3DEngine_DumpTexture(hDevice, hTex);
+				int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);
+				CRect rtDes = rtClient;
+				//rtDes.OffsetRect(100, 0);
+
+				if (rtClient.Width()>0)
 				{
-					//如果没有物件，则清屏
-					if (vecObjID.size() < 1)
-					{
-						DX3DEngine_Lock(hDevice);
-						int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);
-						DX3DEngine_ClearTexture(hDevice, hSwapChainBuffer, RGBA(255, 125, 125, 255));
-						DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain);
-						DX3DEngine_UnLock(hDevice);
-						DXTextureManager_UnQueryTexture(hTex);
-						DXTextureManager_UnQueryTexture(hDepth);
-						ResetEvent(pThis->m_hSeekReadyEvent);
-						continue;
-					}
-
-					//设置帧号SetFrame
-					int nCurFrame = DataRender_GetCurFrame();
-					DataRender_SetFrame(nCurFrame);
-
-					//遍历物件拿到bufer
-					for (size_t i = 0; i < vecObjID.size(); i++)
-					{
-						CString strObjID = vecObjID[i];
-						DataRender_UpdateRender(strObjID);
-						if (false)
-						{
-							StuSimpleBuffer stuSimpleBuf;
-							if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
-							{
-								BufferFunction::WriteBitmap(_T("e:\\test.bmp"), stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
-							}
-						}
-						DXHalDef32 * pHalDef = nullptr;
-						matrix4f worldMat;
-						if (DataRender_Get2DRenderMatrix(strObjID, fScale, worldMat))
-						{
-							if (DataRender_GetDesHalDef(strObjID, pHalDef))
-							{
-								if (pHalDef)
-								{
-									//渲染bufer到3D
-									DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
-									//DX3DEngine_CopyTexture(hDevice, hTex, viewPort.left, viewPort.top, pHalDef->m_rtBound.right - pHalDef->m_rtBound.left, pHalDef->m_rtBound.bottom - pHalDef->m_rtBound.top, pHalDef->m_hTex, 0, 0, pHalDef->m_rtBound.right - pHalDef->m_rtBound.left, pHalDef->m_rtBound.bottom - pHalDef->m_rtBound.top);
-									if (false)
-									{
-										DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));
-										DX3DEngine_DumpRenderTarget(hDevice);
-									}
-								}
-							}
-						}
-					}
-
-					//刷新SwapChain
 					if (false)
 						DX3DEngine_DumpTexture(hDevice, hTex);
-					int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);
-					CRect rtClient;
-					pThis->GetClientRect(rtClient);
-					CRect rtDes = rtClient;
-					//rtDes.OffsetRect(100, 0);
-
-					if (rtClient.Width()>0)
-					{
-						if (false)
-							DX3DEngine_DumpTexture(hDevice, hTex);
-					}
-
-					DX3DEngine_RGBA_To_BGRA(hDevice, hTex, &rtClient, hSwapChainBuffer, &rtDes);
-					if (false)
-						DX3DEngine_DumpTexture(hDevice, hSwapChainBuffer);
-					DXTextureManager_UnQueryTexture(hTex);
-					DXTextureManager_UnQueryTexture(hDepth);
-
-					DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain, 0);
-
-					OutputDebugString(_T("C3DSceneViewWnd::PreDecoderThread\n"));
 				}
-				pThis->RenderCountLock();
+
+				DX3DEngine_RGBA_To_BGRA(hDevice, hTex, &rtClient, hSwapChainBuffer, &rtDes);
+				if (false)
+					DX3DEngine_DumpTexture(hDevice, hSwapChainBuffer);
+
+				OutputDebugString(_T("C3DSceneViewWnd::PreDecoderThread\n"));
+
+				//善后
+				DXTextureManager_UnQueryTexture(hTex);
+				DXTextureManager_UnQueryTexture(hDepth);
+
+				//刷新
+				DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain, 0);
+
 				//待刷新数自减
+				pThis->RenderCountLock();
 				if (pThis->m_nRenderCount > 0)
 				{
 					--pThis->m_nRenderCount;
@@ -225,8 +177,64 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 	return 0;
 }
 
+void C3DSceneViewWnd::RenderAllItem(int hDevice, int hTex, int hDepth, float fScale, RECT &viewPort)
+{
+	//取物件列表来
+	std::vector<CString> vecObjID;
+	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
+	{
+		//如果没有物件，则清屏
+		if (vecObjID.size() < 1)
+		{
+			DX3DEngine_Lock(hDevice);
+			int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, m_ViewInfo.m_hSwapChain);
+			DX3DEngine_ClearTexture(hDevice, hSwapChainBuffer, RGBA(255, 125, 125, 255));
+			return;
+		}
+
+		//设置帧号SetFrame
+		int nCurFrame = DataRender_GetCurFrame();
+		DataRender_SetFrame(nCurFrame);
+
+		//遍历物件拿到bufer
+		for (size_t i = 0; i < vecObjID.size(); i++)
+		{
+			CString strObjID = vecObjID[i];
+			DataRender_UpdateRender(strObjID);
+			if (false)
+			{
+				StuSimpleBuffer stuSimpleBuf;
+				if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
+				{
+					BufferFunction::WriteBitmap(_T("e:\\test.bmp"), stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
+				}
+			}
+			DXHalDef32 * pHalDef = nullptr;
+			matrix4f worldMat;
+			if (DataRender_Get2DRenderMatrix(strObjID, fScale, worldMat))
+			{
+				if (DataRender_GetDesHalDef(strObjID, pHalDef))
+				{
+					if (pHalDef)
+					{
+						//渲染bufer到3D
+						DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
+						if (false)
+						{
+							DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));
+							DX3DEngine_DumpRenderTarget(hDevice);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 C3DSceneViewWnd::C3DSceneViewWnd()
 	: m_nRenderCount(0)
+	, m_nSceneOutBackTex(0)
+	, m_fSceneOutBackTexAlpha(0.7f)
 {
 	InitializeCriticalSection(&m_lockRendCount);
 	m_thPreDecoderThread = NULL;
@@ -245,6 +253,10 @@ C3DSceneViewWnd::~C3DSceneViewWnd()
 		CloseHandle(m_hExitPreDecoderEvent);
 	if (m_hSeekReadyEvent)
 		CloseHandle(m_hSeekReadyEvent);
+	if (m_nSceneOutBackTex)
+	{
+		DX3DEngine_ReleaseTexture(DX3DEngine_GetMainDevice(), m_nSceneOutBackTex);
+	}
 }
 
 void C3DSceneViewWnd::AdjustViewFit()
@@ -283,8 +295,8 @@ float C3DSceneViewWnd::GetZoomScale()
 void C3DSceneViewWnd::ResetScaledViewInfo(CPoint ptCenter)
 {
 	//固定信息的计算
-	m_ViewInfo.m_nSceneWidth = DataBase_GetSceneWidth() * m_ViewInfo.m_fScale;
-	m_ViewInfo.m_nSceneHeight = DataBase_GetSceneHeight() * m_ViewInfo.m_fScale;
+	m_ViewInfo.m_nSceneWidth = (int)(DataBase_GetSceneWidth() * m_ViewInfo.m_fScale);
+	m_ViewInfo.m_nSceneHeight = (int)(DataBase_GetSceneHeight() * m_ViewInfo.m_fScale);
 	CRect rtClient;
 	GetClientRect(rtClient);
 	m_ViewInfo.m_nWndWidth = rtClient.Width();
@@ -317,9 +329,59 @@ CPoint C3DSceneViewWnd::SceneToWnd(CPoint ptScene)
 CPoint C3DSceneViewWnd::WndToScene(CPoint ptWnd)
 {
 	CPoint ptScene = ptWnd;
-	ptScene.x = ptScene.x  * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetX;
-	ptScene.y = ptScene.y  * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetY;
+	ptScene.x = LONG(ptScene.x  * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetX);
+	ptScene.y = LONG(ptScene.y  * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetY);
 	return ptScene;
+}
+
+void C3DSceneViewWnd::RenderVirtualZone(int nDevice, const CRect& rtClient)
+{
+	int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
+	DX3DEngine_ClearTexture(nDevice, hTex, 0);
+
+	RECT rtDraw = { m_ViewInfo.m_nSceneOffsetX,
+		m_ViewInfo.m_nSceneOffsetY ,
+		m_ViewInfo.m_nSceneOffsetX + m_ViewInfo.m_nSceneWidth
+		,m_ViewInfo.m_nSceneOffsetY + m_ViewInfo.m_nSceneHeight };
+
+	if (!m_nSceneOutBackTex)
+	{
+		CImage * pImgSceneLayoutBk = UIControl_GetImage(ThemeImage_SceneLayoutBk);
+		m_nSceneOutBackTex = DX3DEngine_CreateTexFromBuffer(nDevice, (DWORD *)pImgSceneLayoutBk->GetBits(), pImgSceneLayoutBk->GetWidth(), pImgSceneLayoutBk->GetHeight(), DXTexture_Normal2DTex);
+	}
+	DrawEditBackBuffer(nDevice, rtClient, rtDraw, hTex, m_nSceneOutBackTex, m_fSceneOutBackTexAlpha);
+	DX3DEngine_BeginRenderTexture(nDevice);
+	DX3DEngine_RenderTexture(nDevice, hTex, 1, &rtClient, &rtClient, TRUE);
+	DX3DEngine_EndRenderTexture(nDevice);
+	DXTextureManager_UnQueryTexture(hTex);
+}
+
+void C3DSceneViewWnd::DrawEditBackBuffer(int hDevice, const CRect & rtInValid, const CRect & rtValid, int nRTTex, int hTex, float fAlpha)
+{
+	if (false)
+	{
+		TRACE(_T("rtInValid:(%d, %d, %d, %d)\n"), rtInValid.left, rtInValid.top, rtInValid.right, rtInValid.bottom);
+		TRACE(_T("rtValid:(%d, %d, %d, %d)\n"), rtValid.left, rtValid.top, rtValid.right, rtValid.bottom);
+	}
+	int hOldRt, hOldDepth;
+	if (0)
+		DX3DEngine_DumpTexture(hDevice, hTex);
+	DX3DEngine_GetRenderTarget(hDevice, &hOldRt, &hOldDepth);
+	DX3DEngine_SetRenderTarget(hDevice, nRTTex, NULL);
+	DX3DEngine_SetViewPort(hDevice, &rtInValid);
+	DX3DEngine_BeginRenderTexture(hDevice);
+	RECT srcRt = { 0,0,0,0 };
+	DX3DEngine_GetTextureInfo(hDevice, hTex, (int*)&srcRt.right, (int*)&srcRt.bottom, NULL);
+	//背景为纯色，采用拉伸绘制，比平铺效率高
+	DX3DEngine_RenderTexture(hDevice, hTex, fAlpha, &srcRt, &rtInValid, FALSE, BOTH_FIELD, TRUE);
+	DX3DEngine_EndRenderTexture(hDevice);
+	if (0)
+		DX3DEngine_DumpTexture(hDevice, nRTTex);
+	DX3DEngine_SetViewPort(hDevice, &rtValid);
+	DX3DEngine_ClearScreen(hDevice, 0x00000000, 1, DX_CLEAR_RENDERTARGET_ONLY);
+	DX3DEngine_SetRenderTarget(hDevice, hOldRt, hOldDepth);
+	if (0)
+		DX3DEngine_DumpTexture(hDevice, nRTTex);
 }
 
 void C3DSceneViewWnd::OnPaint()
@@ -359,7 +421,7 @@ void C3DSceneViewWnd::OnSize(UINT nType, int cx, int cy)
 		DX3DEngine_ResizeSwapChain(DX3DEngine_GetMainDevice(), m_ViewInfo.m_hSwapChain, cx, cy);
 	}
 
-	OnPaint();
+	AdjustViewFit();
 }
 
 BOOL C3DSceneViewWnd::OnEraseBkgnd(CDC * pDC)

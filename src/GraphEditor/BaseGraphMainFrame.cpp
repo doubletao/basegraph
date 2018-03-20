@@ -574,7 +574,7 @@ void BaseGraphMainFrame::OnSize(UINT nType, int cx, int cy)
 	//时间线在整个窗口底部
 	m_uiTimeLine.MoveTo(0, rtClient.Height() - nTimeLineHeight + nGap, rtClient.Width() - nPropertyViewWidth, nTimeLineHeight);
 	//回显窗在中间
-	m_pwndMainView.MoveWindow(nActionBarWidth, nPlayControlBarHeight, rtClient.Width() - nActionBarWidth - nPropertyViewWidth, rtClient.Height() - nPlayControlBarHeight - nTimeLineHeight);
+	m_pwndMainView.MoveWindow(nActionBarWidth + nGap, nPlayControlBarHeight + nGap * 2, rtClient.Width() - nActionBarWidth - nPropertyViewWidth - nGap * 2, rtClient.Height() - nPlayControlBarHeight - nTimeLineHeight - nGap * 2);
 
 	CSkinFrameWnd::OnSize(nType, cx, cy);
 }

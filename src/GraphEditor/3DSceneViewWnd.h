@@ -12,6 +12,8 @@ class C3DSceneViewWnd : public CWnd
 protected:
 	C3DViewInfo m_ViewInfo;
 	C3DViewBufferInfo m_BufferInfo;
+	int m_nSceneOutBackTex;//屏幕外的半透区域
+	float m_fSceneOutBackTexAlpha;
 protected:
 	//渲染触发线程管理相关
 	int m_nRenderCount;//待渲染次数
@@ -28,6 +30,9 @@ protected:
 	CPoint SceneToWnd(CPoint ptScene);
 	CPoint WndToScene(CPoint ptWnd);
 
+	void RenderVirtualZone(int nDevice, const CRect& rtClient);//绘制周边区域（屏幕外的黑边）
+	void DrawEditBackBuffer(int hDevice, const CRect& rtInValid, const CRect& rtValid, int nRTTex, int hTex, float fAlpha);
+
 	afx_msg LRESULT OnSetRenderTask(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT AddOneRenderTask(WPARAM, LPARAM);
 	afx_msg void OnPaint();
@@ -36,7 +41,9 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
-	static DWORD WINAPI PreDecoderThread(LPVOID pParam);//解码线程
+	static DWORD WINAPI PreDecoderThread(LPVOID pParam);
+	void RenderAllItem(int hDevice, int hTex, int hDepth, float fScale, RECT &viewPort);
+	//解码线程
 public:
 	C3DSceneViewWnd();
 	~C3DSceneViewWnd();
