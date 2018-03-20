@@ -135,6 +135,14 @@ void UITimeLine::AdjustScrollZoom(int nDeta)
 	}
 }
 
+void UITimeLine::SetFrame(int nFrame, float fFPS)
+{
+	if (m_pTimeCode)
+	{
+		m_pTimeCode->SetFrame(nFrame, fFPS);
+	}
+}
+
 bool UITimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
 {
 	if (!m_bCreated)

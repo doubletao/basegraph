@@ -77,3 +77,19 @@ EmUIElementMsgRet UISimpleTimeLine::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM w
 	}
 	return UIElementMsgSuccContinue;
 }
+
+void UISimpleTimeLine::SetWholeFrame(int nFrame)
+{
+	if (m_pSimpTimeLine)
+	{
+		m_pSimpTimeLine->SetLimit(0, nFrame);
+	}
+}
+
+void UISimpleTimeLine::SetFrame(int nFrame)
+{
+	if (m_pSimpTimeLine)
+	{
+		m_pSimpTimeLine->SetPos(nFrame);
+	}
+}

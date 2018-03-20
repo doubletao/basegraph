@@ -16,4 +16,6 @@ protected:
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	void SetWholeFrame(int nFrame);
+	void SetFrame(int nFrame);
 };

@@ -27,5 +27,6 @@ public:
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	void AdjustScrollZoom();//横向滚动条适配到全屏显示
 	void AdjustScrollZoom(int nDeta);//调整横向滚动条,nDeta可正可负,每单位调整百分之n
+	void SetFrame(int nFrame, float fFPS = 25.0);//这个浮点目前没有意义，内部会直接转int
 };
 
