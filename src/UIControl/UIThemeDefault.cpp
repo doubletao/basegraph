@@ -118,6 +118,10 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_X, RGB(0x0a, 0x0a, 0x0a)));
 
 	/////////////////////////////////////////////////////////////////////
+	//ÎÄ±¾
+	m_mapCStringValue.insert(std::make_pair(ThemeCString_CursorOpenHandName, _T("HandDragOpen.cur")));
+	m_mapCStringValue.insert(std::make_pair(ThemeCString_CursorCloseHandName, _T("HandDragClose.cur")));
+	/////////////////////////////////////////////////////////////////////
 	//Í¼Æ¬
 	auto LoadOneImg = [&](int nID, CString strPath)
 	{

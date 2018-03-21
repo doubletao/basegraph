@@ -107,3 +107,12 @@ int UITheme::GetIntValue(int nIntID)
 	}
 	return m_nDefaultInt;
 }
+
+CString UITheme::GetCStringValue(int nCStringID)
+{
+	if (m_mapCStringValue.count(nCStringID) > 0)
+	{
+		return m_mapCStringValue[nCStringID];
+	}
+	return _T("");
+}

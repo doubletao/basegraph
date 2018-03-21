@@ -17,6 +17,8 @@ BEGIN_MESSAGE_MAP(C3DSceneViewWnd, CWnd)
 	ON_MESSAGE(WM_MSG_ExcuteRenderTask, OnSetRenderTask)
 	ON_WM_MOUSEWHEEL()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
@@ -242,6 +244,11 @@ C3DSceneViewWnd::C3DSceneViewWnd()
 	: m_nRenderCount(0)
 	, m_nSceneOutBackTex(0)
 	, m_fSceneOutBackTexAlpha(0.7f)
+	, m_bHandDraging(false)
+	, m_ptHandDragStart(0)
+	, m_hDefaultCur(nullptr)
+	, m_hHandDragCurOpen(nullptr)
+	, m_hHandDragCurClose(nullptr)
 {
 	InitializeCriticalSection(&m_lockRendCount);
 	m_thPreDecoderThread = NULL;
@@ -264,6 +271,9 @@ C3DSceneViewWnd::~C3DSceneViewWnd()
 	{
 		DX3DEngine_ReleaseTexture(DX3DEngine_GetMainDevice(), m_nSceneOutBackTex);
 	}
+	DeleteObject(m_hDefaultCur);
+	DeleteObject(m_hHandDragCurOpen);
+	DeleteObject(m_hHandDragCurClose);
 }
 
 void C3DSceneViewWnd::AdjustViewFit()
@@ -335,6 +345,52 @@ void C3DSceneViewWnd::ResetViewInfo(float fScale)
 
 	m_ViewInfo.m_nSceneOffsetX = (m_ViewInfo.m_nWndWidth - m_ViewInfo.m_nSceneWidth) / 2;
 	m_ViewInfo.m_nSceneOffsetY = (m_ViewInfo.m_nWndHeight - m_ViewInfo.m_nSceneHeight) / 2;
+}
+
+bool C3DSceneViewWnd::DealHandDragMsg(UINT nMsg, UINT nFlags, CPoint point)
+{
+	bool bAlt = ::GetKeyState(VK_MENU) & 0x8000;
+	switch (nMsg)
+	{
+	case WM_LBUTTONDOWN:
+		if (bAlt)
+		{
+			m_ptHandDragStart = point;
+			m_bHandDraging = true;
+			SetHandCloseCursor();
+			SetCapture();
+			return true;
+		}
+		break;
+	case WM_MOUSEMOVE:
+		if (m_bHandDraging)
+		{
+			HandDragView(point);
+			return true;
+		}
+		break;
+	case WM_LBUTTONUP:
+		if (m_bHandDraging)
+		{
+			if (bAlt)
+			{
+				m_bHandDraging = false;
+				m_ptHandDragStart = 0;
+				SetHandOpenCursor();
+			}
+			else
+			{
+				m_bHandDraging = false;
+				SetDefaultCursor();
+			}
+			ReleaseCapture();
+			return true;
+		}
+		break;
+	default:
+		break;
+	}
+	return false;
 }
 
 void C3DSceneViewWnd::RecalcLayout()
@@ -586,6 +642,41 @@ void C3DSceneViewWnd::DrawEditBackBuffer(int hDevice, const CRect & rtInValid, c
 		DX3DEngine_DumpTexture(hDevice, nRTTex);
 }
 
+void C3DSceneViewWnd::HandDragView(CPoint pt)
+{
+}
+
+void C3DSceneViewWnd::SetDefaultCursor()
+{
+	if (!m_hDefaultCur)
+	{
+		m_hDefaultCur = LoadCursor(NULL, IDC_ARROW);
+	}
+	SetCursor(m_hDefaultCur);
+}
+
+void C3DSceneViewWnd::SetHandOpenCursor()
+{
+	if (!m_hHandDragCurOpen)
+	{
+		//CString curPath = SYPath_GetPath(SY_PATH_SYS);
+		//curPath.Append(_T("\\cursorex\\"));
+		//curPath.Append(_T("HandDragClose.cur"));
+		//m_hHandDragCurClose = LoadCursorFromFile(curPath);
+		m_hHandDragCurOpen = LoadCursor(NULL, IDC_CROSS);
+	}
+	SetCursor(m_hHandDragCurOpen);
+}
+
+void C3DSceneViewWnd::SetHandCloseCursor()
+{
+	if (!m_hHandDragCurClose)
+	{
+		m_hHandDragCurClose = LoadCursor(NULL, IDC_HAND);
+	}
+	SetCursor(m_hHandDragCurClose);
+}
+
 void C3DSceneViewWnd::OnPaint()
 {
 	CPaintDC dc(this);
@@ -659,4 +750,31 @@ void C3DSceneViewWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 	{
 		AdjustViewFit();
 	}
+}
+
+void C3DSceneViewWnd::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (DealHandDragMsg(WM_LBUTTONDOWN, nFlags, point))
+	{
+		return;
+	}
+	return CWnd::OnLButtonDown(nFlags, point);
+}
+
+void C3DSceneViewWnd::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	if (DealHandDragMsg(WM_LBUTTONUP, nFlags, point))
+	{
+		return;
+	}
+	return CWnd::OnLButtonDown(nFlags, point);
+}
+
+void C3DSceneViewWnd::OnMouseMove(UINT nFlags, CPoint point)
+{
+	if (DealHandDragMsg(WM_MOUSEMOVE, nFlags, point))
+	{
+		return;
+	}
+	return CWnd::OnLButtonDown(nFlags, point);
 }

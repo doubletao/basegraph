@@ -10,11 +10,20 @@ class C3DSceneViewWnd
 {
 	DECLARE_DYNCREATE(C3DSceneViewWnd)
 	DECLARE_MESSAGE_MAP()
+public:
+	C3DSceneViewWnd();
+	~C3DSceneViewWnd();
 protected:
 	C3DViewInfo m_ViewInfo;
 	C3DViewBufferInfo m_BufferInfo;
 	int m_nSceneOutBackTex;//屏幕外的半透区域
 	float m_fSceneOutBackTexAlpha;
+
+	bool m_bHandDraging;
+	CPoint m_ptHandDragStart;
+	HCURSOR m_hDefaultCur;
+	HCURSOR m_hHandDragCurOpen;//手松开图标
+	HCURSOR m_hHandDragCurClose;//手抓紧图标
 protected:
 	//渲染触发线程管理相关
 	int m_nRenderCount;//待渲染次数
@@ -40,6 +49,11 @@ protected:
 	BOOL UpdateBufferToHal(int hDevice, int hDesHal, RECT rtDirty, int n2DBufferID);
 	void DrawEditBackBuffer(int hDevice, const CRect& rtInValid, const CRect& rtValid, int nRTTex, int hTex, float fAlpha);
 
+	void HandDragView(CPoint pt);
+	void SetDefaultCursor();
+	void SetHandOpenCursor();
+	void SetHandCloseCursor();
+
 	afx_msg LRESULT OnSetRenderTask(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT AddOneRenderTask(WPARAM, LPARAM);
 	afx_msg void OnPaint();
@@ -49,12 +63,11 @@ protected:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-	static DWORD WINAPI PreDecoderThread(LPVOID pParam);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	static DWORD WINAPI PreDecoderThread(LPVOID pParam);//绘制线程
 	void RenderAllItem(int hDevice, int hTex, int hDepth, float fScale, RECT &viewPort);
-	//解码线程
-public:
-	C3DSceneViewWnd();
-	~C3DSceneViewWnd();
 public:
 	void AdjustViewFit();
 	void AdjustViewReal();
@@ -62,4 +75,5 @@ public:
 	float GetZoomScale();
 	void ResetScaledViewInfo(point2f ptFixedScene, point2f ptFixedWnd);
 	void ResetViewInfo(float fScale);
+	bool DealHandDragMsg(UINT nMsg, UINT nFlags, CPoint point);
 };

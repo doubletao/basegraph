@@ -9,6 +9,7 @@ protected:
 	std::map<int, COLORREF> m_mapColorList;
 	std::map<int, CImage * > m_mapImageList;
 	std::map<int, int> m_mapIntValue;
+	std::map<int, CString> m_mapCStringValue;
 	LOGFONT m_DefaultLogFont;
 	COLORREF m_DefaultColor;
 	CImage m_DefaultImage;
@@ -24,5 +25,6 @@ public:
 	virtual COLORREF GetColor(int nColorID);
 	virtual CImage * GetImage(int nImgID);
 	virtual int GetIntValue(int nIntID);
+	virtual CString GetCStringValue(int nCStringID);
 };
 

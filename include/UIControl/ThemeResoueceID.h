@@ -68,6 +68,12 @@ enum ThemeColorValueDef
 	ThemeColor_SliderButton_X,
 };
 
+enum ThemeCStringValueDef
+{
+	ThemeCString_CursorOpenHandName,
+	ThemeCString_CursorCloseHandName,
+};
+
 enum ThemeImageValueDef
 {
 	ThemeImage_SkinWndNcBkgrd,
