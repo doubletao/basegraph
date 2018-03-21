@@ -30,9 +30,10 @@ DataBaseManager & DataBaseManager::Instance()
 	return inst;
 }
 
+//#define DEBUG_LOCK
 void DataBaseManager::Lock()
 {
-#ifdef DEBUG
+#ifdef DEBUG_LOCK
 	if (true)
 	{
 		CString strDebug;
@@ -41,7 +42,7 @@ void DataBaseManager::Lock()
 	}
 #endif // DEBUG
 	EnterCriticalSection(&m_lockData);
-#ifdef DEBUG
+#ifdef DEBUG_LOCK
 	if (true)
 	{
 		CString strDebug;
@@ -54,8 +55,11 @@ void DataBaseManager::Lock()
 void DataBaseManager::Unlock()
 {
 	LeaveCriticalSection(&m_lockData);
-#ifdef DEBUG
-	OutputDebugString(_T("DataBaseManager::Unlock()\n"));
+#ifdef DEBUG_LOCK
+	if (true)
+	{
+		OutputDebugString(_T("DataBaseManager::Unlock()\n"));
+	}
 #endif // DEBUG
 }
 

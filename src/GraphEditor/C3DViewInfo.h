@@ -12,9 +12,6 @@ public:
 	int m_nSceneOffsetX;
 	int m_nSceneOffsetY;
 
-	int m_nScrollX;
-	int m_nScrollY;
-
 	float m_fScale;
 
 	int m_hSwapChain;

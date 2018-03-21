@@ -8,8 +8,6 @@ C3DViewInfo::C3DViewInfo()
 	, m_nWndHeight(0)
 	, m_nSceneOffsetX(0)
 	, m_nSceneOffsetY(0)
-	, m_nScrollX(0)
-	, m_nScrollY(0)
 	, m_fScale(1.0f)
 	, m_hSwapChain(0)
 {

@@ -28,8 +28,10 @@ protected:
 	void RenderCountUnlock();
 
 	void RecalcLayout();
-	CPoint SceneToWnd(CPoint ptScene);
-	CPoint WndToScene(CPoint ptWnd);
+	point2f SceneToWnd(point2f ptScene);
+	point2f WndToScene(point2f ptWnd);
+	point2f SceneToWnd(CPoint ptScene);
+	point2f WndToScene(CPoint ptWnd);
 
 	void RenderVirtualZone(int nDevice, const CRect& rtClient);//绘制周边区域（屏幕外的黑边）
 	void RenderTripleBuffer(int nDevice);//绘制三层buf，安全框、选中框，物件选中框，编辑内容
@@ -46,6 +48,7 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	static DWORD WINAPI PreDecoderThread(LPVOID pParam);
 	void RenderAllItem(int hDevice, int hTex, int hDepth, float fScale, RECT &viewPort);
 	//解码线程
@@ -54,7 +57,9 @@ public:
 	~C3DSceneViewWnd();
 public:
 	void AdjustViewFit();
-	void SetZoomScale(float fScale, CPoint ptCenter);
+	void AdjustViewReal();
+	void SetZoomScale(float fScale, point2f ptFixed);
 	float GetZoomScale();
-	void ResetScaledViewInfo(CPoint ptCenter);
+	void ResetScaledViewInfo(point2f ptFixedScene, point2f ptFixedWnd);
+	void ResetViewInfo(float fScale);
 };

@@ -17,6 +17,7 @@ BEGIN_MESSAGE_MAP(C3DSceneViewWnd, CWnd)
 	ON_MESSAGE(WM_MSG_ExcuteRenderTask, OnSetRenderTask)
 	ON_WM_MOUSEWHEEL()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 void C3DSceneViewWnd::RenderCountLock()
@@ -117,7 +118,9 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				RECT viewPort = { rtClient.left, rtClient.top, rtClient.right, rtClient.bottom };
 				DX3DEngine_SetViewPort(hDevice, &viewPort);
 				DX3DEngine_SetScissor(hDevice, &viewPort);
-				OffsetRect(&viewPort, -viewPort.right / 2, -viewPort.bottom / 2);
+				
+				//定位渲染中心点
+				OffsetRect(&viewPort, -(pThis->m_ViewInfo.m_nSceneOffsetX + pThis->m_ViewInfo.m_nSceneWidth / 2), -(pThis->m_ViewInfo.m_nSceneOffsetY + pThis->m_ViewInfo.m_nSceneHeight / 2));
 
 				//上锁，要绘制了
 				DataBaseLocker DataLocker;
@@ -149,7 +152,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 				if (false)
 					DX3DEngine_DumpTexture(hDevice, hSwapChainBuffer);
 
-				OutputDebugString(_T("C3DSceneViewWnd::PreDecoderThread\n"));
+				//OutputDebugString(_T("C3DSceneViewWnd::PreDecoderThread\n"));
 
 				//善后
 				DXTextureManager_UnQueryTexture(hTex);
@@ -269,11 +272,20 @@ void C3DSceneViewWnd::AdjustViewFit()
 	GetClientRect(rtClient);
 	float fScale = rtClient.Width() / (float)DataBase_GetSceneWidth();
 	fScale = min(fScale, rtClient.Height() / (float)DataBase_GetSceneHeight());
-	SetZoomScale(fScale, CPoint(0, 0));
+	ResetViewInfo(fScale);
+	point2f ptCenter = {0.0f, 0.0f};
+	SetZoomScale(fScale, ptCenter);
 }
 
-void C3DSceneViewWnd::SetZoomScale(float fScale, CPoint ptCenter)
+void C3DSceneViewWnd::AdjustViewReal()
 {
+	point2f ptCenter = { 0.0f, 0.0f };
+	SetZoomScale(1.0f, ptCenter);
+}
+
+void C3DSceneViewWnd::SetZoomScale(float fScale, point2f ptFixed)
+{
+	point2f ptFixedWnd = SceneToWnd(ptFixed);
 	//四倍是以1920  1080编辑为标准的，对于比这个更小的分辨率倍数可以不超过4*1920  4*1080的尺寸
 	int nSceneWidth = DataBase_GetSceneWidth();
 	int nSceneHeight = DataBase_GetSceneHeight();
@@ -288,7 +300,7 @@ void C3DSceneViewWnd::SetZoomScale(float fScale, CPoint ptCenter)
 	}
 	m_ViewInfo.m_fScale = fScale;
 
-	ResetScaledViewInfo(ptCenter);
+	ResetScaledViewInfo(ptFixed, ptFixedWnd);
 }
 
 float C3DSceneViewWnd::GetZoomScale()
@@ -296,8 +308,23 @@ float C3DSceneViewWnd::GetZoomScale()
 	return m_ViewInfo.m_fScale;
 }
 
-void C3DSceneViewWnd::ResetScaledViewInfo(CPoint ptCenter)
+void C3DSceneViewWnd::ResetScaledViewInfo(point2f ptFixedScene, point2f ptFixedWnd)
 {
+	ResetViewInfo(m_ViewInfo.m_fScale);
+
+	//通过调整偏移量来确保指定点尽量保持不动
+	point2f ptCurWnd = SceneToWnd(ptFixedScene);
+	//TRACE(_T("ptFixedWnd = (%f, %f), ptCurWnd = (%f, %f), ptFixedScene = (%f, %f)\n"), ptFixedWnd.x, ptFixedWnd.y, ptCurWnd.x, ptCurWnd.y, ptFixedScene.x, ptFixedScene.y);
+	m_ViewInfo.m_nSceneOffsetX -= ptCurWnd.x - ptFixedWnd.x;
+	m_ViewInfo.m_nSceneOffsetY -= ptCurWnd.y - ptFixedWnd.y;
+
+	//刷新
+	PostMessage(WM_MSG_SerRenderTask);
+}
+
+void C3DSceneViewWnd::ResetViewInfo(float fScale)
+{
+	m_ViewInfo.m_fScale = fScale;
 	//固定信息的计算
 	m_ViewInfo.m_nSceneWidth = (int)(DataBase_GetSceneWidth() * m_ViewInfo.m_fScale);
 	m_ViewInfo.m_nSceneHeight = (int)(DataBase_GetSceneHeight() * m_ViewInfo.m_fScale);
@@ -308,34 +335,38 @@ void C3DSceneViewWnd::ResetScaledViewInfo(CPoint ptCenter)
 
 	m_ViewInfo.m_nSceneOffsetX = (m_ViewInfo.m_nWndWidth - m_ViewInfo.m_nSceneWidth) / 2;
 	m_ViewInfo.m_nSceneOffsetY = (m_ViewInfo.m_nWndHeight - m_ViewInfo.m_nSceneHeight) / 2;
-
-	//通过调整滚动条来确保指定点尽量保持不动
-
-	//刷新
-	PostMessage(WM_MSG_SerRenderTask);
 }
 
 void C3DSceneViewWnd::RecalcLayout()
 {
 }
 
-CPoint C3DSceneViewWnd::SceneToWnd(CPoint ptScene)
+point2f C3DSceneViewWnd::SceneToWnd(point2f ptScene)
 {
-	CPoint ptWnd = ptScene;
-	ptWnd.x -= m_ViewInfo.m_nSceneOffsetX;
-	ptWnd.x = LONG(ptWnd.x / m_ViewInfo.m_fScale);
-
-	ptWnd.y -= m_ViewInfo.m_nSceneOffsetY;
-	ptWnd.y = LONG(ptWnd.y / m_ViewInfo.m_fScale);
+	point2f ptWnd = ptScene;
+	ptWnd.x = ptScene.x * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetX + m_ViewInfo.m_nSceneWidth / 2;
+	ptWnd.y = m_ViewInfo.m_nSceneOffsetY + m_ViewInfo.m_nSceneHeight / 2 - ptScene.y * m_ViewInfo.m_fScale;
 	return ptWnd;
 }
 
-CPoint C3DSceneViewWnd::WndToScene(CPoint ptWnd)
+point2f C3DSceneViewWnd::WndToScene(point2f ptWnd)
 {
-	CPoint ptScene = ptWnd;
-	ptScene.x = LONG(ptScene.x  * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetX);
-	ptScene.y = LONG(ptScene.y  * m_ViewInfo.m_fScale + m_ViewInfo.m_nSceneOffsetY);
+	point2f ptScene = ptWnd;
+	ptScene.x = (ptWnd.x - m_ViewInfo.m_nSceneOffsetX - m_ViewInfo.m_nSceneWidth / 2) / m_ViewInfo.m_fScale;
+	ptScene.y = -(ptWnd.y - m_ViewInfo.m_nSceneOffsetY - m_ViewInfo.m_nSceneHeight / 2) / m_ViewInfo.m_fScale;
 	return ptScene;
+}
+
+point2f C3DSceneViewWnd::SceneToWnd(CPoint ptScene)
+{
+	point2f pt = { ptScene.x, ptScene.y };
+	return SceneToWnd(pt);
+}
+
+point2f C3DSceneViewWnd::WndToScene(CPoint ptWnd)
+{
+	point2f pt = { ptWnd.x, ptWnd.y};
+	return WndToScene(pt);
 }
 
 void C3DSceneViewWnd::RenderVirtualZone(int nDevice, const CRect& rtClient)
@@ -608,8 +639,24 @@ BOOL C3DSceneViewWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	fScale += (float)zDelta / 2000;
 
 	ScreenToClient(&pt);
-	CPoint ptScene = WndToScene(pt);
+	point2f ptScene = WndToScene(pt);
 
 	SetZoomScale(fScale, ptScene);
 	return 0;
+}
+
+void C3DSceneViewWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	CRect rtClient;
+	GetClientRect(rtClient);
+	float fScale = rtClient.Width() / (float)DataBase_GetSceneWidth();
+	fScale = min(fScale, rtClient.Height() / (float)DataBase_GetSceneHeight());
+	if (fabs(m_ViewInfo.m_fScale - fScale) < ABS_DOUBLE_0)
+	{
+		AdjustViewReal();
+	}
+	else
+	{
+		AdjustViewFit();
+	}
 }
