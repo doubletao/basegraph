@@ -26,7 +26,7 @@ void UITimeLine::Release()
 
 void UITimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
 {
-	UIElement::Initialize(nX, nY, nWidth, nHeight, 0, hParentWnd);
+	UIElement::Initialize(nX, nY, nWidth, nHeight, UIElementMsg_TimeLine, hParentWnd);
 	m_setMsgFilter.insert(WM_LBUTTONDOWN);
 	m_setMsgFilter.insert(WM_LBUTTONUP);
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
@@ -53,6 +53,11 @@ void UITimeLine::InitializeObject()
 	//标尺在这里初始化，但不push到子物件集合
 	UITLRuler::Instance().Create(0, 0, 10, 10, UIElementMsg_TimeLineRuler, m_hParentWnd, this);
 	UITLRuler::Instance().SetScrollBar(m_pScrollHor, m_pScrollVer);
+}
+
+void UITimeLine::OnFrameChanged(int nFrame)
+{
+	SetFrame(nFrame);
 }
 
 void UITimeLine::RearrangeChildPos()
@@ -113,6 +118,21 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 		return true;
 	}
 	return false;
+}
+
+void UITimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	switch (nMsgID)
+	{
+	case WM_MSG_FrameChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			OnFrameChanged((int)wParam);
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void UITimeLine::AdjustScrollZoom()

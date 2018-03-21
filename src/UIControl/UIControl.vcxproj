@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ExportUIControl.cpp" />
+    <ClCompile Include="MsgDispatcher.cpp" />
     <ClCompile Include="SkinDlgWnd.cpp" />
     <ClCompile Include="SkinFrameWnd.cpp" />
     <ClCompile Include="SkinWnd.cpp" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ExportUIControl.h" />
+    <ClInclude Include="..\..\include\UIControl\MsgDispatcher.h" />
     <ClInclude Include="..\..\include\UIControl\SkinDlgWnd.h" />
     <ClInclude Include="..\..\include\UIControl\SkinFrameWnd.h" />
     <ClInclude Include="..\..\include\UIControl\SkinWnd.h" />

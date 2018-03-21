@@ -5,7 +5,8 @@
 * 回显窗视图子窗口，分布在回显窗视图主窗口中
 */
 
-class C3DSceneViewWnd : public CWnd
+class C3DSceneViewWnd 
+	: public CWnd
 {
 	DECLARE_DYNCREATE(C3DSceneViewWnd)
 	DECLARE_MESSAGE_MAP()

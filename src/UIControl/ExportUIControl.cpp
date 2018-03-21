@@ -26,3 +26,28 @@ BASEGRAPH_UICONTROL_API int UIControl_GetIntValue(int nIntID)
 {
 	return ThemeManager::Instance().GetIntValue(nIntID);
 }
+
+BASEGRAPH_UICONTROL_API void UIControl_RegistMsgDispatcher(IMsgDispatchObject * pMsgObj)
+{
+	return MsgDispatcher::Instance().RegistMsgDispatcher(pMsgObj);
+}
+
+BASEGRAPH_UICONTROL_API void UIControl_UnRegistDispathObj(IMsgDispatchObject * pMsgObj)
+{
+	return MsgDispatcher::Instance().UnRegistDispatchObj(pMsgObj);
+}
+
+BASEGRAPH_UICONTROL_API void UIControl_BroadcastMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	return MsgDispatcher::Instance().BroadcastMsg(nMsgID, wParam, lParam, nIDFrom);
+}
+
+BASEGRAPH_UICONTROL_API void UIControl_BroadcastMsg(int nMsgID, WPARAM wParam, LPARAM lParam, IMsgDispatchObject * pMsgObj)
+{
+	return MsgDispatcher::Instance().BroadcastMsg(nMsgID, wParam, lParam, pMsgObj);
+}
+
+BASEGRAPH_UICONTROL_API void UIControl_SendMsgTo(int nIDTo, int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	return MsgDispatcher::Instance().SendMsgTo(nIDTo, nMsgID, wParam, lParam, nIDFrom);
+}

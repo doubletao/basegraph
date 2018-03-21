@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UITLRuler.h"
+#include "GraphEditor.h"
 
 
 UITLRuler::UITLRuler()
@@ -156,16 +157,11 @@ void UITLRuler::DrawElement(CDC * pDC)
 
 int UITLRuler::GetDispFrameLength()
 {
-	int nFrameLength = 0;
-	if (DataBase_GetItemLength(nFrameLength))
+	if (CGraphEditorApp::GetBaseGraphFrameWnd())
 	{
-		nFrameLength = nFrameLength / 2;
+		return CGraphEditorApp::GetBaseGraphFrameWnd()->GetWholeFrameLength();
 	}
-	else
-	{
-		nFrameLength = 5;
-	}
-	return nFrameLength;
+	return 5;
 }
 
 float UITLRuler::GetPixelPerFrame()

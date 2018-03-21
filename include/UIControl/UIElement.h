@@ -2,17 +2,19 @@
 #include <vector>
 #include <map>
 #include <set>
-#include "UIDrawer.h"
+#include "UIControl\UIDrawer.h"
+#include "UIControl\MsgDispatcher.h"
 
 enum EmUIElementMsg
 {
-	EmUIElementMsg_BtnClick = WM_USER + 0x00000101,
+	EmUIElementMsg_BtnClick = WM_USER + 0x00000100,
 	EmUIElementMsg_BtnRefresh,
 	EmUIElementMsg_SetCapture,//wParam为set和release，lParam为需要capture的element指针
 	EmUIElementMsg_OnHScroll,
 	EmUIElementMsg_OnVScroll,
 	EmUIElementMsg_OnSliderChanging,
 	EmUIElementMsg_OnSliderChanged,
+	EmUIElementMsg_WndUserEnd,
 };
 
 enum EmUIElementMsgRet
@@ -25,7 +27,7 @@ enum EmUIElementMsgRet
 	UIElementMsgFailBreak		= 0,
 };
 
-class BASEGRAPH_UICONTROL_API UIElement
+class BASEGRAPH_UICONTROL_API UIElement : public IMsgDispatchObject
 {
 protected:
 	HWND m_hParentWnd;//父窗口句柄
@@ -45,6 +47,7 @@ public:
 	static bool IsSucceed(EmUIElementMsgRet emMsgRet);
 	static bool NeedContinue(EmUIElementMsgRet emMsgRet);
 protected:
+	virtual int GetMsgDispatchID();
 	virtual void Release();
 	virtual void SetText(CString strText);
 	virtual void Refresh();

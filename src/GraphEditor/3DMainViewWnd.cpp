@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "3DMainViewWnd.h"
+#include "GraphEditorCommonDef.h"
 
 IMPLEMENT_DYNCREATE(C3DMainViewWnd, CWnd)
 
@@ -28,6 +29,26 @@ C3DMainViewWnd::~C3DMainViewWnd()
 	m_vecSceneViewWnd.clear();
 }
 
+int C3DMainViewWnd::GetMsgDispatchID()
+{
+	return UIElementMsg_MainViewWnd;
+}
+
+void C3DMainViewWnd::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	switch (nMsgID)
+	{
+	case WM_MSG_FrameChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			OnFrameChanged((int)wParam);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 void C3DMainViewWnd::RecalcLayout()
 {
 	CRect rtClient;
@@ -38,6 +59,18 @@ void C3DMainViewWnd::RecalcLayout()
 		if (pViewWnd)
 		{
 			pViewWnd->MoveWindow(rtClient);
+		}
+	}
+}
+
+void C3DMainViewWnd::OnFrameChanged(int nFrame)
+{
+	for (size_t i = 0; i < m_vecSceneViewWnd.size(); i++)
+	{
+		C3DSceneViewWnd *& pViewWnd = m_vecSceneViewWnd[i];
+		if (pViewWnd)
+		{
+			pViewWnd->SendMessage(WM_MSG_SerRenderTask);
 		}
 	}
 }

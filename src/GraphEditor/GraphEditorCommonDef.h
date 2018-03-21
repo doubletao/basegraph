@@ -26,6 +26,7 @@ enum UIElementMsgDef
 	UIElementMsg_PlayCtrlLastFrame,
 
 	UIElementMsg_SimpleTimeLine,
+	UIElementMsg_SimpleTimeLineSlider,
 
 	UIElementMsg_PropertyTabColor,
 	UIElementMsg_PropertyTabObject,
@@ -33,6 +34,7 @@ enum UIElementMsgDef
 	UIElementMsg_PropertyTabFx,
 	UIElementMsg_PropertyTabText,
 
+	UIElementMsg_TimeLine,
 	UIElementMsg_TimeLineHorScroll,
 	UIElementMsg_TimeLineVerScroll,
 	UIElementMsg_TimeLineObjectArea,
@@ -40,7 +42,12 @@ enum UIElementMsgDef
 	UIElementMsg_TimeLineObjectRightArea,
 	UIElementMsg_TimeLineRuler,
 
-	WM_MSG_BEGIN = WM_USER + 1,
-	WM_SET_RENDERTASK,//触发一次刷新
-	WM_EXCUTE_RENDERTASK,//窗口的刷新消息
+	UIElementMsg_BaseGraphMainFrame,
+	UIElementMsg_MainViewWnd,
+
+	WM_MSG_BEGIN = EmUIElementMsg_WndUserEnd + 1,
+	WM_MSG_SerRenderTask,//触发一次刷新
+	WM_MSG_ExcuteRenderTask,//窗口的刷新消息
+	WM_MSG_FrameChanged,//wParam为帧数，lParam为引发change的控件ID
+	WM_MSG_WholeFrameLengthChanged,//wParam为帧数，lParam为引发change的控件ID
 };

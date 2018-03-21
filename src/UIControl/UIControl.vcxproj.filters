@@ -96,6 +96,9 @@
     <ClCompile Include="UISliderCtr.cpp">
       <Filter>UIElementCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="MsgDispatcher.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -175,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\UISliderCtr.h">
       <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\MsgDispatcher.h">
+      <Filter>UIElementBase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

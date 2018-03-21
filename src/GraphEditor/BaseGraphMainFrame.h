@@ -35,8 +35,9 @@ struct SafeLineSettingParam
 	}
 };
 
-class BaseGraphMainFrame :
-	public CSkinFrameWnd
+class BaseGraphMainFrame
+	: public CSkinFrameWnd
+	, public IMsgDispatchObject
 {
 private:
 	UIObjectBar m_uiObjectBar;
@@ -49,6 +50,8 @@ private:
 
 	UIElement * m_pCaptureElement;
 	SafeLineSettingParam m_stuSafeLineParam;
+
+	int m_nWholeFrame;
 public:
 	BaseGraphMainFrame();
 	virtual ~BaseGraphMainFrame();
@@ -70,9 +73,15 @@ public:
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+
+	virtual int GetMsgDispatchID();
 protected:
 	afx_msg LRESULT OnUIElementBtnClicked(WPARAM wParam = 0, LPARAM lParam = 0);
 	afx_msg LRESULT OnUIElementSetCapture(WPARAM wParam = 0, LPARAM lParam = 0);
+protected:
+	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
+	void RegistDispatchMsg();
+	void OnUpdateWholeLength();
 public:
 	void OnBtnCreateTitle();
 	void OnBtnCreateScroll();
@@ -85,5 +94,6 @@ public:
 	void OnBtnRotateAction();
 	void OnBtnSystemSetting();
 	SafeLineSettingParam & GetSafeLineSettingParam();
+	int GetWholeFrameLength();
 };
 

@@ -13,8 +13,8 @@ BEGIN_MESSAGE_MAP(C3DSceneViewWnd, CWnd)
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
-	ON_MESSAGE(WM_SET_RENDERTASK, AddOneRenderTask)
-	ON_MESSAGE(WM_EXCUTE_RENDERTASK, OnSetRenderTask)
+	ON_MESSAGE(WM_MSG_SerRenderTask, AddOneRenderTask)
+	ON_MESSAGE(WM_MSG_ExcuteRenderTask, OnSetRenderTask)
 	ON_WM_MOUSEWHEEL()
 	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
@@ -42,7 +42,7 @@ LRESULT C3DSceneViewWnd::AddOneRenderTask(WPARAM, LPARAM)
 	if (m_nRenderCount < CGSceneViewRenderPoolSize)
 	{
 		++m_nRenderCount;
-		PostMessage(WM_EXCUTE_RENDERTASK);
+		PostMessage(WM_MSG_ExcuteRenderTask);
 	}
 	RenderCountUnlock();
 	return 0;
@@ -312,7 +312,7 @@ void C3DSceneViewWnd::ResetScaledViewInfo(CPoint ptCenter)
 	//通过调整滚动条来确保指定点尽量保持不动
 
 	//刷新
-	PostMessage(WM_SET_RENDERTASK);
+	PostMessage(WM_MSG_SerRenderTask);
 }
 
 void C3DSceneViewWnd::RecalcLayout()
@@ -558,7 +558,7 @@ void C3DSceneViewWnd::DrawEditBackBuffer(int hDevice, const CRect & rtInValid, c
 void C3DSceneViewWnd::OnPaint()
 {
 	CPaintDC dc(this);
-	PostMessage(WM_SET_RENDERTASK);
+	PostMessage(WM_MSG_SerRenderTask);
 }
 
 int C3DSceneViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)

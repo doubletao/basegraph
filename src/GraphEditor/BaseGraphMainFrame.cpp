@@ -30,6 +30,7 @@ END_MESSAGE_MAP()
 
 BaseGraphMainFrame::BaseGraphMainFrame()
 	: m_pCaptureElement(nullptr)
+	, m_nWholeFrame(0)
 {
 }
 
@@ -362,6 +363,8 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		OutputDebugString(_T("主回显窗创建失败\n"));
 		return 0;
 	}
+	//注册消息中心
+	RegistDispatchMsg();
 
 	//测试代码
 	auto CreateTestImgObj = [](CString strName, CString strImgPath, CString strDebugPath, int nBegin, int nEnd)
@@ -499,6 +502,8 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		}
 	}
 
+	OnUpdateWholeLength();
+
 	//CEdit * m_pEdit = new CEdit;
 	//m_pEdit->CreateEx(WS_EX_CLIENTEDGE, _T("Edit"), _T("myedit"), WS_BORDER | WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL | ES_CENTER, CRect(1800, 250, 1900, 350), this, 100081);
 
@@ -606,6 +611,11 @@ void BaseGraphMainFrame::OnSize(UINT nType, int cx, int cy)
 	CSkinFrameWnd::OnSize(nType, cx, cy);
 }
 
+int BaseGraphMainFrame::GetMsgDispatchID()
+{
+	return UIElementMsg_BaseGraphMainFrame;
+}
+
 LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
@@ -661,6 +671,47 @@ LRESULT BaseGraphMainFrame::OnUIElementSetCapture(WPARAM wParam, LPARAM lParam)
 		m_pCaptureElement = nullptr;
 	}
 	return 0;
+}
+
+void BaseGraphMainFrame::RegistDispatchMsg()
+{
+	UIControl_RegistMsgDispatcher(this);
+	UIControl_RegistMsgDispatcher(&m_uiSimpleTimeLine);
+	UIControl_RegistMsgDispatcher(&m_uiTimeLine);
+	UIControl_RegistMsgDispatcher(&m_pwndMainView);
+}
+
+void BaseGraphMainFrame::OnUpdateWholeLength()
+{
+	int nFrameLength = 0;
+	if (DataBase_GetItemLength(nFrameLength))
+	{
+		nFrameLength = nFrameLength / 2;
+	}
+	else
+	{
+		nFrameLength = 5;
+	}
+	if (m_nWholeFrame != nFrameLength)
+	{
+		m_nWholeFrame = nFrameLength;
+		UIControl_BroadcastMsg(WM_MSG_WholeFrameLengthChanged, m_nWholeFrame, GetMsgDispatchID(), this);
+	}
+}
+
+void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	switch (nMsgID)
+	{
+	case WM_MSG_WholeFrameLengthChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			OnUpdateWholeLength();
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void BaseGraphMainFrame::OnBtnCreateTitle()
@@ -735,4 +786,9 @@ void BaseGraphMainFrame::OnBtnSystemSetting()
 SafeLineSettingParam & BaseGraphMainFrame::GetSafeLineSettingParam()
 {
 	return m_stuSafeLineParam;
+}
+
+int BaseGraphMainFrame::GetWholeFrameLength()
+{
+	return m_nWholeFrame;
 }

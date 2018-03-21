@@ -28,9 +28,15 @@
 #include "UIControl\UIScrollElement.h"
 #include "UIControl\UIScrollBar.h"
 #include "UIControl\UIControlDef.h"
+#include "UIControl\MsgDispatcher.h"
 
 BASEGRAPH_UICONTROL_API bool UIControl_SwitchTheme(int nTheme);
 BASEGRAPH_UICONTROL_API LOGFONT UIControl_GetFont(int nFontID);
 BASEGRAPH_UICONTROL_API COLORREF UIControl_GetColor(int nColorID);
 BASEGRAPH_UICONTROL_API CImage * UIControl_GetImage(int nImgID);
 BASEGRAPH_UICONTROL_API int UIControl_GetIntValue(int nIntID);
+BASEGRAPH_UICONTROL_API void UIControl_RegistMsgDispatcher(IMsgDispatchObject * pMsgObj);
+BASEGRAPH_UICONTROL_API void UIControl_UnRegistDispathObj(IMsgDispatchObject * pMsgObj);
+BASEGRAPH_UICONTROL_API void UIControl_BroadcastMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom = 0);
+BASEGRAPH_UICONTROL_API void UIControl_BroadcastMsg(int nMsgID, WPARAM wParam, LPARAM lParam, IMsgDispatchObject * pMsgObj = nullptr);
+BASEGRAPH_UICONTROL_API void UIControl_SendMsgTo(int nIDTo, int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom = 0);

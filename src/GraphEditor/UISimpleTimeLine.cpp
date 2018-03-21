@@ -23,7 +23,7 @@ void UISimpleTimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int n
 void UISimpleTimeLine::InitializeObject()
 {
 	m_pSimpTimeLine = new UISliderCtr;
-	m_pSimpTimeLine->Create(0, 0, 100, 100, 0, 100, UIElementMsg_SimpleTimeLine, true, m_hParentWnd, this);
+	m_pSimpTimeLine->Create(0, 0, 100, 100, 0, 100, UIElementMsg_SimpleTimeLineSlider, true, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pSimpTimeLine);
 }
 
@@ -35,6 +35,31 @@ void UISimpleTimeLine::RearrangeChildPos()
 	{
 		m_pSimpTimeLine->MoveTo(nHorGap, (m_nHeight - nSimpTLHeight) / 2, m_nWidth - nHorGap * 2, nSimpTLHeight);
 	}
+}
+
+void UISimpleTimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	switch (nMsgID)
+	{
+	case WM_MSG_FrameChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			OnFrameChanged((int)wParam);
+		}
+		break;
+	case WM_MSG_WholeFrameLengthChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			SetWholeFrame((int)wParam);
+		}
+	default:
+		break;
+	}
+}
+
+void UISimpleTimeLine::OnFrameChanged(int nFrame)
+{
+	SetFrame(nFrame);
 }
 
 bool UISimpleTimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
@@ -51,10 +76,12 @@ bool UISimpleTimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hPar
 	};
 	if (!m_bCreated)
 	{
-		Initialize(nX, nY, nWidth, nHeight, 0, hParentWnd);
+		Initialize(nX, nY, nWidth, nHeight, UIElementMsg_SimpleTimeLine, hParentWnd);
 		InitializeObject();
 
 		InsertOneDrawer(0, ThemeImage_ElementArea);
+
+		SetFrame(0);
 	}
 	return true;
 }
@@ -78,6 +105,16 @@ EmUIElementMsgRet UISimpleTimeLine::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM w
 	return UIElementMsgSuccContinue;
 }
 
+bool UISimpleTimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (emMsg == EmUIElementMsg_OnSliderChanging
+		|| emMsg == EmUIElementMsg_OnSliderChanged)
+	{
+		SetFrame((int)lParam);
+	}
+	return UIElement::OnChildMsg(emMsg, wParam, lParam);
+}
+
 void UISimpleTimeLine::SetWholeFrame(int nFrame)
 {
 	if (m_pSimpTimeLine)
@@ -92,4 +129,5 @@ void UISimpleTimeLine::SetFrame(int nFrame)
 	{
 		m_pSimpTimeLine->SetPos(nFrame);
 	}
+	UIControl_BroadcastMsg(WM_MSG_FrameChanged, nFrame, m_nID, this);
 }

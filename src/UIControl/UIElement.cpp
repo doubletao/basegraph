@@ -3,6 +3,11 @@
 #include "UIControl\UIElement.h"
 
 
+int UIElement::GetMsgDispatchID()
+{
+	return m_nID;
+}
+
 void UIElement::Release()
 {
 	for (size_t i = 0; i < m_vecChildElement.size(); i++)
