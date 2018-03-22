@@ -22,6 +22,9 @@
     <Filter Include="2DBuffer">
       <UniqueIdentifier>{1f06fa19-8067-4056-8b1b-2ff833374723}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ThreadPool">
+      <UniqueIdentifier>{56ffddc5-41fb-45b1-916d-9575ef133caf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -104,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="2DBuffer\2DBufferDC.cpp">
       <Filter>2DBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPool\ThreadPool.cpp">
+      <Filter>ThreadPool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1015,6 +1021,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Common\2DBufferDC.h">
       <Filter>2DBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\ThreadPool.h">
+      <Filter>ThreadPool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

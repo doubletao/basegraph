@@ -136,6 +136,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ThreadPool\ThreadPool.cpp" />
     <ClCompile Include="tinystr.cpp" />
     <ClCompile Include="tinyxml.cpp" />
     <ClCompile Include="tinyxmlerror.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="..\..\include\Common\PlaneDef.h" />
     <ClInclude Include="..\..\include\Common\QuatnDef.h" />
     <ClInclude Include="..\..\include\Common\ResourceLock.h" />
+    <ClInclude Include="..\..\include\Common\ThreadPool.h" />
     <ClInclude Include="..\..\include\Common\tinystr.h" />
     <ClInclude Include="..\..\include\Common\tinyxml.h" />
     <ClInclude Include="..\..\include\Common\VectorDef.h" />

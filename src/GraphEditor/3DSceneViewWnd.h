@@ -25,6 +25,8 @@ protected:
 	HCURSOR m_hDefaultCur;
 	HCURSOR m_hHandDragCurOpen;//手松开图标
 	HCURSOR m_hHandDragCurClose;//手抓紧图标
+
+	ThreadPool m_ThreadPool;//物件自我渲染的线程池
 protected:
 	//渲染触发线程管理相关
 	int m_nRenderCount;//待渲染次数
@@ -69,7 +71,9 @@ protected:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	static DWORD WINAPI PreDecoderThread(LPVOID pParam);//绘制线程
-	void RenderAllItem(int hDevice, int hTex, int hDepth, float fScale, RECT &viewPort);
+	void RenderAllItemToTarget(std::vector<CString> vecObjID, int hDevice, int hTex, int hDepth, float fScale, RECT &viewPort);//将每个物件的贴片贴到场景上
+	void UpdateAllItemToHal(std::vector<CString> vecObjID, float fScale);//生成物件贴片
+	static DWORD UpdateItemToHalFunc(LPVOID pParam, HANDLE hEnd);//生成物件贴片线程
 public:
 	void AdjustViewFit();
 	void AdjustViewReal();

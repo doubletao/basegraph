@@ -103,73 +103,78 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 			}
 			else if (dwObjectStart == WAIT_OBJECT_0 + 1)
 			{
-				//拿到默认设备
-				int hDevice = DX3DEngine_GetMainDevice();
-				if (!hDevice)
-					continue;
-
-				//设置视图缩放
-				float fScale = pThis->m_ViewInfo.m_fScale;
-				DataRender_SetScale(fScale);
-
-				//创建纹理及深度buf
-				int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
-				int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
-				DX3DEngine_ClearTexture(hDevice, hTex, RGBA(0, 0, 0, 0));
-				DX3DEngine_ClearDepth(hDevice, hDepth, 1);
-
-				//设定渲染目标
-				DX3DEngine_SetRenderTarget(hDevice, hTex, hDepth);
-
-				//设置好视窗
-				CRect rtClient;
-				pThis->GetClientRect(rtClient);
-				RECT viewPort = { rtClient.left, rtClient.top, rtClient.right, rtClient.bottom };
-				DX3DEngine_SetViewPort(hDevice, &viewPort);
-				DX3DEngine_SetScissor(hDevice, &viewPort);
-				
-				//定位渲染中心点
-				OffsetRect(&viewPort, -(pThis->m_ViewInfo.m_nSceneOffsetX + pThis->m_ViewInfo.m_nSceneWidth / 2), -(pThis->m_ViewInfo.m_nSceneOffsetY + pThis->m_ViewInfo.m_nSceneHeight / 2));
-
-				//上锁，要绘制了
-				DataBaseLocker DataLocker;
-				DXEngineLocker EngineLocker(hDevice);
-
-				//绘制物件
-				pThis->RenderAllItem(hDevice, hTex, hDepth, fScale, viewPort);
-
-				//绘制周边黑场
-				pThis->RenderVirtualZone(hDevice, rtClient);
-
-				//绘制三个buffer
-				pThis->RenderTripleBuffer(hDevice);
-
-				//将画面刷到SwapChain上
-				if (false)
-					DX3DEngine_DumpTexture(hDevice, hTex);
-				int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);
-				CRect rtDes = rtClient;
-				//rtDes.OffsetRect(100, 0);
-
-				if (rtClient.Width()>0)
+				std::vector<CString> vecObjID;
+				if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
 				{
+					//拿到视图缩放
+					float fScale = pThis->m_ViewInfo.m_fScale;
+					
+					//形成贴片
+					pThis->UpdateAllItemToHal(vecObjID, fScale);
+
+					//拿到默认设备
+					int hDevice = DX3DEngine_GetMainDevice();
+					if (!hDevice)
+						continue;
+
+					//创建纹理及深度buf
+					int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
+					int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
+					DX3DEngine_ClearTexture(hDevice, hTex, RGBA(0, 0, 0, 0));
+					DX3DEngine_ClearDepth(hDevice, hDepth, 1);
+
+					//设定渲染目标
+					DX3DEngine_SetRenderTarget(hDevice, hTex, hDepth);
+
+					//设置好视窗
+					CRect rtClient;
+					pThis->GetClientRect(rtClient);
+					RECT viewPort = { rtClient.left, rtClient.top, rtClient.right, rtClient.bottom };
+					DX3DEngine_SetViewPort(hDevice, &viewPort);
+					DX3DEngine_SetScissor(hDevice, &viewPort);
+
+					//定位渲染中心点
+					OffsetRect(&viewPort, -(pThis->m_ViewInfo.m_nSceneOffsetX + pThis->m_ViewInfo.m_nSceneWidth / 2), -(pThis->m_ViewInfo.m_nSceneOffsetY + pThis->m_ViewInfo.m_nSceneHeight / 2));
+
+					//上锁，要绘制了
+					DataBaseLocker DataLocker;
+					DXEngineLocker EngineLocker(hDevice);
+
+					//绘制物件
+					pThis->RenderAllItemToTarget(vecObjID, hDevice, hTex, hDepth, fScale, viewPort);
+
+					//绘制周边黑场
+					pThis->RenderVirtualZone(hDevice, rtClient);
+
+					//绘制三个buffer
+					pThis->RenderTripleBuffer(hDevice);
+
+					//将画面刷到SwapChain上
 					if (false)
 						DX3DEngine_DumpTexture(hDevice, hTex);
+					int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, pThis->m_ViewInfo.m_hSwapChain);
+					CRect rtDes = rtClient;
+					//rtDes.OffsetRect(100, 0);
+
+					if (rtClient.Width() > 0)
+					{
+						if (false)
+							DX3DEngine_DumpTexture(hDevice, hTex);
+					}
+
+					DX3DEngine_RGBA_To_BGRA(hDevice, hTex, &rtClient, hSwapChainBuffer, &rtDes);
+					if (false)
+						DX3DEngine_DumpTexture(hDevice, hSwapChainBuffer);
+
+					//OutputDebugString(_T("C3DSceneViewWnd::PreDecoderThread\n"));
+
+					//善后
+					DXTextureManager_UnQueryTexture(hTex);
+					DXTextureManager_UnQueryTexture(hDepth);
+
+					//刷新
+					DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain, 0);
 				}
-
-				DX3DEngine_RGBA_To_BGRA(hDevice, hTex, &rtClient, hSwapChainBuffer, &rtDes);
-				if (false)
-					DX3DEngine_DumpTexture(hDevice, hSwapChainBuffer);
-
-				//OutputDebugString(_T("C3DSceneViewWnd::PreDecoderThread\n"));
-
-				//善后
-				DXTextureManager_UnQueryTexture(hTex);
-				DXTextureManager_UnQueryTexture(hDepth);
-
-				//刷新
-				DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain, 0);
-
 				//待刷新数自减
 				pThis->RenderCountLock();
 				if (pThis->m_nRenderCount > 0)
@@ -193,58 +198,72 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 	return 0;
 }
 
-void C3DSceneViewWnd::RenderAllItem(int hDevice, int hTex, int hDepth, float fScale, RECT &viewPort)
+void C3DSceneViewWnd::RenderAllItemToTarget(std::vector<CString> vecObjID, int hDevice, int hTex, int hDepth, float fScale, RECT &viewPort)
 {
-	//取物件列表来
-	std::vector<CString> vecObjID;
-	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
+	//如果没有物件，则清屏
+	if (vecObjID.size() < 1)
 	{
-		//如果没有物件，则清屏
-		if (vecObjID.size() < 1)
-		{
-			DX3DEngine_Lock(hDevice);
-			int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, m_ViewInfo.m_hSwapChain);
-			DX3DEngine_ClearTexture(hDevice, hSwapChainBuffer, RGBA(255, 125, 125, 255));
-			return;
-		}
+		int hSwapChainBuffer = DX3DEngine_GetSwapChainBuffer(hDevice, m_ViewInfo.m_hSwapChain);
+		DX3DEngine_ClearTexture(hDevice, hSwapChainBuffer, RGBA(255, 125, 125, 255));
+		return;
+	}
 
-		//设置帧号SetFrame
-		int nCurFrame = DataRender_GetCurFrame();
-		DataRender_SetFrame(nCurFrame);
-
-		//遍历物件拿到bufer
-		for (size_t i = 0; i < vecObjID.size(); i++)
+	//遍历物件，取出其矩阵，然后贴上去
+	for (size_t i = 0; i < vecObjID.size(); i++)
+	{
+		CString strObjID = vecObjID[i];
+		DXHalDef32 * pHalDef = nullptr;
+		matrix4f worldMat;
+		if (DataRender_Get2DRenderMatrix(strObjID, fScale, worldMat))
 		{
-			CString strObjID = vecObjID[i];
-			DataRender_UpdateRender(strObjID);
-			if (false)
+			if (DataRender_GetDesHalDef(strObjID, pHalDef))
 			{
-				StuSimpleBuffer stuSimpleBuf;
-				if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
+				if (pHalDef)
 				{
-					BufferFunction::WriteBitmap(_T("e:\\test.bmp"), stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
-				}
-			}
-			DXHalDef32 * pHalDef = nullptr;
-			matrix4f worldMat;
-			if (DataRender_Get2DRenderMatrix(strObjID, fScale, worldMat))
-			{
-				if (DataRender_GetDesHalDef(strObjID, pHalDef))
-				{
-					if (pHalDef)
+					//渲染bufer到3D
+					DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
+					if (false)
 					{
-						//渲染bufer到3D
-						DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
-						if (false)
-						{
-							DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));
-							DX3DEngine_DumpRenderTarget(hDevice);
-						}
+						DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));
+						DX3DEngine_DumpRenderTarget(hDevice);
 					}
 				}
 			}
 		}
 	}
+}
+
+void C3DSceneViewWnd::UpdateAllItemToHal(std::vector<CString> vecObjID, float fScale)
+{
+	//设置缩放
+	DataRender_SetScale(fScale);
+	//设置帧号SetFrame
+	int nCurFrame = DataRender_GetCurFrame();
+	DataRender_SetFrame(nCurFrame);
+	//遍历并生成物件贴片
+	for (size_t i = 0; i < vecObjID.size(); i++)
+	{
+		CString strObjID = vecObjID[i];
+		//m_ThreadPool.StartNewTask(UpdateItemToHalFunc, strObjID.GetBuffer());
+		DataRender_UpdateRender(strObjID);
+		strObjID.ReleaseBuffer();
+		if (false)
+		{
+			StuSimpleBuffer stuSimpleBuf;
+			if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
+			{
+				BufferFunction::WriteBitmap(_T("e:\\test.bmp"), stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
+			}
+		}
+	}
+	m_ThreadPool.WaitAll();
+}
+
+DWORD C3DSceneViewWnd::UpdateItemToHalFunc(LPVOID pParam, HANDLE hEnd)
+{
+	LPCTSTR strObjID = (LPCTSTR)pParam;
+	DataRender_UpdateRender(strObjID);
+	return 0;
 }
 
 C3DSceneViewWnd::C3DSceneViewWnd()
