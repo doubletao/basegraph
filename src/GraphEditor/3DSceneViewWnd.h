@@ -21,6 +21,7 @@ protected:
 
 	bool m_bHandDraging;
 	CPoint m_ptHandDragStart;
+	HCURSOR m_hCursor;
 	HCURSOR m_hDefaultCur;
 	HCURSOR m_hHandDragCurOpen;//手松开图标
 	HCURSOR m_hHandDragCurClose;//手抓紧图标
@@ -56,6 +57,7 @@ protected:
 
 	afx_msg LRESULT OnSetRenderTask(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT AddOneRenderTask(WPARAM, LPARAM);
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	afx_msg void OnPaint();
 	afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDestroy();

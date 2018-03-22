@@ -20,6 +20,7 @@ BEGIN_MESSAGE_MAP(C3DSceneViewWnd, CWnd)
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDBLCLK()
+	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 void C3DSceneViewWnd::RenderCountLock()
@@ -48,6 +49,12 @@ LRESULT C3DSceneViewWnd::AddOneRenderTask(WPARAM, LPARAM)
 		PostMessage(WM_MSG_ExcuteRenderTask);
 	}
 	RenderCountUnlock();
+	return 0;
+}
+
+BOOL C3DSceneViewWnd::OnSetCursor(CWnd * pWnd, UINT nHitTest, UINT message)
+{
+	SetCursor(m_hCursor);
 	return 0;
 }
 
@@ -246,6 +253,7 @@ C3DSceneViewWnd::C3DSceneViewWnd()
 	, m_fSceneOutBackTexAlpha(0.7f)
 	, m_bHandDraging(false)
 	, m_ptHandDragStart(0)
+	, m_hCursor(nullptr)
 	, m_hDefaultCur(nullptr)
 	, m_hHandDragCurOpen(nullptr)
 	, m_hHandDragCurClose(nullptr)
@@ -328,8 +336,7 @@ void C3DSceneViewWnd::ResetScaledViewInfo(point2f ptFixedScene, point2f ptFixedW
 	m_ViewInfo.m_nSceneOffsetX -= ptCurWnd.x - ptFixedWnd.x;
 	m_ViewInfo.m_nSceneOffsetY -= ptCurWnd.y - ptFixedWnd.y;
 
-	//刷新
-	PostMessage(WM_MSG_SerRenderTask);
+	PostMessage(WM_MSG_SerRenderTask);//刷新
 }
 
 void C3DSceneViewWnd::ResetViewInfo(float fScale)
@@ -363,7 +370,7 @@ bool C3DSceneViewWnd::DealHandDragMsg(UINT nMsg, UINT nFlags, CPoint point)
 		}
 		break;
 	case WM_MOUSEMOVE:
-		if (m_bHandDraging)
+		if (m_bHandDraging && bAlt)
 		{
 			HandDragView(point);
 			return true;
@@ -372,16 +379,11 @@ bool C3DSceneViewWnd::DealHandDragMsg(UINT nMsg, UINT nFlags, CPoint point)
 	case WM_LBUTTONUP:
 		if (m_bHandDraging)
 		{
+			m_bHandDraging = false;
+			m_ptHandDragStart = 0;
 			if (bAlt)
 			{
-				m_bHandDraging = false;
-				m_ptHandDragStart = 0;
 				SetHandOpenCursor();
-			}
-			else
-			{
-				m_bHandDraging = false;
-				SetDefaultCursor();
 			}
 			ReleaseCapture();
 			return true;
@@ -389,6 +391,10 @@ bool C3DSceneViewWnd::DealHandDragMsg(UINT nMsg, UINT nFlags, CPoint point)
 		break;
 	default:
 		break;
+	}
+	if (!bAlt)
+	{
+		SetDefaultCursor();
 	}
 	return false;
 }
@@ -644,6 +650,15 @@ void C3DSceneViewWnd::DrawEditBackBuffer(int hDevice, const CRect & rtInValid, c
 
 void C3DSceneViewWnd::HandDragView(CPoint pt)
 {
+	int nXOffet = pt.x - m_ptHandDragStart.x;
+	int nYOffet = pt.y - m_ptHandDragStart.y;
+
+	m_ViewInfo.m_nSceneOffsetX += nXOffet;
+	m_ViewInfo.m_nSceneOffsetY += nYOffet;
+
+	m_ptHandDragStart = pt;
+
+	PostMessage(WM_MSG_SerRenderTask);//刷新
 }
 
 void C3DSceneViewWnd::SetDefaultCursor()
@@ -652,7 +667,8 @@ void C3DSceneViewWnd::SetDefaultCursor()
 	{
 		m_hDefaultCur = LoadCursor(NULL, IDC_ARROW);
 	}
-	SetCursor(m_hDefaultCur);
+	m_hCursor = m_hDefaultCur;
+	SendMessage(WM_SETCURSOR);
 }
 
 void C3DSceneViewWnd::SetHandOpenCursor()
@@ -665,7 +681,8 @@ void C3DSceneViewWnd::SetHandOpenCursor()
 		//m_hHandDragCurClose = LoadCursorFromFile(curPath);
 		m_hHandDragCurOpen = LoadCursor(NULL, IDC_CROSS);
 	}
-	SetCursor(m_hHandDragCurOpen);
+	m_hCursor = m_hHandDragCurOpen;
+	SendMessage(WM_SETCURSOR);
 }
 
 void C3DSceneViewWnd::SetHandCloseCursor()
@@ -674,13 +691,14 @@ void C3DSceneViewWnd::SetHandCloseCursor()
 	{
 		m_hHandDragCurClose = LoadCursor(NULL, IDC_HAND);
 	}
-	SetCursor(m_hHandDragCurClose);
+	m_hCursor = m_hHandDragCurClose;
+	SendMessage(WM_SETCURSOR);
 }
 
 void C3DSceneViewWnd::OnPaint()
 {
 	CPaintDC dc(this);
-	PostMessage(WM_MSG_SerRenderTask);
+	PostMessage(WM_MSG_SerRenderTask);//刷新
 }
 
 int C3DSceneViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -691,6 +709,8 @@ int C3DSceneViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_thPreDecoderThread = CreateThread(NULL, 0, PreDecoderThread, this, 0, NULL);
 	::SetThreadPriority(m_thPreDecoderThread, THREAD_PRIORITY_TIME_CRITICAL);
+
+	SetDefaultCursor();
 
 	return 0;
 }
