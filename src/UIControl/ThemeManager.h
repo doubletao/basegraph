@@ -21,5 +21,7 @@ public:
 	COLORREF GetColor(int nColorID);
 	CImage * GetImage(int nImgID);
 	int GetIntValue(int nIntID);
+	CString GetCStringValue(int nCStringID);
+	CString GetThemePath();
 };
 

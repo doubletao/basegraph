@@ -119,8 +119,8 @@ bool UIThemeDefault::Initialize()
 
 	/////////////////////////////////////////////////////////////////////
 	//ÎÄ±¾
-	m_mapCStringValue.insert(std::make_pair(ThemeCString_CursorOpenHandName, _T("HandDragOpen.cur")));
-	m_mapCStringValue.insert(std::make_pair(ThemeCString_CursorCloseHandName, _T("HandDragClose.cur")));
+	m_mapCStringValue.insert(std::make_pair(ThemeCString_CursorOpenHandName, _T("Common\\HandDragOpen.cur")));
+	m_mapCStringValue.insert(std::make_pair(ThemeCString_CursorCloseHandName, _T("Common\\HandDragClose.cur")));
 	/////////////////////////////////////////////////////////////////////
 	//Í¼Æ¬
 	auto LoadOneImg = [&](int nID, CString strPath)

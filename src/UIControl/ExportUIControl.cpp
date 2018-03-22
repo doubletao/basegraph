@@ -2,6 +2,11 @@
 #include "ExportUIControl.h"
 #include "ThemeManager.h"
 
+BASEGRAPH_UICONTROL_API CString UIControl_GetThemePath()
+{
+	return ThemeManager::Instance().GetThemePath();
+}
+
 BASEGRAPH_UICONTROL_API bool UIControl_SwitchTheme(int nTheme)
 {
 	return ThemeManager::Instance().SwitchTheme(nTheme);
@@ -25,6 +30,11 @@ BASEGRAPH_UICONTROL_API CImage * UIControl_GetImage(int nImgID)
 BASEGRAPH_UICONTROL_API int UIControl_GetIntValue(int nIntID)
 {
 	return ThemeManager::Instance().GetIntValue(nIntID);
+}
+
+BASEGRAPH_UICONTROL_API CString UIControl_GetCString(int nCStringID)
+{
+	return ThemeManager::Instance().GetCStringValue(nCStringID);
 }
 
 BASEGRAPH_UICONTROL_API void UIControl_RegistMsgDispatcher(IMsgDispatchObject * pMsgObj)

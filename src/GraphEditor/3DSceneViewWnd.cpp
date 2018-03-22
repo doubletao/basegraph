@@ -675,11 +675,8 @@ void C3DSceneViewWnd::SetHandOpenCursor()
 {
 	if (!m_hHandDragCurOpen)
 	{
-		//CString curPath = SYPath_GetPath(SY_PATH_SYS);
-		//curPath.Append(_T("\\cursorex\\"));
-		//curPath.Append(_T("HandDragClose.cur"));
-		//m_hHandDragCurClose = LoadCursorFromFile(curPath);
-		m_hHandDragCurOpen = LoadCursor(NULL, IDC_CROSS);
+		CString strFilePath = UIControl_GetThemePath() + UIControl_GetCString(ThemeCString_CursorOpenHandName);
+		m_hHandDragCurOpen = LoadCursorFromFile(strFilePath);
 	}
 	m_hCursor = m_hHandDragCurOpen;
 	SendMessage(WM_SETCURSOR);
@@ -689,7 +686,8 @@ void C3DSceneViewWnd::SetHandCloseCursor()
 {
 	if (!m_hHandDragCurClose)
 	{
-		m_hHandDragCurClose = LoadCursor(NULL, IDC_HAND);
+		CString strFilePath = UIControl_GetThemePath() + UIControl_GetCString(ThemeCString_CursorCloseHandName);
+		m_hHandDragCurClose = LoadCursorFromFile(strFilePath);
 	}
 	m_hCursor = m_hHandDragCurClose;
 	SendMessage(WM_SETCURSOR);

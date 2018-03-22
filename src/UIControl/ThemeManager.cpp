@@ -123,3 +123,23 @@ int ThemeManager::GetIntValue(int nIntID)
 	}
 	return 0;
 }
+
+CString ThemeManager::GetCStringValue(int nCStringID)
+{
+	UITheme * pTheme = GetCurTheme();
+	if (pTheme)
+	{
+		return pTheme->GetCStringValue(nCStringID);
+	}
+	return 0;
+}
+
+CString ThemeManager::GetThemePath()
+{
+	UITheme * pTheme = GetCurTheme();
+	if (pTheme)
+	{
+		return pTheme->GetThemePath();
+	}
+	return 0;
+}
