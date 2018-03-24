@@ -6,15 +6,33 @@
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
+
+class AutoLockTool
+{
+private:
+	CRITICAL_SECTION & m_lock;
+public:
+	AutoLockTool(CRITICAL_SECTION & lock) : m_lock(lock)
+	{
+		EnterCriticalSection(&m_lock);
+	}
+	~AutoLockTool()
+	{
+		LeaveCriticalSection(&m_lock);
+	}
+};
+
 DataBufferManager::DataBufferManager()
 	: m_nWidthSeed(120)
 	, m_nHeightSeed(70)
 {
+	InitializeCriticalSection(&m_Lock);
 }
 
 
 DataBufferManager::~DataBufferManager()
 {
+	Lock();
 	for (std::map<int, ObjectBuffer *>::iterator it = m_map2DBuffer.begin(); it != m_map2DBuffer.end(); it++)
 	{
 		if (it->second)
@@ -23,10 +41,13 @@ DataBufferManager::~DataBufferManager()
 			it->second = nullptr;
 		}
 	}
+	UnLock();
+	DeleteCriticalSection(&m_Lock);
 }
 
 int DataBufferManager::GetNextID()
 {
+	AutoLockTool lock(m_Lock);
 	if (m_map2DBuffer.size() > 0)
 	{
 		return m_map2DBuffer.rbegin()->first + 1;
@@ -36,6 +57,7 @@ int DataBufferManager::GetNextID()
 
 int DataBufferManager::CreateBuffer(int nWidth, int nHeight)
 {
+	AutoLockTool lock(m_Lock);
 	auto GetAdptValue = [](int nReq, int nSeed)
 	{
 		bool bDiv = nReq % nSeed > 0 ? false : true;
@@ -87,6 +109,7 @@ void DataBufferManager::InitialSeed(int nWidthSeed, int nHeightSeed)
 
 int DataBufferManager::Query2DBuffer(int nWidth, int nHeight)
 {
+	AutoLockTool lock(m_Lock);
 	//先遍历已有buf库，查找合适的buf
 	for (std::map<int, ObjectBuffer *>::iterator it = m_map2DBuffer.begin(); it != m_map2DBuffer.end(); it++)
 	{
@@ -102,6 +125,7 @@ int DataBufferManager::Query2DBuffer(int nWidth, int nHeight)
 
 ObjectBuffer * DataBufferManager::Query2DBuffer(int & nBufferID, int nWidth, int nHeight)
 {
+	AutoLockTool lock(m_Lock);
 	UnQuery2DBuffer(nBufferID);
 	nBufferID = Query2DBuffer(nWidth, nHeight);
 	return Get2DBuf(nBufferID);
@@ -109,6 +133,7 @@ ObjectBuffer * DataBufferManager::Query2DBuffer(int & nBufferID, int nWidth, int
 
 bool DataBufferManager::UnQuery2DBuffer(int & nBufferID)
 {
+	AutoLockTool lock(m_Lock);
 	if (m_map2DBuffer.count(nBufferID) > 0)
 	{
 		if (m_map2DBuffer[nBufferID])
@@ -123,6 +148,7 @@ bool DataBufferManager::UnQuery2DBuffer(int & nBufferID)
 
 bool DataBufferManager::Compress2DBuffer()
 {
+	AutoLockTool lock(m_Lock);
 	for (std::map<int, ObjectBuffer *>::iterator it = m_map2DBuffer.begin(); it != m_map2DBuffer.end();)
 	{
 		if (it->second)
@@ -148,6 +174,7 @@ bool DataBufferManager::Compress2DBuffer()
 
 ObjectBuffer * DataBufferManager::Get2DBuf(int nBufferID)
 {
+	AutoLockTool lock(m_Lock);
 	if (m_map2DBuffer.count(nBufferID) > 0)
 	{
 		return m_map2DBuffer[nBufferID];
@@ -157,6 +184,7 @@ ObjectBuffer * DataBufferManager::Get2DBuf(int nBufferID)
 
 bool DataBufferManager::Clear(int nBufferID, COLORREF color)
 {
+	AutoLockTool lock(m_Lock);
 	if (m_map2DBuffer.count(nBufferID) > 0)
 	{
 		if (m_map2DBuffer[nBufferID])
@@ -166,4 +194,14 @@ bool DataBufferManager::Clear(int nBufferID, COLORREF color)
 		}
 	}
 	return false;
+}
+
+void DataBufferManager::Lock()
+{
+	EnterCriticalSection(&m_Lock);
+}
+
+void DataBufferManager::UnLock()
+{
+	LeaveCriticalSection(&m_Lock);
 }

@@ -8,6 +8,7 @@ private:
 	int m_nWidthSeed;
 	int m_nHeightSeed;
 	std::map<int, ObjectBuffer *> m_map2DBuffer;
+	CRITICAL_SECTION m_Lock;
 private:
 	DataBufferManager();
 	~DataBufferManager();
@@ -24,5 +25,7 @@ public:
 	bool Compress2DBuffer();//压缩2Dbuf（释放掉所有未使用的bufer）
 	ObjectBuffer * Get2DBuf(int nBufferID);
 	bool Clear(int nBufferID, COLORREF color);
+	void Lock();
+	void UnLock();
 };
 
