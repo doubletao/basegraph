@@ -24,7 +24,10 @@ void MsgDispatcher::RegistMsgDispatcher(IMsgDispatchObject * pMsgObj)
 
 void MsgDispatcher::UnRegistDispatchObj(IMsgDispatchObject * pMsgObj)
 {
-	m_mapDispatchObject.erase(pMsgObj->GetMsgDispatchID());
+	if (m_mapDispatchObject.count(pMsgObj->GetMsgDispatchID()))
+	{
+		m_mapDispatchObject.erase(pMsgObj->GetMsgDispatchID());
+	}
 }
 
 void MsgDispatcher::BroadcastMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
@@ -76,5 +79,6 @@ void IMsgDispatchObject::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam,
 
 IMsgDispatchObject::~IMsgDispatchObject()
 {
-	MsgDispatcher::Instance().UnRegistDispatchObj(this);
+	//djt 这个自动注销为什么会崩溃，待查
+	//MsgDispatcher::Instance().UnRegistDispatchObj(this);
 }

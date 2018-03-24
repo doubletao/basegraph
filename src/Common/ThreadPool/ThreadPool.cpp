@@ -146,9 +146,9 @@ ThreadPool::ThreadPool()
 {
 	m_hEnd = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	::ResetEvent(m_hEnd);
-	m_hNewTask = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	m_hNewTask = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 	::ResetEvent(m_hNewTask);
-	m_hTaskFinish = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	m_hTaskFinish = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 	::ResetEvent(m_hTaskFinish);
 	InitializeCriticalSection(&m_LockTask);
 	InitializeCriticalSection(&m_LockWorker);
@@ -193,7 +193,6 @@ unsigned int ThreadPool::ThreadTaskDispatch(LPVOID pParam)
 			}
 			else if (dwResult == WAIT_OBJECT_0 + 1)
 			{
-				::ResetEvent(pPool->m_hNewTask);
 				//先拿到新任务
 				while (pPool->HasTask())
 				{
@@ -226,7 +225,6 @@ unsigned int ThreadPool::ThreadTaskDispatch(LPVOID pParam)
 			}
 			else
 			{
-				::ResetEvent(pPool->m_hTaskFinish);
 				//有任务完成
 				//检查任务列表，如果有新任务，则触发任务信号，否则就不管了
 				if (pPool->HasTask())
@@ -293,6 +291,7 @@ void ThreadPool::WaitAll()
 	}
 	UnLockWorker();
 
+	TRACE(_T("m_lstTaskFinish.size = %d\n"), m_lstTaskFinish.size());
 	for (std::list<HANDLE>::iterator it = m_lstTaskFinish.begin(); it != m_lstTaskFinish.end(); it++)
 	{
 		HANDLE hTaskFinish = *it;
@@ -321,6 +320,7 @@ void ThreadPool::OnTaskFinish(ThreadPool_Worker * pWorker)
 	m_setBusiWorker.erase(pWorker);
 	m_setIdleWorker.insert(pWorker);
 	UnLockWorker();
+	::SetEvent(m_hTaskFinish);
 }
 
 ThreadPool_Worker * ThreadPool::GetIdleWorker()

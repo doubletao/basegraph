@@ -243,26 +243,32 @@ void C3DSceneViewWnd::UpdateAllItemToHal(std::vector<CString> vecObjID, float fS
 	//遍历并生成物件贴片
 	for (size_t i = 0; i < vecObjID.size(); i++)
 	{
-		CString strObjID = vecObjID[i];
-		//m_ThreadPool.StartNewTask(UpdateItemToHalFunc, strObjID.GetBuffer());
-		DataRender_UpdateRender(strObjID);
-		strObjID.ReleaseBuffer();
+		CString * pStrObjID = new CString(vecObjID[i]);
+		m_ThreadPool.StartNewTask(UpdateItemToHalFunc, pStrObjID);
+		//DataRender_UpdateRender(*pStrObjID);
 		if (false)
 		{
 			StuSimpleBuffer stuSimpleBuf;
-			if (DataRender_GetBuffer(strObjID, stuSimpleBuf))
+			if (DataRender_GetBuffer(*pStrObjID, stuSimpleBuf))
 			{
 				BufferFunction::WriteBitmap(_T("e:\\test.bmp"), stuSimpleBuf.nWidth, stuSimpleBuf.nHeight, 32, stuSimpleBuf.pBuffer);
 			}
 		}
 	}
+	int nTm = clock();
 	m_ThreadPool.WaitAll();
+	TRACE(_T("wait time = %d\n"), clock() - nTm);
 }
 
 DWORD C3DSceneViewWnd::UpdateItemToHalFunc(LPVOID pParam, HANDLE hEnd)
 {
-	LPCTSTR strObjID = (LPCTSTR)pParam;
-	DataRender_UpdateRender(strObjID);
+	CString * pStrObjID = (CString *)pParam;
+	if (pStrObjID)
+	{
+		DataRender_UpdateRender(*pStrObjID);
+		delete pStrObjID;
+		pStrObjID = nullptr;
+	}
 	return 0;
 }
 
