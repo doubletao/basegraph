@@ -141,12 +141,12 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 				{
 					DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
 					RenderUnitBufferForGpu();
-					UpdateItemGpuBuffer();
+					UpdateItemGpuBuffer(TRUE);
 				}
 			}
 		}
 	}
-	return false;
+	return true;
 }
 
 rectf CalculatorTitleword::CalUnitBound()
