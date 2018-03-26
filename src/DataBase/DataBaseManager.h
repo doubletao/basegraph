@@ -53,6 +53,7 @@ public:
 	float3 GetItemPos(IN CString strID);
 	float3 GetItemCenter(IN CString strID);
 	float3 GetItemAngle(IN CString strID);
+	float3 GetItemAngleRadian(IN CString strID);
 	float3 GetItemScale(IN CString strID);
 	// Ù–‘…Ë÷√
 	bool SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam);

@@ -2,7 +2,8 @@
 #include "UIPropertyView.h"
 
 UIPropertyView::UIPropertyView()
-	:m_pPropertyTabBar(nullptr)
+	: m_pPropertyTabBar(nullptr)
+	, m_pSpaceElement(nullptr)
 {
 }
 
@@ -39,6 +40,10 @@ void UIPropertyView::InitializeObject()
 	m_pPropertyTabBar = new UIPropertyTabBar;
 	m_pPropertyTabBar->Create(0, 0, 100, 100, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pPropertyTabBar);
+
+	m_pSpaceElement = new UIPropertyViewElement;
+	m_pSpaceElement->Create(0, 0, 100, 100, m_hParentWnd, this);
+	m_vecChildElement.push_back(m_pSpaceElement);
 }
 
 bool UIPropertyView::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)

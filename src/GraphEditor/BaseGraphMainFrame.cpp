@@ -476,15 +476,16 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 				{
 					fXPos = 100.0f;
 					fYPos = 100.0f * i / 2;
-					fXRotate = i * 3.14f / 6;
+					//fXRotate = i * 3.14f / 6;
 				}
 				else
 				{
 					fXPos = -100.0f * i / 2;
 					fYPos = 300.0f;
-					fYRotate = i * 3.14f / 6;
+					//fYRotate = i * 3.14f / 6;
 				}
-				fZRotate = i * 3.14f / 6;
+				//fZRotate = i * 3.14f / 6;
+				fZRotate = 60;
 
 				if (i % 3)
 				{

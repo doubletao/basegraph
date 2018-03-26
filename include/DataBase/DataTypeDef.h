@@ -78,10 +78,24 @@ namespace BaseGraph_DataBase
 		ImageParam_End,
 	};
 
+	//所有界面上的控件形式都在这里通过enum来定义，确保属性窗可以通过enum来生成
+	enum PropertyDispType
+	{
+		PropertyDisp_StrSingleEdit,//单行文本框
+		PropertyDisp_StrMutiEdit,//多行文本框
+		PropertyDisp_StrPathEdit,//路径文本框
+		PropertyDisp_NumEdit,//一个数字框
+		PropertyDisp_SpinNumEdit,//一个带spin的数字框
+		PropertyDisp_SliderNumEdit,//一个带滑杆的数字框
+		PropertyDisp_CheckBmp,//bool类型check图按钮
+		PropertyDisp_RatioBmp,//多选一图按钮
+	};
+
 	struct ValueDescriptor
 	{
 		CString strDispName;//属性名
 		int nDispIndex;//属性界面上的显示顺序
+		PropertyDispType emDispType;
 		Value stuDefault;//默认值
 		std::vector<std::pair<int, CString>> vecValueLimit;//值限定，可为空，对于数值类型，意义为最大值最小值，对于枚举类型，意义为可选项以及显示名称，对于字符串类型，意义为最大长度
 	};
@@ -292,85 +306,97 @@ namespace BaseGraph_DataBase
 			break;
 		case SpacePosition_X_Float:
 			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("X");
-			valueDesc.stuDefault.SetValue(10.0f);
+			valueDesc.strDispName = _T("位置_X");
+			valueDesc.stuDefault.SetValue(0.0f);
+			valueDesc.emDispType = PropertyDisp_SpinNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpacePosition_Y_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("Y");
-			valueDesc.stuDefault.SetValue(20.0f);
+			valueDesc.nDispIndex = 1;
+			valueDesc.strDispName = _T("位置_Y");
+			valueDesc.stuDefault.SetValue(0.0f);
+			valueDesc.emDispType = PropertyDisp_SpinNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpacePosition_Z_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("Z");
-			valueDesc.stuDefault.SetValue(30.0f);
+			valueDesc.nDispIndex = 2;
+			valueDesc.strDispName = _T("位置_Z");
+			valueDesc.stuDefault.SetValue(0.0f);
+			valueDesc.emDispType = PropertyDisp_SpinNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpaceRotate_X_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("X");
+			valueDesc.nDispIndex = 3;
+			valueDesc.strDispName = _T("旋转_X");
 			valueDesc.stuDefault.SetValue(0.0f);
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3600, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3600, _T("最大值")));
 			break;
 		case SpaceRotate_Y_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("Y");
+			valueDesc.nDispIndex = 4;
+			valueDesc.strDispName = _T("旋转_Y");
 			valueDesc.stuDefault.SetValue(0.0f);
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3600, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3600, _T("最大值")));
 			break;
 		case SpaceRotate_Z_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("Z");
+			valueDesc.nDispIndex = 5;
+			valueDesc.strDispName = _T("旋转_Z");
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.stuDefault.SetValue(0.0f);
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3600, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3600, _T("最大值")));
 			break;
 		case SpaceScale_X_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("X");
+			valueDesc.nDispIndex = 6;
+			valueDesc.strDispName = _T("缩放_X");
 			valueDesc.stuDefault.SetValue(1.0f);
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(1, _T("最大值")));
 			break;
 		case SpaceScale_Y_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("Y");
+			valueDesc.nDispIndex = 7;
+			valueDesc.strDispName = _T("缩放_Y");
 			valueDesc.stuDefault.SetValue(1.0f);
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(1, _T("最大值")));
 			break;
 		case SpaceScale_Z_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("Z");
+			valueDesc.nDispIndex = 8;
+			valueDesc.strDispName = _T("缩放_Z");
 			valueDesc.stuDefault.SetValue(1.0f);
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(1, _T("最大值")));
 			break;
 		case SpaceCenter_X_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("X");
+			valueDesc.nDispIndex = 9;
+			valueDesc.strDispName = _T("中心_X");
 			valueDesc.stuDefault.SetValue(0.0f);
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpaceCenter_Y_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("Y");
+			valueDesc.nDispIndex = 10;
+			valueDesc.strDispName = _T("中心_Y");
 			valueDesc.stuDefault.SetValue(0.0f);
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case SpaceCenter_Z_Float:
-			valueDesc.nDispIndex = 0;
-			valueDesc.strDispName = _T("Z");
+			valueDesc.nDispIndex = 11;
+			valueDesc.strDispName = _T("中心_Z");
 			valueDesc.stuDefault.SetValue(0.0f);
+			valueDesc.emDispType = PropertyDisp_SliderNumEdit;
 			valueDesc.vecValueLimit.push_back(std::make_pair(-3000, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;

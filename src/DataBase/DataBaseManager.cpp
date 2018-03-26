@@ -275,6 +275,18 @@ float3 DataBaseManager::GetItemAngle(IN CString strID)
 	return f3Angle;
 }
 
+float3 DataBaseManager::GetItemAngleRadian(IN CString strID)
+{
+	float3 f3Angle = { 0 };
+	BaseObject * pObj = nullptr;
+	if (GetItem(strID, pObj)
+		&& pObj)
+	{
+		f3Angle = pObj->GetItemRotateRadian();
+	}
+	return f3Angle;
+}
+
 float3 DataBaseManager::GetItemScale(IN CString strID)
 {
 	float3 f3Scale = { 0 };

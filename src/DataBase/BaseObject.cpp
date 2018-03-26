@@ -193,6 +193,19 @@ void BaseGraph_DataBase::BaseObject::SetItemRotate(point3f ptValue)
 	SetValue(SpaceRotate_Z_Float, ptValue.z);
 }
 
+point3f BaseGraph_DataBase::BaseObject::GetItemRotateRadian()
+{
+	point3f ptRotate = GetItemRotate();
+	ptRotate *= PAIF / 180;
+	return ptRotate;
+}
+
+void BaseGraph_DataBase::BaseObject::SetItemRotateRadian(point3f ptValue)
+{
+	ptValue /= PAIF / 180;
+	SetItemRotate(ptValue);
+}
+
 point3f BaseGraph_DataBase::BaseObject::GetItemScale()
 {
 	point3f ptRet = { 0 };

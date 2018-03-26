@@ -34,6 +34,7 @@ bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, OUT std::
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemPos(IN CString strID);
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemCenter(IN CString strID);
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemAngle(IN CString strID);
+float3 BASEGRAPH_DATABASE_API DataBase_GetItemAngleRadian(IN CString strID);//取得旋转弧度
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID);
 //属性设置
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);

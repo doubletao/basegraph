@@ -32,6 +32,9 @@ namespace BaseGraph_DataBase
 		void SetItemPos(point3f ptValue);
 		point3f GetItemRotate();
 		void SetItemRotate(point3f ptValue);
+		//弧度版的set和get角度
+		point3f GetItemRotateRadian();
+		void SetItemRotateRadian(point3f ptValue);
 		point3f GetItemScale();
 		void SetItemScale(point3f ptValue);
 		point3f GetItemCenter();

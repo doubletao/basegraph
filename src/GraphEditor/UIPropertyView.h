@@ -1,11 +1,13 @@
 #pragma once
 #include "UIPropertyTabBar.h"
+#include "UIPropertyViewElement.h"
 
 class UIPropertyView :
 	public UIElement
 {
 protected:
 	UIPropertyTabBar * m_pPropertyTabBar;
+	UIPropertyViewElement * m_pSpaceElement;
 public:
 	UIPropertyView();
 	virtual ~UIPropertyView();

@@ -32,4 +32,3 @@ public:
 	virtual void SetCheck(bool bCheck);
 	virtual bool GetCheck();
 };
-

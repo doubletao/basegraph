@@ -102,6 +102,9 @@
     <ClCompile Include="C3DViewInfo.cpp">
       <Filter>SceneView</Filter>
     </ClCompile>
+    <ClCompile Include="UIPropertyViewElement.cpp">
+      <Filter>PropertyView</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="C3DViewBufferInfo.h">
       <Filter>SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyViewElement.h">
+      <Filter>PropertyView</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
