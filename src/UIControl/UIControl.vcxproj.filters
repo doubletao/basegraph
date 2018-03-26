@@ -194,6 +194,24 @@
     <ClInclude Include="..\..\include\UIControl\UIStatic.h">
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
+    <ClInclude Include="UIEditMutiLine.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditSingleLine.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditPath.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditNum.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditSpin.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditSlider.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="UIControl.def">

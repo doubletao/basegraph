@@ -42,7 +42,7 @@ void UIPropertyView::InitializeObject()
 	m_vecChildElement.push_back(m_pPropertyTabBar);
 
 	m_pSpaceElement = new UIPropertyViewElement;
-	m_pSpaceElement->Create(0, 0, 100, 100, m_hParentWnd, this);
+	m_pSpaceElement->Create(0, 0, 100, 100, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);
 	m_vecChildElement.push_back(m_pSpaceElement);
 }
 

@@ -75,6 +75,7 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewWidth, 284));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabWidth, 36));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabGap, 10));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewControlLeftGap, 15));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitWidth, 22));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitHeight, 1));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));

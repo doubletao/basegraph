@@ -454,7 +454,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		int i = 0;
 		for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)
 		{
-			for (size_t loop = 0; loop < 3; loop++, i++)
+			for (size_t loop = 0; loop < 8; loop++, i++)
 			{
 				CString strName;
 				strName.Format(_T("ÎÄ±¾_%s"), it->first);
@@ -485,7 +485,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 					//fYRotate = i * 3.14f / 6;
 				}
 				//fZRotate = i * 3.14f / 6;
-				fZRotate = 60;
+				fZRotate = i * 60;
 
 				if (i % 3)
 				{

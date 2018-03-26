@@ -29,6 +29,8 @@
 #include "UIControl\UIScrollBar.h"
 #include "UIControl\UIControlDef.h"
 #include "UIControl\MsgDispatcher.h"
+#include "UIControl\UIEdit.h"
+#include "UIControl\UIStatic.h"
 
 //Ö÷Ìâ
 BASEGRAPH_UICONTROL_API CString UIControl_GetThemePath();

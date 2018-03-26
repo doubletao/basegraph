@@ -170,6 +170,12 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThemeManager.h" />
     <ClInclude Include="UIControl.h" />
+    <ClInclude Include="UIEditMutiLine.h" />
+    <ClInclude Include="UIEditNum.h" />
+    <ClInclude Include="UIEditPath.h" />
+    <ClInclude Include="UIEditSingleLine.h" />
+    <ClInclude Include="UIEditSlider.h" />
+    <ClInclude Include="UIEditSpin.h" />
     <ClInclude Include="UITheme.h" />
     <ClInclude Include="UIThemeDefault.h" />
   </ItemGroup>

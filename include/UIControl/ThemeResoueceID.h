@@ -16,6 +16,7 @@ enum ThemeIntValueDef
 	ThemeInt_PropretyViewWidth,
 	ThemeInt_PropretyViewTabWidth,
 	ThemeInt_PropretyViewTabGap,
+	ThemeInt_PropretyViewControlLeftGap,
 	ThemeInt_PropretyViewTabSplitWidth,
 	ThemeInt_PropretyViewTabSplitHeight,
 	ThemeInt_TimeLineTimeCodeWidth,
