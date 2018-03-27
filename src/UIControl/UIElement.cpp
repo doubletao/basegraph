@@ -1,4 +1,5 @@
 #include "..\..\include\UIControl\UIElement.h"
+#include "..\..\include\UIControl\UIElement.h"
 #include "stdafx.h"
 #include "UIControl\UIElement.h"
 
@@ -159,6 +160,7 @@ UIElement::UIElement()
 	, m_nState(0)
 	, m_strText(_T(""))
 	, m_bCreated(false)
+	, m_bVisible(false)
 {
 }
 
@@ -302,6 +304,11 @@ void UIElement::ReleaseElementCapture()
 	{
 		::SendMessage(m_hParentWnd, EmUIElementMsg_SetCapture, FALSE, (LPARAM)this);
 	}
+}
+
+void UIElement::SetVisible(bool bVisible)
+{
+	m_bVisible = bVisible;
 }
 
 CRect UIElement::GetRect()

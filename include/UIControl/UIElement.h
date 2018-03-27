@@ -40,6 +40,7 @@ protected:
 	int m_nState;
 	CString m_strText;
 	bool m_bCreated;
+	bool m_bVisible;
 	std::vector<UIElement *> m_vecChildElement;//子控件
 	std::map<int, std::vector<UIDrawer *>> m_mapDrawer;//绘制管理器
 	std::set<UINT> m_setMsgFilter;//消息过滤器
@@ -81,5 +82,6 @@ public:
 	void InsertDrawer(int nState, UIDrawer * pDrawer);
 	void SetElementCapture();//需要父窗口实现对应的消息接口
 	void ReleaseElementCapture();//需要父窗口实现对应的消息接口
+	void SetVisible(bool bVisible);
 };
 

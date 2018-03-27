@@ -28,10 +28,15 @@ void UIPropertyView::Initialize(int nX, int nY, int nWidth, int nHeight, int nID
 
 void UIPropertyView::RearrangeChildPos()
 {
+	int nGap = UIControl_GetIntValue(ThemeInt_UIModualGap);
 	int nPropertyTabBarWdith = UIControl_GetIntValue(ThemeInt_PropretyViewTabWidth);
 	if (m_pPropertyTabBar)
 	{
 		m_pPropertyTabBar->MoveTo(0, 0, nPropertyTabBarWdith, m_nHeight);
+	}
+	if (m_pSpaceElement)
+	{
+		m_pSpaceElement->MoveTo(nPropertyTabBarWdith + nGap, 0, m_nWidth - nPropertyTabBarWdith - nGap, m_nHeight);
 	}
 }
 

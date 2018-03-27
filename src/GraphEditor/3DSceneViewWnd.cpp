@@ -291,22 +291,6 @@ C3DSceneViewWnd::C3DSceneViewWnd()
 
 C3DSceneViewWnd::~C3DSceneViewWnd()
 {
-	DeleteCriticalSection(&m_lockRendCount);
-	SetEvent(m_hExitPreDecoderEvent);
-	WaitForSingleObject(m_thPreDecoderThread, INFINITE);
-	if (m_thPreDecoderThread)
-		CloseHandle(m_thPreDecoderThread);
-	if (m_hExitPreDecoderEvent)
-		CloseHandle(m_hExitPreDecoderEvent);
-	if (m_hSeekReadyEvent)
-		CloseHandle(m_hSeekReadyEvent);
-	if (m_nSceneOutBackTex)
-	{
-		DX3DEngine_ReleaseTexture(DX3DEngine_GetMainDevice(), m_nSceneOutBackTex);
-	}
-	DeleteObject(m_hDefaultCur);
-	DeleteObject(m_hHandDragCurOpen);
-	DeleteObject(m_hHandDragCurClose);
 }
 
 void C3DSceneViewWnd::AdjustViewFit()
@@ -740,6 +724,23 @@ int C3DSceneViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void C3DSceneViewWnd::OnDestroy()
 {
+	SetEvent(m_hExitPreDecoderEvent);
+	WaitForSingleObject(m_thPreDecoderThread, INFINITE);
+	if (m_thPreDecoderThread)
+		CloseHandle(m_thPreDecoderThread);
+	if (m_hExitPreDecoderEvent)
+		CloseHandle(m_hExitPreDecoderEvent);
+	if (m_hSeekReadyEvent)
+		CloseHandle(m_hSeekReadyEvent);
+	if (m_nSceneOutBackTex)
+	{
+		DX3DEngine_ReleaseTexture(DX3DEngine_GetMainDevice(), m_nSceneOutBackTex);
+	}
+	DeleteObject(m_hDefaultCur);
+	DeleteObject(m_hHandDragCurOpen);
+	DeleteObject(m_hHandDragCurClose);
+
+	DeleteCriticalSection(&m_lockRendCount);
 	CWnd::OnDestroy();
 }
 

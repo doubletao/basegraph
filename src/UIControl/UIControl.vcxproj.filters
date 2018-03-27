@@ -25,6 +25,9 @@
     <Filter Include="SkinedWindow">
       <UniqueIdentifier>{21a04262-ed02-4fc5-a5eb-630616da53e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UIElementCombinedCtrl">
+      <UniqueIdentifier>{577b64a6-8b00-4243-8dd5-29f7ab75d5f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -194,23 +197,23 @@
     <ClInclude Include="..\..\include\UIControl\UIStatic.h">
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditMutiLine.h">
-      <Filter>UIElementCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="UIEditSingleLine.h">
-      <Filter>UIElementCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="UIEditPath.h">
-      <Filter>UIElementCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="UIEditNum.h">
-      <Filter>UIElementCtrl</Filter>
-    </ClInclude>
     <ClInclude Include="UIEditSpin.h">
-      <Filter>UIElementCtrl</Filter>
+      <Filter>UIElementCombinedCtrl</Filter>
     </ClInclude>
     <ClInclude Include="UIEditSlider.h">
-      <Filter>UIElementCtrl</Filter>
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditSingleLine.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditPath.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditNum.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditMutiLine.h">
+      <Filter>UIElementCombinedCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

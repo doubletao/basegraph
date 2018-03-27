@@ -29,7 +29,8 @@ bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditI
 		CWnd * pWnd = CWnd::FromHandlePermanent(hParentWnd);
 		if (pWnd)
 		{
-			m_pEdit->CreateEx(WS_EX_CLIENTEDGE, _T("UIEdit"), _T("UIEditWnd"), WS_BORDER | WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL | ES_CENTER, CRect(0, 0, 100, 100), pWnd, nEditID);
+			m_pEdit = new CEdit;
+			m_pEdit->CreateEx(WS_EX_CLIENTEDGE, _T("Edit"), _T("UIEditWnd"), WS_BORDER | WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL | ES_CENTER, CRect(0, 0, 100, 100), pWnd, nEditID);
 		}
 		bRet = true;
 	}

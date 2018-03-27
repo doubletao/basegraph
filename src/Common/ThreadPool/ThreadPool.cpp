@@ -3,6 +3,12 @@
 #include <assert.h>
 #include <list>
 
+//#define DEBUG_HANDLE
+//#ifdef DEBUG_HANDLE
+//std::set<DWORD> g_setHandleValue;
+//#endif // DEBUG_HANDLE
+
+
 ///////////////ThreadPool_Task/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ThreadPool_Task::ThreadPool_Task(ThreadTaskFunc pFunc, LPVOID pParam)
 	: m_pParam(pParam)
@@ -21,6 +27,7 @@ ThreadPool_Task::~ThreadPool_Task()
 
 void ThreadPool_Task::Run(HANDLE hEnd)
 {
+	TRACE(_T("Task begin = %p\n"), m_hFinish);
 	if (m_pFunc)
 	{
 		if (WaitForSingleObject(hEnd, 0) != WAIT_OBJECT_0)
@@ -30,6 +37,7 @@ void ThreadPool_Task::Run(HANDLE hEnd)
 	}
 	//注意，检测到退出指令导致实际上未执行的情况也被算做完成
 	::SetEvent(m_hFinish);
+	TRACE(_T("Task finish = %p\n"), m_hFinish);
 }
 
 HANDLE ThreadPool_Task::GetFinishHandle()
