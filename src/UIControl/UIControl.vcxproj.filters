@@ -108,6 +108,12 @@
     <ClCompile Include="UIStatic.cpp">
       <Filter>UIElementCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="UIEditNum.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEditNumSpin.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -197,22 +203,25 @@
     <ClInclude Include="..\..\include\UIControl\UIStatic.h">
       <Filter>UIElementCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditSpin.h">
+    <ClInclude Include="..\..\include\UIControl\UIEditMutiLine.h">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditSlider.h">
+    <ClInclude Include="..\..\include\UIControl\UIEditNum.h">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditSingleLine.h">
+    <ClInclude Include="..\..\include\UIControl\UIEditNumSlider.h">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditPath.h">
+    <ClInclude Include="..\..\include\UIControl\UIEditNumSpin.h">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditNum.h">
+    <ClInclude Include="..\..\include\UIControl\UIEditPath.h">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditMutiLine.h">
+    <ClInclude Include="..\..\include\UIControl\UIEditSingleLine.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UICombinedCtrl.h">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClInclude>
   </ItemGroup>

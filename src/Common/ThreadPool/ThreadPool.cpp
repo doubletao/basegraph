@@ -23,6 +23,7 @@ ThreadPool_Task::~ThreadPool_Task()
 {
 	if (m_hFinish)
 		CloseHandle(m_hFinish);
+	TRACE(_T("Task closed = %p\n"), m_hFinish);
 }
 
 void ThreadPool_Task::Run(HANDLE hEnd)
@@ -303,6 +304,7 @@ void ThreadPool::WaitAll()
 	for (std::list<HANDLE>::iterator it = m_lstTaskFinish.begin(); it != m_lstTaskFinish.end(); it++)
 	{
 		HANDLE hTaskFinish = *it;
+		TRACE(_T("m_lstTaskFinish waitting = %p\n"), hTaskFinish);
 		WaitForSingleObject(hTaskFinish, INFINITE);
 	}
 }

@@ -251,13 +251,19 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_TabBtnText_F, strThemePath + _T("Button\\TabBtnText_F.png"));
 		LoadOneImg(ThemeImage_TabBtnText_D, strThemePath + _T("Button\\TabBtnText_D.png"));
 		LoadOneImg(ThemeImage_TabBtnText_X, strThemePath + _T("Button\\TabBtnText_X.png"));
-
+		LoadOneImg(ThemeImage_BtnSpinUp_N, strThemePath + _T("Button\\BtnSpinUp_N.png"));
+		LoadOneImg(ThemeImage_BtnSpinUp_F, strThemePath + _T("Button\\BtnSpinUp_F.png"));
+		LoadOneImg(ThemeImage_BtnSpinUp_D, strThemePath + _T("Button\\BtnSpinUp_D.png"));
+		LoadOneImg(ThemeImage_BtnSpinUp_X, strThemePath + _T("Button\\BtnSpinUp_X.png"));
+		LoadOneImg(ThemeImage_BtnSpinDown_N, strThemePath + _T("Button\\BtnSpinDown_N.png"));
+		LoadOneImg(ThemeImage_BtnSpinDown_F, strThemePath + _T("Button\\BtnSpinDown_F.png"));
+		LoadOneImg(ThemeImage_BtnSpinDown_D, strThemePath + _T("Button\\BtnSpinDown_D.png"));
+		LoadOneImg(ThemeImage_BtnSpinDown_X, strThemePath + _T("Button\\BtnSpinDown_X.png"));
 
 		LoadOneImg(ThemeImage_ElementArea, strThemePath + _T("Common\\ElementArea.png"));
 		LoadOneImg(ThemeImage_SceneLayoutBk, strThemePath + _T("Common\\SceneLayoutBk.png"));
 
 		LoadOneImg(ThemeImage_TimeLineTimeCodeBk, strThemePath + _T("TimeLine\\TimeLineTimeCodeBk.png"));
-
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Nor.png"));
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Sel, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Sel.png"));
 		LoadOneImg(ThemeImage_TimeLineRightObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineRightObjectBkGnd_Nor.png"));

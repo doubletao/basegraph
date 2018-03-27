@@ -30,6 +30,12 @@
 #include "UIControl\UIControlDef.h"
 #include "UIControl\MsgDispatcher.h"
 #include "UIControl\UIEdit.h"
+#include "UIControl\UIEditMutiLine.h"
+#include "UIControl\UIEditNum.h"
+#include "UIControl\UIEditNumSlider.h"
+#include "UIControl\UIEditNumSpin.h"
+#include "UIControl\UIEditPath.h"
+#include "UIControl\\UIEditSingleLine.h"
 #include "UIControl\UIStatic.h"
 
 //Ö÷Ìâ

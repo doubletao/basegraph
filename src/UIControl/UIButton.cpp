@@ -28,7 +28,7 @@ void UIButton::OnButtonClickDown()
 void UIButton::OnButtonClickUp()
 {
 	//œÏ”¶∞¥≈•
-	EmitMsg(EmUIElementMsg_BtnClick, m_nID, 0);
+	EmitMsg(EmUIElementMsg_BtnClick, m_nID, (LPARAM)this);
 	//…Ë÷√◊¥Ã¨
 	SetState(UIElement_BtnFloat, true);
 }

@@ -51,7 +51,7 @@ void UICheckBtn::OnButtonClickUp()
 	if (m_bCheck && m_nState == UIElement_BtnDown)
 	{
 		//œÏ”¶∞¥≈•
-		EmitMsg(EmUIElementMsg_BtnClick, m_nID, 0);
+		EmitMsg(EmUIElementMsg_BtnClick, m_nID, (LPARAM)this);
 		SetState(UIElement_BtnDown, true);
 	}
 	else

@@ -131,6 +131,8 @@
     <ClCompile Include="UIControl.cpp" />
     <ClCompile Include="UIDrawer.cpp" />
     <ClCompile Include="UIEdit.cpp" />
+    <ClCompile Include="UIEditNum.cpp" />
+    <ClCompile Include="UIEditNumSpin.cpp" />
     <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UIImageDrawer.cpp" />
     <ClCompile Include="UIRectDrawer.cpp" />
@@ -154,9 +156,16 @@
     <ClInclude Include="..\..\include\UIControl\UICheckBtn.h" />
     <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h" />
     <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UICombinedCtrl.h" />
     <ClInclude Include="..\..\include\UIControl\UIControlDef.h" />
     <ClInclude Include="..\..\include\UIControl\UIDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIEdit.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditMutiLine.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditNum.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditNumSlider.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditNumSpin.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditPath.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditSingleLine.h" />
     <ClInclude Include="..\..\include\UIControl\UIElement.h" />
     <ClInclude Include="..\..\include\UIControl\UIImageDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIRectDrawer.h" />
@@ -170,12 +179,6 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThemeManager.h" />
     <ClInclude Include="UIControl.h" />
-    <ClInclude Include="UIEditMutiLine.h" />
-    <ClInclude Include="UIEditNum.h" />
-    <ClInclude Include="UIEditPath.h" />
-    <ClInclude Include="UIEditSingleLine.h" />
-    <ClInclude Include="UIEditSlider.h" />
-    <ClInclude Include="UIEditSpin.h" />
     <ClInclude Include="UITheme.h" />
     <ClInclude Include="UIThemeDefault.h" />
   </ItemGroup>

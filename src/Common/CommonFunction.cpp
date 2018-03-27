@@ -114,3 +114,101 @@ CString CommonFunction::GetFilePath(LPCTSTR szFullPathFileName)
 
 	return strPath;
 }
+
+CString CommonFunction::ConvertNumToCString(DWORD dwValue)
+{
+	CString strRet;
+	strRet.Format(_T("%d"), dwValue);
+	return strRet;
+}
+
+CString CommonFunction::ConvertNumToCString(int nValue)
+{
+	CString strRet;
+	strRet.Format(_T("%d"), nValue);
+	return strRet;
+}
+
+CString CommonFunction::ConvertNumToCString(float fValue, int nPrecision/* = 2*/)
+{
+	CString strRet;
+	switch (nPrecision)
+	{
+	case 0:
+		strRet.Format(_T("%d"), (int)fValue);
+		break;
+	case 1:
+		strRet.Format(_T("%.1f"), fValue);
+		break;
+	case 2:
+		strRet.Format(_T("%.2f"), fValue);
+		break;
+	case 3:
+		strRet.Format(_T("%.3f"), fValue);
+		break;
+	case 4:
+		strRet.Format(_T("%.4f"), fValue);
+		break;
+	case 5:
+		strRet.Format(_T("%.5f"), fValue);
+		break;
+	case 6:
+		strRet.Format(_T("%.6f"), fValue);
+		break;
+	default:
+		strRet.Format(_T("%.6f"), fValue);
+		break;
+	}
+	return strRet;
+}
+
+CString CommonFunction::ConvertNumToCString(double dValue, int nPrecision/* = 2*/)
+{
+	CString strRet;
+	switch (nPrecision)
+	{
+	case 0:
+		strRet.Format(_T("%d"), (int)dValue);
+		break;
+	case 1:
+		strRet.Format(_T("%.1f"), dValue);
+		break;
+	case 2:
+		strRet.Format(_T("%.2f"), dValue);
+		break;
+	case 3:
+		strRet.Format(_T("%.3f"), dValue);
+		break;
+	case 4:
+		strRet.Format(_T("%.4f"), dValue);
+		break;
+	case 5:
+		strRet.Format(_T("%.5f"), dValue);
+		break;
+	case 6:
+		strRet.Format(_T("%.6f"), dValue);
+		break;
+	default:
+		strRet.Format(_T("%.6f"), dValue);
+		break;
+	}
+	return strRet;
+}
+
+int CommonFunction::ConvertCStringToInt(CString strValue)
+{
+	int nRet = _ttoi(strValue);
+	return nRet;
+}
+
+float CommonFunction::ConvertCStringToFloat(CString strValue)
+{
+	float fRet = (float)_ttof(strValue);
+	return fRet;
+}
+
+double CommonFunction::ConvertCStringToDouble(CString strValue)
+{
+	double dRet = _ttof(strValue);
+	return dRet;
+}

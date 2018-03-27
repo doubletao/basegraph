@@ -46,3 +46,21 @@ void UIEdit::RearrangeChildPos()
 		m_pEdit->MoveWindow(nX, nY, m_nWidth, m_nHeight);
 	}
 }
+
+void UIEdit::SetText(CString strText)
+{
+	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
+	{
+		m_pEdit->SetWindowText(strText);
+	}
+}
+
+CString UIEdit::GetText()
+{
+	CString strRet = _T("");
+	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
+	{
+		m_pEdit->GetWindowText(strRet);
+	}
+	return strRet;
+}

@@ -12,4 +12,6 @@ public:
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditID, HWND hParentWnd, UIElement * pParent);
 	virtual void RearrangeChildPos();
+	void SetText(CString strText);
+	CString GetText();
 };
