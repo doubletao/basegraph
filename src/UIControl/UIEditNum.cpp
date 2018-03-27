@@ -20,7 +20,7 @@ bool UIEditNum::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEd
 	{
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 		m_pUIEdit = new UIEdit;
-		m_pUIEdit->Create(nX, nY, nWidth, nHeight, nID, nEditID, hParentWnd, pParent);
+		m_pUIEdit->Create(nX, nY, nWidth, nHeight, nID, nEditID, hParentWnd, this);
 		m_vecChildElement.push_back(m_pUIEdit);
 		return true;
 	}
