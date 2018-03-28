@@ -58,6 +58,14 @@ bool UIThemeDefault::Initialize()
 		m_mapFontList.insert(std::make_pair(ThemeFont_TimeLineRuler, lfFont));
 	}
 
+	{
+		LOGFONT lfFont;
+		memset(&lfFont, 0, sizeof(lfFont));
+		lfFont.lfHeight = -12;
+		lstrcpy(lfFont.lfFaceName, _T("微软雅黑"));
+		m_mapFontList.insert(std::make_pair(ThemeFont_CustomEditCtr, lfFont));
+	}
+
 	/////////////////////////////////////////////////////////////////////
 	//整数
 	m_mapIntValue.insert(std::make_pair(ThemeInt_UIModualGap, 1));
@@ -118,6 +126,17 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_F, RGB(0xff, 0xff, 0xff)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_D, RGB(0xaf, 0xaf, 0xaf)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderButton_X, RGB(0x0a, 0x0a, 0x0a)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditBk, RGB(50, 50, 50)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditBkFocus, RGB(50, 50, 50)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditGray, RGB(65, 65, 65)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditNorText, RGB(125, 255, 200)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditHighLightText, RGB(255, 255, 255)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditGrayText, RGB(100, 100, 100)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditTopLeftBoard, RGB(255, 255, 255)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditBottomRightBoard, RGB(200, 200, 200)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditTopLeftBoardGray, RGB(255, 255, 255)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditBottomRightBoardGray, RGB(200, 200, 200)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditUnderLay, RGB(0, 200, 200)));
 
 	/////////////////////////////////////////////////////////////////////
 	//文本

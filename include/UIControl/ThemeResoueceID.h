@@ -46,6 +46,7 @@ enum ThemeFontValueDef
 	ThemeFont_TimeLineTimeCode,
 	ThemeFont_TimeLineObjectTrackText,
 	ThemeFont_TimeLineRuler,//时间线刻度尺字体
+	ThemeFont_CustomEditCtr,
 };
 
 enum ThemeColorValueDef
@@ -68,6 +69,17 @@ enum ThemeColorValueDef
 	ThemeColor_SliderButton_F,
 	ThemeColor_SliderButton_D,
 	ThemeColor_SliderButton_X,
+	ThemeColor_CustomEditBk,					//编辑框背景色
+	ThemeColor_CustomEditBkFocus,				//有焦点的编辑框背景色
+	ThemeColor_CustomEditGray,					//无效编辑框背景色
+	ThemeColor_CustomEditNorText,				//正常文本色
+	ThemeColor_CustomEditHighLightText,			//选中状态颜色
+	ThemeColor_CustomEditGrayText,				//无效状态下文本色
+	ThemeColor_CustomEditTopLeftBoard,			//3D编辑框左上角
+	ThemeColor_CustomEditBottomRightBoard,		//3D编辑框右下角
+	ThemeColor_CustomEditTopLeftBoardGray,		//编辑框无效状态左上边框
+	ThemeColor_CustomEditBottomRightBoardGray,	//编辑框无效状态右下边框
+	ThemeColor_CustomEditUnderLay,				//编辑框衬底边框
 };
 
 enum ThemeCStringValueDef

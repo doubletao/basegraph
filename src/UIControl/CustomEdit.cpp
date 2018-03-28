@@ -1,27 +1,13 @@
 #include "stdafx.h"
 #include "UIControl\CustomEdit.h"
+#include "UIControl\ThemeResoueceID.h"
+#include "ThemeManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-//±à¼­¿ò
-#define CUSTOM_COLOR_EDIT					60   //±à¼­¿ò±³¾°É«
-#define CUSTOM_COLOR_EDITFOCUS				61   //ÓÐ½¹µãµÄ±à¼­¿ò±³¾°É«
-#define CUSTOM_COLOR_EDITGRAY				62	  //ÎÞÐ§±à¼­¿ò±³¾°É«
-#define CUSTOM_COLOR_EDIT_TEXT				63   //Õý³£ÎÄ±¾É«
-#define CUSTOM_COLOR_EDIT_HIGHLIGHTEXT		64	  //Ñ¡ÖÐ×´Ì¬ÑÕÉ«
-#define CUSTOM_COLOR_EDIT_GRAYTEXT			65   //ÎÞÐ§×´Ì¬ÏÂÎÄ±¾É«
-#define CUSTOM_COLOR_EDIT_TOPLEFT			66   //3D±à¼­¿ò×óÉÏ½Ç
-#define CUSTOM_COLOR_EDIT_BOTTOMRIGHT		67   //3D±à¼­¿òÓÒÏÂ½Ç
-#define CUSTOM_COLOR_EDIT_GRAY_TOPLEFT		68   //±à¼­¿òÎÞÐ§×´Ì¬×óÉÏ±ß¿ò
-#define CUSTOM_COLOR_EDIT_GRAY_BOTTOMRIGHT	69   //±à¼­¿òÎÞÐ§×´Ì¬ÓÒÏÂ±ß¿ò
-#define CUSTOM_COLOR_EDIT_UNDERLAY			70	 //±à¼­¿ò³Äµ×±ß¿ò
-#define SYSTEM_FONT_TYPE					71
-
-#define GetSysFont(x) ((HFONT)m_textFont.GetSafeHandle())
 
 inline BOOL IsValidWindow(CWnd* pWnd)
 {
@@ -60,45 +46,7 @@ inline BOOL  DoTabKey(CWnd *pWnd)
 
  static inline COLORREF GetThemeColor(int nIndex)
  {
- 	COLORREF clRet;
- 	switch(nIndex)
- 	{
- 	case CUSTOM_COLOR_EDIT://±à¼­¿ò±³¾°É«
- 		clRet = RGB(50, 50, 50);
- 		break;
- 	case CUSTOM_COLOR_EDITFOCUS://ÓÐ½¹µãµÄ±à¼­¿ò±³¾°É«
- 		clRet = RGB(50, 50, 50);
- 		break;
- 	case CUSTOM_COLOR_EDITGRAY://ÎÞÐ§±à¼­¿ò±³¾°É«
- 		clRet = RGB(65, 65, 65);
- 		break;
- 	case CUSTOM_COLOR_EDIT_TEXT://Õý³£ÎÄ±¾É«
- 		clRet = RGB(125, 255, 200);
- 		break;
- 	case CUSTOM_COLOR_EDIT_HIGHLIGHTEXT://Ñ¡ÖÐ×´Ì¬ÑÕÉ«
- 		clRet = RGB(255, 255, 255);
- 		break;
- 	case CUSTOM_COLOR_EDIT_GRAYTEXT://ÎÞÐ§×´Ì¬ÏÂÎÄ±¾É«
- 		clRet = RGB(100, 100, 100);
- 		break;
- 	case CUSTOM_COLOR_EDIT_TOPLEFT://3D±à¼­¿ò×óÉÏ½Ç
- 		clRet = RGB(255, 255, 255);
- 		break;
- 	case CUSTOM_COLOR_EDIT_BOTTOMRIGHT://3D±à¼­¿òÓÒÏÂ½Ç
- 		clRet = RGB(200, 200, 200);
- 		break;
- 	case CUSTOM_COLOR_EDIT_GRAY_TOPLEFT://±à¼­¿òÎÞÐ§×´Ì¬×óÉÏ±ß¿ò
- 		clRet = RGB(255, 255, 255);
- 		break;
- 	case CUSTOM_COLOR_EDIT_GRAY_BOTTOMRIGHT://±à¼­¿òÎÞÐ§×´Ì¬ÓÒÏÂ±ß¿ò
- 		clRet = RGB(200, 200, 200);
- 		break;
- 	case CUSTOM_COLOR_EDIT_UNDERLAY://±à¼­¿ò³Äµ×±ß¿ò
- 		clRet = RGB(0, 200, 200);
- 		break;
- 	default:
- 		clRet = RGB(255, 0, 0);
- 	}
+ 	COLORREF clRet = ThemeManager::Instance().GetColor(nIndex);
  	return clRet;
  }
 
@@ -124,14 +72,14 @@ WNDPROC CustomEdit::lpfnSuperEdit = NULL;
 
 CustomEdit::CustomEdit()
 {
-	m_ctlBkBrush.CreateSolidBrush(GetThemeColor(CUSTOM_COLOR_EDIT));
-	m_dwHighLightText = GetThemeColor( CUSTOM_COLOR_EDIT_HIGHLIGHTEXT );
-	m_dwNormalText = GetThemeColor( CUSTOM_COLOR_EDIT_TEXT );
-	m_dwDisableText = GetThemeColor( CUSTOM_COLOR_EDIT_GRAYTEXT );
-	m_dwNORActiveBorder = GetThemeColor(CUSTOM_COLOR_EDIT_TOPLEFT);
-	m_dwNORInActiveBorder = GetThemeColor(CUSTOM_COLOR_EDIT_BOTTOMRIGHT);
-	m_dwDISActiveBorder = GetThemeColor(CUSTOM_COLOR_EDIT_GRAY_TOPLEFT);
-	m_dwDISInActiveBorder = GetThemeColor(CUSTOM_COLOR_EDIT_GRAY_BOTTOMRIGHT);
+	m_ctlBkBrush.CreateSolidBrush(GetThemeColor(ThemeColor_CustomEditBk));
+	m_dwHighLightText = GetThemeColor( ThemeColor_CustomEditHighLightText );
+	m_dwNormalText = GetThemeColor( ThemeColor_CustomEditNorText );
+	m_dwDisableText = GetThemeColor( ThemeColor_CustomEditGrayText );
+	m_dwNORActiveBorder = GetThemeColor(ThemeColor_CustomEditTopLeftBoard);
+	m_dwNORInActiveBorder = GetThemeColor(ThemeColor_CustomEditBottomRightBoard);
+	m_dwDISActiveBorder = GetThemeColor(ThemeColor_CustomEditTopLeftBoardGray);
+	m_dwDISInActiveBorder = GetThemeColor(ThemeColor_CustomEditBottomRightBoardGray);
 
 	m_dwStyle		 = 0;
 	m_fAutoDelete	 = FALSE; //×Ô¶¯É¾³ý±êÖ¾
@@ -341,7 +289,7 @@ void CustomEdit::OnNcPaint()
 
 	pDC->Draw3dRect(rect,DlgEdgeColor[0],DlgEdgeColor[1]);
 	rect.InflateRect(-1,-1);
-	COLORREF clBack = GetThemeColor(CUSTOM_COLOR_EDIT);
+	COLORREF clBack = GetThemeColor(ThemeColor_CustomEditBk);
 
 	LOGBRUSH lbr;
 	clBack = m_ctlBkBrush.GetLogBrush(&lbr);
@@ -376,15 +324,15 @@ HBRUSH CustomEdit::CtlColor(CDC* pDC, UINT nCtlColor)
 				{
 					if(GetFocus() == this)
 					{
-						clBKColor = GetThemeColor(CUSTOM_COLOR_EDITFOCUS);
+						clBKColor = GetThemeColor(ThemeColor_CustomEditBkFocus);
 					}
 					else
 					{
-						clBKColor = GetThemeColor(CUSTOM_COLOR_EDIT);
+						clBKColor = GetThemeColor(ThemeColor_CustomEditBk);
 					}
 				}
 				else
-					clBKColor = GetThemeColor(CUSTOM_COLOR_EDITGRAY);
+					clBKColor = GetThemeColor(ThemeColor_CustomEditGray);
 				pDC->SetBkColor(clBKColor);
 				if(m_ctlBkBrush.m_hObject)
 					m_ctlBkBrush.DeleteObject();
@@ -396,12 +344,12 @@ HBRUSH CustomEdit::CtlColor(CDC* pDC, UINT nCtlColor)
 	case CTLCOLOR_STATIC:
 		{
 			pDC->SetTextColor( m_dwDisableText);
-			pDC->SetBkColor(GetThemeColor(CUSTOM_COLOR_EDITGRAY));
+			pDC->SetBkColor(GetThemeColor(ThemeColor_CustomEditGray));
 
 			if(m_ctlBkBrush.m_hObject)
 				m_ctlBkBrush.DeleteObject();
 
-			m_ctlBkBrush.CreateSolidBrush(GetThemeColor(CUSTOM_COLOR_EDITGRAY));
+			m_ctlBkBrush.CreateSolidBrush(GetThemeColor(ThemeColor_CustomEditGray));
 			hBkBrush = (HBRUSH)m_ctlBkBrush;
 		}
 		break;
@@ -532,7 +480,8 @@ BOOL CustomEdit::Create/*No.3*/( LPCTSTR lpszCaption, DWORD dwStyle,LPCRECT pRec
 		ModifyStyle(WS_EX_LEFTSCROLLBAR, 0);
 		ModifyStyleEx(0, WS_EX_LEFTSCROLLBAR);
 	}
-	m_textFont.CreatePointFont(100, _T("Î¢ÈíÑÅºÚ"));
+	LOGFONT lgFont = ThemeManager::Instance().GetFont(ThemeFont_CustomEditCtr);
+	m_textFont.CreateFontIndirect(&lgFont);
 	CreateScroolBar();
 	ModifyTextRect();
 	return bRet;
@@ -587,10 +536,6 @@ int CustomEdit::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	if(m_textFont.m_hObject)
 		SetFont(&m_textFont);
-	else
-	{
-		SetFont(CFont::FromHandle(GetSysFont(SYSTEM_FONT_TYPE)));
-	}
 
 	return 0;
 }
@@ -599,26 +544,14 @@ void CustomEdit::ModifyTextRect()
 {
 	if(m_textFont.m_hObject)
 		SetFont(&m_textFont);
-	else
-	{
-		SetFont(CFont::FromHandle(GetSysFont(SYSTEM_FONT_TYPE)));
-	}
 	
 	DWORD dwStyle = GetStyle();
 	if(!(dwStyle & ES_MULTILINE))
 	{
 		CFont* tempFont = NULL;
 		if(m_textFont.m_hObject)
-			tempFont = (&m_textFont);
-		else
-		{
-			tempFont = (CFont::FromHandle(GetSysFont(SYSTEM_FONT_TYPE)));
-		}
-		
-		if(!tempFont)
-		{
-			tempFont = (CFont::FromHandle(GetSysFont(SYSTEM_FONT_TYPE)));
-		}
+			tempFont = &m_textFont;
+
 		LOGFONT logFont; tempFont->GetLogFont(&logFont);
 		CRect rc1, rc2; int h1,h2;
 		GetClientRect(&rc1);
