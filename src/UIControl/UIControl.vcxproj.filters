@@ -28,6 +28,9 @@
     <Filter Include="UIElementCombinedCtrl">
       <UniqueIdentifier>{577b64a6-8b00-4243-8dd5-29f7ab75d5f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UIMFControl">
+      <UniqueIdentifier>{e5b6c443-feb5-47aa-a0f1-adbf1e4b173a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -113,6 +116,12 @@
     </ClCompile>
     <ClCompile Include="UIEditNumSpin.cpp">
       <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomEdit.cpp">
+      <Filter>UIMFControl</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomScrollBar.cpp">
+      <Filter>UIMFControl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -223,6 +232,12 @@
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\UICombinedCtrl.h">
       <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\CustomEdit.h">
+      <Filter>UIMFControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\CustomScrollBar.h">
+      <Filter>UIMFControl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

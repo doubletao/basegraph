@@ -78,6 +78,7 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewControlLeftTopGap, 15));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitWidth, 22));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitHeight, 1));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlGap, 3));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeLeftGap, 10));
@@ -259,6 +260,18 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_BtnSpinDown_F, strThemePath + _T("Button\\BtnSpinDown_F.png"));
 		LoadOneImg(ThemeImage_BtnSpinDown_D, strThemePath + _T("Button\\BtnSpinDown_D.png"));
 		LoadOneImg(ThemeImage_BtnSpinDown_X, strThemePath + _T("Button\\BtnSpinDown_X.png"));
+		LoadOneImg(ThemeImage_ScrollBk, strThemePath + _T("Button\\ScrollBk.png"));
+		LoadOneImg(ThemeImage_ScrollBkHot, strThemePath + _T("Button\\ScrollBkHot.png"));
+		LoadOneImg(ThemeImage_ScrollBottomArrow, strThemePath + _T("Button\\ScrollBottomArrow.png"));
+		LoadOneImg(ThemeImage_ScrollBottomArrowHot, strThemePath + _T("Button\\ScrollBottomArrowHot.png"));
+		LoadOneImg(ThemeImage_ScrollLeftArrow, strThemePath + _T("Button\\ScrollLeftArrow.png"));
+		LoadOneImg(ThemeImage_ScrollLeftArrowHot, strThemePath + _T("Button\\ScrollLeftArrowHot.png"));
+		LoadOneImg(ThemeImage_ScrollRightArrow, strThemePath + _T("Button\\ScrollRightArrow.png"));
+		LoadOneImg(ThemeImage_ScrollRightArrowHot, strThemePath + _T("Button\\ScrollRightArrowHot.png"));
+		LoadOneImg(ThemeImage_ScrollThumb, strThemePath + _T("Button\\ScrollThumb.png"));
+		LoadOneImg(ThemeImage_ScrollThumbHot, strThemePath + _T("Button\\ScrollThumbHot.png"));
+		LoadOneImg(ThemeImage_ScrollTopArrow, strThemePath + _T("Button\\ScrollTopArrow.png"));
+		LoadOneImg(ThemeImage_ScrollTopArrowHot, strThemePath + _T("Button\\ScrollTopArrowHot.png"));
 
 		LoadOneImg(ThemeImage_ElementArea, strThemePath + _T("Common\\ElementArea.png"));
 		LoadOneImg(ThemeImage_SceneLayoutBk, strThemePath + _T("Common\\SceneLayoutBk.png"));

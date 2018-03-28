@@ -113,6 +113,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CustomEdit.cpp" />
+    <ClCompile Include="CustomScrollBar.cpp" />
     <ClCompile Include="ExportUIControl.cpp" />
     <ClCompile Include="MsgDispatcher.cpp" />
     <ClCompile Include="SkinDlgWnd.cpp" />
@@ -146,6 +148,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ExportUIControl.h" />
+    <ClInclude Include="..\..\include\UIControl\CustomEdit.h" />
+    <ClInclude Include="..\..\include\UIControl\CustomScrollBar.h" />
     <ClInclude Include="..\..\include\UIControl\MsgDispatcher.h" />
     <ClInclude Include="..\..\include\UIControl\SkinDlgWnd.h" />
     <ClInclude Include="..\..\include\UIControl\SkinFrameWnd.h" />
