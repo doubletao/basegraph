@@ -2,6 +2,7 @@
 #include "Common\ThreadPool.h"
 #include <assert.h>
 #include <list>
+#include "Common\CommonFunction.h"
 
 //#define DEBUG_HANDLE
 //#ifdef DEBUG_HANDLE
@@ -15,7 +16,8 @@ ThreadPool_Task::ThreadPool_Task(ThreadTaskFunc pFunc, LPVOID pParam)
 	, m_pFunc(pFunc)
 	, m_hFinish(nullptr)
 {
-	m_hFinish = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	//怀疑handle被释放后会成为野handle，此时如果Windows等未知的地方使用了该handle，则wait会死锁，此处加上GUID保证handle唯一
+	m_hFinish = ::CreateEvent(NULL, TRUE, FALSE, CommonFunction::CreateGUID());
 	::ResetEvent(m_hFinish);
 }
 
