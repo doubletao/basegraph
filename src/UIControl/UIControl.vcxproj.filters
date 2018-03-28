@@ -123,6 +123,9 @@
     <ClCompile Include="CustomScrollBar.cpp">
       <Filter>UIMFControl</Filter>
     </ClCompile>
+    <ClCompile Include="UIEditNumSlider.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">

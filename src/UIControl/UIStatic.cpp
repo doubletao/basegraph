@@ -46,7 +46,7 @@ void UIStatic::DrawElement(CDC * pDC)
 		CFont * pOldFont = pDC->SelectObject(&font);
 		CRect rtText(nX, nY, nX + m_nWidth, nY + m_nHeight);
 		pDC->SetTextColor(m_nFontColor);
-		pDC->DrawText(m_strText, rtText, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
+		pDC->DrawText(m_strText, rtText, DT_SINGLELINE | DT_VCENTER | DT_RIGHT);
 		pDC->SelectObject(pOldFont);
 	}
 }

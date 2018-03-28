@@ -71,6 +71,8 @@ int UISliderCtr::LogicToReal(int nLogicPos)
 		&& fRealLength > 0)
 	{
 		fRealPos = fLogicPos / fLogicLength * fRealLength;
+		float fZeroOffset = (0 - m_nMin) * 1.0f / (m_nMax - m_nMin) * fRealLength;
+		fRealPos += fZeroOffset;
 	}
 	return (int)fRealPos;
 }
@@ -91,16 +93,18 @@ int UISliderCtr::RealToLogic(int nRealPos)
 	float fRealPos = float(nRealPos);
 	if (fRealPos < 0)
 	{
-		fLogicPos = 0.0f;
+		fRealPos = 0;
 	}
-	else if (fLogicPos > fRealLength)
+	else if (fRealPos > fRealLength)
 	{
-		fLogicPos = fRealLength;
+		fRealPos = fRealLength;
 	}
 	if (fLogicLength > 0
 		&& fRealLength > 0)
 	{
 		fLogicPos = fRealPos * fLogicLength / fRealLength;
+		float fZeroOffset = (0 - m_nMin) * 1.0f / (m_nMax - m_nMin) * fLogicLength;
+		fLogicPos -= fZeroOffset;
 	}
 	return (int)fLogicPos;
 }
@@ -249,7 +253,7 @@ void UISliderCtr::SetPos(int nPos, bool bRefresh, bool bChanging)
 	{
 		EmitMsg(EmUIElementMsg_OnSliderChanged, m_nID, m_nLogicPos);
 	}
-	TRACE(_T("UISliderCtr::SetPos %d\n"), m_nLogicPos);
+	//TRACE(_T("UISliderCtr::SetPos %d\n"), m_nLogicPos);
 }
 
 int UISliderCtr::GetPos()
