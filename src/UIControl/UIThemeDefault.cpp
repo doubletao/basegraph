@@ -66,6 +66,14 @@ bool UIThemeDefault::Initialize()
 		m_mapFontList.insert(std::make_pair(ThemeFont_CustomEditCtr, lfFont));
 	}
 
+	{
+		LOGFONT lfFont;
+		memset(&lfFont, 0, sizeof(lfFont));
+		lfFont.lfHeight = -12;
+		lstrcpy(lfFont.lfFaceName, _T("微软雅黑"));
+		m_mapFontList.insert(std::make_pair(ThemeFont_CustomStatic, lfFont));
+	}
+
 	/////////////////////////////////////////////////////////////////////
 	//整数
 	m_mapIntValue.insert(std::make_pair(ThemeInt_UIModualGap, 1));
@@ -87,6 +95,8 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitWidth, 22));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitHeight, 1));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlGap, 3));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlTitleWidth, 50));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlNumEditWidth, 50));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeLeftGap, 10));
@@ -137,6 +147,7 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditTopLeftBoardGray, RGB(255, 255, 255)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditBottomRightBoardGray, RGB(200, 200, 200)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditUnderLay, RGB(0, 200, 200)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomStatic, RGB(200, 200, 200)));
 
 	/////////////////////////////////////////////////////////////////////
 	//文本

@@ -1,9 +1,11 @@
 #pragma once
 #include "stdafx.h"
 #include "UIControl\UIStatic.h"
+#include "ThemeManager.h"
 
 UIStatic::UIStatic()
-	: m_pTextDrawer(nullptr)
+	: m_nFont(0)
+	, m_nFontColor(0)
 {
 }
 
@@ -17,25 +19,34 @@ bool UIStatic::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 	if (!m_bCreated)
 	{
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
-		m_pTextDrawer = new UITextDrawer(nFont);
-		m_pTextDrawer->SetColor(nFontColor);
-		m_mapDrawer[0].push_back(m_pTextDrawer);
+		m_strText = strText;
+		m_nFont = nFont;
+		m_nFontColor = nFontColor;
 		bRet = true;
 	}
 	return bRet;
 }
 
-EmUIElementMsgRet UIStatic::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
-{
-	return UIElementMsgSuccContinue;
-}
-
 void UIStatic::SetText(LPCTSTR strText, int nFont, COLORREF nFontColor)
 {
 	m_strText = strText;
-	if (m_pTextDrawer)
+	m_nFont = nFont;
+	m_nFontColor = nFontColor;
+}
+
+void UIStatic::DrawElement(CDC * pDC)
+{
+	if (!m_strText.IsEmpty())
 	{
-		m_pTextDrawer->SetResID(nFont);
-		m_pTextDrawer->SetColor(nFontColor);
+		int nX = GetRealX();
+		int nY = GetRealY();
+		LOGFONT lgfont = ThemeManager::Instance().GetFont(m_nFont);
+		CFont font;
+		font.CreateFontIndirect(&lgfont);
+		CFont * pOldFont = pDC->SelectObject(&font);
+		CRect rtText(nX, nY, nX + m_nWidth, nY + m_nHeight);
+		pDC->SetTextColor(m_nFontColor);
+		pDC->DrawText(m_strText, rtText, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
+		pDC->SelectObject(pOldFont);
 	}
 }

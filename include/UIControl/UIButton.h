@@ -1,5 +1,5 @@
 #pragma once
-#include "UIElement.h"
+#include "UIControl\UIElement.h"
 
 class BASEGRAPH_UICONTROL_API UIButton :
 	public UIElement

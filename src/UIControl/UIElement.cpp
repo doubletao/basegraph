@@ -1,5 +1,3 @@
-#include "..\..\include\UIControl\UIElement.h"
-#include "..\..\include\UIControl\UIElement.h"
 #include "stdafx.h"
 #include "UIControl\UIElement.h"
 

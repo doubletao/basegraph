@@ -109,7 +109,6 @@ protected:
 
 	CRect	m_rtClient;
 
-
 	BOOL	m_fAutoDelete;	 // 该C++ CWnd object 需要自动删除
 	BOOL	m_bIsKeyUp;
 	CustomScrollBar *m_pVScrollBar;

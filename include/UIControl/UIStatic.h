@@ -1,18 +1,19 @@
 #pragma once
-#include "UIElement.h"
-#include "UITextDrawer.h"
+#include "UIControl\UIElement.h"
+#include "UIControl\UITextDrawer.h"
 
 class BASEGRAPH_UICONTROL_API UIStatic :
 	public UIElement
 {
 protected:
-	UITextDrawer * m_pTextDrawer;
+	int m_nFont;
+	COLORREF m_nFontColor;
 public:
 	UIStatic();
 	virtual ~UIStatic();
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd = nullptr, UIElement * pParent = nullptr, LPCTSTR strText = nullptr, int nFont = 0, COLORREF nFontColor = 0);
-	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	void SetText(LPCTSTR strText, int nFont = 0, COLORREF nFontColor = 0);
+	virtual void DrawElement(CDC * pDC);
 };
 

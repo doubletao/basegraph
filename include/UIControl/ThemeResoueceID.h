@@ -20,6 +20,8 @@ enum ThemeIntValueDef
 	ThemeInt_PropretyViewTabSplitWidth,
 	ThemeInt_PropretyViewTabSplitHeight,
 	ThemeInt_PropertyViewCtrlGap,
+	ThemeInt_PropertyViewCtrlTitleWidth,//属性窗控件左侧文本宽度
+	ThemeInt_PropertyViewCtrlNumEditWidth,//属性窗数字edit宽度
 	ThemeInt_TimeLineTimeCodeWidth,
 	ThemeInt_TimeLineTimeCodeHeight,
 	ThemeInt_TimeLineTimeCodeLeftGap,
@@ -47,6 +49,7 @@ enum ThemeFontValueDef
 	ThemeFont_TimeLineObjectTrackText,
 	ThemeFont_TimeLineRuler,//时间线刻度尺字体
 	ThemeFont_CustomEditCtr,
+	ThemeFont_CustomStatic,
 };
 
 enum ThemeColorValueDef
@@ -80,6 +83,7 @@ enum ThemeColorValueDef
 	ThemeColor_CustomEditTopLeftBoardGray,		//编辑框无效状态左上边框
 	ThemeColor_CustomEditBottomRightBoardGray,	//编辑框无效状态右下边框
 	ThemeColor_CustomEditUnderLay,				//编辑框衬底边框
+	ThemeColor_CustomStatic,
 };
 
 enum ThemeCStringValueDef

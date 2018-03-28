@@ -16,10 +16,10 @@
 #include "UIControl\SkinFrameWnd.h"
 #include "UIControl\SkinWnd.h"
 #include "UIControl\ThemeResoueceID.h"
+#include "UIControl\UIElement.h"
 #include "UIControl\UIButton.h"
 #include "UIControl\UIColorDrawer.h"
 #include "UIControl\UIDrawer.h"
-#include "UIControl\UIElement.h"
 #include "UIControl\UIImageDrawer.h"
 #include "UIControl\UITextDrawer.h"
 #include "UIControl\UICheckBtn.h"
@@ -35,8 +35,10 @@
 #include "UIControl\UIEditNumSlider.h"
 #include "UIControl\UIEditNumSpin.h"
 #include "UIControl\UIEditPath.h"
-#include "UIControl\\UIEditSingleLine.h"
+#include "UIControl\UIEditSingleLine.h"
 #include "UIControl\UIStatic.h"
+#include "UIControl\CustomEdit.h"
+#include "UIControl\CustomScrollBar.h"
 
 //Ö÷Ìâ
 BASEGRAPH_UICONTROL_API CString UIControl_GetThemePath();

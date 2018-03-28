@@ -20,7 +20,7 @@ UIEdit::~UIEdit()
 	}
 }
 
-bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditID, HWND hParentWnd, UIElement * pParent)
+bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent)
 {
 	bool bRet = false;
 	if (!m_bCreated)
@@ -29,8 +29,8 @@ bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditI
 		CWnd * pWnd = CWnd::FromHandlePermanent(hParentWnd);
 		if (pWnd)
 		{
-			m_pEdit = new CEdit;
-			m_pEdit->CreateEx(WS_EX_CLIENTEDGE, _T("Edit"), _T("UIEditWnd"), WS_BORDER | WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL | ES_CENTER, CRect(0, 0, 100, 100), pWnd, nEditID);
+			m_pEdit = new CustomEdit;
+			m_pEdit->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | WS_BORDER | dwStyleEs, CRect(), pWnd, nEditID);
 		}
 		bRet = true;
 	}
