@@ -52,6 +52,8 @@ void UIEdit::SetText(CString strText)
 	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
 	{
 		m_pEdit->SetWindowText(strText);
+		//强制立刻刷新
+		m_pEdit->UpdateWindow();
 	}
 }
 
