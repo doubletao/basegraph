@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIControl\CustomEdit.h"
 #include "UIControl\ThemeResoueceID.h"
+#include "UIControl\UIEdit.h"
 #include "ThemeManager.h"
 
 #ifdef _DEBUG
@@ -29,6 +30,11 @@ inline BOOL  DoTabKey(CWnd *pWnd)
 	UINT uStyleEx;
  	if(!pWnd) return FALSE;
  	CWnd *pParent = pWnd->GetParent();
+	//djt 这里纯粹是为了针对UIEdit控件包裹下的edit进行适配，如果单独提取本edit，可以删掉这句
+	if (pParent && pParent->IsKindOf(RUNTIME_CLASS(UIEdit)))
+	{
+		pParent = pParent->GetParent();
+	}
  	while(pParent != NULL) 
  	{
  		uStyleEx =pParent->GetExStyle();
@@ -364,7 +370,7 @@ void CustomEdit::OnKillFocus(CWnd* pNewWnd)
 	CWnd * pParent = GetParent();
 	if (pParent)
 	{
-		pParent->SendMessage(WM_SYEDIT_MSG_END_EDIT, GetDlgCtrlID(), 0);
+		pParent->SendMessage(EmUIElementMsg_OnEditEnded, GetDlgCtrlID(), 0);
 	}
 
 	if(IsWindow(GetSafeHwnd())){
@@ -618,12 +624,22 @@ void CustomEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		AdjustScrollPos();
 	}
-	if(nChar == VK_RETURN)
+	else if(nChar == VK_RETURN)
 	{
 		DWORD dwStyle = GetStyle();
+		//回车触发tab切换这个功能，虽然觉得有问题，但暂时不动
 		if( ( dwStyle & ES_MULTILINE ) != ES_MULTILINE && 
 			(dwStyle & ES_WANTRETURN) != ES_WANTRETURN) 
 			DoTabKey(this);
+	}
+	else if (nChar == VK_TAB)
+	{
+		DWORD dwStyle = GetStyle();
+		//如果支持tab键，则触发tab键
+		if (dwStyle & WS_TABSTOP)
+		{
+			DoTabKey(this);
+		}
 	}
 	else 	
 		CEdit::OnKeyDown(nChar, nRepCnt, nFlags);

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "UIControl\CustomScrollBar.h"
+#include "UIControl\UIControlDef.h"
 
-#define WM_SYEDIT_MSG_END_EDIT	WM_USER + 0x0014
 #define CustomEditClass "CustomEditClass"
 
 //****************************************************************************

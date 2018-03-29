@@ -38,6 +38,16 @@ void UIEditNum::SetLimit(int nMin, int nMax)
 	m_nMax = nMax;
 }
 
+bool UIEditNum::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (emMsg == EmUIElementMsg_OnEditEnded)
+	{
+		UpdateUIToValue();
+		return true;
+	}
+	return UICombinedCtrl::OnChildMsg(emMsg, wParam, lParam);
+}
+
 BaseGraph_Common::Value UIEditNum::GetValue()
 {
 	return m_value;

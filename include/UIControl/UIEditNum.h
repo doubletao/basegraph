@@ -17,6 +17,7 @@ public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent);
 	void SetPrecision(int nPrecision);
 	void SetLimit(int nMin, int nMax);
+	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	virtual BaseGraph_Common::Value GetValue();
 	virtual void SetValue(BaseGraph_Common::Value value, bool bRefresh = true);
 	virtual void UpdateValueToUI();

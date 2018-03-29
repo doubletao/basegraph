@@ -14,6 +14,7 @@ enum EmUIElementMsg
 	EmUIElementMsg_OnVScroll,
 	EmUIElementMsg_OnSliderChanging,
 	EmUIElementMsg_OnSliderChanged,
+	EmUIElementMsg_OnEditEnded,
 	EmUIElementMsg_WndUserEnd,
 };
 

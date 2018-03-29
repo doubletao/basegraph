@@ -2,6 +2,11 @@
 #include "stdafx.h"
 #include "UIControl\UIEdit.h"
 
+BEGIN_MESSAGE_MAP(UIEdit, CWnd)
+	ON_WM_SETFOCUS()
+	ON_MESSAGE(EmUIElementMsg_OnEditEnded, UIEdit::OnEndEdit)
+END_MESSAGE_MAP()
+
 UIEdit::UIEdit()
 	: m_pEdit(nullptr)
 {
@@ -20,30 +25,83 @@ UIEdit::~UIEdit()
 	}
 }
 
+BOOL UIEdit::RegisterControlClass()
+{
+	HINSTANCE	hInst = AfxGetInstanceHandle();
+	return	RegisterControlClass(hInst);
+}
+
+BOOL UIEdit::RegisterControlClass(HINSTANCE hInst)
+{
+	if (hInst == NULL)		hInst = AfxGetInstanceHandle();
+
+	WNDCLASS wcls;
+	// check to see if class already registered
+	static const TCHAR szClass[] = _T(CustomUIEditClass);
+	if (::GetClassInfo(hInst, szClass, &wcls)) {
+		// name already registered - ok if it was us
+		return (wcls.lpfnWndProc == AfxWndProc);
+	}
+
+	memset(&wcls, sizeof(WNDCLASS), 0);
+
+	// Use standard "static" control as a template.
+	VERIFY(::GetClassInfo(NULL, _T("Static"), &wcls));
+
+	wcls.lpfnWndProc = AfxWndProc;
+	wcls.style |= CS_DBLCLKS;
+	wcls.hInstance = hInst;
+	wcls.lpszClassName = szClass;
+	return AfxRegisterClass(&wcls);
+}
+
+void UIEdit::OnSetFocus(CWnd * pOldWnd)
+{
+	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
+	{
+		m_pEdit->SetFocus();
+		m_pEdit->SetSel(0, -1, TRUE);
+	}
+}
+
+LRESULT UIEdit::OnEndEdit(WPARAM, LPARAM)
+{
+	//通知上层，编辑结束了
+	EmitMsg(EmUIElementMsg_OnEditEnded, m_nID, (LPARAM)this);
+	return 0;
+}
+
 bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent)
 {
 	bool bRet = false;
 	if (!m_bCreated)
 	{
-		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
-		CWnd * pWnd = CWnd::FromHandlePermanent(hParentWnd);
-		if (pWnd)
+		CWnd * pParentWnd = CWnd::FromHandle(hParentWnd);
+		if (pParentWnd)
 		{
-			m_pEdit = new CustomEdit;
-			m_pEdit->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | WS_BORDER | dwStyleEs, CRect(), pWnd, nEditID);
+			WNDCLASS	wcls;
+			HINSTANCE	hInst = AfxGetInstanceHandle();
+			if (!::GetClassInfo(hInst, _T(CustomUIEditClass), &wcls))
+			{
+				RegisterControlClass(hInst);
+			}
+			if (CWnd::Create(_T(CustomUIEditClass), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP | WS_CLIPSIBLINGS, CRect(), pParentWnd, nID, nullptr))
+			{
+				Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
+				m_pEdit = new CustomEdit;
+				m_pEdit->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | WS_BORDER | dwStyleEs, CRect(), this, nEditID);
+				bRet = true;
+			}
 		}
-		bRet = true;
 	}
 	return bRet;
 }
 
 void UIEdit::RearrangeChildPos()
 {
-	int nX = GetRealX();
-	int nY = GetRealY();
 	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
 	{
-		m_pEdit->MoveWindow(nX, nY, m_nWidth, m_nHeight);
+		m_pEdit->MoveWindow(0, 0, m_nWidth, m_nHeight);
 	}
 }
 
@@ -65,4 +123,49 @@ CString UIEdit::GetText()
 		m_pEdit->GetWindowText(strRet);
 	}
 	return strRet;
+}
+
+inline void UIEdit::MoveTo(CRect rtNew, bool bRefresh)
+{
+	m_nX = rtNew.left;
+	m_nY = rtNew.top;
+	m_nWidth = rtNew.Width();
+	m_nHeight = rtNew.Height();
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
+	MoveWindow(GetRealX(), GetRealY(), m_nWidth, m_nHeight);
+}
+
+inline void UIEdit::MoveTo(int nX, int nY, bool bRefresh)
+{
+	m_nX = nX;
+	m_nY = nY;
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
+	MoveWindow(GetRealX(), GetRealY(), m_nWidth, m_nHeight);
+}
+
+inline void UIEdit::MoveTo(int nX, int nY, int nWidth, int nHeight, bool bRefresh)
+{
+	m_nX = nX;
+	m_nY = nY;
+	m_nWidth = nWidth;
+	m_nHeight = nHeight;
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
+	MoveWindow(GetRealX(), GetRealY(), m_nWidth, m_nHeight);
+}
+
+CWnd * UIEdit::GetNextDlgTabItem(CWnd * pWndCtl, BOOL bPrevious) const
+{
+	return nullptr;
 }

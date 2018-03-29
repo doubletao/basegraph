@@ -85,8 +85,9 @@ bool UIEditNumSpin::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lPara
 			float fValue = GetValue().ToFloat();
 			SetValue(fValue - m_fStep);
 		}
+		return true;
 	}
-	return true;
+	return UIEditNum::OnChildMsg(emMsg, wParam, lParam);
 }
 
 void UIEditNumSpin::RearrangeChildPos()
