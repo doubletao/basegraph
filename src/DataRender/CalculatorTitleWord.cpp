@@ -118,6 +118,7 @@ bool CalculatorTitleword::GetCurrentParam()
 bool CalculatorTitleword::Update2DUnit()
 {
 	//造一个Text并由此对象生成一个排版器并排版
+	SYText_Release(&m_text);
 	m_text.Reset();
 	SYText_Init(&m_text);
 
