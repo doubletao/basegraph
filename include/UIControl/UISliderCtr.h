@@ -38,7 +38,7 @@ protected:
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nMin, int nMax, int nID = 0, bool bHorizon = false, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
-	void SetPos(int nPos, bool bRefresh = true, bool bChanging = true);
+	void SetPos(int nPos, bool bRefresh = true, bool bChanging = true, bool bForbidMsg = false);
 	int GetPos();
 	void SetLimit(int nMin, int nMax, bool bRefresh = true);
 	int GetMax();

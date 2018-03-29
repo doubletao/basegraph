@@ -126,6 +126,9 @@
     <ClCompile Include="UIEditNumSlider.cpp">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="UICombinedCtrl.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">

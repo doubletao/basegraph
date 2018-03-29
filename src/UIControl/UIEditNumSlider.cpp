@@ -52,6 +52,7 @@ bool UIEditNumSlider::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lPa
 		{
 			float fValue = (float)m_pSliderCtrl->GetPos();
 			SetValue(fValue * m_fStep);
+			NotifyValueChg();
 		}
 		return true;
 	}
@@ -62,11 +63,13 @@ bool UIEditNumSlider::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lPa
 		{
 			float fValue = GetValue().ToFloat();
 			SetValue(fValue + m_fStep);
+			NotifyValueChg();
 		}
 		else if (m_pBtnDownSpin == pButton)
 		{
 			float fValue = GetValue().ToFloat();
 			SetValue(fValue - m_fStep);
+			NotifyValueChg();
 		}
 		UpdateValueToUI();
 		return true;
@@ -76,6 +79,7 @@ bool UIEditNumSlider::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lPa
 	{
 		UpdateUIToValue();
 		UpdateValueToUI();
+		NotifyValueChg();
 		return true;
 	}
 	return UIEditNumSpin::OnChildMsg(emMsg, wParam, lParam);
@@ -101,7 +105,7 @@ void UIEditNumSlider::UpdateValueToUI()
 	}
 	if (m_pSliderCtrl)
 	{
-		m_pSliderCtrl->SetPos((int)(fValue / m_fStep), true, true);
+		m_pSliderCtrl->SetPos((int)(fValue / m_fStep), true, false, true);
 	}
 }
 

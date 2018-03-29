@@ -226,7 +226,7 @@ EmUIElementMsgRet UISliderCtr::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam
 	return UIElementMsgSuccContinue;
 }
 
-void UISliderCtr::SetPos(int nPos, bool bRefresh, bool bChanging)
+void UISliderCtr::SetPos(int nPos, bool bRefresh/* = true*/, bool bChanging/* = true*/, bool bForbidMsg/* = false*/)
 {
 	if (nPos < m_nMin)
 	{
@@ -242,16 +242,19 @@ void UISliderCtr::SetPos(int nPos, bool bRefresh, bool bChanging)
 	{
 		Refresh();
 	}
-	if (bChanging)
+	if (!bForbidMsg)
 	{
-		if (bMsg)
+		if (bChanging)
 		{
-			EmitMsg(EmUIElementMsg_OnSliderChanging, m_nID, m_nLogicPos);
+			if (bMsg)
+			{
+				EmitMsg(EmUIElementMsg_OnSliderChanging, m_nID, m_nLogicPos);
+			}
 		}
-	}
-	else
-	{
-		EmitMsg(EmUIElementMsg_OnSliderChanged, m_nID, m_nLogicPos);
+		else
+		{
+			EmitMsg(EmUIElementMsg_OnSliderChanged, m_nID, m_nLogicPos);
+		}
 	}
 	//TRACE(_T("UISliderCtr::SetPos %d\n"), m_nLogicPos);
 }

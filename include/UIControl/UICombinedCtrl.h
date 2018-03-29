@@ -1,7 +1,7 @@
 #pragma once
 #include "UIControl\UIElement.h"
 
-class UICombinedCtrl
+class BASEGRAPH_UICONTROL_API UICombinedCtrl
 	: public UIElement
 {
 protected:
@@ -11,4 +11,5 @@ public:
 	virtual void SetValue(BaseGraph_Common::Value value, bool bRefresh = true) = 0;
 	virtual void UpdateValueToUI() = 0;
 	virtual void UpdateUIToValue() = 0;
+	virtual void NotifyValueChg();//发出数据变动的消息给上层
 };

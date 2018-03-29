@@ -130,6 +130,7 @@
     <ClCompile Include="UICheckBtn.cpp" />
     <ClCompile Include="UICheckBtnBar.cpp" />
     <ClCompile Include="UIColorDrawer.cpp" />
+    <ClCompile Include="UICombinedCtrl.cpp" />
     <ClCompile Include="UIControl.cpp" />
     <ClCompile Include="UIDrawer.cpp" />
     <ClCompile Include="UIEdit.cpp" />

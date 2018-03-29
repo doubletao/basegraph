@@ -79,12 +79,20 @@ bool UIEditNumSpin::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lPara
 		{
 			float fValue = GetValue().ToFloat();
 			SetValue(fValue + m_fStep);
+			NotifyValueChg();
 		}
 		else if (m_pBtnDownSpin == pButton)
 		{
 			float fValue = GetValue().ToFloat();
 			SetValue(fValue - m_fStep);
+			NotifyValueChg();
 		}
+		return true;
+	}
+	else if (emMsg == EmUIElementMsg_OnEditEnded)
+	{
+		UpdateUIToValue();
+		NotifyValueChg();
 		return true;
 	}
 	return UIEditNum::OnChildMsg(emMsg, wParam, lParam);
