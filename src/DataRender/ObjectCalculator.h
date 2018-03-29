@@ -78,4 +78,3 @@ protected:
 	void AddRenderUnitView(CString strUnitID, SYRenderUnitView * pRenderUnitView);
 	void ClearRenderUnitView();
 };
-

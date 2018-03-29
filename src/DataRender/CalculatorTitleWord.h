@@ -15,9 +15,33 @@ protected:
 	SYArray m_2DTextRenderUnitArray;
 	SYArray m_arWholeRenderTextGraph;	//文字整体渲染时的临时Graph（可以从零散Graph重建得到）
 protected:
+	///文字属性
+	//基本属性
+	CString m_strText;
+	CString m_strFontName;
+	BOOL m_bUnderline;
+	int m_nFontDistance;
+	BOOL m_bHorizontal;
+	BOOL m_bLineWrap;
+	E_TextAlignHorizontal m_TextAlignH;
+	E_TextAlignVeritical m_TextAlignV;
+	BOOL m_bLeftInput;
+	BOOL m_bVLeftTypeset;
+	BOOL m_bFixedFrame;
+	//字色
+	SYStaticEffect m_TextStaitcEffect;
+	//下划线
+	SYUnderLine m_TextUnderLine;
+protected:
 	bool PrepareObjBuffer(int nWidth, int nHeight);
 public:
+	virtual bool NeedRenderBuffer();
 	virtual bool UpdateRenderBuffer();
+
+	virtual bool GetCurrentParam();//获取模型参数(如果有关键帧动作，应该在这里边干完)
+	virtual bool Update2DUnit();//更新2D模型
+	virtual bool UpdateToHalBuf();//更新显存buf
+
 	virtual rectf CalUnitBound();
 	virtual bool RefreshRenderUnit(int nFrame, BOOL bInherit);
 	//计算图形单元,源为punitin，目标为prenderunit,vmatrix,nmatrix为当前变换矩阵

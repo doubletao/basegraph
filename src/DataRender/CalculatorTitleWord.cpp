@@ -11,6 +11,25 @@ CalculatorTitleword::CalculatorTitleword(CString strObjID)
 {
 	memset(&m_2DTextRenderUnitArray, 0, sizeof(SYArray));
 	memset(&m_arWholeRenderTextGraph, 0, sizeof(SYArray));
+
+	//基本属性
+	m_strText = _T("");
+	m_strFontName = _T("");
+	m_bUnderline = FALSE;
+	m_nFontDistance = 0;
+	m_bHorizontal = FALSE;
+	m_bLineWrap = FALSE;
+	m_TextAlignH = TEXT_ALIGN_H_LEFT;
+	m_TextAlignV = TEXT_ALIGN_V_TOP;
+	m_bLeftInput = TRUE;
+	m_bVLeftTypeset = FALSE;
+	m_bFixedFrame = FALSE;
+	//字色
+	SYStaticEffect_Init(&m_TextStaitcEffect);
+	m_TextStaitcEffect.face.color.color = 0xFFF7007F;
+	m_TextStaitcEffect.border.disable = 0;
+	m_TextStaitcEffect.border.color.color = 0xFFF7FF7F;
+	m_TextStaitcEffect.border.width = 5;
 }
 
 CalculatorTitleword::~CalculatorTitleword()
@@ -33,120 +52,129 @@ bool CalculatorTitleword::PrepareObjBuffer(int nWidth, int nHeight)
 	return false;
 }
 
+bool CalculatorTitleword::NeedRenderBuffer()
+{
+	if (m_emChgLevel > ChgLevel_Matrix)
+	{
+		return true;
+	}
+	if (m_2DTextRenderUnitArray.m_nSize < 1)
+	{
+		m_emChgLevel = ChgLevel_Create;
+		return true;
+	}
+	return false;
+}
+
 bool CalculatorTitleword::UpdateRenderBuffer()
 {
 	if (NeedRenderBuffer())
 	{
 		//取得基本属性
-		CString strText = _T("");
-		CString strFontName = _T("");
-		BOOL bUnderline = FALSE;
-		int nFontDistance = 0;
-		BOOL bHorizontal = FALSE;
-		BOOL bLineWrap = FALSE;
-		bool bContinue = false;
-		BaseGraph_Common::Value stuValue;
-		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_Text_Str, stuValue))
+		bool bContinue = GetCurrentParam();
+		if (bContinue)
 		{
-			strText = stuValue.ToCString();
-			if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontName_Str, stuValue))
+			//更新2D Uint
+			Update2DUnit();
+			//更新画面到显存
+			UpdateToHalBuf();
+			SetChgLevel(ChgLevel_NULL);
+		}
+	}
+	return true;
+}
+
+bool CalculatorTitleword::GetCurrentParam()
+{
+	BaseGraph_Common::Value stuValue;
+	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_Text_Str, stuValue))
+	{
+		m_strText = stuValue.ToCString();
+		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontName_Str, stuValue))
+		{
+			m_strFontName = stuValue.ToCString();
+			if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_UnderLine_Bool, stuValue))
 			{
-				strFontName = stuValue.ToCString();
-				if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_UnderLine_Bool, stuValue))
+				m_bUnderline = stuValue.ToBOOL();
+				if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontDistance_Int, stuValue))
 				{
-					bUnderline = stuValue.ToBOOL();
-					if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontDistance_Int, stuValue))
+					m_nFontDistance = stuValue.ToInt();
+					if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_Horizontal_Bool, stuValue))
 					{
-						nFontDistance = stuValue.ToInt();
-						if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_Horizontal_Bool, stuValue))
+						m_bHorizontal = stuValue.ToBOOL();
+						if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_LineWrap_Bool, stuValue))
 						{
-							bHorizontal = stuValue.ToBOOL();
-							if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_LineWrap_Bool, stuValue))
-							{
-								bLineWrap = stuValue.ToBOOL();
-								bContinue = true;
-							}
+							m_bLineWrap = stuValue.ToBOOL();
+							return true;
 						}
 					}
 				}
 			}
 		}
-		if (bContinue)
+	}
+	return false;
+}
+
+bool CalculatorTitleword::Update2DUnit()
+{
+	//造一个Text并由此对象生成一个排版器并排版
+	m_text.Reset();
+	SYText_Init(&m_text);
+
+	//字体
+	SYFont newFont;
+	newFont.lfWidth = 35;
+	newFont.lfHeight = 40;
+	newFont.lfDistance = 0;
+	_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, m_strFontName.GetBuffer());
+	m_strFontName.ReleaseBuffer();
+
+	SYText_Create(&m_text,
+		m_strText,
+		rectf(),
+		&newFont,
+		&m_TextStaitcEffect,
+		nullptr,//3D颜色先不使用
+		&m_TextUnderLine,
+		m_TextAlignH,
+		m_TextAlignV,
+		m_bHorizontal,
+		m_bLeftInput,
+		m_bVLeftTypeset,
+		m_bLineWrap,
+		m_bFixedFrame
+	);
+
+	m_TypeSet.Attach(&m_text, this);
+	m_TypeSet.ReplaceString(m_strText, FALSE);
+
+	//重要函数
+	RefreshRenderUnit(0, FALSE);
+
+	return true;
+}
+
+bool CalculatorTitleword::UpdateToHalBuf()
+{
+	//计算出bound
+	CalUnitBound();
+
+	//拿到宽高
+	int nWidth = GetWidth();
+	int nHeight = GetHeight();
+
+	if (nWidth > 0 && nHeight > 0)
+	{
+		int nDevice = DX3DEngine_GetMainDevice();
+		if (PrepareItemHalBufer(nDevice))
 		{
-			//造一个Text并由此对象生成一个排版器并排版
-			m_text.Reset();
-			SYText_Init(&m_text);
-			
-			//字体
-			SYFont newFont;
-			newFont.lfWidth = 35;
-			newFont.lfHeight = 40;
-			newFont.lfDistance = 0;
-			_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, strFontName.GetBuffer());
-			strFontName.ReleaseBuffer();
-
-			//字色
-			SYStaticEffect staitcEffect;
-			SYStaticEffect_Init(&staitcEffect);
-			staitcEffect.face.color.color = 0xFFF7007F;
-			staitcEffect.border.disable = 0;
-			staitcEffect.border.color.color = 0xFFF7FF7F;
-			staitcEffect.border.width = 5;
-
-			//下划线
-			SYUnderLine underLine;
-
-			//其他属性
-			E_TextAlignHorizontal alignH = TEXT_ALIGN_H_LEFT;
-			E_TextAlignVeritical alignV = TEXT_ALIGN_V_TOP;
-			BOOL bLeftInput = TRUE;
-			BOOL bVLeftTypeset = FALSE;
-			BOOL bFixedFrame = FALSE;
-
-			SYText_Create(&m_text,
-				strText,
-				rectf(),
-				&newFont,
-				&staitcEffect,
-				nullptr,//3D颜色先不使用
-				&underLine,
-				alignH,
-				alignV,
-				bHorizontal,
-				bLeftInput,
-				bVLeftTypeset,
-				bLineWrap,
-				bFixedFrame
-			);
-
-			m_TypeSet.Attach(&m_text, this);
-			m_TypeSet.ReplaceString(strText, FALSE);
-
-			//重要函数
-			RefreshRenderUnit(0, FALSE);
-
-			//计算出bound
-			CalUnitBound();
-
-			//拿到宽高
-			int nWidth = GetWidth();
-			int nHeight = GetHeight();
-
-			m_emChgLevel = ChgLevel_Create;
-
-			if (nWidth > 0 && nHeight > 0)
-			{
-				int nDevice = DX3DEngine_GetMainDevice();
-				if (PrepareItemHalBufer(nDevice))
-				{
-					DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
-					RenderUnitBufferForGpu();
-					UpdateItemGpuBuffer(TRUE);
-				}
-			}
+			DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex, 0);
+			RenderUnitBufferForGpu();
+			UpdateItemGpuBuffer(TRUE);
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 rectf CalculatorTitleword::CalUnitBound()

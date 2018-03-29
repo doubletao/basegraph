@@ -244,8 +244,16 @@ void C3DSceneViewWnd::UpdateAllItemToHal(std::vector<CString> vecObjID, float fS
 	for (size_t i = 0; i < vecObjID.size(); i++)
 	{
 		CString * pStrObjID = new CString(vecObjID[i]);
-		m_ThreadPool.StartNewTask(UpdateItemToHalFunc, pStrObjID);
-		//DataRender_UpdateRender(*pStrObjID);
+		//是否启动多线程，目前单线程仅用于调试
+		//if (true)
+		if (true)
+		{
+			m_ThreadPool.StartNewTask(UpdateItemToHalFunc, pStrObjID);
+		}
+		else
+		{
+			DataRender_UpdateRender(*pStrObjID);
+		}
 		if (false)
 		{
 			StuSimpleBuffer stuSimpleBuf;
