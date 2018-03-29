@@ -175,7 +175,7 @@ float CalculatorManager::GetScale()
 
 void CalculatorManager::SetScale(const float & fScale)
 {
-	if (fabs(m_fScale - fScale) < FLOAT_0)
+	if (fabs(m_fScale - fScale) > FLOAT_0)
 	{
 		//如果不相等，则所有物件都需要设置变动级别
 		for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)

@@ -16,8 +16,7 @@ ThreadPool_Task::ThreadPool_Task(ThreadTaskFunc pFunc, LPVOID pParam)
 	, m_pFunc(pFunc)
 	, m_hFinish(nullptr)
 {
-	//怀疑handle被释放后会成为野handle，此时如果Windows等未知的地方使用了该handle，则wait会死锁，此处加上GUID保证handle唯一
-	m_hFinish = ::CreateEvent(NULL, TRUE, FALSE, CommonFunction::CreateGUID());
+	m_hFinish = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	::ResetEvent(m_hFinish);
 }
 
@@ -161,6 +160,9 @@ ThreadPool::ThreadPool()
 	::ResetEvent(m_hNewTask);
 	m_hTaskFinish = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 	::ResetEvent(m_hTaskFinish);
+	m_hFinishAll = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	::SetEvent(m_hFinishAll);//池子刚创建时，全部完成的信号量是有信号
+	::ResetEvent(m_hTaskFinish);
 	InitializeCriticalSection(&m_LockTask);
 	InitializeCriticalSection(&m_LockWorker);
 
@@ -184,6 +186,11 @@ ThreadPool::~ThreadPool()
 	{
 		CloseHandle(m_hTaskFinish);
 		m_hTaskFinish = nullptr;
+	}
+	if (m_hFinishAll)
+	{
+		CloseHandle(m_hFinishAll);
+		m_hFinishAll = nullptr;
 	}
 	DeleteCriticalSection(&m_LockTask);
 	DeleteCriticalSection(&m_LockWorker);
@@ -242,6 +249,26 @@ unsigned int ThreadPool::ThreadTaskDispatch(LPVOID pParam)
 				{
 					::SetEvent(pPool->m_hNewTask);
 				}
+				else
+				{
+					//每当有任务完成，就判定一下还有没有待分配的任务和正在执行的任务，如果没有，则重置工作信号
+					pPool->LockWorker();
+					if (pPool->m_setBusiWorker.size() > 0)
+					{
+						pPool->UnLockWorker();
+						continue;
+					}
+					pPool->UnLockWorker();
+
+					pPool->LockTask();
+					if (pPool->m_lstTask.size() > 0)
+					{
+						pPool->UnLockTask();
+						continue;
+					}
+					pPool->UnLockTask();
+					::SetEvent(pPool->m_hFinishAll);
+				}
 			}
 		}
 	}
@@ -275,44 +302,13 @@ void ThreadPool::ResizePool(int nMaxThreadCount)
 
 void ThreadPool::WaitAll()
 {
-	LockTask();
-	std::list<HANDLE> m_lstTaskFinish;
-	for (std::list<ThreadPool_Task *>::iterator it = m_lstTask.begin(); it != m_lstTask.end(); it++)
-	{
-		ThreadPool_Task * pTask = *it;
-		if (pTask)
-		{
-			m_lstTaskFinish.push_back(pTask->GetFinishHandle());
-		}
-	}
-	UnLockTask();
-
-	LockWorker();
-	for (std::set<ThreadPool_Worker *>::iterator it = m_setBusiWorker.begin(); it != m_setBusiWorker.end(); it++)
-	{
-		ThreadPool_Worker * pWorker = *it;
-		if (pWorker)
-		{
-			ThreadPool_Task * pTask = pWorker->GetTask();
-			if (pTask)
-			{
-				m_lstTaskFinish.push_back(pTask->GetFinishHandle());
-			}
-		}
-	}
-	UnLockWorker();
-
-	TRACE(_T("m_lstTaskFinish.size = %d\n"), m_lstTaskFinish.size());
-	for (std::list<HANDLE>::iterator it = m_lstTaskFinish.begin(); it != m_lstTaskFinish.end(); it++)
-	{
-		HANDLE hTaskFinish = *it;
-		TRACE(_T("m_lstTaskFinish waitting = %p\n"), hTaskFinish);
-		WaitForSingleObject(hTaskFinish, INFINITE);
-	}
+	WaitForSingleObject(m_hFinishAll, INFINITE);
 }
 
 ThreadPool_Task * ThreadPool::StartNewTask(ThreadTaskFunc pFunc, LPVOID pParam)
 {
+	//只要有任务加进来，完成的信号量就是reset状态
+	::ResetEvent(m_hFinishAll);
 	ThreadPool_Task * pTask = new ThreadPool_Task(pFunc, pParam);
 	LockTask();
 	m_lstTask.push_back(pTask);

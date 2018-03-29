@@ -54,13 +54,13 @@ bool CalculatorTitleword::PrepareObjBuffer(int nWidth, int nHeight)
 
 bool CalculatorTitleword::NeedRenderBuffer()
 {
-	if (m_emChgLevel > ChgLevel_Matrix)
+	if (GetChgLevel() > ChgLevel_Matrix)
 	{
 		return true;
 	}
 	if (m_2DTextRenderUnitArray.m_nSize < 1)
 	{
-		m_emChgLevel = ChgLevel_Create;
+		SetChgLevel(ChgLevel_Create);
 		return true;
 	}
 	return false;
@@ -237,7 +237,7 @@ rectf CalculatorTitleword::CalUnitBound()
 
 bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 {
-	if (m_emChgLevel == ChgLevel_NULL && nFrame == m_nLastFrame)//没有变化
+	if (GetChgLevel() == ChgLevel_NULL && nFrame == m_nLastFrame)//没有变化
 	{
 		return FALSE;
 	}
@@ -251,7 +251,7 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 	SYArray * pRenderArray = &m_2DTextRenderUnitArray;
 	nRenderUnitCount = (int)SYAR_GetSize(pRenderArray);
 
-	if (m_emChgLevel >= ChgLevel_Figure)
+	if (GetChgLevel() >= ChgLevel_Figure)
 	{
 		//如果不相等，需要释放并且重新计算
 		int nUnitCount = Get2DTextUnitCount();
@@ -985,7 +985,7 @@ void CalculatorTitleword::DeleteRenderUnitView(LPCTSTR szUnitID)
 
 void CalculatorTitleword::RenderUnitBufferForGpu()
 {
-	if (m_emChgLevel < ChgLevel_Figure)
+	if (GetChgLevel() < ChgLevel_Figure)
 		return;
 
 	int nDevice = DX3DEngine_GetMainDevice();
