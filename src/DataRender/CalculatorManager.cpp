@@ -55,14 +55,28 @@ DXHalDef32 * CalculatorManager::GetDesHalDef(IN CString strID)
 	return nullptr;
 }
 
-matrix4f CalculatorManager::Get2DRenderMatrix(IN CString strID, IN float fScale)
+void CalculatorManager::Update2DRenderMatrix(IN float fScale)
 {
+	for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
+	{
+		ObjectCalculator * pCalc = it->second;
+		if (pCalc)
+		{
+			pCalc->UpdateRenderMatrix(fScale);
+		}
+	}
+}
+
+matrix4f CalculatorManager::Get2DRenderMatrix(IN CString strID)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strID);
+	if (pCalc)
+	{
+		return pCalc->Get2DRenderMatrix();
+	}
+	//没找到直接给一个单位矩阵
 	matrix4f matRet;
 	matrix4f_identity(&matRet);
-	calc_trans_vector_tomatrix(matRet, DataBase_GetItemCenter(strID), DataBase_GetItemScale(strID), DataBase_GetItemAngleRadian(strID), DataBase_GetItemPos(strID), ROTATE_ORDER_YXZ);
-	matRet._41 *= fScale;
-	matRet._42 *= fScale;
-	matRet._43 *= fScale;
 	return matRet;
 }
 
@@ -160,7 +174,7 @@ bool CalculatorManager::ClearAllSelect()
 	for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
 	{
 		ObjectCalculator * pCalc = it->second;
-		if (pCalc->GetSelected())
+		if (pCalc && pCalc->GetSelected())
 		{
 			pCalc->SetSelected(false);
 		}
@@ -187,6 +201,12 @@ void CalculatorManager::SetScale(const float & fScale)
 		}
 	}
 	m_fScale = fScale;
+}
+
+void CalculatorManager::SetFrame(const int & nFrame)
+{
+	m_nFrame = nFrame;
+	Update2DRenderMatrix(m_fScale);
 }
 
 int CalculatorManager::GetFrame()

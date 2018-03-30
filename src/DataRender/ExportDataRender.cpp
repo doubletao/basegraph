@@ -30,9 +30,9 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetDesHalDef(IN CString strID, OUT DXHa
 	return true;
 }
 
-BASEGRAPH_DATARENDER_API bool DataRender_Get2DRenderMatrix(IN CString strID, IN float fScale, OUT matrix4f & matWorld)
+BASEGRAPH_DATARENDER_API bool DataRender_Get2DRenderMatrix(IN CString strID, OUT matrix4f & matWorld)
 {
-	matWorld = CalculatorManager::Instance().Get2DRenderMatrix(strID, fScale);
+	matWorld = CalculatorManager::Instance().Get2DRenderMatrix(strID);
 	return true;
 }
 
@@ -126,8 +126,8 @@ BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame()
 
 BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame)
 {
-	//‘›≤ª µœ÷
-	return false;
+	CalculatorManager::Instance().SetFrame(nFrame);
+	return true;
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale)

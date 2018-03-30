@@ -16,7 +16,8 @@ public:
 
 	int GetTexture(IN CString strID);
 	DXHalDef32 * GetDesHalDef(IN CString strID);
-	matrix4f Get2DRenderMatrix(IN CString strID, IN float fScale);
+	void Update2DRenderMatrix(IN float fScale);
+	matrix4f Get2DRenderMatrix(IN CString strID);
 
 	ObjectCalculator * GetObjCalculator(CString strObjID);
 	bool ReleaseCalculator(CString strObjID);
@@ -32,6 +33,7 @@ public:
 
 	float GetScale();
 	void SetScale(const float & fScale);
+	void SetFrame(const int & nFrame);
 	int GetFrame();
 };
 

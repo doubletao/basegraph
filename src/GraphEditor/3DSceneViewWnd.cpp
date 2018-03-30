@@ -214,7 +214,7 @@ void C3DSceneViewWnd::RenderAllItemToTarget(std::vector<CString> vecObjID, int h
 		CString strObjID = vecObjID[i];
 		DXHalDef32 * pHalDef = nullptr;
 		matrix4f worldMat;
-		if (DataRender_Get2DRenderMatrix(strObjID, fScale, worldMat))
+		if (DataRender_Get2DRenderMatrix(strObjID, worldMat))
 		{
 			if (DataRender_GetDesHalDef(strObjID, pHalDef))
 			{
@@ -245,8 +245,8 @@ void C3DSceneViewWnd::UpdateAllItemToHal(std::vector<CString> vecObjID, float fS
 	{
 		CString * pStrObjID = new CString(vecObjID[i]);
 		//是否启动多线程，目前单线程仅用于调试
-		//if (true)
 		if (true)
+		//if (false)
 		{
 			m_ThreadPool.StartNewTask(UpdateItemToHalFunc, pStrObjID);
 		}

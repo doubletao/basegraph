@@ -454,7 +454,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		int i = 0;
 		for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)
 		{
-			for (size_t loop = 0; loop < 8; loop++, i++)
+			for (size_t loop = 0; loop < 16; loop++, i++)
 			{
 				CString strName;
 				strName.Format(_T("ÎÄ±¾_%s"), it->first);

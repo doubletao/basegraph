@@ -78,10 +78,9 @@ bool CalculatorTitleword::UpdateRenderBuffer()
 			Update2DUnit();
 			//更新画面到显存
 			UpdateToHalBuf();
-			SetChgLevel(ChgLevel_NULL);
 		}
 	}
-	return true;
+	return ObjectCalculator::UpdateRenderBuffer();
 }
 
 bool CalculatorTitleword::GetCurrentParam()

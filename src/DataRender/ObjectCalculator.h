@@ -50,6 +50,7 @@ protected:
 	CRITICAL_SECTION m_Lock;
 	int m_nLastFrame;
 	int m_nRotateOrder;
+	matrix4f m_matSelf;//自身矩阵，注意，子矩阵需要叠加父矩阵后才是正常矩阵
 	std::map<CString, SYRenderUnitView *> m_mapRenderUnitView;
 public:
 	ObjectCalculator(CString strObjID);
@@ -60,6 +61,8 @@ public:
 	virtual bool UpdateRenderBuffer();
 	virtual bool PrepareItemHalBufer(int nDevice);
 	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const SYArray& pUnitArray);
+	virtual void UpdateRenderMatrix(IN float fScale);
+	matrix4f Get2DRenderMatrix();
 
 	void SetChgLevel(EmObjectChgLevel emChgLevel);
 	EmObjectChgLevel GetChgLevel();

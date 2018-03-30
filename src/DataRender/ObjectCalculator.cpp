@@ -16,6 +16,7 @@ ObjectCalculator::ObjectCalculator(CString strObjID)
 	, m_nRotateOrder(ROTATE_ORDER_YXZ)
 {
 	InitializeCriticalSection(&m_Lock);
+	matrix4f_identity(&m_matSelf);
 }
 
 
@@ -28,6 +29,7 @@ ObjectCalculator::~ObjectCalculator()
 void ObjectCalculator::Release()
 {
 	ClearRenderUnitView();
+	matrix4f_identity(&m_matSelf);
 }
 
 int ObjectCalculator::GetWidth()
@@ -150,7 +152,8 @@ void ObjectCalculator::ClearRenderUnitView()
 
 bool ObjectCalculator::UpdateRenderBuffer()
 {
-	return false;
+	SetChgLevel(ChgLevel_NULL);
+	return true;
 }
 
 bool ObjectCalculator::PrepareItemHalBufer(int nDevice)
@@ -192,6 +195,23 @@ bool ObjectCalculator::PrepareItemHalBufer(int nDevice)
 SYItemRenderUnit * ObjectCalculator::GetRenderUnit(int nIndex, const SYArray & pUnitArray)
 {
 	return (SYItemRenderUnit*)SYAR_GetAt(&pUnitArray, nIndex);
+}
+
+void ObjectCalculator::UpdateRenderMatrix(IN float fScale)
+{
+	if (GetChgLevel() >= ChgLevel_Matrix)
+	{
+		matrix4f_identity(&m_matSelf);
+		calc_trans_vector_tomatrix(m_matSelf, DataBase_GetItemCenter(m_strObjID), DataBase_GetItemScale(m_strObjID), DataBase_GetItemAngleRadian(m_strObjID), DataBase_GetItemPos(m_strObjID), ROTATE_ORDER_YXZ);
+		m_matSelf._41 *= fScale;
+		m_matSelf._42 *= fScale;
+		m_matSelf._43 *= fScale;
+	}
+}
+
+matrix4f ObjectCalculator::Get2DRenderMatrix()
+{
+	return m_matSelf;
 }
 
 void ObjectCalculator::SetChgLevel(EmObjectChgLevel emChgLevel)
