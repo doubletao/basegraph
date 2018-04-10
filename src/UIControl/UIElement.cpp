@@ -65,6 +65,7 @@ void UIElement::SetText(CString strText)
 
 void UIElement::Refresh()
 {
+#if 1
 	if (m_pParentElement)
 	{
 		//如果有父物件，就通知父物件刷新
@@ -75,6 +76,12 @@ void UIElement::Refresh()
 		//如果已经是顶层，则刷新自己的区域
 		InvalidateRect(m_hParentWnd, CRect(m_nX, m_nY, m_nX + m_nWidth, m_nY + m_nHeight), false);
 	}
+#else
+	//刷新自己的区域
+	int nRealX = GetRealX();
+	int nRealY = GetRealY();
+	InvalidateRect(m_hParentWnd, CRect(nRealX, nRealY, nRealX + m_nWidth, nRealY + m_nHeight), false);
+#endif
 	EmitMsg(EmUIElementMsg_BtnRefresh, m_nID, 0);
 }
 

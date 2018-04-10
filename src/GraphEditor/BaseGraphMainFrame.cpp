@@ -525,6 +525,8 @@ void BaseGraphMainFrame::OnPaint()
 {
 	CPaintDC dc(this);
 
+	//CRect rtInvalidate = dc.m_ps.rcPaint;
+
 	//先从绘制区域中排除掉子窗口，避免闪烁问题
 	CWnd *pChild = GetWindow(GW_CHILD); //取第一个子窗口
 	while (pChild != NULL && ::IsWindow(pChild->GetSafeHwnd()))
