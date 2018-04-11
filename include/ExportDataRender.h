@@ -59,9 +59,14 @@ BASEGRAPH_DATARENDER_API bool DataRender_Get2DBuf(IN int nBufferID, OUT StuSimpl
 BASEGRAPH_DATARENDER_API bool DataRender_Clear2DBuf(IN int nBufferID, IN COLORREF color);
 BASEGRAPH_DATARENDER_API bool DataRender_DebugOutPut2DBuffer(IN int nBufferID, IN CString strPath);
 BASEGRAPH_DATARENDER_API bool DataRender_IsItemSelected(IN CString strID, OUT bool & bSel);
+BASEGRAPH_DATARENDER_API bool DataRender_GetSelectObj(OUT std::vector<CString> & vecSelObjID);
 BASEGRAPH_DATARENDER_API bool DataRender_ClearAllSelect();
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, OPTIONAL bool & bSel);//bSel会返回之前的状态
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, IN const bool & bSel);
 BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame();//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame);//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale);
+BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
+BASEGRAPH_DATARENDER_API bool DataRender_HitTest(IN CPoint ptHit, OPTIONAL CString & strID);//根据一次单击查找选中块(),strID为空则选中最上层，否则会查找指定点的重叠物件中指定块的下一个物件
+BASEGRAPH_DATARENDER_API bool DataRender_BoxHitTest(IN CPoint ptHit, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是碰着就算
+BASEGRAPH_DATARENDER_API bool DataRender_BoxSelectTest(IN CPoint ptHit, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是框住了才算

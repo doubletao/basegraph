@@ -55,6 +55,8 @@ public:
 	float3 GetItemAngle(IN CString strID);
 	float3 GetItemAngleRadian(IN CString strID);
 	float3 GetItemScale(IN CString strID);
+
+	BaseGraph_DataBase::ITEM_FORMTYPE Get3DType(IN CString strID);
 	// Ù–‘…Ë÷√
 	bool SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam);
 	bool SetItemProperty(IN CString strID, IN const map<ParamValueDef, Value> & mapParam);

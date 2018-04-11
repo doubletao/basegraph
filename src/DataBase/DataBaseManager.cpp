@@ -299,6 +299,18 @@ float3 DataBaseManager::GetItemScale(IN CString strID)
 	return f3Scale;
 }
 
+BaseGraph_DataBase::ITEM_FORMTYPE DataBaseManager::Get3DType(IN CString strID)
+{
+	BaseGraph_DataBase::ITEM_FORMTYPE emType = BaseGraph_DataBase::ITEM_FORMTYPE_2D;
+	BaseObject * pObj = nullptr;
+	if (GetItem(strID, pObj)
+		&& pObj)
+	{
+		emType = pObj->Get3DType();
+	}
+	return emType;
+}
+
 bool DataBaseManager::SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam)
 {
 	BaseObject * pObj = nullptr;

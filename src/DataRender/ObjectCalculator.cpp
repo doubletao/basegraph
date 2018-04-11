@@ -7,6 +7,16 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
+void ObjectCalculator::SetRenderMatV(matrix4f* pMat)
+{
+	m_VGlobalMatrix = *pMat;
+}
+
+const matrix4f* ObjectCalculator::GetRenderMatV() const
+{
+	return &m_VGlobalMatrix;
+}
+
 ObjectCalculator::ObjectCalculator(CString strObjID)
 	: m_strObjID(strObjID)
 	, m_nObjBufferID(0)
@@ -16,7 +26,9 @@ ObjectCalculator::ObjectCalculator(CString strObjID)
 	, m_nRotateOrder(ROTATE_ORDER_YXZ)
 {
 	InitializeCriticalSection(&m_Lock);
-	matrix4f_identity(&m_matSelf);
+	matrix4f_identity(&m_VSelfMatrix);
+	matrix4f_identity(&m_VGlobalMatrix);
+	matrix4f_identity(&m_ScrollMatrix);
 }
 
 
@@ -29,7 +41,9 @@ ObjectCalculator::~ObjectCalculator()
 void ObjectCalculator::Release()
 {
 	ClearRenderUnitView();
-	matrix4f_identity(&m_matSelf);
+	matrix4f_identity(&m_VSelfMatrix);
+	matrix4f_identity(&m_VGlobalMatrix);
+	matrix4f_identity(&m_ScrollMatrix);
 }
 
 int ObjectCalculator::GetWidth()
@@ -86,7 +100,7 @@ bool ObjectCalculator::SetSelected(bool bSel)
 	return bSelOri;
 }
 
-bool ObjectCalculator::GetSelected()
+bool ObjectCalculator::IsSelected()
 {
 	return m_bSelected;
 }
@@ -94,6 +108,16 @@ bool ObjectCalculator::GetSelected()
 DXHalDef32 * ObjectCalculator::GetHalDes()
 {
 	return &m_HalDes;
+}
+
+CString ObjectCalculator::GetObjectID()
+{
+	return m_strObjID;
+}
+
+BaseGraph_DataBase::ITEM_FORMTYPE ObjectCalculator::Get3DType() const
+{
+	return DataBase_Get3DType(m_strObjID);
 }
 
 void ObjectCalculator::Lock()
@@ -197,21 +221,33 @@ SYItemRenderUnit * ObjectCalculator::GetRenderUnit(int nIndex, const SYArray & p
 	return (SYItemRenderUnit*)SYAR_GetAt(&pUnitArray, nIndex);
 }
 
-void ObjectCalculator::UpdateRenderMatrix(IN float fScale)
+void ObjectCalculator::GetSceneCenter(float3& pt)
+{
+	pt.x = DataBase_GetSceneWidth() / 2.0f;
+	pt.y = DataBase_GetSceneHeight() / 2.0f;
+	pt.z = 0;
+}
+
+void ObjectCalculator::Update2DRenderMatrix(IN float fScale)
 {
 	if (GetChgLevel() >= ChgLevel_Matrix)
 	{
-		matrix4f_identity(&m_matSelf);
-		calc_trans_vector_tomatrix(m_matSelf, DataBase_GetItemCenter(m_strObjID), DataBase_GetItemScale(m_strObjID), DataBase_GetItemAngleRadian(m_strObjID), DataBase_GetItemPos(m_strObjID), ROTATE_ORDER_YXZ);
-		m_matSelf._41 *= fScale;
-		m_matSelf._42 *= fScale;
-		m_matSelf._43 *= fScale;
+		matrix4f_identity(&m_VSelfMatrix);
+		calc_trans_vector_tomatrix(m_VSelfMatrix, DataBase_GetItemCenter(m_strObjID), DataBase_GetItemScale(m_strObjID), DataBase_GetItemAngleRadian(m_strObjID), DataBase_GetItemPos(m_strObjID), ROTATE_ORDER_YXZ);
+		m_VSelfMatrix._41 *= fScale;
+		m_VSelfMatrix._42 *= fScale;
+		m_VSelfMatrix._43 *= fScale;
 	}
 }
 
 matrix4f ObjectCalculator::Get2DRenderMatrix()
 {
-	return m_matSelf;
+	return m_VSelfMatrix;
+}
+
+matrix4f ObjectCalculator::GetScrollMatrix()
+{
+	return m_ScrollMatrix;
 }
 
 void ObjectCalculator::SetChgLevel(EmObjectChgLevel emChgLevel)

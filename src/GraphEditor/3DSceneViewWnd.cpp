@@ -603,6 +603,15 @@ void C3DSceneViewWnd::RenderCtrlBuffer(int nDevice)
 		bufferDC.MoveTo(0, nHeight / 2);
 		bufferDC.LineTo(nWidth, nHeight / 2);
 	}
+	//»­Ñ¡ÖÐ¿ò
+	std::vector<CString> vecSelObjID;
+	if (DataRender_GetSelectObj(vecSelObjID))
+	{
+		for (size_t i = 0; i < vecSelObjID.size(); i++)
+		{
+			CString strID = vecSelObjID[i];
+		}
+	}
 }
 
 void C3DSceneViewWnd::RenderUIBuffer(int nDevice)

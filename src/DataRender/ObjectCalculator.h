@@ -50,8 +50,18 @@ protected:
 	CRITICAL_SECTION m_Lock;
 	int m_nLastFrame;
 	int m_nRotateOrder;
-	matrix4f m_matSelf;//自身矩阵，注意，子矩阵需要叠加父矩阵后才是正常矩阵
 	std::map<CString, SYRenderUnitView *> m_mapRenderUnitView;
+protected:
+	/*矩阵相关*/
+	matrix4f	m_VSelfMatrix;			//只计算自身的矩阵
+	matrix4f	m_VGlobalMatrix;		//计算自上而下的的矩阵
+	matrix4f	m_ScrollMatrix;			//滚动矩阵
+public:
+	void		SetRenderMatV(matrix4f* pMat);
+	const matrix4f* GetRenderMatV() const;
+	void Update2DRenderMatrix(IN float fScale);
+	matrix4f Get2DRenderMatrix();
+	matrix4f GetScrollMatrix();
 public:
 	ObjectCalculator(CString strObjID);
 	virtual ~ObjectCalculator();
@@ -61,8 +71,7 @@ public:
 	virtual bool UpdateRenderBuffer();
 	virtual bool PrepareItemHalBufer(int nDevice);
 	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const SYArray& pUnitArray);
-	virtual void UpdateRenderMatrix(IN float fScale);
-	matrix4f Get2DRenderMatrix();
+	static void GetSceneCenter(float3& pt);
 
 	void SetChgLevel(EmObjectChgLevel emChgLevel);
 	EmObjectChgLevel GetChgLevel();
@@ -71,8 +80,10 @@ public:
 	int GetObjBufferID();
 	bool GetObjSimpBuffer(StuSimpleBuffer & pBuf);
 	bool SetSelected(bool bSel);//返回原来的状态
-	bool GetSelected();
+	bool IsSelected();
 	DXHalDef32 * GetHalDes();
+	CString GetObjectID();
+	BaseGraph_DataBase::ITEM_FORMTYPE Get3DType()const;
 	void Lock();
 	void Unlock();
 protected:

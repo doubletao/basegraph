@@ -103,6 +103,11 @@ BASEGRAPH_DATARENDER_API bool DataRender_IsItemSelected(IN CString strID, OUT bo
 	return CalculatorManager::Instance().IsItemSelected(strID, bSel);
 }
 
+BASEGRAPH_DATARENDER_API bool DataRender_GetSelectObj(OUT std::vector<CString> & vecSelObjID)
+{
+	return CalculatorManager::Instance().GetSelectObj(vecSelObjID);
+}
+
 BASEGRAPH_DATARENDER_API bool DataRender_ClearAllSelect()
 {
 	return CalculatorManager::Instance().ClearAllSelect();

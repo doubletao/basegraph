@@ -5,6 +5,18 @@ using BaseGraph_Common::Value;
 
 namespace BaseGraph_DataBase
 {
+	enum ITEM_FORMTYPE
+	{
+		ITEM_FORMTYPE_2D = 0,
+		ITEM_FORMTYPE_2DIN3D,
+		ITEM_FORMTYPE_3D,
+		ITEM_FORMTYPE_3DIN2D,
+		ITEM_FORMTYPE_LIGHT,
+		ITEM_FORMTYPE_CAMERA,
+		ITEM_FORMTYPE_2DRENDERBY3D,//以三维的方式渲染2D保持纵深效果出来
+		ITEM_FORMTYPE_UNKNOW,
+	};
+
 	enum ObjectType
 	{
 		ObjectType_Err = -1,
@@ -24,6 +36,7 @@ namespace BaseGraph_DataBase
 		Obj_Height_Int,
 		Obj_ActionBegin_Int,//使用场作为单位
 		Obj_ActionEnd_Int,//使用场作为单位
+		Obj_3DType,
 		ObjParam_End,
 
 		SpaceParam = 100,
@@ -318,6 +331,12 @@ namespace BaseGraph_DataBase
 			valueDesc.stuDefault.SetValue(10 * 25 * 2, BaseGraph_Common::ValueType_INT);
 			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 			valueDesc.vecValueLimit.push_back(std::make_pair(INT32_MAX, _T("最大值")));
+			break;
+		case Obj_3DType:
+			valueDesc.nDispIndex = 0;
+			valueDesc.fStep = 0.0f;
+			valueDesc.strDispName = _T("3D类型");
+			valueDesc.stuDefault.SetValue(ITEM_FORMTYPE_2D, BaseGraph_Common::ValueType_ENUM);
 			break;
 		case SpacePosition_X_Float:
 			valueDesc.nDispIndex = 0;

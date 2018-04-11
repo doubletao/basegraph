@@ -88,6 +88,11 @@ float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID)
 	return DataBaseManager::Instance().GetItemScale(strID);
 }
 
+BaseGraph_DataBase::ITEM_FORMTYPE BASEGRAPH_DATABASE_API DataBase_Get3DType(IN CString strID)
+{
+	return DataBaseManager::Instance().Get3DType(strID);
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
 {
 	return DataBaseManager::Instance().SetItemProperty(strID, emParam, stuParam);

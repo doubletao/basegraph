@@ -22,6 +22,9 @@
     <Filter Include="Algorithm">
       <UniqueIdentifier>{720b081a-83a3-4cba-b2c9-3b953e4edad3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SpaceConvert">
+      <UniqueIdentifier>{a8810432-14e8-4dc0-83d8-fb151bbc34e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -110,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="Typeset\TextDrawer.cpp">
       <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleSpaceConvert.cpp">
+      <Filter>SpaceConvert</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\DataRender\TextDrawer.h">
       <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleSpaceConvert.h">
+      <Filter>SpaceConvert</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

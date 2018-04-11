@@ -62,7 +62,7 @@ void CalculatorManager::Update2DRenderMatrix(IN float fScale)
 		ObjectCalculator * pCalc = it->second;
 		if (pCalc)
 		{
-			pCalc->UpdateRenderMatrix(fScale);
+			pCalc->Update2DRenderMatrix(fScale);
 		}
 	}
 }
@@ -141,7 +141,7 @@ bool CalculatorManager::IsItemSelected(IN CString strID, OUT bool & bSel)
 	ObjectCalculator * pCalc = GetObjCalculator(strID);
 	if (pCalc)
 	{
-		bSel = pCalc->GetSelected();
+		bSel = pCalc->IsSelected();
 		return true;
 	}
 	return false;
@@ -169,12 +169,27 @@ bool CalculatorManager::SetItemSelected(IN CString strID, IN const bool & bSel)
 	return false;
 }
 
+bool CalculatorManager::GetSelectObj(OUT std::vector<CString> & vecSelObjID)
+{
+	bool bRet = false;
+	for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
+	{
+		ObjectCalculator * pCalc = it->second;
+		if (pCalc && pCalc->IsSelected())
+		{
+			vecSelObjID.push_back(pCalc->GetObjectID());
+			bRet = true;
+		}
+	}
+	return bRet;
+}
+
 bool CalculatorManager::ClearAllSelect()
 {
 	for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
 	{
 		ObjectCalculator * pCalc = it->second;
-		if (pCalc && pCalc->GetSelected())
+		if (pCalc && pCalc->IsSelected())
 		{
 			pCalc->SetSelected(false);
 		}

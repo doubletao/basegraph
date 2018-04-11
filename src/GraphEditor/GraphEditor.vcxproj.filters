@@ -31,6 +31,12 @@
     <Filter Include="ObjectBar">
       <UniqueIdentifier>{a4623c5d-f605-4efe-af61-208b1ced5d9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ObjectEditor">
+      <UniqueIdentifier>{0907be5f-2875-488e-acd9-ada980fb421d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ObjectTool">
+      <UniqueIdentifier>{00e0b418-6902-46ae-88a1-79e5baac813f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

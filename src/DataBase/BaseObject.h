@@ -39,5 +39,7 @@ namespace BaseGraph_DataBase
 		void SetItemScale(point3f ptValue);
 		point3f GetItemCenter();
 		void SetItemCenter(point3f ptValue);
+
+		BaseGraph_DataBase::ITEM_FORMTYPE Get3DType();
 	};
 };

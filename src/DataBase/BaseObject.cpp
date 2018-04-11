@@ -237,3 +237,8 @@ void BaseGraph_DataBase::BaseObject::SetItemCenter(point3f ptValue)
 	SetValue(SpaceCenter_Y_Float, ptValue.y);
 	SetValue(SpaceCenter_Z_Float, ptValue.z);
 }
+
+BaseGraph_DataBase::ITEM_FORMTYPE BaseGraph_DataBase::BaseObject::Get3DType()
+{
+	return (BaseGraph_DataBase::ITEM_FORMTYPE)GetValue(Obj_3DType).ToInt();
+}

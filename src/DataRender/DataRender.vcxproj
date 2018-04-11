@@ -135,6 +135,7 @@
     <ClCompile Include="MaterialDef.cpp" />
     <ClCompile Include="ObjectBuffer.cpp" />
     <ClCompile Include="ObjectCalculator.cpp" />
+    <ClCompile Include="SimpleSpaceConvert.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -171,6 +172,7 @@
     <ClInclude Include="ObjectBuffer.h" />
     <ClInclude Include="ObjectCalculator.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SimpleSpaceConvert.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Typeset\TextParagraph.h" />
