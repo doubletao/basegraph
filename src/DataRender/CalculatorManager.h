@@ -36,5 +36,8 @@ public:
 	void SetScale(const float & fScale);
 	void SetFrame(const int & nFrame);
 	int GetFrame();
+
+	bool GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
+	bool GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件的场景bound
 };
 

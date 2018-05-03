@@ -65,4 +65,5 @@ public:
 	virtual void DeleteRenderUnitView(LPCTSTR szUnitID);
 	virtual void RenderUnitBufferForGpu();
 	virtual bool PrepareItemHalBufer(int nDevice);
+	virtual bool GetCtrlBound(OUT rectf & rtBoundf);//获取物件原始bound
 };

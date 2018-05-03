@@ -120,6 +120,30 @@ BaseGraph_DataBase::ITEM_FORMTYPE ObjectCalculator::Get3DType() const
 	return DataBase_Get3DType(m_strObjID);
 }
 
+bool ObjectCalculator::GetCtrlBound(OUT rectf & rtBoundf)
+{
+	int nWidth = GetWidth();
+	int nHeight = GetHeight();
+	if (nWidth > 0 && nHeight > 0)
+	{
+		rtBoundf.left = -nWidth / 2;
+		rtBoundf.right = nWidth / 2;
+		rtBoundf.top = -nHeight / 2;
+		rtBoundf.bottom = nHeight / 2;
+		return true;
+	}
+	return false;
+}
+
+bool ObjectCalculator::GetSceneBound(OUT rectf & rtBoundf)
+{
+	if (GetCtrlBound(rtBoundf))
+	{
+		//取得物件旋转缩放位移属性，进而得出物件的scene bound
+	}
+	return false;
+}
+
 void ObjectCalculator::Lock()
 {
 	EnterCriticalSection(&m_Lock);

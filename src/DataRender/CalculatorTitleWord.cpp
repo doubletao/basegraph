@@ -1132,3 +1132,9 @@ bool CalculatorTitleword::PrepareItemHalBufer(int nDevice)
 	DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex);
 	return true;
 }
+
+bool CalculatorTitleword::GetCtrlBound(OUT rectf & rtBoundf)
+{
+	rtBoundf = CalUnitBound();
+	return false;
+}

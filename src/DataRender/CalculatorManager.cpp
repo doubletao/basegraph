@@ -228,3 +228,23 @@ int CalculatorManager::GetFrame()
 {
 	return m_nFrame;
 }
+
+bool CalculatorManager::GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strObjID);
+	if (pCalc)
+	{
+		return pCalc->GetCtrlBound(rtBoundf);
+	}
+	return false;
+}
+
+bool CalculatorManager::GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strObjID);
+	if (pCalc)
+	{
+		return pCalc->GetSceneBound(rtBoundf);
+	}
+	return false;
+}

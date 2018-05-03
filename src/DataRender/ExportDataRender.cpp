@@ -140,3 +140,14 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale)
 	CalculatorManager::Instance().SetScale(fScale);
 	return true;
 }
+
+BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf)
+{
+	return CalculatorManager::Instance().GetCtrlBound(strObjID, rtBoundf);
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf)
+{
+	return CalculatorManager::Instance().GetSceneBound(strObjID, rtBoundf);
+}
+

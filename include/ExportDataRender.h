@@ -67,6 +67,9 @@ BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame();//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame);//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale);
 BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
+//这里的scene bound相对场景坐标系(场景中心为原点，上为Y轴正向，右为X轴正向)
+BASEGRAPH_DATARENDER_API bool DataRender_GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
+//到这个层面的hittest，参数进来的点都是场景点(场景中心为原点，上为Y轴正向，右为X轴正向)
 BASEGRAPH_DATARENDER_API bool DataRender_HitTest(IN CPoint ptHit, OPTIONAL CString & strID);//根据一次单击查找选中块(),strID为空则选中最上层，否则会查找指定点的重叠物件中指定块的下一个物件
-BASEGRAPH_DATARENDER_API bool DataRender_BoxHitTest(IN CPoint ptHit, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是碰着就算
-BASEGRAPH_DATARENDER_API bool DataRender_BoxSelectTest(IN CPoint ptHit, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是框住了才算
+BASEGRAPH_DATARENDER_API bool DataRender_BoxHitTest(IN CRect rtBox, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是碰着就算
+BASEGRAPH_DATARENDER_API bool DataRender_BoxSelectTest(IN CRect rtBox, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是框住了才算
