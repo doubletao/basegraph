@@ -57,6 +57,8 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert(float3* pOutVec,			//目的向量
 //fCenterX,fCenterY 是场景中心点在Buffer中的位置
 void BASEGRAPH_SCENE_RENDER_API SceneToBuffer(float3* pBufferPt,const float3* pScenePt,float fCenterX,float fCenterY,float fScale);
 void BASEGRAPH_SCENE_RENDER_API BufferToScene(float3* pScenePt,const float3* pBufferPt,float fCenterX,float fCenterY,float fScale);
+void BASEGRAPH_SCENE_RENDER_API SceneToBuffer(float2* pBufferPt, const float2* pScenePt, float fCenterX, float fCenterY, float fScale);
+void BASEGRAPH_SCENE_RENDER_API BufferToScene(float2* pScenePt, const float2* pBufferPt, float fCenterX, float fCenterY, float fScale);
 void BASEGRAPH_SCENE_RENDER_API SceneToBufferMat( matrix4f* pMat,float fCenterX,float fCenterY); 
 
 void BASEGRAPH_SCENE_RENDER_API CalProjectMat( matrix4f* pOutProjMat,

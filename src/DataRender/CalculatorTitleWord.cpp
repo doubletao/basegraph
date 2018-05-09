@@ -1136,5 +1136,5 @@ bool CalculatorTitleword::PrepareItemHalBufer(int nDevice)
 bool CalculatorTitleword::GetCtrlBound(OUT rectf & rtBoundf)
 {
 	rtBoundf = CalUnitBound();
-	return false;
+	return true;
 }

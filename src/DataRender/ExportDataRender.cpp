@@ -151,3 +151,8 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetSceneBound(IN CString strObjID, OUT 
 	return CalculatorManager::Instance().GetSceneBound(strObjID, rtBoundf);
 }
 
+BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlPoint(IN CString strObjID, OUT std::vector<point3f>& vecCtrlPoint)
+{
+	return CalculatorManager::Instance().GetCtrlPoint(strObjID, vecCtrlPoint);
+}
+

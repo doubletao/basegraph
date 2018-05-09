@@ -248,3 +248,13 @@ bool CalculatorManager::GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf)
 	}
 	return false;
 }
+
+bool CalculatorManager::GetCtrlPoint(IN CString strObjID, OUT std::vector<point3f>& vecCtrlPoint)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strObjID);
+	if (pCalc)
+	{
+		return pCalc->GetCtrlPoint(vecCtrlPoint);
+	}
+	return false;
+}

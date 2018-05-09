@@ -44,6 +44,18 @@ void C3DMainViewWnd::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int
 			OnFrameChanged((int)wParam);
 		}
 		break;
+	case WM_MSG_SerRenderTask:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			for (size_t i = 0; i < m_vecSceneViewWnd.size(); i++)
+			{
+				C3DSceneViewWnd *& pViewWnd = m_vecSceneViewWnd[i];
+				if (pViewWnd)
+				{
+					pViewWnd->SendMessage(WM_MSG_SerRenderTask);
+				}
+			}
+		}
 	default:
 		break;
 	}

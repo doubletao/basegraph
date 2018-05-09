@@ -260,6 +260,18 @@ void BASEGRAPH_SCENE_RENDER_API BufferToScene( float3* pScenePt,const float3* pB
 	*pScenePt /= fScale;
 }
 
+void BASEGRAPH_SCENE_RENDER_API SceneToBuffer(float2 * pBufferPt, const float2 * pScenePt, float fCenterX, float fCenterY, float fScale)
+{
+	float2Set(pBufferPt, pScenePt->x + fCenterX, -pScenePt->y + fCenterY);
+	*pBufferPt *= fScale;
+}
+
+void BASEGRAPH_SCENE_RENDER_API BufferToScene(float2 * pScenePt, const float2 * pBufferPt, float fCenterX, float fCenterY, float fScale)
+{
+	float2Set(pScenePt, pBufferPt->x - fCenterX, -(pBufferPt->y - fCenterY));
+	*pScenePt /= fScale;
+}
+
 void BASEGRAPH_SCENE_RENDER_API SceneToBufferMat( matrix4f* pMat,float fCenterX,float fCenterY)
 {
 	matrix4f_from_scale(pMat,1,-1,1);

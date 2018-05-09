@@ -62,6 +62,7 @@ public:
 	void Update2DRenderMatrix(IN float fScale);
 	matrix4f Get2DRenderMatrix();
 	matrix4f GetScrollMatrix();
+	matrix4f GetSelfMatrix();
 public:
 	ObjectCalculator(CString strObjID);
 	virtual ~ObjectCalculator();
@@ -87,6 +88,7 @@ public:
 
 	virtual bool GetCtrlBound(OUT rectf & rtBoundf);//获取物件原始bound
 	virtual bool GetSceneBound(OUT rectf & rtBoundf);//获取物件原始bound
+	virtual bool GetCtrlPoint(OUT std::vector<point3f> & vecCtrlPoint);//获取物件原始bound
 	void Lock();
 	void Unlock();
 protected:

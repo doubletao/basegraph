@@ -126,10 +126,10 @@ bool ObjectCalculator::GetCtrlBound(OUT rectf & rtBoundf)
 	int nHeight = GetHeight();
 	if (nWidth > 0 && nHeight > 0)
 	{
-		rtBoundf.left = -nWidth / 2;
-		rtBoundf.right = nWidth / 2;
-		rtBoundf.top = -nHeight / 2;
-		rtBoundf.bottom = nHeight / 2;
+		rtBoundf.left = -nWidth * 1.0f / 2;
+		rtBoundf.right = nWidth * 1.0f / 2;
+		rtBoundf.top = -nHeight * 1.0f / 2;
+		rtBoundf.bottom = nHeight * 1.0f / 2;
 		return true;
 	}
 	return false;
@@ -140,6 +140,44 @@ bool ObjectCalculator::GetSceneBound(OUT rectf & rtBoundf)
 	if (GetCtrlBound(rtBoundf))
 	{
 		//取得物件旋转缩放位移属性，进而得出物件的scene bound
+		point2f ptLeftTop = { rtBoundf.left, rtBoundf.top };
+		point2f ptRightBottom = { rtBoundf.right, rtBoundf.bottom };
+		ptLeftTop *= m_VSelfMatrix;
+		ptRightBottom *= m_VSelfMatrix;
+		
+		rtBoundf.left = min(rtBoundf.left, ptLeftTop.x);
+		rtBoundf.top = min(rtBoundf.top, -ptLeftTop.y);
+		rtBoundf.right = max(rtBoundf.right, ptLeftTop.x);
+		rtBoundf.bottom = max(rtBoundf.bottom, -ptLeftTop.y);
+
+		rtBoundf.left = min(rtBoundf.left, ptRightBottom.x);
+		rtBoundf.top = min(rtBoundf.top, -ptRightBottom.y);
+		rtBoundf.right = max(rtBoundf.right, ptRightBottom.x);
+		rtBoundf.bottom = max(rtBoundf.bottom, -ptRightBottom.y);
+		return true;
+	}
+	return false;
+}
+
+bool ObjectCalculator::GetCtrlPoint(OUT std::vector<point3f>& vecCtrlPoint)
+{
+	rectf rtBoundf;
+	if (GetCtrlBound(rtBoundf))
+	{
+		float3 pt[4] = {
+			{ rtBoundf.left, -rtBoundf.top, 0 },
+			{ rtBoundf.left, -rtBoundf.bottom, 0 },
+			{ rtBoundf.right, -rtBoundf.bottom, 0 },
+			{ rtBoundf.right, -rtBoundf.top, 0 },
+		};
+
+		matrix4f vSelfMatrix = GetSelfMatrix();
+		for (int i = 0; i < 4; i++)
+		{
+			pt[i] *= vSelfMatrix;
+			vecCtrlPoint.push_back(pt[i]);
+		}
+		return true;
 	}
 	return false;
 }
@@ -256,8 +294,7 @@ void ObjectCalculator::Update2DRenderMatrix(IN float fScale)
 {
 	if (GetChgLevel() >= ChgLevel_Matrix)
 	{
-		matrix4f_identity(&m_VSelfMatrix);
-		calc_trans_vector_tomatrix(m_VSelfMatrix, DataBase_GetItemCenter(m_strObjID), DataBase_GetItemScale(m_strObjID), DataBase_GetItemAngleRadian(m_strObjID), DataBase_GetItemPos(m_strObjID), ROTATE_ORDER_YXZ);
+		m_VSelfMatrix = GetSelfMatrix();
 		m_VSelfMatrix._41 *= fScale;
 		m_VSelfMatrix._42 *= fScale;
 		m_VSelfMatrix._43 *= fScale;
@@ -272,6 +309,14 @@ matrix4f ObjectCalculator::Get2DRenderMatrix()
 matrix4f ObjectCalculator::GetScrollMatrix()
 {
 	return m_ScrollMatrix;
+}
+
+matrix4f ObjectCalculator::GetSelfMatrix()
+{
+	matrix4f vSelfMatrix;
+	matrix4f_identity(&vSelfMatrix);
+	calc_trans_vector_tomatrix(vSelfMatrix, DataBase_GetItemCenter(m_strObjID), DataBase_GetItemScale(m_strObjID), DataBase_GetItemAngleRadian(m_strObjID), DataBase_GetItemPos(m_strObjID), ROTATE_ORDER_YXZ);
+	return vSelfMatrix;
 }
 
 void ObjectCalculator::SetChgLevel(EmObjectChgLevel emChgLevel)

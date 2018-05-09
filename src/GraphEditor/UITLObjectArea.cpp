@@ -68,6 +68,8 @@ void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	if (ObjectArea_HitNull != ObjectHittest(lParam, &strHitID))
 	{
 		DataRender_SetItemSelected(strHitID, true);
+		//通知渲染窗口刷新
+		UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);
 	}
 	Refresh();
 }

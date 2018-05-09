@@ -2,6 +2,7 @@
 #include "3DSceneViewWnd.h"
 #include "GraphEditorCommonDef.h"
 #include "GraphEditor.h"
+#include "SceneRender\3DSpaceConvert.h"
 
 IMPLEMENT_DYNCREATE(C3DSceneViewWnd, CWnd)
 
@@ -172,7 +173,7 @@ DWORD C3DSceneViewWnd::PreDecoderThread(LPVOID pParam)
 					DXTextureManager_UnQueryTexture(hTex);
 					DXTextureManager_UnQueryTexture(hDepth);
 
-					//刷新
+					//交换链
 					DX3DEngine_Present(hDevice, pThis->m_ViewInfo.m_hSwapChain, 0);
 				}
 				//待刷新数自减
@@ -607,9 +608,29 @@ void C3DSceneViewWnd::RenderCtrlBuffer(int nDevice)
 	std::vector<CString> vecSelObjID;
 	if (DataRender_GetSelectObj(vecSelObjID))
 	{
+		bufferDC.SetPenColor(ABGR(255, 255, 0, 0));
 		for (size_t i = 0; i < vecSelObjID.size(); i++)
 		{
 			CString strID = vecSelObjID[i];
+			std::vector<point3f> vecCtrlPoint;
+			DataRender_GetCtrlPoint(strID, vecCtrlPoint);
+			//取出来的矩形是以场景中心为坐标原点的，需要转化为左上坐标系
+			for (int i = 0; i < vecCtrlPoint.size(); i++)
+			{
+				SceneToBuffer(&vecCtrlPoint[i], &vecCtrlPoint[i], nWidth / 2, nHeight / 2, 1.0f);
+				if (i == 0)
+				{
+					bufferDC.MoveTo(vecCtrlPoint[i].x, vecCtrlPoint[i].y);
+				}
+				else
+				{
+					bufferDC.LineTo(vecCtrlPoint[i].x, vecCtrlPoint[i].y);
+				}
+			}
+			if (vecCtrlPoint.size() > 0)
+			{
+				bufferDC.LineTo(vecCtrlPoint[0].x, vecCtrlPoint[0].y);
+			}
 		}
 	}
 }
