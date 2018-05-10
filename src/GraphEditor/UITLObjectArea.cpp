@@ -68,10 +68,30 @@ void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	if (ObjectArea_HitNull != ObjectHittest(lParam, &strHitID))
 	{
 		DataRender_SetItemSelected(strHitID, true);
-		//通知渲染窗口刷新
-		UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);
+		//广播通知选中项变更
+		UIControl_BroadcastMsg(WM_MSG_OnSelectChanged, 0, 0, this);
 	}
 	Refresh();
+}
+
+int UITLObjectArea::GetMsgDispatchID()
+{
+	return UIElementMsg_TimeLineObjectArea;
+}
+
+void UITLObjectArea::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	switch (nMsgID)
+	{
+	case WM_MSG_OnSelectChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			Refresh();
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 ObjectAreaHittestType UITLObjectArea::ObjectHittest(CPoint ptHit, CString * pStrID)

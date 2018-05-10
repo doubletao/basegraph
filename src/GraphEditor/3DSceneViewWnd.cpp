@@ -608,7 +608,7 @@ void C3DSceneViewWnd::RenderCtrlBuffer(int nDevice)
 	std::vector<CString> vecSelObjID;
 	if (DataRender_GetSelectObj(vecSelObjID))
 	{
-		bufferDC.SetPenColor(ABGR(255, 255, 0, 0));
+		bufferDC.SetPenColor(ABGR(255, 255, 255, 0));
 		for (size_t i = 0; i < vecSelObjID.size(); i++)
 		{
 			CString strID = vecSelObjID[i];

@@ -26,10 +26,12 @@ void UITimeLine::Release()
 
 void UITimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
 {
-	UIElement::Initialize(nX, nY, nWidth, nHeight, UIElementMsg_TimeLine, hParentWnd);
+	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd);
 	m_setMsgFilter.insert(WM_LBUTTONDOWN);
 	m_setMsgFilter.insert(WM_LBUTTONUP);
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
+	//注册消息中心
+	UIControl_RegistMsgDispatcher(this);
 }
 
 void UITimeLine::InitializeObject()
@@ -167,7 +169,7 @@ bool UITimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd
 {
 	if (!m_bCreated)
 	{
-		Initialize(nX, nY, nWidth, nHeight, 0, hParentWnd);
+		Initialize(nX, nY, nWidth, nHeight, UIElementMsg_TimeLine, hParentWnd);
 		InitializeObject();
 
 		UIImageDrawer * pImgDrawer = new UIImageDrawer(ThemeImage_ElementArea);

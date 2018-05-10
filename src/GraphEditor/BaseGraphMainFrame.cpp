@@ -363,8 +363,6 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		OutputDebugString(_T("主回显窗创建失败\n"));
 		return 0;
 	}
-	//注册消息中心
-	RegistDispatchMsg();
 
 	//测试代码
 	auto CreateTestImgObj = [](CString strName, CString strImgPath, CString strDebugPath, int nBegin, int nEnd)
@@ -507,6 +505,9 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	//CEdit * m_pEdit = new CEdit;
 	//m_pEdit->CreateEx(WS_EX_CLIENTEDGE, _T("Edit"), _T("myedit"), WS_BORDER | WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL | ES_CENTER, CRect(1800, 250, 1900, 350), this, 100081);
+
+	//注册消息中心
+	UIControl_RegistMsgDispatcher(this);
 
 	return 0;
 }
@@ -674,14 +675,6 @@ LRESULT BaseGraphMainFrame::OnUIElementSetCapture(WPARAM wParam, LPARAM lParam)
 		m_pCaptureElement = nullptr;
 	}
 	return 0;
-}
-
-void BaseGraphMainFrame::RegistDispatchMsg()
-{
-	UIControl_RegistMsgDispatcher(this);
-	UIControl_RegistMsgDispatcher(&m_uiSimpleTimeLine);
-	UIControl_RegistMsgDispatcher(&m_uiTimeLine);
-	UIControl_RegistMsgDispatcher(&m_pwndMainView);
 }
 
 void BaseGraphMainFrame::OnUpdateWholeLength()

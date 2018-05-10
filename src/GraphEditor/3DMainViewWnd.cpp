@@ -44,6 +44,7 @@ void C3DMainViewWnd::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int
 			OnFrameChanged((int)wParam);
 		}
 		break;
+	case WM_MSG_OnSelectChanged:
 	case WM_MSG_SerRenderTask:
 		if (nIDFrom != GetMsgDispatchID())
 		{
@@ -102,6 +103,9 @@ int C3DMainViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return 0;
 	}
 	m_vecSceneViewWnd.push_back(pSceneView);
+
+	//注册消息中心
+	UIControl_RegistMsgDispatcher(this);
 
 	return 0;
 }

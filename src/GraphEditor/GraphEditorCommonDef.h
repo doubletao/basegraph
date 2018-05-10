@@ -50,4 +50,5 @@ enum UIElementMsgDef
 	WM_MSG_ExcuteRenderTask,//窗口的刷新消息
 	WM_MSG_FrameChanged,//wParam为帧数，lParam为引发change的控件ID
 	WM_MSG_WholeFrameLengthChanged,//wParam为帧数，lParam为引发change的控件ID
+	WM_MSG_OnSelectChanged,//选中项发生变化
 };

@@ -14,10 +14,12 @@ UISimpleTimeLine::~UISimpleTimeLine()
 
 void UISimpleTimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
 {
-	UIElement::Initialize(nX, nY, nWidth, nHeight, UIElementMsg_SimpleTimeLine, hParentWnd);
+	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd);
 	m_setMsgFilter.insert(WM_LBUTTONDOWN);
 	m_setMsgFilter.insert(WM_LBUTTONUP);
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
+	//注册消息中心
+	UIControl_RegistMsgDispatcher(this);
 }
 
 void UISimpleTimeLine::InitializeObject()

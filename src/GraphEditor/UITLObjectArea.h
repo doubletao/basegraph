@@ -26,6 +26,8 @@ protected:
 	UITLObjectItem * CreateObjectItem(CString strID);
 	void OnLButtonDown(WPARAM wParam, LPARAM lParam);
 public:
+	virtual int GetMsgDispatchID();
+	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	ObjectAreaHittestType ObjectHittest(CPoint ptHit, CString * pStrID = nullptr);
 	ObjectAreaHittestType ObjectHittest(int x, int y, CString * pStrID = nullptr);
 	ObjectAreaHittestType ObjectHittest(LPARAM lParam, CString * pStrID = nullptr);
