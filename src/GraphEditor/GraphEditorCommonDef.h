@@ -28,6 +28,13 @@ enum UIElementMsgDef
 	UIElementMsg_SimpleTimeLine,
 	UIElementMsg_SimpleTimeLineSlider,
 
+	UIElementMsg_PropertyView,
+	UIElementMsg_PropertyView_Color,
+	UIElementMsg_PropertyView_Object,
+	UIElementMsg_PropertyView_Space,
+	UIElementMsg_PropertyView_Fx,
+	UIElementMsg_PropertyView_Text,
+
 	UIElementMsg_PropertyTabColor,
 	UIElementMsg_PropertyTabObject,
 	UIElementMsg_PropertyTabSpace,

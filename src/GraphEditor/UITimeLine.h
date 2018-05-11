@@ -19,11 +19,11 @@ protected:
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr);//初始化工作
 	virtual void RearrangeChildPos();
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
-	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 
 	void InitializeObject();
 	void OnFrameChanged(int nFrame);
 public:
+	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
 	virtual void DrawElement(CDC * pDC);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);

@@ -19,6 +19,12 @@ public:
 	void Update2DRenderMatrix(IN float fScale);
 	matrix4f Get2DRenderMatrix(IN CString strID);
 
+	//ChangLevel
+	void SetChgLevel(CString strObjID, EmObjectChgLevel emChgLevel);//set是赋值
+	void AddChgLevel(CString strObjID, EmObjectChgLevel emChgLevel);//add是叠加
+	void AddChgLevel(CString strObjID, BaseGraph_DataBase::ParamValueDef emParam);//通过变更的属性设置changlevel
+	EmObjectChgLevel GetChgLevel(CString strObjID);
+
 	ObjectCalculator * GetObjCalculator(CString strObjID);
 	bool ReleaseCalculator(CString strObjID);
 	bool ReleaseCalculator(ObjectCalculator * pCalc);
@@ -40,5 +46,8 @@ public:
 	bool GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
 	bool GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件的场景bound
 	bool GetCtrlPoint(IN CString strObjID, OUT std::vector<point3f> & vecCtrlPoint);//获取物件原始bound
+
+	//根据属性来获取属性对应的changlevel
+	EmObjectChgLevel GetPropertyChanegLevel(IN BaseGraph_DataBase::ParamValueDef emParam);
 };
 

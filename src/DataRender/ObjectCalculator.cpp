@@ -324,6 +324,14 @@ void ObjectCalculator::SetChgLevel(EmObjectChgLevel emChgLevel)
 	m_emChgLevel = emChgLevel;
 }
 
+void ObjectCalculator::AddChgLevel(EmObjectChgLevel emChgLevel)
+{
+	if (m_emChgLevel < emChgLevel)
+	{
+		m_emChgLevel = emChgLevel;
+	}
+}
+
 EmObjectChgLevel ObjectCalculator::GetChgLevel()
 {
 	return m_emChgLevel;

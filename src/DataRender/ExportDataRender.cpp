@@ -146,6 +146,32 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlBound(IN CString strObjID, OUT r
 	return CalculatorManager::Instance().GetCtrlBound(strObjID, rtBoundf);
 }
 
+BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam)
+{
+	//暂时还没有引入关键帧，先直接从database层调
+	return DataBase_GetItemProperty(strID, emParam, stuParam);
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
+{
+	return DataBase_GetItemProperty(strID, mapParam);
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
+{
+	CalculatorManager::Instance().AddChgLevel(strID, emParam);
+	return DataBase_SetItemProperty(strID, emParam, stuParam);
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
+{
+	for (auto it : mapParam)
+	{
+		CalculatorManager::Instance().AddChgLevel(strID, it.first);
+	}
+	return DataBase_SetItemProperty(strID, mapParam);
+}
+
 BASEGRAPH_DATARENDER_API bool DataRender_GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf)
 {
 	return CalculatorManager::Instance().GetSceneBound(strObjID, rtBoundf);

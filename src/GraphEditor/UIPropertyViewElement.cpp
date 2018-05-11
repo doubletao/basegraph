@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "UIPropertyViewElement.h"
+#include "GraphEditorCommonDef.h"
 
 UIPropertyViewElement::UIPropertyViewElement()
+	: m_strObjID()
 {
 }
 
@@ -13,7 +15,7 @@ void UIPropertyViewElement::InitializeObject()
 {
 	for (int i = m_nParamIDBegin + 1; i < m_nParamIDEnd; i++)
 	{
-		//填充默认值
+		//开局填充默认值
 		BaseGraph_DataBase::ParamValueDef paramValueDef = (BaseGraph_DataBase::ParamValueDef)i;
 		BaseGraph_DataBase::ValueDescriptor valueDesc = BaseGraph_DataBase::GetValueDescriptor(paramValueDef);
 		m_mapParam[paramValueDef] = valueDesc.stuDefault;
@@ -95,7 +97,7 @@ void UIPropertyViewElement::RearrangeChildPos()
 	}
 }
 
-bool UIPropertyViewElement::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd, UIElement * pParent, int nParamIDBegin, int nParamIDEnd)
+bool UIPropertyViewElement::Create(int nX, int nY, int nWidth, int nHeight, int m_nID, HWND hParentWnd, UIElement * pParent, int nParamIDBegin, int nParamIDEnd)
 {
 	bool bRet = false;
 	if (!m_bCreated)
@@ -105,7 +107,7 @@ bool UIPropertyViewElement::Create(int nX, int nY, int nWidth, int nHeight, HWND
 		m_setMsgFilter.insert(WM_MOUSEMOVE);
 		m_nParamIDBegin = nParamIDBegin;
 		m_nParamIDEnd = nParamIDEnd;
-		Initialize(nX, nY, nWidth, nHeight, 0, hParentWnd, pParent);
+		Initialize(nX, nY, nWidth, nHeight, m_nID, hParentWnd, pParent);
 		UIImageDrawer * pImgDrawer = new UIImageDrawer(ThemeImage_ElementArea);
 		m_mapDrawer[0].push_back(pImgDrawer);
 		InitializeObject();
@@ -114,11 +116,32 @@ bool UIPropertyViewElement::Create(int nX, int nY, int nWidth, int nHeight, HWND
 	return bRet;
 }
 
+bool UIPropertyViewElement::BindObject(CString strObjID)
+{
+	if (m_strObjID != strObjID)
+	{
+		m_strObjID = strObjID;
+		if (!m_strObjID.IsEmpty())
+		{
+			std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
+			if (DataRender_GetItemProperty(m_strObjID, mapParam))
+			{
+				//获取物件的值赋予窗口
+				SetValue(mapParam);
+			}
+		}
+	}
+	return true;
+}
+
 void UIPropertyViewElement::SetValue(const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, bool bRefresh/* = true*/)
 {
 	for (std::map<BaseGraph_DataBase::ParamValueDef, Value>::const_iterator it = mapParam.begin(); it != mapParam.end(); it++)
 	{
-		m_mapParam[it->first] = it->second;
+		if (it->first > m_nParamIDBegin && it->first < m_nParamIDEnd)
+		{
+			m_mapParam[it->first] = it->second;
+		}		
 	}
 	if (bRefresh)
 	{
@@ -128,10 +151,22 @@ void UIPropertyViewElement::SetValue(const std::map<BaseGraph_DataBase::ParamVal
 
 void UIPropertyViewElement::SetValue(BaseGraph_DataBase::ParamValueDef paramValueDef, Value value, bool bRefresh/* = true*/)
 {
-	m_mapParam[paramValueDef] = value;
+	if (paramValueDef > m_nParamIDBegin && paramValueDef < m_nParamIDEnd)
+	{
+		m_mapParam[paramValueDef] = value;
+	}
 	if (bRefresh)
 	{
 		UpdateDataToUI();
+	}
+}
+
+void UIPropertyViewElement::UpdateToObject(BaseGraph_DataBase::ParamValueDef paramValueDef, Value value)
+{
+	if (!m_strObjID.IsEmpty())
+	{
+		DataRender_SetItemProperty(m_strObjID, paramValueDef, value);
+		UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);//通知刷新
 	}
 }
 
@@ -209,6 +244,7 @@ bool UIPropertyViewElement::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPAR
 				BaseGraph_DataBase::ParamValueDef paramValueDef = m_mapControlValue[pCombinedCtrl];
 				Value value = pCombinedCtrl->GetValue();
 				SetValue(paramValueDef, value);
+				UpdateToObject(paramValueDef, value);
 			}
 			return true;
 		}

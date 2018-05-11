@@ -30,6 +30,9 @@ bool BASEGRAPH_DATABASE_API DataBase_MoveItemAfter(IN CString strSrcID, IN CStri
 //属性获取
 bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemProperty(IN CString strID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+//属性设置
+bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
+bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
 
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemPos(IN CString strID);
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemCenter(IN CString strID);
@@ -38,9 +41,7 @@ float3 BASEGRAPH_DATABASE_API DataBase_GetItemAngleRadian(IN CString strID);//取
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID);
 
 BaseGraph_DataBase::ITEM_FORMTYPE BASEGRAPH_DATABASE_API DataBase_Get3DType(IN CString strID);
-//属性设置
-bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
-bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+
 //物件长度（注意，这里的单位是场(按照一帧两场计数)）
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(OUT int & nLength);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);

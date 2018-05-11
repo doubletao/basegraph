@@ -67,10 +67,10 @@ void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	DataRender_ClearAllSelect();
 	if (ObjectArea_HitNull != ObjectHittest(lParam, &strHitID))
 	{
-		DataRender_SetItemSelected(strHitID, true);
-		//广播通知选中项变更
-		UIControl_BroadcastMsg(WM_MSG_OnSelectChanged, 0, 0, this);
+		DataRender_SetItemSelected(strHitID, true);		
 	}
+	//广播通知选中项变更
+	UIControl_BroadcastMsg(WM_MSG_OnSelectChanged, 0, 0, this);
 	Refresh();
 }
 

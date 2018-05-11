@@ -4,6 +4,7 @@
 UIPropertyView::UIPropertyView()
 	: m_pPropertyTabBar(nullptr)
 	, m_pSpaceElement(nullptr)
+	, m_strObjID()
 {
 }
 
@@ -24,6 +25,8 @@ void UIPropertyView::Initialize(int nX, int nY, int nWidth, int nHeight, int nID
 	m_setMsgFilter.insert(WM_LBUTTONDOWN);
 	m_setMsgFilter.insert(WM_LBUTTONUP);
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
+	//注册消息中心
+	UIControl_RegistMsgDispatcher(this);
 }
 
 void UIPropertyView::RearrangeChildPos()
@@ -47,15 +50,55 @@ void UIPropertyView::InitializeObject()
 	m_vecChildElement.push_back(m_pPropertyTabBar);
 
 	m_pSpaceElement = new UIPropertyViewElement;
-	m_pSpaceElement->Create(0, 0, 100, 100, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);
+	m_pSpaceElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Space, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);
 	m_vecChildElement.push_back(m_pSpaceElement);
+}
+
+CString UIPropertyView::GetCurSelObjID()
+{
+	//获取当前的主选中项
+	CString strID = _T("");
+	std::vector<CString> vecSelObjID;
+	if (DataRender_GetSelectObj(vecSelObjID))
+	{
+		//最后一个选中项视为主选中项
+		if (vecSelObjID.size() > 0)
+		{
+			strID = *vecSelObjID.rbegin();
+		}
+	}
+	return strID;
+}
+
+void UIPropertyView::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	switch (nMsgID)
+	{
+	case WM_MSG_OnSelectChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			CString strObjID = GetCurSelObjID();
+			if (m_strObjID != strObjID)
+			{
+				//对各个窗口取出其值
+				m_strObjID = strObjID;
+				if (m_pSpaceElement)
+				{
+					m_pSpaceElement->BindObject(m_strObjID);
+				}
+			}
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 bool UIPropertyView::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
 {
 	if (!m_bCreated)
 	{
-		Initialize(nX, nY, nWidth, nHeight, 0, hParentWnd);
+		Initialize(nX, nY, nWidth, nHeight, UIElementMsg_PropertyView, hParentWnd);
 		InitializeObject();
 	}
 	return true;

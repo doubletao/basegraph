@@ -79,9 +79,9 @@ protected:
 	afx_msg LRESULT OnUIElementBtnClicked(WPARAM wParam = 0, LPARAM lParam = 0);
 	afx_msg LRESULT OnUIElementSetCapture(WPARAM wParam = 0, LPARAM lParam = 0);
 protected:
-	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	void OnUpdateWholeLength();
 public:
+	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	void OnBtnCreateTitle();
 	void OnBtnCreateScroll();
 	void OnBtnCreateImage();

@@ -74,7 +74,8 @@ public:
 	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const SYArray& pUnitArray);
 	static void GetSceneCenter(float3& pt);
 
-	void SetChgLevel(EmObjectChgLevel emChgLevel);
+	void SetChgLevel(EmObjectChgLevel emChgLevel);//set是赋值
+	void AddChgLevel(EmObjectChgLevel emChgLevel);//add是叠加
 	EmObjectChgLevel GetChgLevel();
 
 	ObjectBuffer * GetObjectBuffer();

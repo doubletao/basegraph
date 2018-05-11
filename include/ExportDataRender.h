@@ -67,6 +67,13 @@ BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame();//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame);//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale);
 BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
+//datarender层面的属性获取与设置是考虑了关键帧之后，注意与database层区分
+//属性获取
+BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam);
+BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, OUT std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+//属性设置
+BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
+BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
 //这里的scene bound相对场景坐标系(场景中心为原点，上为Y轴正向，右为X轴正向)
 BASEGRAPH_DATARENDER_API bool DataRender_GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
 BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlPoint(IN CString strObjID, OUT std::vector<point3f> & vecCtrlPoint);//获取物件原始bound
