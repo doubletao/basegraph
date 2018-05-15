@@ -89,7 +89,7 @@ public:
 
 	virtual bool GetCtrlBound(OUT rectf & rtBoundf);//获取物件原始bound
 	virtual bool GetSceneBound(OUT rectf & rtBoundf);//获取物件原始bound
-	virtual bool GetCtrlPoint(OUT std::vector<point3f> & vecCtrlPoint);//获取物件原始bound
+	virtual bool GetCtrlPoint(OUT std::vector<pointf> & vecCtrlPoint);//获取物件原始bound
 	void Lock();
 	void Unlock();
 protected:

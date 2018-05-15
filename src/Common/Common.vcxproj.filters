@@ -111,6 +111,9 @@
     <ClCompile Include="ThreadPool\ThreadPool.cpp">
       <Filter>ThreadPool</Filter>
     </ClCompile>
+    <ClCompile Include="ExportCommon.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">

@@ -612,7 +612,7 @@ void C3DSceneViewWnd::RenderCtrlBuffer(int nDevice)
 		for (size_t i = 0; i < vecSelObjID.size(); i++)
 		{
 			CString strID = vecSelObjID[i];
-			std::vector<point3f> vecCtrlPoint;
+			std::vector<pointf> vecCtrlPoint;
 			DataRender_GetCtrlPoint(strID, vecCtrlPoint);
 			//取出来的矩形是以场景中心为坐标原点的，需要转化为左上坐标系
 			for (int i = 0; i < vecCtrlPoint.size(); i++)

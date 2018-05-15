@@ -159,16 +159,16 @@ bool ObjectCalculator::GetSceneBound(OUT rectf & rtBoundf)
 	return false;
 }
 
-bool ObjectCalculator::GetCtrlPoint(OUT std::vector<point3f>& vecCtrlPoint)
+bool ObjectCalculator::GetCtrlPoint(OUT std::vector<pointf>& vecCtrlPoint)
 {
 	rectf rtBoundf;
 	if (GetCtrlBound(rtBoundf))
 	{
-		float3 pt[4] = {
-			{ rtBoundf.left, -rtBoundf.top, 0 },
-			{ rtBoundf.left, -rtBoundf.bottom, 0 },
-			{ rtBoundf.right, -rtBoundf.bottom, 0 },
-			{ rtBoundf.right, -rtBoundf.top, 0 },
+		float2 pt[4] = {
+			{ rtBoundf.left, -rtBoundf.top},
+			{ rtBoundf.left, -rtBoundf.bottom},
+			{ rtBoundf.right, -rtBoundf.bottom},
+			{ rtBoundf.right, -rtBoundf.top},
 		};
 
 		matrix4f vSelfMatrix = GetSelfMatrix();

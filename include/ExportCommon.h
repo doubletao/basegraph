@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 #ifdef BASEGRAPH_COMMON_EXPORTS
 #define BASEGRAPH_COMMON_API __declspec(dllexport)
@@ -46,3 +47,6 @@
 #include "Common\vectorgraph.h"
 #include "Common\2DBufferDC.h"
 #include "Common\ThreadPool.h"
+
+BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN std::vector<pointf> & vecPolygon);
+BASEGRAPH_COMMON_API bool Common_IsCrossLine(IN pointf ptLine11, IN pointf ptLine12, IN pointf ptLine21, IN pointf ptLine22);
