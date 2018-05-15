@@ -192,6 +192,100 @@ void ObjectCalculator::Unlock()
 	LeaveCriticalSection(&m_Lock);
 }
 
+//判定是否点在物件内
+bool ObjectCalculator::HitTest(IN pointf ptHit)
+{
+	//先拿到控制点矩形
+	std::vector<pointf> vecCtrlPoint;
+	if (GetCtrlPoint(vecCtrlPoint))
+	{
+		return Common_IsPointInPolygon(ptHit, vecCtrlPoint);
+	}
+	return false;
+}
+
+//框选，条件是碰着就算
+bool ObjectCalculator::BoxHitTest(IN rectf rtBox)
+{
+	auto PushOneLine = [](std::vector<std::pair<pointf, pointf>> & vecBoxLine, float fX1, float fY1, float fX2, float fY2)
+	{
+		pointf ptStart = { fX1, fY1 };
+		pointf ptEnd = { fX2, fY2 };
+		vecBoxLine.push_back(std::make_pair(ptStart, ptEnd));
+	};
+	auto IsCrossLine = [](std::pair<pointf, pointf> line1, std::pair<pointf, pointf> line2) -> bool
+	{
+		return Common_IsCrossLine(line1.first, line1.second, line2.first, line2.second);
+	};
+	//先拿到控制点矩形
+	bool bRet = false;
+	std::vector<pointf> vecCtrlPoint;
+	if (GetCtrlPoint(vecCtrlPoint))
+	{
+		//先判定控制点
+		for (size_t i = 0; i < vecCtrlPoint.size(); i++)
+		{
+			if (SYRectf_PtInRect(&rtBox, vecCtrlPoint[i]))
+			{
+				//只要有一个控制点在里边就视为选中
+				bRet = true;
+				break;
+			}
+		}
+		//没有被包含则判定边相交情况
+		if (!bRet)
+		{
+			//box的四条边和控制点构成的边进行相交判定
+			std::vector<std::pair<pointf, pointf>> vecBoxLine;
+			PushOneLine(vecBoxLine, rtBox.left, rtBox.top, rtBox.right, rtBox.top);
+			PushOneLine(vecBoxLine, rtBox.right, rtBox.top, rtBox.right, rtBox.bottom);
+			PushOneLine(vecBoxLine, rtBox.right, rtBox.bottom, rtBox.left, rtBox.bottom);
+			PushOneLine(vecBoxLine, rtBox.left, rtBox.bottom, rtBox.left, rtBox.top);
+
+			std::vector<std::pair<pointf, pointf>> vecCtrlLine;
+			for (int i = 0; i < vecCtrlPoint.size() - 1; i++)
+			{
+				vecCtrlLine.push_back(std::make_pair(vecCtrlPoint[i], vecCtrlPoint[i + 1]));
+			}
+			vecCtrlLine.push_back(std::make_pair(vecCtrlPoint[0], *vecCtrlPoint.rbegin()));
+
+			for (int i = 0; i < vecBoxLine.size(); i++)
+			{
+				for (int j = 0; j < vecCtrlLine.size(); j++)
+				{
+					if (IsCrossLine(vecBoxLine[i], vecCtrlLine[j]))
+					{
+						bRet = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	return bRet;
+}
+
+//框选，条件是框住了才算
+bool ObjectCalculator::BoxInterTest(IN rectf rtBox)
+{
+	//先拿到控制点矩形
+	std::vector<pointf> vecCtrlPoint;
+	if (GetCtrlPoint(vecCtrlPoint))
+	{
+		for (size_t i = 0; i < vecCtrlPoint.size(); i++)
+		{
+			//如果控制点都在矩形内，则就是框住了
+			if (!SYRectf_PtInRect(&rtBox, vecCtrlPoint[i]))
+			{
+				//有一个不在里边就算是外边
+				return false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
 bool ObjectCalculator::NeedRenderBuffer()
 {
 	//如果连bufer都还没有呢，必然需要render

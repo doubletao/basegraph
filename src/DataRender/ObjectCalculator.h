@@ -92,6 +92,11 @@ public:
 	virtual bool GetCtrlPoint(OUT std::vector<pointf> & vecCtrlPoint);//获取物件原始bound
 	void Lock();
 	void Unlock();
+
+	//hittest
+	bool HitTest(IN pointf ptHit);//判定是否点在物件内
+	bool BoxHitTest(IN rectf rtBox);//框选，条件是碰着就算
+	bool BoxInterTest(IN rectf rtBox);//框选，条件是框住了才算
 protected:
 	virtual bool NeedRenderBuffer();
 	SYRenderUnitView * GetRenderUnitView(CString strUintID);

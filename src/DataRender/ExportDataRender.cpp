@@ -182,44 +182,20 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlPoint(IN CString strObjID, OUT s
 	return CalculatorManager::Instance().GetCtrlPoint(strObjID, vecCtrlPoint);
 }
 
-//////////////////////////////////////////////////////////////////////////
-2018年5月14日这里搞错了，这三个接口目的是通过点或者选择框来找到选中的物件，而不是判断指定物件是否被选中
-这里边需要搞一套物件是否被选中或者被框中的接口，然后这三个接口仅仅遍历判定是否入选
 BASEGRAPH_DATARENDER_API bool DataRender_HitTest(IN pointf ptHit, OPTIONAL CString & strID)
 {
-	//先拿到控制点矩形
-	std::vector<pointf> vecCtrlPoint;
-	if (CalculatorManager::Instance().GetCtrlPoint(strID, vecCtrlPoint))
-	{
-		return Common_IsPointInPolygon(ptHit, vecCtrlPoint);
-	}
-	return false;
+	return CalculatorManager::Instance().HitTest(ptHit, strID);
 }
 
 //框选，入选的条件是碰着就算
 BASEGRAPH_DATARENDER_API bool DataRender_BoxHitTest(IN rectf rtBox, OUT std::vector<CString>& vecStrObjID)
 {
-	return BASEGRAPH_DATARENDER_API bool();
+	return CalculatorManager::Instance().BoxHitTest(rtBox, vecStrObjID);
 }
 
 //框选，入选的条件是框住了才算
 BASEGRAPH_DATARENDER_API bool DataRender_BoxInterTest(IN rectf rtBox, OUT std::vector<CString>& vecStrObjID)
 {
-	//先拿到控制点矩形
-	std::vector<pointf> vecCtrlPoint;
-	if (CalculatorManager::Instance().GetCtrlPoint(strID, vecCtrlPoint))
-	{
-		for (size_t i = 0; i < vecCtrlPoint; i++)
-		{
-			//如果控制点都在矩形内，则就是框住了
-			if (!SYRectf_PtInRect(&rtBox, vecCtrlPoint[i]))
-			{
-				//有一个不在里边就算是外边
-				return false;
-			}
-		}
-		return true;
-	}
-	return false;
+	return CalculatorManager::Instance().BoxInterTest(rtBox, vecStrObjID);
 }
 

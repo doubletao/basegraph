@@ -296,6 +296,109 @@ bool CalculatorManager::GetCtrlPoint(IN CString strObjID, OUT std::vector<pointf
 	return false;
 }
 
+bool CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID)
+{
+	//遍历物件执行hittest点测试，如果strID不为空，则从strID的下一个开始执行遍历到strID的上一个结束
+	if (strID.IsEmpty())
+	{
+		//指定ID为空，直接遍历calculate就可以
+		for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
+		{
+			if (it->second)
+			{
+				if (it->second->HitTest(ptHit))
+				{
+					strID = it->first;
+					return true;
+				}
+			}
+		}
+	} 
+	else
+	{
+		//指定ID不为空，则需要考虑层次，此时需要遍历物件集合
+		std::vector<CString> vecObjID;
+		if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
+		{
+			std::vector<CString>::iterator itFind = std::find(vecObjID.begin(), vecObjID.end(), strID);
+			if (itFind == vecObjID.end())
+			{
+				//如果没找到，则视为无指定查找
+				strID.Empty();
+				return HitTest(ptHit, strID);
+			}
+			else
+			{
+				//先从指定物件的下一个物件开始，查找到结尾
+				for (std::vector<CString>::iterator it = itFind + 1; it != vecObjID.end(); it++)
+				{
+					if (m_mapObjCalculator.count(*it) > 0)
+					{
+						if (m_mapObjCalculator[*it])
+						{
+							if (m_mapObjCalculator[*it]->HitTest(ptHit))
+							{
+								strID = *it;
+								return true;
+							}
+						}
+					}
+				}
+				//然后回到开头一直找到指定物件为止
+				for (std::vector<CString>::iterator it = vecObjID.begin(); it != itFind; it++)
+				{
+					if (m_mapObjCalculator.count(*it) > 0)
+					{
+						if (m_mapObjCalculator[*it])
+						{
+							if (m_mapObjCalculator[*it]->HitTest(ptHit))
+							{
+								strID = *it;
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool CalculatorManager::BoxHitTest(IN rectf rtBox, OUT std::vector<CString>& vecStrObjID)
+{
+	bool bRet = false;
+	for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
+	{
+		if (it->second)
+		{
+			if (it->second->BoxHitTest(rtBox))
+			{
+				vecStrObjID.push_back(it->first);
+				bRet = true;
+			}
+		}
+	}
+	return bRet;
+}
+
+bool CalculatorManager::BoxInterTest(IN rectf rtBox, OUT std::vector<CString>& vecStrObjID)
+{
+	bool bRet = false;
+	for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
+	{
+		if (it->second)
+		{
+			if (it->second->BoxInterTest(rtBox))
+			{
+				vecStrObjID.push_back(it->first);
+				bRet = true;
+			}
+		}
+	}
+	return bRet;
+}
+
 EmObjectChgLevel CalculatorManager::GetPropertyChanegLevel(IN BaseGraph_DataBase::ParamValueDef emParam)
 {
 	switch (emParam)
