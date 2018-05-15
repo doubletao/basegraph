@@ -24,10 +24,8 @@ void UIButtonBar::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, H
 
 void UIButtonBar::AddSplitLine(int nWidth, int nHeight, COLORREF clColor)
 {
-	UIElement * pEleRect = new UIElement;
-	pEleRect->Initialize(0, 0, nWidth, nHeight, 0, m_hParentWnd, this);
-	UIRectDrawer * pRectDrawer = new UIRectDrawer(clColor);
-	pEleRect->InsertDrawer(0, pRectDrawer);
+	UIButton * pEleRect = new UIButton;
+	pEleRect->Create(0, 0, nWidth, nHeight, 0, m_hParentWnd, clColor, clColor, clColor, clColor, this);
 	m_vecChildElement.push_back(pEleRect);
 }
 

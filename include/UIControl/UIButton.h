@@ -24,6 +24,9 @@ public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, 
 		int nBKImgN, int nBKImgF, int nBKImgD, int nBKImgX, int nForeImgN, int nForeImgF, int nForeImgD, int nForeImgX, 
 		UIElement * pParent = nullptr, LPCTSTR strText = nullptr, int nFont = 0, COLORREF nFontColor = 0);
+	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd,
+		COLORREF clN, COLORREF clF, COLORREF clD, COLORREF clX,
+		UIElement * pParent = nullptr, LPCTSTR strText = nullptr, int nFont = 0, COLORREF nFontColor = 0);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	virtual void OnButtonClickDown();
 	virtual void OnButtonClickUp();

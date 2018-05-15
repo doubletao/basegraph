@@ -2,6 +2,7 @@
 #include "UIControl\UIButton.h"
 #include "UIControl\UIImageDrawer.h"
 #include "UIControl\UITextDrawer.h"
+#include "UIControl\UIRectDrawer.h"
 
 UIButton::UIButton()
 {
@@ -99,6 +100,33 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 		InsertOneDrawer(UIElement_BtnFloat, nBKImgF, nForeImgF);
 		InsertOneDrawer(UIElement_BtnDown, nBKImgD, nForeImgD);
 		InsertOneDrawer(UIElement_BtnXable, nBKImgX, nForeImgX);
+
+		return true;
+	}
+	return false;
+}
+
+bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, COLORREF clN, COLORREF clF, COLORREF clD, COLORREF clX, UIElement * pParent, LPCTSTR strText, int nFont, COLORREF nFontColor)
+{
+	auto InsertOneDrawer = [&](int nStateValue, COLORREF clValue)
+	{
+		UIRectDrawer * pRectDrawer = new UIRectDrawer(clValue);
+		m_mapDrawer[nStateValue].push_back(pRectDrawer);
+		if (strText)
+		{
+			UITextDrawer * pTextDrawer = new UITextDrawer(nFont);
+			m_mapDrawer[nStateValue].push_back(pTextDrawer);
+		}
+	};
+	if (!m_bCreated)
+	{
+		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
+		m_strText = strText;
+
+		InsertOneDrawer(UIElement_BtnNormal, clN);
+		InsertOneDrawer(UIElement_BtnFloat, clF);
+		InsertOneDrawer(UIElement_BtnDown, clD);
+		InsertOneDrawer(UIElement_BtnXable, clX);
 
 		return true;
 	}
