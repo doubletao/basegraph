@@ -1,0 +1,43 @@
+#pragma once
+
+// 消息处理返回值定义
+enum EmMessageHandlerResult
+{
+	Msg_Handle_Success		= 0x00000001,
+	Msg_Handle_Failed		= 0x00000002,
+	Msg_Handle_Continue		= 0x00000004,
+	Msg_Handle_Break		= 0x00000008,
+	Msg_Handle_Exit			= 0x00000010,
+	Msg_Handle_Success_Continue = Msg_Handle_Success | Msg_Handle_Continue,
+	Msg_Handle_Failed_Continue = Msg_Handle_Failed | Msg_Handle_Continue,
+	Msg_Handle_Success_Break = Msg_Handle_Success | Msg_Handle_Break,
+	Msg_Handle_Failed_Break = Msg_Handle_Failed | Msg_Handle_Break,
+};
+
+class ISceneMessageHandler
+{
+protected:
+	CString m_strObjID;
+public:
+	virtual ~ISceneMessageHandler() = 0;
+public:
+	//基本属性
+	virtual void SetObject(CString strObjID);
+	virtual CString GetObject();
+	//焦点
+	virtual void OnSetFocus(ISceneMessageHandler * pLastHandler = nullptr);
+	virtual void OnKillFocus(ISceneMessageHandler * pNextHandler = nullptr);
+	//鼠标
+	virtual EmMessageHandlerResult OnMouseMove(IN CWnd * pWnd, UINT nFlags, CPoint point);
+	virtual EmMessageHandlerResult OnMouseWheel(IN CWnd * pWnd, UINT nFlags, short zDelta, CPoint pt);
+	virtual EmMessageHandlerResult OnLButtonDown(IN CWnd * pWnd, UINT nFlags, CPoint point);
+	virtual EmMessageHandlerResult OnLButtonUp(IN CWnd * pWnd, UINT nFlags, CPoint point);
+	virtual EmMessageHandlerResult OnLButtonDblClk(IN CWnd * pWnd, UINT nFlags, CPoint point);
+	virtual EmMessageHandlerResult OnRButtonDown(IN CWnd * pWnd, UINT nFlags, CPoint point);
+	virtual EmMessageHandlerResult OnRButtonUp(IN CWnd * pWnd, UINT nFlags, CPoint point);
+	virtual EmMessageHandlerResult OnRButtonDblClk(IN CWnd * pWnd, UINT nFlags, CPoint point);
+	//键盘
+	virtual EmMessageHandlerResult OnKeyDown(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual EmMessageHandlerResult OnKeyUp(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual EmMessageHandlerResult OnChar(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
+};

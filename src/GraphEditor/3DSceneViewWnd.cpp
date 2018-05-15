@@ -806,6 +806,16 @@ BOOL C3DSceneViewWnd::OnEraseBkgnd(CDC * pDC)
 	return TRUE;
 }
 
+void C3DSceneViewWnd::OnMouseMove(UINT nFlags, CPoint point)
+{
+	if (DealHandDragMsg(WM_MOUSEMOVE, nFlags, point))
+	{
+		return;
+	}
+	return CWnd::OnLButtonDown(nFlags, point);
+}
+
+
 BOOL C3DSceneViewWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	float fScale = GetZoomScale();
@@ -815,7 +825,7 @@ BOOL C3DSceneViewWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	point2f ptScene = WndToScene(pt);
 
 	SetZoomScale(fScale, ptScene);
-	return 0;
+	return CWnd::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 void C3DSceneViewWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
@@ -832,6 +842,7 @@ void C3DSceneViewWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 	{
 		AdjustViewFit();
 	}
+	return CWnd::OnLButtonDblClk(nFlags, point);
 }
 
 void C3DSceneViewWnd::OnLButtonDown(UINT nFlags, CPoint point)
@@ -852,11 +863,32 @@ void C3DSceneViewWnd::OnLButtonUp(UINT nFlags, CPoint point)
 	return CWnd::OnLButtonDown(nFlags, point);
 }
 
-void C3DSceneViewWnd::OnMouseMove(UINT nFlags, CPoint point)
+void C3DSceneViewWnd::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	if (DealHandDragMsg(WM_MOUSEMOVE, nFlags, point))
-	{
-		return;
-	}
-	return CWnd::OnLButtonDown(nFlags, point);
+	return CWnd::OnRButtonDown(nFlags, point);
+}
+
+void C3DSceneViewWnd::OnRButtonUp(UINT nFlags, CPoint point)
+{
+	return CWnd::OnRButtonUp(nFlags, point);
+}
+
+void C3DSceneViewWnd::OnRButtonDblClk(UINT nFlags, CPoint point)
+{
+	return CWnd::OnRButtonDblClk(nFlags, point);
+}
+
+void C3DSceneViewWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	return CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void C3DSceneViewWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	return CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+}
+
+void C3DSceneViewWnd::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	return CWnd::OnChar(nChar, nRepCnt, nFlags);
 }

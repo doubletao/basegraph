@@ -31,11 +31,17 @@
     <Filter Include="ObjectBar">
       <UniqueIdentifier>{a4623c5d-f605-4efe-af61-208b1ced5d9c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ObjectEditor">
-      <UniqueIdentifier>{0907be5f-2875-488e-acd9-ada980fb421d}</UniqueIdentifier>
+    <Filter Include="SceneMessageHandler">
+      <UniqueIdentifier>{5ebde4c5-39bc-45ff-89b8-ccbd60e4ad39}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ObjectTool">
+    <Filter Include="SceneMessageHandler\ActionTool">
+      <UniqueIdentifier>{4c5d13f2-fff6-457a-ac7c-7474efb98101}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneMessageHandler\ObjectTool">
       <UniqueIdentifier>{00e0b418-6902-46ae-88a1-79e5baac813f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneMessageHandler\ObjectEditor">
+      <UniqueIdentifier>{0907be5f-2875-488e-acd9-ada980fb421d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +116,15 @@
     </ClCompile>
     <ClCompile Include="UIPropertyViewElement.cpp">
       <Filter>PropertyView</Filter>
+    </ClCompile>
+    <ClCompile Include="ISceneMessageHandler.cpp">
+      <Filter>SceneMessageHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerFactory.cpp">
+      <Filter>SceneMessageHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerManager.cpp">
+      <Filter>SceneMessageHandler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +205,15 @@
     </ClInclude>
     <ClInclude Include="UIPropertyViewElement.h">
       <Filter>PropertyView</Filter>
+    </ClInclude>
+    <ClInclude Include="ISceneMessageHandler.h">
+      <Filter>SceneMessageHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerManager.h">
+      <Filter>SceneMessageHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerFactory.h">
+      <Filter>SceneMessageHandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
