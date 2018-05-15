@@ -69,6 +69,7 @@
       <ModuleDefinitionFile>.\BaseCodec.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>..\..\interdir\Debug\PDB\$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
