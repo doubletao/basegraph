@@ -26,3 +26,22 @@ void UICheckBtnBar::UnCkeckAll(int nExceptID/* = 0*/)
 		}
 	}
 }
+
+void UICheckBtnBar::CkeckOne(int nCheckID)
+{
+	for (size_t i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIButton * pChild = (UIButton *)m_vecChildElement[i];
+		if (pChild)
+		{
+			if (pChild->GetMsgID() != nCheckID)
+			{
+				pChild->SetCheck(false);
+			}
+			else
+			{
+				pChild->SetCheck(true);
+			}
+		}
+	}
+}

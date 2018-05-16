@@ -55,5 +55,5 @@ void UIObjectBar::RearrangeChildPos()
 
 void UIObjectBar::UpdateStatus()
 {
-	UnCkeckAll(GraphEditorStatusManager::Instance().GetCurrentObjectTool());
+	CkeckOne(GraphEditorStatusManager::Instance().GetCurrentUIElementTool());
 }

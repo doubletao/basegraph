@@ -126,6 +126,9 @@
     <ClCompile Include="MessageHandlerManager.cpp">
       <Filter>SceneMessageHandler</Filter>
     </ClCompile>
+    <ClCompile Include="MessageHanderDefault.cpp">
+      <Filter>SceneMessageHandler\ActionTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="MessageHandlerFactory.h">
       <Filter>SceneMessageHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHanderDefault.h">
+      <Filter>SceneMessageHandler\ActionTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

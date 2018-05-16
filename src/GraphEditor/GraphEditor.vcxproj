@@ -125,6 +125,7 @@
     <ClCompile Include="GraphEditor.cpp" />
     <ClCompile Include="GraphEditorStatusManager.cpp" />
     <ClCompile Include="ISceneMessageHandler.cpp" />
+    <ClCompile Include="MessageHanderDefault.cpp" />
     <ClCompile Include="MessageHandlerFactory.cpp" />
     <ClCompile Include="MessageHandlerManager.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -156,6 +157,7 @@
     <ClInclude Include="GraphEditorStatusManager.h" />
     <ClInclude Include="3DMainViewWnd.h" />
     <ClInclude Include="ISceneMessageHandler.h" />
+    <ClInclude Include="MessageHanderDefault.h" />
     <ClInclude Include="MessageHandlerFactory.h" />
     <ClInclude Include="MessageHandlerManager.h" />
     <ClInclude Include="Resource.h" />

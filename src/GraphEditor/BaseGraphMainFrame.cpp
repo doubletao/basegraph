@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "BaseGraphMainFrame.h"
 #include "GraphEditorStatusManager.h"
+#include "MessageHandlerManager.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
@@ -695,6 +697,12 @@ void BaseGraphMainFrame::OnUpdateWholeLength()
 	}
 }
 
+void BaseGraphMainFrame::OnUpdateBarStatus()
+{
+	m_uiObjectBar.UpdateStatus();
+	m_uiActionBar.UpdateStatus();
+}
+
 void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
 {
 	switch (nMsgID)
@@ -705,6 +713,12 @@ void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam,
 			OnUpdateWholeLength();
 		}
 		break;
+	case WM_MSG_OnMessageHandlerChg:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			OnUpdateBarStatus();
+		}
+		break;
 	default:
 		break;
 	}
@@ -713,70 +727,64 @@ void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam,
 void BaseGraphMainFrame::OnBtnCreateTitle()
 {
 	OutputDebugString(_T("创建标题字\n"));
-	GraphEditorStatusManager::Instance().SetCurrentObjectTool(UIElementMsg_CreateTitle);
-	m_uiObjectBar.UpdateStatus();
+	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_CreateTitle);
 }
 
 void BaseGraphMainFrame::OnBtnCreateScroll()
 {
 	OutputDebugString(_T("创建滚屏\n"));
-	GraphEditorStatusManager::Instance().SetCurrentObjectTool(UIElementMsg_CreateScroll);
-	m_uiObjectBar.UpdateStatus();
+	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_CreateScroll);
 }
 
 void BaseGraphMainFrame::OnBtnCreateImage()
 {
 	OutputDebugString(_T("创建图片\n"));
-	GraphEditorStatusManager::Instance().SetCurrentObjectTool(UIElementMsg_CreateImage);
-	m_uiObjectBar.UpdateStatus();
+	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_CreateImage);
 }
 
 void BaseGraphMainFrame::OnBtnNewFile()
 {
 	OutputDebugString(_T("新建\n"));
-	m_uiActionBar.UpdateStatus();
+	OnUpdateBarStatus();
 	m_uiTimeLine.AdjustScrollZoom();
 }
 
 void BaseGraphMainFrame::OnBtnSaveFile()
 {
 	OutputDebugString(_T("保存\n"));
-	m_uiActionBar.UpdateStatus();
+	OnUpdateBarStatus();
 	m_uiTimeLine.AdjustScrollZoom(10);
 }
 
 void BaseGraphMainFrame::OnBtnSaveAs()
 {
 	OutputDebugString(_T("另存\n"));
-	m_uiActionBar.UpdateStatus();
+	OnUpdateBarStatus();
 	m_uiTimeLine.AdjustScrollZoom(-10);
 }
 
 void BaseGraphMainFrame::OnBtnDefaultAction()
 {
 	OutputDebugString(_T("默认\n"));
-	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_DefaultAction);
-	m_uiActionBar.UpdateStatus();
+	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_Default);
 }
 
 void BaseGraphMainFrame::OnBtnZoomAction()
 {
 	OutputDebugString(_T("缩放\n"));
-	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_ZoomAction);
-	m_uiActionBar.UpdateStatus();
+	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_Scale);
 }
 
 void BaseGraphMainFrame::OnBtnRotateAction()
 {
 	OutputDebugString(_T("旋转\n"));
-	GraphEditorStatusManager::Instance().SetCurrentActionTool(UIElementMsg_RotateAction);
-	m_uiActionBar.UpdateStatus();
+	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_Rotate);
 }
 
 void BaseGraphMainFrame::OnBtnSystemSetting()
 {
 	OutputDebugString(_T("设置\n"));
-	m_uiActionBar.UpdateStatus();
+	OnUpdateBarStatus();
 }
 
 SafeLineSettingParam & BaseGraphMainFrame::GetSafeLineSettingParam()

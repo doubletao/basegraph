@@ -3,6 +3,7 @@
 // 消息处理返回值定义
 enum EmMessageHandlerResult
 {
+	Msg_Handle_NULL			= 0x00000000,
 	Msg_Handle_Success		= 0x00000001,
 	Msg_Handle_Failed		= 0x00000002,
 	Msg_Handle_Continue		= 0x00000004,
@@ -22,8 +23,8 @@ public:
 	virtual ~ISceneMessageHandler() = 0;
 public:
 	//基本属性
-	virtual void SetObject(CString strObjID);
-	virtual CString GetObject();
+	virtual void SetObjectID(CString strObjID);
+	virtual CString GetObjectID();
 	//焦点
 	virtual void OnSetFocus(ISceneMessageHandler * pLastHandler = nullptr);
 	virtual void OnKillFocus(ISceneMessageHandler * pNextHandler = nullptr);

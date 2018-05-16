@@ -1,7 +1,10 @@
 #pragma once
+#include "MessageHandlerManager.h"
+
 class MessageHandlerFactory
 {
+private:
+	virtual ~MessageHandlerFactory() = 0;
 public:
-	MessageHandlerFactory();
-	~MessageHandlerFactory();
+	static ISceneMessageHandler * CreateMessageHandler(EmMessageHandlerType emHandlerType);
 };

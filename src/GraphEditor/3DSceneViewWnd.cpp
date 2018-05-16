@@ -3,6 +3,7 @@
 #include "GraphEditorCommonDef.h"
 #include "GraphEditor.h"
 #include "SceneRender\3DSpaceConvert.h"
+#include "MessageHandlerManager.h"
 
 IMPLEMENT_DYNCREATE(C3DSceneViewWnd, CWnd)
 
@@ -808,87 +809,131 @@ BOOL C3DSceneViewWnd::OnEraseBkgnd(CDC * pDC)
 
 void C3DSceneViewWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if (DealHandDragMsg(WM_MOUSEMOVE, nFlags, point))
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnMouseMove(this, nFlags, point) & Msg_Handle_Continue) != 0)
 	{
-		return;
+		if (DealHandDragMsg(WM_MOUSEMOVE, nFlags, point))
+		{
+			return;
+		}
+		return CWnd::OnLButtonDown(nFlags, point);
 	}
-	return CWnd::OnLButtonDown(nFlags, point);
 }
-
 
 BOOL C3DSceneViewWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	float fScale = GetZoomScale();
-	fScale += (float)zDelta / 2000;
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnMouseWheel(this, nFlags, zDelta, pt) & Msg_Handle_Continue) != 0)
+	{
+		float fScale = GetZoomScale();
+		fScale += (float)zDelta / 2000;
 
-	ScreenToClient(&pt);
-	point2f ptScene = WndToScene(pt);
+		ScreenToClient(&pt);
+		point2f ptScene = WndToScene(pt);
 
-	SetZoomScale(fScale, ptScene);
-	return CWnd::OnMouseWheel(nFlags, zDelta, pt);
+		SetZoomScale(fScale, ptScene);
+		return CWnd::OnMouseWheel(nFlags, zDelta, pt);
+	}
+	return TRUE;
 }
 
 void C3DSceneViewWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	CRect rtClient;
-	GetClientRect(rtClient);
-	float fScale = rtClient.Width() / (float)DataBase_GetSceneWidth();
-	fScale = min(fScale, rtClient.Height() / (float)DataBase_GetSceneHeight());
-	if (fabs(m_ViewInfo.m_fScale - fScale) < ABS_DOUBLE_0)
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnLButtonDblClk(this, nFlags, point) & Msg_Handle_Continue) != 0)
 	{
-		AdjustViewReal();
+		CRect rtClient;
+		GetClientRect(rtClient);
+		float fScale = rtClient.Width() / (float)DataBase_GetSceneWidth();
+		fScale = min(fScale, rtClient.Height() / (float)DataBase_GetSceneHeight());
+		if (fabs(m_ViewInfo.m_fScale - fScale) < ABS_DOUBLE_0)
+		{
+			AdjustViewReal();
+		}
+		else
+		{
+			AdjustViewFit();
+		}
+		return CWnd::OnLButtonDblClk(nFlags, point);
 	}
-	else
-	{
-		AdjustViewFit();
-	}
-	return CWnd::OnLButtonDblClk(nFlags, point);
 }
 
 void C3DSceneViewWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if (DealHandDragMsg(WM_LBUTTONDOWN, nFlags, point))
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnLButtonDown(this, nFlags, point) & Msg_Handle_Continue) != 0)
 	{
-		return;
+		if (DealHandDragMsg(WM_LBUTTONDOWN, nFlags, point))
+		{
+			return;
+		}
+		return CWnd::OnLButtonDown(nFlags, point);
 	}
-	return CWnd::OnLButtonDown(nFlags, point);
 }
 
 void C3DSceneViewWnd::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	if (DealHandDragMsg(WM_LBUTTONUP, nFlags, point))
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnLButtonUp(this, nFlags, point) & Msg_Handle_Continue) != 0)
 	{
-		return;
+		if (DealHandDragMsg(WM_LBUTTONUP, nFlags, point))
+		{
+			return;
+		}
+		return CWnd::OnLButtonDown(nFlags, point);
 	}
-	return CWnd::OnLButtonDown(nFlags, point);
 }
 
 void C3DSceneViewWnd::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	return CWnd::OnRButtonDown(nFlags, point);
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnRButtonDown(this, nFlags, point) & Msg_Handle_Continue) != 0)
+	{
+		return CWnd::OnRButtonDown(nFlags, point);
+	}
 }
 
 void C3DSceneViewWnd::OnRButtonUp(UINT nFlags, CPoint point)
 {
-	return CWnd::OnRButtonUp(nFlags, point);
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnRButtonUp(this, nFlags, point) & Msg_Handle_Continue) != 0)
+	{
+		return CWnd::OnRButtonUp(nFlags, point);
+	}
 }
 
 void C3DSceneViewWnd::OnRButtonDblClk(UINT nFlags, CPoint point)
 {
-	return CWnd::OnRButtonDblClk(nFlags, point);
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnRButtonDblClk(this, nFlags, point) & Msg_Handle_Continue) != 0)
+	{
+		return CWnd::OnRButtonDblClk(nFlags, point);
+	}
 }
 
 void C3DSceneViewWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	return CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnKeyDown(this, nChar, nRepCnt, nFlags) & Msg_Handle_Continue) != 0)
+	{
+		return CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+	}
 }
 
 void C3DSceneViewWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	return CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnKeyUp(this, nChar, nRepCnt, nFlags) & Msg_Handle_Continue) != 0)
+	{
+		return CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+	}
 }
 
 void C3DSceneViewWnd::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	return CWnd::OnChar(nChar, nRepCnt, nFlags);
+	//消息先进hander管理器，如果需要continue，才进窗口自己的处理逻辑
+	if ((MessageHandlerManager::Instance().OnChar(this, nChar, nRepCnt, nFlags) & Msg_Handle_Continue) != 0)
+	{
+		return CWnd::OnChar(nChar, nRepCnt, nFlags);
+	}
 }

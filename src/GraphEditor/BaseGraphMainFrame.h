@@ -80,6 +80,7 @@ protected:
 	afx_msg LRESULT OnUIElementSetCapture(WPARAM wParam = 0, LPARAM lParam = 0);
 protected:
 	void OnUpdateWholeLength();
+	void OnUpdateBarStatus();
 public:
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	void OnBtnCreateTitle();

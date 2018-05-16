@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "GraphEditorStatusManager.h"
-
+#include "MessageHandlerManager.h"
+#include "GraphEditorCommonDef.h"
 
 GraphEditorStatusManager::GraphEditorStatusManager()
-	: m_nCurrentObjectTool(0)
-	, m_nCurrentObjectEditor(0)
-	, m_nCurrentActionTool(0)
 {
 }
 
@@ -20,33 +18,33 @@ GraphEditorStatusManager & GraphEditorStatusManager::Instance()
 	return inst;
 }
 
-void GraphEditorStatusManager::SetCurrentObjectTool(int nCurrentObjectTool)
+int GraphEditorStatusManager::GetCurrentUIElementTool()
 {
-	m_nCurrentObjectTool = nCurrentObjectTool;
+	EmMessageHandlerType emHandlerType = MessageHandlerManager::Instance().GetTopHandlerType();
+	switch (emHandlerType)
+	{
+	case MessageHandlerType_NULL:
+		return -1;
+	case MessageHandlerType_Default:
+		return UIElementMsg_DefaultAction;
+	case MessageHandlerType_Scale:
+		return UIElementMsg_ZoomAction;
+	case MessageHandlerType_Rotate:
+		return UIElementMsg_RotateAction;
+	case MessageHandlerType_CreateTitle:
+		return UIElementMsg_CreateTitle;
+	case MessageHandlerType_CreateScroll:
+		return UIElementMsg_CreateScroll;
+	case MessageHandlerType_CreateImage:
+		return UIElementMsg_CreateImage;
+	case MessageHandlerType_EditTitle:
+		break;
+	case MessageHandlerType_EditScroll:
+		break;
+	case MessageHandlerType_EditImage:
+		break;
+	default:
+		break;
+	}
+	return -1;
 }
-
-int GraphEditorStatusManager::GetCurrentObjectTool()
-{
-	return m_nCurrentObjectTool;
-}
-
-void GraphEditorStatusManager::SetCurrentObjectEditor(int nCurrentObjectEditor)
-{
-	m_nCurrentObjectEditor = nCurrentObjectEditor;
-}
-
-int GraphEditorStatusManager::GetCurrentObjectEditor()
-{
-	return m_nCurrentObjectEditor;
-}
-
-void GraphEditorStatusManager::SetCurrentActionTool(int nCurrentActionTool)
-{
-	m_nCurrentActionTool = nCurrentActionTool;
-}
-
-int GraphEditorStatusManager::GetCurrentActionTool()
-{
-	return m_nCurrentActionTool;
-}
-
