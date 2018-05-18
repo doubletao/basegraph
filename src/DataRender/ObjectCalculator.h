@@ -87,7 +87,7 @@ public:
 	CString GetObjectID();
 	BaseGraph_DataBase::ITEM_FORMTYPE Get3DType()const;
 
-	virtual bool GetCtrlBound(OUT rectf & rtBoundf);//获取物件原始bound
+	virtual bool GetOriBound(OUT rectf & rtBoundf);//获取物件原始bound
 	virtual bool GetSceneBound(OUT rectf & rtBoundf);//获取物件原始bound
 	virtual bool GetCtrlPoint(OUT std::vector<pointf> & vecCtrlPoint);//获取物件原始bound
 	void Lock();

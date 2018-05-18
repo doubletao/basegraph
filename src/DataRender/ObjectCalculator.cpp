@@ -120,7 +120,7 @@ BaseGraph_DataBase::ITEM_FORMTYPE ObjectCalculator::Get3DType() const
 	return DataBase_Get3DType(m_strObjID);
 }
 
-bool ObjectCalculator::GetCtrlBound(OUT rectf & rtBoundf)
+bool ObjectCalculator::GetOriBound(OUT rectf & rtBoundf)
 {
 	int nWidth = GetWidth();
 	int nHeight = GetHeight();
@@ -137,7 +137,7 @@ bool ObjectCalculator::GetCtrlBound(OUT rectf & rtBoundf)
 
 bool ObjectCalculator::GetSceneBound(OUT rectf & rtBoundf)
 {
-	if (GetCtrlBound(rtBoundf))
+	if (GetOriBound(rtBoundf))
 	{
 		//取得物件旋转缩放位移属性，进而得出物件的scene bound
 		point2f ptLeftTop = { rtBoundf.left, rtBoundf.top };
@@ -162,7 +162,7 @@ bool ObjectCalculator::GetSceneBound(OUT rectf & rtBoundf)
 bool ObjectCalculator::GetCtrlPoint(OUT std::vector<pointf>& vecCtrlPoint)
 {
 	rectf rtBoundf;
-	if (GetCtrlBound(rtBoundf))
+	if (GetOriBound(rtBoundf))
 	{
 		float2 pt[4] = {
 			{ rtBoundf.left, -rtBoundf.top},

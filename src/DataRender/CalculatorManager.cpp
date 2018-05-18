@@ -266,12 +266,12 @@ int CalculatorManager::GetFrame()
 	return m_nFrame;
 }
 
-bool CalculatorManager::GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf)
+bool CalculatorManager::GetOriBound(IN CString strObjID, OUT rectf & rtBoundf)
 {
 	ObjectCalculator * pCalc = GetObjCalculator(strObjID);
 	if (pCalc)
 	{
-		return pCalc->GetCtrlBound(rtBoundf);
+		return pCalc->GetOriBound(rtBoundf);
 	}
 	return false;
 }

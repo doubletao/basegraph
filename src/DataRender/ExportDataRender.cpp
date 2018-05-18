@@ -141,9 +141,9 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale)
 	return true;
 }
 
-BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlBound(IN CString strObjID, OUT rectf & rtBoundf)
+BASEGRAPH_DATARENDER_API bool DataRender_GetOriBound(IN CString strObjID, OUT rectf & rtBoundf)
 {
-	return CalculatorManager::Instance().GetCtrlBound(strObjID, rtBoundf);
+	return CalculatorManager::Instance().GetOriBound(strObjID, rtBoundf);
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam)
