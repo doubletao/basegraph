@@ -296,7 +296,7 @@ bool CalculatorManager::GetCtrlPoint(IN CString strObjID, OUT std::vector<pointf
 	return false;
 }
 
-bool CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID)
+EmHittestRetType CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID, OPTIONAL EmCtrlPointIndex & emCtrlPoint)
 {
 	//遍历物件执行hittest点测试，如果strID不为空，则从strID的下一个开始执行遍历到strID的上一个结束
 	if (strID.IsEmpty())
@@ -309,7 +309,7 @@ bool CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID)
 				if (it->second->HitTest(ptHit))
 				{
 					strID = it->first;
-					return true;
+					return Hittest_Object;
 				}
 			}
 		}
@@ -325,7 +325,7 @@ bool CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID)
 			{
 				//如果没找到，则视为无指定查找
 				strID.Empty();
-				return HitTest(ptHit, strID);
+				return HitTest(ptHit, strID, emCtrlPoint);
 			}
 			else
 			{
@@ -339,7 +339,7 @@ bool CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID)
 							if (m_mapObjCalculator[*it]->HitTest(ptHit))
 							{
 								strID = *it;
-								return true;
+								return Hittest_Object;
 							}
 						}
 					}
@@ -354,7 +354,7 @@ bool CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID)
 							if (m_mapObjCalculator[*it]->HitTest(ptHit))
 							{
 								strID = *it;
-								return true;
+								return Hittest_Object;
 							}
 						}
 					}
@@ -362,7 +362,9 @@ bool CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID)
 			}
 		}
 	}
-	return false;
+	strID.Empty();
+	emCtrlPoint = CtrlPoint_NULL;
+	return Hittest_NULL;
 }
 
 bool CalculatorManager::BoxHitTest(IN rectf rtBox, OUT std::vector<CString>& vecStrObjID)

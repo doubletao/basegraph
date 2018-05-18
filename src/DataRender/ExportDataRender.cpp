@@ -182,9 +182,9 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlPoint(IN CString strObjID, OUT s
 	return CalculatorManager::Instance().GetCtrlPoint(strObjID, vecCtrlPoint);
 }
 
-BASEGRAPH_DATARENDER_API bool DataRender_HitTest(IN pointf ptHit, OPTIONAL CString & strID)
+BASEGRAPH_DATARENDER_API EmHittestRetType DataRender_HitTest(IN pointf ptHit, OPTIONAL CString & strID, OPTIONAL EmCtrlPointIndex & emCtrlPoint)
 {
-	return CalculatorManager::Instance().HitTest(ptHit, strID);
+	return CalculatorManager::Instance().HitTest(ptHit, strID, emCtrlPoint);
 }
 
 //框选，入选的条件是碰着就算

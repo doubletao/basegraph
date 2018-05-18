@@ -1,6 +1,26 @@
 #pragma once
 #include "DataRender\DrawTextDef.h"
 
+enum EmHittestRetType
+{
+	Hittest_NULL,			//什么都没点中
+	Hittest_Object,			//点中物件
+	Hittest_CtrlPoint,		//点中控制点
+};
+
+enum EmCtrlPointIndex
+{
+	CtrlPoint_NULL,
+	CtrlPoint_LeftTop,			//左上
+	CtrlPoint_MiddelTop,		//中上
+	CtrlPoint_RightTop,			//右上
+	CtrlPoint_MiddleRight,		//中右
+	CtrlPoint_RightBottom,		//右下
+	CtrlPoint_MiddleBottom,		//中下
+	CtrlPoint_LeftBottom,		//左下
+	CtrlPoint_MiddelLeft,		//中左
+};
+
 typedef struct tag_sy_render_submodel
 {
 	DWORD	vstart;

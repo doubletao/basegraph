@@ -74,11 +74,6 @@ void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	Refresh();
 }
 
-int UITLObjectArea::GetMsgDispatchID()
-{
-	return UIElementMsg_TimeLineObjectArea;
-}
-
 void UITLObjectArea::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
 {
 	switch (nMsgID)
@@ -215,6 +210,9 @@ bool UITLObjectArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HW
 
 		m_pRightArea = new UITLObjectRightArea;
 		m_pRightArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectRightArea, hParentWnd, this);
+
+		//注册消息中心
+		UIControl_RegistMsgDispatcher(this);
 
 		return true;
 	}

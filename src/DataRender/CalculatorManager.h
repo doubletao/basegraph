@@ -47,8 +47,7 @@ public:
 	bool GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件的场景bound
 	bool GetCtrlPoint(IN CString strObjID, OUT std::vector<pointf> & vecCtrlPoint);//获取物件原始bound
 
-																				   //hittest
-	bool HitTest(IN pointf ptHit, OPTIONAL CString & strID);//根据一次单击查找选中块(),strID为空则选中最上层，否则会查找指定点的重叠物件中指定块的下一个物件
+	EmHittestRetType HitTest(IN pointf ptHit, OPTIONAL CString & strID, OPTIONAL EmCtrlPointIndex & emCtrlPoint);//根据一次单击查找选中块(),strID为空则选中最上层，否则会查找指定点的重叠物件中指定块的下一个物件
 	bool BoxHitTest(IN rectf rtBox, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是碰着就算
 	bool BoxInterTest(IN rectf rtBox, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是框住了才算
 

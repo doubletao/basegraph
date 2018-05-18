@@ -1,4 +1,5 @@
 #pragma once
+#include "GraphEditorCommonDef.h"
 
 // 消息处理返回值定义
 enum EmMessageHandlerResult
@@ -29,14 +30,14 @@ public:
 	virtual void OnSetFocus(ISceneMessageHandler * pLastHandler = nullptr);
 	virtual void OnKillFocus(ISceneMessageHandler * pNextHandler = nullptr);
 	//鼠标
-	virtual EmMessageHandlerResult OnMouseMove(IN CWnd * pWnd, UINT nFlags, CPoint point);
-	virtual EmMessageHandlerResult OnMouseWheel(IN CWnd * pWnd, UINT nFlags, short zDelta, CPoint pt);
-	virtual EmMessageHandlerResult OnLButtonDown(IN CWnd * pWnd, UINT nFlags, CPoint point);
-	virtual EmMessageHandlerResult OnLButtonUp(IN CWnd * pWnd, UINT nFlags, CPoint point);
-	virtual EmMessageHandlerResult OnLButtonDblClk(IN CWnd * pWnd, UINT nFlags, CPoint point);
-	virtual EmMessageHandlerResult OnRButtonDown(IN CWnd * pWnd, UINT nFlags, CPoint point);
-	virtual EmMessageHandlerResult OnRButtonUp(IN CWnd * pWnd, UINT nFlags, CPoint point);
-	virtual EmMessageHandlerResult OnRButtonDblClk(IN CWnd * pWnd, UINT nFlags, CPoint point);
+	virtual EmMessageHandlerResult OnMouseMove(IN CWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnMouseWheel(IN CWnd * pWnd, UINT nFlags, short zDelta, pointf pt);
+	virtual EmMessageHandlerResult OnLButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnLButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnLButtonDblClk(IN CWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnRButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnRButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnRButtonDblClk(IN CWnd * pWnd, UINT nFlags, pointf point);
 	//键盘
 	virtual EmMessageHandlerResult OnKeyDown(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual EmMessageHandlerResult OnKeyUp(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);

@@ -701,6 +701,7 @@ void BaseGraphMainFrame::OnUpdateBarStatus()
 {
 	m_uiObjectBar.UpdateStatus();
 	m_uiActionBar.UpdateStatus();
+	OnNcPaint();
 }
 
 void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)

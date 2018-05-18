@@ -23,42 +23,42 @@ void ISceneMessageHandler::OnKillFocus(ISceneMessageHandler * pNextHandler)
 {
 }
 
-EmMessageHandlerResult ISceneMessageHandler::OnMouseMove(IN CWnd * pWnd, UINT nFlags, CPoint point)
+EmMessageHandlerResult ISceneMessageHandler::OnMouseMove(IN CWnd * pWnd, UINT nFlags, pointf point)
 {
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult ISceneMessageHandler::OnMouseWheel(IN CWnd * pWnd, UINT nFlags, short zDelta, CPoint pt)
+EmMessageHandlerResult ISceneMessageHandler::OnMouseWheel(IN CWnd * pWnd, UINT nFlags, short zDelta, pointf pt)
 {
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult ISceneMessageHandler::OnLButtonDown(IN CWnd * pWnd, UINT nFlags, CPoint point)
+EmMessageHandlerResult ISceneMessageHandler::OnLButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point)
 {
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult ISceneMessageHandler::OnLButtonUp(IN CWnd * pWnd, UINT nFlags, CPoint point)
+EmMessageHandlerResult ISceneMessageHandler::OnLButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point)
 {
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult ISceneMessageHandler::OnLButtonDblClk(IN CWnd * pWnd, UINT nFlags, CPoint point)
+EmMessageHandlerResult ISceneMessageHandler::OnLButtonDblClk(IN CWnd * pWnd, UINT nFlags, pointf point)
 {
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult ISceneMessageHandler::OnRButtonDown(IN CWnd * pWnd, UINT nFlags, CPoint point)
+EmMessageHandlerResult ISceneMessageHandler::OnRButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point)
 {
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult ISceneMessageHandler::OnRButtonUp(IN CWnd * pWnd, UINT nFlags, CPoint point)
+EmMessageHandlerResult ISceneMessageHandler::OnRButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point)
 {
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult ISceneMessageHandler::OnRButtonDblClk(IN CWnd * pWnd, UINT nFlags, CPoint point)
+EmMessageHandlerResult ISceneMessageHandler::OnRButtonDblClk(IN CWnd * pWnd, UINT nFlags, pointf point)
 {
 	return Msg_Handle_Continue;
 }
