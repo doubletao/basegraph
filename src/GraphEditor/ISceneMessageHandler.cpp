@@ -5,6 +5,14 @@ ISceneMessageHandler::~ISceneMessageHandler()
 {
 }
 
+void ISceneMessageHandler::ClearEditBuf(C3DSceneViewWnd * pWnd)
+{
+	int nEditBuffer = pWnd->GetViewBufInfo().GetEditMemBuffer();
+	//清空画布
+	DataRender_Clear2DBuf(nEditBuffer, 0);
+	UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);//通知刷新
+}
+
 void ISceneMessageHandler::SetObjectID(CString strObjID)
 {
 	m_strObjID = strObjID;

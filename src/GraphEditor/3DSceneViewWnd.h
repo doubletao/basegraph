@@ -49,7 +49,6 @@ protected:
 	void RenderTripleBuffer(int nDevice);//绘制三层buf，安全框、选中框，物件选中框，编辑内容
 	void RenderCtrlBuffer();//画安全框和选中框
 	void RenderUIBuffer();//画界面元素
-	void RenderEditBuffer();//画界面元素
 	BOOL UpdateBufferToHal(int hDevice, int hDesHal, RECT rtDirty, int n2DBufferID);
 	void DrawEditBackBuffer(int hDevice, const CRect& rtInValid, const CRect& rtValid, int nRTTex, int hTex, float fAlpha);
 
@@ -91,4 +90,6 @@ public:
 	void ResetScaledViewInfo(point2f ptFixedScene, point2f ptFixedWnd);
 	void ResetViewInfo(float fScale);
 	bool DealHandDragMsg(UINT nMsg, UINT nFlags, CPoint point);
+	C3DViewBufferInfo & GetViewBufInfo();
+	C3DViewInfo & GetViewInfo();
 };

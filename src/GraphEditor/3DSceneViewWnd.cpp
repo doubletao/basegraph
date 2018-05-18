@@ -418,6 +418,16 @@ bool C3DSceneViewWnd::DealHandDragMsg(UINT nMsg, UINT nFlags, CPoint point)
 	return false;
 }
 
+C3DViewBufferInfo & C3DSceneViewWnd::GetViewBufInfo()
+{
+	return m_BufferInfo;
+}
+
+C3DViewInfo & C3DSceneViewWnd::GetViewInfo()
+{
+	return m_ViewInfo;
+}
+
 void C3DSceneViewWnd::RecalcLayout()
 {
 }
@@ -486,7 +496,7 @@ void C3DSceneViewWnd::RenderTripleBuffer(int nDevice)
 
 	RenderCtrlBuffer();//画安全框和选中框
 	UpdateBufferToHal(nDevice, hCtrlHal, rtClient, m_BufferInfo.GetControlMemBuffer());
-	RenderEditBuffer();//画编辑元素
+	//编辑元素的绘制分散在各个消息处理工具里，这里仅更新
 	UpdateBufferToHal(nDevice, hEditHal, rtClient, m_BufferInfo.GetEditMemBuffer());
 	RenderUIBuffer();//画界面元素
 	UpdateBufferToHal(nDevice, hUIHal, rtClient, m_BufferInfo.GetUIMemBuffer());
@@ -611,7 +621,8 @@ void C3DSceneViewWnd::RenderCtrlBuffer()
 	std::vector<CString> vecSelObjID;
 	if (DataRender_GetSelectObj(vecSelObjID))
 	{
-		bufferDC.SetPenColor(ABGR(255, 255, 255, 0));
+		BufferDrawerSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetBufferDrawerSettingParam();
+		bufferDC.SetPenColor(stuDrawerParam.nColorSelectBound);
 		for (size_t i = 0; i < vecSelObjID.size(); i++)
 		{
 			CString strID = vecSelObjID[i];
@@ -639,10 +650,6 @@ void C3DSceneViewWnd::RenderCtrlBuffer()
 }
 
 void C3DSceneViewWnd::RenderUIBuffer()
-{
-}
-
-void C3DSceneViewWnd::RenderEditBuffer()
 {
 }
 

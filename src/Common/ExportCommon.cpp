@@ -11,7 +11,7 @@
 3)如果射线竖直，而P0的横坐标小于P1,P2的横坐标，则必然相交。
 4)再判断相交之前，先判断P是否在边(P1,P2)的上面，如果在，则直接得出结论：P再多边形内部。
 */
-BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN std::vector<pointf>& vecPolygon)
+BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN const std::vector<pointf>& vecPolygon)
 {
 	// 交点个数  
 	int nCross = 0;
@@ -36,6 +36,27 @@ BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN std::vecto
 	}
 	// 交点为偶数，点在多边形之外  
 	return (nCross % 2 == 1);
+}
+
+BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN rectf rtRect)
+{
+	auto PushPoint = [](std::vector<pointf> & vecPolygon, float fX, float fY)
+	{
+		pointf pt = { fX, fY };
+		vecPolygon.push_back(pt);
+	};
+	std::vector<pointf> vecPolygon;
+	PushPoint(vecPolygon, rtRect.left, rtRect.top);
+	PushPoint(vecPolygon, rtRect.right, rtRect.top);
+	PushPoint(vecPolygon, rtRect.right, rtRect.bottom);
+	PushPoint(vecPolygon, rtRect.left, rtRect.bottom);
+	return Common_IsPointInPolygon(ptHit, vecPolygon);
+}
+
+BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN float fX, IN float fY, IN const std::vector<pointf>& vecPolygon)
+{
+	pointf pt = { fX, fY };
+	return Common_IsPointInPolygon(pt, vecPolygon);
 }
 
 //叉积

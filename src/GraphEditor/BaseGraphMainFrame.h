@@ -35,6 +35,21 @@ struct SafeLineSettingParam
 	}
 };
 
+struct BufferDrawerSettingParam
+{
+	DWORD nColorSelectBound;//物件选中框颜色
+	DWORD nColorCtrlPoint;//控制点颜色
+	DWORD nSizeCtrlPoint;//控制点size
+	DWORD nColorBoxSelect;//框选框颜色
+	BufferDrawerSettingParam()
+	{
+		nColorSelectBound = ABGR(255, 125, 255, 125);
+		nColorCtrlPoint = ABGR(255, 255, 255, 0);
+		nSizeCtrlPoint = 10;
+		nColorBoxSelect = ABGR(255, 255, 255, 255);
+	}
+};
+
 class BaseGraphMainFrame
 	: public CSkinFrameWnd
 	, public IMsgDispatchObject
@@ -50,6 +65,7 @@ private:
 
 	UIElement * m_pCaptureElement;
 	SafeLineSettingParam m_stuSafeLineParam;
+	BufferDrawerSettingParam m_stuBufferDrawerSettingParam;
 
 	int m_nWholeFrame;
 public:
@@ -94,6 +110,7 @@ public:
 	void OnBtnRotateAction();
 	void OnBtnSystemSetting();
 	SafeLineSettingParam & GetSafeLineSettingParam();
+	BufferDrawerSettingParam & GetBufferDrawerSettingParam();
 	int GetWholeFrameLength();
 };
 

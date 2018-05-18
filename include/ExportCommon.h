@@ -48,5 +48,7 @@
 #include "Common\2DBufferDC.h"
 #include "Common\ThreadPool.h"
 
-BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN std::vector<pointf> & vecPolygon);
+BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN const std::vector<pointf> & vecPolygon);
+BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN rectf rtRect);
+BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN float fX, IN float fY, IN const std::vector<pointf> & vecPolygon);
 BASEGRAPH_COMMON_API bool Common_IsCrossLine(IN pointf ptLine11, IN pointf ptLine12, IN pointf ptLine21, IN pointf ptLine22);

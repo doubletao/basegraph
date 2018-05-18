@@ -23,6 +23,8 @@ protected:
 	CString m_strObjID;
 public:
 	virtual ~ISceneMessageHandler() = 0;
+protected:
+	void ClearEditBuf(C3DSceneViewWnd * pWnd);
 public:
 	//»ù±¾ÊôÐÔ
 	virtual void SetObjectID(CString strObjID);

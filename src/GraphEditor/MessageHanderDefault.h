@@ -16,12 +16,15 @@ protected:
 		HandleState_Rotate,//控制点旋转
 	};
 	EmCurrentHandleState m_emHandleState;
-	CPoint m_ptBegin;
+	pointf m_ptBegin;
 	CString m_strHitObjID;
 	EmCtrlPointIndex m_emHitCtrlPt;
 public:
 	MessageHanderDefault();
 	virtual ~MessageHanderDefault();
+protected:
+	void DrawSelectBox(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd);
+	void SelectObjectByBox(pointf ptBegin, pointf ptEnd, bool bPreSelect);//bPreSelect指示是否是预选中，预选中仅将选中变动消息通知回显窗，真正的选中才会将消息广播出去
 public:
 	virtual EmMessageHandlerResult OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
 	virtual EmMessageHandlerResult OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);

@@ -225,11 +225,35 @@ bool ObjectCalculator::BoxHitTest(IN rectf rtBox)
 		//先判定控制点
 		for (size_t i = 0; i < vecCtrlPoint.size(); i++)
 		{
-			if (SYRectf_PtInRect(&rtBox, vecCtrlPoint[i]))
+			if (Common_IsPointInPolygon(vecCtrlPoint[i], rtBox))
 			{
 				//只要有一个控制点在里边就视为选中
 				bRet = true;
 				break;
+			}
+		}
+		//如果选中框中任何一个点被包含在控制点内也视为选中
+		if (!bRet)
+		{
+			if (Common_IsPointInPolygon(rtBox.left, rtBox.top, vecCtrlPoint))
+			{
+				//只要有一个在里边就视为选中
+				bRet = true;
+			}
+			else if (Common_IsPointInPolygon(rtBox.right, rtBox.top, vecCtrlPoint))
+			{
+				//只要有一个在里边就视为选中
+				bRet = true;
+			}
+			else if (Common_IsPointInPolygon(rtBox.right, rtBox.bottom, vecCtrlPoint))
+			{
+				//只要有一个在里边就视为选中
+				bRet = true;
+			}
+			else if (Common_IsPointInPolygon(rtBox.left, rtBox.bottom, vecCtrlPoint))
+			{
+				//只要有一个在里边就视为选中
+				bRet = true;
 			}
 		}
 		//没有被包含则判定边相交情况
@@ -275,7 +299,7 @@ bool ObjectCalculator::BoxInterTest(IN rectf rtBox)
 		for (size_t i = 0; i < vecCtrlPoint.size(); i++)
 		{
 			//如果控制点都在矩形内，则就是框住了
-			if (!SYRectf_PtInRect(&rtBox, vecCtrlPoint[i]))
+			if (!Common_IsPointInPolygon(vecCtrlPoint[i], rtBox))
 			{
 				//有一个不在里边就算是外边
 				return false;

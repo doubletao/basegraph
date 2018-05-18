@@ -511,6 +511,9 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//注册消息中心
 	UIControl_RegistMsgDispatcher(this);
 
+	//设置默认工具
+	OnBtnDefaultAction();
+
 	return 0;
 }
 
@@ -791,6 +794,11 @@ void BaseGraphMainFrame::OnBtnSystemSetting()
 SafeLineSettingParam & BaseGraphMainFrame::GetSafeLineSettingParam()
 {
 	return m_stuSafeLineParam;
+}
+
+BufferDrawerSettingParam & BaseGraphMainFrame::GetBufferDrawerSettingParam()
+{
+	return m_stuBufferDrawerSettingParam;
 }
 
 int BaseGraphMainFrame::GetWholeFrameLength()
