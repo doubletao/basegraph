@@ -39,17 +39,17 @@ public:
 	EmMessageHandlerType GetTopHandlerType();//获取当前handler类型
 public:
 	//鼠标
-	virtual EmMessageHandlerResult OnMouseMove(IN CWnd * pWnd, UINT nFlags, pointf point);
-	virtual EmMessageHandlerResult OnMouseWheel(IN CWnd * pWnd, UINT nFlags, short zDelta, pointf pt);
-	virtual EmMessageHandlerResult OnLButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point);
-	virtual EmMessageHandlerResult OnLButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point);
-	virtual EmMessageHandlerResult OnLButtonDblClk(IN CWnd * pWnd, UINT nFlags, pointf point);
-	virtual EmMessageHandlerResult OnRButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point);
-	virtual EmMessageHandlerResult OnRButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point);
-	virtual EmMessageHandlerResult OnRButtonDblClk(IN CWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnMouseWheel(IN C3DSceneViewWnd * pWnd, UINT nFlags, short zDelta, pointf pt);
+	virtual EmMessageHandlerResult OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnLButtonDblClk(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnRButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnRButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnRButtonDblClk(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
 	//键盘
-	virtual EmMessageHandlerResult OnKeyDown(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
-	virtual EmMessageHandlerResult OnKeyUp(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
-	virtual EmMessageHandlerResult OnChar(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual EmMessageHandlerResult OnKeyDown(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual EmMessageHandlerResult OnKeyUp(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual EmMessageHandlerResult OnChar(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 

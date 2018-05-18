@@ -9,22 +9,21 @@ MessageHanderDefault::MessageHanderDefault()
 {
 }
 
-
 MessageHanderDefault::~MessageHanderDefault()
 {
 }
 
-EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (m_emHandleState == HandleState_ClickSelect)
 	{
 		//单击后move则变成box
-		//m_emHandleState = HandleState_BoxSelect;
+		m_emHandleState = HandleState_BoxSelect;
 	}
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult MessageHanderDefault::OnLButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHanderDefault::OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (pWnd)
 	{
@@ -57,7 +56,7 @@ EmMessageHandlerResult MessageHanderDefault::OnLButtonDown(IN CWnd * pWnd, UINT 
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult MessageHanderDefault::OnLButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHanderDefault::OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (pWnd)
 	{

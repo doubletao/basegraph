@@ -484,10 +484,12 @@ void C3DSceneViewWnd::RenderTripleBuffer(int nDevice)
 	CRect rtClient;
 	GetClientRect(rtClient);
 
-	RenderCtrlBuffer(nDevice);//画安全框和选中框
+	RenderCtrlBuffer();//画安全框和选中框
 	UpdateBufferToHal(nDevice, hCtrlHal, rtClient, m_BufferInfo.GetControlMemBuffer());
-	RenderUIBuffer(nDevice);//画界面元素
+	RenderEditBuffer();//画编辑元素
 	UpdateBufferToHal(nDevice, hEditHal, rtClient, m_BufferInfo.GetEditMemBuffer());
+	RenderUIBuffer();//画界面元素
+	UpdateBufferToHal(nDevice, hUIHal, rtClient, m_BufferInfo.GetUIMemBuffer());
 
 	RECT rtDst = rtClient;
 	RECT rtCtrlSrc = rtDst;
@@ -511,7 +513,7 @@ void C3DSceneViewWnd::RenderTripleBuffer(int nDevice)
 	return;
 }
 
-void C3DSceneViewWnd::RenderCtrlBuffer(int nDevice)
+void C3DSceneViewWnd::RenderCtrlBuffer()
 {
 	int nWidth = DataBase_GetSceneWidth();
 	int nHeight = DataBase_GetSceneHeight();
@@ -636,7 +638,11 @@ void C3DSceneViewWnd::RenderCtrlBuffer(int nDevice)
 	}
 }
 
-void C3DSceneViewWnd::RenderUIBuffer(int nDevice)
+void C3DSceneViewWnd::RenderUIBuffer()
+{
+}
+
+void C3DSceneViewWnd::RenderEditBuffer()
 {
 }
 

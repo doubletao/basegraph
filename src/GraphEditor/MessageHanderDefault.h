@@ -23,7 +23,7 @@ public:
 	MessageHanderDefault();
 	virtual ~MessageHanderDefault();
 public:
-	virtual EmMessageHandlerResult OnMouseMove(IN CWnd * pWnd, UINT nFlags, pointf point);
-	virtual EmMessageHandlerResult OnLButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point);
-	virtual EmMessageHandlerResult OnLButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
 };

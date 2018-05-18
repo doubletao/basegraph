@@ -47,8 +47,9 @@ protected:
 
 	void RenderVirtualZone(int nDevice, const CRect& rtClient);//绘制周边区域（屏幕外的黑边）
 	void RenderTripleBuffer(int nDevice);//绘制三层buf，安全框、选中框，物件选中框，编辑内容
-	void RenderCtrlBuffer(int nDevice);//画安全框和选中框
-	void RenderUIBuffer(int nDevice);//画界面元素
+	void RenderCtrlBuffer();//画安全框和选中框
+	void RenderUIBuffer();//画界面元素
+	void RenderEditBuffer();//画界面元素
 	BOOL UpdateBufferToHal(int hDevice, int hDesHal, RECT rtDirty, int n2DBufferID);
 	void DrawEditBackBuffer(int hDevice, const CRect& rtInValid, const CRect& rtValid, int nRTTex, int hTex, float fAlpha);
 

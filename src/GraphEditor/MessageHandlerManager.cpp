@@ -128,7 +128,7 @@ ISceneMessageHandler * MessageHandlerManager::GetTopHanderPointer()
 	return pMsgHandler;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnMouseMove(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerManager::OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -144,7 +144,7 @@ EmMessageHandlerResult MessageHandlerManager::OnMouseMove(IN CWnd * pWnd, UINT n
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnMouseWheel(IN CWnd * pWnd, UINT nFlags, short zDelta, pointf pt)
+EmMessageHandlerResult MessageHandlerManager::OnMouseWheel(IN C3DSceneViewWnd * pWnd, UINT nFlags, short zDelta, pointf pt)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -160,7 +160,7 @@ EmMessageHandlerResult MessageHandlerManager::OnMouseWheel(IN CWnd * pWnd, UINT 
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnLButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerManager::OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -176,7 +176,7 @@ EmMessageHandlerResult MessageHandlerManager::OnLButtonDown(IN CWnd * pWnd, UINT
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnLButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerManager::OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -192,7 +192,7 @@ EmMessageHandlerResult MessageHandlerManager::OnLButtonUp(IN CWnd * pWnd, UINT n
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnLButtonDblClk(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerManager::OnLButtonDblClk(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -208,7 +208,7 @@ EmMessageHandlerResult MessageHandlerManager::OnLButtonDblClk(IN CWnd * pWnd, UI
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnRButtonDown(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerManager::OnRButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -224,7 +224,7 @@ EmMessageHandlerResult MessageHandlerManager::OnRButtonDown(IN CWnd * pWnd, UINT
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnRButtonUp(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerManager::OnRButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -240,7 +240,7 @@ EmMessageHandlerResult MessageHandlerManager::OnRButtonUp(IN CWnd * pWnd, UINT n
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnRButtonDblClk(IN CWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerManager::OnRButtonDblClk(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -256,7 +256,7 @@ EmMessageHandlerResult MessageHandlerManager::OnRButtonDblClk(IN CWnd * pWnd, UI
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnKeyDown(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags)
+EmMessageHandlerResult MessageHandlerManager::OnKeyDown(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -272,7 +272,7 @@ EmMessageHandlerResult MessageHandlerManager::OnKeyDown(IN CWnd * pWnd, UINT nCh
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnKeyUp(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags)
+EmMessageHandlerResult MessageHandlerManager::OnKeyUp(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
@@ -288,7 +288,7 @@ EmMessageHandlerResult MessageHandlerManager::OnKeyUp(IN CWnd * pWnd, UINT nChar
 	return emRet;
 }
 
-EmMessageHandlerResult MessageHandlerManager::OnChar(IN CWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags)
+EmMessageHandlerResult MessageHandlerManager::OnChar(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
