@@ -74,6 +74,9 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, OUT s
 //属性设置
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam);
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);
+//物件移动动作
+BASEGRAPH_DATARENDER_API bool DataRender_OffsetObject(IN const std::vector<CString> & vecStrObjID, IN float fXOffset, IN float fYOffset, IN float fZOffset);
+BASEGRAPH_DATARENDER_API bool DataRender_OffsetSelObject(IN float fXOffset, IN float fYOffset, IN float fZOffset);
 //这里的scene bound相对场景坐标系(场景中心为原点，上为Y轴正向，右为X轴正向)
 BASEGRAPH_DATARENDER_API bool DataRender_GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件场景bound
 BASEGRAPH_DATARENDER_API bool DataRender_GetCtrlPoint(IN CString strObjID, OUT std::vector<pointf> & vecCtrlPoint);//获取物件场景控制点

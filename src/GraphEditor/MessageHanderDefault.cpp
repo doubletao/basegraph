@@ -85,6 +85,11 @@ EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN C3DSceneViewWnd * pW
 		DrawSelectBox(pWnd, m_ptBegin, point);
 		SelectObjectByBox(m_ptBegin, point, true);
 	}
+	else if (m_emHandleState == HandleState_Move)
+	{
+		float fXOffset = point.x - m_ptBegin.x;
+		float fYOffset = point.y - m_ptBegin.y;
+	}
 	return Msg_Handle_Continue;
 }
 
@@ -103,8 +108,22 @@ EmMessageHandlerResult MessageHanderDefault::OnLButtonDown(IN C3DSceneViewWnd * 
 		}
 		else if (emHitRet == Hittest_Object)
 		{
-			//点中了物件，则进入单击选中状态
-			m_emHandleState = HandleState_ClickSelect;
+			//点中了物件，则分情况处理，如果点中项之前已被选中，则进入移动逻辑，如果点中项之前未被选中，则进入单击逻辑
+			bool bSeled = false;
+			if (DataRender_IsItemSelected(m_strHitObjID, bSeled))
+			{
+				if (bSeled)
+				{
+					m_emHandleState = HandleState_Move;
+				}
+				else
+				{
+					m_emHandleState = HandleState_ClickSelect;
+				}
+			}
+			//物件有问题，清空
+			m_strHitObjID.Empty();
+			m_emHitCtrlPt = CtrlPoint_NULL;
 		}
 		else if (emHitRet == Hittest_NULL)
 		{

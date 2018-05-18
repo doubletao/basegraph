@@ -172,6 +172,40 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN co
 	return DataBase_SetItemProperty(strID, mapParam);
 }
 
+BASEGRAPH_DATARENDER_API bool DataRender_OffsetObject(IN const std::vector<CString>& vecStrObjID, IN float fXOffset, IN float fYOffset, IN float fZOffset)
+{
+	for (auto it : vecStrObjID)
+	{
+		//对每个物件取坐标，然后做相应的offset，再设置回去
+		Value stuParamX;
+		Value stuParamY;
+		Value stuParamZ;
+		if (DataRender_GetItemProperty(it, BaseGraph_DataBase::SpacePosition_X_Float, stuParamX)
+			&& DataRender_GetItemProperty(it, BaseGraph_DataBase::SpacePosition_Y_Float, stuParamY)
+			&& DataRender_GetItemProperty(it, BaseGraph_DataBase::SpacePosition_Z_Float, stuParamZ))
+		{
+			float fX = stuParamX.ToFloat();
+			float fY = stuParamY.ToFloat();
+			float fZ = stuParamZ.ToFloat();
+			stuParamX.SetValue(fX + fXOffset);
+			stuParamY.SetValue(fY + fYOffset);
+			stuParamZ.SetValue(fZ + fZOffset);
+			if (DataRender_SetItemProperty(it, BaseGraph_DataBase::SpacePosition_X_Float, stuParamX)
+				&& DataRender_SetItemProperty(it, BaseGraph_DataBase::SpacePosition_Y_Float, stuParamY)
+				&& DataRender_SetItemProperty(it, BaseGraph_DataBase::SpacePosition_Z_Float, stuParamZ))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_OffsetSelObject(IN float fXOffset, IN float fYOffset, IN float fZOffset)
+{
+	return false;
+}
+
 BASEGRAPH_DATARENDER_API bool DataRender_GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf)
 {
 	return CalculatorManager::Instance().GetSceneBound(strObjID, rtBoundf);
