@@ -77,9 +77,10 @@ EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN C3DSceneViewWnd * pW
 {
 	if (m_emHandleState == HandleState_ClickSelect)
 	{
+		EditorSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetEditorSettingParam();
 		//单击后move且相差大于最小物件size则变成box
-		if (fabs(point.x - m_ptBegin.x) > 10
-			&& fabs(point.y - m_ptBegin.y) > 10);
+		if ((fabs(point.x - m_ptBegin.x) > stuDrawerParam.nObjectMinSize)
+			&& (fabs(point.y - m_ptBegin.y) > stuDrawerParam.nObjectMinSize))
 		{
 			m_emHandleState = HandleState_BoxSelect;
 		}
