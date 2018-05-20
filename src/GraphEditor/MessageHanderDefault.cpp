@@ -24,7 +24,7 @@ void MessageHanderDefault::DrawSelectBox(C3DSceneViewWnd * pWnd, pointf ptBegin,
 		SceneToBuffer(&ptBegin, &ptBegin, nWidth / 2, nHeight / 2, 1.0f);
 		SceneToBuffer(&ptEnd, &ptEnd, nWidth / 2, nHeight / 2, 1.0f);
 		int nEditBuffer = pWnd->GetViewBufInfo().GetEditMemBuffer();
-		BufferDrawerSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetBufferDrawerSettingParam();
+		EditorSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetEditorSettingParam();
 		//准备好DC
 		CSYBufferDC bufferDC;
 		//清空画布
@@ -77,8 +77,12 @@ EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN C3DSceneViewWnd * pW
 {
 	if (m_emHandleState == HandleState_ClickSelect)
 	{
-		//单击后move则变成box
-		m_emHandleState = HandleState_BoxSelect;
+		//单击后move且相差大于最小物件size则变成box
+		if (fabs(point.x - m_ptBegin.x) > 10
+			&& fabs(point.y - m_ptBegin.y) > 10);
+		{
+			m_emHandleState = HandleState_BoxSelect;
+		}
 	}
 	else if (m_emHandleState == HandleState_BoxSelect)
 	{
@@ -89,6 +93,10 @@ EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN C3DSceneViewWnd * pW
 	{
 		float fXOffset = point.x - m_ptBegin.x;
 		float fYOffset = point.y - m_ptBegin.y;
+		float fZOffset = 0.0f;
+		DataRender_OffsetSelObject(fXOffset, fYOffset, fZOffset);
+		UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);//通知刷新
+		m_ptBegin = point;
 	}
 	return Msg_Handle_Continue;
 }
@@ -121,8 +129,11 @@ EmMessageHandlerResult MessageHanderDefault::OnLButtonDown(IN C3DSceneViewWnd * 
 					m_emHandleState = HandleState_ClickSelect;
 				}
 			}
-			//物件有问题，清空
-			m_strHitObjID.Empty();
+			else
+			{
+				//物件有问题，清空
+				m_strHitObjID.Empty();
+			}
 			m_emHitCtrlPt = CtrlPoint_NULL;
 		}
 		else if (emHitRet == Hittest_NULL)

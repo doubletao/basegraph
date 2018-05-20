@@ -25,6 +25,11 @@ protected:
 	HCURSOR m_hDefaultCur;
 	HCURSOR m_hHandDragCurOpen;//手松开图标
 	HCURSOR m_hHandDragCurClose;//手抓紧图标
+	HCURSOR m_hCurNWSE;
+	HCURSOR m_hCurNESW;
+	HCURSOR m_hCurWE;
+	HCURSOR m_hCurNS;
+	HCURSOR m_hCurALL;
 
 	ThreadPool m_ThreadPool;//物件自我渲染的线程池
 protected:
@@ -53,9 +58,6 @@ protected:
 	void DrawEditBackBuffer(int hDevice, const CRect& rtInValid, const CRect& rtValid, int nRTTex, int hTex, float fAlpha);
 
 	void HandDragView(CPoint pt);
-	void SetDefaultCursor();
-	void SetHandOpenCursor();
-	void SetHandCloseCursor();
 
 	afx_msg LRESULT OnSetRenderTask(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT AddOneRenderTask(WPARAM, LPARAM);
@@ -92,4 +94,9 @@ public:
 	bool DealHandDragMsg(UINT nMsg, UINT nFlags, CPoint point);
 	C3DViewBufferInfo & GetViewBufInfo();
 	C3DViewInfo & GetViewInfo();
+	void SetDefaultCursor();
+	void SetHandOpenCursor();
+	void SetHandCloseCursor();
+	void SetMoveCursor();
+	void SetScaleCursor(int nAngle);/*角度值为0-，45/，90|,135\*/
 };

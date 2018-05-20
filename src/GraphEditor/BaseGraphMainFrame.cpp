@@ -796,9 +796,9 @@ SafeLineSettingParam & BaseGraphMainFrame::GetSafeLineSettingParam()
 	return m_stuSafeLineParam;
 }
 
-BufferDrawerSettingParam & BaseGraphMainFrame::GetBufferDrawerSettingParam()
+EditorSettingParam & BaseGraphMainFrame::GetEditorSettingParam()
 {
-	return m_stuBufferDrawerSettingParam;
+	return m_stuEditorSettingParam;
 }
 
 int BaseGraphMainFrame::GetWholeFrameLength()

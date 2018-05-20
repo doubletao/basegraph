@@ -621,7 +621,7 @@ void C3DSceneViewWnd::RenderCtrlBuffer()
 	std::vector<CString> vecSelObjID;
 	if (DataRender_GetSelectObj(vecSelObjID))
 	{
-		BufferDrawerSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetBufferDrawerSettingParam();
+		EditorSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetEditorSettingParam();
 		bufferDC.SetPenColor(stuDrawerParam.nColorSelectBound);
 		for (size_t i = 0; i < vecSelObjID.size(); i++)
 		{
@@ -754,6 +754,14 @@ void C3DSceneViewWnd::SetHandCloseCursor()
 	SendMessage(WM_SETCURSOR);
 }
 
+void C3DSceneViewWnd::SetMoveCursor()
+{
+}
+
+void C3DSceneViewWnd::SetScaleCursor(int nAngle)
+{
+}
+
 void C3DSceneViewWnd::OnPaint()
 {
 	CPaintDC dc(this);
@@ -784,6 +792,17 @@ void C3DSceneViewWnd::OnDestroy()
 		CloseHandle(m_hExitPreDecoderEvent);
 	if (m_hSeekReadyEvent)
 		CloseHandle(m_hSeekReadyEvent);
+	if (m_hCurNWSE)
+		CloseHandle(m_hCurNWSE);
+	if (m_hCurNESW)
+		CloseHandle(m_hCurNESW);
+	if (m_hCurWE)
+		CloseHandle(m_hCurWE);
+	if (m_hCurNS)
+		CloseHandle(m_hCurNS);
+	if (m_hCurALL)
+		CloseHandle(m_hCurALL);
+
 	if (m_nSceneOutBackTex)
 	{
 		DX3DEngine_ReleaseTexture(DX3DEngine_GetMainDevice(), m_nSceneOutBackTex);

@@ -174,6 +174,7 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN co
 
 BASEGRAPH_DATARENDER_API bool DataRender_OffsetObject(IN const std::vector<CString>& vecStrObjID, IN float fXOffset, IN float fYOffset, IN float fZOffset)
 {
+	bool bRet = false;
 	for (auto it : vecStrObjID)
 	{
 		//对每个物件取坐标，然后做相应的offset，再设置回去
@@ -194,15 +195,20 @@ BASEGRAPH_DATARENDER_API bool DataRender_OffsetObject(IN const std::vector<CStri
 				&& DataRender_SetItemProperty(it, BaseGraph_DataBase::SpacePosition_Y_Float, stuParamY)
 				&& DataRender_SetItemProperty(it, BaseGraph_DataBase::SpacePosition_Z_Float, stuParamZ))
 			{
-				return true;
+				bRet = true;
 			}
 		}
 	}
-	return false;
+	return bRet;
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_OffsetSelObject(IN float fXOffset, IN float fYOffset, IN float fZOffset)
 {
+	std::vector<CString> vecSelObjID;
+	if (DataRender_GetSelectObj(vecSelObjID))
+	{
+		return DataRender_OffsetObject(vecSelObjID, fXOffset, fYOffset, fZOffset);
+	}
 	return false;
 }
 
