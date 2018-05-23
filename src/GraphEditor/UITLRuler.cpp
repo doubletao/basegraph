@@ -8,7 +8,6 @@ UITLRuler::UITLRuler()
 	, m_pScrollHor(nullptr)
 	, m_pScrollVer(nullptr)
 	, m_bMoving(false)
-	, m_ptStart()
 	, m_pTimeLine(nullptr)
 {
 }
@@ -50,13 +49,14 @@ void UITLRuler::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	}
 	SetCapture(m_hParentWnd);
 	m_bMoving = true;
-	m_ptStart.x = GET_X_LPARAM(lParam);
-	m_ptStart.y = GET_Y_LPARAM(lParam);
+	int nFrame = RulerPosToFrame(GET_X_LPARAM(lParam));
+	SetFrame(nFrame);
 }
 
 void UITLRuler::OnLButtonUp(WPARAM wParam, LPARAM lParam)
 {
 	ReleaseCapture();
+	m_bMoving = false;
 	if (!HitTest(lParam))
 	{
 		return;
@@ -67,11 +67,17 @@ void UITLRuler::OnLButtonUp(WPARAM wParam, LPARAM lParam)
 		strDebug.Format(_T("OnLButtonUp\n"));
 		OutputDebugString(strDebug);
 	}
-	m_bMoving = false;
+	int nFrame = RulerPosToFrame(GET_X_LPARAM(lParam));
+	SetFrame(nFrame);
 }
 
 void UITLRuler::OnMouseMove(WPARAM wParam, LPARAM lParam)
 {
+	if (m_bMoving)
+	{
+		int nFrame = RulerPosToFrame(GET_X_LPARAM(lParam));
+		SetFrame(nFrame);
+	}
 }
 
 void UITLRuler::OnMouseWheel(WPARAM wParam, LPARAM lParam)
@@ -88,6 +94,17 @@ void UITLRuler::OnMouseWheel(WPARAM wParam, LPARAM lParam)
 	{
 		m_pTimeLine->AdjustScrollZoom(nDelta / 10);
 	}
+}
+
+void UITLRuler::OnFrameChanged(int nFrame)
+{
+	Refresh();
+}
+
+void UITLRuler::SetFrame(int nFrame)
+{
+	DataRender_SetFrame(nFrame);
+	UIControl_BroadcastMsg(WM_MSG_FrameChanged, nFrame, m_nID, this);
 }
 
 UITLRuler & UITLRuler::Instance()
@@ -120,6 +137,8 @@ void UITLRuler::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hP
 	m_setMsgFilter.insert(WM_LBUTTONUP);
 	m_setMsgFilter.insert(WM_MOUSEMOVE);
 	m_setMsgFilter.insert(WM_MOUSEWHEEL);
+	//注册消息中心
+	UIControl_RegistMsgDispatcher(this);
 }
 
 void UITLRuler::DrawElement(CDC * pDC)
@@ -243,6 +262,21 @@ EmUIElementMsgRet UITLRuler::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	return UIElementMsgSuccContinue;
 }
 
+void UITLRuler::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	switch (nMsgID)
+	{
+	case WM_MSG_FrameChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			OnFrameChanged((int)wParam);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 int UITLRuler::GetDispFrameLength()
 {
 	if (CGraphEditorApp::GetBaseGraphFrameWnd())
@@ -276,4 +310,30 @@ float UITLRuler::RecalPixelPerFrame(int nWndWidth, int nFrameLength, float fScro
 		fScrollPercent = nWndWidth / m_fPixelPerFrame / nFrameLength;
 	}
 	return fScrollPercent;
+}
+
+int UITLRuler::RulerPosToFrame(int nX)
+{
+	int nLogicX = nX - GetRealX();
+	if (nLogicX < 0)
+	{
+		nLogicX = 0;
+	}
+	if (nLogicX > m_nLogicWidth)
+	{
+		nLogicX = m_nLogicWidth;
+	}
+	int nFrame = int(nLogicX / m_fPixelPerFrame);
+	return nFrame;
+}
+
+int UITLRuler::FrameToRulerPos(int nFrame)
+{
+	int nPos = 0;
+	if (fabs(m_fPixelPerFrame) > 0.001)
+	{
+		int nLogicX = int(nFrame * m_fPixelPerFrame);
+		nPos = nLogicX + GetRealX();
+	}
+	return nPos;
 }

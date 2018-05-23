@@ -16,17 +16,19 @@ protected:
 	//尺子上保存这两个滚动条的指针目的为方便全局操作滚动条
 	UIScrollBar * m_pScrollHor;
 	UIScrollBar * m_pScrollVer;
-	float m_fPixelPerFrame;//每帧对应的像素数（放大一百倍取整）
+	float m_fPixelPerFrame;//每帧对应的像素数
 	inline int LimitValue();
 	UITimeLine * m_pTimeLine;
 protected:
 	bool m_bMoving;
-	point2f m_ptStart;
 protected:
 	void OnLButtonDown(WPARAM wParam, LPARAM lParam);
 	void OnLButtonUp(WPARAM wParam, LPARAM lParam);
 	void OnMouseMove(WPARAM wParam, LPARAM lParam);
 	void OnMouseWheel(WPARAM wParam, LPARAM lParam);
+protected:
+	void OnFrameChanged(int nFrame);
+	void SetFrame(int nFrame);
 public:
 	static UITLRuler & Instance();
 	void SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrollVer);
@@ -35,8 +37,11 @@ public:
 	void Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UITimeLine * pParent);
 	virtual void DrawElement(CDC * pDC);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	int GetDispFrameLength();
 	float GetPixelPerFrame();
 	int SetPixelPerFrame(float fPixelPerFrame);
 	float RecalPixelPerFrame(int nWndWidth, int nFrameLength, float fScrollPercent);//重新计算比例尺需要知道当前窗口宽度和当前总帧长以及当前滚动条占整体的百分比
+	int RulerPosToFrame(int nX);
+	int FrameToRulerPos(int nFrame);
 };
