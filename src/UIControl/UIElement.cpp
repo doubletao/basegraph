@@ -225,7 +225,7 @@ bool UIElement::HitTest(int nX, int nY)
 
 bool UIElement::HitTest(LPARAM lParam)
 {
-	return HitTest(LOWORD(lParam), HIWORD(lParam));
+	return HitTest(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 }
 
 void UIElement::DrawElement(CDC * pDC)

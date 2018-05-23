@@ -18,6 +18,7 @@ public:
 	//向上追溯获取自己的实际窗口坐标
 	virtual int GetRealX();
 	virtual int GetRealY();
+	virtual inline CRect GetRect();
 	bool SetScrollInfo(int nLogicWidth, int nLogicHeight, bool bRefresh = true);
 	int GetScrollXPos();
 	int GetScrollYPos();

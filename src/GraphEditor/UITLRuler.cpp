@@ -7,6 +7,9 @@ UITLRuler::UITLRuler()
 	: m_fPixelPerFrame(1.0f)
 	, m_pScrollHor(nullptr)
 	, m_pScrollVer(nullptr)
+	, m_bMoving(false)
+	, m_ptStart()
+	, m_pTimeLine(nullptr)
 {
 }
 
@@ -33,6 +36,60 @@ inline int UITLRuler::LimitValue()
 	return 0;
 }
 
+void UITLRuler::OnLButtonDown(WPARAM wParam, LPARAM lParam)
+{
+	if (!HitTest(lParam))
+	{
+		return;
+	}
+	if (false)
+	{
+		CString strDebug;
+		strDebug.Format(_T("OnLButtonDown\n"));
+		OutputDebugString(strDebug);
+	}
+	SetCapture(m_hParentWnd);
+	m_bMoving = true;
+	m_ptStart.x = GET_X_LPARAM(lParam);
+	m_ptStart.y = GET_Y_LPARAM(lParam);
+}
+
+void UITLRuler::OnLButtonUp(WPARAM wParam, LPARAM lParam)
+{
+	ReleaseCapture();
+	if (!HitTest(lParam))
+	{
+		return;
+	}
+	if (false)
+	{
+		CString strDebug;
+		strDebug.Format(_T("OnLButtonUp\n"));
+		OutputDebugString(strDebug);
+	}
+	m_bMoving = false;
+}
+
+void UITLRuler::OnMouseMove(WPARAM wParam, LPARAM lParam)
+{
+}
+
+void UITLRuler::OnMouseWheel(WPARAM wParam, LPARAM lParam)
+{
+	//mousewheel拿到的坐标需要转化为客户区坐标再进一步判定
+	CPoint ptClient(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+	::ScreenToClient(m_hParentWnd, &ptClient);
+	if (!HitTest(ptClient))
+	{
+		return;
+	}
+	int nDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+	if (m_pTimeLine)
+	{
+		m_pTimeLine->AdjustScrollZoom(nDelta / 10);
+	}
+}
+
 UITLRuler & UITLRuler::Instance()
 {
 	static UITLRuler inst;
@@ -55,9 +112,14 @@ UIScrollBar * UITLRuler::GetVScrollBar()
 	return m_pScrollVer;
 }
 
-void UITLRuler::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent)
+void UITLRuler::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UITimeLine * pParent)
 {
 	Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
+	m_pTimeLine = pParent;
+	m_setMsgFilter.insert(WM_LBUTTONDOWN);
+	m_setMsgFilter.insert(WM_LBUTTONUP);
+	m_setMsgFilter.insert(WM_MOUSEMOVE);
+	m_setMsgFilter.insert(WM_MOUSEWHEEL);
 }
 
 void UITLRuler::DrawElement(CDC * pDC)
@@ -153,6 +215,32 @@ void UITLRuler::DrawElement(CDC * pDC)
 	}
 
 	pDC->SelectClipRgn(NULL);
+}
+
+EmUIElementMsgRet UITLRuler::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+{
+	if (m_setMsgFilter.count(nMsg) > 0)
+	{
+		switch (nMsg)
+		{
+		case WM_LBUTTONDOWN:
+			OnLButtonDown(wParam, lParam);
+			break;
+		case WM_LBUTTONUP:
+			OnLButtonUp(wParam, lParam);
+			break;
+		case WM_MOUSEMOVE:
+			OnMouseMove(wParam, lParam);
+			break;
+		case WM_MOUSEWHEEL:
+			OnMouseWheel(wParam, lParam);
+			break;
+		default:
+			break;
+		}
+		return UIElementMsgSuccBreak;
+	}
+	return UIElementMsgSuccContinue;
 }
 
 int UITLRuler::GetDispFrameLength()

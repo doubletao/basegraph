@@ -4,6 +4,7 @@
  * 设计尺子是一个静态类目的是方便各模块绘制时获取当前比例尺
  * 同时尺子会根据当前的比例尺绘制一个刻度在时间线中
 */
+#include "UITimeLine.h"
 
 class UITLRuler :
 	public UIScrollElement
@@ -17,13 +18,23 @@ protected:
 	UIScrollBar * m_pScrollVer;
 	float m_fPixelPerFrame;//每帧对应的像素数（放大一百倍取整）
 	inline int LimitValue();
+	UITimeLine * m_pTimeLine;
+protected:
+	bool m_bMoving;
+	point2f m_ptStart;
+protected:
+	void OnLButtonDown(WPARAM wParam, LPARAM lParam);
+	void OnLButtonUp(WPARAM wParam, LPARAM lParam);
+	void OnMouseMove(WPARAM wParam, LPARAM lParam);
+	void OnMouseWheel(WPARAM wParam, LPARAM lParam);
 public:
 	static UITLRuler & Instance();
 	void SetScrollBar(UIScrollBar * pScrollHor, UIScrollBar * pScrollVer);
 	UIScrollBar * GetHScrollBar();
 	UIScrollBar * GetVScrollBar();
-	void Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent);
+	void Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UITimeLine * pParent);
 	virtual void DrawElement(CDC * pDC);
+	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
 	int GetDispFrameLength();
 	float GetPixelPerFrame();
 	int SetPixelPerFrame(float fPixelPerFrame);

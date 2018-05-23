@@ -91,7 +91,7 @@ bool UIScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
 	rtThumbArea.OffsetRect(nRealX, nRealY);
 	CRect rtThumb = GetThumbRect();
 	rtThumb.OffsetRect(nRealX, nRealY);
-	CPoint ptMsg(LOWORD(lParam), HIWORD(lParam));
+	CPoint ptMsg(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 	switch (nMsg)
 	{
 	case WM_LBUTTONDOWN:

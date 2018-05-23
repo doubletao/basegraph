@@ -134,7 +134,7 @@ bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
 			SetPos(nLogicPos);
 		}
 	};
-	CPoint ptMsg(LOWORD(lParam), HIWORD(lParam));
+	CPoint ptMsg(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 	switch (nMsg)
 	{
 	case WM_LBUTTONDOWN:

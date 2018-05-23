@@ -56,7 +56,7 @@ void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	{
 		return;
 	}
-	if (true)
+	if (false)
 	{
 		CString strDebug;
 		strDebug.Format(_T("OnLButtonDown\n"));
@@ -118,7 +118,7 @@ ObjectAreaHittestType UITLObjectArea::ObjectHittest(int x, int y, CString * strI
 
 ObjectAreaHittestType UITLObjectArea::ObjectHittest(LPARAM lParam, CString * strID)
 {
-	return ObjectHittest(LOWORD(lParam), HIWORD(lParam), strID);
+	return ObjectHittest(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), strID);
 }
 
 std::map<CString, UITLObjectItem*>& UITLObjectArea::GetObjDrawerInfo()
@@ -246,7 +246,7 @@ bool UITLObjectArea::SetScrollInfo(bool bRefresh)
 		int nLogicWidth = int(m_pRightArea->GetWidth() / fXRatio);
 		m_pRightArea->SetScrollInfo(nLogicWidth, nLogicHeight, bRefresh);
 		nLogicWidth = int(UITLRuler::Instance().GetWidth() / fXRatio);
-		UITLRuler::Instance().SetScrollInfo(nLogicWidth, nLogicHeight, bRefresh);
+		UITLRuler::Instance().SetScrollInfo(nLogicWidth, UITLRuler::Instance().GetHeight(), bRefresh);
 	}
 	return true;
 }

@@ -36,6 +36,13 @@ int UIScrollElement::GetRealY()
 	return nRet - m_nScrollY;
 }
 
+inline CRect UIScrollElement::GetRect()
+{
+	int nX = GetRealX();
+	int nY = GetRealY();
+	return CRect(nX, nY, nX + m_nLogicWidth, nY + m_nLogicHeight);
+}
+
 UIScrollElement::UIScrollElement()
 	: m_nScrollX(0)
 	, m_nScrollY(0)
