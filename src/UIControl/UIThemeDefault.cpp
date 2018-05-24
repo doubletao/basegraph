@@ -125,6 +125,7 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Nor, RGB(255, 255, 255)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineObjectTrackText_Sel, RGB(0x0a, 0xa9, 0x01)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerLine, RGB(112, 112, 112)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLinePointerLine, RGB(50, 150, 250)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_TimeLineRulerText, RGB(255, 255, 255)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_N, RGB(0x70, 0x70, 0x70)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_F, RGB(0x60, 0x60, 0x60)));
@@ -321,6 +322,7 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_TimeLineObjectLeftAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectLeftAreaBk.png"));
 		LoadOneImg(ThemeImage_TimeLineObjectRightAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectRightAreaBk.png"));
 		LoadOneImg(ThemeImage_TimeLineRulerBk, strThemePath + _T("TimeLine\\TimeLineRulerBk.png"));
+		LoadOneImg(ThemeImage_TimeLinePointerHeader, strThemePath + _T("TimeLine\\TimeLinePointerHeader.png"));
 	} while (false);
 	return true;
 }

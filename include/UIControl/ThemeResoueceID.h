@@ -61,6 +61,7 @@ enum ThemeColorValueDef
 	ThemeColor_TimeLineObjectTrackText_Nor,
 	ThemeColor_TimeLineObjectTrackText_Sel,
 	ThemeColor_TimeLineRulerLine,
+	ThemeColor_TimeLinePointerLine,//时间线指针颜色
 	ThemeColor_TimeLineRulerText,
 	ThemeColor_ScrollThumbColor_N,
 	ThemeColor_ScrollThumbColor_F,
@@ -236,6 +237,7 @@ enum ThemeImageValueDef
 	ThemeImage_TimeLineObjectLeftAreaBk,
 	ThemeImage_TimeLineObjectRightAreaBk,
 	ThemeImage_TimeLineRulerBk,
+	ThemeImage_TimeLinePointerHeader,
 
 	ThemeImage_SceneLayoutBk,
 };
