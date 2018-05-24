@@ -146,6 +146,7 @@
     <ClCompile Include="UITLObjectRightArea.cpp" />
     <ClCompile Include="UITLRuler.cpp" />
     <ClCompile Include="UITLTimeCode.cpp" />
+    <ClCompile Include="UITLTimeLinePointer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ExportGraphEditor.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="UITLObjectRightArea.h" />
     <ClInclude Include="UITLRuler.h" />
     <ClInclude Include="UITLTimeCode.h" />
+    <ClInclude Include="UITLTimeLinePointer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GraphEditor.def" />

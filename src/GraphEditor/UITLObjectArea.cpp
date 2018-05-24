@@ -140,6 +140,18 @@ UITLObjectItem * UITLObjectArea::GetObjDrawerInfo(CString strID)
 
 bool UITLObjectArea::DeleteObjDrawerInfo(CString strID)
 {
+	std::map<CString, UITLObjectItem *>::iterator it = m_mapObjDrawerInfo.find(strID);
+	if (it != m_mapObjDrawerInfo.end())
+	{
+		UITLObjectItem *& pObjEle = it->second;
+		if (pObjEle)
+		{
+			delete pObjEle;
+			pObjEle = nullptr;
+		}
+		m_mapObjDrawerInfo.erase(it);
+		return true;
+	}
 	return false;
 }
 

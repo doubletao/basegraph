@@ -6,8 +6,10 @@
 enum ObjectAreaHittestType
 {
 	ObjectArea_HitNull,
-	ObjectArea_HitItem,
-	ObjectArea_HitBar,
+	ObjectArea_HitItem,//点中了物件
+	ObjectArea_HitBar,//点中了物件条
+	ObjectArea_HitTrack,//点中了关键帧轨道
+	ObjectArea_HitPointer,//点中了时间线指针
 };
 
 class UITLObjectArea :
@@ -48,5 +50,5 @@ public:
 	float GetCurrentPercent();
 	std::map<CString, UITLObjectItem *> & GetObjDrawerInfo();
 	UITLObjectItem * GetObjDrawerInfo(CString strID);
-	bool  DeleteObjDrawerInfo(CString strID);//TODO: 目前为空,需要实现
+	bool  DeleteObjDrawerInfo(CString strID);
 };

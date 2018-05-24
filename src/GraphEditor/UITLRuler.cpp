@@ -333,6 +333,14 @@ int UITLRuler::FrameToRulerPos(int nFrame)
 	if (fabs(m_fPixelPerFrame) > 0.001)
 	{
 		int nLogicX = int(nFrame * m_fPixelPerFrame);
+		if (nLogicX < 0)
+		{
+			nLogicX = 0;
+		}
+		if (nLogicX > m_nLogicWidth)
+		{
+			nLogicX = m_nLogicWidth;
+		}
 		nPos = nLogicX + GetRealX();
 	}
 	return nPos;

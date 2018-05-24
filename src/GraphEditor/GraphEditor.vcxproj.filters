@@ -129,6 +129,9 @@
     <ClCompile Include="MessageHanderDefault.cpp">
       <Filter>SceneMessageHandler\ActionTool</Filter>
     </ClCompile>
+    <ClCompile Include="UITLTimeLinePointer.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="MessageHanderDefault.h">
       <Filter>SceneMessageHandler\ActionTool</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLTimeLinePointer.h">
+      <Filter>TimeLine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

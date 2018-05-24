@@ -38,6 +38,7 @@ enum ThemeIntValueDef
 	ThemeInt_TimeLineRulerLongLineLength,//时间线刻度尺长线长
 	ThemeInt_TimeLineRulerGapMinPixel,//时间线刻度尺每刻度的最小像素数
 	ThemeInt_TimeLineRulerGapMaxPixel,//时间线刻度尺每刻度的最大像素数
+	ThemeInt_TimeLinePointerWidth,//时间线指针宽度
 	ThemeInt_SimpleTimeLineHorGap,
 	ThemeInt_SimpleTimeLineHeight,
 };

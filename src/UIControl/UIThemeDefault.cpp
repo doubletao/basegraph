@@ -113,6 +113,7 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerLongLineLength, 14));//时间线刻度尺长线长
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerGapMinPixel, 20));//时间线刻度尺每刻度的最小像素数
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineRulerGapMaxPixel, 35));//时间线刻度尺每刻度的最大像素数
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLinePointerWidth, 1));//时间线指针宽度
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SimpleTimeLineHorGap, 10));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_SimpleTimeLineHeight, 15));
 
