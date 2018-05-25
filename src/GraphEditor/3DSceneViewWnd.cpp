@@ -267,7 +267,7 @@ void C3DSceneViewWnd::UpdateAllItemToHal(std::vector<CString> vecObjID, float fS
 	}
 	int nTm = clock();
 	m_ThreadPool.WaitAll();
-	TRACE(_T("wait time = %d\n"), clock() - nTm);
+	//TRACE(_T("wait time = %d\n"), clock() - nTm);
 }
 
 DWORD C3DSceneViewWnd::UpdateItemToHalFunc(LPVOID pParam, HANDLE hEnd)

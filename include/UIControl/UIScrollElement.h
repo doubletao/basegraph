@@ -16,6 +16,7 @@ public:
 	virtual ~UIScrollElement();
 public:
 	//向上追溯获取自己的实际窗口坐标
+	virtual inline bool HitTest(CPoint point);
 	virtual int GetRealX();
 	virtual int GetRealY();
 	virtual inline CRect GetRect();

@@ -125,8 +125,7 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, IN co
 
 BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame()
 {
-	//‘›≤ª µœ÷
-	return 0;
+	return CalculatorManager::Instance().GetFrame();
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame)

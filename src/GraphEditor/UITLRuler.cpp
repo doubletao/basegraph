@@ -47,7 +47,7 @@ void UITLRuler::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 		strDebug.Format(_T("OnLButtonDown\n"));
 		OutputDebugString(strDebug);
 	}
-	SetCapture(m_hParentWnd);
+	SetElementCapture();
 	m_bMoving = true;
 	int nFrame = RulerPosToFrame(GET_X_LPARAM(lParam));
 	SetFrame(nFrame);
@@ -55,20 +55,19 @@ void UITLRuler::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 
 void UITLRuler::OnLButtonUp(WPARAM wParam, LPARAM lParam)
 {
-	ReleaseCapture();
+	if (m_bMoving)
+	{
+		if (false)
+		{
+			CString strDebug;
+			strDebug.Format(_T("OnLButtonUp\n"));
+			OutputDebugString(strDebug);
+		}
+		int nFrame = RulerPosToFrame(GET_X_LPARAM(lParam));
+		SetFrame(nFrame);
+	}
+	ReleaseElementCapture();
 	m_bMoving = false;
-	if (!HitTest(lParam))
-	{
-		return;
-	}
-	if (false)
-	{
-		CString strDebug;
-		strDebug.Format(_T("OnLButtonUp\n"));
-		OutputDebugString(strDebug);
-	}
-	int nFrame = RulerPosToFrame(GET_X_LPARAM(lParam));
-	SetFrame(nFrame);
 }
 
 void UITLRuler::OnMouseMove(WPARAM wParam, LPARAM lParam)
@@ -344,4 +343,9 @@ int UITLRuler::FrameToRulerPos(int nFrame)
 		nPos = nLogicX + GetRealX();
 	}
 	return nPos;
+}
+
+UITimeLine * UITLRuler::GetTimeLine()
+{
+	return m_pTimeLine;
 }

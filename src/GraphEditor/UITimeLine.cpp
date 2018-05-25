@@ -8,6 +8,7 @@ UITimeLine::UITimeLine()
 	, m_pScrollHor(nullptr)
 	, m_pObjectArea(nullptr)
 	, m_pScrollVer(nullptr)
+	, m_pLinePointer(nullptr)
 {
 }
 
@@ -54,6 +55,10 @@ void UITimeLine::InitializeObject()
 	m_pScrollVer->Create(0, 0, 10, 10, 10, 10, UIElementMsg_TimeLineVerScroll, false, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pScrollVer);
 
+	m_pLinePointer = new UITLTimeLinePointer;
+	m_pLinePointer->Create(UIElementMsg_TimeLinePointer, m_hParentWnd, this);
+	m_vecChildElement.push_back(m_pLinePointer);
+
 	//标尺在这里初始化，但不push到子物件集合
 	UITLRuler::Instance().Create(0, 0, 10, 10, UIElementMsg_TimeLineRuler, m_hParentWnd, this);
 	UITLRuler::Instance().SetScrollBar(m_pScrollHor, m_pScrollVer);
@@ -88,7 +93,14 @@ void UITimeLine::RearrangeChildPos()
 		m_pObjectArea->SetScrollInfo();
 	}
 
-	UITLRuler::Instance().MoveTo(nTimeCodeWidth + 1, nScrollHeight, m_nWidth - nTimeCodeWidth - nGap * 2, nTimeCodeHeight - nScrollHeight);
+	UITLRuler::Instance().MoveTo(nTimeCodeWidth + nGap, nScrollHeight, m_nWidth - nTimeCodeWidth - nGap * 2, nTimeCodeHeight - nScrollHeight);
+
+	if (m_pLinePointer)
+	{
+		int nTimeLinePointerWidth = UIControl_GetIntValue(ThemeInt_TimeLinePointerWidth);
+		int nPos = GetTimeLinePointerPos(DataRender_GetCurFrame());
+		m_pLinePointer->MoveTo(nPos, nScrollHeight, nTimeLinePointerWidth, m_nHeight - nScrollHeight - nGap * 2);
+	}
 }
 
 bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
@@ -148,6 +160,12 @@ void UITimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nID
 			OnFrameChanged((int)wParam);
 		}
 		break;
+	case WM_MSG_TimeLinePointerChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			SetFrame(DataRender_GetCurFrame());
+		}
+		break;
 	default:
 		break;
 	}
@@ -175,10 +193,51 @@ void UITimeLine::AdjustScrollZoom(int nDeta)
 
 void UITimeLine::SetFrame(int nFrame, float fFPS)
 {
+	if (true)
+	{
+		int nFrame = DataRender_GetCurFrame();
+		CString strDebug;
+		strDebug.Format(_T("DataRender_GetCurFrame() = %d\n"), nFrame);
+		OutputDebugString(strDebug);
+	}
+	if (true)
+	{
+		CString strDebug;
+		strDebug.Format(_T("SetFrame(int nFrame, float fFPS) = %d\n"), nFrame);
+		OutputDebugString(strDebug);
+	}
+	DataRender_SetFrame(nFrame);
 	if (m_pTimeCode)
 	{
 		m_pTimeCode->SetFrame(nFrame, fFPS);
 	}
+	if (m_pLinePointer)
+	{
+		int nScrollHeight = UIControl_GetIntValue(ThemeInt_TimeLineTimeScrollHeight);
+		int nPos = GetTimeLinePointerPos(nFrame);
+		m_pLinePointer->MoveTo(nPos, nScrollHeight);
+	}
+}
+
+int UITimeLine::GetTimeLinePointerPos(int nFrame)
+{
+	int nPos = UITLRuler::Instance().FrameToRulerPos(nFrame);
+	nPos = GetRealX() + nPos;
+	return nPos;
+}
+
+CRect UITimeLine::GetTimeLinePointerArea()
+{
+	//时间线的活动范围应该是标尺+物件区右侧
+	CRect rtTlPointer = {0};
+	rtTlPointer.left = UITLRuler::Instance().GetRealX() + UITLRuler::Instance().GetScrollXPos();
+	rtTlPointer.top = UITLRuler::Instance().GetRealY() + UITLRuler::Instance().GetScrollYPos();
+	if (m_pObjectArea)
+	{
+		rtTlPointer.right = UITLRuler::Instance().GetRealX() + UITLRuler::Instance().GetScrollXPos() + UITLRuler::Instance().GetWidth();
+		rtTlPointer.bottom = m_pObjectArea->GetRealY() + m_pObjectArea->GetScrollYPos() + m_pObjectArea->GetHeight();
+	}
+	return rtTlPointer;
 }
 
 bool UITimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd)
@@ -213,6 +272,10 @@ void UITimeLine::DrawElement(CDC * pDC)
 	if (m_pObjectArea)
 	{
 		m_pObjectArea->DrawElement(pDC);
+		if (m_pLinePointer)
+		{
+			m_pLinePointer->DrawElement(pDC);
+		}
 		if (m_pScrollVer)
 		{
 			if (false)
@@ -226,7 +289,6 @@ void UITimeLine::DrawElement(CDC * pDC)
 		}
 		m_pObjectArea->SetScrollInfo(false);
 	}
-
 }
 
 EmUIElementMsgRet UITimeLine::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)

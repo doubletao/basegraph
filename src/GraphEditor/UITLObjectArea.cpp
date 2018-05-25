@@ -260,6 +260,11 @@ bool UITLObjectArea::SetScrollInfo(bool bRefresh)
 		nLogicWidth = int(UITLRuler::Instance().GetWidth() / fXRatio);
 		UITLRuler::Instance().SetScrollInfo(nLogicWidth, UITLRuler::Instance().GetHeight(), bRefresh);
 	}
+	if (bRefresh)
+	{
+		//通知时间线刷新一下pointer的位置
+		UIControl_SendMsgTo(UIElementMsg_TimeLine, WM_MSG_TimeLinePointerChanged, 0, 0, 0);
+	}
 	return true;
 }
 
@@ -275,6 +280,8 @@ bool UITLObjectArea::SetScrollXPos(int nXPos, bool bRefresh)
 	}
 	//尺子的滚动也跟着物件区一起走
 	UITLRuler::Instance().SetScrollXPos(nXPos, bRefresh);
+	//通知时间线刷新一下pointer的位置
+	UIControl_SendMsgTo(UIElementMsg_TimeLine, WM_MSG_TimeLinePointerChanged, 0, 0, 0);
 	return true;
 }
 

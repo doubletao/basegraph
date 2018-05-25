@@ -48,6 +48,7 @@ enum UIElementMsgDef
 	UIElementMsg_TimeLineObjectLeftArea,
 	UIElementMsg_TimeLineObjectRightArea,
 	UIElementMsg_TimeLineRuler,
+	UIElementMsg_TimeLinePointer,
 
 	UIElementMsg_BaseGraphMainFrame,
 	UIElementMsg_MainViewWnd,
@@ -59,4 +60,5 @@ enum UIElementMsgDef
 	WM_MSG_WholeFrameLengthChanged,//wParam为帧数，lParam为引发change的控件ID
 	WM_MSG_OnSelectChanged,//选中项发生变化
 	WM_MSG_OnMessageHandlerChg,//当前消息处理器发生变化
+	WM_MSG_TimeLinePointerChanged,//通知时间线刷新一下pointer
 };

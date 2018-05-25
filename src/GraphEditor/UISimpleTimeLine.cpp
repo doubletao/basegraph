@@ -131,5 +131,6 @@ void UISimpleTimeLine::SetFrame(int nFrame)
 	{
 		m_pSimpTimeLine->SetPos(nFrame);
 	}
+	DataRender_SetFrame(nFrame);
 	UIControl_BroadcastMsg(WM_MSG_FrameChanged, nFrame, m_nID, this);
 }

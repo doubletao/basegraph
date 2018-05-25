@@ -8,6 +8,25 @@ void UIScrollElement::Initialize(int nX, int nY, int nWidth, int nHeight, int nI
 	m_nLogicHeight = nHeight;
 }
 
+inline bool UIScrollElement::HitTest(CPoint point)
+{
+	//滚动窗口的hittest应当以窗口实际大小为判定基础，而不是逻辑大小
+	int nX = GetRealX() + m_nScrollX;
+	int nY = GetRealY() + m_nScrollY;
+	CRect rtReal(nX, nY, nX + m_nWidth, nY + m_nHeight);
+	if (false)
+	{
+		BOOL bTest = rtReal.PtInRect(point);
+		int i = 0;
+		i++;
+	}
+	if (rtReal.PtInRect(point))
+	{
+		return true;
+	}
+	return false;
+}
+
 int UIScrollElement::GetRealX()
 {
 	int nRet = 0;

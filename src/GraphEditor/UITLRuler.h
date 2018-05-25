@@ -44,4 +44,5 @@ public:
 	float RecalPixelPerFrame(int nWndWidth, int nFrameLength, float fScrollPercent);//重新计算比例尺需要知道当前窗口宽度和当前总帧长以及当前滚动条占整体的百分比
 	int RulerPosToFrame(int nX);
 	int FrameToRulerPos(int nFrame);
+	UITimeLine * GetTimeLine();
 };

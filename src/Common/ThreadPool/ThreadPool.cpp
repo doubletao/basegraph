@@ -24,12 +24,12 @@ ThreadPool_Task::~ThreadPool_Task()
 {
 	if (m_hFinish)
 		CloseHandle(m_hFinish);
-	TRACE(_T("Task closed = %p\n"), m_hFinish);
+	//TRACE(_T("Task closed = %p\n"), m_hFinish);
 }
 
 void ThreadPool_Task::Run(HANDLE hEnd)
 {
-	TRACE(_T("Task begin = %p\n"), m_hFinish);
+	//TRACE(_T("Task begin = %p\n"), m_hFinish);
 	if (m_pFunc)
 	{
 		if (WaitForSingleObject(hEnd, 0) != WAIT_OBJECT_0)
@@ -39,7 +39,7 @@ void ThreadPool_Task::Run(HANDLE hEnd)
 	}
 	//注意，检测到退出指令导致实际上未执行的情况也被算做完成
 	::SetEvent(m_hFinish);
-	TRACE(_T("Task finish = %p\n"), m_hFinish);
+	//TRACE(_T("Task finish = %p\n"), m_hFinish);
 }
 
 HANDLE ThreadPool_Task::GetFinishHandle()
