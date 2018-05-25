@@ -128,9 +128,9 @@ BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame()
 	return CalculatorManager::Instance().GetFrame();
 }
 
-BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame)
+BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nField)
 {
-	CalculatorManager::Instance().SetFrame(nFrame);
+	CalculatorManager::Instance().SetFrame(nField);
 	return true;
 }
 
@@ -143,6 +143,11 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale)
 BASEGRAPH_DATARENDER_API bool DataRender_GetOriBound(IN CString strObjID, OUT rectf & rtBoundf)
 {
 	return CalculatorManager::Instance().GetOriBound(strObjID, rtBoundf);
+}
+
+BASEGRAPH_DATARENDER_API bool DataRender_IsItemNeedRender(IN CString strObjID)
+{
+	return CalculatorManager::Instance().IsItemNeedRender(strObjID);
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam)

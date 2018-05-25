@@ -42,7 +42,7 @@ public:
 	float GetPixelPerFrame();
 	int SetPixelPerFrame(float fPixelPerFrame);
 	float RecalPixelPerFrame(int nWndWidth, int nFrameLength, float fScrollPercent);//重新计算比例尺需要知道当前窗口宽度和当前总帧长以及当前滚动条占整体的百分比
-	int RulerPosToFrame(int nX);
-	int FrameToRulerPos(int nFrame);
 	UITimeLine * GetTimeLine();
+	int RulerPosToFrame(int nX);//注意，单位是场
+	int FrameToRulerPos(int nFrame);//注意，单位是场
 };

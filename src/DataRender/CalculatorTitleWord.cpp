@@ -52,8 +52,12 @@ bool CalculatorTitleword::PrepareObjBuffer(int nWidth, int nHeight)
 	return false;
 }
 
-bool CalculatorTitleword::NeedRenderBuffer()
+bool CalculatorTitleword::NeedUpdateBuffer()
 {
+	if (!IsItemNeedRender())
+	{
+		return false;
+	}
 	if (GetChgLevel() > ChgLevel_Matrix)
 	{
 		return true;
@@ -68,7 +72,7 @@ bool CalculatorTitleword::NeedRenderBuffer()
 
 bool CalculatorTitleword::UpdateRenderBuffer()
 {
-	if (NeedRenderBuffer())
+	if (NeedUpdateBuffer())
 	{
 		//取得基本属性
 		bool bContinue = GetCurrentParam();

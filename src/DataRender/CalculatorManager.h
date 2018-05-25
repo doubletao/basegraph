@@ -7,7 +7,7 @@ class CalculatorManager
 private:
 	std::map<CString, ObjectCalculator * > m_mapObjCalculator;//物件ID和物件计算器的键值对
 	float m_fScale;
-	int m_nFrame;
+	int m_nField;
 private:
 	CalculatorManager();
 	~CalculatorManager();
@@ -40,12 +40,14 @@ public:
 
 	float GetScale();
 	void SetScale(const float & fScale);
-	void SetFrame(const int & nFrame);
+	void SetFrame(const int & nField);
 	int GetFrame();
 
 	bool GetOriBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
 	bool GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件的场景bound
 	bool GetCtrlPoint(IN CString strObjID, OUT std::vector<pointf> & vecCtrlPoint);//获取物件原始bound
+
+	bool IsItemNeedRender(IN CString strObjID);
 
 	EmHittestRetType HitTest(IN pointf ptHit, OPTIONAL CString & strID, OPTIONAL EmCtrlPointIndex & emCtrlPoint);//根据一次单击查找选中块(),strID为空则选中最上层，否则会查找指定点的重叠物件中指定块的下一个物件
 	bool BoxHitTest(IN rectf rtBox, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是碰着就算

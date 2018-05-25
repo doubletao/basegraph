@@ -7,6 +7,8 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
+#include "CalculatorManager.h"
+
 void ObjectCalculator::SetRenderMatV(matrix4f* pMat)
 {
 	m_VGlobalMatrix = *pMat;
@@ -310,8 +312,12 @@ bool ObjectCalculator::BoxInterTest(IN rectf rtBox)
 	return false;
 }
 
-bool ObjectCalculator::NeedRenderBuffer()
+bool ObjectCalculator::NeedUpdateBuffer()
 {
+	if (!IsItemNeedRender())
+	{
+		return false;
+	}
 	//如果连bufer都还没有呢，必然需要render
 	ObjectBuffer * pBufer = DataBufferManager::Instance().Get2DBuf(GetObjBufferID());
 	if (!pBufer)
@@ -394,6 +400,28 @@ bool ObjectCalculator::PrepareItemHalBufer(int nDevice)
 	m_HalDes.m_rtBound.bottom = nHeight / 2;
 	DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex);
 	return true;
+}
+
+bool ObjectCalculator::IsItemNeedRender()
+{
+	bool bRet = true;
+	//如果当前帧号在action起始点之外，则不需要
+	BaseGraph_Common::Value valueBeginFrame;
+	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Obj_ActionBegin_Int, valueBeginFrame))
+	{
+		BaseGraph_Common::Value valueEndFrame;
+		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Obj_ActionEnd_Int, valueEndFrame))
+		{
+			int nCurFrame = CalculatorManager::Instance().GetFrame();
+			int nBeginFrame = valueBeginFrame.ToInt();
+			int nEndFrame = valueEndFrame.ToInt();
+			if (nCurFrame < nBeginFrame || nCurFrame > nEndFrame)
+			{
+				bRet = false;
+			}
+		}
+	}
+	return bRet;
 }
 
 SYItemRenderUnit * ObjectCalculator::GetRenderUnit(int nIndex, const SYArray & pUnitArray)

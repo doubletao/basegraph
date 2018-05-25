@@ -71,6 +71,7 @@ public:
 	virtual int GetHeight();
 	virtual bool UpdateRenderBuffer();
 	virtual bool PrepareItemHalBufer(int nDevice);
+	virtual bool IsItemNeedRender();
 	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const SYArray& pUnitArray);
 	static void GetSceneCenter(float3& pt);
 
@@ -98,7 +99,7 @@ public:
 	bool BoxHitTest(IN rectf rtBox);//框选，条件是碰着就算
 	bool BoxInterTest(IN rectf rtBox);//框选，条件是框住了才算
 protected:
-	virtual bool NeedRenderBuffer();
+	virtual bool NeedUpdateBuffer();
 	SYRenderUnitView * GetRenderUnitView(CString strUintID);
 	void AddRenderUnitView(CString strUnitID, SYRenderUnitView * pRenderUnitView);
 	void ClearRenderUnitView();

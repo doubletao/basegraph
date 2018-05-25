@@ -216,18 +216,21 @@ void C3DSceneViewWnd::RenderAllItemToTarget(std::vector<CString> vecObjID, int h
 		CString strObjID = vecObjID[i];
 		DXHalDef32 * pHalDef = nullptr;
 		matrix4f worldMat;
-		if (DataRender_Get2DRenderMatrix(strObjID, worldMat))
+		if (DataRender_IsItemNeedRender(strObjID))
 		{
-			if (DataRender_GetDesHalDef(strObjID, pHalDef))
+			if (DataRender_Get2DRenderMatrix(strObjID, worldMat))
 			{
-				if (pHalDef)
+				if (DataRender_GetDesHalDef(strObjID, pHalDef))
 				{
-					//äÖÈ¾buferµ½3D
-					DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
-					if (false)
+					if (pHalDef)
 					{
-						DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));
-						DX3DEngine_DumpRenderTarget(hDevice);
+						//äÖÈ¾buferµ½3D
+						DX3DEngine_RenderTexture(hDevice, pHalDef, &worldMat, &viewPort, FALSE, 1.0f);
+						if (false)
+						{
+							DX3DEngine_DumpTexture(hDevice, pHalDef->m_hTex, _T("e:\\test.bmp"));
+							DX3DEngine_DumpRenderTarget(hDevice);
+						}
 					}
 				}
 			}

@@ -9,7 +9,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 CalculatorManager::CalculatorManager()
 	: m_fScale(1.0f)
-	, m_nFrame(0)
+	, m_nField(0)
 {
 }
 
@@ -255,15 +255,15 @@ void CalculatorManager::SetScale(const float & fScale)
 	m_fScale = fScale;
 }
 
-void CalculatorManager::SetFrame(const int & nFrame)
+void CalculatorManager::SetFrame(const int & nField)
 {
-	m_nFrame = nFrame;
+	m_nField = nField;
 	Update2DRenderMatrix(m_fScale);
 }
 
 int CalculatorManager::GetFrame()
 {
-	return m_nFrame;
+	return m_nField;
 }
 
 bool CalculatorManager::GetOriBound(IN CString strObjID, OUT rectf & rtBoundf)
@@ -292,6 +292,16 @@ bool CalculatorManager::GetCtrlPoint(IN CString strObjID, OUT std::vector<pointf
 	if (pCalc)
 	{
 		return pCalc->GetCtrlPoint(vecCtrlPoint);
+	}
+	return false;
+}
+
+bool CalculatorManager::IsItemNeedRender(IN CString strObjID)
+{
+	ObjectCalculator * pCalc = GetObjCalculator(strObjID);
+	if (pCalc)
+	{
+		return pCalc->IsItemNeedRender();
 	}
 	return false;
 }

@@ -35,7 +35,7 @@ protected:
 protected:
 	bool PrepareObjBuffer(int nWidth, int nHeight);
 public:
-	virtual bool NeedRenderBuffer();
+	virtual bool NeedUpdateBuffer();
 	virtual bool UpdateRenderBuffer();
 
 	virtual bool GetCurrentParam();//获取模型参数(如果有关键帧动作，应该在这里边干完)

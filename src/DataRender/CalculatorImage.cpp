@@ -14,7 +14,7 @@ CalculatorImage::~CalculatorImage()
 
 bool CalculatorImage::UpdateRenderBuffer()
 {
-	if (NeedRenderBuffer())
+	if (NeedUpdateBuffer())
 	{
 		BaseGraph_Common::Value stuValue;
 		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_Path_Str, stuValue))

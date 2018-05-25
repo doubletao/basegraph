@@ -64,9 +64,10 @@ BASEGRAPH_DATARENDER_API bool DataRender_ClearAllSelect();
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, OPTIONAL bool & bSel);//bSel会返回之前的状态
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, IN const bool & bSel);
 BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame();//注意，单位是场
-BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nFrame);//注意，单位是场
+BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nField);//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale);
 BASEGRAPH_DATARENDER_API bool DataRender_GetOriBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound（不考虑旋转缩放等因素）
+BASEGRAPH_DATARENDER_API bool DataRender_IsItemNeedRender(IN CString strObjID);
 //datarender层面的属性获取与设置是考虑了关键帧之后，注意与database层区分
 //属性获取
 BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam);
