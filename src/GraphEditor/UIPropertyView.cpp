@@ -5,6 +5,7 @@ UIPropertyView::UIPropertyView()
 	: m_pPropertyTabBar(nullptr)
 	, m_pSpaceElement(nullptr)
 	, m_strObjID()
+	, m_emCurrentTab(UIElementMsg_PropertyTabColor)
 {
 }
 
@@ -121,4 +122,37 @@ EmUIElementMsgRet UIPropertyView::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wPa
 		return UIElementMsgSuccBreak;
 	}
 	return UIElementMsgSuccContinue; 
+}
+
+void UIPropertyView::OnBtnPropertyTabColor()
+{
+	m_emCurrentTab = UIElementMsg_PropertyTabColor;
+}
+
+void UIPropertyView::OnBtnPropertyTabObject()
+{
+	m_emCurrentTab = UIElementMsg_PropertyTabObject;
+}
+
+void UIPropertyView::OnBtnPropertyTabSpace()
+{
+	m_emCurrentTab = UIElementMsg_PropertyTabSpace;
+}
+
+void UIPropertyView::OnBtnPropertyTabFx()
+{
+	m_emCurrentTab = UIElementMsg_PropertyTabFx;
+}
+
+void UIPropertyView::OnBtnPropertyTabText()
+{
+	m_emCurrentTab = UIElementMsg_PropertyTabText;
+}
+
+void UIPropertyView::UpdateStatus()
+{
+	if (m_pPropertyTabBar)
+	{
+		m_pPropertyTabBar->CkeckOne(m_emCurrentTab);
+	}
 }

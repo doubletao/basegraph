@@ -9,6 +9,8 @@ protected:
 	UIPropertyTabBar * m_pPropertyTabBar;
 	UIPropertyViewElement * m_pSpaceElement;
 	CString m_strObjID;//当前属性窗绑定物件
+
+	UIElementMsgDef m_emCurrentTab;
 public:
 	UIPropertyView();
 	virtual ~UIPropertyView();
@@ -22,5 +24,11 @@ public:
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	void OnBtnPropertyTabColor();
+	void OnBtnPropertyTabObject();
+	void OnBtnPropertyTabSpace();
+	void OnBtnPropertyTabFx();
+	void OnBtnPropertyTabText();
+	void UpdateStatus();
 };
 

@@ -659,6 +659,21 @@ LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
 	case UIElementMsg_SystemSetting:
 		OnBtnSystemSetting();
 		break;
+	case UIElementMsg_PropertyTabColor:
+		OnBtnPropertyTabColor();
+		break;
+	case UIElementMsg_PropertyTabObject:
+		OnBtnPropertyTabObject();
+		break;
+	case UIElementMsg_PropertyTabSpace:
+		OnBtnPropertyTabSpace();
+		break;
+	case UIElementMsg_PropertyTabFx:
+		OnBtnPropertyTabFx();
+		break;
+	case UIElementMsg_PropertyTabText:
+		OnBtnPropertyTabText();
+		break;
 	default:
 		break;
 	}
@@ -704,6 +719,7 @@ void BaseGraphMainFrame::OnUpdateBarStatus()
 {
 	m_uiObjectBar.UpdateStatus();
 	m_uiActionBar.UpdateStatus();
+	m_uiPropertyView.UpdateStatus();
 	OnNcPaint();
 }
 
@@ -788,6 +804,36 @@ void BaseGraphMainFrame::OnBtnRotateAction()
 void BaseGraphMainFrame::OnBtnSystemSetting()
 {
 	OutputDebugString(_T("…Ë÷√\n"));
+	OnUpdateBarStatus();
+}
+
+void BaseGraphMainFrame::OnBtnPropertyTabColor()
+{
+	m_uiPropertyView.OnBtnPropertyTabColor();
+	OnUpdateBarStatus();
+}
+
+void BaseGraphMainFrame::OnBtnPropertyTabObject()
+{
+	m_uiPropertyView.OnBtnPropertyTabObject();
+	OnUpdateBarStatus();
+}
+
+void BaseGraphMainFrame::OnBtnPropertyTabSpace()
+{
+	m_uiPropertyView.OnBtnPropertyTabSpace();
+	OnUpdateBarStatus();
+}
+
+void BaseGraphMainFrame::OnBtnPropertyTabFx()
+{
+	m_uiPropertyView.OnBtnPropertyTabFx();
+	OnUpdateBarStatus();
+}
+
+void BaseGraphMainFrame::OnBtnPropertyTabText()
+{
+	m_uiPropertyView.OnBtnPropertyTabText();
 	OnUpdateBarStatus();
 }
 

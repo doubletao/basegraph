@@ -111,6 +111,11 @@ public:
 	void OnBtnZoomAction();
 	void OnBtnRotateAction();
 	void OnBtnSystemSetting();
+	void OnBtnPropertyTabColor();
+	void OnBtnPropertyTabObject();
+	void OnBtnPropertyTabSpace();
+	void OnBtnPropertyTabFx();
+	void OnBtnPropertyTabText();
 	SafeLineSettingParam & GetSafeLineSettingParam();
 	EditorSettingParam & GetEditorSettingParam();
 	int GetWholeFrameLength();
