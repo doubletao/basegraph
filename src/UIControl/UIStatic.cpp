@@ -36,17 +36,20 @@ void UIStatic::SetText(LPCTSTR strText, int nFont, COLORREF nFontColor)
 
 void UIStatic::DrawElement(CDC * pDC)
 {
-	if (!m_strText.IsEmpty())
+	if (m_bVisible)
 	{
-		int nX = GetRealX();
-		int nY = GetRealY();
-		LOGFONT lgfont = ThemeManager::Instance().GetFont(m_nFont);
-		CFont font;
-		font.CreateFontIndirect(&lgfont);
-		CFont * pOldFont = pDC->SelectObject(&font);
-		CRect rtText(nX, nY, nX + m_nWidth, nY + m_nHeight);
-		pDC->SetTextColor(m_nFontColor);
-		pDC->DrawText(m_strText, rtText, DT_SINGLELINE | DT_VCENTER | DT_RIGHT);
-		pDC->SelectObject(pOldFont);
+		if (!m_strText.IsEmpty())
+		{
+			int nX = GetRealX();
+			int nY = GetRealY();
+			LOGFONT lgfont = ThemeManager::Instance().GetFont(m_nFont);
+			CFont font;
+			font.CreateFontIndirect(&lgfont);
+			CFont * pOldFont = pDC->SelectObject(&font);
+			CRect rtText(nX, nY, nX + m_nWidth, nY + m_nHeight);
+			pDC->SetTextColor(m_nFontColor);
+			pDC->DrawText(m_strText, rtText, DT_SINGLELINE | DT_VCENTER | DT_RIGHT);
+			pDC->SelectObject(pOldFont);
+		}
 	}
 }

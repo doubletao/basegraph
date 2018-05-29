@@ -89,67 +89,70 @@ int UITLObjectLeftArea::DrawItemLeft(CDC * pDC, CString strID, int nCol, int nCu
 
 void UITLObjectLeftArea::DrawElement(CDC * pDC)
 {
-	int nXStart = GetRealX() + m_nScrollX;
-	int nYStart = GetRealY() + m_nScrollY;
-	CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
-
-	CRgn rgnDC;
-	rgnDC.CreateRectRgnIndirect(rcClient);
-	pDC->SelectClipRgn(&rgnDC);
-
-	int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
-	int nItemGap = UIControl_GetIntValue(ThemeInt_TimeLineItemActionGap);
-	int nItemTabWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeTabWidth);
-	LOGFONT logFont = UIControl_GetFont(ThemeFont_TimeLineObjectTrackText);
-	CImage * pLeftAreaBkImage = UIControl_GetImage(ThemeImage_TimeLineObjectLeftAreaBk);
-	int nGraListTextColorNor = UIControl_GetColor(ThemeColor_TimeLineObjectTrackText_Nor);
-	CImage * pLeftBkImageNor = UIControl_GetImage(ThemeImage_TimeLineLeftObjectBkGnd_Nor);
-	int nGraListTextColorSel = UIControl_GetColor(ThemeColor_TimeLineObjectTrackText_Sel);
-	CImage * pLeftBkImageSel = UIControl_GetImage(ThemeImage_TimeLineLeftObjectBkGnd_Sel);
-
-	//绘制背景
-	if (pLeftAreaBkImage)
+	if (m_bVisible)
 	{
-		CRect rtBk(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
-		pLeftAreaBkImage->AlphaBlend(pDC->GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pLeftAreaBkImage->GetWidth(), pLeftAreaBkImage->GetHeight());
-	}
+		int nXStart = GetRealX() + m_nScrollX;
+		int nYStart = GetRealY() + m_nScrollY;
+		CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
 
-	//绘制首条底色
-	if (pLeftBkImageSel)
-	{
-		CRect rtLeft(nXStart, nYStart, nXStart + m_nWidth, nYStart + nItemHeight);
-		rtLeft.OffsetRect(-m_nScrollX, -m_nScrollY);
-		pLeftBkImageSel->AlphaBlend(pDC->GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pLeftBkImageSel->GetWidth(), pLeftBkImageSel->GetHeight());
-	}
+		CRgn rgnDC;
+		rgnDC.CreateRectRgnIndirect(rcClient);
+		pDC->SelectClipRgn(&rgnDC);
 
-	//绘制文本
-	CString strText = _T("物件列表");
-	int nCol = 1;
-	CFont font;
-	font.CreateFontIndirect(&logFont);
-	CFont * pOldFont = pDC->SelectObject(&font);
-	pDC->SetTextColor(nGraListTextColorNor);
-	int nOldBkMode = pDC->SetBkMode(TRANSPARENT);
-	CSize sizText = pDC->GetTextExtent(strText);
-	CRect rtText(nXStart + nItemTabWidth * nCol, nYStart, nXStart + nItemTabWidth * nCol + sizText.cx, nYStart + nItemHeight);
-	rtText.OffsetRect(-m_nScrollX, -m_nScrollY);
-	pDC->DrawText(strText, rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
-	pDC->SelectObject(pOldFont);
-	pDC->SetBkMode(nOldBkMode);
+		int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
+		int nItemGap = UIControl_GetIntValue(ThemeInt_TimeLineItemActionGap);
+		int nItemTabWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeTabWidth);
+		LOGFONT logFont = UIControl_GetFont(ThemeFont_TimeLineObjectTrackText);
+		CImage * pLeftAreaBkImage = UIControl_GetImage(ThemeImage_TimeLineObjectLeftAreaBk);
+		int nGraListTextColorNor = UIControl_GetColor(ThemeColor_TimeLineObjectTrackText_Nor);
+		CImage * pLeftBkImageNor = UIControl_GetImage(ThemeImage_TimeLineLeftObjectBkGnd_Nor);
+		int nGraListTextColorSel = UIControl_GetColor(ThemeColor_TimeLineObjectTrackText_Sel);
+		CImage * pLeftBkImageSel = UIControl_GetImage(ThemeImage_TimeLineLeftObjectBkGnd_Sel);
 
-	//绘制物件
-	int nCurentY = nYStart + nItemHeight - m_nScrollY + nItemGap;
-	std::vector<CString> vecObjID;
-	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
-	{
-		for (size_t i = 0; i < vecObjID.size(); i++)
+		//绘制背景
+		if (pLeftAreaBkImage)
 		{
-			CString strID = vecObjID[i];
-			nCurentY = DrawItemLeft(pDC, strID, nCol + 1, nCurentY) + nItemGap;
+			CRect rtBk(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
+			pLeftAreaBkImage->AlphaBlend(pDC->GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pLeftAreaBkImage->GetWidth(), pLeftAreaBkImage->GetHeight());
 		}
-	}
 
-	pDC->SelectClipRgn(NULL);
+		//绘制首条底色
+		if (pLeftBkImageSel)
+		{
+			CRect rtLeft(nXStart, nYStart, nXStart + m_nWidth, nYStart + nItemHeight);
+			rtLeft.OffsetRect(-m_nScrollX, -m_nScrollY);
+			pLeftBkImageSel->AlphaBlend(pDC->GetSafeHdc(), rtLeft.left, rtLeft.top, rtLeft.Width(), rtLeft.Height(), 0, 0, pLeftBkImageSel->GetWidth(), pLeftBkImageSel->GetHeight());
+		}
+
+		//绘制文本
+		CString strText = _T("物件列表");
+		int nCol = 1;
+		CFont font;
+		font.CreateFontIndirect(&logFont);
+		CFont * pOldFont = pDC->SelectObject(&font);
+		pDC->SetTextColor(nGraListTextColorNor);
+		int nOldBkMode = pDC->SetBkMode(TRANSPARENT);
+		CSize sizText = pDC->GetTextExtent(strText);
+		CRect rtText(nXStart + nItemTabWidth * nCol, nYStart, nXStart + nItemTabWidth * nCol + sizText.cx, nYStart + nItemHeight);
+		rtText.OffsetRect(-m_nScrollX, -m_nScrollY);
+		pDC->DrawText(strText, rtText, DT_SINGLELINE | DT_LEFT | DT_VCENTER);
+		pDC->SelectObject(pOldFont);
+		pDC->SetBkMode(nOldBkMode);
+
+		//绘制物件
+		int nCurentY = nYStart + nItemHeight - m_nScrollY + nItemGap;
+		std::vector<CString> vecObjID;
+		if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
+		{
+			for (size_t i = 0; i < vecObjID.size(); i++)
+			{
+				CString strID = vecObjID[i];
+				nCurentY = DrawItemLeft(pDC, strID, nCol + 1, nCurentY) + nItemGap;
+			}
+		}
+
+		pDC->SelectClipRgn(NULL);
+	}
 }
 
 bool UITLObjectLeftArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UITLObjectArea * pParentElement)

@@ -380,14 +380,17 @@ float UIScrollBar::GetPagePercent()
 
 void UIScrollBar::DrawElement(CDC * pDC)
 {
-	COLORREF clScrollBkColor = ThemeManager::Instance().GetColor(ThemeColor_ScrollBkColor);
-	int nX = GetRealX();
-	int nY = GetRealY();
-	pDC->FillSolidRect(nX, nY, m_nWidth, m_nHeight, clScrollBkColor);
-
-	if (m_pBtnThumb)
+	if (m_bVisible)
 	{
-		m_pBtnThumb->DrawElement(pDC);
+		COLORREF clScrollBkColor = ThemeManager::Instance().GetColor(ThemeColor_ScrollBkColor);
+		int nX = GetRealX();
+		int nY = GetRealY();
+		pDC->FillSolidRect(nX, nY, m_nWidth, m_nHeight, clScrollBkColor);
+
+		if (m_pBtnThumb)
+		{
+			m_pBtnThumb->DrawElement(pDC);
+		}
 	}
 }
 
@@ -416,59 +419,62 @@ bool UIScrollThumbButton::Create(int nX, int nY, int nWidth, int nHeight, int nI
 
 void UIScrollThumbButton::DrawElement(CDC * pDC)
 {
-	COLORREF clThumb_N = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_N);
-	COLORREF clThumb_F = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_F);
-	COLORREF clThumb_D = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_D);
-	COLORREF clThumb_X = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_X);
-	//根据状态变换颜色
-	COLORREF clThumb = clThumb_N;
-	switch (m_nState)
+	if (m_bVisible)
 	{
-	case UIElement_BtnNormal:
-		clThumb = clThumb_N;
-		break;
-	case UIElement_BtnFloat:
-		clThumb = clThumb_F;
-		break;
-	case UIElement_BtnDown:
-		clThumb = clThumb_D;
-		break;
-	case UIElement_BtnXable:
-		clThumb = clThumb_X;
-		break;
-	default:
-		break;
-	}
+		COLORREF clThumb_N = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_N);
+		COLORREF clThumb_F = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_F);
+		COLORREF clThumb_D = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_D);
+		COLORREF clThumb_X = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_X);
+		//根据状态变换颜色
+		COLORREF clThumb = clThumb_N;
+		switch (m_nState)
+		{
+		case UIElement_BtnNormal:
+			clThumb = clThumb_N;
+			break;
+		case UIElement_BtnFloat:
+			clThumb = clThumb_F;
+			break;
+		case UIElement_BtnDown:
+			clThumb = clThumb_D;
+			break;
+		case UIElement_BtnXable:
+			clThumb = clThumb_X;
+			break;
+		default:
+			break;
+		}
 
-	//为了解决锯齿问题，两头的圆拿gdi+画
-	Gdiplus::Graphics graphics(pDC->GetSafeHdc());
-	graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
-	Gdiplus::SolidBrush brush(Gdiplus::Color(255, GetRValue(clThumb), GetGValue(clThumb), GetBValue(clThumb)));
+		//为了解决锯齿问题，两头的圆拿gdi+画
+		Gdiplus::Graphics graphics(pDC->GetSafeHdc());
+		graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		Gdiplus::SolidBrush brush(Gdiplus::Color(255, GetRValue(clThumb), GetGValue(clThumb), GetBValue(clThumb)));
 
-	//绘制方式是两个圆一个矩形
-	int nX = GetRealX();
-	int nY = GetRealY();
-	HBRUSH hBrush = CreateSolidBrush(clThumb);
-	HPEN hPen = CreatePen(PS_NULL, 0, 0);
-	HGDIOBJ hOldBrush = pDC->SelectObject(hBrush);
-	HGDIOBJ hOldPen = pDC->SelectObject(hPen);
-	//圆的直径根据横纵不同
-	if (m_bHorScroll)
-	{
-		int nR = m_nHeight;
-		graphics.FillEllipse(&brush, nX * 1.0f, nY - 0.5f, nR * 1.0f, nR * 1.0f);
-		graphics.FillEllipse(&brush, nX + m_nWidth - nR * 1.0f, nY - 0.5f, nR * 1.0f, nR * 1.0f);
-		pDC->FillSolidRect(nX + nR / 2, nY, m_nWidth - nR, m_nHeight, clThumb);
+		//绘制方式是两个圆一个矩形
+		int nX = GetRealX();
+		int nY = GetRealY();
+		HBRUSH hBrush = CreateSolidBrush(clThumb);
+		HPEN hPen = CreatePen(PS_NULL, 0, 0);
+		HGDIOBJ hOldBrush = pDC->SelectObject(hBrush);
+		HGDIOBJ hOldPen = pDC->SelectObject(hPen);
+		//圆的直径根据横纵不同
+		if (m_bHorScroll)
+		{
+			int nR = m_nHeight;
+			graphics.FillEllipse(&brush, nX * 1.0f, nY - 0.5f, nR * 1.0f, nR * 1.0f);
+			graphics.FillEllipse(&brush, nX + m_nWidth - nR * 1.0f, nY - 0.5f, nR * 1.0f, nR * 1.0f);
+			pDC->FillSolidRect(nX + nR / 2, nY, m_nWidth - nR, m_nHeight, clThumb);
+		}
+		else
+		{
+			int nR = m_nWidth;
+			graphics.FillEllipse(&brush, nX - 0.5f, nY * 1.0f, nR * 1.0f, nR * 1.0f);
+			graphics.FillEllipse(&brush, nX - 0.5f, nY + m_nHeight - nR * 1.0f, nR * 1.0f, nR * 1.0f);
+			pDC->FillSolidRect(nX, nY + nR / 2, m_nWidth, m_nHeight - nR, clThumb);
+		}
+		pDC->SelectObject(hOldPen);
+		pDC->SelectObject(hOldBrush);
+		DeleteObject(hBrush);
+		DeleteObject(hPen);
 	}
-	else
-	{
-		int nR = m_nWidth;
-		graphics.FillEllipse(&brush, nX - 0.5f, nY * 1.0f, nR * 1.0f, nR * 1.0f);
-		graphics.FillEllipse(&brush, nX - 0.5f, nY + m_nHeight - nR * 1.0f, nR * 1.0f, nR * 1.0f);
-		pDC->FillSolidRect(nX, nY + nR / 2, m_nWidth, m_nHeight - nR, clThumb);
-	}
-	pDC->SelectObject(hOldPen);
-	pDC->SelectObject(hOldBrush);
-	DeleteObject(hBrush);
-	DeleteObject(hPen);
 }

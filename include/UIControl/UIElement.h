@@ -84,6 +84,6 @@ public:
 	void InsertDrawer(int nState, UIDrawer * pDrawer);
 	void SetElementCapture();//需要父窗口实现对应的消息接口
 	void ReleaseElementCapture();//需要父窗口实现对应的消息接口
-	void SetVisible(bool bVisible);
+	void SetVisible(bool bVisible, bool bRefresh = true);
 };
 

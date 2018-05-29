@@ -3,7 +3,11 @@
 
 UIPropertyView::UIPropertyView()
 	: m_pPropertyTabBar(nullptr)
+	, m_pColorElement(nullptr)
+	, m_pObjectElement(nullptr)
 	, m_pSpaceElement(nullptr)
+	, m_pFxElement(nullptr)
+	, m_pTextElement(nullptr)
 	, m_strObjID()
 	, m_emCurrentTab(UIElementMsg_PropertyTabColor)
 {
@@ -38,9 +42,25 @@ void UIPropertyView::RearrangeChildPos()
 	{
 		m_pPropertyTabBar->MoveTo(0, 0, nPropertyTabBarWdith, m_nHeight);
 	}
+	if (m_pColorElement)
+	{
+		m_pColorElement->MoveTo(nPropertyTabBarWdith + nGap, 0, m_nWidth - nPropertyTabBarWdith - nGap, m_nHeight);
+	}
+	if (m_pObjectElement)
+	{
+		m_pObjectElement->MoveTo(nPropertyTabBarWdith + nGap, 0, m_nWidth - nPropertyTabBarWdith - nGap, m_nHeight);
+	}
 	if (m_pSpaceElement)
 	{
 		m_pSpaceElement->MoveTo(nPropertyTabBarWdith + nGap, 0, m_nWidth - nPropertyTabBarWdith - nGap, m_nHeight);
+	}
+	if (m_pFxElement)
+	{
+		m_pFxElement->MoveTo(nPropertyTabBarWdith + nGap, 0, m_nWidth - nPropertyTabBarWdith - nGap, m_nHeight);
+	}
+	if (m_pTextElement)
+	{
+		m_pTextElement->MoveTo(nPropertyTabBarWdith + nGap, 0, m_nWidth - nPropertyTabBarWdith - nGap, m_nHeight);
 	}
 }
 
@@ -50,9 +70,25 @@ void UIPropertyView::InitializeObject()
 	m_pPropertyTabBar->Create(0, 0, 100, 100, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pPropertyTabBar);
 
+	m_pColorElement = new UIPropertyViewElement;
+	m_pColorElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Color, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
+	m_vecChildElement.push_back(m_pColorElement);
+
+	m_pObjectElement = new UIPropertyViewElement;
+	m_pObjectElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Object, m_hParentWnd, this, BaseGraph_DataBase::TitlewordParam, BaseGraph_DataBase::TitlewordParam_End);
+	m_vecChildElement.push_back(m_pObjectElement);
+
 	m_pSpaceElement = new UIPropertyViewElement;
 	m_pSpaceElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Space, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);
 	m_vecChildElement.push_back(m_pSpaceElement);
+
+	m_pFxElement = new UIPropertyViewElement;
+	m_pFxElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Fx, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
+	m_vecChildElement.push_back(m_pFxElement);
+
+	m_pTextElement = new UIPropertyViewElement;
+	m_pTextElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Text, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);
+	m_vecChildElement.push_back(m_pTextElement);
 }
 
 CString UIPropertyView::GetCurSelObjID()
@@ -83,9 +119,25 @@ void UIPropertyView::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int
 			{
 				//对各个窗口取出其值
 				m_strObjID = strObjID;
+				if (m_pColorElement)
+				{
+					m_pColorElement->BindObject(m_strObjID);
+				}
+				if (m_pObjectElement)
+				{
+					m_pObjectElement->BindObject(m_strObjID);
+				}
 				if (m_pSpaceElement)
 				{
 					m_pSpaceElement->BindObject(m_strObjID);
+				}
+				if (m_pFxElement)
+				{
+					m_pFxElement->BindObject(m_strObjID);
+				}
+				if (m_pTextElement)
+				{
+					m_pTextElement->BindObject(m_strObjID);
 				}
 			}
 		}
@@ -127,26 +179,126 @@ EmUIElementMsgRet UIPropertyView::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wPa
 void UIPropertyView::OnBtnPropertyTabColor()
 {
 	m_emCurrentTab = UIElementMsg_PropertyTabColor;
+	if (m_pColorElement)
+	{
+		m_pColorElement->SetVisible(true);
+	}
+	if (m_pObjectElement)
+	{
+		m_pObjectElement->SetVisible(false);
+	}
+	if (m_pSpaceElement)
+	{
+		m_pSpaceElement->SetVisible(false);
+	}
+	if (m_pFxElement)
+	{
+		m_pFxElement->SetVisible(false);
+	}
+	if (m_pTextElement)
+	{
+		m_pTextElement->SetVisible(false);
+	}
 }
 
 void UIPropertyView::OnBtnPropertyTabObject()
 {
 	m_emCurrentTab = UIElementMsg_PropertyTabObject;
+	if (m_pColorElement)
+	{
+		m_pColorElement->SetVisible(false);
+	}
+	if (m_pObjectElement)
+	{
+		m_pObjectElement->SetVisible(true);
+	}
+	if (m_pSpaceElement)
+	{
+		m_pSpaceElement->SetVisible(false);
+	}
+	if (m_pFxElement)
+	{
+		m_pFxElement->SetVisible(false);
+	}
+	if (m_pTextElement)
+	{
+		m_pTextElement->SetVisible(false);
+	}
 }
 
 void UIPropertyView::OnBtnPropertyTabSpace()
 {
 	m_emCurrentTab = UIElementMsg_PropertyTabSpace;
+	if (m_pColorElement)
+	{
+		m_pColorElement->SetVisible(false);
+	}
+	if (m_pObjectElement)
+	{
+		m_pObjectElement->SetVisible(false);
+	}
+	if (m_pSpaceElement)
+	{
+		m_pSpaceElement->SetVisible(true);
+	}
+	if (m_pFxElement)
+	{
+		m_pFxElement->SetVisible(false);
+	}
+	if (m_pTextElement)
+	{
+		m_pTextElement->SetVisible(false);
+	}
 }
 
 void UIPropertyView::OnBtnPropertyTabFx()
 {
 	m_emCurrentTab = UIElementMsg_PropertyTabFx;
+	if (m_pColorElement)
+	{
+		m_pColorElement->SetVisible(false);
+	}
+	if (m_pObjectElement)
+	{
+		m_pObjectElement->SetVisible(false);
+	}
+	if (m_pSpaceElement)
+	{
+		m_pSpaceElement->SetVisible(false);
+	}
+	if (m_pFxElement)
+	{
+		m_pFxElement->SetVisible(true);
+	}
+	if (m_pTextElement)
+	{
+		m_pTextElement->SetVisible(false);
+	}
 }
 
 void UIPropertyView::OnBtnPropertyTabText()
 {
 	m_emCurrentTab = UIElementMsg_PropertyTabText;
+	if (m_pColorElement)
+	{
+		m_pColorElement->SetVisible(false);
+	}
+	if (m_pObjectElement)
+	{
+		m_pObjectElement->SetVisible(false);
+	}
+	if (m_pSpaceElement)
+	{
+		m_pSpaceElement->SetVisible(false);
+	}
+	if (m_pFxElement)
+	{
+		m_pFxElement->SetVisible(false);
+	}
+	if (m_pTextElement)
+	{
+		m_pTextElement->SetVisible(true);
+	}
 }
 
 void UIPropertyView::UpdateStatus()

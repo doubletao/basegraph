@@ -103,67 +103,70 @@ bool UITLObjectRightArea::Create(int nX, int nY, int nWidth, int nHeight, int nI
 
 void UITLObjectRightArea::DrawElement(CDC * pDC)
 {
-	if (m_pObjectArea)
+	if (m_bVisible)
 	{
-		m_pObjectArea->SetVScrollHeight(0, true);
-	}
-
-	int nXStart = GetRealX() + m_nScrollX;
-	int nYStart = GetRealY() + m_nScrollY;
-	CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
-
-	CRgn rgnDC;
-	rgnDC.CreateRectRgnIndirect(rcClient);
-	pDC->SelectClipRgn(&rgnDC);
-
-	int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
-	CImage * pRightAreaBkImage = UIControl_GetImage(ThemeImage_TimeLineObjectRightAreaBk);
-	CImage * pActionTotalBarImage = UIControl_GetImage(ThemeImage_TimeLineObjectActionBar_TotalLength);
-	CImage * pRightBkImageNor = UIControl_GetImage(ThemeImage_TimeLineRightObjectBkGnd_Nor);
-
-	//绘制背景
-	if (pRightAreaBkImage)
-	{
-		CRect rtBk(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
-		pRightAreaBkImage->AlphaBlend(pDC->GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pRightAreaBkImage->GetWidth(), pRightAreaBkImage->GetHeight());
-	}
-
-	//绘制一个总长度条底色
-	if (pRightBkImageNor)
-	{
-		CRect rtRight(nXStart, nYStart, nXStart + m_nWidth, nYStart + nItemHeight);
-		rtRight.OffsetRect(0, -m_nScrollY);//底色受Y的影响,不受X的影响
-		pRightBkImageNor->AlphaBlend(pDC->GetSafeHdc(), rtRight.left, rtRight.top, rtRight.Width(), rtRight.Height(), 0, 0, pRightBkImageNor->GetWidth(), pRightBkImageNor->GetHeight());
-	}
-
-	//绘制总长度条
-	if (pActionTotalBarImage)
-	{
-		//取出当前总长及当前比例尺，画总长条
-		int nBarLength = int(UITLRuler::Instance().GetDispFrameLength() * UITLRuler::Instance().GetPixelPerFrame());
-
-		CRect rtBar(nXStart, nYStart, nXStart + nBarLength, nYStart + nItemHeight);
-		rtBar.OffsetRect(-m_nScrollX, -m_nScrollY);
-		pActionTotalBarImage->AlphaBlend(pDC->GetSafeHdc(), rtBar.left, rtBar.top, rtBar.Width(), rtBar.Height(), 0, 0, pActionTotalBarImage->GetWidth(), pActionTotalBarImage->GetHeight());
-	}
-
-	//绘制物件
-	int nItemGap = UIControl_GetIntValue(ThemeInt_TimeLineItemActionGap);
-	int nCurentY = nYStart + nItemHeight - m_nScrollY + nItemGap;
-	std::vector<CString> vecObjID;
-	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
-	{
-		for (size_t i = 0; i < vecObjID.size(); i++)
+		if (m_pObjectArea)
 		{
-			CString strID = vecObjID[i];
-			nCurentY = DrawItemRight(pDC, strID, nCurentY) + nItemGap;
+			m_pObjectArea->SetVScrollHeight(0, true);
 		}
-	}
 
-	if (m_pObjectArea)
-	{
-		m_pObjectArea->SetVScrollHeight(nCurentY - nYStart + m_nScrollY + nItemHeight * 2);
-	}
+		int nXStart = GetRealX() + m_nScrollX;
+		int nYStart = GetRealY() + m_nScrollY;
+		CRect rcClient(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
 
-	pDC->SelectClipRgn(NULL);
+		CRgn rgnDC;
+		rgnDC.CreateRectRgnIndirect(rcClient);
+		pDC->SelectClipRgn(&rgnDC);
+
+		int nItemHeight = UIControl_GetIntValue(ThemeInt_TimeLineItemActionHeight);
+		CImage * pRightAreaBkImage = UIControl_GetImage(ThemeImage_TimeLineObjectRightAreaBk);
+		CImage * pActionTotalBarImage = UIControl_GetImage(ThemeImage_TimeLineObjectActionBar_TotalLength);
+		CImage * pRightBkImageNor = UIControl_GetImage(ThemeImage_TimeLineRightObjectBkGnd_Nor);
+
+		//绘制背景
+		if (pRightAreaBkImage)
+		{
+			CRect rtBk(nXStart, nYStart, nXStart + m_nWidth, nYStart + m_nHeight);
+			pRightAreaBkImage->AlphaBlend(pDC->GetSafeHdc(), rtBk.left, rtBk.top, rtBk.Width(), rtBk.Height(), 0, 0, pRightAreaBkImage->GetWidth(), pRightAreaBkImage->GetHeight());
+		}
+
+		//绘制一个总长度条底色
+		if (pRightBkImageNor)
+		{
+			CRect rtRight(nXStart, nYStart, nXStart + m_nWidth, nYStart + nItemHeight);
+			rtRight.OffsetRect(0, -m_nScrollY);//底色受Y的影响,不受X的影响
+			pRightBkImageNor->AlphaBlend(pDC->GetSafeHdc(), rtRight.left, rtRight.top, rtRight.Width(), rtRight.Height(), 0, 0, pRightBkImageNor->GetWidth(), pRightBkImageNor->GetHeight());
+		}
+
+		//绘制总长度条
+		if (pActionTotalBarImage)
+		{
+			//取出当前总长及当前比例尺，画总长条
+			int nBarLength = int(UITLRuler::Instance().GetDispFrameLength() * UITLRuler::Instance().GetPixelPerFrame());
+
+			CRect rtBar(nXStart, nYStart, nXStart + nBarLength, nYStart + nItemHeight);
+			rtBar.OffsetRect(-m_nScrollX, -m_nScrollY);
+			pActionTotalBarImage->AlphaBlend(pDC->GetSafeHdc(), rtBar.left, rtBar.top, rtBar.Width(), rtBar.Height(), 0, 0, pActionTotalBarImage->GetWidth(), pActionTotalBarImage->GetHeight());
+		}
+
+		//绘制物件
+		int nItemGap = UIControl_GetIntValue(ThemeInt_TimeLineItemActionGap);
+		int nCurentY = nYStart + nItemHeight - m_nScrollY + nItemGap;
+		std::vector<CString> vecObjID;
+		if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
+		{
+			for (size_t i = 0; i < vecObjID.size(); i++)
+			{
+				CString strID = vecObjID[i];
+				nCurentY = DrawItemRight(pDC, strID, nCurentY) + nItemGap;
+			}
+		}
+
+		if (m_pObjectArea)
+		{
+			m_pObjectArea->SetVScrollHeight(nCurentY - nYStart + m_nScrollY + nItemHeight * 2);
+		}
+
+		pDC->SelectClipRgn(NULL);
+	}
 }

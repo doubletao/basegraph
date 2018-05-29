@@ -7,10 +7,14 @@ class UIPropertyView :
 {
 protected:
 	UIPropertyTabBar * m_pPropertyTabBar;
-	UIPropertyViewElement * m_pSpaceElement;
 	CString m_strObjID;//当前属性窗绑定物件
-
 	UIElementMsgDef m_emCurrentTab;
+
+	UIPropertyViewElement * m_pColorElement;
+	UIPropertyViewElement * m_pObjectElement;
+	UIPropertyViewElement * m_pSpaceElement;
+	UIPropertyViewElement * m_pFxElement;
+	UIPropertyViewElement * m_pTextElement;
 public:
 	UIPropertyView();
 	virtual ~UIPropertyView();

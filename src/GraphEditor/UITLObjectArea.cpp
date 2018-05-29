@@ -175,16 +175,19 @@ void UITLObjectArea::RearrangeChildPos()
 
 void UITLObjectArea::DrawElement(CDC * pDC)
 {
-	if (m_pLeftArea)
+	if (m_bVisible)
 	{
-		m_pLeftArea->DrawElement(pDC);
+		if (m_pLeftArea)
+		{
+			m_pLeftArea->DrawElement(pDC);
+		}
+		if (m_pRightArea)
+		{
+			m_pRightArea->DrawElement(pDC);
+		}
+		//标尺的绘制逻辑放在这里调用
+		UITLRuler::Instance().DrawElement(pDC);
 	}
-	if (m_pRightArea)
-	{
-		m_pRightArea->DrawElement(pDC);
-	}
-	//标尺的绘制逻辑放在这里调用
-	UITLRuler::Instance().DrawElement(pDC);
 }
 
 EmUIElementMsgRet UITLObjectArea::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)

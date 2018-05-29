@@ -247,34 +247,37 @@ bool UITimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd
 
 void UITimeLine::DrawElement(CDC * pDC)
 {
-	//时间线的绘制自己来，因为物件区绘制后需要更新物件区高度后再绘制垂直滚动条，所以需要保证物件区绘制在垂直滚动条前边
-	if (m_pTimeCode)
+	if (m_bVisible)
 	{
-		m_pTimeCode->DrawElement(pDC);
-	}
-	if (m_pScrollHor)
-	{
-		m_pScrollHor->DrawElement(pDC);
-	}
-	if (m_pObjectArea)
-	{
-		m_pObjectArea->DrawElement(pDC);
-		if (m_pLinePointer)
+		//时间线的绘制自己来，因为物件区绘制后需要更新物件区高度后再绘制垂直滚动条，所以需要保证物件区绘制在垂直滚动条前边
+		if (m_pTimeCode)
 		{
-			m_pLinePointer->DrawElement(pDC);
+			m_pTimeCode->DrawElement(pDC);
 		}
-		if (m_pScrollVer)
+		if (m_pScrollHor)
 		{
-			if (false)
+			m_pScrollHor->DrawElement(pDC);
+		}
+		if (m_pObjectArea)
+		{
+			m_pObjectArea->DrawElement(pDC);
+			if (m_pLinePointer)
 			{
-				CString strDebug;
-				strDebug.Format(_T("m_pObjectArea->GetVScrollHeight()=%d\n"), m_pObjectArea->GetVScrollHeight());
-				OutputDebugString(strDebug);
+				m_pLinePointer->DrawElement(pDC);
 			}
-			m_pScrollVer->ResetScroll(m_pObjectArea->GetVScrollHeight(), m_pObjectArea->GetHeight(), -1, false);
-			m_pScrollVer->DrawElement(pDC);
+			if (m_pScrollVer)
+			{
+				if (false)
+				{
+					CString strDebug;
+					strDebug.Format(_T("m_pObjectArea->GetVScrollHeight()=%d\n"), m_pObjectArea->GetVScrollHeight());
+					OutputDebugString(strDebug);
+				}
+				m_pScrollVer->ResetScroll(m_pObjectArea->GetVScrollHeight(), m_pObjectArea->GetHeight(), -1, false);
+				m_pScrollVer->DrawElement(pDC);
+			}
+			m_pObjectArea->SetScrollInfo(false);
 		}
-		m_pObjectArea->SetScrollInfo(false);
 	}
 }
 

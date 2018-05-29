@@ -165,7 +165,7 @@ UIElement::UIElement()
 	, m_nState(0)
 	, m_strText(_T(""))
 	, m_bCreated(false)
-	, m_bVisible(false)
+	, m_bVisible(true)
 {
 }
 
@@ -230,40 +230,44 @@ bool UIElement::HitTest(LPARAM lParam)
 
 void UIElement::DrawElement(CDC * pDC)
 {
-	if (false)
+	
+	if (m_bVisible)
 	{
-		CString strDebug;
-		strDebug.Format(_T("m_nState:%d, m_nID:%d, m_strText:%s, GetRealX():%d, GetRealY():%d\n"), m_nState, m_nID, m_strText, GetRealX(), GetRealY());
-		OutputDebugString(strDebug);
-	}
-	//先画自己
-	if (m_mapDrawer.count(m_nState))
-	{
-		std::vector<UIDrawer *> & vecDrawer = m_mapDrawer[m_nState];
-		for (size_t i = 0; i < vecDrawer.size(); i++)
+		if (false)
 		{
-			UIDrawer * & pDrawer = vecDrawer[i];
-			if (pDrawer)
+			CString strDebug;
+			strDebug.Format(_T("m_nState:%d, m_nID:%d, m_strText:%s, GetRealX():%d, GetRealY():%d\n"), m_nState, m_nID, m_strText, GetRealX(), GetRealY());
+			OutputDebugString(strDebug);
+		}
+		//先画自己
+		if (m_mapDrawer.count(m_nState))
+		{
+			std::vector<UIDrawer *> & vecDrawer = m_mapDrawer[m_nState];
+			for (size_t i = 0; i < vecDrawer.size(); i++)
 			{
-				pDrawer->Draw(pDC, GetRealX(), GetRealY(), m_nWidth, m_nHeight, m_strText);
+				UIDrawer * & pDrawer = vecDrawer[i];
+				if (pDrawer)
+				{
+					pDrawer->Draw(pDC, GetRealX(), GetRealY(), m_nWidth, m_nHeight, m_strText);
+				}
 			}
 		}
-	}
-	//再画子
-	for (size_t i = 0; i < m_vecChildElement.size(); i++)
-	{
-		UIElement * & pChild = m_vecChildElement[i];
-		if (pChild)
+		//再画子
+		for (size_t i = 0; i < m_vecChildElement.size(); i++)
 		{
-			pChild->DrawElement(pDC);
+			UIElement * & pChild = m_vecChildElement[i];
+			if (pChild)
+			{
+				pChild->DrawElement(pDC);
+			}
 		}
-	}
-	if (false)
-	{
-		CImage img;
-		img.Attach((HBITMAP)pDC->GetCurrentBitmap()->GetSafeHandle());
-		img.Save(_T("F:\\test.bmp"));
-		img.Detach();
+		if (false)
+		{
+			CImage img;
+			img.Attach((HBITMAP)pDC->GetCurrentBitmap()->GetSafeHandle());
+			img.Save(_T("F:\\test.bmp"));
+			img.Detach();
+		}
 	}
 }
 
@@ -311,9 +315,13 @@ void UIElement::ReleaseElementCapture()
 	}
 }
 
-void UIElement::SetVisible(bool bVisible)
+void UIElement::SetVisible(bool bVisible, bool bRefresh/* = true*/)
 {
 	m_bVisible = bVisible;
+	if (bRefresh)
+	{
+		Refresh();
+	}
 }
 
 CRect UIElement::GetRect()

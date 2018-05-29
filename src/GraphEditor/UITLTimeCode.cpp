@@ -29,20 +29,23 @@ void UITLTimeCode::SetFrame(int nFrame, float fFPS/* = 25.0*/)
 
 void UITLTimeCode::DrawElement(CDC * pDC)
 {
-	CImage * pImgBk = UIControl_GetImage(ThemeImage_TimeLineTimeCodeBk);
-	LOGFONT lgFont = UIControl_GetFont(ThemeFont_TimeLineTimeCode);
-	COLORREF nFontColor = UIControl_GetColor(ThemeColor_TimeLineTimeCodeText);
-	int nTimeCodeGap = UIControl_GetIntValue(ThemeInt_TimeLineTimeCodeLeftGap);
-	int nX = GetRealX();
-	int nY = GetRealY();
+	if (m_bVisible)
+	{
+		CImage * pImgBk = UIControl_GetImage(ThemeImage_TimeLineTimeCodeBk);
+		LOGFONT lgFont = UIControl_GetFont(ThemeFont_TimeLineTimeCode);
+		COLORREF nFontColor = UIControl_GetColor(ThemeColor_TimeLineTimeCodeText);
+		int nTimeCodeGap = UIControl_GetIntValue(ThemeInt_TimeLineTimeCodeLeftGap);
+		int nX = GetRealX();
+		int nY = GetRealY();
 
-	pImgBk->AlphaBlend(pDC->GetSafeHdc(), nX, nY, m_nWidth, m_nHeight, 0, 0, pImgBk->GetWidth(), pImgBk->GetHeight());
+		pImgBk->AlphaBlend(pDC->GetSafeHdc(), nX, nY, m_nWidth, m_nHeight, 0, 0, pImgBk->GetWidth(), pImgBk->GetHeight());
 
-	CFont font;
-	font.CreateFontIndirect(&lgFont);
-	CFont * pOldFont = pDC->SelectObject(&font);
-	CRect rtText(nX + nTimeCodeGap, nY, nX + m_nWidth, nY + m_nHeight);
-	pDC->SetTextColor(nFontColor);
-	pDC->DrawText(m_strText, rtText, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
-	pDC->SelectObject(pOldFont);
+		CFont font;
+		font.CreateFontIndirect(&lgFont);
+		CFont * pOldFont = pDC->SelectObject(&font);
+		CRect rtText(nX + nTimeCodeGap, nY, nX + m_nWidth, nY + m_nHeight);
+		pDC->SetTextColor(nFontColor);
+		pDC->DrawText(m_strText, rtText, DT_SINGLELINE | DT_VCENTER | DT_LEFT);
+		pDC->SelectObject(pOldFont);
+	}
 }
