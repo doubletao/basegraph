@@ -629,24 +629,28 @@ void C3DSceneViewWnd::RenderCtrlBuffer()
 		for (size_t i = 0; i < vecSelObjID.size(); i++)
 		{
 			CString strID = vecSelObjID[i];
-			std::vector<pointf> vecCtrlPoint;
-			DataRender_GetCtrlPoint(strID, vecCtrlPoint);
-			//取出来的矩形是以场景中心为坐标原点的，需要转化为左上坐标系
-			for (int i = 0; i < vecCtrlPoint.size(); i++)
+			//不可见的物件不绘制选中框
+			if (DataRender_IsItemNeedRender(strID))
 			{
-				SceneToBuffer(&vecCtrlPoint[i], &vecCtrlPoint[i], nWidth / 2, nHeight / 2, 1.0f);
-				if (i == 0)
+				std::vector<pointf> vecCtrlPoint;
+				DataRender_GetCtrlPoint(strID, vecCtrlPoint);
+				//取出来的矩形是以场景中心为坐标原点的，需要转化为左上坐标系
+				for (int i = 0; i < vecCtrlPoint.size(); i++)
 				{
-					bufferDC.MoveTo(vecCtrlPoint[i].x, vecCtrlPoint[i].y);
+					SceneToBuffer(&vecCtrlPoint[i], &vecCtrlPoint[i], nWidth / 2, nHeight / 2, 1.0f);
+					if (i == 0)
+					{
+						bufferDC.MoveTo(vecCtrlPoint[i].x, vecCtrlPoint[i].y);
+					}
+					else
+					{
+						bufferDC.LineTo(vecCtrlPoint[i].x, vecCtrlPoint[i].y);
+					}
 				}
-				else
+				if (vecCtrlPoint.size() > 0)
 				{
-					bufferDC.LineTo(vecCtrlPoint[i].x, vecCtrlPoint[i].y);
+					bufferDC.LineTo(vecCtrlPoint[0].x, vecCtrlPoint[0].y);
 				}
-			}
-			if (vecCtrlPoint.size() > 0)
-			{
-				bufferDC.LineTo(vecCtrlPoint[0].x, vecCtrlPoint[0].y);
 			}
 		}
 	}
