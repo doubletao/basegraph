@@ -136,18 +136,18 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 	return false;
 }
 
-void UITimeLine::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+void UITimeLine::ChildHandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	for (size_t i = 0; i < m_vecChildElement.size(); i++)
 	{
 		UIElement * pChild = m_vecChildElement[i];
 		if (pChild)
 		{
-			pChild->HandleMsg(nMsg, lParam, wParam);
+			pChild->HandleMsg(nMsg, wParam, lParam);
 		}
 	}
 	//由于有个标尺，它的消息要单独给
-	UITLRuler::Instance().HandleMsg(nMsg, lParam, wParam);
+	UITLRuler::Instance().HandleMsg(nMsg, wParam, lParam);
 }
 
 void UITimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
@@ -281,7 +281,7 @@ void UITimeLine::DrawElement(CDC * pDC)
 	}
 }
 
-EmUIElementMsgRet UITimeLine::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UITimeLine::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
@@ -291,7 +291,7 @@ EmUIElementMsgRet UITimeLine::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
 		case WM_LBUTTONUP:
 		case WM_MOUSEMOVE:
 		case WM_MOUSEWHEEL:
-			ChildHandleMsg(nMsg, lParam, wParam);
+			ChildHandleMsg(nMsg, wParam, lParam);
 			break;
 		default:
 			break;

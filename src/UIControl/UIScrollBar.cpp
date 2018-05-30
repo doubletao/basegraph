@@ -224,14 +224,14 @@ bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLeng
 	return false;
 }
 
-EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	bool bContinue = true;
 	auto BtnHandleMsg = [&](UIElement * pElement)->bool
 	{
 		if (pElement)
 		{
-			if (UIElementMsgSuccBreak == pElement->HandleMsg(nMsg, lParam, wParam))
+			if (UIElementMsgSuccBreak == pElement->HandleMsg(nMsg, wParam, lParam))
 			{
 				bContinue = false;
 			}

@@ -121,17 +121,22 @@ bool UIPropertyViewElement::BindObject(CString strObjID)
 	if (m_strObjID != strObjID)
 	{
 		m_strObjID = strObjID;
-		if (!m_strObjID.IsEmpty())
-		{
-			std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
-			if (DataRender_GetItemProperty(m_strObjID, mapParam))
-			{
-				//获取物件的值赋予窗口
-				SetValue(mapParam);
-			}
-		}
+		RefreshFromData();
 	}
 	return true;
+}
+
+void UIPropertyViewElement::RefreshFromData()
+{
+	if (!m_strObjID.IsEmpty())
+	{
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
+		if (DataRender_GetItemProperty(m_strObjID, mapParam))
+		{
+			//获取物件的值赋予窗口
+			SetValue(mapParam);
+		}
+	}
 }
 
 void UIPropertyViewElement::SetValue(const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, bool bRefresh/* = true*/)
@@ -213,7 +218,23 @@ void UIPropertyViewElement::UpdateUIToData()
 	}
 }
 
-EmUIElementMsgRet UIPropertyViewElement::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+void UIPropertyViewElement::SetVisible(bool bVisible, bool bRefresh)
+{
+	m_bVisible = bVisible;
+	for (auto it : m_mapValueControl)
+	{
+		if (it.second != nullptr)
+		{
+			it.second->SetVisible(bVisible, bRefresh);
+		}
+	}
+	if (bRefresh)
+	{
+		Refresh();
+	}
+}
+
+EmUIElementMsgRet UIPropertyViewElement::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
@@ -222,7 +243,7 @@ EmUIElementMsgRet UIPropertyViewElement::HandleMsg(UINT nMsg, LPARAM lParam, WPA
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONUP:
 		case WM_MOUSEMOVE:
-			ChildHandleMsg(nMsg, lParam, wParam);
+			ChildHandleMsg(nMsg, wParam, lParam);
 			break;
 		default:
 			break;

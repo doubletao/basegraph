@@ -12,6 +12,7 @@ protected:
 	virtual void AddSplitLine(int nWidth, int nHeight, COLORREF clColor);
 public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
-	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
+	virtual void SetVisible(bool bVisible, bool bRefresh = true);
 };
 

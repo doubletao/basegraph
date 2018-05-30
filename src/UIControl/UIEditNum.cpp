@@ -91,3 +91,4 @@ void UIEditNum::UpdateUIToValue()
 		m_value = fValue;
 	}
 }
+

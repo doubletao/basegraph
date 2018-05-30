@@ -72,6 +72,8 @@ public:
 	virtual bool UpdateRenderBuffer();
 	virtual bool PrepareItemHalBufer(int nDevice);
 	virtual bool IsItemNeedRender();
+	bool ValidAction();
+
 	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const SYArray& pUnitArray);
 	static void GetSceneCenter(float3& pt);
 

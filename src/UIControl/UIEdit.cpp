@@ -165,6 +165,23 @@ inline void UIEdit::MoveTo(int nX, int nY, int nWidth, int nHeight, bool bRefres
 	MoveWindow(GetRealX(), GetRealY(), m_nWidth, m_nHeight);
 }
 
+void UIEdit::SetVisible(bool bVisible, bool bRefresh)
+{
+	m_bVisible = bVisible;
+	if (bRefresh)
+	{
+		if (bVisible)
+		{
+			ShowWindow(SW_SHOW);
+		}
+		else
+		{
+			ShowWindow(SW_HIDE);
+		}
+		Refresh();
+	}
+}
+
 CWnd * UIEdit::GetNextDlgTabItem(CWnd * pWndCtl, BOOL bPrevious) const
 {
 	return nullptr;

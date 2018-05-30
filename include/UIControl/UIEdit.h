@@ -29,5 +29,6 @@ public:
 	virtual inline void MoveTo(CRect rtNew, bool bRefresh = true);
 	virtual inline void MoveTo(int nX, int nY, bool bRefresh = true);
 	virtual inline void MoveTo(int nX, int nY, int nWidth, int nHeight, bool bRefresh = true);
+	virtual void SetVisible(bool bVisible, bool bRefresh = true);
 	CWnd * GetNextDlgTabItem(CWnd* pWndCtl, BOOL bPrevious = FALSE) const;
 };

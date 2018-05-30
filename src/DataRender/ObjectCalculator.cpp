@@ -197,11 +197,15 @@ void ObjectCalculator::Unlock()
 //判定是否点在物件内
 bool ObjectCalculator::HitTest(IN pointf ptHit)
 {
-	//先拿到控制点矩形
-	std::vector<pointf> vecCtrlPoint;
-	if (GetCtrlPoint(vecCtrlPoint))
+	//不需要渲染的物件，不执行hittest
+	if (IsItemNeedRender())
 	{
-		return Common_IsPointInPolygon(ptHit, vecCtrlPoint);
+		//先拿到控制点矩形
+		std::vector<pointf> vecCtrlPoint;
+		if (GetCtrlPoint(vecCtrlPoint))
+		{
+			return Common_IsPointInPolygon(ptHit, vecCtrlPoint);
+		}
 	}
 	return false;
 }
@@ -209,6 +213,11 @@ bool ObjectCalculator::HitTest(IN pointf ptHit)
 //框选，条件是碰着就算
 bool ObjectCalculator::BoxHitTest(IN rectf rtBox)
 {
+	//不需要渲染的物件，不执行hittest
+	if (!IsItemNeedRender())
+	{
+		return false;
+	}
 	auto PushOneLine = [](std::vector<std::pair<pointf, pointf>> & vecBoxLine, float fX1, float fY1, float fX2, float fY2)
 	{
 		pointf ptStart = { fX1, fY1 };
@@ -294,6 +303,11 @@ bool ObjectCalculator::BoxHitTest(IN rectf rtBox)
 //框选，条件是框住了才算
 bool ObjectCalculator::BoxInterTest(IN rectf rtBox)
 {
+	//不需要渲染的物件，不执行hittest
+	if (!IsItemNeedRender())
+	{
+		return false;
+	}
 	//先拿到控制点矩形
 	std::vector<pointf> vecCtrlPoint;
 	if (GetCtrlPoint(vecCtrlPoint))
@@ -404,8 +418,18 @@ bool ObjectCalculator::PrepareItemHalBufer(int nDevice)
 
 bool ObjectCalculator::IsItemNeedRender()
 {
+	//这里边不只是对frame的判定，应该还会有物件可视性灯其他决定因素
+	if (!ValidAction())
+	{
+		return false;
+	}
+	return true;
+}
+
+inline bool ObjectCalculator::ValidAction()
+{
 	bool bRet = true;
-	//如果当前帧号在action起始点之外，则不需要
+	//如果当前帧号在action起始点之外，则无效
 	BaseGraph_Common::Value valueBeginFrame;
 	if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Obj_ActionBegin_Int, valueBeginFrame))
 	{

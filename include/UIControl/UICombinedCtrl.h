@@ -12,4 +12,5 @@ public:
 	virtual void UpdateValueToUI() = 0;
 	virtual void UpdateUIToValue() = 0;
 	virtual void NotifyValueChg();//发出数据变动的消息给上层
+	virtual void SetVisible(bool bVisible, bool bRefresh = true);
 };

@@ -46,6 +46,7 @@ void C3DMainViewWnd::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int
 		break;
 	case WM_MSG_OnSelectChanged:
 	case WM_MSG_SerRenderTask:
+	case WM_MSG_ObjectSpaceChanged:
 		if (nIDFrom != GetMsgDispatchID())
 		{
 			for (size_t i = 0; i < m_vecSceneViewWnd.size(); i++)

@@ -96,7 +96,7 @@ EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN C3DSceneViewWnd * pW
 		float fYOffset = point.y - m_ptBegin.y;
 		float fZOffset = 0.0f;
 		DataRender_OffsetSelObject(fXOffset, fYOffset, fZOffset);
-		UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);//通知刷新
+		UIControl_BroadcastMsg(WM_MSG_ObjectSpaceChanged, 0, 0, nullptr);//通知刷新
 		m_ptBegin = point;
 	}
 	return Msg_Handle_Continue;

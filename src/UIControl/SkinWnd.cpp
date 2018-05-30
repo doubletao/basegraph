@@ -347,7 +347,7 @@ void SkinWnd::OnNcLButtonDown(UINT nHitTest, CPoint point)
 	int iButton = SysButtonHitTest(pt);
 	if (iButton != -1)
 	{
-		m_vecButton[iButton]->HandleMsg(WM_LBUTTONDOWN, MAKELPARAM(pt.x, pt.y), 0);
+		m_vecButton[iButton]->HandleMsg(WM_LBUTTONDOWN, 0, MAKELPARAM(pt.x, pt.y));
 		OnNcPaint();
 		return;
 	}

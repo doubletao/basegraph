@@ -49,7 +49,7 @@ bool UIEditNumSpin::Create(CString strTitle, int nTitleWidth, DWORD dwStyleEs, i
 	return bRet;
 }
 
-EmUIElementMsgRet UIEditNumSpin::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UIEditNumSpin::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
@@ -57,7 +57,7 @@ EmUIElementMsgRet UIEditNumSpin::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wPar
 		{
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONUP:
-			ChildHandleMsg(nMsg, lParam, wParam);
+			ChildHandleMsg(nMsg, wParam, lParam);
 			break;
 		case WM_MOUSEMOVE:
 			EnterLeaveChild(nMsg, lParam, wParam);

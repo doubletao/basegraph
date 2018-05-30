@@ -88,7 +88,7 @@ bool UISimpleTimeLine::Create(int nX, int nY, int nWidth, int nHeight, HWND hPar
 	return true;
 }
 
-EmUIElementMsgRet UISimpleTimeLine::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UISimpleTimeLine::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
@@ -97,7 +97,7 @@ EmUIElementMsgRet UISimpleTimeLine::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM w
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONUP:
 		case WM_MOUSEMOVE:
-			ChildHandleMsg(nMsg, lParam, wParam);
+			ChildHandleMsg(nMsg, wParam, lParam);
 			break;
 		default:
 			break;

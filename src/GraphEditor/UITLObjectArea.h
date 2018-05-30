@@ -34,7 +34,7 @@ public:
 	ObjectAreaHittestType ObjectHittest(LPARAM lParam, CString * pStrID = nullptr);
 
 	virtual void DrawElement(CDC * pDC);
-	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement);
 
 	bool SetScrollInfo(bool bRefresh = true);

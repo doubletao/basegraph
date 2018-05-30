@@ -190,7 +190,7 @@ void UITLObjectArea::DrawElement(CDC * pDC)
 	}
 }
 
-EmUIElementMsgRet UITLObjectArea::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UITLObjectArea::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{

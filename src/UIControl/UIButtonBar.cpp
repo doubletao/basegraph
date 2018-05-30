@@ -46,7 +46,7 @@ bool UIButtonBar::Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWn
 	return true;
 }
 
-EmUIElementMsgRet UIButtonBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UIButtonBar::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
@@ -54,7 +54,7 @@ EmUIElementMsgRet UIButtonBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam
 		{
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONUP:
-			ChildHandleMsg(nMsg, lParam, wParam);
+			ChildHandleMsg(nMsg, wParam, lParam);
 			break;
 		case WM_MOUSEMOVE:
 			EnterLeaveChild(nMsg, lParam, wParam);
@@ -65,4 +65,21 @@ EmUIElementMsgRet UIButtonBar::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam
 		return UIElementMsgSuccBreak;
 	}
 	return UIElementMsgSuccContinue;
+}
+
+void UIButtonBar::SetVisible(bool bVisible, bool bRefresh)
+{
+	//对于buttonbar来说，visible应该影响到其子物件
+	m_bVisible = bVisible;
+	for (auto it : m_vecChildElement)
+	{
+		if (it)
+		{
+			it->SetVisible(bVisible, bRefresh);
+		}
+	}
+	if (bRefresh)
+	{
+		Refresh();
+	}
 }

@@ -54,7 +54,7 @@ protected:
 	virtual void Release();
 	virtual void SetText(CString strText);
 	virtual void Refresh();
-	virtual void ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual void ChildHandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
 	virtual void EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam);
 public:
 	UIElement();
@@ -62,7 +62,7 @@ public:
 public:
 	virtual void RearrangeChildPos();
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);//初始化工作
-	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
 	virtual inline bool HitTest(CPoint point);
 	virtual inline bool HitTest(int nX, int nY);
 	virtual inline bool HitTest(LPARAM lParam);
@@ -78,12 +78,12 @@ public:
 	virtual int GetRealY();
 	virtual bool EmitMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
+	virtual void SetVisible(bool bVisible, bool bRefresh = true);
 	int GetMsgID();
 	int GetWidth();
 	int GetHeight();
 	void InsertDrawer(int nState, UIDrawer * pDrawer);
 	void SetElementCapture();//需要父窗口实现对应的消息接口
 	void ReleaseElementCapture();//需要父窗口实现对应的消息接口
-	void SetVisible(bool bVisible, bool bRefresh = true);
 };
 

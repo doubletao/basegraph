@@ -70,25 +70,25 @@ void UIPropertyView::InitializeObject()
 	m_pPropertyTabBar->Create(0, 0, 100, 100, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pPropertyTabBar);
 
-	m_pColorElement = new UIPropertyViewElement;
-	m_pColorElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Color, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
-	m_vecChildElement.push_back(m_pColorElement);
+	//m_pColorElement = new UIPropertyViewElement;
+	//m_pColorElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Color, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
+	//m_vecChildElement.push_back(m_pColorElement);
 
-	m_pObjectElement = new UIPropertyViewElement;
-	m_pObjectElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Object, m_hParentWnd, this, BaseGraph_DataBase::TitlewordParam, BaseGraph_DataBase::TitlewordParam_End);
-	m_vecChildElement.push_back(m_pObjectElement);
+	//m_pObjectElement = new UIPropertyViewElement;
+	//m_pObjectElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Object, m_hParentWnd, this, BaseGraph_DataBase::TitlewordParam, BaseGraph_DataBase::TitlewordParam_End);
+	//m_vecChildElement.push_back(m_pObjectElement);
 
 	m_pSpaceElement = new UIPropertyViewElement;
 	m_pSpaceElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Space, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);
 	m_vecChildElement.push_back(m_pSpaceElement);
 
-	m_pFxElement = new UIPropertyViewElement;
-	m_pFxElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Fx, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
-	m_vecChildElement.push_back(m_pFxElement);
+	//m_pFxElement = new UIPropertyViewElement;
+	//m_pFxElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Fx, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
+	//m_vecChildElement.push_back(m_pFxElement);
 
-	m_pTextElement = new UIPropertyViewElement;
-	m_pTextElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Text, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);
-	m_vecChildElement.push_back(m_pTextElement);
+	//m_pTextElement = new UIPropertyViewElement;
+	//m_pTextElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Text, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);
+	//m_vecChildElement.push_back(m_pTextElement);
 }
 
 CString UIPropertyView::GetCurSelObjID()
@@ -142,6 +142,12 @@ void UIPropertyView::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int
 			}
 		}
 		break;
+	case WM_MSG_ObjectSpaceChanged:
+		if (m_pSpaceElement)
+		{
+			m_pSpaceElement->RefreshFromData();
+		}
+		break;
 	default:
 		break;
 	}
@@ -157,7 +163,7 @@ bool UIPropertyView::Create(int nX, int nY, int nWidth, int nHeight, HWND hParen
 	return true;
 }
 
-EmUIElementMsgRet UIPropertyView::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UIPropertyView::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
@@ -166,7 +172,7 @@ EmUIElementMsgRet UIPropertyView::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wPa
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONUP:
 		case WM_MOUSEMOVE:
-			ChildHandleMsg(nMsg, lParam, wParam);
+			ChildHandleMsg(nMsg, wParam, lParam);
 			break;
 		default:
 			break;

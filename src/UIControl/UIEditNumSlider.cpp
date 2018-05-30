@@ -118,3 +118,4 @@ void UIEditNumSlider::UpdateUIToValue()
 		m_value = fValue;
 	}
 }
+

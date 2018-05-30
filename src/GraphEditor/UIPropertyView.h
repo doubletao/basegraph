@@ -27,7 +27,7 @@ protected:
 public:
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
-	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
 	void OnBtnPropertyTabColor();
 	void OnBtnPropertyTabObject();
 	void OnBtnPropertyTabSpace();

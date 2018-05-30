@@ -18,7 +18,7 @@ protected:
 public:
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	bool Create(int nX, int nY, int nWidth, int nHeight, HWND hParentWnd);
-	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	void SetWholeFrame(int nFrame);
 	void SetFrame(int nFrame);

@@ -44,7 +44,7 @@ BOOL BaseGraphMainFrame::PreTranslateMessage(MSG * pMsg)
 {
 	auto DealMsg = [&](UIElement & elem)->bool
 	{
-		if (UIElement::NeedContinue(elem.HandleMsg(pMsg->message, pMsg->lParam, pMsg->wParam)))
+		if (UIElement::NeedContinue(elem.HandleMsg(pMsg->message, pMsg->wParam, pMsg->lParam)))
 		{
 			return false;
 		}
@@ -280,7 +280,7 @@ void BaseGraphMainFrame::OnNcLButtonDown(UINT nHitTest, CPoint point)
 	CPoint ptTmp = point;
 	ptTmp.x -= rcWindow.left;
 	ptTmp.y -= rcWindow.top;
-	m_uiObjectBar.HandleMsg(WM_LBUTTONDOWN, MAKELPARAM(ptTmp.x, ptTmp.y), 0);
+	m_uiObjectBar.HandleMsg(WM_LBUTTONDOWN, 0, MAKELPARAM(ptTmp.x, ptTmp.y));
 	OnNcPaint();
 	if (m_uiObjectBar.HitTest(ptTmp))
 	{
@@ -296,7 +296,7 @@ void BaseGraphMainFrame::OnNcLButtonUp(UINT nHitTest, CPoint point)
 	CPoint ptTmp = point;
 	ptTmp.x -= rcWindow.left;
 	ptTmp.y -= rcWindow.top;
-	m_uiObjectBar.HandleMsg(WM_LBUTTONUP, MAKELPARAM(ptTmp.x, ptTmp.y), 0);
+	m_uiObjectBar.HandleMsg(WM_LBUTTONUP, 0, MAKELPARAM(ptTmp.x, ptTmp.y));
 	OnNcPaint();
 	if (m_uiObjectBar.HitTest(ptTmp))
 	{
@@ -312,7 +312,7 @@ void BaseGraphMainFrame::OnNcMouseMove(UINT nHitTest, CPoint point)
 	CPoint ptTmp = point;
 	ptTmp.x -= rcWindow.left;
 	ptTmp.y -= rcWindow.top;
-	m_uiObjectBar.HandleMsg(WM_MOUSEMOVE, MAKELPARAM(ptTmp.x, ptTmp.y), 0);
+	m_uiObjectBar.HandleMsg(WM_MOUSEMOVE, 0, MAKELPARAM(ptTmp.x, ptTmp.y));
 	OnNcPaint();
 	if (m_uiObjectBar.HitTest(ptTmp))
 	{
@@ -535,7 +535,7 @@ void BaseGraphMainFrame::OnPaint()
 
 	//先从绘制区域中排除掉子窗口，避免闪烁问题
 	CWnd *pChild = GetWindow(GW_CHILD); //取第一个子窗口
-	while (pChild != NULL && ::IsWindow(pChild->GetSafeHwnd()))
+	while (pChild != NULL && ::IsWindow(pChild->GetSafeHwnd()) && pChild->IsWindowVisible())
 	{
 		CRect rtChild;
 		pChild->GetWindowRect(rtChild);

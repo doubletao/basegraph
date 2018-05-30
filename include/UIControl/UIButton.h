@@ -27,7 +27,7 @@ public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd,
 		COLORREF clN, COLORREF clF, COLORREF clD, COLORREF clX,
 		UIElement * pParent = nullptr, LPCTSTR strText = nullptr, int nFont = 0, COLORREF nFontColor = 0);
-	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
 	virtual void OnButtonClickDown();
 	virtual void OnButtonClickUp();
 	virtual void OnMouseHover();

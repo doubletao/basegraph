@@ -133,7 +133,7 @@ bool UIButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hPa
 	return false;
 }
 
-EmUIElementMsgRet UIButton::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UIButton::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{

@@ -85,14 +85,14 @@ void UIElement::Refresh()
 	EmitMsg(EmUIElementMsg_BtnRefresh, m_nID, 0);
 }
 
-void UIElement::ChildHandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+void UIElement::ChildHandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	for (size_t i = 0; i < m_vecChildElement.size(); i++)
 	{
 		UIElement * pChild = m_vecChildElement[i];
 		if (pChild)
 		{
-			pChild->HandleMsg(nMsg, lParam, wParam);
+			pChild->HandleMsg(nMsg, wParam, lParam);
 		}
 	}
 }
@@ -179,7 +179,7 @@ void UIElement::RearrangeChildPos()
 {
 }
 
-EmUIElementMsgRet UIElement::HandleMsg(UINT nMsg, LPARAM lParam, WPARAM wParam)
+EmUIElementMsgRet UIElement::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	return UIElementMsgSuccContinue;
 }
