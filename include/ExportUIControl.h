@@ -22,6 +22,8 @@
 #include "UIControl\UIDrawer.h"
 #include "UIControl\UIImageDrawer.h"
 #include "UIControl\UITextDrawer.h"
+#include "UIControl\UICombinedCtrl.h"
+#include "UIControl\UIColorButton.h"
 #include "UIControl\UICheckBtn.h"
 #include "UIControl\UIButtonBar.h"
 #include "UIControl\UICheckBtnBar.h"

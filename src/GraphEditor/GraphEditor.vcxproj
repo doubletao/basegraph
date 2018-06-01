@@ -133,6 +133,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UIActionBar.cpp" />
+    <ClCompile Include="UICheckColorButton.cpp" />
     <ClCompile Include="UIObjectBar.cpp" />
     <ClCompile Include="UIPlayControlBar.cpp" />
     <ClCompile Include="UIPropertyTabBar.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="GraphEditorCommonDef.h" />
     <ClInclude Include="UIActionBar.h" />
+    <ClInclude Include="UICheckColorButton.h" />
     <ClInclude Include="UIObjectBar.h" />
     <ClInclude Include="UIPlayControlBar.h" />
     <ClInclude Include="UIPropertyTabBar.h" />

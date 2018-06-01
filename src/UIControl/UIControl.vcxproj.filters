@@ -31,9 +31,6 @@
     <Filter Include="UIMFControl">
       <UniqueIdentifier>{e5b6c443-feb5-47aa-a0f1-adbf1e4b173a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UIColorCtrl">
-      <UniqueIdentifier>{51bb0653-f0d0-4e1d-bc6c-5963a8550f5a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -132,11 +129,8 @@
     <ClCompile Include="UICombinedCtrl.cpp">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="UICheckColorButton.cpp">
-      <Filter>UIElementCombinedCtrl</Filter>
-    </ClCompile>
     <ClCompile Include="UIColorButton.cpp">
-      <Filter>UIColorCtrl</Filter>
+      <Filter>UIElementCtrl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -255,10 +249,7 @@
       <Filter>UIMFControl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\UIColorButton.h">
-      <Filter>UIColorCtrl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\UIControl\UICheckColorButton.h">
-      <Filter>UIElementCombinedCtrl</Filter>
+      <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

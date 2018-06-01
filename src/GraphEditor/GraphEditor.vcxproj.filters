@@ -43,6 +43,9 @@
     <Filter Include="SceneMessageHandler\ObjectEditor">
       <UniqueIdentifier>{0907be5f-2875-488e-acd9-ada980fb421d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PropertyView\UIColorCtrl">
+      <UniqueIdentifier>{20f2cc58-ae8b-4d46-ab5c-3a3f867de8c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -131,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="UITLTimeLinePointer.cpp">
       <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UICheckColorButton.cpp">
+      <Filter>PropertyView\UIColorCtrl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="UITLTimeLinePointer.h">
       <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UICheckColorButton.h">
+      <Filter>PropertyView\UIColorCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

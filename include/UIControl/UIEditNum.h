@@ -18,8 +18,6 @@ public:
 	void SetPrecision(int nPrecision);
 	void SetLimit(int nMin, int nMax);
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
-	virtual BaseGraph_Common::Value GetValue();
-	virtual void SetValue(BaseGraph_Common::Value value, bool bRefresh = true);
 	virtual void UpdateValueToUI();
 	virtual void UpdateUIToValue();
 };

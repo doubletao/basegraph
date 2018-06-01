@@ -48,20 +48,6 @@ bool UIEditNum::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 	return UICombinedCtrl::OnChildMsg(emMsg, wParam, lParam);
 }
 
-BaseGraph_Common::Value UIEditNum::GetValue()
-{
-	return m_value;
-}
-
-void UIEditNum::SetValue(BaseGraph_Common::Value value, bool bRefresh/* = true*/)
-{
-	m_value = value;
-	if (bRefresh)
-	{
-		UpdateValueToUI();
-	}
-}
-
 void UIEditNum::UpdateValueToUI()
 {
 	//对于数字edit来说，全部使用float类型，通过精度来控制是否显示小数点
