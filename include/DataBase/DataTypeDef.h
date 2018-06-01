@@ -138,6 +138,8 @@ namespace BaseGraph_DataBase
 		BOOL  enable;
 		point3f pos;
 		float strength[3];
+		BASEGRAPH_DATABASE_API metallight();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -152,6 +154,8 @@ namespace BaseGraph_DataBase
 		DWORD		 height;//0-100
 		metallight	 light[3];
 		vector3f	 eyepos;
+		BASEGRAPH_DATABASE_API metalinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -165,6 +169,8 @@ namespace BaseGraph_DataBase
 		int 					soft;		//虚边宽
 		DWORD					color;		//凹凸单色,不透明
 		metalinfo				metal;		//立体边
+		BASEGRAPH_DATABASE_API artinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -179,6 +185,8 @@ namespace BaseGraph_DataBase
 		DWORD	avcolor;
 		artinfo art;
 		sycolor	color;
+		BASEGRAPH_DATABASE_API faceinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -196,6 +204,8 @@ namespace BaseGraph_DataBase
 		DWORD	avcolor;
 		artinfo	art;
 		sycolor	color;
+		BASEGRAPH_DATABASE_API borderinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -217,6 +227,8 @@ namespace BaseGraph_DataBase
 		DWORD	avcolor;
 		artinfo  art;
 		sycolor	color;
+		BASEGRAPH_DATABASE_API shadowinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -232,6 +244,8 @@ namespace BaseGraph_DataBase
 		unsigned long	avcolor;
 		artinfo	art;
 		sycolor	color;
+		BASEGRAPH_DATABASE_API cubeinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -245,6 +259,8 @@ namespace BaseGraph_DataBase
 		DWORD dwReverse1;
 		DWORD dwReverse2;
 		TCHAR szPath[512];
+		BASEGRAPH_DATABASE_API lightinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -257,6 +273,8 @@ namespace BaseGraph_DataBase
 		int	  channelid;
 		DWORD dwReverse1;
 		DWORD dwReverse2;
+		BASEGRAPH_DATABASE_API channelinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -267,6 +285,8 @@ namespace BaseGraph_DataBase
 		TCHAR szPath[512];
 		DWORD dwReverse1;
 		DWORD dwReverse2;
+		BASEGRAPH_DATABASE_API materialinfo();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
@@ -289,6 +309,8 @@ namespace BaseGraph_DataBase
 		float alpha;
 		BOOL  bRepeat;
 		BOOL  bUseAlpha;
+		BASEGRAPH_DATABASE_API dynamictexture();
+		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);

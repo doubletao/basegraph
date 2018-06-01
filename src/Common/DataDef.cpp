@@ -242,6 +242,7 @@ int BaseGraph_Common::Value::ToInt()
 	{
 		//不匹配的类型转换，可能出问题
 		assert(false);
+		return false;
 	}
 	return nTmp;
 }
@@ -257,6 +258,7 @@ DWORD BaseGraph_Common::Value::ToDWORD()
 	{
 		//不匹配的类型转换，可能出问题
 		assert(false);
+		return false;
 	}
 	return dwTmp;
 }
@@ -272,6 +274,7 @@ BOOL BaseGraph_Common::Value::ToBOOL()
 	{
 		//不匹配的类型转换，可能出问题
 		assert(false);
+		return false;
 	}
 	return bTmp;
 }
@@ -287,6 +290,7 @@ float BaseGraph_Common::Value::ToFloat()
 	{
 		//不匹配的类型转换，可能出问题
 		assert(false);
+		return false;
 	}
 	return fTmp;
 }
@@ -306,6 +310,7 @@ CString BaseGraph_Common::Value::ToCString()
 	{
 		//不匹配的类型转换，可能出问题
 		assert(false);
+		return false;
 	}
 	return strTmp;
 }

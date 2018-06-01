@@ -305,10 +305,8 @@ typedef   struct tag_sycolor : public BaseGraph_Common::ValueAbleInterface
 
 		return TRUE;
 	}
-	tag_sycolor()
-	{
-		memset(this, 0, sizeof(tag_sycolor));
-	}
+	BASEGRAPH_COMMON_API tag_sycolor();
+	BASEGRAPH_COMMON_API void Reset();
 	BASEGRAPH_COMMON_API virtual int GetSerializeSize() const;
 	BASEGRAPH_COMMON_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 	BASEGRAPH_COMMON_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
