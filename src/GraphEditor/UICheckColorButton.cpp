@@ -31,6 +31,21 @@ void UICheckColorButton::UpdateValueToUI()
 
 void UICheckColorButton::UpdateUIToValue()
 {
+	BaseGraph_DataBase::faceinfo info;
+	if (m_value.ToStruct(info))
+	{
+		if (m_pCheckButton)
+		{
+			bool bCheck = m_pCheckButton->GetCheck();
+			info.disable = !bCheck;
+		}
+		if (m_pColorButton)
+		{
+			sycolor color = m_pColorButton->GetColor();
+			info.color = color;
+		}
+		m_value = info;
+	}
 }
 
 bool UICheckColorButton::Create(int nID, HWND hParentWnd, UIElement * pParent)
