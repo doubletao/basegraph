@@ -9,7 +9,7 @@ class BASEGRAPH_UICONTROL_API IMsgDispatchObject
 public:
 	virtual int GetMsgDispatchID() = 0;
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
-	virtual ~IMsgDispatchObject();//析构时自动从消息分发器中注销，防止野指针
+	virtual void UnRegistDispatchObj();//析构前应调用注销，防止野指针
 };
 
 class BASEGRAPH_UICONTROL_API MsgDispatcher

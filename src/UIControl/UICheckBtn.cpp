@@ -48,10 +48,14 @@ void UICheckBtn::OnButtonClickUp()
 	{
 		m_bCheck = true;
 	}
-	if (m_bCheck && m_nState == UIElement_BtnDown)
+	else
 	{
-		//响应按钮
-		EmitMsg(EmUIElementMsg_BtnClick, m_nID, (LPARAM)this);
+		m_bCheck = false;
+	}
+	//响应按钮
+	EmitMsg(EmUIElementMsg_BtnClick, m_nID, (LPARAM)this);
+	if (m_bCheck)
+	{
 		SetState(UIElement_BtnDown, true);
 	}
 	else

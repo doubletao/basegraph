@@ -9,6 +9,7 @@ int UIElement::GetMsgDispatchID()
 
 void UIElement::Release()
 {
+	IMsgDispatchObject::UnRegistDispatchObj();
 	for (size_t i = 0; i < m_vecChildElement.size(); i++)
 	{
 		UIElement * & pChild = m_vecChildElement[i];

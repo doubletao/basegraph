@@ -102,6 +102,7 @@ namespace BaseGraph_DataBase
 		PropertyDisp_SliderNumEdit,//一个带滑杆的数字框
 		PropertyDisp_CheckBmp,//bool类型check图按钮
 		PropertyDisp_RatioBmp,//多选一图按钮
+		PropertyDisp_ColorCheckButton,//可关闭的颜色选择控件
 	};
 
 	struct ValueDescriptor
@@ -453,6 +454,7 @@ namespace BaseGraph_DataBase
 			valueDesc.nDispIndex = 0;
 			valueDesc.fStep = 0.0f;
 			valueDesc.strDispName = _T("面");
+			valueDesc.emDispType = PropertyDisp_ColorCheckButton;
 			valueDesc.stuDefault.SetValue(faceinfo());
 			break;
 		case ColorParam_Border_Stu:

@@ -97,6 +97,8 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlGap, 3));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlTitleWidth, 45));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlNumEditWidth, 35));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlColorBtnWidth, 80));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlColorBtnHeight, 30));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeLeftGap, 10));
@@ -304,9 +306,18 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_ScrollThumbHot, strThemePath + _T("Button\\ScrollThumbHot.png"));
 		LoadOneImg(ThemeImage_ScrollTopArrow, strThemePath + _T("Button\\ScrollTopArrow.png"));
 		LoadOneImg(ThemeImage_ScrollTopArrowHot, strThemePath + _T("Button\\ScrollTopArrowHot.png"));
+		LoadOneImg(ThemeImage_CheckBtn_Bk_N, strThemePath + _T("Button\\CheckBtn_Bk_N.png"));
+		LoadOneImg(ThemeImage_CheckBtn_Bk_F, strThemePath + _T("Button\\CheckBtn_Bk_F.png"));
+		LoadOneImg(ThemeImage_CheckBtn_Bk_D, strThemePath + _T("Button\\CheckBtn_Bk_D.png"));
+		LoadOneImg(ThemeImage_CheckBtn_Bk_X, strThemePath + _T("Button\\CheckBtn_Bk_X.png"));
+		LoadOneImg(ThemeImage_CheckBtn_Fore_N, strThemePath + _T("Button\\CheckBtn_Fore_N.png"));
+		LoadOneImg(ThemeImage_CheckBtn_Fore_F, strThemePath + _T("Button\\CheckBtn_Fore_F.png"));
+		LoadOneImg(ThemeImage_CheckBtn_Fore_D, strThemePath + _T("Button\\CheckBtn_Fore_D.png"));
+		LoadOneImg(ThemeImage_CheckBtn_Fore_X, strThemePath + _T("Button\\CheckBtn_Fore_X.png"));
 
 		LoadOneImg(ThemeImage_ElementArea, strThemePath + _T("Common\\ElementArea.png"));
 		LoadOneImg(ThemeImage_SceneLayoutBk, strThemePath + _T("Common\\SceneLayoutBk.png"));
+		LoadOneImg(ThemeImage_ColorButtonTranspBmp, strThemePath + _T("Common\\transparent_small.bmp"));
 
 		LoadOneImg(ThemeImage_TimeLineTimeCodeBk, strThemePath + _T("TimeLine\\TimeLineTimeCodeBk.png"));
 		LoadOneImg(ThemeImage_TimeLineLeftObjectBkGnd_Nor, strThemePath + _T("TimeLine\\TimeLineLeftObjectBkGnd_Nor.png"));

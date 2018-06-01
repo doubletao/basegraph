@@ -70,9 +70,9 @@ void UIPropertyView::InitializeObject()
 	m_pPropertyTabBar->Create(0, 0, 100, 100, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pPropertyTabBar);
 
-	//m_pColorElement = new UIPropertyViewElement;
-	//m_pColorElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Color, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
-	//m_vecChildElement.push_back(m_pColorElement);
+	m_pColorElement = new UIPropertyViewElement;
+	m_pColorElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Color, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
+	m_vecChildElement.push_back(m_pColorElement);
 
 	//m_pObjectElement = new UIPropertyViewElement;
 	//m_pObjectElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Object, m_hParentWnd, this, BaseGraph_DataBase::TitlewordParam, BaseGraph_DataBase::TitlewordParam_End);
@@ -159,6 +159,8 @@ bool UIPropertyView::Create(int nX, int nY, int nWidth, int nHeight, HWND hParen
 	{
 		Initialize(nX, nY, nWidth, nHeight, UIElementMsg_PropertyView, hParentWnd);
 		InitializeObject();
+		//起始在color页面
+		OnBtnPropertyTabColor();
 	}
 	return true;
 }

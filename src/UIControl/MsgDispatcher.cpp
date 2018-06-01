@@ -77,8 +77,7 @@ void IMsgDispatchObject::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam,
 {
 }
 
-IMsgDispatchObject::~IMsgDispatchObject()
+void IMsgDispatchObject::UnRegistDispatchObj()
 {
-	//djt 这个自动注销为什么会崩溃，待查
-	//MsgDispatcher::Instance().UnRegistDispatchObj(this);
+	MsgDispatcher::Instance().UnRegistDispatchObj(this);
 }

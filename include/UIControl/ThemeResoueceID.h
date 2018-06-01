@@ -22,6 +22,8 @@ enum ThemeIntValueDef
 	ThemeInt_PropertyViewCtrlGap,
 	ThemeInt_PropertyViewCtrlTitleWidth,//属性窗控件左侧文本宽度
 	ThemeInt_PropertyViewCtrlNumEditWidth,//属性窗数字edit宽度
+	ThemeInt_PropertyViewCtrlColorBtnWidth,//属性窗颜色选择按钮宽度
+	ThemeInt_PropertyViewCtrlColorBtnHeight,//属性窗颜色选择按钮高度
 	ThemeInt_TimeLineTimeCodeWidth,
 	ThemeInt_TimeLineTimeCodeHeight,
 	ThemeInt_TimeLineTimeCodeLeftGap,
@@ -198,6 +200,14 @@ enum ThemeImageValueDef
 	ThemeImage_ScrollThumbHot,
 	ThemeImage_ScrollTopArrow,
 	ThemeImage_ScrollTopArrowHot,
+	ThemeImage_CheckBtn_Bk_N,
+	ThemeImage_CheckBtn_Bk_F,
+	ThemeImage_CheckBtn_Bk_D,
+	ThemeImage_CheckBtn_Bk_X,
+	ThemeImage_CheckBtn_Fore_N,
+	ThemeImage_CheckBtn_Fore_F,
+	ThemeImage_CheckBtn_Fore_D,
+	ThemeImage_CheckBtn_Fore_X,
 
 	ThemeImage_TabBtnColor_N,
 	ThemeImage_TabBtnColor_F,
@@ -240,4 +250,5 @@ enum ThemeImageValueDef
 	ThemeImage_TimeLinePointerHeader,
 
 	ThemeImage_SceneLayoutBk,
+	ThemeImage_ColorButtonTranspBmp,
 };

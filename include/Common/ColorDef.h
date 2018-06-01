@@ -401,7 +401,7 @@ typedef	COLORARGB	*LPCOLORARGB;
 #define COLORARGB_B(color)	(((LPCOLORARGB)(&color))->B)
 
 #define ARGBColor(a, r, g, b)	\
-	ARGB(a, r, g, b)
+	BGRA(b, g, r, a)
 
 #define ColorARGB(Color, pA, pR, pG, pB)	\
 	*pA = COLORARGB_A(Color), \

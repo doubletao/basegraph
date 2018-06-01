@@ -132,6 +132,8 @@
     <ClCompile Include="UIButtonBar.cpp" />
     <ClCompile Include="UICheckBtn.cpp" />
     <ClCompile Include="UICheckBtnBar.cpp" />
+    <ClCompile Include="UICheckColorButton.cpp" />
+    <ClCompile Include="UIColorButton.cpp" />
     <ClCompile Include="UIColorDrawer.cpp" />
     <ClCompile Include="UICombinedCtrl.cpp" />
     <ClCompile Include="UIControl.cpp" />
@@ -164,6 +166,8 @@
     <ClInclude Include="..\..\include\UIControl\UIButtonBar.h" />
     <ClInclude Include="..\..\include\UIControl\UICheckBtn.h" />
     <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h" />
+    <ClInclude Include="..\..\include\UIControl\UICheckColorButton.h" />
+    <ClInclude Include="..\..\include\UIControl\UIColorButton.h" />
     <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UICombinedCtrl.h" />
     <ClInclude Include="..\..\include\UIControl\UIControlDef.h" />

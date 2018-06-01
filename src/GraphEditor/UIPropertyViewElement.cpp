@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIPropertyViewElement.h"
 #include "GraphEditorCommonDef.h"
+#include "UIControl/UICheckColorButton.h"
 
 UIPropertyViewElement::UIPropertyViewElement()
 	: m_strObjID()
@@ -65,6 +66,13 @@ void UIPropertyViewElement::InitializeObject()
 		case BaseGraph_DataBase::PropertyDisp_CheckBmp:
 			break;
 		case BaseGraph_DataBase::PropertyDisp_RatioBmp:
+			break;
+		case BaseGraph_DataBase::PropertyDisp_ColorCheckButton:
+		{
+			pElement = new UICheckColorButton;
+			((UICheckColorButton *)pElement)->Create(0, m_hParentWnd, this);
+			//((UIEditNumSlider *)pElement)->SetValue(valueDesc.stuDefault);
+		}
 			break;
 		default:
 			break;

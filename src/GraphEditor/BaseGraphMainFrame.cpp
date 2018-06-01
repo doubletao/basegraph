@@ -519,6 +519,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void BaseGraphMainFrame::OnDestroy()
 {
+	IMsgDispatchObject::UnRegistDispatchObj();
 	CSkinFrameWnd::OnDestroy();
 }
 
@@ -677,6 +678,7 @@ LRESULT BaseGraphMainFrame::OnUIElementBtnClicked(WPARAM wParam, LPARAM lParam)
 	default:
 		break;
 	}
+	OnUpdateBarStatus();
 	return 0;
 }
 
