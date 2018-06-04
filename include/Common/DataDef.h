@@ -25,16 +25,16 @@
 
 #define SERIALIZE_PARAM_TO_BUF_STU(pBuf, size, param) \
 {	\
-	int nSize = param.GetSerializeSize();	\
-	param.GetSerializeBuf(pBuf + size, nSize);	\
-	size += nSize;	\
+	int nParSize = param.GetSerializeSize();	\
+	param.GetSerializeBuf(pBuf + size, nParSize);	\
+	size += nParSize;	\
 }
 
 #define SERIALIZE_BUF_TO_PARAM_STU(pBuf, size, param) \
 {	\
-	int nSize = param.GetSerializeSize();	\
-	param.RecoverFromBuf(pBuf + size, nSize);	\
-	size += nSize;	\
+	int nParSize = param.GetSerializeSize();	\
+	param.RecoverFromBuf(pBuf + size, nParSize);	\
+	size += nParSize;	\
 }
 
 #define SERIALIZE_PARAM_GET_SIZE_STU_ARR(size, param, count) \
@@ -48,9 +48,9 @@
 	assert(count > 0);	\
 	for (int i = 0; i < count; i++)	\
 	{	\
-		int nSize = param[i].GetSerializeSize();	\
-		param[i].GetSerializeBuf(pBuf + size, nSize);	\
-		size += nSize;	\
+		int nParSize = param[i].GetSerializeSize();	\
+		param[i].GetSerializeBuf(pBuf + size, nParSize);	\
+		size += nParSize;	\
 	}	\
 }
 
@@ -59,9 +59,9 @@
 	assert(count > 0);	\
 	for (int i = 0; i < count; i++)	\
 	{	\
-		int nSize = param[i].GetSerializeSize();	\
-		param[i].RecoverFromBuf(pBuf + size, nSize);	\
-		size += nSize;	\
+		int nParSize = param[i].GetSerializeSize();	\
+		param[i].RecoverFromBuf(pBuf + size, nParSize);	\
+		size += nParSize;	\
 	}	\
 }
 

@@ -9,6 +9,8 @@ public:
 	UICheckColorButton();
 	virtual ~UICheckColorButton();
 public:
+	virtual BaseGraph_Common::Value GetValue();
+	virtual void SetValue(BaseGraph_Common::Value value, bool bRefresh = true);
 	virtual void UpdateValueToUI();
 	virtual void UpdateUIToValue();
 

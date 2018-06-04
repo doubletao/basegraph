@@ -272,6 +272,14 @@ bool UIPropertyViewElement::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPAR
 			{
 				BaseGraph_DataBase::ParamValueDef paramValueDef = m_mapControlValue[pCombinedCtrl];
 				Value value = pCombinedCtrl->GetValue();
+#ifdef _DEBUG
+				BaseGraph_DataBase::faceinfo info;
+				if (value.ToStruct(info))
+				{
+					int i = 0;
+					i++;
+				}
+#endif
 				SetValue(paramValueDef, value);
 				UpdateToObject(paramValueDef, value);
 			}

@@ -11,6 +11,28 @@ UICheckColorButton::~UICheckColorButton()
 {
 }
 
+BaseGraph_Common::Value UICheckColorButton::GetValue()
+{
+#ifdef _DEBUG
+	BaseGraph_DataBase::faceinfo info;
+	if (m_value.ToStruct(info))
+	{
+		int i = 0;
+		i++;
+	}
+#endif
+	return m_value;
+}
+
+void UICheckColorButton::SetValue(BaseGraph_Common::Value value, bool bRefresh)
+{
+	m_value = value;
+	if (bRefresh)
+	{
+		UpdateValueToUI();
+	}
+}
+
 void UICheckColorButton::UpdateValueToUI()
 {
 	BaseGraph_DataBase::faceinfo info;
@@ -46,6 +68,14 @@ void UICheckColorButton::UpdateUIToValue()
 		}
 		m_value = info;
 	}
+#ifdef _DEBUG
+	BaseGraph_DataBase::faceinfo inf2;
+	if (m_value.ToStruct(inf2))
+	{
+		int i = 0;
+		i++;
+	}
+#endif
 }
 
 bool UICheckColorButton::Create(int nID, HWND hParentWnd, UIElement * pParent)
@@ -101,7 +131,7 @@ bool UICheckColorButton::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM 
 		UIButton * pButton = (UIButton *)lParam;
 		if (m_pCheckButton == pButton)
 		{
-			bool bCheck = m_pCheckButton->GetCheck();
+			UpdateUIToValue();
 			NotifyValueChg();
 		}
 		return true;
