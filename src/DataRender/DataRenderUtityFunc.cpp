@@ -213,7 +213,7 @@ BASEGRAPH_DATARENDER_API void SYStaticEffect_Init(static_effect * pEffect)
 {
 	if (pEffect == NULL)
 		return;
-	memset(pEffect, 0, sizeof(static_effect));
+	pEffect->Reset();
 }
 
 BASEGRAPH_DATARENDER_API void SYStaticEffect_Release(static_effect * pEffect)

@@ -119,6 +119,22 @@ typedef struct tag_staticeffect
 	int			        index;
 	tag_staticeffect()
 	{
+		Reset();
+	}
+	void Reset()
+	{
+		face.Reset();
+		border.Reset();
+		shadow.Reset();
+		cube.Reset();
+		bordercube.Reset();
+		bordershadow.Reset();
+		facelight.Reset();
+		cubelight.Reset();
+		channel.Reset();
+		material.Reset();
+		appendmaterial.Reset();
+		dyntex.Reset();
 		renderline = 0;
 		fwidth = 0;
 		index = 0;

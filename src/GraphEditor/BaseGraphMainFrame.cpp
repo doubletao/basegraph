@@ -428,6 +428,11 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		mapParam[BaseGraph_DataBase::SpaceRotate_X_Float].SetValue(fXRorate);
 		mapParam[BaseGraph_DataBase::SpaceRotate_Y_Float].SetValue(fYRorate);
 		mapParam[BaseGraph_DataBase::SpaceRotate_Z_Float].SetValue(fZRorate);
+		BaseGraph_DataBase::faceinfo face;
+		face.disable = 0;
+		face.color.type = 0;
+		face.color.color = ARGBColor(255, 0, 255, 0);
+		mapParam[BaseGraph_DataBase::ColorParam_Face_Stu].SetValue(face);
 		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Titleword, mapParam, strObjID);
 		if (!strObjID.IsEmpty())
 		{

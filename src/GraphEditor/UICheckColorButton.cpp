@@ -62,7 +62,7 @@ void UICheckColorButton::UpdateUIToValue()
 			info.disable = !bCheck;
 		}
 		if (m_pColorButton)
-		{       
+		{
 			sycolor color = m_pColorButton->GetColor();
 			info.color = color;
 		}

@@ -75,7 +75,7 @@ BaseGraph_DataBase::faceinfo::faceinfo()
 
 void BaseGraph_DataBase::faceinfo::Reset()
 {
-	disable = 0;
+	disable = 1;
 	soft = 0;
 	effect_type = 0;
 	effect_width = 0;
@@ -144,7 +144,7 @@ BaseGraph_DataBase::borderinfo::borderinfo()
 
 void BaseGraph_DataBase::borderinfo::Reset()
 {
-	disable = 0;
+	disable = 1;
 	soft = 0;
 	linestyle = 0;
 	width = 0;
@@ -225,7 +225,7 @@ BaseGraph_DataBase::shadowinfo::shadowinfo()
 
 void BaseGraph_DataBase::shadowinfo::Reset()
 {
-	disable = 0;
+	disable = 1;
 	soft = 0;
 	offsetx = 0;
 	offsety = 0;
@@ -314,7 +314,7 @@ BaseGraph_DataBase::cubeinfo::cubeinfo()
 
 void BaseGraph_DataBase::cubeinfo::Reset()
 {
-	disable = 0;
+	disable = 1;
 	width = 0;
 	angle = 0;
 	effect_type = 0;
@@ -567,7 +567,7 @@ BaseGraph_DataBase::dynamictexture::dynamictexture()
 void BaseGraph_DataBase::dynamictexture::Reset()
 {
 	memset(szPath, 0, sizeof(szPath));
-	disable = 0;
+	disable = 1;
 	speed = 0;
 	offsetx = 0;
 	offsety = 0;

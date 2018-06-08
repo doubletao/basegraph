@@ -26,10 +26,11 @@ CalculatorTitleword::CalculatorTitleword(CString strObjID)
 	m_bFixedFrame = FALSE;
 	//×ÖÉ«
 	SYStaticEffect_Init(&m_TextStaitcEffect);
-	m_TextStaitcEffect.face.color.color = 0xFFF7007F;
-	m_TextStaitcEffect.border.disable = 0;
-	m_TextStaitcEffect.border.color.color = 0xFFF7FF7F;
-	m_TextStaitcEffect.border.width = 5;
+	BaseGraph_Common::Value stuValue;
+	if (DataRender_GetItemProperty(m_strObjID, BaseGraph_DataBase::ColorParam_Face_Stu, stuValue))
+	{
+		stuValue.ToStruct(m_TextStaitcEffect.face);
+	}
 }
 
 CalculatorTitleword::~CalculatorTitleword()
@@ -132,6 +133,16 @@ bool CalculatorTitleword::Update2DUnit()
 	newFont.lfDistance = 0;
 	_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, m_strFontName.GetBuffer());
 	m_strFontName.ReleaseBuffer();
+
+	//ÑÕÉ«ÐÞ¸Ä
+	if (GetChgLevel() >= ChgLevel_Buffer)
+	{
+		BaseGraph_Common::Value stuValue;
+		if (DataRender_GetItemProperty(m_strObjID, BaseGraph_DataBase::ColorParam_Face_Stu, stuValue))
+		{
+			stuValue.ToStruct(m_TextStaitcEffect.face);
+		}
+	}
 
 	SYText_Create(&m_text,
 		m_strText,
