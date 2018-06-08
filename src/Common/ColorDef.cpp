@@ -32,7 +32,6 @@ bool tag_sycolor::GetSerializeBuf(byte * pBuf, int nBufSize) const
 		assert(false);
 		return false;
 	}
-	nSize = 0;
 	memcpy(pBuf, this, nSize);
 	return true;
 }
@@ -46,7 +45,6 @@ bool tag_sycolor::RecoverFromBuf(byte * pBuf, int nBufSize)
 		assert(false);
 		return false;
 	}
-	nSize = 0;
 	memcpy(this, pBuf, nSize);
 	return false;
 }
