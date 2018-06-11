@@ -258,6 +258,12 @@ EmMessageHandlerResult MessageHandlerManager::OnRButtonDblClk(IN C3DSceneViewWnd
 
 EmMessageHandlerResult MessageHandlerManager::OnKeyDown(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags)
 {
+	//默认情况下，按下ESC键，视为回到default工具
+	if (nChar == VK_ESCAPE)
+	{
+		ClearHandlerTo(MessageHandlerType_Default);
+		return Msg_Handle_Exit;
+	}
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
 	if (pHandler)

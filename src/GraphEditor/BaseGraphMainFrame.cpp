@@ -28,6 +28,7 @@ BEGIN_MESSAGE_MAP(BaseGraphMainFrame, CSkinFrameWnd)
 	ON_WM_DESTROY()
 	ON_MESSAGE(EmUIElementMsg_BtnClick, BaseGraphMainFrame::OnUIElementBtnClicked)
 	ON_MESSAGE(EmUIElementMsg_SetCapture, BaseGraphMainFrame::OnUIElementSetCapture)
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 BaseGraphMainFrame::BaseGraphMainFrame()
@@ -346,6 +347,14 @@ BOOL BaseGraphMainFrame::OnNcCreate(LPCREATESTRUCT lpCreateStruct)
 	m_uiObjectBar.Create(nX, nY, rcWnd.Width(), nTitleHeight - nY, GetSafeHwnd());
 
 	return TRUE;
+}
+
+void BaseGraphMainFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if (::IsWindow(m_pwndMainView.GetSafeHwnd()))
+	{
+		m_pwndMainView.OnKeyDown(nChar, nRepCnt, nFlags);
+	}
 }
 
 int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -754,19 +763,19 @@ void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam,
 void BaseGraphMainFrame::OnBtnCreateTitle()
 {
 	OutputDebugString(_T("创建标题字\n"));
-	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_CreateTitle);
+	MessageHandlerManager::Instance().PushHandler(MessageHandlerType_CreateTitle);
 }
 
 void BaseGraphMainFrame::OnBtnCreateScroll()
 {
 	OutputDebugString(_T("创建滚屏\n"));
-	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_CreateScroll);
+	MessageHandlerManager::Instance().PushHandler(MessageHandlerType_CreateScroll);
 }
 
 void BaseGraphMainFrame::OnBtnCreateImage()
 {
 	OutputDebugString(_T("创建图片\n"));
-	MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_CreateImage);
+	MessageHandlerManager::Instance().PushHandler(MessageHandlerType_CreateImage);
 }
 
 void BaseGraphMainFrame::OnBtnNewFile()

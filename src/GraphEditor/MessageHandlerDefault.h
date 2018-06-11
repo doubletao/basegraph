@@ -2,7 +2,7 @@
 #include "ISceneMessageHandler.h"
 
 //默认工具担当点选，框选，移动，控制点缩放，控制点旋转等一系列功能
-class MessageHanderDefault :
+class MessageHandlerDefault :
 	public ISceneMessageHandler
 {
 protected:
@@ -20,8 +20,8 @@ protected:
 	CString m_strHitObjID;
 	EmCtrlPointIndex m_emHitCtrlPt;
 public:
-	MessageHanderDefault();
-	virtual ~MessageHanderDefault();
+	MessageHandlerDefault();
+	virtual ~MessageHandlerDefault();
 protected:
 	void DrawSelectBox(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd);
 	void SelectObjectByBox(pointf ptBegin, pointf ptEnd, bool bPreSelect);//bPreSelect指示是否是预选中，预选中仅将选中变动消息通知回显窗，真正的选中才会将消息广播出去

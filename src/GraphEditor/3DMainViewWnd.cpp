@@ -9,6 +9,7 @@ BEGIN_MESSAGE_MAP(C3DMainViewWnd, CWnd)
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 C3DMainViewWnd::C3DMainViewWnd()
@@ -125,4 +126,15 @@ void C3DMainViewWnd::OnSize(UINT nType, int cx, int cy)
 BOOL C3DMainViewWnd::OnEraseBkgnd(CDC * pDC)
 {
 	return TRUE;
+}
+
+void C3DMainViewWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	for (int i = 0; i < m_vecSceneViewWnd.size(); i++)
+	{
+		C3DSceneViewWnd * pViewWnd = m_vecSceneViewWnd[i];
+		if (pViewWnd && ::IsWindow(pViewWnd->GetSafeHwnd()))
+		{
+		}
+	}
 }

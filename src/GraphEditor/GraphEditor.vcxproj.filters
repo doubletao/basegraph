@@ -129,14 +129,17 @@
     <ClCompile Include="MessageHandlerManager.cpp">
       <Filter>SceneMessageHandler</Filter>
     </ClCompile>
-    <ClCompile Include="MessageHanderDefault.cpp">
-      <Filter>SceneMessageHandler\ActionTool</Filter>
-    </ClCompile>
     <ClCompile Include="UITLTimeLinePointer.cpp">
       <Filter>TimeLine</Filter>
     </ClCompile>
     <ClCompile Include="UICheckColorButton.cpp">
       <Filter>PropertyView\UIColorCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerDefault.cpp">
+      <Filter>SceneMessageHandler\ActionTool</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerTitlewordTool.cpp">
+      <Filter>SceneMessageHandler\ObjectTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,14 +230,17 @@
     <ClInclude Include="MessageHandlerFactory.h">
       <Filter>SceneMessageHandler</Filter>
     </ClInclude>
-    <ClInclude Include="MessageHanderDefault.h">
-      <Filter>SceneMessageHandler\ActionTool</Filter>
-    </ClInclude>
     <ClInclude Include="UITLTimeLinePointer.h">
       <Filter>TimeLine</Filter>
     </ClInclude>
     <ClInclude Include="UICheckColorButton.h">
       <Filter>PropertyView\UIColorCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerDefault.h">
+      <Filter>SceneMessageHandler\ActionTool</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerTitlewordTool.h">
+      <Filter>SceneMessageHandler\ObjectTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

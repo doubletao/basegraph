@@ -125,9 +125,10 @@
     <ClCompile Include="GraphEditor.cpp" />
     <ClCompile Include="GraphEditorStatusManager.cpp" />
     <ClCompile Include="ISceneMessageHandler.cpp" />
-    <ClCompile Include="MessageHanderDefault.cpp" />
+    <ClCompile Include="MessageHandlerDefault.cpp" />
     <ClCompile Include="MessageHandlerFactory.cpp" />
     <ClCompile Include="MessageHandlerManager.cpp" />
+    <ClCompile Include="MessageHandlerTitlewordTool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -159,9 +160,10 @@
     <ClInclude Include="GraphEditorStatusManager.h" />
     <ClInclude Include="3DMainViewWnd.h" />
     <ClInclude Include="ISceneMessageHandler.h" />
-    <ClInclude Include="MessageHanderDefault.h" />
+    <ClInclude Include="MessageHandlerDefault.h" />
     <ClInclude Include="MessageHandlerFactory.h" />
     <ClInclude Include="MessageHandlerManager.h" />
+    <ClInclude Include="MessageHandlerTitlewordTool.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

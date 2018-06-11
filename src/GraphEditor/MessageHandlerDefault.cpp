@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "MessageHanderDefault.h"
+#include "MessageHandlerDefault.h"
 #include "GraphEditor.h"
 
-MessageHanderDefault::MessageHanderDefault()
+MessageHandlerDefault::MessageHandlerDefault()
 	: m_emHandleState(HandleState_NULL)
 	, m_strHitObjID(_T(""))
 	, m_emHitCtrlPt(CtrlPoint_NULL)
@@ -11,11 +11,11 @@ MessageHanderDefault::MessageHanderDefault()
 	m_ptBegin.y = 0.0f;
 }
 
-MessageHanderDefault::~MessageHanderDefault()
+MessageHandlerDefault::~MessageHandlerDefault()
 {
 }
 
-void MessageHanderDefault::DrawSelectBox(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd)
+void MessageHandlerDefault::DrawSelectBox(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd)
 {
 	if (pWnd)
 	{
@@ -43,7 +43,7 @@ void MessageHanderDefault::DrawSelectBox(C3DSceneViewWnd * pWnd, pointf ptBegin,
 	}
 }
 
-void MessageHanderDefault::SelectObjectByBox(pointf ptBegin, pointf ptEnd, bool bPreSelect)
+void MessageHandlerDefault::SelectObjectByBox(pointf ptBegin, pointf ptEnd, bool bPreSelect)
 {
 	//分两种情况处理，如果是向左上拉框，则碰到就算，否则圈住才算
 	rectf rtBox = { ptBegin.x, ptBegin.y, ptEnd.x, ptEnd.y };
@@ -73,7 +73,7 @@ void MessageHanderDefault::SelectObjectByBox(pointf ptBegin, pointf ptEnd, bool 
 	}
 }
 
-EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerDefault::OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (m_emHandleState == HandleState_ClickSelect)
 	{
@@ -102,7 +102,7 @@ EmMessageHandlerResult MessageHanderDefault::OnMouseMove(IN C3DSceneViewWnd * pW
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult MessageHanderDefault::OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerDefault::OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (pWnd)
 	{
@@ -153,7 +153,7 @@ EmMessageHandlerResult MessageHanderDefault::OnLButtonDown(IN C3DSceneViewWnd * 
 	return Msg_Handle_Continue;
 }
 
-EmMessageHandlerResult MessageHanderDefault::OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHandlerDefault::OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (pWnd)
 	{

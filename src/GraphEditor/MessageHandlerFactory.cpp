@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MessageHandlerFactory.h"
-#include "MessageHanderDefault.h"
+#include "MessageHandlerDefault.h"
 
 ISceneMessageHandler * MessageHandlerFactory::CreateMessageHandler(EmMessageHandlerType emHandlerType)
 {
@@ -8,7 +8,7 @@ ISceneMessageHandler * MessageHandlerFactory::CreateMessageHandler(EmMessageHand
 	switch (emHandlerType)
 	{
 	case MessageHandlerType_Default:
-		pRet = new MessageHanderDefault;
+		pRet = new MessageHandlerDefault;
 		break;
 	case MessageHandlerType_Scale:
 		break;

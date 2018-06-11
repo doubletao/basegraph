@@ -19,6 +19,7 @@ public:
 public:
 	virtual int GetMsgDispatchID();
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 protected:
 	void RecalcLayout();
 	void OnFrameChanged(int nFrame);
