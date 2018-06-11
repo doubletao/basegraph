@@ -25,6 +25,7 @@ public:
 	virtual ~ISceneMessageHandler() = 0;
 protected:
 	void ClearEditBuf(C3DSceneViewWnd * pWnd);
+	void DrawBoxToEditBuf(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd, int nPenStyle, int nPenWidth, int nPenColor);
 public:
 	//»ù±¾ÊôÐÔ
 	virtual void SetObjectID(CString strObjID);

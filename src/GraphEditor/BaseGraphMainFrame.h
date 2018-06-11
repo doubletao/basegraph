@@ -42,6 +42,7 @@ struct EditorSettingParam
 	DWORD nSizeCtrlPoint;//控制点size
 	DWORD nColorBoxSelect;//框选框颜色
 	DWORD nObjectMinSize;//物件最小size
+	DWORD nColorObjCreateLine;//物件创建框颜色
 	EditorSettingParam()
 	{
 		nColorSelectBound = ABGR(255, 125, 255, 125);
@@ -49,6 +50,7 @@ struct EditorSettingParam
 		nSizeCtrlPoint = 10;
 		nColorBoxSelect = ABGR(255, 255, 255, 255);
 		nObjectMinSize = 10;
+		nColorObjCreateLine = ABGR(255, 125, 255, 255);
 	}
 };
 
