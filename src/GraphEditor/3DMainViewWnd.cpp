@@ -135,6 +135,7 @@ void C3DMainViewWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		C3DSceneViewWnd * pViewWnd = m_vecSceneViewWnd[i];
 		if (pViewWnd && ::IsWindow(pViewWnd->GetSafeHwnd()))
 		{
+			pViewWnd->OnKeyDown(nChar, nRepCnt, nFlags);
 		}
 	}
 }

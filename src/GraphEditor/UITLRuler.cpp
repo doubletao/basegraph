@@ -50,6 +50,7 @@ void UITLRuler::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	SetElementCapture();
 	m_bMoving = true;
 	int nFrame = RulerPosToFrame(GET_X_LPARAM(lParam));
+	DataRender_SetStaticMode(false);
 	SetFrame(nFrame);
 }
 
@@ -64,6 +65,7 @@ void UITLRuler::OnLButtonUp(WPARAM wParam, LPARAM lParam)
 			OutputDebugString(strDebug);
 		}
 		int nFrame = RulerPosToFrame(GET_X_LPARAM(lParam));
+		DataRender_SetStaticMode(true);
 		SetFrame(nFrame);
 	}
 	ReleaseElementCapture();

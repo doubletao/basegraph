@@ -109,9 +109,14 @@ EmUIElementMsgRet UISimpleTimeLine::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM l
 
 bool UISimpleTimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (emMsg == EmUIElementMsg_OnSliderChanging
-		|| emMsg == EmUIElementMsg_OnSliderChanged)
+	if (emMsg == EmUIElementMsg_OnSliderChanging)
 	{
+		DataRender_SetStaticMode(false);
+		SetFrame((int)lParam);
+	}
+	else if (emMsg == EmUIElementMsg_OnSliderChanged)
+	{
+		DataRender_SetStaticMode(true);
 		SetFrame((int)lParam);
 	}
 	return UIElement::OnChildMsg(emMsg, wParam, lParam);
@@ -129,7 +134,7 @@ void UISimpleTimeLine::SetFrame(int nFrame)
 {
 	if (m_pSimpTimeLine)
 	{
-		m_pSimpTimeLine->SetPos(nFrame);
+		m_pSimpTimeLine->SetPos(nFrame, true, true, true);
 	}
 	DataRender_SetFrame(nFrame * 2);
 	UIControl_BroadcastMsg(WM_MSG_FrameChanged, nFrame, m_nID, this);

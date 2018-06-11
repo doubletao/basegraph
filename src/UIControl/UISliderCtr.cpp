@@ -125,13 +125,13 @@ bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
 		{
 			int nReal = ptMsg.x - GetRealX() - m_nHeight / 2;
 			int nLogicPos = RealToLogic(nReal);
-			SetPos(nLogicPos);
+			SetPos(nLogicPos, true, true, false);
 		}
 		else
 		{
 			int nReal = ptMsg.y - GetRealY() - m_nWidth / 2;
 			int nLogicPos = RealToLogic(nReal);
-			SetPos(nLogicPos);
+			SetPos(nLogicPos, true, true, false);
 		}
 	};
 	CPoint ptMsg(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
@@ -160,7 +160,7 @@ bool UISliderCtr::SliderMsgHandle(UINT nMsg, LPARAM lParam, WPARAM wParam)
 		{
 			ReleaseElementCapture();
 			m_pSliderBtn->SetState(UIButton::UIElement_BtnFloat, true);
-			SetPos(m_nLogicPos, true, false);
+			SetPos(m_nLogicPos, true, false, false);
 			m_bMoving = false;
 			return true;
 		}
@@ -226,7 +226,7 @@ EmUIElementMsgRet UISliderCtr::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam
 	return UIElementMsgSuccContinue;
 }
 
-void UISliderCtr::SetPos(int nPos, bool bRefresh/* = true*/, bool bChanging/* = true*/, bool bForbidMsg/* = false*/)
+void UISliderCtr::SetPos(int nPos, bool bRefresh, bool bChanging, bool bForbidMsg)
 {
 	if (nPos < m_nMin)
 	{

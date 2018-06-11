@@ -10,6 +10,7 @@ static char THIS_FILE[] = __FILE__;
 CalculatorManager::CalculatorManager()
 	: m_fScale(1.0f)
 	, m_nField(0)
+	, m_bStaticMode(true)
 {
 }
 
@@ -531,4 +532,14 @@ EmObjectChgLevel CalculatorManager::GetPropertyChanegLevel(IN BaseGraph_DataBase
 		break;
 	}
 	return ChgLevel_NULL;
+}
+
+bool CalculatorManager::IsStaticMode()
+{
+	return m_bStaticMode;
+}
+
+void CalculatorManager::SetStaticMode(bool bStatic)
+{
+	m_bStaticMode = bStatic;
 }

@@ -8,6 +8,7 @@ private:
 	std::map<CString, ObjectCalculator * > m_mapObjCalculator;//物件ID和物件计算器的键值对
 	float m_fScale;
 	int m_nField;
+	bool m_bStaticMode;
 private:
 	CalculatorManager();
 	~CalculatorManager();
@@ -55,5 +56,8 @@ public:
 
 	//根据属性来获取属性对应的changlevel
 	static EmObjectChgLevel GetPropertyChanegLevel(IN BaseGraph_DataBase::ParamValueDef emParam);
+
+	bool IsStaticMode();
+	void SetStaticMode(bool bStatic);
 };
 

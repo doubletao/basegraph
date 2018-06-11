@@ -419,9 +419,14 @@ bool ObjectCalculator::PrepareItemHalBufer(int nDevice)
 bool ObjectCalculator::IsItemNeedRender()
 {
 	//这里边不只是对frame的判定，应该还会有物件可视性灯其他决定因素
-	if (!ValidAction())
+
+	//如果是静态模式则忽略掉action的判定
+	if (!CalculatorManager::Instance().IsStaticMode())
 	{
-		return false;
+		if (!ValidAction())
+		{
+			return false;
+		}
 	}
 	return true;
 }
