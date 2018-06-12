@@ -9,6 +9,7 @@ private:
 	float m_fScale;//当前缩放系数
 	int m_nField;//以场为单位的当前帧号
 	bool m_bStaticMode;//静态模式标记
+	CString m_strCurParentCalcID;//当前父物件ID
 private:
 	CalculatorManager();
 	~CalculatorManager();
@@ -59,5 +60,8 @@ public:
 
 	bool IsStaticMode();
 	void SetStaticMode(bool bStatic);
+
+	CString GetCurParentObjID();
+	void SetCurParentObjID(CString strParentObjID);
 };
 

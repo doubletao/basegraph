@@ -120,6 +120,9 @@
     <ClCompile Include="SimpleSpaceConvert.cpp">
       <Filter>SpaceConvert</Filter>
     </ClCompile>
+    <ClCompile Include="Calculator2DLayer.cpp">
+      <Filter>Layer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataRender.h">
@@ -217,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\DataRender\SimpleSpaceConvert.h">
       <Filter>SpaceConvert</Filter>
+    </ClInclude>
+    <ClInclude Include="Calculator2DLayer.h">
+      <Filter>Layer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

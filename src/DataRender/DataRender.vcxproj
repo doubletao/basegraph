@@ -125,6 +125,7 @@
     <ClCompile Include="Algorithm\OffsetCurve.cpp" />
     <ClCompile Include="Algorithm\ShapeForm.cpp" />
     <ClCompile Include="Algorithm\TriangulateApp.cpp" />
+    <ClCompile Include="Calculator2DLayer.cpp" />
     <ClCompile Include="CalculatorFactory.cpp" />
     <ClCompile Include="CalculatorManager.cpp" />
     <ClCompile Include="CalculatorTitleWord.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="..\..\include\DataRender\TextDrawer.h" />
     <ClInclude Include="..\..\include\DataRender\TriangulateApp.h" />
     <ClInclude Include="..\..\include\ExportDataRender.h" />
+    <ClInclude Include="Calculator2DLayer.h" />
     <ClInclude Include="CalculatorFactory.h" />
     <ClInclude Include="CalculatorManager.h" />
     <ClInclude Include="CalculatorTitleWord.h" />

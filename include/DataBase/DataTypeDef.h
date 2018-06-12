@@ -20,6 +20,7 @@ namespace BaseGraph_DataBase
 	enum ObjectType
 	{
 		ObjectType_Err = -1,
+		ObjectType_2DLayer,
 		ObjectType_Titleword,
 		ObjectType_Scroll,
 		ObjectType_Image,

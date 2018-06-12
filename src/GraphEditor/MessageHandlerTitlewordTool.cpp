@@ -120,7 +120,7 @@ EmMessageHandlerResult MessageHanderTitleword::OnLButtonUp(IN C3DSceneViewWnd * 
 
 		matrix4f matItem;
 		rectf rtItemBound;
-		SYCaclTransMatrixFromTwoPointInReal(&matItem, &rtItemBound, &vStart, &vEnd, nullptr);
+		SYCaclTransMatrixFromTwoPointInReal(&matItem, &rtItemBound, &vStart, &vEnd, DataRender_GetCurParentObjID());
 		//分解得到SRP各矩阵
 		matrix4f matS, matR, matP;
 		matrix4f_issolvesrp(&matItem, &matS, &matR, &matP);

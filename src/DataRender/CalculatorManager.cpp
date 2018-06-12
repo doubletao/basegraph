@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "CalculatorManager.h"
 #include "CalculatorFactory.h"
+#include "Calculator2DLayer.h"
 #include <assert.h>
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
@@ -11,7 +13,9 @@ CalculatorManager::CalculatorManager()
 	: m_fScale(1.0f)
 	, m_nField(0)
 	, m_bStaticMode(true)
+	, m_strCurParentCalcID()
 {
+	m_strCurParentCalcID = Calculator2DLayer::strCalculator2DLayer;
 }
 
 
@@ -122,6 +126,12 @@ ObjectCalculator * CalculatorManager::GetObjCalculator(CString strObjID)
 {
 	if (m_mapObjCalculator.count(strObjID) > 0)
 	{
+		return m_mapObjCalculator[strObjID];
+	}
+	else if (strObjID == Calculator2DLayer::strCalculator2DLayer)
+	{
+		BaseGraph_DataBase::ObjectType emObjType = BaseGraph_DataBase::ObjectType_2DLayer;
+		m_mapObjCalculator[strObjID] = CalculatorFactory::CreateCalculator(emObjType, strObjID);
 		return m_mapObjCalculator[strObjID];
 	}
 	else
@@ -542,4 +552,14 @@ bool CalculatorManager::IsStaticMode()
 void CalculatorManager::SetStaticMode(bool bStatic)
 {
 	m_bStaticMode = bStatic;
+}
+
+CString CalculatorManager::GetCurParentObjID()
+{
+	return m_strCurParentCalcID;
+}
+
+void CalculatorManager::SetCurParentObjID(CString strParentObjID)
+{
+	m_strCurParentCalcID = strParentObjID;
 }

@@ -160,6 +160,16 @@ BASEGRAPH_DATARENDER_API bool DataRender_IsStaticMode()
 	return CalculatorManager::Instance().IsStaticMode();
 }
 
+BASEGRAPH_DATARENDER_API CString DataRender_GetCurParentObjID()
+{
+	return CalculatorManager::Instance().GetCurParentObjID();
+}
+
+BASEGRAPH_DATARENDER_API void DataRender_SetCurParentObjID(CString strParentObjID)
+{
+	return CalculatorManager::Instance().SetCurParentObjID(strParentObjID);
+}
+
 BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam)
 {
 	//暂时还没有引入关键帧，先直接从database层调

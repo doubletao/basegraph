@@ -650,11 +650,14 @@ void SYCaclTransMatrixFromTwoPointInReal(matrix4f *dest, rectf *rtBound, const f
 void BASEGRAPH_DATARENDER_API SYCaclTransMatrixFromTwoPointInReal(matrix4f * dest, rectf * rtBound, const float3 * pt0, const float3 * pt1, CString strParentID)
 {
 	ObjectCalculator * pCalculator = CalculatorManager::Instance().GetObjCalculator(strParentID);
-	if (nullptr == pCalculator)
+	if (nullptr != pCalculator)
 	{
-		//找不到父，则返回默认的父
+		SYCaclTransMatrixFromTwoPointInReal(dest, rtBound, pt0, pt1, pCalculator);
 	}
-	SYCaclTransMatrixFromTwoPointInReal(dest, rtBound, pt0, pt1, pCalculator);
+	else
+	{
+		assert(false);
+	}
 }
 
 CSimpleSpaceConvert3DIn2D::CSimpleSpaceConvert3DIn2D( ObjectCalculator *pCalculator, BOOL bForEdit, BOOL bUse2DReal, CSpaceConvertMatrix *pConvertMatrix )
