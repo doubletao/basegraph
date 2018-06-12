@@ -268,7 +268,7 @@ void BASEGRAPH_SCENE_RENDER_API SceneToBuffer(float2 * pBufferPt, const float2 *
 
 void BASEGRAPH_SCENE_RENDER_API BufferToScene(float2 * pScenePt, const float2 * pBufferPt, float fCenterX, float fCenterY, float fScale)
 {
-	float2Set(pScenePt, pBufferPt->x - fCenterX, -(pBufferPt->y - fCenterY));
+	float2Set(pScenePt, pBufferPt->x + fCenterX, -(pBufferPt->y - fCenterY));
 	*pScenePt /= fScale;
 }
 
