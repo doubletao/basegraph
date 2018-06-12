@@ -25,6 +25,9 @@
     <Filter Include="SpaceConvert">
       <UniqueIdentifier>{a8810432-14e8-4dc0-83d8-fb151bbc34e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Layer">
+      <UniqueIdentifier>{16edef2e-5c60-4d75-a83f-c50bf8485557}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -212,7 +215,7 @@
     <ClInclude Include="..\..\include\DataRender\TextDrawer.h">
       <Filter>TitleWord</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleSpaceConvert.h">
+    <ClInclude Include="..\..\include\DataRender\SimpleSpaceConvert.h">
       <Filter>SpaceConvert</Filter>
     </ClInclude>
   </ItemGroup>

@@ -77,6 +77,8 @@ namespace BaseGraph_DataBase
 		Titleword_FontName_Str,
 		Titleword_UnderLine_Bool,
 		Titleword_LineWrap_Bool,
+		Titleword_FontWidth_Int,
+		Titleword_FontHeight_Int,
 		Titleword_FontDistance_Int,
 		Titleword_Horizontal_Bool,
 		TitlewordParam_End,
@@ -586,6 +588,22 @@ namespace BaseGraph_DataBase
 			valueDesc.fStep = 0.0f;
 			valueDesc.strDispName = _T("自动折行");
 			valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+			break;
+		case Titleword_FontWidth_Int:
+			valueDesc.nDispIndex = 0;
+			valueDesc.fStep = 1.0f;
+			valueDesc.strDispName = _T("字宽");
+			valueDesc.stuDefault.SetValue(40);
+			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(1024, _T("最大值")));
+			break;
+		case Titleword_FontHeight_Int:
+			valueDesc.nDispIndex = 0;
+			valueDesc.fStep = 1.0f;
+			valueDesc.strDispName = _T("字高");
+			valueDesc.stuDefault.SetValue(40);
+			valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
+			valueDesc.vecValueLimit.push_back(std::make_pair(1024, _T("最大值")));
 			break;
 		case Titleword_FontDistance_Int:
 			valueDesc.nDispIndex = 0;

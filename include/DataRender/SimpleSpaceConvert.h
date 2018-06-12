@@ -175,4 +175,5 @@ public:
 private:
 	float3 m_vSceneCenter;
 };
-void BASEGRAPH_DATARENDER_API SYCaclTransMatrixFromTwoPointInReal( matrix4f *dest, rectf *rtBound, const float3 *pt0, const float3 *pt1, ObjectCalculator *pParentCalculator);
+
+void BASEGRAPH_DATARENDER_API SYCaclTransMatrixFromTwoPointInReal(matrix4f *dest, rectf *rtBound, const float3 *pt0, const float3 *pt1, CString strParentID);

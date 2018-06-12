@@ -31,6 +31,7 @@
 #include "DataRender\ShapeForm.h"
 #include "DataRender\TextDrawer.h"
 #include "DataRender\TriangulateApp.h"
+#include "DataRender\SimpleSpaceConvert.h"
 
 struct StuSimpleBuffer
 {

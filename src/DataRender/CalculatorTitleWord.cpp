@@ -8,6 +8,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 CalculatorTitleword::CalculatorTitleword(CString strObjID)
 	: ObjectCalculator(strObjID)
+	, m_nFontWidth(0)
+	, m_nFontHeight(0)
 {
 	memset(&m_2DTextRenderUnitArray, 0, sizeof(SYArray));
 	memset(&m_arWholeRenderTextGraph, 0, sizeof(SYArray));
@@ -109,7 +111,15 @@ bool CalculatorTitleword::GetCurrentParam()
 						if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_LineWrap_Bool, stuValue))
 						{
 							m_bLineWrap = stuValue.ToBOOL();
-							return true;
+							if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontWidth_Int, stuValue))
+							{
+								m_nFontWidth = stuValue.ToInt();
+								if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontHeight_Int, stuValue))
+								{
+									m_nFontHeight = stuValue.ToInt();
+									return true;
+								}
+							}
 						}
 					}
 				}
@@ -128,9 +138,9 @@ bool CalculatorTitleword::Update2DUnit()
 
 	//×ÖÌå
 	SYFont newFont;
-	newFont.lfWidth = 35;
-	newFont.lfHeight = 40;
-	newFont.lfDistance = 0;
+	newFont.lfWidth = m_nFontWidth;
+	newFont.lfHeight = m_nFontHeight;
+	newFont.lfDistance = m_nFontDistance;
 	_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, m_strFontName.GetBuffer());
 	m_strFontName.ReleaseBuffer();
 

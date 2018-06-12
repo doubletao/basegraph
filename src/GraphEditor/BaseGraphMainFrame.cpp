@@ -421,6 +421,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	auto CreateTestTitlewordObj = [](CString strName, CString strText, CString strFontName, CString strDebugPath, int nBegin, int nEnd,
 		float fXPos, float fYPos, float fZPos,
 		float fXRorate, float fYRorate, float fZRorate,
+		int nFontWidth, int nFontHeight,
 		bool bHor)
 	{
 		CString strObjID = _T("");
@@ -437,6 +438,8 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		mapParam[BaseGraph_DataBase::SpaceRotate_X_Float].SetValue(fXRorate);
 		mapParam[BaseGraph_DataBase::SpaceRotate_Y_Float].SetValue(fYRorate);
 		mapParam[BaseGraph_DataBase::SpaceRotate_Z_Float].SetValue(fZRorate);
+		mapParam[BaseGraph_DataBase::Titleword_FontWidth_Int].SetValue(nFontWidth);
+		mapParam[BaseGraph_DataBase::Titleword_FontHeight_Int].SetValue(nFontHeight);
 		BaseGraph_DataBase::faceinfo face;
 		face.disable = 0;
 		face.color.type = 0;
@@ -485,17 +488,21 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 				float fYRotate = 0.0f;
 				float fZRotate = 0.0f;
 
+				int nWidth = 30;
+				int nHeight = 30;
 				bool bHor = i % 2 == 0;
 				if (bHor)
 				{
 					fXPos = 100.0f;
 					fYPos = 100.0f * i / 2;
+					nHeight += 20;
 					//fXRotate = i * 3.14f / 6;
 				}
 				else
 				{
 					fXPos = -100.0f * i / 2;
 					fYPos = 300.0f;
+					nWidth += 20;
 					//fYRotate = i * 3.14f / 6;
 				}
 				//fZRotate = i * 3.14f / 6;
@@ -505,12 +512,14 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 				{
 					CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd, fXPos, fYPos, fZPos,
 						fXRotate, fYRotate, fZRotate,
+						nWidth, nHeight,
 						bHor);
 				}
 				else
 				{
 					CreateTestTitlewordObj(strName, it->first, it->second, strDebug, nBegin, nEnd, fXPos, fYPos, fZPos,
 						0.0f, 0.0f, 0.0f,
+						nWidth, nHeight,
 						bHor);
 				}
 			}

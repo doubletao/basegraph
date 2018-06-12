@@ -1,6 +1,8 @@
 #include "stdafx.h"
-#include "SimpleSpaceConvert.h"
+#include "DataRender/SimpleSpaceConvert.h"
 #include "ObjectCalculator.h"
+#include "CalculatorManager.h"
+
 CSpaceConvertMatrix::CSpaceConvertMatrix( ObjectCalculator *pCalculator )
 {
 	m_pCalculator = pCalculator;
@@ -643,6 +645,16 @@ void SYCaclTransMatrixFromTwoPointInReal(matrix4f *dest, rectf *rtBound, const f
 	rtBound->bottom = rtBound->top + height;
 
 	ReleaseSimpleSpaceConvert( pSpaceConvert );
+}
+
+void BASEGRAPH_DATARENDER_API SYCaclTransMatrixFromTwoPointInReal(matrix4f * dest, rectf * rtBound, const float3 * pt0, const float3 * pt1, CString strParentID)
+{
+	ObjectCalculator * pCalculator = CalculatorManager::Instance().GetObjCalculator(strParentID);
+	if (nullptr == pCalculator)
+	{
+		//找不到父，则返回默认的父
+	}
+	SYCaclTransMatrixFromTwoPointInReal(dest, rtBound, pt0, pt1, pCalculator);
 }
 
 CSimpleSpaceConvert3DIn2D::CSimpleSpaceConvert3DIn2D( ObjectCalculator *pCalculator, BOOL bForEdit, BOOL bUse2DReal, CSpaceConvertMatrix *pConvertMatrix )

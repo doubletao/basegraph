@@ -6,9 +6,9 @@ class CalculatorManager
 {
 private:
 	std::map<CString, ObjectCalculator * > m_mapObjCalculator;//物件ID和物件计算器的键值对
-	float m_fScale;
-	int m_nField;
-	bool m_bStaticMode;
+	float m_fScale;//当前缩放系数
+	int m_nField;//以场为单位的当前帧号
+	bool m_bStaticMode;//静态模式标记
 private:
 	CalculatorManager();
 	~CalculatorManager();

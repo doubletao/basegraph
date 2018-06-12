@@ -23,6 +23,8 @@ protected:
 	int m_nFontDistance;
 	BOOL m_bHorizontal;
 	BOOL m_bLineWrap;
+	int m_nFontWidth;
+	int m_nFontHeight;
 	E_TextAlignHorizontal m_TextAlignH;
 	E_TextAlignVeritical m_TextAlignV;
 	BOOL m_bLeftInput;
