@@ -165,7 +165,7 @@ EmMessageHandlerResult MessageHandlerDefault::OnKeyDown(IN C3DSceneViewWnd * pWn
 	{
 		//删除物件
 		DataRender_DeleteSelObj();
-		UIControl_BroadcastMsg(WM_MSG_WholeFrameLengthChanged, 0, 0, nullptr);//通知物件变动
+		UIControl_BroadcastMsg(WM_MSG_ObjectCreateDelete, 0, 0, nullptr);//通知物件变动
 		return Msg_Handle_Break;
 	}
 	return Msg_Handle_Continue;

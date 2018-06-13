@@ -563,3 +563,13 @@ void CalculatorManager::SetCurParentObjID(CString strParentObjID)
 {
 	m_strCurParentCalcID = strParentObjID;
 }
+
+void CalculatorManager::DeleteCalculator(CString strID)
+{
+	if (m_mapObjCalculator.count(strID) > 0)
+	{
+		delete m_mapObjCalculator[strID];
+		m_mapObjCalculator[strID] = nullptr;
+		m_mapObjCalculator.erase(strID);
+	}
+}

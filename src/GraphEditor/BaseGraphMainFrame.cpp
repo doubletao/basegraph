@@ -757,6 +757,12 @@ void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam,
 			OnUpdateWholeLength();
 		}
 		break;
+	case WM_MSG_ObjectCreateDelete:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			OnUpdateWholeLength();
+		}
+		break;
 	case WM_MSG_OnMessageHandlerChg:
 		if (nIDFrom != GetMsgDispatchID())
 		{

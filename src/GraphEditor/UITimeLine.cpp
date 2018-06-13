@@ -160,6 +160,12 @@ void UITimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nID
 			AdjustScrollZoom();
 		}
 		break;
+	case WM_MSG_ObjectCreateDelete:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			AdjustScrollZoom();
+		}
+		break;
 	case WM_MSG_FrameChanged:
 		if (nIDFrom != GetMsgDispatchID())
 		{

@@ -167,7 +167,7 @@ EmMessageHandlerResult MessageHanderTitleword::OnLButtonUp(IN C3DSceneViewWnd * 
 		CString strNewObjID = _T("");
 		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Titleword, mapParamValue, strNewObjID);
 		//广播通知新物件被创建
-		UIControl_BroadcastMsg(WM_MSG_WholeFrameLengthChanged, 0, 0, nullptr);
+		UIControl_BroadcastMsg(WM_MSG_ObjectCreateDelete, 0, 0, nullptr);
 		//创建成功则选中
 		if (!strNewObjID.IsEmpty())
 		{

@@ -54,6 +54,13 @@ void UISimpleTimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, i
 		{
 			SetWholeFrame((int)wParam);
 		}
+		break;
+	case WM_MSG_ObjectCreateDelete:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			SetWholeFrame((int)wParam);
+		}
+		break;
 	default:
 		break;
 	}

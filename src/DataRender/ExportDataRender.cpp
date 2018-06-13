@@ -178,6 +178,7 @@ BASEGRAPH_DATARENDER_API bool DataRender_DeleteSelObj()
 		for (auto it : vecSelObjID)
 		{
 			DataBase_DeleteItem(it);
+			CalculatorManager::Instance().DeleteCalculator(it);
 		}
 		return true;
 	}

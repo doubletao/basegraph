@@ -63,5 +63,7 @@ public:
 
 	CString GetCurParentObjID();
 	void SetCurParentObjID(CString strParentObjID);
+
+	void DeleteCalculator(CString strID);
 };
 
