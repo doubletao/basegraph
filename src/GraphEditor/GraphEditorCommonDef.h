@@ -62,4 +62,5 @@ enum UIElementMsgDef
 	WM_MSG_OnMessageHandlerChg,//当前消息处理器发生变化
 	WM_MSG_TimeLinePointerChanged,//通知时间线刷新一下pointer
 	WM_MSG_ObjectSpaceChanged,//属性变更
+	WM_MSG_OnCreateObjTool,//创建物件工具被加载
 };

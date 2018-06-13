@@ -34,5 +34,6 @@ public:
 	void OnBtnPropertyTabFx();
 	void OnBtnPropertyTabText();
 	void UpdateStatus();
+	std::map<BaseGraph_DataBase::ParamValueDef, Value> GetCurrentParamValue();//拿到当前所有属性窗的属性集合
 };
 

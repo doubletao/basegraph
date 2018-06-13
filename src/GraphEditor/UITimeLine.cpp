@@ -154,6 +154,12 @@ void UITimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nID
 {
 	switch (nMsgID)
 	{
+	case WM_MSG_WholeFrameLengthChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			AdjustScrollZoom();
+		}
+		break;
 	case WM_MSG_FrameChanged:
 		if (nIDFrom != GetMsgDispatchID())
 		{

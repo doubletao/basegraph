@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MessageHandlerTitlewordTool.h"
 #include "GraphEditor.h"
+#include "UIPropertyView.h"
 
 MessageHanderTitleword::MessageHanderTitleword()
 	: m_bLButtonDown(false)
@@ -16,6 +17,8 @@ MessageHanderTitleword::~MessageHanderTitleword()
 void MessageHanderTitleword::OnSetFocus(ISceneMessageHandler * pLastHandler)
 {
 	ISceneMessageHandler::OnSetFocus(pLastHandler);
+	//广播出去自己被激活了
+	UIControl_BroadcastMsg(WM_MSG_OnCreateObjTool, BaseGraph_DataBase::ObjectType_Titleword, (LPARAM)pLastHandler, nullptr);
 	//拿到焦点后干掉选中项
 	DataRender_ClearAllSelect();
 	UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);//通知刷新
@@ -110,10 +113,10 @@ EmMessageHandlerResult MessageHanderTitleword::OnLButtonUp(IN C3DSceneViewWnd * 
 				}
 			}
 		}
-		int nWidth = DataBase_GetSceneWidth();
-		int nHeight = DataBase_GetSceneHeight();
-		BufferToScene(&m_ptBegin, &m_ptBegin, nWidth / 2, nHeight / 2, 1.0f);
-		BufferToScene(&point, &point, nWidth / 2, nHeight / 2, 1.0f);
+		int nSceneWidth = DataBase_GetSceneWidth();
+		int nSceneHeight = DataBase_GetSceneHeight();
+		BufferToScene(&m_ptBegin, &m_ptBegin, nSceneWidth / 2, nSceneHeight / 2, 1.0f);
+		BufferToScene(&point, &point, nSceneWidth / 2, nSceneHeight / 2, 1.0f);
 
 		vector3f vStart = { m_ptBegin.x, m_ptBegin.y, 0 };
 		vector3f vEnd = { point.x, point.y, 0 };
@@ -142,6 +145,36 @@ EmMessageHandlerResult MessageHanderTitleword::OnLButtonUp(IN C3DSceneViewWnd * 
 		ptRightBottom.x = max(vStart.x, vEnd.x);
 		ptRightBottom.y = min(vStart.y, vEnd.y);
 		ptRightBottom.z = vEnd.z;
+
+		//这个两个点拿到的是位置和字宽或者字高，还需要从属性窗里拿到当前属性
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParamValue;
+		//拿到属性窗
+		UIPropertyView * pPropertyView = (UIPropertyView *)UIControl_GetMsgDispatcher(UIElementMsg_PropertyView);
+		//取出属性
+		if (pPropertyView)
+		{
+			mapParamValue = pPropertyView->GetCurrentParamValue();
+		}
+		//填充创建工具确定的属性
+		CString strNewItemName = DataBase_GetNextItemName(BaseGraph_DataBase::ObjectType_Titleword);
+		mapParamValue[BaseGraph_DataBase::Obj_Name_Str].SetValue(strNewItemName);
+		mapParamValue[BaseGraph_DataBase::SpacePosition_X_Float].SetValue(ptLeftTop.x);
+		mapParamValue[BaseGraph_DataBase::SpacePosition_Y_Float].SetValue(ptLeftTop.y);
+		mapParamValue[BaseGraph_DataBase::SpacePosition_Z_Float].SetValue(0.0f);
+		//测试
+		mapParamValue[BaseGraph_DataBase::Titleword_Text_Str].SetValue(_T("新建标题字"));
+		//生成一个名字出来
+		CString strNewObjID = _T("");
+		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Titleword, mapParamValue, strNewObjID);
+		//广播通知新物件被创建
+		UIControl_BroadcastMsg(WM_MSG_WholeFrameLengthChanged, 0, 0, nullptr);
+		//创建成功则选中
+		if (!strNewObjID.IsEmpty())
+		{
+			DataRender_SetItemSelected(strNewObjID, true);
+			//广播通知选中项变更
+			UIControl_BroadcastMsg(WM_MSG_OnSelectChanged, 0, 0, nullptr);
+		}
 
 		ReleaseCapture();
 		m_ptBegin.x = 0.0f;

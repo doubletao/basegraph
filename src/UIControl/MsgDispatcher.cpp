@@ -71,6 +71,15 @@ void MsgDispatcher::SendMsgTo(int nIDTo, int nMsgID, WPARAM wParam, LPARAM lPara
 	}
 }
 
+IMsgDispatchObject * MsgDispatcher::GetMsgDispatcher(int nDispatcherID)
+{
+	if (m_mapDispatchObject.count(nDispatcherID) > 0)
+	{
+		return m_mapDispatchObject[nDispatcherID];
+	}
+	return nullptr;
+}
+
 ///////////////////////IMsgDispatchObject//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void IMsgDispatchObject::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)

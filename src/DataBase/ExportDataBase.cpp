@@ -93,6 +93,11 @@ BaseGraph_DataBase::ITEM_FORMTYPE BASEGRAPH_DATABASE_API DataBase_Get3DType(IN C
 	return DataBaseManager::Instance().Get3DType(strID);
 }
 
+CString BASEGRAPH_DATABASE_API DataBase_GetNextItemName(IN BaseGraph_DataBase::ObjectType emItemType)
+{
+	return DataBaseManager::Instance().GetNextItemName(emItemType);
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
 {
 	return DataBaseManager::Instance().SetItemProperty(strID, emParam, stuParam);

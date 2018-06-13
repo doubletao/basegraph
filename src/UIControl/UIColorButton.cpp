@@ -105,7 +105,8 @@ EmUIElementMsgRet UIColorButton::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lPar
 
 void UIColorButton::OnButtonClickDown()
 {
-	int nA = COLORARGB_A(m_color.color);
+	//int nA = COLORARGB_A(m_color.color);
+	int nA = 255;
 	int nR = COLORARGB_R(m_color.color);
 	int nG = COLORARGB_G(m_color.color);
 	int nB = COLORARGB_B(m_color.color);

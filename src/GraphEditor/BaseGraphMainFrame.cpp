@@ -461,20 +461,19 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	};
 
 	std::map<CString, CString> mapText;
-	mapText[_T("宋体_文本样例")] = _T("宋体");
-	mapText[_T("楷体_文本样例")] = _T("楷体");
-	mapText[_T("微软雅黑_文本样例")] = _T("微软雅黑");
-	mapText[_T("黑体_文本样例")] = _T("黑体");
-	mapText[_T("仿宋_文本样例")] = _T("仿宋");
-	mapText[_T("新宋体_文本样例")] = _T("新宋体");
+	//mapText[_T("宋体_文本样例")] = _T("宋体");
+	//mapText[_T("楷体_文本样例")] = _T("楷体");
+	//mapText[_T("微软雅黑_文本样例")] = _T("微软雅黑");
+	//mapText[_T("黑体_文本样例")] = _T("黑体");
+	//mapText[_T("仿宋_文本样例")] = _T("仿宋");
+	//mapText[_T("新宋体_文本样例")] = _T("新宋体");
 	{
 		int i = 0;
 		for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)
 		{
 			for (size_t loop = 0; loop < 1; loop++, i++)
 			{
-				CString strName;
-				strName.Format(_T("文本_%s"), it->first);
+				CString strName = DataBase_GetNextItemName(BaseGraph_DataBase::ObjectType_Titleword);
 				CString strDebug;
 				strDebug.Format(_T("e:\\%s.bmp"), it->first);
 				int nBegin = 100 * i;

@@ -111,6 +111,29 @@ void UIPropertyView::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int
 {
 	switch (nMsgID)
 	{
+	case WM_MSG_OnCreateObjTool:
+		//对各个窗口取出其值
+		if (m_pColorElement)
+		{
+			m_pColorElement->BindCreateType((BaseGraph_DataBase::ObjectType)wParam);
+		}
+		if (m_pObjectElement)
+		{
+			m_pObjectElement->BindCreateType((BaseGraph_DataBase::ObjectType)wParam);
+		}
+		if (m_pSpaceElement)
+		{
+			m_pSpaceElement->BindCreateType((BaseGraph_DataBase::ObjectType)wParam);
+		}
+		if (m_pFxElement)
+		{
+			m_pFxElement->BindCreateType((BaseGraph_DataBase::ObjectType)wParam);
+		}
+		if (m_pTextElement)
+		{
+			m_pTextElement->BindCreateType((BaseGraph_DataBase::ObjectType)wParam);
+		}
+		break;
 	case WM_MSG_OnSelectChanged:
 		if (nIDFrom != GetMsgDispatchID())
 		{
@@ -145,7 +168,7 @@ void UIPropertyView::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int
 	case WM_MSG_ObjectSpaceChanged:
 		if (m_pSpaceElement)
 		{
-			m_pSpaceElement->RefreshFromData();
+			m_pSpaceElement->RefreshFromID(m_strObjID);
 		}
 		break;
 	default:
@@ -315,4 +338,35 @@ void UIPropertyView::UpdateStatus()
 	{
 		m_pPropertyTabBar->CkeckOne(m_emCurrentTab);
 	}
+}
+
+std::map<BaseGraph_DataBase::ParamValueDef, Value> UIPropertyView::GetCurrentParamValue()
+{
+	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParamValueRet;
+	if (m_pColorElement)
+	{
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParamValue = m_pColorElement->GetValue();
+		mapParamValueRet.insert(mapParamValue.begin(), mapParamValue.end());
+	}
+	if (m_pObjectElement)
+	{
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParamValue = m_pObjectElement->GetValue();
+		mapParamValueRet.insert(mapParamValue.begin(), mapParamValue.end());
+	}
+	if (m_pSpaceElement)
+	{
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParamValue = m_pSpaceElement->GetValue();
+		mapParamValueRet.insert(mapParamValue.begin(), mapParamValue.end());
+	}
+	if (m_pFxElement)
+	{
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParamValue = m_pFxElement->GetValue();
+		mapParamValueRet.insert(mapParamValue.begin(), mapParamValue.end());
+	}
+	if (m_pTextElement)
+	{
+		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParamValue = m_pTextElement->GetValue();
+		mapParamValueRet.insert(mapParamValue.begin(), mapParamValue.end());
+	}
+	return mapParamValueRet;
 }

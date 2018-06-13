@@ -60,6 +60,11 @@ public:
 	//属性设置
 	bool SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam);
 	bool SetItemProperty(IN CString strID, IN const map<ParamValueDef, Value> & mapParam);
+	//名字
+	CString GetItemTypePrefix(BaseGraph_DataBase::ObjectType emObjType);
+	std::set<CString> GetAllItemName();
+	bool IsItemNameExist(CString strItemName);
+	CString GetNextItemName(BaseGraph_DataBase::ObjectType emObjType);
 	//统计
 	bool GetItemLength(OUT int & nLength);
 	bool GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);

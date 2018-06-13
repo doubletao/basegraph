@@ -124,27 +124,45 @@ bool UIPropertyViewElement::Create(int nX, int nY, int nWidth, int nHeight, int 
 	return bRet;
 }
 
+bool UIPropertyViewElement::BindCreateType(BaseGraph_DataBase::ObjectType emType)
+{
+	RefreshFromType(emType);
+	return false;
+}
+
 bool UIPropertyViewElement::BindObject(CString strObjID)
 {
 	if (m_strObjID != strObjID)
 	{
 		m_strObjID = strObjID;
-		RefreshFromData();
+		RefreshFromID(m_strObjID);
 	}
 	return true;
 }
 
-void UIPropertyViewElement::RefreshFromData()
+void UIPropertyViewElement::RefreshFromID(CString strObjID)
 {
-	if (!m_strObjID.IsEmpty())
+	if (!strObjID.IsEmpty())
 	{
 		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
-		if (DataRender_GetItemProperty(m_strObjID, mapParam))
+		if (DataRender_GetItemProperty(strObjID, mapParam))
 		{
 			//获取物件的值赋予窗口
 			SetValue(mapParam);
 		}
 	}
+}
+
+void UIPropertyViewElement::RefreshFromType(BaseGraph_DataBase::ObjectType emType)
+{
+	for (int i = m_nParamIDBegin + 1; i < m_nParamIDEnd; i++)
+	{
+		//创建物件填充默认值
+		BaseGraph_DataBase::ParamValueDef paramValueDef = (BaseGraph_DataBase::ParamValueDef)i;
+		BaseGraph_DataBase::ValueDescriptor valueDesc = BaseGraph_DataBase::GetValueDescriptor(paramValueDef);
+		m_mapParam[paramValueDef] = valueDesc.stuDefault;
+	}
+	UpdateDataToUI();
 }
 
 void UIPropertyViewElement::SetValue(const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, bool bRefresh/* = true*/)

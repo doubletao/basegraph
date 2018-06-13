@@ -616,7 +616,7 @@ namespace BaseGraph_DataBase
 			valueDesc.nDispIndex = 0;
 			valueDesc.fStep = 0.0f;
 			valueDesc.strDispName = _T("ˮƽ");
-			valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+			valueDesc.stuDefault.SetValue(TRUE, BaseGraph_Common::ValueType_BOOL);
 			break;
 		case Image_Path_Str:
 			valueDesc.nDispIndex = 0;

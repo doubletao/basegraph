@@ -42,6 +42,9 @@ float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID);
 
 BaseGraph_DataBase::ITEM_FORMTYPE BASEGRAPH_DATABASE_API DataBase_Get3DType(IN CString strID);
 
+//名字
+CString BASEGRAPH_DATABASE_API DataBase_GetNextItemName(IN BaseGraph_DataBase::ObjectType emItemType);
+
 //物件长度（注意，这里的单位是场(按照一帧两场计数)）
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(OUT int & nLength);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);

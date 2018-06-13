@@ -26,13 +26,6 @@ CalculatorTitleword::CalculatorTitleword(CString strObjID)
 	m_bLeftInput = TRUE;
 	m_bVLeftTypeset = FALSE;
 	m_bFixedFrame = FALSE;
-	//字色
-	SYStaticEffect_Init(&m_TextStaitcEffect);
-	BaseGraph_Common::Value stuValue;
-	if (DataRender_GetItemProperty(m_strObjID, BaseGraph_DataBase::ColorParam_Face_Stu, stuValue))
-	{
-		stuValue.ToStruct(m_TextStaitcEffect.face);
-	}
 }
 
 CalculatorTitleword::~CalculatorTitleword()
@@ -144,7 +137,7 @@ bool CalculatorTitleword::Update2DUnit()
 	_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, m_strFontName.GetBuffer());
 	m_strFontName.ReleaseBuffer();
 
-	//颜色修改
+	//颜色赋值
 	if (GetChgLevel() >= ChgLevel_Buffer)
 	{
 		BaseGraph_Common::Value stuValue;

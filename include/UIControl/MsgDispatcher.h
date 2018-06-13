@@ -25,4 +25,5 @@ public:
 	void BroadcastMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom = 0);
 	void BroadcastMsg(int nMsgID, WPARAM wParam, LPARAM lParam, IMsgDispatchObject * pMsgObj = nullptr);
 	void SendMsgTo(int nIDTo, int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom = 0);
+	IMsgDispatchObject * GetMsgDispatcher(int nDispatcherID);
 };

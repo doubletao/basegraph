@@ -338,6 +338,82 @@ bool DataBaseManager::SetItemProperty(IN CString strID, IN const map<ParamValueD
 	return false;
 }
 
+CString DataBaseManager::GetItemTypePrefix(BaseGraph_DataBase::ObjectType emObjType)
+{
+	switch (emObjType)
+	{
+	case BaseGraph_DataBase::ObjectType_Err:
+		return _T("未知类型");
+	case BaseGraph_DataBase::ObjectType_2DLayer:
+		return _T("2D层");
+	case BaseGraph_DataBase::ObjectType_Titleword:
+		return _T("标题字");
+	case BaseGraph_DataBase::ObjectType_Scroll:
+		return _T("滚屏");
+	case BaseGraph_DataBase::ObjectType_Image:
+		return _T("图片");
+	default:
+		break;
+	}
+	return _T("");
+}
+
+std::set<CString> DataBaseManager::GetAllItemName()
+{
+	std::set<CString> setItemNames;
+	std::vector<CString> vecItemID;
+	GetAllItemID(vecItemID);
+	for (int i = 0; i < vecItemID.size(); i++)
+	{
+		CString strID = vecItemID[i];
+		BaseGraph_Common::Value valueItemName;
+		if (GetItemProperty(strID, BaseGraph_DataBase::Obj_Name_Str, valueItemName))
+		{
+			CString strName = valueItemName.ToCString();
+			setItemNames.insert(strName);
+		}
+	}
+	return setItemNames;
+}
+
+bool DataBaseManager::IsItemNameExist(CString strItemName)
+{
+	std::vector<CString> vecItemID;
+	GetAllItemID(vecItemID);
+	for (int i = 0; i < vecItemID.size(); i++)
+	{
+		CString strID = vecItemID[i];
+		BaseGraph_Common::Value valueItemName;
+		if (GetItemProperty(strID, BaseGraph_DataBase::Obj_Name_Str, valueItemName))
+		{
+			CString strName = valueItemName.ToCString();
+			if (strName == strItemName)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+CString DataBaseManager::GetNextItemName(BaseGraph_DataBase::ObjectType emObjType)
+{
+	//取名的方式是在类型后边加数字，判断是否重复，重复则数字++并继续，不重复则使用
+	CString strPrefix = GetItemTypePrefix(emObjType);
+	int nSuffix = 0;
+	std::set<CString> setItemNames = GetAllItemName();
+	CString strNextName = strPrefix;
+	do 
+	{
+		if (nSuffix > 0)
+		{
+			strNextName.Format(_T("%s%d"), strPrefix, nSuffix);
+		}
+		nSuffix++;
+	} while (setItemNames.count(strNextName) > 0);
+	return strNextName;
+}
+
 bool DataBaseManager::GetItemLength(OUT int & nLength)
 {
 	std::vector<CString> vecItemID;

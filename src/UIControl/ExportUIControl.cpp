@@ -61,3 +61,8 @@ BASEGRAPH_UICONTROL_API void UIControl_SendMsgTo(int nIDTo, int nMsgID, WPARAM w
 {
 	return MsgDispatcher::Instance().SendMsgTo(nIDTo, nMsgID, wParam, lParam, nIDFrom);
 }
+
+BASEGRAPH_UICONTROL_API IMsgDispatchObject * UIControl_GetMsgDispatcher(int nDispatcherID)
+{
+	return MsgDispatcher::Instance().GetMsgDispatcher(nDispatcherID);
+}
