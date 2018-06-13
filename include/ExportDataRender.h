@@ -73,6 +73,7 @@ BASEGRAPH_DATARENDER_API void DataRender_SetStaticMode(bool bStatic);
 BASEGRAPH_DATARENDER_API bool DataRender_IsStaticMode();
 BASEGRAPH_DATARENDER_API CString DataRender_GetCurParentObjID();
 BASEGRAPH_DATARENDER_API void DataRender_SetCurParentObjID(CString strParentObjID);
+BASEGRAPH_DATARENDER_API bool DataRender_DeleteSelObj();//删除当前选中物件
 //datarender层面的属性获取与设置是考虑了关键帧之后，注意与database层区分
 //属性获取
 BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam);

@@ -29,4 +29,5 @@ public:
 	virtual EmMessageHandlerResult OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
 	virtual EmMessageHandlerResult OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
 	virtual EmMessageHandlerResult OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);
+	virtual EmMessageHandlerResult OnKeyDown(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags);
 };

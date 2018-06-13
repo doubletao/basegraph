@@ -162,7 +162,7 @@ EmMessageHandlerResult MessageHanderTitleword::OnLButtonUp(IN C3DSceneViewWnd * 
 		mapParamValue[BaseGraph_DataBase::SpacePosition_Y_Float].SetValue(ptLeftTop.y);
 		mapParamValue[BaseGraph_DataBase::SpacePosition_Z_Float].SetValue(0.0f);
 		//测试
-		mapParamValue[BaseGraph_DataBase::Titleword_Text_Str].SetValue(_T("新建标题字"));
+		mapParamValue[BaseGraph_DataBase::Titleword_Text_Str].SetValue(_T(" "));
 		//生成一个名字出来
 		CString strNewObjID = _T("");
 		DataBase_CreateItem(BaseGraph_DataBase::ObjectType_Titleword, mapParamValue, strNewObjID);

@@ -170,6 +170,20 @@ BASEGRAPH_DATARENDER_API void DataRender_SetCurParentObjID(CString strParentObjI
 	return CalculatorManager::Instance().SetCurParentObjID(strParentObjID);
 }
 
+BASEGRAPH_DATARENDER_API bool DataRender_DeleteSelObj()
+{
+	std::vector<CString> vecSelObjID;
+	if (CalculatorManager::Instance().GetSelectObj(vecSelObjID))
+	{
+		for (auto it : vecSelObjID)
+		{
+			DataBase_DeleteItem(it);
+		}
+		return true;
+	}
+	return false;
+}
+
 BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, OUT Value & stuParam)
 {
 	//暂时还没有引入关键帧，先直接从database层调

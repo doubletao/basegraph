@@ -172,6 +172,18 @@ bool DataBaseManager::AddSubItemTo(IN CString strParentID, IN CString strSubID)
 
 bool DataBaseManager::DeleteItem(IN CString strID)
 {
+	for (vector<BaseObject *>::iterator it = m_vecObject.begin(); it != m_vecObject.end(); it++)
+	{
+		BaseObject * pObj = *it;
+		if (pObj)
+		{
+			if (pObj->GetItemID() == strID)
+			{
+				m_vecObject.erase(it);
+				break;
+			}
+		}
+	}
 	return false;
 }
 

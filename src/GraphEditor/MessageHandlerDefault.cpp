@@ -158,3 +158,15 @@ EmMessageHandlerResult MessageHandlerDefault::OnLButtonUp(IN C3DSceneViewWnd * p
 	}
 	return Msg_Handle_Continue;
 }
+
+EmMessageHandlerResult MessageHandlerDefault::OnKeyDown(IN C3DSceneViewWnd * pWnd, UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if (nChar == VK_DELETE)
+	{
+		//删除物件
+		DataRender_DeleteSelObj();
+		UIControl_BroadcastMsg(WM_MSG_WholeFrameLengthChanged, 0, 0, nullptr);//通知物件变动
+		return Msg_Handle_Break;
+	}
+	return Msg_Handle_Continue;
+}
