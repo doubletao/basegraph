@@ -87,7 +87,14 @@ enum ThemeColorValueDef
 	ThemeColor_CustomEditTopLeftBoardGray,		//±à¼­¿òÎÞÐ§×´Ì¬×óÉÏ±ß¿ò
 	ThemeColor_CustomEditBottomRightBoardGray,	//±à¼­¿òÎÞÐ§×´Ì¬ÓÒÏÂ±ß¿ò
 	ThemeColor_CustomEditUnderLay,				//±à¼­¿ò³Äµ×±ß¿ò
-	ThemeColor_CustomStatic,
+	ThemeColor_CustomStatic,					//static×ÖÉ«
+	ThemeColor_CustomDropDownWndBk,				//comboxÏÂÀ­´°µ×É«
+	ThemeColor_CustomDropGreyBk,
+	ThemeColor_CustomDropText,
+	ThemeColor_CustomDropGreyText,
+	ThemeColor_CustomDropSelectText,
+	ThemeColor_CustomDropNorBk,
+	ThemeColor_CustomComboxBk,
 };
 
 enum ThemeCStringValueDef
@@ -251,4 +258,9 @@ enum ThemeImageValueDef
 
 	ThemeImage_SceneLayoutBk,
 	ThemeImage_ColorButtonTranspBmp,
+
+	ThemeImage_ComboxDropDownBtn_U,
+	ThemeImage_ComboxDropDownBtn_D,
+	ThemeImage_ComboxDropDownBtn_F,
+	ThemeImage_ComboxDropDownBtn_X,
 };

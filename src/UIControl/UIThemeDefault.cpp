@@ -152,6 +152,13 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditBottomRightBoardGray, RGB(200, 200, 200)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_CustomEditUnderLay, RGB(0, 200, 200)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_CustomStatic, RGB(200, 200, 200)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomDropDownWndBk, RGB(30, 30, 30)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomDropGreyBk, RGB(74, 70, 72)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomDropText, RGB(230, 230, 230)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomDropGreyText, RGB(200, 200, 200)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomDropSelectText, RGB(0, 20, 50)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomDropNorBk, RGB(54, 54, 54)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_CustomComboxBk, RGB(54, 54, 54)));
 
 	/////////////////////////////////////////////////////////////////////
 	//ÎÄ±¾
@@ -334,6 +341,10 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_TimeLineObjectRightAreaBk, strThemePath + _T("TimeLine\\TimeLineObjectRightAreaBk.png"));
 		LoadOneImg(ThemeImage_TimeLineRulerBk, strThemePath + _T("TimeLine\\TimeLineRulerBk.png"));
 		LoadOneImg(ThemeImage_TimeLinePointerHeader, strThemePath + _T("TimeLine\\TimeLinePointerHeader.png"));
+		LoadOneImg(ThemeImage_ComboxDropDownBtn_U, strThemePath + _T("Button\\ComboxDropDownBtn_U.png"));
+		LoadOneImg(ThemeImage_ComboxDropDownBtn_D, strThemePath + _T("Button\\ComboxDropDownBtn_D.png"));
+		LoadOneImg(ThemeImage_ComboxDropDownBtn_F, strThemePath + _T("Button\\ComboxDropDownBtn_F.png"));
+		LoadOneImg(ThemeImage_ComboxDropDownBtn_X, strThemePath + _T("Button\\ComboxDropDownBtn_X.png"));
 	} while (false);
 	return true;
 }

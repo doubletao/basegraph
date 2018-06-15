@@ -135,8 +135,10 @@
     <ClCompile Include="UIColorButton.cpp" />
     <ClCompile Include="UIColorDrawer.cpp" />
     <ClCompile Include="UICombinedCtrl.cpp" />
+    <ClCompile Include="CustomComboBox.cpp" />
     <ClCompile Include="UIControl.cpp" />
     <ClCompile Include="UIDrawer.cpp" />
+    <ClCompile Include="CustomDropDownWnd.cpp" />
     <ClCompile Include="UIEdit.cpp" />
     <ClCompile Include="UIEditNum.cpp" />
     <ClCompile Include="UIEditNumSlider.cpp" />
@@ -168,8 +170,10 @@
     <ClInclude Include="..\..\include\UIControl\UIColorButton.h" />
     <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UICombinedCtrl.h" />
+    <ClInclude Include="..\..\include\UIControl\CustomComboBox.h" />
     <ClInclude Include="..\..\include\UIControl\UIControlDef.h" />
     <ClInclude Include="..\..\include\UIControl\UIDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\CustomDropDownWnd.h" />
     <ClInclude Include="..\..\include\UIControl\UIEdit.h" />
     <ClInclude Include="..\..\include\UIControl\UIEditMutiLine.h" />
     <ClInclude Include="..\..\include\UIControl\UIEditNum.h" />
