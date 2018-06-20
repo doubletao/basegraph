@@ -2,8 +2,8 @@
 #include "UIComboxFontSel.h"
 
 UIComboxFontSel::UIComboxFontSel()
-	: m_pCheckButton(nullptr)
-	, m_pColorButton(nullptr)
+	: m_pStatic(nullptr)
+	, m_pComboBoxFont(nullptr)
 {
 }
 
@@ -13,14 +13,6 @@ UIComboxFontSel::~UIComboxFontSel()
 
 BaseGraph_Common::Value UIComboxFontSel::GetValue()
 {
-#ifdef _DEBUG
-	BaseGraph_DataBase::faceinfo info;
-	if (m_value.ToStruct(info))
-	{
-		int i = 0;
-		i++;
-	}
-#endif
 	return m_value;
 }
 
@@ -35,108 +27,45 @@ void UIComboxFontSel::SetValue(BaseGraph_Common::Value value, bool bRefresh)
 
 void UIComboxFontSel::UpdateValueToUI()
 {
-	BaseGraph_DataBase::faceinfo info;
-	if (m_value.ToStruct(info))
+	CString strFontName = m_value.ToCString();
+	if (m_pComboBoxFont)
 	{
-		bool bCheck = !info.disable;
-		if (m_pCheckButton)
-		{
-			m_pCheckButton->SetCheck(bCheck);
-		}
-		sycolor color = info.color;
-		if (m_pColorButton)
-		{
-			m_pColorButton->SetColor(color);
-		}
+		m_pComboBoxFont->SelectString(-1, strFontName);
 	}
 }
 
 void UIComboxFontSel::UpdateUIToValue()
 {
-	BaseGraph_DataBase::faceinfo info;
-	if (m_value.ToStruct(info))
+	if (m_pComboBoxFont)
 	{
-		if (m_pCheckButton)
-		{
-			bool bCheck = m_pCheckButton->GetCheck();
-			info.disable = !bCheck;
-		}
-		if (m_pColorButton)
-		{
-			sycolor color = m_pColorButton->GetColor();
-			info.color = color;
-		}
-		m_value = info;
+		CString strFontName;
+		m_pComboBoxFont->GetWindowText(strFontName);
 	}
-#ifdef _DEBUG
-	BaseGraph_DataBase::faceinfo inf2;
-	if (m_value.ToStruct(inf2))
-	{
-		int i = 0;
-		i++;
-	}
-#endif
 }
 
-bool UIComboxFontSel::Create(int nID, HWND hParentWnd, UIElement * pParent)
+bool UIComboxFontSel::Create(CString strTitle, int nTitleWidth, int nID, HWND hParentWnd, UIElement * pParent)
 {
 	if (!m_bCreated)
 	{
-		int nColorBtnHeight = UIControl_GetIntValue(ThemeInt_PropertyViewCtrlColorBtnHeight);
-		Initialize(0, 0, 100, nColorBtnHeight, nID, hParentWnd, pParent);
+		int nBtnHeight = UIControl_GetIntValue(ThemeInt_PropertyViewComboBoxBtnHeight);
+		int nBtnWidth = UIControl_GetIntValue(ThemeInt_PropertyViewComboBoxBtnWidth);
+		Initialize(0, 0, 100, nBtnHeight, nID, hParentWnd, pParent);
 
-		m_pCheckButton = new UICheckBtn;
-		m_pCheckButton->Create(0, 0, 100, 100, 0, hParentWnd,
-			ThemeImage_CheckBtn_Bk_N, ThemeImage_CheckBtn_Bk_F, ThemeImage_CheckBtn_Bk_D, ThemeImage_CheckBtn_Bk_X,
-			ThemeImage_CheckBtn_Fore_N, ThemeImage_CheckBtn_Fore_F, ThemeImage_CheckBtn_Fore_D, ThemeImage_CheckBtn_Fore_X, this);
-		m_vecChildElement.push_back(m_pCheckButton);
+		m_pStatic = new UIStatic;
+		m_pStatic->Create(0, 0, nTitleWidth, nBtnHeight, 0, nullptr, this, strTitle, ThemeFont_CustomEditCtr, UIControl_GetColor(ThemeColor_CustomStatic));
+		m_vecChildElement.push_back(m_pStatic);
 
-		m_pColorButton = new UIColorButton;
-		m_pColorButton->Create(0, 0, 100, 100, 0, hParentWnd, this);
-		m_vecChildElement.push_back(m_pColorButton);
-
-		m_setMsgFilter.insert(WM_LBUTTONDOWN);
-		m_setMsgFilter.insert(WM_LBUTTONUP);
-		m_setMsgFilter.insert(WM_MOUSEMOVE);
+		m_pComboBoxFont = new UIComboBox;
+		m_pComboBoxFont->Create(0, 0, nBtnWidth, nBtnHeight, 0, 0, hParentWnd, this);
+		m_vecChildElement.push_back(m_pComboBoxFont);
 		return true;
 	}
 	return false;
 }
 
-EmUIElementMsgRet UIComboxFontSel::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
-{
-	if (m_setMsgFilter.count(nMsg) > 0)
-	{
-		switch (nMsg)
-		{
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-			ChildHandleMsg(nMsg, wParam, lParam);
-			break;
-		case WM_MOUSEMOVE:
-			EnterLeaveChild(nMsg, lParam, wParam);
-			break;
-		default:
-			break;
-		}
-		return UIElementMsgSuccBreak;
-	}
-	return UIElementMsgSuccContinue;
-}
-
 bool UIComboxFontSel::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (emMsg == EmUIElementMsg_BtnClick)
-	{
-		UIButton * pButton = (UIButton *)lParam;
-		if (m_pCheckButton == pButton)
-		{
-			UpdateUIToValue();
-			NotifyValueChg();
-		}
-		return true;
-	}
-	else if (emMsg == EmUIElementMsg_OnColorChanged)
+	if (emMsg == EmUIElementMsg_OnComboBoxSelChged)
 	{
 		UpdateUIToValue();
 		NotifyValueChg();
@@ -147,17 +76,12 @@ bool UIComboxFontSel::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lPa
 
 void UIComboxFontSel::RearrangeChildPos()
 {
-	if (m_pCheckButton && m_pColorButton)
+	if (m_pStatic && m_pComboBoxFont)
 	{
-		CImage * pImg = UIControl_GetImage(ThemeImage_CheckBtn_Bk_N);
-		if (pImg)
-		{
-			int nCheckWidth = pImg->GetWidth();
-			int nCheckHeight = pImg->GetHeight();
-			int nColorBtnWidth = UIControl_GetIntValue(ThemeInt_PropertyViewCtrlColorBtnWidth);
-			int nColorBtnHeight = UIControl_GetIntValue(ThemeInt_PropertyViewCtrlColorBtnHeight);
-			m_pCheckButton->MoveTo(0, (nColorBtnHeight - nCheckHeight) / 2, nCheckWidth, nCheckHeight);
-			m_pColorButton->MoveTo((m_nWidth - nCheckWidth - nColorBtnWidth) / 2, 0, nColorBtnWidth, nColorBtnHeight);
-		}
+		int nTitleWidth = m_pStatic->GetWidth();
+		int nBtnWidth = m_pComboBoxFont->GetWidth();
+		int nBtnHeight = m_pComboBoxFont->GetHeight();
+		m_pStatic->MoveTo(0, 0, nTitleWidth, m_nHeight);
+		m_pComboBoxFont->MoveTo(m_nWidth - nBtnWidth, 0, nBtnWidth, nBtnHeight);
 	}
 }

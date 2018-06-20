@@ -3,8 +3,8 @@
 class UIComboxFontSel : public UICombinedCtrl
 {
 protected:
-	UICheckBtn * m_pCheckButton;
-	UIColorButton * m_pColorButton;
+	UIStatic * m_pStatic;
+	UIComboBox * m_pComboBoxFont;
 public:
 	UIComboxFontSel();
 	virtual ~UIComboxFontSel();
@@ -14,8 +14,7 @@ public:
 	virtual void UpdateValueToUI();
 	virtual void UpdateUIToValue();
 
-	virtual bool Create(int nID, HWND hParentWnd, UIElement * pParent);
-	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
+	virtual bool Create(CString strTitle, int nTitleWidth, int nID, HWND hParentWnd, UIElement * pParent);
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	virtual void RearrangeChildPos();
 };

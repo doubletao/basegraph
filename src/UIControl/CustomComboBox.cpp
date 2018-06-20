@@ -502,7 +502,6 @@ void CustomComboBox::OnKillFocus(CWnd* pNewWnd)
 		GetParent()->SendMessage(WM_COMMAND, MAKELPARAM(GetDlgCtrlID(), CBN_KILLFOCUS), (LPARAM)GetSafeHwnd());
 }
 
-
 void CustomComboBox::OnLButtonDown(UINT nFlags, CPoint point) 
 {
 	m_nHit = HitTest( point );
@@ -611,8 +610,10 @@ BOOL CustomComboBox::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, U
 		rtWnd.bottom = rtWnd.top + 40;
 	if((dwStyle & CBS_SORT) == CBS_SORT)
 		m_pDropDownWnd->SetSortString(TRUE);
-	return CWnd::Create( _T(Custom_szComboBoxClass), NULL, dwStyle/*|WS_CLIPSIBLINGS*/, rtWnd, pParentWnd, nID); 
+	return CWnd::Create(_T(Custom_szComboBoxClass), NULL, dwStyle/*|WS_CLIPSIBLINGS*/, rtWnd, pParentWnd, nID); 
+	//return CWnd::CreateEx(WS_EX_CLIENTEDGE, _T(Custom_szComboBoxClass), NULL, dwStyle/*|WS_CLIPSIBLINGS*/, rtWnd, pParentWnd, nID);
 }
+
 //返回下拉列表的项目数
 int CustomComboBox::GetCount() const
 {

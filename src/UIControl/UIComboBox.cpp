@@ -2,7 +2,8 @@
 #include "stdafx.h"
 #include "UIControl\UIComboBox.h"
 
-const int nCmbID = 100010;
+#define CustomUIComboBoxClass "CustomUIComboBoxClass"
+const int nCmbID = 10423;
 
 BEGIN_MESSAGE_MAP(UIComboBox, CWnd)
 	ON_WM_SETFOCUS()
@@ -89,7 +90,7 @@ bool UIComboBox::Create(int nX, int nY, int nWidth, int nHeight, int nID, DWORD 
 			{
 				Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 				m_pComboBox = new CustomComboBox;
-				m_pComboBox->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | WS_BORDER | dwStyleEs, CRect(), this, nCmbID);
+				bRet = m_pComboBox->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST | WS_VSCROLL | dwStyleEs, CRect(0, 0, 200, 300), this, nCmbID);
 				bRet = true;
 			}
 		}

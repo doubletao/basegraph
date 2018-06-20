@@ -7,6 +7,8 @@ BEGIN_MESSAGE_MAP(UIEdit, CWnd)
 	ON_MESSAGE(EmUIElementMsg_OnEditEnded, UIEdit::OnEndEdit)
 END_MESSAGE_MAP()
 
+#define CustomUIEditClass "CustomUIEditClass"
+
 UIEdit::UIEdit()
 	: m_pComboBox(nullptr)
 {

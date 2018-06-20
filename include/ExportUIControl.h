@@ -41,6 +41,8 @@
 #include "UIControl\UIStatic.h"
 #include "UIControl\CustomEdit.h"
 #include "UIControl\CustomScrollBar.h"
+#include "UIControl\CustomComboBox.h"
+#include "UIControl\UIComboBox.h"
 
 //Ö÷Ìâ
 BASEGRAPH_UICONTROL_API CString UIControl_GetThemePath();

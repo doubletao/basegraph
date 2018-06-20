@@ -2,8 +2,6 @@
 #include "UIControl\UIElement.h"
 #include "UIControl\CustomEdit.h"
 
-#define CustomUIEditClass "CustomUIEditClass"
-
 class BASEGRAPH_UICONTROL_API UIEdit
 	: public CWnd
 	, public UIElement

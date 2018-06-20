@@ -2,6 +2,7 @@
 #include "UIPropertyViewElement.h"
 #include "GraphEditorCommonDef.h"
 #include "UICheckColorButton.h"
+#include "UIComboxFontSel.h"
 
 UIPropertyViewElement::UIPropertyViewElement()
 	: m_strObjID()
@@ -75,6 +76,9 @@ void UIPropertyViewElement::InitializeObject()
 		}
 			break;
 		case BaseGraph_DataBase::PropertyDisp_FontNameCombo:
+			pElement = new UIComboxFontSel;
+			((UIComboxFontSel *)pElement)->Create(valueDesc.strDispName, nTitleWidth, 0, m_hParentWnd, this);
+			((UIComboxFontSel *)pElement)->SetValue(valueDesc.stuDefault);
 			break;
 		default:
 			break;

@@ -2,8 +2,6 @@
 #include "UIControl\UIElement.h"
 #include "UIControl\CustomComboBox.h"
 
-#define CustomUIComboBoxClass "CustomUIComboBoxClass"
-
 class BASEGRAPH_UICONTROL_API UIComboBox
 	: public CWnd
 	, public UIElement

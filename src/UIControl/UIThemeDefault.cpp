@@ -95,10 +95,12 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitWidth, 22));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropretyViewTabSplitHeight, 1));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlGap, 3));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlTitleWidth, 45));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlTitleWidth, 55));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlNumEditWidth, 35));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlColorBtnWidth, 80));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlColorBtnHeight, 30));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewComboBoxBtnWidth, 130));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewComboBoxBtnHeight, 30));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeLeftGap, 10));
