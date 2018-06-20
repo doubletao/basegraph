@@ -151,6 +151,7 @@
     <ClCompile Include="UIScrollElement.cpp" />
     <ClCompile Include="UISliderCtr.cpp" />
     <ClCompile Include="UIStatic.cpp" />
+    <ClCompile Include="UISysFontObtainer.cpp" />
     <ClCompile Include="UITextDrawer.cpp" />
     <ClCompile Include="UITheme.cpp" />
     <ClCompile Include="UIThemeDefault.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThemeManager.h" />
     <ClInclude Include="UIControl.h" />
+    <ClInclude Include="UISysFontObtainer.h" />
     <ClInclude Include="UITheme.h" />
     <ClInclude Include="UIThemeDefault.h" />
   </ItemGroup>

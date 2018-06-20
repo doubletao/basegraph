@@ -55,9 +55,16 @@ bool UIComboxFontSel::Create(CString strTitle, int nTitleWidth, int nID, HWND hP
 		m_pStatic->Create(0, 0, nTitleWidth, nBtnHeight, 0, nullptr, this, strTitle, ThemeFont_CustomEditCtr, UIControl_GetColor(ThemeColor_CustomStatic));
 		m_vecChildElement.push_back(m_pStatic);
 
-		m_pComboBoxFont = new UIComboBox;
-		m_pComboBoxFont->Create(0, 0, nBtnWidth, nBtnHeight, 0, 0, hParentWnd, this);
-		m_vecChildElement.push_back(m_pComboBoxFont);
+		m_pComboBoxFont = new CComboBox;
+		//m_pComboBoxFont->Create(0, 0, nBtnWidth, nBtnHeight, 0, 0, hParentWnd, this);
+		m_pComboBoxFont->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST | WS_VSCROLL, CRect(0, 0, nBtnWidth, nBtnHeight), CWnd::FromHandle(hParentWnd), 10423);
+		//m_vecChildElement.push_back(m_pComboBoxFont);
+		std::list<CString> lstFontName = UIControl_GetFontList();
+		for (auto it : lstFontName)
+		{
+			m_pComboBoxFont->AddString(it);
+		}
+
 		return true;
 	}
 	return false;
@@ -79,9 +86,16 @@ void UIComboxFontSel::RearrangeChildPos()
 	if (m_pStatic && m_pComboBoxFont)
 	{
 		int nTitleWidth = m_pStatic->GetWidth();
-		int nBtnWidth = m_pComboBoxFont->GetWidth();
-		int nBtnHeight = m_pComboBoxFont->GetHeight();
+		//int nBtnWidth = m_pComboBoxFont->GetWidth();
+		//int nBtnHeight = m_pComboBoxFont->GetHeight();
+		CRect rtComboBox;
+		m_pComboBoxFont->GetWindowRect(rtComboBox);
+		int nBtnWidth = rtComboBox.Width();
+		int nBtnHeight = rtComboBox.Height();
 		m_pStatic->MoveTo(0, 0, nTitleWidth, m_nHeight);
-		m_pComboBoxFont->MoveTo(m_nWidth - nBtnWidth, 0, nBtnWidth, nBtnHeight);
+		//m_pComboBoxFont->MoveTo(m_nWidth - nBtnWidth, 0, nBtnWidth, nBtnHeight);
+		int nX = GetRealX();
+		int nY = GetRealY();
+		m_pComboBoxFont->MoveWindow(nX + m_nWidth - nBtnWidth, nY + 0, nBtnWidth, nBtnHeight);
 	}
 }

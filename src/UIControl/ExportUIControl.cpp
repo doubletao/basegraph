@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ExportUIControl.h"
 #include "ThemeManager.h"
+#include "UISysFontObtainer.h"
 
 BASEGRAPH_UICONTROL_API CString UIControl_GetThemePath()
 {
@@ -65,4 +66,9 @@ BASEGRAPH_UICONTROL_API void UIControl_SendMsgTo(int nIDTo, int nMsgID, WPARAM w
 BASEGRAPH_UICONTROL_API IMsgDispatchObject * UIControl_GetMsgDispatcher(int nDispatcherID)
 {
 	return MsgDispatcher::Instance().GetMsgDispatcher(nDispatcherID);
+}
+
+BASEGRAPH_UICONTROL_API const std::list<CString>& UIControl_GetFontList()
+{
+	return UISysFontObtainer::Instance().GetFontList();
 }
