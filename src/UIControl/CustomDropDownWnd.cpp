@@ -8,11 +8,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define SY_szDropDownWndClass			"UIDropDownWindow"
+#define Custom_szDropDownWndClass			"CustomDropDownWindow"
 
-//************  CSYDropDownWnd ******************************************
-long CSYDropDownWnd::sm_lRef = 0;
-CSYDropDownWnd::CSYDropDownWnd()
+//************  CustomDropDownWnd ******************************************
+long CustomDropDownWnd::sm_lRef = 0;
+CustomDropDownWnd::CustomDropDownWnd()
 {
 	m_nItemHeight	 = 18;
 	m_nTop			 = 0;
@@ -34,7 +34,7 @@ CSYDropDownWnd::CSYDropDownWnd()
 	m_nCurSel = -1;
 }
 
-CSYDropDownWnd::~CSYDropDownWnd()
+CustomDropDownWnd::~CustomDropDownWnd()
 {
 	SAFE_DELETE(m_pVScrollBar);
 
@@ -47,8 +47,8 @@ CSYDropDownWnd::~CSYDropDownWnd()
 		UnRegisterDropDownWndClass();
 }
 
-BEGIN_MESSAGE_MAP(CSYDropDownWnd, CWnd)
-	//{{AFX_MSG_MAP(CSYDropDownWnd)
+BEGIN_MESSAGE_MAP(CustomDropDownWnd, CWnd)
+	//{{AFX_MSG_MAP(CustomDropDownWnd)
 	ON_WM_CREATE()
 	ON_WM_VSCROLL()
 	ON_WM_LBUTTONDOWN()
@@ -65,9 +65,9 @@ END_MESSAGE_MAP()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CSYDropDownWnd message handlers
+// CustomDropDownWnd message handlers
 
-int CSYDropDownWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) 
+int CustomDropDownWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -92,7 +92,7 @@ int CSYDropDownWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void CSYDropDownWnd::OnDestroy() 
+void CustomDropDownWnd::OnDestroy() 
 {
 	CWnd::OnDestroy();
 	
@@ -100,7 +100,7 @@ void CSYDropDownWnd::OnDestroy()
 		m_pVScrollBar->DestroyWindow();
 }
 
-void CSYDropDownWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+void CustomDropDownWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
 {
 	int nOldTop = m_nTop;
 
@@ -159,7 +159,7 @@ void CSYDropDownWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	}
 }
 
-void CSYDropDownWnd::OnLButtonDown(UINT nFlags, CPoint point) 
+void CustomDropDownWnd::OnLButtonDown(UINT nFlags, CPoint point) 
 {	
 	int nRow = -1;
 	int nValue = HitTest( point , nRow );
@@ -184,7 +184,7 @@ void CSYDropDownWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
-void CSYDropDownWnd::OnLButtonUp(UINT nFlags, CPoint point) 
+void CustomDropDownWnd::OnLButtonUp(UINT nFlags, CPoint point) 
 {
 	int nRow = -1;
 	int nValue = HitTest( point , nRow );
@@ -203,7 +203,7 @@ void CSYDropDownWnd::OnLButtonUp(UINT nFlags, CPoint point)
 	CWnd::OnLButtonUp(nFlags, point);
 }
 
-void CSYDropDownWnd::OnMouseMove(UINT nFlags, CPoint point) 
+void CustomDropDownWnd::OnMouseMove(UINT nFlags, CPoint point) 
 {
 	CWnd::OnMouseMove(nFlags, point);
 	
@@ -230,14 +230,14 @@ void CSYDropDownWnd::OnMouseMove(UINT nFlags, CPoint point)
 	}
 }
 
-void CSYDropDownWnd::OnNcPaint() 
+void CustomDropDownWnd::OnNcPaint() 
 {
 	CDC* pDC = GetWindowDC();
 	DrawBorder(pDC);
 	ReleaseDC(pDC);
 }
 
-void CSYDropDownWnd::DrawOneItem( CDC* pDC , int nItem )
+void CustomDropDownWnd::DrawOneItem( CDC* pDC , int nItem )
 {
 	if( nItem < m_nTop || nItem >= ( m_nTop + m_nRows ) )
 		return;
@@ -299,7 +299,7 @@ void CSYDropDownWnd::DrawOneItem( CDC* pDC , int nItem )
 	pDC->SelectObject(pOldFont);
 }
 
-void CSYDropDownWnd::OnPaint() 
+void CustomDropDownWnd::OnPaint() 
 {	
 	CPaintDC dc(this); // device context for painting
 	CRect rtClient;
@@ -333,11 +333,11 @@ void CSYDropDownWnd::OnPaint()
 	bmpBK.DeleteObject();
 }
 
-BOOL CSYDropDownWnd::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
+BOOL CustomDropDownWnd::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
 {
 	dwStyle &=~WS_CHILD;
 	dwStyle |=WS_POPUP|WS_CLIPSIBLINGS;
-	BOOL bRet = CWnd::CreateEx( NULL,_T(SY_szDropDownWndClass) , _T("DropDown") , dwStyle,
+	BOOL bRet = CWnd::CreateEx( NULL,_T(Custom_szDropDownWndClass) , _T("DropDown") , dwStyle,
 								rect , pParentWnd, NULL );
 
 	if (!bRet)
@@ -351,17 +351,17 @@ BOOL CSYDropDownWnd::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, U
 	return bRet;
 }
 
-int CSYDropDownWnd::GetCount() const
+int CustomDropDownWnd::GetCount() const
 {
 	return (int)m_AllItemArray.GetSize();
 }
 
-int CSYDropDownWnd::GetCurSel() const
+int CustomDropDownWnd::GetCurSel() const
 {
 	return m_nCurSel;
 }
 
-int CSYDropDownWnd::SetCurSel(int nSelect)
+int CustomDropDownWnd::SetCurSel(int nSelect)
 {
 	int iOldSelect = m_nCurSel; 
 	m_nCurSel = nSelect;
@@ -372,7 +372,7 @@ int CSYDropDownWnd::SetCurSel(int nSelect)
 	return m_nCurSel;
 }
 
-void CSYDropDownWnd::EnsureVisible()
+void CustomDropDownWnd::EnsureVisible()
 {
 	if(GetCount() <= m_nRows)
 		return;
@@ -394,7 +394,7 @@ void CSYDropDownWnd::EnsureVisible()
 	}	
 }
 
-void CSYDropDownWnd::EnsureVisibleEx(int nItem)
+void CustomDropDownWnd::EnsureVisibleEx(int nItem)
 {
 	if(GetCount() <= m_nRows)
 		return;
@@ -417,7 +417,7 @@ void CSYDropDownWnd::EnsureVisibleEx(int nItem)
 	}
 }
 
-int CSYDropDownWnd::AddString(LPCTSTR lpszString)
+int CustomDropDownWnd::AddString(LPCTSTR lpszString)
 {
 	if(m_bSortString)
 	{
@@ -433,7 +433,7 @@ int CSYDropDownWnd::AddString(LPCTSTR lpszString)
 	return (int)m_AllItemArray.GetSize();
 }
 
-int CSYDropDownWnd::AddStringEx(LPCTSTR lpszString)
+int CustomDropDownWnd::AddStringEx(LPCTSTR lpszString)
 {
 	int nIndex = GetCount();
 	if(m_bSortString)
@@ -453,7 +453,7 @@ int CSYDropDownWnd::AddStringEx(LPCTSTR lpszString)
 	return nIndex;
 }
 
-int CSYDropDownWnd::AddStringArray(const CStringArray & aryString)
+int CustomDropDownWnd::AddStringArray(const CStringArray & aryString)
 {
 	m_AllItemArray.Append(aryString);
 	for (int i = 0; i < aryString.GetSize(); i++)
@@ -465,7 +465,7 @@ int CSYDropDownWnd::AddStringArray(const CStringArray & aryString)
 	return (int)m_AllItemArray.GetSize();
 }
 
-int CSYDropDownWnd::DeleteString(UINT nIndex)
+int CustomDropDownWnd::DeleteString(UINT nIndex)
 {
 	int i =(int)m_AllItemArray.GetSize();
 	int j =(int)m_arrItemData.GetSize();
@@ -495,7 +495,7 @@ int CSYDropDownWnd::DeleteString(UINT nIndex)
 	return nIndex;
 }
 
-int CSYDropDownWnd::InsertString(int nIndex, LPCTSTR lpszString)
+int CustomDropDownWnd::InsertString(int nIndex, LPCTSTR lpszString)
 {
 	int nNewIdx = nIndex;
 	if( nIndex < 0 || nIndex > GetCount() )
@@ -515,7 +515,7 @@ int CSYDropDownWnd::InsertString(int nIndex, LPCTSTR lpszString)
 	return nNewIdx;
 }
 
-int CSYDropDownWnd::ReplaceString(int nIndex,LPCTSTR lpszValue)
+int CustomDropDownWnd::ReplaceString(int nIndex,LPCTSTR lpszValue)
 {
 	if(nIndex < 0 || nIndex > GetCount())
 		return -1;//falure;
@@ -523,7 +523,7 @@ int CSYDropDownWnd::ReplaceString(int nIndex,LPCTSTR lpszValue)
 	return nIndex;
 }
 
-void CSYDropDownWnd::ResetContent()
+void CustomDropDownWnd::ResetContent()
 {
 	m_AllItemArray.RemoveAll();
 	m_arrItemData.RemoveAll();
@@ -535,7 +535,7 @@ void CSYDropDownWnd::ResetContent()
 	m_nCurSel = -1;
 }
 
-void CSYDropDownWnd::CalRowsNum()
+void CustomDropDownWnd::CalRowsNum()
 {
 	if(!IsWindow(m_hWnd))
 		return;
@@ -556,7 +556,7 @@ Param: pt: 鼠标点击的点位置。nRow：点击的条目所在行。
 Return Value: -1：鼠标点击位于窗口之外。 1：鼠标点击位于窗口内。
 			   2：鼠标点击位于滚动条窗口内。0：点击在窗口内但所选条目超过了条目总范围。
 */
-int CSYDropDownWnd::HitTest( CPoint pt , int& nRow )
+int CustomDropDownWnd::HitTest( CPoint pt , int& nRow )
 {
 	nRow = -1;
 
@@ -595,7 +595,7 @@ int CSYDropDownWnd::HitTest( CPoint pt , int& nRow )
 	return 0;
 }
 
-void CSYDropDownWnd::SetVerScrollBarRange()
+void CustomDropDownWnd::SetVerScrollBarRange()
 {
 	if(!m_pVScrollBar||!::IsWindow(m_pVScrollBar->m_hWnd))
 		return;
@@ -631,7 +631,7 @@ void CSYDropDownWnd::SetVerScrollBarRange()
 	}
 }
 
-void CSYDropDownWnd::ReDrawOneItem( int nItem )
+void CustomDropDownWnd::ReDrawOneItem( int nItem )
 {
 	if( nItem < m_nTop || nItem >= ( m_nTop + m_nRows ) )
 		return;
@@ -652,14 +652,14 @@ void CSYDropDownWnd::ReDrawOneItem( int nItem )
 	InvalidateRect( rtText );
 }
 
-void CSYDropDownWnd::GetLBText(int nIndex, CString& rString) const
+void CustomDropDownWnd::GetLBText(int nIndex, CString& rString) const
 {
 	if( nIndex < 0 || nIndex >= GetCount() )
 		return;
 	rString = m_AllItemArray.GetAt( nIndex );
 }
 
-int CSYDropDownWnd::GetLBTextLen(int nIndex) const
+int CustomDropDownWnd::GetLBTextLen(int nIndex) const
 {
 	if( nIndex < 0 || nIndex >= GetCount() )
 		return 0;
@@ -669,7 +669,7 @@ int CSYDropDownWnd::GetLBTextLen(int nIndex) const
 	return str.GetLength();
 }
 
-int CSYDropDownWnd::SetItemHeight( int nItemHeight )
+int CustomDropDownWnd::SetItemHeight( int nItemHeight )
 {
 	if( nItemHeight <= 0 )
 		return 0;
@@ -681,12 +681,12 @@ int CSYDropDownWnd::SetItemHeight( int nItemHeight )
 	return m_nItemHeight;
 }
 
-int CSYDropDownWnd::GetItemHeight() const
+int CustomDropDownWnd::GetItemHeight() const
 {
 	return m_nItemHeight;
 }
 
-void CSYDropDownWnd::DrawBorder( CDC* pDC )
+void CustomDropDownWnd::DrawBorder( CDC* pDC )
 {
 	CRect rtClient;
 	GetWindowRect(&rtClient);
@@ -699,7 +699,7 @@ void CSYDropDownWnd::DrawBorder( CDC* pDC )
 	pDC->Draw3dRect(rtClient,DlgEdgeColor[0],DlgEdgeColor[1]);
 }
 
-void CSYDropDownWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp) 
+void CustomDropDownWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp) 
 {
 	long lData = ::GetWindowLongPtr(m_hWnd, GWLP_USERDATA);
 
@@ -735,26 +735,26 @@ void CSYDropDownWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* l
 	SetVerScrollBarRange();
 }
 
-int CSYDropDownWnd::SetItemData(int nIndex, DWORD_PTR dwItemData ){
+int CustomDropDownWnd::SetItemData(int nIndex, DWORD_PTR dwItemData ){
 	if(nIndex < 0 || nIndex >= GetCount())
 		return LB_ERR; 
 	m_arrItemData.SetAt(nIndex,dwItemData);
 	return TRUE;
 }
 
-DWORD_PTR CSYDropDownWnd::GetItemData(int nIndex ) const {
+DWORD_PTR CustomDropDownWnd::GetItemData(int nIndex ) const {
 	if(nIndex < 0 || nIndex >= GetCount())
 		return (DWORD)LB_ERR;
 	return m_arrItemData.GetAt(nIndex);
 }
 
-int CSYDropDownWnd::GetNums()
+int CustomDropDownWnd::GetNums()
 {
 	int nums = (int)m_AllItemArray.GetSize();
 	return nums;
 }
 
-void CSYDropDownWnd::ReSetScrollWndPos()
+void CustomDropDownWnd::ReSetScrollWndPos()
 {
 	if( m_bScrollBarShow == FALSE )
 		return;
@@ -780,7 +780,7 @@ void CSYDropDownWnd::ReSetScrollWndPos()
 //					to 0, it is the zero-based index of the matching item. It is CB_ERR if the 
 //					search was unsuccessful.
 //-------------------------------------------------------------------------------------------------
-int CSYDropDownWnd::FindString(int nStartAfter, LPCTSTR lpszString) const
+int CustomDropDownWnd::FindString(int nStartAfter, LPCTSTR lpszString) const
 {
 	int nFindStart = (nStartAfter == -1)?0:nStartAfter;
 
@@ -799,19 +799,19 @@ int CSYDropDownWnd::FindString(int nStartAfter, LPCTSTR lpszString) const
 	return (i==nCount)?CB_ERR:i;
 }
 
-WNDPROC CSYDropDownWnd::m_lpSuperDropDownWnd = NULL;
+WNDPROC CustomDropDownWnd::m_lpSuperDropDownWnd = NULL;
 
 LRESULT CALLBACK EXPORT
-CSYDropDownWnd::WndProcHook(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+CustomDropDownWnd::WndProcHook(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
-	CSYDropDownWnd* pDropDownWnd = (CSYDropDownWnd*)FromHandlePermanent(hWnd);
+	CustomDropDownWnd* pDropDownWnd = (CustomDropDownWnd*)FromHandlePermanent(hWnd);
 	if(pDropDownWnd == NULL)//window has not been created
 	{
-		pDropDownWnd = new CSYDropDownWnd;
+		pDropDownWnd = new CustomDropDownWnd;
 		pDropDownWnd->Attach(hWnd);
 		pDropDownWnd->m_bIsAutoDelete = TRUE;		
 	}
-	pDropDownWnd->m_pfnSuper = CSYDropDownWnd::m_lpSuperDropDownWnd;
+	pDropDownWnd->m_pfnSuper = CustomDropDownWnd::m_lpSuperDropDownWnd;
 	::SetWindowLongPtr(hWnd,GWLP_USERDATA,(LONG)(LONG_PTR)AfxWndProc);
 #ifdef STRICT
 	return ::CallWindowProc(AfxWndProc, hWnd, uMsg, wParam, lParam);
@@ -821,14 +821,14 @@ CSYDropDownWnd::WndProcHook(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
 }
 
-BOOL CSYDropDownWnd::RegisterDropDownWndClass(HINSTANCE hInst)
+BOOL CustomDropDownWnd::RegisterDropDownWndClass(HINSTANCE hInst)
 {
 	WNDCLASS wndcls;
-	static TCHAR szClass[] = _T(SY_szDropDownWndClass);
+	static TCHAR szClass[] = _T(Custom_szDropDownWndClass);
 
 	if(::GetClassInfo(hInst,szClass,&wndcls))
 	{
-		return wndcls.lpfnWndProc == (WNDPROC)CSYDropDownWnd::WndProcHook;
+		return wndcls.lpfnWndProc == (WNDPROC)CustomDropDownWnd::WndProcHook;
 	}
 
 	VERIFY(::GetClassInfo(NULL,_T("Static"),&wndcls));
@@ -843,17 +843,17 @@ BOOL CSYDropDownWnd::RegisterDropDownWndClass(HINSTANCE hInst)
 	return TRUE;
 }
 
-BOOL CSYDropDownWnd::UnRegisterDropDownWndClass()
+BOOL CustomDropDownWnd::UnRegisterDropDownWndClass()
 {
-	return ::UnregisterClass(_T(SY_szDropDownWndClass),AfxGetInstanceHandle());
+	return ::UnregisterClass(_T(Custom_szDropDownWndClass),AfxGetInstanceHandle());
 }
 
-BOOL CSYDropDownWnd::PreCreateWindow(CREATESTRUCT& cs) 
+BOOL CustomDropDownWnd::PreCreateWindow(CREATESTRUCT& cs) 
 {
 	return CWnd::PreCreateWindow(cs);
 }
 
-BOOL CSYDropDownWnd::SetImageList(CImageList* pImageList)
+BOOL CustomDropDownWnd::SetImageList(CImageList* pImageList)
 {
 	if(!pImageList) return FALSE;
 	m_ItemImagelist.DeleteImageList();
@@ -869,12 +869,12 @@ BOOL CSYDropDownWnd::SetImageList(CImageList* pImageList)
 	return TRUE;
 }
 
-CImageList* CSYDropDownWnd::GetImageList()
+CImageList* CustomDropDownWnd::GetImageList()
 {
 	return &m_ItemImagelist;
 }
 
-BOOL CSYDropDownWnd::SetItemImage(int nItemIndex,UINT nImageIndex)
+BOOL CustomDropDownWnd::SetItemImage(int nItemIndex,UINT nImageIndex)
 {
 	if(nItemIndex < 0 || nItemIndex > GetNums() -1) 
 		return FALSE;
@@ -885,7 +885,7 @@ BOOL CSYDropDownWnd::SetItemImage(int nItemIndex,UINT nImageIndex)
 	return TRUE;
 }
 
-int CSYDropDownWnd::GetItemImage(int nItemIndex ) const
+int CustomDropDownWnd::GetItemImage(int nItemIndex ) const
 {
 	if(nItemIndex <= 0 || nItemIndex > m_AllItemArray.GetSize() - 1)
 		return -1;
@@ -895,7 +895,7 @@ int CSYDropDownWnd::GetItemImage(int nItemIndex ) const
 	return nImageIndex;
 }
 
-int CSYDropDownWnd::AddStringSort(CString strInsert,BOOL bAsc/*=FALSE*/)
+int CustomDropDownWnd::AddStringSort(CString strInsert,BOOL bAsc/*=FALSE*/)
 {
 	BOOL bInsert =FALSE;
 	int nIndex=-1;
@@ -956,11 +956,11 @@ int CSYDropDownWnd::AddStringSort(CString strInsert,BOOL bAsc/*=FALSE*/)
 	return nIndex;
 }
 
-void CSYDropDownWnd::ShowTip(int nIndex)
+void CustomDropDownWnd::ShowTip(int nIndex)
 {
 }
 
-void CSYDropDownWnd::OnRButtonDown(UINT nFlags, CPoint point) 
+void CustomDropDownWnd::OnRButtonDown(UINT nFlags, CPoint point) 
 {
 	int nRow = -1;
 	int nValue = HitTest( point , nRow );
@@ -977,7 +977,7 @@ void CSYDropDownWnd::OnRButtonDown(UINT nFlags, CPoint point)
 	CWnd::OnRButtonDown(nFlags, point);
 }
 
-void CSYDropDownWnd::OnCaptureChanged(CWnd *pWnd) 
+void CustomDropDownWnd::OnCaptureChanged(CWnd *pWnd) 
 {
 	POINT point;
 	GetCursorPos(&point);

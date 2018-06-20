@@ -3,15 +3,15 @@
 
 #include "UIControl/CustomEdit.h"
 
-class CSYDropDownWnd;
-class BASEGRAPH_UICONTROL_API CSYComboBox : public CWnd
+class CustomDropDownWnd;
+class BASEGRAPH_UICONTROL_API CustomComboBox : public CWnd
 {
 	// Construction
-	DECLARE_DYNAMIC(CSYComboBox)
+	DECLARE_DYNAMIC(CustomComboBox)
 
 // Construction
 public:
-	CSYComboBox();
+	CustomComboBox();
 
 public:
 // 注册窗口类
@@ -89,8 +89,8 @@ public:
 	BOOL IsDropDown(){return m_bIsDropDown;};
 	
 protected:
-	CSYDropDownWnd*	m_pDropDownWnd;//combobox 窗口的下拉窗口。
-	CustomEdit			*m_pEdit;
+	CustomDropDownWnd*	m_pDropDownWnd;//combobox 窗口的下拉窗口。
+	CustomEdit			*m_pComboBox;
 // 	CInComboEdit	*m_pEdit;//带有编辑功能的 combobox 窗口的编辑框。
 // 	CDYTipWnd		*m_pToolTip;//提示栏
 	BOOL			m_bIsDropDown;//combobox是否处于下拉状态。
@@ -129,7 +129,7 @@ protected:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CSYComboBox)
+	//{{AFX_VIRTUAL(CustomComboBox)
 	public:
 	virtual void PostNcDestroy();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
@@ -137,7 +137,7 @@ protected:
 
 // Implementation
 public:
-	virtual ~CSYComboBox();
+	virtual ~CustomComboBox();
 
 protected:
 	// 该类的Proc
@@ -145,7 +145,7 @@ protected:
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);	
 	// Generated message map functions
 protected:
-	//{{AFX_MSG(CSYComboBox)
+	//{{AFX_MSG(CustomComboBox)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnPaint();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

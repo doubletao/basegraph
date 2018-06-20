@@ -6,11 +6,11 @@
 #define WM_DROPWND_DISFOCUS (WM_USER + 3701)
 #define WM_DROPWND_SELECT   (WM_USER + 3702)
 
-class CSYDropDownWnd : public CWnd
+class CustomDropDownWnd : public CWnd
 {
 // Construction
 public:
-	CSYDropDownWnd();
+	CustomDropDownWnd();
 
 // Attributes
 public:
@@ -62,18 +62,18 @@ protected:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CSYDropDownWnd)
+	//{{AFX_VIRTUAL(CustomDropDownWnd)
 protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	//}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~CSYDropDownWnd();
+	virtual ~CustomDropDownWnd();
 
 	// Generated message map functions
 protected:
-	//{{AFX_MSG(CSYDropDownWnd)
+	//{{AFX_MSG(CustomDropDownWnd)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

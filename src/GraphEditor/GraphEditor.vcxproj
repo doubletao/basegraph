@@ -135,6 +135,7 @@
     </ClCompile>
     <ClCompile Include="UIActionBar.cpp" />
     <ClCompile Include="UICheckColorButton.cpp" />
+    <ClCompile Include="UIComboxFontSel.cpp" />
     <ClCompile Include="UIObjectBar.cpp" />
     <ClCompile Include="UIPlayControlBar.cpp" />
     <ClCompile Include="UIPropertyTabBar.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="GraphEditorCommonDef.h" />
     <ClInclude Include="UIActionBar.h" />
     <ClInclude Include="UICheckColorButton.h" />
+    <ClInclude Include="UIComboxFontSel.h" />
     <ClInclude Include="UIObjectBar.h" />
     <ClInclude Include="UIPlayControlBar.h" />
     <ClInclude Include="UIPropertyTabBar.h" />

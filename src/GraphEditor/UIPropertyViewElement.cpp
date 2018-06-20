@@ -74,6 +74,8 @@ void UIPropertyViewElement::InitializeObject()
 			((UICheckColorButton *)pElement)->SetValue(valueDesc.stuDefault);
 		}
 			break;
+		case BaseGraph_DataBase::PropertyDisp_FontNameCombo:
+			break;
 		default:
 			break;
 		}

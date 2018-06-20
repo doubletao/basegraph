@@ -141,6 +141,9 @@
     <ClCompile Include="MessageHandlerTitlewordTool.cpp">
       <Filter>SceneMessageHandler\ObjectTool</Filter>
     </ClCompile>
+    <ClCompile Include="UIComboxFontSel.cpp">
+      <Filter>PropertyView\UIColorCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="MessageHandlerTitlewordTool.h">
       <Filter>SceneMessageHandler\ObjectTool</Filter>
+    </ClInclude>
+    <ClInclude Include="UIComboxFontSel.h">
+      <Filter>PropertyView\UIColorCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

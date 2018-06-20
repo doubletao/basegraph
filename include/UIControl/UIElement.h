@@ -17,6 +17,7 @@ enum EmUIElementMsg
 	EmUIElementMsg_OnEditEnded,
 	EmUIElementMsg_OnColorChanged,
 	EmUIElementMsg_OnCombinedCtrlValueChged,
+	EmUIElementMsg_OnComboBoxSelChged,
 	EmUIElementMsg_WndUserEnd,
 };
 

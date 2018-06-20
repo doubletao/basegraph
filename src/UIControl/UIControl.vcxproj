@@ -136,6 +136,7 @@
     <ClCompile Include="UIColorDrawer.cpp" />
     <ClCompile Include="UICombinedCtrl.cpp" />
     <ClCompile Include="CustomComboBox.cpp" />
+    <ClCompile Include="UIComboBox.cpp" />
     <ClCompile Include="UIControl.cpp" />
     <ClCompile Include="UIDrawer.cpp" />
     <ClCompile Include="CustomDropDownWnd.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UICombinedCtrl.h" />
     <ClInclude Include="..\..\include\UIControl\CustomComboBox.h" />
+    <ClInclude Include="..\..\include\UIControl\UIComboBox.h" />
     <ClInclude Include="..\..\include\UIControl\UIControlDef.h" />
     <ClInclude Include="..\..\include\UIControl\UIDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\CustomDropDownWnd.h" />

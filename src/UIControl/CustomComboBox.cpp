@@ -12,25 +12,25 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #pragma comment(lib, "imm32.lib")
-#define SY_szComboBoxClass				"SY_ComboBoxClass32"
+#define Custom_szComboBoxClass				"Custom_ComboBoxClass32"
 
 //*********************************************************************
-//************  CSYComboBox *******************************************
+//************  CustomComboBox *******************************************
 #define		IDC_DYCOMBOBOX_EDIT		20032
 #define		IDC_DYCOMBOBOX_DROPWND		20033
 
 
-WNDPROC CSYComboBox::lpfnSuperComboBox = NULL;
+WNDPROC CustomComboBox::lpfnSuperComboBox = NULL;
 
 #define COMBO_TIMER_FLUSH_DROPBTN	1
 #define COMBO_TIMER_CLEAR_IMEBUFFER	2
 
 #define WM_FLUSH_WND (WM_USER + 101)
 
-IMPLEMENT_DYNAMIC( CSYComboBox, CWnd )
+IMPLEMENT_DYNAMIC( CustomComboBox, CWnd )
 
-CSYComboBox::CSYComboBox()
-	: m_pEdit(NULL)
+CustomComboBox::CustomComboBox()
+	: m_pComboBox(NULL)
 	, m_pDropDownWnd(NULL)
 	, m_pDropDownBtnU(nullptr)
 	, m_pDropDownBtnD(nullptr)
@@ -39,8 +39,8 @@ CSYComboBox::CSYComboBox()
 	, m_nDropDownBtnWidth(20)
 	, m_nDropDownBtnHeight(20)
 {
-	m_pDropDownWnd	= new CSYDropDownWnd;	
-	m_pEdit = new CustomEdit;
+	m_pDropDownWnd	= new CustomDropDownWnd;	
+	m_pComboBox = new CustomEdit;
 
 	m_nCtrlHeight = GetSystemMetrics(SM_CYSIZE) + 2;
 	if(m_nCtrlHeight > 22)
@@ -93,29 +93,29 @@ CSYComboBox::CSYComboBox()
 	m_clSelectText	= ThemeManager::Instance().GetColor(ThemeColor_CustomDropSelectText);
 }
 
-CSYComboBox::~CSYComboBox()
+CustomComboBox::~CustomComboBox()
 {
 	SAFE_DELETE(m_pDropDownWnd );
-	SAFE_DELETE(m_pEdit);
+	SAFE_DELETE(m_pComboBox);
 }
 
 // 注册窗口类
-BOOL CSYComboBox::RegisterControlClass()
+BOOL CustomComboBox::RegisterControlClass()
 {
 	HINSTANCE hInst = AfxGetInstanceHandle();
 
 	return	RegisterControlClass( hInst );
 }
 
-BOOL CSYComboBox::RegisterControlClass( HINSTANCE	hInst )
+BOOL CustomComboBox::RegisterControlClass( HINSTANCE	hInst )
 {
 	WNDCLASS wcls;
 	// check to see if class already registered
-	static const TCHAR szClass[] = _T(SY_szComboBoxClass);
+	static const TCHAR szClass[] = _T(Custom_szComboBoxClass);
 	if ( ::GetClassInfo( hInst, szClass, &wcls ) )
 	{
 		// name already registered - ok if it was us
-		return ( wcls.lpfnWndProc == ( WNDPROC )CSYComboBox::WndProcHook );
+		return ( wcls.lpfnWndProc == ( WNDPROC )CustomComboBox::WndProcHook );
 	}
 
 	// Use standard "Static" control as a template.
@@ -133,39 +133,39 @@ BOOL CSYComboBox::RegisterControlClass( HINSTANCE	hInst )
 		return	FALSE;
 	return TRUE;
 }
-BOOL CSYComboBox::UnregisterControlClass(HINSTANCE hInst)
+BOOL CustomComboBox::UnregisterControlClass(HINSTANCE hInst)
 {
 	if (hInst == NULL)	  hInst = AfxGetInstanceHandle();
-	return UnregisterClass(_T(SY_szComboBoxClass), hInst);
+	return UnregisterClass(_T(Custom_szComboBoxClass), hInst);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // Special create hooks
 
 LRESULT CALLBACK EXPORT
-CSYComboBox::WndProcHook( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+CustomComboBox::WndProcHook( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-	CSYComboBox* pWnd = ( CSYComboBox* )FromHandlePermanent( hWnd );
+	CustomComboBox* pWnd = ( CustomComboBox* )FromHandlePermanent( hWnd );
 
 	if( !pWnd )
 	{
 		// create new item and attach it
-		pWnd = new CSYComboBox;
+		pWnd = new CustomComboBox;
 		pWnd->Attach( hWnd );
 		pWnd->m_bAutoDelete = TRUE;
 		pWnd->PreSubclassWindow();
 	}
 
 	// set up wndproc to AFX one, and call it
-	pWnd->m_pfnSuper = CSYComboBox::lpfnSuperComboBox;
+	pWnd->m_pfnSuper = CustomComboBox::lpfnSuperComboBox;
 	::SetWindowLongPtr( hWnd, GWLP_WNDPROC, (LONG)(LONG_PTR)AfxWndProc );
 
 // then call it for this first message
 	return ::CallWindowProc( AfxWndProc, hWnd, msg, wParam, lParam );
 }
 
-BEGIN_MESSAGE_MAP(CSYComboBox, CWnd)
-	//{{AFX_MSG_MAP(CSYComboBox)
+BEGIN_MESSAGE_MAP(CustomComboBox, CWnd)
+	//{{AFX_MSG_MAP(CustomComboBox)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
 	ON_WM_SIZE()
@@ -193,9 +193,9 @@ END_MESSAGE_MAP()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CSYComboBox message handlers
+// CustomComboBox message handlers
 
-int CSYComboBox::OnCreate(LPCREATESTRUCT lpCreateStruct) 
+int CustomComboBox::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -218,7 +218,7 @@ int CSYComboBox::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 1;
 }
 
-void CSYComboBox::OnDestroy() 
+void CustomComboBox::OnDestroy() 
 {
 	CWnd::OnDestroy();
 	
@@ -227,15 +227,15 @@ void CSYComboBox::OnDestroy()
 	{
 		m_pDropDownWnd->DestroyWindow();
 	}
-	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
+	if (m_pComboBox && ::IsWindow(m_pComboBox->GetSafeHwnd()))
 	{
-		m_pEdit->DestroyWindow();
+		m_pComboBox->DestroyWindow();
 	}
 }
 
 
 //create edit box and drop list box.
-BOOL CSYComboBox::CreateChildWindows(DWORD dwStyle,CRect rtControl)
+BOOL CustomComboBox::CreateChildWindows(DWORD dwStyle,CRect rtControl)
 {
 	BOOL ret = TRUE;
 	if(!::IsWindow(m_hWnd))
@@ -247,10 +247,10 @@ BOOL CSYComboBox::CreateChildWindows(DWORD dwStyle,CRect rtControl)
 		m_nStyle = 0;//带有edit框的comboBox.
 
 	if(!m_pDropDownWnd)
-		m_pDropDownWnd = new CSYDropDownWnd;
-	if (!m_pEdit)
+		m_pDropDownWnd = new CustomDropDownWnd;
+	if (!m_pComboBox)
 	{
-		m_pEdit = new CustomEdit;
+		m_pComboBox = new CustomEdit;
 	}
 
 	//create window
@@ -285,7 +285,7 @@ BOOL CSYComboBox::CreateChildWindows(DWORD dwStyle,CRect rtControl)
 
 	if (m_nStyle == 1)
 	{
-		if (!IsWindow(m_pEdit->GetSafeHwnd()))
+		if (!IsWindow(m_pComboBox->GetSafeHwnd()))
 		{
 			//BOOL bResult = m_pEdit->Create();
 		}
@@ -294,7 +294,7 @@ BOOL CSYComboBox::CreateChildWindows(DWORD dwStyle,CRect rtControl)
 	return TRUE;
 }
 
-void CSYComboBox::CalcClientRect(CRect& rtClient)
+void CustomComboBox::CalcClientRect(CRect& rtClient)
 {
 	DWORD dwStyle = GetStyle() & 0x0000000f;
 	if (dwStyle != CBS_DROPDOWN && dwStyle != CBS_DROPDOWNLIST)
@@ -305,7 +305,7 @@ void CSYComboBox::CalcClientRect(CRect& rtClient)
 		rtClient.bottom = rtClient.top + nHeight;
 }
 
-void CSYComboBox::OnPaint() 
+void CustomComboBox::OnPaint() 
 {
 	CPaintDC	dc(this);
 	CRect		rtClient;
@@ -458,7 +458,7 @@ void CSYComboBox::OnPaint()
 	MemDC.DeleteDC();
 }
 
-void CSYComboBox::DrawText( CDC *pDC )
+void CustomComboBox::DrawText( CDC *pDC )
 {
 	CRect rtText;
 	GetCtrlRect( rtText );
@@ -477,7 +477,7 @@ void CSYComboBox::DrawText( CDC *pDC )
 	pDC->SetTextColor(clrOldText);
 }
 
-void CSYComboBox::OnSetFocus(CWnd* pOldWnd) 
+void CustomComboBox::OnSetFocus(CWnd* pOldWnd) 
 {
 	//////////////////////////////////////////////////////////////////////////
 	//do not call for the white combobox splash out
@@ -487,7 +487,7 @@ void CSYComboBox::OnSetFocus(CWnd* pOldWnd)
 	PostMessage(WM_FLUSH_WND);
 }
 
-void CSYComboBox::OnKillFocus(CWnd* pNewWnd) 
+void CustomComboBox::OnKillFocus(CWnd* pNewWnd) 
 {
 //	CWnd::OnKillFocus(pNewWnd);
 	if(m_pDropDownWnd && ::IsWindow(m_pDropDownWnd->m_hWnd))
@@ -503,7 +503,7 @@ void CSYComboBox::OnKillFocus(CWnd* pNewWnd)
 }
 
 
-void CSYComboBox::OnLButtonDown(UINT nFlags, CPoint point) 
+void CustomComboBox::OnLButtonDown(UINT nFlags, CPoint point) 
 {
 	m_nHit = HitTest( point );
 	
@@ -595,11 +595,11 @@ void CSYComboBox::OnLButtonDown(UINT nFlags, CPoint point)
 	//////////////////////////////////////////////////////////////////////////
 }
 
-BOOL CSYComboBox::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
+BOOL CustomComboBox::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
 {
 	WNDCLASS	wcls;
 	HINSTANCE	hInst = AfxGetInstanceHandle();
-	if (!::GetClassInfo(hInst, _T(SY_szComboBoxClass), &wcls))
+	if (!::GetClassInfo(hInst, _T(Custom_szComboBoxClass), &wcls))
 	{
 		RegisterControlClass(hInst);
 	}
@@ -611,24 +611,24 @@ BOOL CSYComboBox::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT
 		rtWnd.bottom = rtWnd.top + 40;
 	if((dwStyle & CBS_SORT) == CBS_SORT)
 		m_pDropDownWnd->SetSortString(TRUE);
-	return CWnd::Create( _T(SY_szComboBoxClass), NULL, dwStyle/*|WS_CLIPSIBLINGS*/, rtWnd, pParentWnd, nID); 
+	return CWnd::Create( _T(Custom_szComboBoxClass), NULL, dwStyle/*|WS_CLIPSIBLINGS*/, rtWnd, pParentWnd, nID); 
 }
 //返回下拉列表的项目数
-int CSYComboBox::GetCount() const
+int CustomComboBox::GetCount() const
 {
 	if( m_pDropDownWnd )
 		return m_pDropDownWnd->GetCount();
 	return 0;
 }
 
-int CSYComboBox::GetCurSel() const
+int CustomComboBox::GetCurSel() const
 {
 	if(!IsWindow(m_hWnd))
 		return CB_ERR;
 	return (int)::SendMessage(m_hWnd,CB_GETCURSEL,0,0L);
 }
 
-int CSYComboBox::FindStringExact( int nIndexStart, LPCTSTR lpszFind ) const
+int CustomComboBox::FindStringExact( int nIndexStart, LPCTSTR lpszFind ) const
 {
 	int nIndex = CB_ERR;
 	if (lpszFind == NULL)
@@ -651,7 +651,7 @@ int CSYComboBox::FindStringExact( int nIndexStart, LPCTSTR lpszFind ) const
 	return nIndex;
 }
 
-int CSYComboBox::SelectString( int nStartAfter, LPCTSTR lpszString )
+int CustomComboBox::SelectString( int nStartAfter, LPCTSTR lpszString )
 {
 	int nIndex = CB_ERR;
 	if (lpszString == NULL)
@@ -683,7 +683,7 @@ int CSYComboBox::SelectString( int nStartAfter, LPCTSTR lpszString )
 	return nIndex;
 }
 
-LRESULT CSYComboBox::OnGetCurSel(WPARAM wParam,LPARAM lParam)
+LRESULT CustomComboBox::OnGetCurSel(WPARAM wParam,LPARAM lParam)
 {
 	int nSel = m_pDropDownWnd->GetCurSel();
 	CString strSel = GetLBText(nSel);
@@ -695,7 +695,7 @@ LRESULT CSYComboBox::OnGetCurSel(WPARAM wParam,LPARAM lParam)
 		return CB_ERR;
 }
 
-int CSYComboBox::SetCurSel(int nSelect, BOOL bSendChangeMessageToParent /*= FALSE*/)
+int CustomComboBox::SetCurSel(int nSelect, BOOL bSendChangeMessageToParent /*= FALSE*/)
 {
 	if( m_pDropDownWnd )
 	{
@@ -717,7 +717,7 @@ int CSYComboBox::SetCurSel(int nSelect, BOOL bSendChangeMessageToParent /*= FALS
 	return CB_ERR;
 }
 
-LRESULT CSYComboBox::OnSetCurSel(WPARAM wParam,LPARAM lParam)
+LRESULT CustomComboBox::OnSetCurSel(WPARAM wParam,LPARAM lParam)
 {
 	int nSelect = (int)wParam;
 	CRect rect;
@@ -740,7 +740,7 @@ LRESULT CSYComboBox::OnSetCurSel(WPARAM wParam,LPARAM lParam)
 	return m_nCurSel;
 }
 
-LRESULT CSYComboBox::OnSelectString(WPARAM wParam,LPARAM lParam)
+LRESULT CustomComboBox::OnSelectString(WPARAM wParam,LPARAM lParam)
 {
 	LPCTSTR lpszValue = (LPCTSTR)lParam;
 
@@ -756,7 +756,7 @@ LRESULT CSYComboBox::OnSelectString(WPARAM wParam,LPARAM lParam)
 	return CB_ERR;
 }
 
-int CSYComboBox::AddString(LPCTSTR lpszString)
+int CustomComboBox::AddString(LPCTSTR lpszString)
 {
 	CString strItem = lpszString;
 	//strItem = DYRTranslate(strItem,m_dwDicID)
@@ -766,7 +766,7 @@ int CSYComboBox::AddString(LPCTSTR lpszString)
 	}
 	return -1;
 }
-int CSYComboBox::AddStringEx(LPCTSTR lpszString)
+int CustomComboBox::AddStringEx(LPCTSTR lpszString)
 {
 	CString strItem = lpszString;
 	if( m_pDropDownWnd )
@@ -776,7 +776,7 @@ int CSYComboBox::AddStringEx(LPCTSTR lpszString)
 	return -1;
 }
 
-int CSYComboBox::AddStringArray(const CStringArray & aryString)
+int CustomComboBox::AddStringArray(const CStringArray & aryString)
 {
 	if( m_pDropDownWnd )
 	{
@@ -785,12 +785,12 @@ int CSYComboBox::AddStringArray(const CStringArray & aryString)
 	return -1;
 }
 
-int CSYComboBox::DelString(UINT nIndex)
+int CustomComboBox::DelString(UINT nIndex)
 {
 	return DeleteString(nIndex);
 }
 //删除指定索引的项
-int CSYComboBox::DeleteString(UINT nIndex)
+int CustomComboBox::DeleteString(UINT nIndex)
 {
 	int iRet = -1;
 	if( m_pDropDownWnd )
@@ -810,7 +810,7 @@ int CSYComboBox::DeleteString(UINT nIndex)
 	return iRet;
 }
 //插入指定索引的字符串
-int CSYComboBox::InsertString(int nIndex, LPCTSTR lpszString)
+int CustomComboBox::InsertString(int nIndex, LPCTSTR lpszString)
 {
 	CString strItem = lpszString;
 	int iRet = -1;
@@ -825,7 +825,7 @@ int CSYComboBox::InsertString(int nIndex, LPCTSTR lpszString)
 	return iRet;
 }
 
-int CSYComboBox::ReplaceString(int nIndex,LPCTSTR lpszValue)
+int CustomComboBox::ReplaceString(int nIndex,LPCTSTR lpszValue)
 {
 	CString strItem = lpszValue; 
 	if(m_pDropDownWnd)
@@ -837,7 +837,7 @@ int CSYComboBox::ReplaceString(int nIndex,LPCTSTR lpszValue)
 	return -1;
 }
 
-void CSYComboBox::ResetContent()
+void CustomComboBox::ResetContent()
 {
 	if( m_pDropDownWnd )
 		m_pDropDownWnd->ResetContent();
@@ -849,26 +849,26 @@ void CSYComboBox::ResetContent()
 	
 }
 
-void CSYComboBox::RereshContent()
+void CustomComboBox::RereshContent()
 {
 		m_pDropDownWnd->ReSetScrollWndPos();
  		m_pDropDownWnd->Invalidate();
 }
 
-int CSYComboBox::SetItemData(int nIndex, DWORD_PTR dwItemData )
+int CustomComboBox::SetItemData(int nIndex, DWORD_PTR dwItemData )
 {
 	if(m_pDropDownWnd == NULL) return CB_ERR;
 //	if(!::IsWindow(m_pDropDownWnd->m_hWnd))  return CB_ERR;
 	return m_pDropDownWnd->SetItemData(nIndex, dwItemData);
 }
-DWORD_PTR CSYComboBox::GetItemData(int nIndex ) const 
+DWORD_PTR CustomComboBox::GetItemData(int nIndex ) const 
 {
 	if(m_pDropDownWnd == NULL) return CB_ERR;
 	return m_pDropDownWnd->GetItemData(nIndex);
 }
 
 //得到下拉列表的CRect
-void CSYComboBox::GetDropWndRect( CRect &rtDropWnd )
+void CustomComboBox::GetDropWndRect( CRect &rtDropWnd )
 {
 	CRect rtClient;
 	GetWindowRect(&rtClient);
@@ -879,7 +879,7 @@ void CSYComboBox::GetDropWndRect( CRect &rtDropWnd )
 }
 
 //获取下拉按钮的CRect
-void CSYComboBox::GetDropBtnRect( CRect &rtDropBtn )
+void CustomComboBox::GetDropBtnRect( CRect &rtDropBtn )
 {
 // 	int nHeightMin = 2 * m_szTopLeftBmp.cy + m_szArrowBtn.cy;
 // 	CRect rtClient;
@@ -902,7 +902,7 @@ void CSYComboBox::GetDropBtnRect( CRect &rtDropBtn )
 }
 
 //获得包括button在内的Edit的CRect
-void CSYComboBox::GetCtrlRect( CRect &rtCtrl )
+void CustomComboBox::GetCtrlRect( CRect &rtCtrl )
 {
 	CRect rtClient;
 	GetWindowRect(&rtClient);
@@ -911,7 +911,7 @@ void CSYComboBox::GetCtrlRect( CRect &rtCtrl )
 	rtCtrl = rtClient;	
 }
 
-void CSYComboBox::DrawDropBtn( CDC* pDC , BOOL bIsPress )
+void CustomComboBox::DrawDropBtn( CDC* pDC , BOOL bIsPress )
 {
 
 }
@@ -924,7 +924,7 @@ Return Value: -1: the mouse is out of the range of the control;
 			0: in the drop down button range;
 			1:in combox but not in drop down button range.
 */
-int CSYComboBox::HitTest( CPoint pt )
+int CustomComboBox::HitTest( CPoint pt )
 {
 	CRect rtClient;
 	GetClientRect( &rtClient );
@@ -939,7 +939,7 @@ int CSYComboBox::HitTest( CPoint pt )
 	return 1;
 }
 
-void CSYComboBox::OnLButtonUp(UINT nFlags, CPoint point) 
+void CustomComboBox::OnLButtonUp(UINT nFlags, CPoint point) 
 {
 	// TODO: Add your message handler code here and/or call default
 	ReleaseCapture();
@@ -962,7 +962,7 @@ void CSYComboBox::OnLButtonUp(UINT nFlags, CPoint point)
 	CWnd::OnLButtonUp(nFlags, point);
 }
 
-void CSYComboBox::OnMouseMove(UINT nFlags, CPoint point) 
+void CustomComboBox::OnMouseMove(UINT nFlags, CPoint point) 
 {
 	if(m_bIsDropDown)
 		return;
@@ -988,7 +988,7 @@ void CSYComboBox::OnMouseMove(UINT nFlags, CPoint point)
 	//CWnd::OnMouseMove(nFlags, point);
 }
 
-void CSYComboBox::OnTimer(UINT_PTR nIDEvent) 
+void CustomComboBox::OnTimer(UINT_PTR nIDEvent) 
 {
 	if(nIDEvent == COMBO_TIMER_FLUSH_DROPBTN)
 	{
@@ -1016,7 +1016,7 @@ void CSYComboBox::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-LRESULT	CSYComboBox::OnDropWndSelect(WPARAM wParam,LPARAM lParam)
+LRESULT	CustomComboBox::OnDropWndSelect(WPARAM wParam,LPARAM lParam)
 {
 	m_nCurSel = (int)wParam;
 	m_pDropDownWnd->GetLBText((int)wParam, m_strCurSel);
@@ -1065,7 +1065,7 @@ LRESULT	CSYComboBox::OnDropWndSelect(WPARAM wParam,LPARAM lParam)
 	return TRUE;
 }
 
-LRESULT	CSYComboBox::OnDropWndKillFocus(WPARAM wParam,LPARAM lParam)
+LRESULT	CustomComboBox::OnDropWndKillFocus(WPARAM wParam,LPARAM lParam)
 {
 	if( m_bIsDropDown )
 	{
@@ -1106,34 +1106,34 @@ LRESULT	CSYComboBox::OnDropWndKillFocus(WPARAM wParam,LPARAM lParam)
 }
 
 
-void CSYComboBox::GetLBText(int nIndex, CString& rString) const
+void CustomComboBox::GetLBText(int nIndex, CString& rString) const
 {
 	if( m_pDropDownWnd )
 		m_pDropDownWnd->GetLBText( nIndex , rString );
 }
 
-int CSYComboBox::GetLBTextLen(int nIndex) const
+int CustomComboBox::GetLBTextLen(int nIndex) const
 {
 	if( m_pDropDownWnd )
 		return m_pDropDownWnd->GetLBTextLen( nIndex );
 	return 0;
 }
 
-CString CSYComboBox::GetLBText(int nIndex)
+CString CustomComboBox::GetLBText(int nIndex)
 {
 	CString strValue;
 	GetLBText(nIndex,strValue);
 	return strValue;
 }
 
-CString CSYComboBox::GetEditText()
+CString CustomComboBox::GetEditText()
 {
 	CString strValue;
 	GetWindowText(strValue);
 	return strValue;
 }
 
-void CSYComboBox::SetEditText(CString strText)
+void CustomComboBox::SetEditText(CString strText)
 {
 	CString strEdit;
 	if(m_pDropDownWnd)
@@ -1150,7 +1150,7 @@ void CSYComboBox::SetEditText(CString strText)
 	}
 }
 
-int CSYComboBox::SetItemHeight( int nItemHeight )
+int CustomComboBox::SetItemHeight( int nItemHeight )
 {
 	if( nItemHeight <= 0 )
 		return 0;
@@ -1176,12 +1176,12 @@ int CSYComboBox::SetItemHeight( int nItemHeight )
 	return m_nCtrlHeight;
 }
 
-int CSYComboBox::GetItemHeight() const
+int CustomComboBox::GetItemHeight() const
 {
 	return m_nCtrlHeight;
 }
 
-void CSYComboBox::PostNcDestroy()
+void CustomComboBox::PostNcDestroy()
 {
 	if( m_bAutoDelete )
 	{
@@ -1191,7 +1191,7 @@ void CSYComboBox::PostNcDestroy()
 	}
 }
 
-BOOL CSYComboBox::SubclassComboBox( UINT nID, CWnd* pParent )
+BOOL CustomComboBox::SubclassComboBox( UINT nID, CWnd* pParent )
 {
 	CWnd*	pDlg = CWnd::FromHandle( pParent->m_hWnd );
 	ASSERT( pDlg );
@@ -1211,8 +1211,8 @@ BOOL CSYComboBox::SubclassComboBox( UINT nID, CWnd* pParent )
 	m_nCurSel = pCombo->GetCurSel();
 
 	DWORD dwStyle = pCombo->GetStyle();
-	CSYComboBox* pWnd = ( CSYComboBox* )FromHandlePermanent( pCombo->m_hWnd );
-	if( pWnd )//ddx_control the combox is CSYComboBox type.
+	CustomComboBox* pWnd = ( CustomComboBox* )FromHandlePermanent( pCombo->m_hWnd );
+	if( pWnd )//ddx_control the combox is CustomComboBox type.
 	{
 		// pWnd->ModifyStyle(0,WS_CLIPSIBLINGS);
 		pWnd->CreateChildWindows(dwStyle,rtControl);
@@ -1239,7 +1239,7 @@ BOOL CSYComboBox::SubclassComboBox( UINT nID, CWnd* pParent )
 	return SubclassDlgItem( nID, pParent );
 }
 
-BOOL CSYComboBox::AutoLoad( UINT nID, CWnd* pParent, BOOL fAutoDelete )
+BOOL CustomComboBox::AutoLoad( UINT nID, CWnd* pParent, BOOL fAutoDelete )
 {
 	// first attach the CDYStatic to the dialog control
 	if( SubclassComboBox( nID , pParent ) == FALSE )
@@ -1272,11 +1272,11 @@ BOOL CSYComboBox::AutoLoad( UINT nID, CWnd* pParent, BOOL fAutoDelete )
 	return TRUE;
 }
 
-void CSYComboBox::OnChangeEdit()
+void CustomComboBox::OnChangeEdit()
 {
 }
 
-void CSYComboBox::GetWindowText( CString &rString )
+void CustomComboBox::GetWindowText( CString &rString )
 {   
 	rString = m_strCurSel;
 }
@@ -1287,7 +1287,7 @@ Description: WM_CTLCOLOR 消息响应函数。用于控件中子控件画之前的刷子准备。
 Param: pDC：子控件的dc 。 pWnd：子控件的窗口指针。 nCtlColor: 控件颜色类型也即控件类型，祥见msdn。
 Return Value: 画子控件的刷子。
 */
-HBRUSH CSYComboBox::OnCtlColor( CDC* pDC , CWnd* pWnd , UINT nCtlColor )
+HBRUSH CustomComboBox::OnCtlColor( CDC* pDC , CWnd* pWnd , UINT nCtlColor )
 {
 	HBRUSH hbr = CWnd::OnCtlColor( pDC , pWnd , nCtlColor );
 	
@@ -1358,7 +1358,7 @@ HBRUSH CSYComboBox::OnCtlColor( CDC* pDC , CWnd* pWnd , UINT nCtlColor )
 	return (HBRUSH)m_brCombBK;
 }
 
-void CSYComboBox::OnSize(UINT nType, int cx, int cy) 
+void CustomComboBox::OnSize(UINT nType, int cx, int cy) 
 {
 	CWnd::OnSize(nType, cx, cy);
 	
@@ -1383,7 +1383,7 @@ void CSYComboBox::OnSize(UINT nType, int cx, int cy)
 //					to 0, it is the zero-based index of the matching item. It is CB_ERR if the 
 //					search was unsuccessful.
 //-------------------------------------------------------------------------------------------------
-int CSYComboBox::FindString(int nStartAfter, LPCTSTR lpszString) const
+int CustomComboBox::FindString(int nStartAfter, LPCTSTR lpszString) const
 {
 	CString strItem = lpszString;
 //	strItem = DYRTranslate(strItem,m_dwDicID);
@@ -1397,7 +1397,7 @@ int CSYComboBox::FindString(int nStartAfter, LPCTSTR lpszString) const
 //	Description:	Set Dropped width of this combobox . 
 //					If successful, the new width of the list box, otherwise CB_ERR
 //-------------------------------------------------------------------------------------------------
-int CSYComboBox::SetDroppedWidth(UINT nWidth)
+int CustomComboBox::SetDroppedWidth(UINT nWidth)
 {
 	//	new dropped width must larger than original 
 	//	rect's width
@@ -1415,7 +1415,7 @@ int CSYComboBox::SetDroppedWidth(UINT nWidth)
 //	Function:		GetDroppedWidth()	
 //	Description:	Get Dropped width of this combobox .
 //-------------------------------------------------------------------------------------------------
-int CSYComboBox::GetDroppedWidth() const
+int CustomComboBox::GetDroppedWidth() const
 {
 	return m_nDroppedWidth;
 }
@@ -1424,7 +1424,7 @@ int CSYComboBox::GetDroppedWidth() const
 //	Function:		SetTextFormat()
 //	Description:	set text format for text shown in combobox edit control
 //-------------------------------------------------------------------------------------------------
-void CSYComboBox::SetTextFormat(UINT nFormat)
+void CustomComboBox::SetTextFormat(UINT nFormat)
 {
 	m_nTextFormat = nFormat;
 }
@@ -1433,12 +1433,12 @@ void CSYComboBox::SetTextFormat(UINT nFormat)
 //	Function:		GetTextFormat()
 //	Description:	get text format
 //-------------------------------------------------------------------------------------------------
-UINT CSYComboBox::GetTextFormat() const
+UINT CustomComboBox::GetTextFormat() const
 {
 	return m_nTextFormat;
 }
 
-BOOL CSYComboBox::EnableWindow(BOOL bEnable )
+BOOL CustomComboBox::EnableWindow(BOOL bEnable )
 {
 	CRect rect;
 	GetCtrlRect( rect );
@@ -1455,7 +1455,7 @@ Description: 设定comboBox的文字标题。当为带有EDIT框的为设定EDIT框的内容。
 Param:
 Return Value:
 */
-void CSYComboBox::SetWindowText( CString rString )
+void CustomComboBox::SetWindowText( CString rString )
 {
 	if(!IsWindow(m_hWnd))
 		return;
@@ -1466,17 +1466,17 @@ void CSYComboBox::SetWindowText( CString rString )
 	CWnd::SetWindowText(rString);
 }
 
-BOOL CSYComboBox::SetItemImage(int nItemIndex,UINT nImageIndex)
+BOOL CustomComboBox::SetItemImage(int nItemIndex,UINT nImageIndex)
 {
 	return m_pDropDownWnd->SetItemImage(nItemIndex,nImageIndex);
 }
 
-int CSYComboBox::GetItemImage(int nItemIndex ) const
+int CustomComboBox::GetItemImage(int nItemIndex ) const
 {
 	return m_pDropDownWnd->GetItemImage(nItemIndex);
 }
 
-BOOL CSYComboBox::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) 
+BOOL CustomComboBox::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) 
 {
 	return FALSE;
 	if(m_pDropDownWnd 
@@ -1514,7 +1514,7 @@ BOOL CSYComboBox::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	//	return CWnd::OnMouseWheel(nFlags, zDelta, pt);
 }
 
-BOOL CSYComboBox::PreTranslateMessage(MSG* pMsg) 
+BOOL CustomComboBox::PreTranslateMessage(MSG* pMsg) 
 {
 	if(pMsg->message == WM_KEYDOWN)	
 	{
@@ -1691,7 +1691,7 @@ BOOL CSYComboBox::PreTranslateMessage(MSG* pMsg)
 	return CWnd::PreTranslateMessage(pMsg);
 }
 
-LRESULT CSYComboBox::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CustomComboBox::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lResult = __super::WindowProc(message, wParam, lParam);
 	
@@ -1828,14 +1828,14 @@ LRESULT CSYComboBox::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 
-LRESULT CSYComboBox::OnMsgGetTextLength(WPARAM wP,LPARAM lP)
+LRESULT CustomComboBox::OnMsgGetTextLength(WPARAM wP,LPARAM lP)
 {
 	CString rString;
 	rString = m_strCurSel;
 	
 	return rString.GetLength();
 }
-LRESULT CSYComboBox::OnMsgGetText(WPARAM wP,LPARAM lP)
+LRESULT CustomComboBox::OnMsgGetText(WPARAM wP,LPARAM lP)
 {
 	CString rString;
 	rString = m_strCurSel;
@@ -1848,7 +1848,7 @@ LRESULT CSYComboBox::OnMsgGetText(WPARAM wP,LPARAM lP)
 	rString.ReleaseBuffer();
 	return wP;
 }
-LRESULT CSYComboBox::OnMsgSetText(WPARAM wP,LPARAM lP)
+LRESULT CustomComboBox::OnMsgSetText(WPARAM wP,LPARAM lP)
 {
 	LPCTSTR lpString = LPCTSTR(lP);
 	CString strRealText = lpString;
@@ -1857,31 +1857,31 @@ LRESULT CSYComboBox::OnMsgSetText(WPARAM wP,LPARAM lP)
 	return 1L;
 }
 
-LRESULT CSYComboBox::OnFlushWnd(WPARAM wParam, LPARAM lParam)
+LRESULT CustomComboBox::OnFlushWnd(WPARAM wParam, LPARAM lParam)
 {
 	Invalidate();
 	
 	return 1L;
 }
 
-BOOL CSYComboBox::EnableRunTimeList(BOOL bEnable)
+BOOL CustomComboBox::EnableRunTimeList(BOOL bEnable)
 {
 	BOOL bRet = m_bEnableRunTimeList;
 	m_bEnableRunTimeList = bEnable;
 	return bRet;
 }
-void CSYComboBox::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp) 
+void CustomComboBox::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp) 
 {
 	CWnd::OnNcCalcSize(bCalcValidRects, lpncsp);
 }
-void CSYComboBox::OnNcPaint() 
+void CustomComboBox::OnNcPaint() 
 {
 	//	CDC* pDC = GetWindowDC();
 	//	ReleaseDC(pDC);
 	//	pDC = NULL;
 }
 
-BOOL CSYComboBox::OnEraseBkgnd(CDC* pDC)
+BOOL CustomComboBox::OnEraseBkgnd(CDC* pDC)
 {
 	return TRUE;
 }

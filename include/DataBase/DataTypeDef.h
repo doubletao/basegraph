@@ -106,6 +106,7 @@ namespace BaseGraph_DataBase
 		PropertyDisp_CheckBmp,//bool类型check图按钮
 		PropertyDisp_RatioBmp,//多选一图按钮
 		PropertyDisp_ColorCheckButton,//可关闭的颜色选择控件
+		PropertyDisp_FontNameCombo,//字体选择控件
 	};
 
 	struct ValueDescriptor
@@ -576,6 +577,7 @@ namespace BaseGraph_DataBase
 			valueDesc.nDispIndex = 0;
 			valueDesc.fStep = 0.0f;
 			valueDesc.strDispName = _T("字体名称");
+			valueDesc.emDispType = PropertyDisp_FontNameCombo;
 			valueDesc.stuDefault.SetValue(_T("宋体"));
 			break;
 		case Titleword_UnderLine_Bool:

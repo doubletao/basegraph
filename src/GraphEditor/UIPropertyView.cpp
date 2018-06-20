@@ -74,9 +74,9 @@ void UIPropertyView::InitializeObject()
 	m_pColorElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Color, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
 	m_vecChildElement.push_back(m_pColorElement);
 
-	//m_pObjectElement = new UIPropertyViewElement;
-	//m_pObjectElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Object, m_hParentWnd, this, BaseGraph_DataBase::TitlewordParam, BaseGraph_DataBase::TitlewordParam_End);
-	//m_vecChildElement.push_back(m_pObjectElement);
+	m_pObjectElement = new UIPropertyViewElement;
+	m_pObjectElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Object, m_hParentWnd, this, BaseGraph_DataBase::TitlewordParam, BaseGraph_DataBase::TitlewordParam_End);
+	m_vecChildElement.push_back(m_pObjectElement);
 
 	m_pSpaceElement = new UIPropertyViewElement;
 	m_pSpaceElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Space, m_hParentWnd, this, BaseGraph_DataBase::SpaceParam, BaseGraph_DataBase::SpaceParam_End);

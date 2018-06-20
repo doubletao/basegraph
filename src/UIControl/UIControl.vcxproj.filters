@@ -138,6 +138,9 @@
     <ClCompile Include="CustomDropDownWnd.cpp">
       <Filter>UIMFControl</Filter>
     </ClCompile>
+    <ClCompile Include="UIComboBox.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -262,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\UIControl\CustomDropDownWnd.h">
       <Filter>UIMFControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIComboBox.h">
+      <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
