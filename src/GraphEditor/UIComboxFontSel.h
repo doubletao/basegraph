@@ -4,8 +4,8 @@ class UIComboxFontSel : public UICombinedCtrl
 {
 protected:
 	UIStatic * m_pStatic;
-	//UIComboBox * m_pComboBoxFont;
-	CComboBox * m_pComboBoxFont;
+	UIComboBox * m_pComboBoxFont;
+	//CComboBox * m_pComboBoxFont;
 public:
 	UIComboxFontSel();
 	virtual ~UIComboxFontSel();

@@ -90,7 +90,7 @@ public:
 	
 protected:
 	CustomDropDownWnd*	m_pDropDownWnd;//combobox 窗口的下拉窗口。
-	CustomEdit			*m_pComboBox;
+	CustomEdit			*m_pEdit;
 // 	CInComboEdit	*m_pEdit;//带有编辑功能的 combobox 窗口的编辑框。
 // 	CDYTipWnd		*m_pToolTip;//提示栏
 	BOOL			m_bIsDropDown;//combobox是否处于下拉状态。

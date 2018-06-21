@@ -12,7 +12,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #pragma comment(lib, "imm32.lib")
-#define Custom_szComboBoxClass				"Custom_ComboBoxClass32"
+#define Custom_szComboBoxClass				"CustomComboBoxClass64"
 
 //*********************************************************************
 //************  CustomComboBox *******************************************
@@ -30,7 +30,7 @@ WNDPROC CustomComboBox::lpfnSuperComboBox = NULL;
 IMPLEMENT_DYNAMIC( CustomComboBox, CWnd )
 
 CustomComboBox::CustomComboBox()
-	: m_pComboBox(NULL)
+	: m_pEdit(NULL)
 	, m_pDropDownWnd(NULL)
 	, m_pDropDownBtnU(nullptr)
 	, m_pDropDownBtnD(nullptr)
@@ -40,7 +40,7 @@ CustomComboBox::CustomComboBox()
 	, m_nDropDownBtnHeight(20)
 {
 	m_pDropDownWnd	= new CustomDropDownWnd;	
-	m_pComboBox = new CustomEdit;
+	m_pEdit = new CustomEdit;
 
 	m_nCtrlHeight = GetSystemMetrics(SM_CYSIZE) + 2;
 	if(m_nCtrlHeight > 22)
@@ -96,7 +96,7 @@ CustomComboBox::CustomComboBox()
 CustomComboBox::~CustomComboBox()
 {
 	SAFE_DELETE(m_pDropDownWnd );
-	SAFE_DELETE(m_pComboBox);
+	SAFE_DELETE(m_pEdit);
 }
 
 // ×¢²á´°¿ÚÀà
@@ -109,29 +109,26 @@ BOOL CustomComboBox::RegisterControlClass()
 
 BOOL CustomComboBox::RegisterControlClass( HINSTANCE	hInst )
 {
+	if (hInst == NULL)		hInst = AfxGetInstanceHandle();
+
 	WNDCLASS wcls;
 	// check to see if class already registered
 	static const TCHAR szClass[] = _T(Custom_szComboBoxClass);
-	if ( ::GetClassInfo( hInst, szClass, &wcls ) )
-	{
+	if (::GetClassInfo(hInst, szClass, &wcls)) {
 		// name already registered - ok if it was us
-		return ( wcls.lpfnWndProc == ( WNDPROC )CustomComboBox::WndProcHook );
+		return (wcls.lpfnWndProc == AfxWndProc);
 	}
 
-	// Use standard "Static" control as a template.
-	VERIFY( ::GetClassInfo( NULL, _T( "Static" ), &wcls ) );
+	memset(&wcls, sizeof(WNDCLASS), 0);
 
-	//should be NULL.
-	lpfnSuperComboBox = NULL;
+	// Use standard "static" control as a template.
+	VERIFY(::GetClassInfo(NULL, _T("Static"), &wcls));
 
-	// set new values
-	wcls.lpfnWndProc = WndProcHook;
+	wcls.lpfnWndProc = AfxWndProc;
+	wcls.style |= CS_DBLCLKS;
 	wcls.hInstance = hInst;
 	wcls.lpszClassName = szClass;
-	wcls.hCursor = ::LoadCursor(NULL,IDC_ARROW);
-	if( RegisterClass( &wcls ) == 0 )
-		return	FALSE;
-	return TRUE;
+	return AfxRegisterClass(&wcls);
 }
 BOOL CustomComboBox::UnregisterControlClass(HINSTANCE hInst)
 {
@@ -227,9 +224,9 @@ void CustomComboBox::OnDestroy()
 	{
 		m_pDropDownWnd->DestroyWindow();
 	}
-	if (m_pComboBox && ::IsWindow(m_pComboBox->GetSafeHwnd()))
+	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
 	{
-		m_pComboBox->DestroyWindow();
+		m_pEdit->DestroyWindow();
 	}
 }
 
@@ -248,9 +245,9 @@ BOOL CustomComboBox::CreateChildWindows(DWORD dwStyle,CRect rtControl)
 
 	if(!m_pDropDownWnd)
 		m_pDropDownWnd = new CustomDropDownWnd;
-	if (!m_pComboBox)
+	if (!m_pEdit)
 	{
-		m_pComboBox = new CustomEdit;
+		m_pEdit = new CustomEdit;
 	}
 
 	//create window
@@ -285,7 +282,7 @@ BOOL CustomComboBox::CreateChildWindows(DWORD dwStyle,CRect rtControl)
 
 	if (m_nStyle == 1)
 	{
-		if (!IsWindow(m_pComboBox->GetSafeHwnd()))
+		if (!IsWindow(m_pEdit->GetSafeHwnd()))
 		{
 			//BOOL bResult = m_pEdit->Create();
 		}
@@ -354,6 +351,8 @@ void CustomComboBox::OnPaint()
 			//MemDC.FillSolidRect(&rtTemp,SYGetColorRes(SYCOLORRES_DLG_NORMAL_BK));
 			MemDC.FillRect(rtTemp,&m_brCombBK);
 	}
+
+	MemDC.FillSolidRect(rtTemp, ThemeManager::Instance().GetColor(ThemeColor_CustomComboxBk));
 
 	DWORD dwStyle	= GetStyle();
 	DWORD dwExStyle = GetExStyle();
@@ -465,6 +464,7 @@ void CustomComboBox::DrawText( CDC *pDC )
 	rtText.right -= m_nCtrlWidth;
 	rtText.DeflateRect(m_szTopLeftBmp.cx+2, m_szTopLeftBmp.cy);
 	pDC->SetBkMode(TRANSPARENT);
+
 	COLORREF clrOldText = pDC->GetTextColor();
 	
 	COLORREF clrText;
@@ -610,6 +610,9 @@ BOOL CustomComboBox::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, U
 		rtWnd.bottom = rtWnd.top + 40;
 	if((dwStyle & CBS_SORT) == CBS_SORT)
 		m_pDropDownWnd->SetSortString(TRUE);
+
+	//LPCTSTR szClassName = AfxRegisterWndClass(0);
+	//return CWnd::Create(szClassName, NULL, dwStyle/*|WS_CLIPSIBLINGS*/, rtWnd, pParentWnd, nID);
 	return CWnd::Create(_T(Custom_szComboBoxClass), NULL, dwStyle/*|WS_CLIPSIBLINGS*/, rtWnd, pParentWnd, nID); 
 	//return CWnd::CreateEx(WS_EX_CLIENTEDGE, _T(Custom_szComboBoxClass), NULL, dwStyle/*|WS_CLIPSIBLINGS*/, rtWnd, pParentWnd, nID);
 }
