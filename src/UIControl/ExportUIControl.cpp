@@ -68,7 +68,12 @@ BASEGRAPH_UICONTROL_API IMsgDispatchObject * UIControl_GetMsgDispatcher(int nDis
 	return MsgDispatcher::Instance().GetMsgDispatcher(nDispatcherID);
 }
 
-BASEGRAPH_UICONTROL_API const std::list<CString>& UIControl_GetFontList()
+BASEGRAPH_UICONTROL_API const std::list<CString>& UIControl_GetChnFontList()
 {
-	return UISysFontObtainer::Instance().GetFontList();
+	return UISysFontObtainer::Instance().GetChnFontList();
+}
+
+BASEGRAPH_UICONTROL_API const std::list<CString>& UIControl_GetEngFontList()
+{
+	return UISysFontObtainer::Instance().GetEngFontList();
 }

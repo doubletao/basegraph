@@ -26,6 +26,8 @@ enum ThemeIntValueDef
 	ThemeInt_PropertyViewCtrlColorBtnHeight,//属性窗颜色选择按钮高度
 	ThemeInt_PropertyViewComboBoxBtnWidth,//属性窗下拉选框宽度
 	ThemeInt_PropertyViewComboBoxBtnHeight,//属性窗下拉选框高度
+	ThemeInt_PropertyViewStaticTextHeight,	//属性窗静态文本控件高度
+	ThemeInt_PropertyViewTitlewordMutiEditHeight,//属性窗多行文本编辑框高度
 	ThemeInt_TimeLineTimeCodeWidth,
 	ThemeInt_TimeLineTimeCodeHeight,
 	ThemeInt_TimeLineTimeCodeLeftGap,

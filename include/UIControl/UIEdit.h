@@ -8,7 +8,7 @@ class BASEGRAPH_UICONTROL_API UIEdit
 {
 	DECLARE_MESSAGE_MAP()
 protected:
-	CustomEdit * m_pComboBox;
+	CustomEdit * m_pEdit;
 public:
 	UIEdit();
 	virtual ~UIEdit();

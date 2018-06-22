@@ -571,6 +571,7 @@ namespace BaseGraph_DataBase
 			valueDesc.nDispIndex = 0;
 			valueDesc.fStep = 0.0f;
 			valueDesc.strDispName = _T("ÎÄ±¾ÄÚÈÝ");
+			valueDesc.emDispType = PropertyDisp_StrMutiEdit;
 			valueDesc.stuDefault.SetValue(_T(""));
 			break;
 		case Titleword_FontName_Str:

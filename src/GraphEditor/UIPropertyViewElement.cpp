@@ -31,6 +31,12 @@ void UIPropertyViewElement::InitializeObject()
 		case BaseGraph_DataBase::PropertyDisp_StrSingleEdit:
 			break;
 		case BaseGraph_DataBase::PropertyDisp_StrMutiEdit:
+		{
+			pElement = new UIEditMutiLine;
+			int nMutiEditHeight = UIControl_GetIntValue(ThemeInt_PropertyViewTitlewordMutiEditHeight);
+			((UIEditMutiLine *)pElement)->Create(valueDesc.strDispName, 0, 0, 100, nMutiEditHeight, 0, 0, 0, m_hParentWnd, this);
+			((UIEditMutiLine *)pElement)->SetValue(valueDesc.stuDefault);
+		}
 			break;
 		case BaseGraph_DataBase::PropertyDisp_StrPathEdit:
 			break;

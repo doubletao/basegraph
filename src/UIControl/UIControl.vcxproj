@@ -141,6 +141,7 @@
     <ClCompile Include="UIDrawer.cpp" />
     <ClCompile Include="CustomDropDownWnd.cpp" />
     <ClCompile Include="UIEdit.cpp" />
+    <ClCompile Include="UIEditMutiLine.cpp" />
     <ClCompile Include="UIEditNum.cpp" />
     <ClCompile Include="UIEditNumSlider.cpp" />
     <ClCompile Include="UIEditNumSpin.cpp" />

@@ -15,19 +15,26 @@ void UISysFontObtainer::LoadFontList()
 {
 	CDC memDC;
 	memDC.CreateCompatibleDC(NULL);
-	EnumFontFamilies(memDC.m_hDC, NULL, FontEngEnumProc, (LPARAM)this);
+	EnumFontFamilies(memDC.m_hDC, NULL, FontEnumProc, (LPARAM)this);
 }
 
-int UISysFontObtainer::FontEngEnumProc(const LOGFONT * pLogFont, const TEXTMETRIC * pTextMetric, DWORD type, LPARAM pDestLogFont)
+int UISysFontObtainer::FontEnumProc(const LOGFONT * pLogFont, const TEXTMETRIC * pTextMetric, DWORD type, LPARAM pDestLogFont)
 {
 	UISysFontObtainer * pThis = (UISysFontObtainer *)pDestLogFont;
 	if (pThis)
 	{
-		if ((type != 0) && ((type & RASTER_FONTTYPE) == 0) && pLogFont)
+		if (type != 0 && (type & RASTER_FONTTYPE) == 0)
 		{
-			if (pLogFont->lfFaceName[0] != _T('@'))
+			if ((pLogFont->lfFaceName)[0] != _T('@'))
 			{
-				pThis->m_lstFontName.push_back(pLogFont->lfFaceName);
+				pThis->m_lstEngFontName.push_back(pLogFont->lfFaceName);
+			}
+		}
+		if (type != 0 && (type & RASTER_FONTTYPE) == 0)
+		{
+			if ((pLogFont->lfFaceName)[0] != _T('@'))
+			{
+				pThis->m_lstChnFontName.push_back(pLogFont->lfFaceName);
 			}
 		}
 	}
@@ -40,11 +47,20 @@ UISysFontObtainer & UISysFontObtainer::Instance()
 	return inst;
 }
 
-const std::list<CString>& UISysFontObtainer::GetFontList()
+const std::list<CString>& UISysFontObtainer::GetEngFontList()
 {
-	if (m_lstFontName.empty())
+	if (m_lstEngFontName.empty())
 	{
 		LoadFontList();
 	}
-	return m_lstFontName;
+	return m_lstEngFontName;
+}
+
+const std::list<CString>& UISysFontObtainer::GetChnFontList()
+{
+	if (m_lstChnFontName.empty())
+	{
+		LoadFontList();
+	}
+	return m_lstChnFontName;
 }

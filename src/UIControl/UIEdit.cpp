@@ -10,20 +10,20 @@ END_MESSAGE_MAP()
 #define CustomUIEditClass "CustomUIEditClass"
 
 UIEdit::UIEdit()
-	: m_pComboBox(nullptr)
+	: m_pEdit(nullptr)
 {
 }
 
 UIEdit::~UIEdit()
 {
-	if (m_pComboBox)
+	if (m_pEdit)
 	{
-		if (::IsWindow(m_pComboBox->GetSafeHwnd()))
+		if (::IsWindow(m_pEdit->GetSafeHwnd()))
 		{
-			m_pComboBox->DestroyWindow();
+			m_pEdit->DestroyWindow();
 		}
-		delete m_pComboBox;
-		m_pComboBox = nullptr;
+		delete m_pEdit;
+		m_pEdit = nullptr;
 	}
 }
 
@@ -59,10 +59,10 @@ BOOL UIEdit::RegisterControlClass(HINSTANCE hInst)
 
 void UIEdit::OnSetFocus(CWnd * pOldWnd)
 {
-	if (m_pComboBox && ::IsWindow(m_pComboBox->GetSafeHwnd()))
+	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
 	{
-		m_pComboBox->SetFocus();
-		m_pComboBox->SetSel(0, -1, TRUE);
+		m_pEdit->SetFocus();
+		m_pEdit->SetSel(0, -1, TRUE);
 	}
 }
 
@@ -90,8 +90,8 @@ bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditI
 			if (CWnd::Create(_T(CustomUIEditClass), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | WS_TABSTOP | WS_CLIPSIBLINGS, CRect(), pParentWnd, nID, nullptr))
 			{
 				Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
-				m_pComboBox = new CustomEdit;
-				m_pComboBox->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | WS_BORDER | dwStyleEs, CRect(), this, nEditID);
+				m_pEdit = new CustomEdit;
+				m_pEdit->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | WS_BORDER | dwStyleEs, CRect(), this, nEditID);
 				bRet = true;
 			}
 		}
@@ -101,28 +101,28 @@ bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditI
 
 void UIEdit::RearrangeChildPos()
 {
-	if (m_pComboBox && ::IsWindow(m_pComboBox->GetSafeHwnd()))
+	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
 	{
-		m_pComboBox->MoveWindow(0, 0, m_nWidth, m_nHeight);
+		m_pEdit->MoveWindow(0, 0, m_nWidth, m_nHeight);
 	}
 }
 
 void UIEdit::SetText(CString strText)
 {
-	if (m_pComboBox && ::IsWindow(m_pComboBox->GetSafeHwnd()))
+	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
 	{
-		m_pComboBox->SetWindowText(strText);
+		m_pEdit->SetWindowText(strText);
 		//强制立刻刷新
-		m_pComboBox->UpdateWindow();
+		m_pEdit->UpdateWindow();
 	}
 }
 
 CString UIEdit::GetText()
 {
 	CString strRet = _T("");
-	if (m_pComboBox && ::IsWindow(m_pComboBox->GetSafeHwnd()))
+	if (m_pEdit && ::IsWindow(m_pEdit->GetSafeHwnd()))
 	{
-		m_pComboBox->GetWindowText(strRet);
+		m_pEdit->GetWindowText(strRet);
 	}
 	return strRet;
 }

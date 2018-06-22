@@ -101,6 +101,8 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewCtrlColorBtnHeight, 30));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewComboBoxBtnWidth, 130));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewComboBoxBtnHeight, 30));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewStaticTextHeight, 20));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_PropertyViewTitlewordMutiEditHeight, 200));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeLeftGap, 10));

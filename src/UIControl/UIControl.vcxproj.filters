@@ -144,6 +144,9 @@
     <ClCompile Include="UISysFontObtainer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="UIEditMutiLine.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">

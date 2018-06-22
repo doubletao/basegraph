@@ -60,4 +60,5 @@ BASEGRAPH_UICONTROL_API void UIControl_BroadcastMsg(int nMsgID, WPARAM wParam, L
 BASEGRAPH_UICONTROL_API void UIControl_SendMsgTo(int nIDTo, int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom = 0);
 BASEGRAPH_UICONTROL_API IMsgDispatchObject * UIControl_GetMsgDispatcher(int nDispatcherID);//取得消息处理器对象指针
 //拿字体列表
-BASEGRAPH_UICONTROL_API const std::list<CString> & UIControl_GetFontList();
+BASEGRAPH_UICONTROL_API const std::list<CString> & UIControl_GetChnFontList();
+BASEGRAPH_UICONTROL_API const std::list<CString> & UIControl_GetEngFontList();

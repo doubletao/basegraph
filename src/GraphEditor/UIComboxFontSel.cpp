@@ -61,7 +61,7 @@ bool UIComboxFontSel::Create(CString strTitle, int nTitleWidth, int nID, HWND hP
 		m_vecChildElement.push_back(m_pComboBoxFont);
 		//m_pComboBoxFont = new CComboBox;
 		//m_pComboBoxFont->Create(WS_VISIBLE | WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST | WS_VSCROLL, CRect(0, 0, nBtnWidth, nBtnHeight), CWnd::FromHandle(hParentWnd), 10423);
-		std::list<CString> lstFontName = UIControl_GetFontList();
+		std::list<CString> lstFontName = UIControl_GetChnFontList();
 		for (auto it : lstFontName)
 		{
 			m_pComboBoxFont->AddString(it);
