@@ -128,6 +128,7 @@
     <ClCompile Include="MessageHandlerDefault.cpp" />
     <ClCompile Include="MessageHandlerFactory.cpp" />
     <ClCompile Include="MessageHandlerManager.cpp" />
+    <ClCompile Include="MessageHandlerTitlewordEditor.cpp" />
     <ClCompile Include="MessageHandlerTitlewordTool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -164,6 +165,7 @@
     <ClInclude Include="MessageHandlerDefault.h" />
     <ClInclude Include="MessageHandlerFactory.h" />
     <ClInclude Include="MessageHandlerManager.h" />
+    <ClInclude Include="MessageHandlerTitlewordEditor.h" />
     <ClInclude Include="MessageHandlerTitlewordTool.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />

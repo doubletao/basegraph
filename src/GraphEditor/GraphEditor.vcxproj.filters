@@ -144,6 +144,9 @@
     <ClCompile Include="UIComboxFontSel.cpp">
       <Filter>PropertyView\UIColorCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="MessageHandlerTitlewordEditor.cpp">
+      <Filter>SceneMessageHandler\ObjectEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="UIComboxFontSel.h">
       <Filter>PropertyView\UIColorCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerTitlewordEditor.h">
+      <Filter>SceneMessageHandler\ObjectEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

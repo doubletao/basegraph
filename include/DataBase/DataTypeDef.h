@@ -477,11 +477,17 @@ namespace BaseGraph_DataBase
 			valueDesc.vecValueLimit.push_back(std::make_pair(3000, _T("最大值")));
 			break;
 		case ColorParam_Face_Stu:
+		{
 			valueDesc.nDispIndex = 0;
 			valueDesc.fStep = 0.0f;
 			valueDesc.strDispName = _T("面");
 			valueDesc.emDispType = PropertyDisp_ColorCheckButton;
-			valueDesc.stuDefault.SetValue(faceinfo());
+			faceinfo faceInfo;
+			faceInfo.disable = 0;
+			faceInfo.color.type = SYCOLOR_HOMO;
+			faceInfo.color.color = ABGR(255, 255, 0, 0 );
+			valueDesc.stuDefault.SetValue(faceInfo);
+		}
 			break;
 		case ColorParam_Border_Stu:
 			valueDesc.nDispIndex = 0;

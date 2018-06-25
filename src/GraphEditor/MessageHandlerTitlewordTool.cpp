@@ -3,18 +3,18 @@
 #include "GraphEditor.h"
 #include "UIPropertyView.h"
 
-MessageHanderTitleword::MessageHanderTitleword()
+MessageHanderTitlewordTool::MessageHanderTitlewordTool()
 	: m_bLButtonDown(false)
 {
 	m_ptBegin.x = 0.0f;
 	m_ptBegin.y = 0.0f;
 }
 
-MessageHanderTitleword::~MessageHanderTitleword()
+MessageHanderTitlewordTool::~MessageHanderTitlewordTool()
 {
 }
 
-void MessageHanderTitleword::OnSetFocus(ISceneMessageHandler * pLastHandler)
+void MessageHanderTitlewordTool::OnSetFocus(ISceneMessageHandler * pLastHandler)
 {
 	ISceneMessageHandler::OnSetFocus(pLastHandler);
 	//广播出去自己被激活了
@@ -24,13 +24,13 @@ void MessageHanderTitleword::OnSetFocus(ISceneMessageHandler * pLastHandler)
 	UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);//通知刷新
 }
 
-void MessageHanderTitleword::DrawObjCreateBox(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd)
+void MessageHanderTitlewordTool::DrawObjCreateBox(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd)
 {
 	EditorSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetEditorSettingParam();
 	DrawBoxToEditBuf(pWnd, ptBegin, ptEnd, PS_SOLID, 1, stuDrawerParam.nColorObjCreateLine);
 }
 
-EmMessageHandlerResult MessageHanderTitleword::OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHanderTitlewordTool::OnLButtonDown(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (pWnd)
 	{
@@ -41,7 +41,7 @@ EmMessageHandlerResult MessageHanderTitleword::OnLButtonDown(IN C3DSceneViewWnd 
 	return Msg_Handle_Break;
 }
 
-EmMessageHandlerResult MessageHanderTitleword::OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHanderTitlewordTool::OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (m_bLButtonDown)
 	{
@@ -73,7 +73,7 @@ EmMessageHandlerResult MessageHanderTitleword::OnMouseMove(IN C3DSceneViewWnd * 
 	return Msg_Handle_Break;
 }
 
-EmMessageHandlerResult MessageHanderTitleword::OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
+EmMessageHandlerResult MessageHanderTitlewordTool::OnLButtonUp(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point)
 {
 	if (pWnd)
 	{

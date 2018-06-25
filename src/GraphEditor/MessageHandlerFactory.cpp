@@ -16,7 +16,7 @@ ISceneMessageHandler * MessageHandlerFactory::CreateMessageHandler(EmMessageHand
 	case MessageHandlerType_Rotate:
 		break;
 	case MessageHandlerType_CreateTitle:
-		pRet = new MessageHanderTitleword;
+		pRet = new MessageHanderTitlewordTool;
 		break;
 	case MessageHandlerType_CreateScroll:
 		break;

@@ -2,15 +2,15 @@
 #include "ISceneMessageHandler.h"
 
 //默认工具担当点选，框选，移动，控制点缩放，控制点旋转等一系列功能
-class MessageHanderTitleword :
+class MessageHanderTitlewordTool :
 	public ISceneMessageHandler
 {
 protected:
 	pointf m_ptBegin;
 	bool m_bLButtonDown;
 public:
-	MessageHanderTitleword();
-	virtual ~MessageHanderTitleword();
+	MessageHanderTitlewordTool();
+	virtual ~MessageHanderTitlewordTool();
 protected:
 	virtual void OnSetFocus(ISceneMessageHandler * pLastHandler = nullptr);
 	void DrawObjCreateBox(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd);

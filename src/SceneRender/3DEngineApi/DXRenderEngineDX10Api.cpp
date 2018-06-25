@@ -463,6 +463,7 @@ int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileN
 	SYHash_Insert(pDevice->ShaderHash,pNewShader->pShaderName,pShaderHashValue);
 	return hShader;
 }
+
 void ShaderHashRelease(void* pValue)
 {
 	shaderhash* hShader = (shaderhash*)pValue;
@@ -520,6 +521,7 @@ int Create2DVertex(SY_DeviceDX10* pDevice)
 
 	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,DXVertexBuffer,TRIANGLELIST);
 }
+
 int CreateScreenVertex(SY_DeviceDX10* pDevice)
 {
 	screenVertex pSrceenVertex[6]; 

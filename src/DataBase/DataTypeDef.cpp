@@ -75,7 +75,7 @@ BaseGraph_DataBase::faceinfo::faceinfo()
 
 void BaseGraph_DataBase::faceinfo::Reset()
 {
-	disable = 1;
+	disable = 0;
 	soft = 0;
 	effect_type = 0;
 	effect_width = 0;
