@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CalculatorImage.h"
+#include "CalculatorManager.h"
 
 CalculatorImage::CalculatorImage(CString strObjID)
 	: ObjectCalculator(strObjID)
@@ -27,21 +28,21 @@ bool CalculatorImage::UpdateRenderBuffer()
 				{
 					if (StretchImage())
 					{
-						int nWidth = GetWidth();
-						int nHeight = GetHeight();
 						int nMainDevice = DX3DEngine_GetMainDevice();
 						//创建texture
 						PrepareItemHalBufer(nMainDevice);
 						ObjectBuffer * pImgBuf = GetObjectBuffer();
 						if (pImgBuf)
 						{
+							int nWidth = pImgBuf->GetWidth();
+							int nHeight = pImgBuf->GetHeight();
 							//将2D buffer传上去
 							int hTrans = DXTextureManager_QueryTexture(DXTexture_MemTexture, nWidth, nHeight);
 							int nOffsetX = 0;
 							int nOffsetY = 0;
 							assert(m_HalDes.m_hTex);
 							DX3DEngine_UpLoad(m_HalDes.m_hTex, nMainDevice, hTrans, nOffsetX, nOffsetY, nWidth, nHeight,
-								(DWORD *)pImgBuf->GetBuffer(), nOffsetX, nOffsetY, nWidth, nHeight, pImgBuf->GetWidth(), pImgBuf->GetHeight());
+								(DWORD *)pImgBuf->GetBuffer(), nOffsetX, nOffsetY, nWidth, nHeight, nWidth, nHeight);
 
 							if (false)
 							{
@@ -106,17 +107,17 @@ bool CalculatorImage::StretchImage()
 		}
 		return false;
 	};
-	int nDispWidth = GetWidth();
-	int nDispHeight = GetHeight();
-	if (nDispWidth > 0
-		&& nDispHeight > 0)
+	ObjectBuffer * pImgBuf = DataBufferManager::Instance().Get2DBuf(m_nImageBufferID);
+	ObjectBuffer * pObjBuf = DataBufferManager::Instance().Get2DBuf(m_nObjBufferID);
+	if (BuferValid(pImgBuf) && BuferValid(pObjBuf))
 	{
-		ObjectBuffer * pImgBuf = DataBufferManager::Instance().Get2DBuf(m_nImageBufferID);
-		ObjectBuffer * pObjBuf = DataBufferManager::Instance().Get2DBuf(m_nObjBufferID);
-		if (BuferValid(pImgBuf) && BuferValid(pObjBuf))
+		int nDispWidth = pObjBuf->GetWidth();
+		int nDispHeight = pObjBuf->GetHeight();
+		if (nDispWidth > 0
+			&& nDispHeight > 0)
 		{
 			BufferFunction::BufferBitblt((DWORD *)pObjBuf->GetBuffer(),
-				0, 0, pObjBuf->GetWidth(), pObjBuf->GetHeight(), pObjBuf->GetWidth(), pObjBuf->GetHeight(),
+				0, 0, nDispWidth, nDispHeight, nDispWidth, nDispHeight,
 				(DWORD *)pImgBuf->GetBuffer(),
 				0, 0, pImgBuf->GetWidth(), pImgBuf->GetHeight(), pImgBuf->GetWidth(), pImgBuf->GetHeight(),
 				BUFFER_COPY, BUFFER_PARITY_BOTH);
@@ -146,6 +147,10 @@ bool CalculatorImage::PrepareObjBuffer()
 	if (nObjWidth > 0
 		&& nObjHeight > 0)
 	{
+		//这里对宽高做一个scale缩放
+		float fScale = CalculatorManager::Instance().GetScale();
+		nObjWidth = nObjWidth * fScale;
+		nObjHeight = nObjHeight * fScale;
 		DataBufferManager::Instance().UnQuery2DBuffer(m_nObjBufferID);
 		m_nObjBufferID = DataBufferManager::Instance().Query2DBuffer(nObjWidth, nObjHeight);
 		if (m_nObjBufferID > 0)

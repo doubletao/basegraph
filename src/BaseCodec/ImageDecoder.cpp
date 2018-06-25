@@ -135,6 +135,11 @@ bool ImageDecoder::ReadImage(IN int nWidth, IN int nHeight, OUT byte * pBuffer, 
 
 	::GetBitmapBits(hBmp, nBufSize, pBuffer);
 
+	for (int i = 0; i < nBufSize; i += 4)
+	{
+		pBuffer[i + 3] = 0xff;
+	}
+
 	::ReleaseDC(NULL, hdc);
 	::DeleteDC(hdcMem);
 	::DeleteObject(hBmp);

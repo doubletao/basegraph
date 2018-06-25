@@ -384,36 +384,41 @@ bool ObjectCalculator::PrepareItemHalBufer(int nDevice)
 {
 	int nTexWidth = 0;
 	int nTexHeight = 0;
-	int nWidth = GetWidth();
-	int nHeight = GetHeight();
-	DXTextureType emTexType = DXTexture_Normal2DTex;
-	if (m_HalDes.m_hTex)
+	ObjectBuffer * pObjBuf = DataBufferManager::Instance().Get2DBuf(m_nObjBufferID);
+	if (pObjBuf)
 	{
-		DX3DEngine_GetTextureInfo(nDevice, m_HalDes.m_hTex, &nTexWidth, &nTexHeight, (int *)&emTexType);
-		BOOL bRelease = nTexWidth < nWidth || nTexHeight < nHeight
-			|| nWidth >= 8192 || nHeight >= 8192
-			|| ((nTexWidth > nWidth || nTexHeight > nHeight) && (nTexHeight > 8192 || nTexWidth > 8192));
-		// 8192以内，新的tex超过旧的，重新生成，新的tex超过8192，重新生成，新的tex正常旧的tex超过8192，重新生成
-		if (bRelease)
+		int nWidth = pObjBuf->GetWidth();
+		int nHeight = pObjBuf->GetHeight();
+		DXTextureType emTexType = DXTexture_Normal2DTex;
+		if (m_HalDes.m_hTex)
 		{
-			if (m_HalDes.m_bRelease)
-				DX3DEngine_ReleaseTexture(nDevice, m_HalDes.m_hTex);
-			m_HalDes.m_hTex = 0;
+			DX3DEngine_GetTextureInfo(nDevice, m_HalDes.m_hTex, &nTexWidth, &nTexHeight, (int *)&emTexType);
+			BOOL bRelease = nTexWidth < nWidth || nTexHeight < nHeight
+				|| nWidth >= 8192 || nHeight >= 8192
+				|| ((nTexWidth > nWidth || nTexHeight > nHeight) && (nTexHeight > 8192 || nTexWidth > 8192));
+			// 8192以内，新的tex超过旧的，重新生成，新的tex超过8192，重新生成，新的tex正常旧的tex超过8192，重新生成
+			if (bRelease)
+			{
+				if (m_HalDes.m_bRelease)
+					DX3DEngine_ReleaseTexture(nDevice, m_HalDes.m_hTex);
+				m_HalDes.m_hTex = 0;
+			}
 		}
+		if (!m_HalDes.m_hTex)
+		{
+			m_HalDes.m_hTex = DX3DEngine_CreateTexture(nDevice, nWidth, nHeight, emTexType);
+			m_HalDes.m_bRelease = TRUE;
+		}
+		m_HalDes.m_nOriginX = nWidth / 2;
+		m_HalDes.m_nOriginY = nHeight / 2;
+		m_HalDes.m_rtBound.left = -nWidth / 2;
+		m_HalDes.m_rtBound.right = nWidth / 2;
+		m_HalDes.m_rtBound.top = -nHeight / 2;
+		m_HalDes.m_rtBound.bottom = nHeight / 2;
+		DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex);
+		return true;
 	}
-	if (!m_HalDes.m_hTex)
-	{
-		m_HalDes.m_hTex = DX3DEngine_CreateTexture(nDevice, nWidth, nHeight, emTexType);
-		m_HalDes.m_bRelease = TRUE;
-	}
-	m_HalDes.m_nOriginX = nWidth / 2;
-	m_HalDes.m_nOriginY = nHeight / 2;
-	m_HalDes.m_rtBound.left = -nWidth / 2;
-	m_HalDes.m_rtBound.right = nWidth / 2;
-	m_HalDes.m_rtBound.top = -nHeight / 2;
-	m_HalDes.m_rtBound.bottom = nHeight / 2;
-	DX3DEngine_ClearTexture(nDevice, m_HalDes.m_hTex);
-	return true;
+	return false;
 }
 
 bool ObjectCalculator::IsItemNeedRender()
