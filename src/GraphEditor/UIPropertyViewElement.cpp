@@ -34,7 +34,7 @@ void UIPropertyViewElement::InitializeObject()
 		{
 			pElement = new UIEditMutiLine;
 			int nMutiEditHeight = UIControl_GetIntValue(ThemeInt_PropertyViewTitlewordMutiEditHeight);
-			((UIEditMutiLine *)pElement)->Create(valueDesc.strDispName, 0, 0, 100, nMutiEditHeight, 0, 0, 0, m_hParentWnd, this);
+			((UIEditMutiLine *)pElement)->Create(valueDesc.strDispName, 0, 0, 100, nMutiEditHeight, 0, 0, m_hParentWnd, this);
 			((UIEditMutiLine *)pElement)->SetValue(valueDesc.stuDefault);
 		}
 			break;
@@ -302,7 +302,7 @@ bool UIPropertyViewElement::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPAR
 			{
 				BaseGraph_DataBase::ParamValueDef paramValueDef = m_mapControlValue[pCombinedCtrl];
 				Value value = pCombinedCtrl->GetValue();
-				SetValue(paramValueDef, value);
+				SetValue(paramValueDef, value, false);
 				UpdateToObject(paramValueDef, value);
 			}
 			return true;

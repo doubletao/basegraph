@@ -467,6 +467,7 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mapText[_T("黑体_文本样例")] = _T("黑体");
 	mapText[_T("仿宋_文本样例")] = _T("仿宋");
 	mapText[_T("新宋体_文本样例")] = _T("新宋体");
+	if (0)
 	{
 		int i = 0;
 		for (std::map<CString, CString>::iterator it = mapText.begin(); it != mapText.end(); it++)

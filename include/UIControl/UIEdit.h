@@ -19,8 +19,9 @@ protected:
 protected:
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg LRESULT OnEndEdit(WPARAM, LPARAM);
+	afx_msg void OnEnChanged();
 public:
-	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent);
+	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent);
 	virtual void RearrangeChildPos();
 	void SetText(CString strText);
 	CString GetText();

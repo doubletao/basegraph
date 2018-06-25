@@ -2,12 +2,14 @@
 #include "stdafx.h"
 #include "UIControl\UIEdit.h"
 
+#define CustomUIEditClass "CustomUIEditClass"
+const int nEditID = 10323;
+
 BEGIN_MESSAGE_MAP(UIEdit, CWnd)
 	ON_WM_SETFOCUS()
 	ON_MESSAGE(EmUIElementMsg_OnEditEnded, UIEdit::OnEndEdit)
+	ON_EN_CHANGE(nEditID, UIEdit::OnEnChanged)
 END_MESSAGE_MAP()
-
-#define CustomUIEditClass "CustomUIEditClass"
 
 UIEdit::UIEdit()
 	: m_pEdit(nullptr)
@@ -73,7 +75,13 @@ LRESULT UIEdit::OnEndEdit(WPARAM, LPARAM)
 	return 0;
 }
 
-bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, int nEditID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent)
+void UIEdit::OnEnChanged()
+{
+	//通知上层，编辑变更
+	EmitMsg(EmUIElementMsg_OnEditChged, m_nID, (LPARAM)this);
+}
+
+bool UIEdit::Create(int nX, int nY, int nWidth, int nHeight, int nID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent)
 {
 	bool bRet = false;
 	if (!m_bCreated)

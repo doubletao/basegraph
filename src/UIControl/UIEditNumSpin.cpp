@@ -30,7 +30,7 @@ bool UIEditNumSpin::Create(CString strTitle, int nTitleWidth, DWORD dwStyleEs, i
 			int nSpinHeight = pImg->GetHeight();
 			m_nHeight = nSpinHeight * 2;
 
-			UIEditNum::Create(0, 0, nWidth, m_nHeight, nID, 0, dwStyleEs, hParentWnd, pParent);
+			UIEditNum::Create(0, 0, nWidth, m_nHeight, nID, dwStyleEs, hParentWnd, pParent);
 			m_pBtnUpSpin = new UIButton;
 			m_pBtnUpSpin->Create(0, 0, 10, 10, 0, nullptr, ThemeImage_BtnSpinUp_N, ThemeImage_BtnSpinUp_F, ThemeImage_BtnSpinUp_D, ThemeImage_BtnSpinUp_X, this);
 			m_vecChildElement.push_back(m_pBtnUpSpin);

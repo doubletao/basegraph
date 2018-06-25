@@ -14,13 +14,13 @@ UIEditMutiLine::~UIEditMutiLine()
 {
 }
 
-bool UIEditMutiLine::Create(CString strTitle, int nX, int nY, int nWidth, int nHeight, int nID, int nEditID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent)
+bool UIEditMutiLine::Create(CString strTitle, int nX, int nY, int nWidth, int nHeight, int nID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent)
 {
 	if (!m_bCreated)
 	{
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 		m_pUIEdit = new UIEdit;
-		m_pUIEdit->Create(nX, nY, nWidth, nHeight, nID, nEditID, dwStyleEs | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL | ES_WANTRETURN, hParentWnd, this);
+		m_pUIEdit->Create(nX, nY, nWidth, nHeight, nID, dwStyleEs | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL | ES_WANTRETURN, hParentWnd, this);
 		m_vecChildElement.push_back(m_pUIEdit);
 
 		m_pUIStatic = new UIStatic;
@@ -34,6 +34,11 @@ bool UIEditMutiLine::Create(CString strTitle, int nX, int nY, int nWidth, int nH
 bool UIEditMutiLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (emMsg == EmUIElementMsg_OnEditEnded)
+	{
+		UpdateUIToValue();
+		return true;
+	}
+	else if (emMsg == EmUIElementMsg_OnEditChged)
 	{
 		UpdateUIToValue();
 		return true;
