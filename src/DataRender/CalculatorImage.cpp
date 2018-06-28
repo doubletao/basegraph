@@ -52,7 +52,7 @@ bool CalculatorImage::UpdateRenderBuffer()
 
 							DXTextureManager_UnQueryTexture(hTrans, TRUE);
 						}
-						return true;
+						return ObjectCalculator::UpdateRenderBuffer();
 					}
 				}
 			} 
