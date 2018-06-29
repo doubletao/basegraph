@@ -40,6 +40,10 @@ float3 BASEGRAPH_DATABASE_API DataBase_GetItemAngle(IN CString strID);
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemAngleRadian(IN CString strID);//取得旋转弧度
 float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID);
 
+//获取物件属性ID边界
+bool BASEGRAPH_DATABASE_API DataBase_GetItemTypePropertyIDRange(IN BaseGraph_DataBase::ObjectType emType, OUT BaseGraph_DataBase::ParamValueDef & emParamBegin, OUT BaseGraph_DataBase::ParamValueDef & emParamEmd);
+bool BASEGRAPH_DATABASE_API DataBase_GetItemPropertyIDRange(IN CString strID, OUT BaseGraph_DataBase::ParamValueDef & emParamBegin, OUT BaseGraph_DataBase::ParamValueDef & emParamEmd);
+
 BaseGraph_DataBase::ITEM_FORMTYPE BASEGRAPH_DATABASE_API DataBase_Get3DType(IN CString strID);
 
 //名字

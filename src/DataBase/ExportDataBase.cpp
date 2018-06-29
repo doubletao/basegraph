@@ -88,6 +88,42 @@ float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID)
 	return DataBaseManager::Instance().GetItemScale(strID);
 }
 
+bool BASEGRAPH_DATABASE_API DataBase_GetItemTypePropertyIDRange(IN BaseGraph_DataBase::ObjectType emType, OUT BaseGraph_DataBase::ParamValueDef & emParamBegin, OUT BaseGraph_DataBase::ParamValueDef & emParamEmd)
+{
+	switch (emType)
+	{
+	case BaseGraph_DataBase::ObjectType_Err:
+		return false;
+	case BaseGraph_DataBase::ObjectType_2DLayer:
+		return false;
+	case BaseGraph_DataBase::ObjectType_Titleword:
+		emParamBegin = BaseGraph_DataBase::TitlewordParam;
+		emParamEmd = BaseGraph_DataBase::TitlewordParam_End;
+		return true;
+	case BaseGraph_DataBase::ObjectType_Scroll:
+		emParamBegin = BaseGraph_DataBase::ScrollParam;
+		emParamEmd = BaseGraph_DataBase::ScrollParam_End;
+		return true;
+	case BaseGraph_DataBase::ObjectType_Image:
+		emParamBegin = BaseGraph_DataBase::ImageParam;
+		emParamEmd = BaseGraph_DataBase::ImageParam_End;
+		return true;
+	default:
+		return false;
+	}
+	return false;
+}
+
+bool BASEGRAPH_DATABASE_API DataBase_GetItemPropertyIDRange(IN CString strID, OUT BaseGraph_DataBase::ParamValueDef & emParamBegin, OUT BaseGraph_DataBase::ParamValueDef & emParamEmd)
+{
+	BaseGraph_DataBase::ObjectType emType;
+	if (DataBaseManager::Instance().GetItemType(strID, emType))
+	{
+		return DataBase_GetItemTypePropertyIDRange(emType, emParamBegin, emParamEmd);
+	}
+	return false;
+}
+
 BaseGraph_DataBase::ITEM_FORMTYPE BASEGRAPH_DATABASE_API DataBase_Get3DType(IN CString strID)
 {
 	return DataBaseManager::Instance().Get3DType(strID);
