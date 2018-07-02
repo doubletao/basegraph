@@ -18,6 +18,13 @@ bool BASEGRAPH_DATABASE_API DataBase_GetItemType(IN CString strID, OUT BaseGraph
 	return DataBaseManager::Instance().GetItemType(strID, emType);
 }
 
+BASEGRAPH_DATABASE_API BaseGraph_DataBase::ObjectType DataBase_GetItemType(IN CString strID)
+{
+	BaseGraph_DataBase::ObjectType emType = BaseGraph_DataBase::ObjectType_Err;
+	DataBaseManager::Instance().GetItemType(strID, emType);
+	return emType;
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_CreateItem(IN BaseGraph_DataBase::ObjectType emType, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, OUT CString & strID)
 {
 	return DataBaseManager::Instance().CreateItem(emType, mapParam, strID);
@@ -90,28 +97,7 @@ float3 BASEGRAPH_DATABASE_API DataBase_GetItemScale(IN CString strID)
 
 bool BASEGRAPH_DATABASE_API DataBase_GetItemTypePropertyIDRange(IN BaseGraph_DataBase::ObjectType emType, OUT BaseGraph_DataBase::ParamValueDef & emParamBegin, OUT BaseGraph_DataBase::ParamValueDef & emParamEmd)
 {
-	switch (emType)
-	{
-	case BaseGraph_DataBase::ObjectType_Err:
-		return false;
-	case BaseGraph_DataBase::ObjectType_2DLayer:
-		return false;
-	case BaseGraph_DataBase::ObjectType_Titleword:
-		emParamBegin = BaseGraph_DataBase::TitlewordParam;
-		emParamEmd = BaseGraph_DataBase::TitlewordParam_End;
-		return true;
-	case BaseGraph_DataBase::ObjectType_Scroll:
-		emParamBegin = BaseGraph_DataBase::ScrollParam;
-		emParamEmd = BaseGraph_DataBase::ScrollParam_End;
-		return true;
-	case BaseGraph_DataBase::ObjectType_Image:
-		emParamBegin = BaseGraph_DataBase::ImageParam;
-		emParamEmd = BaseGraph_DataBase::ImageParam_End;
-		return true;
-	default:
-		return false;
-	}
-	return false;
+	return GetItemPropertyIDRange(emType, emParamBegin, emParamEmd);
 }
 
 bool BASEGRAPH_DATABASE_API DataBase_GetItemPropertyIDRange(IN CString strID, OUT BaseGraph_DataBase::ParamValueDef & emParamBegin, OUT BaseGraph_DataBase::ParamValueDef & emParamEmd)
@@ -119,7 +105,7 @@ bool BASEGRAPH_DATABASE_API DataBase_GetItemPropertyIDRange(IN CString strID, OU
 	BaseGraph_DataBase::ObjectType emType;
 	if (DataBaseManager::Instance().GetItemType(strID, emType))
 	{
-		return DataBase_GetItemTypePropertyIDRange(emType, emParamBegin, emParamEmd);
+		return GetItemPropertyIDRange(emType, emParamBegin, emParamEmd);
 	}
 	return false;
 }

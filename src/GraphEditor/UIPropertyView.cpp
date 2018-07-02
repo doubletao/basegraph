@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UIPropertyView.h"
+#include "UIPropertyDynamicViewElement.h"
 
 UIPropertyView::UIPropertyView()
 	: m_pPropertyTabBar(nullptr)
@@ -74,7 +75,7 @@ void UIPropertyView::InitializeObject()
 	m_pColorElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Color, m_hParentWnd, this, BaseGraph_DataBase::ColorParam, BaseGraph_DataBase::ColorParam_End);
 	m_vecChildElement.push_back(m_pColorElement);
 
-	m_pObjectElement = new UIPropertyViewElement;
+	m_pObjectElement = new UIPropertyDynamicViewElement;
 	m_pObjectElement->Create(0, 0, 100, 100, UIElementMsg_PropertyView_Object, m_hParentWnd, this, BaseGraph_DataBase::TitlewordParam, BaseGraph_DataBase::TitlewordParam_End);
 	m_vecChildElement.push_back(m_pObjectElement);
 

@@ -670,4 +670,29 @@ namespace BaseGraph_DataBase
 		}
 		return valueDesc;
 	}
+	inline bool GetItemPropertyIDRange(IN ObjectType emType, OUT ParamValueDef & emParamBegin, OUT ParamValueDef & emParamEmd)
+	{
+		switch (emType)
+		{
+		case ObjectType_Err:
+			return false;
+		case ObjectType_2DLayer:
+			return false;
+		case ObjectType_Titleword:
+			emParamBegin = TitlewordParam;
+			emParamEmd = TitlewordParam_End;
+			return true;
+		case ObjectType_Scroll:
+			emParamBegin = ScrollParam;
+			emParamEmd = ScrollParam_End;
+			return true;
+		case ObjectType_Image:
+			emParamBegin = ImageParam;
+			emParamEmd = ImageParam_End;
+			return true;
+		default:
+			return false;
+		}
+		return false;
+	}
 };

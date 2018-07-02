@@ -6,6 +6,7 @@
 
 UIPropertyViewElement::UIPropertyViewElement()
 	: m_strObjID()
+	, m_emObjType(BaseGraph_DataBase::ObjectType_Err)
 {
 }
 
@@ -117,6 +118,35 @@ void UIPropertyViewElement::RearrangeChildPos()
 	}
 }
 
+void UIPropertyViewElement::EraseChild(UIElement * pChild)
+{
+	UIElement::EraseChild(pChild);
+}
+
+void UIPropertyViewElement::EraseChild(std::set<UIElement*> setChildPointer)
+{
+	for (std::set<UIElement*>::iterator it = setChildPointer.begin(); it != setChildPointer.end(); it++)
+	{
+		if (m_mapControlValue.count((UICombinedCtrl *)*it) > 0)
+		{
+			BaseGraph_DataBase::ParamValueDef paramDef = m_mapControlValue[(UICombinedCtrl *)*it];
+			if (m_mapValueControl.count(paramDef) > 0)
+			{
+				m_mapValueControl.erase(paramDef);
+			}
+			m_mapControlValue.erase((UICombinedCtrl *)*it);
+		}
+	}
+	UIElement::EraseChild(setChildPointer);
+}
+
+void UIPropertyViewElement::EraseAllChild()
+{
+	m_mapControlValue.clear();
+	m_mapValueControl.clear();
+	UIElement::EraseAllChild();
+}
+
 bool UIPropertyViewElement::Create(int nX, int nY, int nWidth, int nHeight, int m_nID, HWND hParentWnd, UIElement * pParent, int nParamIDBegin, int nParamIDEnd)
 {
 	bool bRet = false;
@@ -146,8 +176,7 @@ bool UIPropertyViewElement::BindObject(CString strObjID)
 {
 	if (m_strObjID != strObjID)
 	{
-		m_strObjID = strObjID;
-		RefreshFromID(m_strObjID);
+		RefreshFromID(strObjID);
 	}
 	return true;
 }
@@ -156,25 +185,36 @@ void UIPropertyViewElement::RefreshFromID(CString strObjID)
 {
 	if (!strObjID.IsEmpty())
 	{
-		std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
-		if (DataRender_GetItemProperty(strObjID, mapParam))
+		BaseGraph_DataBase::ObjectType emType = DataBase_GetItemType(strObjID);
+		if (BaseGraph_DataBase::ObjectType_Err != emType)
 		{
-			//获取物件的值赋予窗口
-			SetValue(mapParam);
+			m_emObjType = emType;
+			m_strObjID = strObjID;
+			//拿出物件属性放到界面上
+			std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam;
+			if (DataRender_GetItemProperty(strObjID, mapParam))
+			{
+				//获取物件的值赋予窗口
+				SetValue(mapParam);
+			}
 		}
 	}
 }
 
 void UIPropertyViewElement::RefreshFromType(BaseGraph_DataBase::ObjectType emType)
 {
-	for (int i = m_nParamIDBegin + 1; i < m_nParamIDEnd; i++)
+	if (BaseGraph_DataBase::ObjectType_Err != emType)
 	{
-		//创建物件填充默认值
-		BaseGraph_DataBase::ParamValueDef paramValueDef = (BaseGraph_DataBase::ParamValueDef)i;
-		BaseGraph_DataBase::ValueDescriptor valueDesc = BaseGraph_DataBase::GetValueDescriptor(paramValueDef);
-		m_mapParam[paramValueDef] = valueDesc.stuDefault;
+		m_emObjType = emType;
+		for (int i = m_nParamIDBegin + 1; i < m_nParamIDEnd; i++)
+		{
+			//创建物件填充默认值
+			BaseGraph_DataBase::ParamValueDef paramValueDef = (BaseGraph_DataBase::ParamValueDef)i;
+			BaseGraph_DataBase::ValueDescriptor valueDesc = BaseGraph_DataBase::GetValueDescriptor(paramValueDef);
+			m_mapParam[paramValueDef] = valueDesc.stuDefault;
+		}
+		UpdateDataToUI();
 	}
-	UpdateDataToUI();
 }
 
 void UIPropertyViewElement::SetValue(const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, bool bRefresh/* = true*/)

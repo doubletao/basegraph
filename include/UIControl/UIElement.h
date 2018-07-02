@@ -59,6 +59,9 @@ protected:
 	virtual void Refresh();
 	virtual void ChildHandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
 	virtual void EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	virtual void EraseChild(UIElement * pChild);
+	virtual void EraseChild(std::set<UIElement *> setChildPointer);
+	virtual void EraseAllChild();
 public:
 	UIElement();
 	virtual ~UIElement();

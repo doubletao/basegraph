@@ -18,6 +18,7 @@
 bool BASEGRAPH_DATABASE_API DataBase_GetAllItemID(OUT std::vector<CString> & vecID);
 bool BASEGRAPH_DATABASE_API DataBase_GetAllItemIDExceptSubItem(OUT std::vector<CString>& vecID);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemType(IN CString strID, OUT BaseGraph_DataBase::ObjectType & emType);
+BASEGRAPH_DATABASE_API BaseGraph_DataBase::ObjectType DataBase_GetItemType(IN CString strID);
 //ÔöÉ¾
 bool BASEGRAPH_DATABASE_API DataBase_CreateItem(IN BaseGraph_DataBase::ObjectType emType, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam, OUT CString & strID);
 bool BASEGRAPH_DATABASE_API DataBase_AddSubItemTo(IN CString strParentID, IN CString strSubID);

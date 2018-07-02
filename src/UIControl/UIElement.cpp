@@ -10,16 +10,7 @@ int UIElement::GetMsgDispatchID()
 void UIElement::Release()
 {
 	IMsgDispatchObject::UnRegistDispatchObj();
-	for (size_t i = 0; i < m_vecChildElement.size(); i++)
-	{
-		UIElement * & pChild = m_vecChildElement[i];
-		if (pChild)
-		{
-			delete pChild;
-			pChild = nullptr;
-		}
-	}
-	m_vecChildElement.clear();
+	EraseAllChild();
 
 	for (std::map<int, std::vector<UIDrawer *>>::iterator it = m_mapDrawer.begin(); it != m_mapDrawer.end(); it++)
 	{
@@ -112,6 +103,51 @@ void UIElement::EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam)
 			pChild->OnMouseLeave();
 		}
 	}
+}
+
+void UIElement::EraseChild(UIElement * pChild)
+{
+	for (auto it = m_vecChildElement.begin(); it != m_vecChildElement.end(); it++)
+	{
+		if (*it == pChild)
+		{
+			delete *it;
+			*it = nullptr;
+			m_vecChildElement.erase(it);
+			break;
+		}
+	}
+}
+
+void UIElement::EraseChild(std::set<UIElement*> setChildPointer)
+{
+	for (auto it = m_vecChildElement.begin(); it != m_vecChildElement.end();)
+	{
+		if (setChildPointer.count(*it) > 0)
+		{
+			delete *it;
+			*it = nullptr;
+			it = m_vecChildElement.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
+}
+
+void UIElement::EraseAllChild()
+{
+	for (size_t i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIElement * & pChild = m_vecChildElement[i];
+		if (pChild)
+		{
+			delete pChild;
+			pChild = nullptr;
+		}
+	}
+	m_vecChildElement.clear();
 }
 
 int UIElement::GetRealX()

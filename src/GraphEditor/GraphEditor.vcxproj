@@ -139,6 +139,7 @@
     <ClCompile Include="UIComboxFontSel.cpp" />
     <ClCompile Include="UIObjectBar.cpp" />
     <ClCompile Include="UIPlayControlBar.cpp" />
+    <ClCompile Include="UIPropertyDynamicViewElement.cpp" />
     <ClCompile Include="UIPropertyTabBar.cpp" />
     <ClCompile Include="UIPropertyView.cpp" />
     <ClCompile Include="UIPropertyViewElement.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="UIComboxFontSel.h" />
     <ClInclude Include="UIObjectBar.h" />
     <ClInclude Include="UIPlayControlBar.h" />
+    <ClInclude Include="UIPropertyDynamicViewElement.h" />
     <ClInclude Include="UIPropertyTabBar.h" />
     <ClInclude Include="UIPropertyView.h" />
     <ClInclude Include="UIPropertyViewElement.h" />

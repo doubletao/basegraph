@@ -147,6 +147,9 @@
     <ClCompile Include="MessageHandlerTitlewordEditor.cpp">
       <Filter>SceneMessageHandler\ObjectEditor</Filter>
     </ClCompile>
+    <ClCompile Include="UIPropertyDynamicViewElement.cpp">
+      <Filter>PropertyView</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -253,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="MessageHandlerTitlewordEditor.h">
       <Filter>SceneMessageHandler\ObjectEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyDynamicViewElement.h">
+      <Filter>PropertyView</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
