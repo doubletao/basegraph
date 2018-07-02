@@ -26,7 +26,11 @@ void UIPropertyDynamicViewElement::RefreshFromID(CString strObjID)
 			m_nParamIDBegin = paramIDBegin;
 			m_nParamIDEnd = paramIDEnd;
 			EraseAllChild();
-			InitializeObject();//TODO:重新创建后需要调整物件可见性
+			InitializeObject();
+			if (!m_bVisible)
+			{
+				SetVisible(m_bVisible);
+			}
 			RearrangeChildPos();
 		}
 	}
@@ -46,7 +50,11 @@ void UIPropertyDynamicViewElement::RefreshFromType(BaseGraph_DataBase::ObjectTyp
 			m_nParamIDBegin = paramIDBegin;
 			m_nParamIDEnd = paramIDEnd;
 			EraseAllChild();
-			InitializeObject();//TODO:重新创建后需要调整物件可见性
+			InitializeObject();
+			if (!m_bVisible)
+			{
+				SetVisible(m_bVisible);
+			}
 			RearrangeChildPos();
 		}
 	}
