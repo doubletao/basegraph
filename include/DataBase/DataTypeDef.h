@@ -631,6 +631,7 @@ namespace BaseGraph_DataBase
 			valueDesc.nDispIndex = 0;
 			valueDesc.fStep = 0.0f;
 			valueDesc.strDispName = _T("Í¼Æ¬Â·¾¶");
+			valueDesc.emDispType = PropertyDisp_StrPathEdit;
 			valueDesc.stuDefault.SetValue(_T(""));
 			break;
 		case Image_SrcWidth_Int:

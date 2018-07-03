@@ -40,6 +40,9 @@ void UIPropertyViewElement::InitializeObject()
 		}
 			break;
 		case BaseGraph_DataBase::PropertyDisp_StrPathEdit:
+			pElement = new UIEditPath;
+			((UIEditPath *)pElement)->Create(valueDesc.strDispName, nTitleWidth, 0, 0, m_hParentWnd, this);
+			((UIEditPath *)pElement)->SetValue(valueDesc.stuDefault);
 			break;
 		case BaseGraph_DataBase::PropertyDisp_NumEdit:
 			break;

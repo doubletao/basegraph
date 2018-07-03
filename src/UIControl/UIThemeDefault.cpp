@@ -325,6 +325,10 @@ bool UIThemeDefault::Initialize()
 		LoadOneImg(ThemeImage_CheckBtn_Fore_F, strThemePath + _T("Button\\CheckBtn_Fore_F.png"));
 		LoadOneImg(ThemeImage_CheckBtn_Fore_D, strThemePath + _T("Button\\CheckBtn_Fore_D.png"));
 		LoadOneImg(ThemeImage_CheckBtn_Fore_X, strThemePath + _T("Button\\CheckBtn_Fore_X.png"));
+		LoadOneImg(ThemeImage_BtnPathSel_N, strThemePath + _T("Button\\BtnPathSel_N.png"));
+		LoadOneImg(ThemeImage_BtnPathSel_F, strThemePath + _T("Button\\BtnPathSel_F.png"));
+		LoadOneImg(ThemeImage_BtnPathSel_D, strThemePath + _T("Button\\BtnPathSel_D.png"));
+		LoadOneImg(ThemeImage_BtnPathSel_X, strThemePath + _T("Button\\BtnPathSel_X.png"));
 
 		LoadOneImg(ThemeImage_ElementArea, strThemePath + _T("Common\\ElementArea.png"));
 		LoadOneImg(ThemeImage_SceneLayoutBk, strThemePath + _T("Common\\SceneLayoutBk.png"));

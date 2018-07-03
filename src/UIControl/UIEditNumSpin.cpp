@@ -45,6 +45,7 @@ bool UIEditNumSpin::Create(CString strTitle, int nTitleWidth, DWORD dwStyleEs, i
 		m_setMsgFilter.insert(WM_LBUTTONUP);
 		m_setMsgFilter.insert(WM_MOUSEMOVE);
 		m_bCreated = true;
+		bRet = true;
 	}
 	return bRet;
 }

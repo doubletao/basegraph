@@ -248,7 +248,8 @@ bool UIElement::HitTest(CPoint point)
 		int i = 0;
 		i++;
 	}
-	if (GetRect().PtInRect(point))
+	//不可见的物件hittest不响应
+	if (m_bVisible && GetRect().PtInRect(point))
 	{
 		return true;
 	}
@@ -267,7 +268,6 @@ bool UIElement::HitTest(LPARAM lParam)
 
 void UIElement::DrawElement(CDC * pDC)
 {
-	
 	if (m_bVisible)
 	{
 		if (false)

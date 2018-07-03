@@ -147,6 +147,9 @@
     <ClCompile Include="UIEditMutiLine.cpp">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="UIEditPath.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">

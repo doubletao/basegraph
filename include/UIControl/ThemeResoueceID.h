@@ -219,6 +219,10 @@ enum ThemeImageValueDef
 	ThemeImage_CheckBtn_Fore_F,
 	ThemeImage_CheckBtn_Fore_D,
 	ThemeImage_CheckBtn_Fore_X,
+	ThemeImage_BtnPathSel_N,
+	ThemeImage_BtnPathSel_F,
+	ThemeImage_BtnPathSel_D,
+	ThemeImage_BtnPathSel_X,
 
 	ThemeImage_TabBtnColor_N,
 	ThemeImage_TabBtnColor_F,
