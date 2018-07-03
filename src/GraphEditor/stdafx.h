@@ -47,6 +47,7 @@
 #endif // BASEGRAPH_GRAPHEDITOR_EXPORTS
 
 #include "ExportCommon.h"
+#include "ExportBaseCodec.h"
 #include "ExportDataBase.h"
 #include "ExportDataRender.h"
 #include "ExportUIControl.h"

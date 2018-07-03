@@ -40,9 +40,13 @@ void UIPropertyViewElement::InitializeObject()
 		}
 			break;
 		case BaseGraph_DataBase::PropertyDisp_StrPathEdit:
+		{
+			CString strFilter = valueDesc.stuDefault.ToCString();
 			pElement = new UIEditPath;
-			((UIEditPath *)pElement)->Create(valueDesc.strDispName, nTitleWidth, 0, 0, m_hParentWnd, this);
-			((UIEditPath *)pElement)->SetValue(valueDesc.stuDefault);
+			((UIEditPath *)pElement)->Create(valueDesc.strDispName, strFilter, nTitleWidth, 0, 0, m_hParentWnd, this);
+			strFilter = _T("");
+			((UIEditPath *)pElement)->SetValue(strFilter);
+		}
 			break;
 		case BaseGraph_DataBase::PropertyDisp_NumEdit:
 			break;

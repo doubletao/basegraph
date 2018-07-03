@@ -15,11 +15,12 @@ UIEditPath::~UIEditPath()
 {
 }
 
-bool UIEditPath::Create(CString strTitle, int nTitleWidth, int nID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent)
+bool UIEditPath::Create(CString strTitle, CString strFilter, int nTitleWidth, int nID, DWORD dwStyleEs, HWND hParentWnd, UIElement * pParent)
 {
 	if (!m_bCreated)
 	{
 		Initialize(0, 0, 100, 100, nID, hParentWnd, pParent);
+		m_strFilter = strFilter;
 		m_pUIEdit = new UIEdit;
 		m_pUIEdit->Create(0, 0, 100, 100, nID, dwStyleEs | ES_READONLY, hParentWnd, this);
 		m_vecChildElement.push_back(m_pUIEdit);
@@ -49,8 +50,7 @@ bool UIEditPath::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 		UIButton * pButton = (UIButton *)lParam;
 		if (m_pUIButton == pButton)
 		{
-			CString strFilter(_T("png Files (*.png)|*.png|bmp Files (*.bmp)|*.bmp|jpg Files (*.jpg)|*.jpg;|All Files (*.*)|*.*||"));
-			CFileDialog selectFile(TRUE, NULL, strDefPathFile, 0, strFilter);
+			CFileDialog selectFile(TRUE, NULL, strDefPathFile, 0, m_strFilter);
 			if (selectFile.DoModal() == IDOK)
 			{
 				m_value = selectFile.GetPathName();
@@ -125,4 +125,9 @@ void UIEditPath::RearrangeChildPos()
 			m_pUIButton->MoveTo(m_nWidth - nCtrGap - nBtnWidth, 0, nBtnWidth, m_nHeight);
 		}
 	}
+}
+
+void UIEditPath::SetPathFilter(CString strFilter)
+{
+	m_strFilter = strFilter;
 }

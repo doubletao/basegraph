@@ -150,6 +150,9 @@
     <ClCompile Include="UIPropertyDynamicViewElement.cpp">
       <Filter>PropertyView</Filter>
     </ClCompile>
+    <ClCompile Include="MessageHandlerImageTool.cpp">
+      <Filter>SceneMessageHandler\ObjectTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphEditor.h">
@@ -259,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="UIPropertyDynamicViewElement.h">
       <Filter>PropertyView</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerImageTool.h">
+      <Filter>SceneMessageHandler\ObjectTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

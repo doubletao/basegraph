@@ -2,6 +2,7 @@
 #include "MessageHandlerFactory.h"
 #include "MessageHandlerDefault.h"
 #include "MessageHandlerTitlewordTool.h"
+#include "MessageHandlerImageTool.h"
 
 ISceneMessageHandler * MessageHandlerFactory::CreateMessageHandler(EmMessageHandlerType emHandlerType)
 {
@@ -21,6 +22,7 @@ ISceneMessageHandler * MessageHandlerFactory::CreateMessageHandler(EmMessageHand
 	case MessageHandlerType_CreateScroll:
 		break;
 	case MessageHandlerType_CreateImage:
+		pRet = new MessageHandlerImageTool;
 		break;
 	case MessageHandlerType_EditTitle:
 		break;

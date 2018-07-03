@@ -78,7 +78,7 @@ EmMessageHandlerResult MessageHanderTitlewordTool::OnLButtonUp(IN C3DSceneViewWn
 	if (pWnd)
 	{
 		//点击方式创建物件
-		BOOL bClickCreate = TRUE;
+		BOOL bClickCreate = FALSE;
 		EditorSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetEditorSettingParam();
 		if ((fabs(point.x - m_ptBegin.x) < stuDrawerParam.nObjectMinSize)
 			&& (fabs(point.y - m_ptBegin.y) < stuDrawerParam.nObjectMinSize))

@@ -46,3 +46,4 @@
 #endif // BASEGRAPH_DATABASE_EXPORTS
 
 #include "ExportCommon.h"
+#include "ExportBaseCodec.h"

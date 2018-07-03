@@ -127,6 +127,7 @@
     <ClCompile Include="ISceneMessageHandler.cpp" />
     <ClCompile Include="MessageHandlerDefault.cpp" />
     <ClCompile Include="MessageHandlerFactory.cpp" />
+    <ClCompile Include="MessageHandlerImageTool.cpp" />
     <ClCompile Include="MessageHandlerManager.cpp" />
     <ClCompile Include="MessageHandlerTitlewordEditor.cpp" />
     <ClCompile Include="MessageHandlerTitlewordTool.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="ISceneMessageHandler.h" />
     <ClInclude Include="MessageHandlerDefault.h" />
     <ClInclude Include="MessageHandlerFactory.h" />
+    <ClInclude Include="MessageHandlerImageTool.h" />
     <ClInclude Include="MessageHandlerManager.h" />
     <ClInclude Include="MessageHandlerTitlewordEditor.h" />
     <ClInclude Include="MessageHandlerTitlewordTool.h" />
