@@ -1,11 +1,7 @@
 #include "stdafx.h"
 #include "DataRender\ShapeForm.h"
 #include "DataRender\AlgorithmRip.h"
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
+
 /////////////////////////////////////////////////////////////////////////
 //implement of CMatrixForm 
 CMatrixForm::CMatrixForm()

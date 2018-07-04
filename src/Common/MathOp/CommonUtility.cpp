@@ -2,14 +2,6 @@
 #include <assert.h>
 #include "Common\CommonUtility.h"
 
-#ifdef _DEBUG
-#define new SY_DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define malloc(x) _malloc_dbg(x,_NORMAL_BLOCK,__FILE__,__LINE__)
-#endif
-
-
 void SYPtCopyPt2f(point2 &P,point2f &FP)
 {
 	FP.x = (float)P.x;

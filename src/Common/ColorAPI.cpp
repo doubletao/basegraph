@@ -5,12 +5,6 @@
 #include <tchar.h>
 #include <assert.h>
 
-#ifdef _DEBUG
-#define new SY_DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 // 缺省颜色初始化定义
 // 单色
 #define DEFAULT_HOMO_COLOR				0x7f7f7f7f

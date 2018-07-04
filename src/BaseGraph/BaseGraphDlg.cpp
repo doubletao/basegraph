@@ -1,4 +1,3 @@
-
 // BaseGraphDlg.cpp : 实现文件
 //
 
@@ -6,11 +5,6 @@
 #include "BaseGraph.h"
 #include "BaseGraphDlg.h"
 #include "afxdialogex.h"
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 

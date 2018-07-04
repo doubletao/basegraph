@@ -7,11 +7,7 @@
 #include "DataRender\LineAPI.h"
 #include <stdio.h>
 #include "..\..\..\include\DataRender\DataRenderUtityFunc.h"
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
+
 int		g_rip_nsubpixel = 8;
 int		g_rip_nsubsh = 3;
 int		g_rip_table_size = 16;

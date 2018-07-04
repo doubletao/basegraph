@@ -5,11 +5,6 @@
 #include "MathOpASM64.h"
 #include <assert.h>
 
-#ifdef _DEBUG
-#define new SY_DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	…Ë÷√µ„÷µ
 //

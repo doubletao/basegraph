@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "DataRender\DrawTextDef.h"
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
+
 //////////////////////////////////////////////////////////////////////////
 //缺省字体、缺省中文字体、预制用字符。
 extern TCHAR g_strDefFontFacename[LF_FACESIZE];

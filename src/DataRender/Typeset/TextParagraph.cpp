@@ -2,11 +2,7 @@
 #include "TextParagraph.h"
 #include "TextTypeset.h"
 #include "TextTypesetDataAPI.h"
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
+
 //////////////////////////////////////////////////////////////////////////
 // CSYTextLine
 CSYTextLine::CSYTextLine(CSYTextParagraph* pTextParagraph, int nBeginIndex, float fLength)

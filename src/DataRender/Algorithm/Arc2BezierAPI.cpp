@@ -1,11 +1,7 @@
 #include "stdafx.h"
 #include "DataRender\Arc2BezierAPI.h"
 #include <math.h>
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
+
 int SolveSqure(double a, double b, double c, double *xx)
 {
 	//形如a*xx^2 +b*xx +c=0(a != 0)的一元二次方程的实数解。由*xx返回。

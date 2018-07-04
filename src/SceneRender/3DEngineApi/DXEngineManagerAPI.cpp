@@ -8,12 +8,6 @@
 #include <iostream>
 #include <fstream>
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
-
 CSY3DLineManager* pLineManager = NULL;
 TCHAR g_szPathShader[MAX_PATH] = {0};	
 

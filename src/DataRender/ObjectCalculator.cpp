@@ -1,12 +1,6 @@
 #include "stdafx.h"
 #include "ObjectCalculator.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
-
 #include "CalculatorManager.h"
 
 void ObjectCalculator::SetRenderMatV(matrix4f* pMat)

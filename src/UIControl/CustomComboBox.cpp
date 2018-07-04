@@ -5,12 +5,6 @@
 #include "ThemeManager.h"
 #include <imm.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #pragma comment(lib, "imm32.lib")
 #define Custom_szComboBoxClass				"CustomComboBoxClass64"
 

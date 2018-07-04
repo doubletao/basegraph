@@ -4,11 +4,6 @@
 #include "Common\VectorDef.h"
 #include "Common\QuatnDef.h"
 #include "MathOpASM64.h"
-#ifdef _DEBUG
-#define new SY_DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 BOOL iszero(float value)
 {

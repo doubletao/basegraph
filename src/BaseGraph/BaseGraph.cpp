@@ -1,15 +1,9 @@
-
 // BaseGraph.cpp : 定义应用程序的类行为。
 //
 
 #include "stdafx.h"
 #include "BaseGraph.h"
 #include "BaseGraphDlg.h"
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
 
 // CBaseGraphApp
 
