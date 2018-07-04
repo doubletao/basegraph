@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "ObjectBuffer.h"
+#include "DataBufferManager.h"
 #include <assert.h>
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
-static const int BUFFER_AREA_RATIO = 2;//面积系数，当前设为2，即reserve面积小于等于实际使用面积的2倍
+static const int BUFFER_AREA_RATIO = 4;//面积系数，当前设为4，即reserve面积小于等于实际使用面积的4倍(这个4是经验值，按照当前的宽高种子比值，宽高从1*1递增到1920*1080过程中，按照当前规则最大出现3.9的情况)
 static const int BUFFER_DEPTH = 4;//默认未RGBA，4字节
 
 ObjectBuffer::ObjectBuffer()
@@ -87,7 +88,11 @@ bool ObjectBuffer::FitIn(int nReqWidth, int nReqHeight)
 	if (!m_bUsed
 		&& m_nReserveWidth >= nReqWidth
 		&& m_nReserveHeight >= nReqHeight
-		&& m_nReserveWidth * m_nReserveHeight <= nReqWidth * nReqHeight * BUFFER_AREA_RATIO)
+		//避免浪费的检测规则为留存空间小于需要空间的BUFFER_AREA_RATIO倍。但当需要空间的宽或者高比种子还小时，不适用
+		&& (nReqWidth < DataBufferManager::Instance().GetWidthGrowSeed()
+			|| nReqHeight < DataBufferManager::Instance().GetHeightGrowSeed()
+			|| m_nReserveWidth * m_nReserveHeight <= nReqWidth * nReqHeight * BUFFER_AREA_RATIO)
+		)
 	{
 		return true;
 	}

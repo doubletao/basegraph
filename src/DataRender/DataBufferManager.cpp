@@ -101,6 +101,16 @@ DataBufferManager & DataBufferManager::Instance()
 	return inst;
 }
 
+int DataBufferManager::GetWidthGrowSeed()
+{
+	return m_nWidthSeed;
+}
+
+int DataBufferManager::GetHeightGrowSeed()
+{
+	return m_nHeightSeed;
+}
+
 void DataBufferManager::InitialSeed(int nWidthSeed, int nHeightSeed)
 {
 	m_nWidthSeed = nWidthSeed;

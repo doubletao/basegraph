@@ -17,6 +17,8 @@ protected:
 	int CreateBuffer(int nWidth, int nHeight);
 public:
 	static DataBufferManager & Instance();
+	int GetWidthGrowSeed();
+	int GetHeightGrowSeed();
 	//2D Buffer操作
 	void InitialSeed(int nWidthSeed, int nHeightSeed);//种子是创建内存块时的基础大小，新创建的内存块的宽高一定是种子宽高的整数倍
 	int Query2DBuffer(int nWidth, int nHeight);//取一个2Dbuf
