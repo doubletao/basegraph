@@ -3,6 +3,12 @@
 #include "ThemeManager.h"
 #include "UISysFontObtainer.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 BASEGRAPH_UICONTROL_API CString UIControl_GetThemePath()
 {
 	return ThemeManager::Instance().GetThemePath();

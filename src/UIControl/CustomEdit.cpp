@@ -4,6 +4,12 @@
 #include "UIControl\UIEdit.h"
 #include "ThemeManager.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 inline BOOL IsValidWindow(CWnd* pWnd)
 {
 	return (pWnd && ::IsWindow(pWnd->m_hWnd));

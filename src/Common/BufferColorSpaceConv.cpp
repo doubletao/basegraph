@@ -7,6 +7,12 @@
 #include "BufferSSE2.h"
 #include "Common\BufferCommonDef.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 //////////////////////////////////////////////////////////////////////////
 // 常量定义
 

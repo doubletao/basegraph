@@ -25,6 +25,12 @@ distribution.
 #include "stdafx.h"
 #include "Common\tinyxml.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 // The goal of the seperate error file is to make the first
 // step towards localization. tinyxml (currently) only supports
 // english error messages, but the could now be translated.

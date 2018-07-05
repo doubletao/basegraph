@@ -5,6 +5,12 @@
 #include "Common\PlaneDef.h"
 #include "Common\vectorgraph.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 void vg_copy(vectorgraph* des, const vectorgraph* src)
 {
 	vg_release(des);

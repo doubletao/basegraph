@@ -1,5 +1,11 @@
 #include "stdafx.h"
 #include "SceneRender\3DIntersection.h"
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 #define LINE_SEG_DEVIATION	2.f
 #define LINE_CIRCLE_DEVIATION	6.f
 

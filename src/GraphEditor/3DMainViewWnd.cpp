@@ -2,6 +2,12 @@
 #include "3DMainViewWnd.h"
 #include "GraphEditorCommonDef.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 IMPLEMENT_DYNCREATE(C3DMainViewWnd, CWnd)
 
 BEGIN_MESSAGE_MAP(C3DMainViewWnd, CWnd)

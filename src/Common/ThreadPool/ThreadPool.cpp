@@ -4,6 +4,12 @@
 #include <list>
 #include "Common\CommonFunction.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 //#define DEBUG_HANDLE
 //#ifdef DEBUG_HANDLE
 //std::set<DWORD> g_setHandleValue;

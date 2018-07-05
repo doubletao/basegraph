@@ -10,6 +10,12 @@
 #include "Common\BufferCommonDef.h"
 #include <assert.h>
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 void InitSSEStaticCoef()
 {
 	DWORD dwTmpR(0), dwTmpG(0), dwTmpB(0), dwTmpU(0), dwTmpV(0);

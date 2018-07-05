@@ -8,6 +8,12 @@
 #include "stdafx.h"
 #include "DataRender\LineAPI.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 // 求两点之间距离 
 float PointToPointDis(IN point2f p1, IN point2f p2)
 {

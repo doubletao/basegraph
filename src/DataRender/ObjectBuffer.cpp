@@ -3,6 +3,12 @@
 #include "DataBufferManager.h"
 #include <assert.h>
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 static const int BUFFER_AREA_RATIO = 4;//面积系数，当前设为4，即reserve面积小于等于实际使用面积的4倍(这个4是经验值，按照当前的宽高种子比值，宽高从1*1递增到1920*1080过程中，按照当前规则最大出现3.9的情况)
 static const int BUFFER_DEPTH = 4;//默认未RGBA，4字节
 

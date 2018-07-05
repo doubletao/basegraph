@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "UIComboxFontSel.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 UIComboxFontSel::UIComboxFontSel()
 	: m_pStatic(nullptr)
 	, m_pComboBoxFont(nullptr)

@@ -2,6 +2,12 @@
 #include "DataRender\BevelPoly.h"
 #include "DataRender\OffsetCurve.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 const float g_fScaleAAA = 1.01f;
 
 SYBevelPoly::SYBevelPoly(void)

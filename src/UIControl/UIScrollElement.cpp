@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "UIControl\UIScrollElement.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 void UIScrollElement::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent)
 {
 	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);

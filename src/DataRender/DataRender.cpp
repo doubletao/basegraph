@@ -5,6 +5,12 @@
 #include "DataRender.h"
 #include "Typeset\TextTypesetDataAPI.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 //
 //TODO:  如果此 DLL 相对于 MFC DLL 是动态链接的，
 //		则从此 DLL 导出的任何调入

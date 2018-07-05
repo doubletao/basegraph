@@ -3,6 +3,12 @@
 #include "UIControl\UIStatic.h"
 #include "ThemeManager.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 UIStatic::UIStatic()
 	: m_nFont(0)
 	, m_nFontColor(0)

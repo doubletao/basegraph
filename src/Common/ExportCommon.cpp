@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "ExportCommon.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 #define FLOAT_EQUAL(f1,f2)		(fabs((f1) - (f2)) < FLOAT_0)
 #define POINTF_EQUAL(p1,p2)		(FLOAT_EQUAL((p1).x,(p2).x) && FLOAT_EQUAL((p1).y,(p2).y))
 

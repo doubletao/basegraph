@@ -3,6 +3,12 @@
 #include "DataBaseManager.h"
 #include "ObjectFactory.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 bool BASEGRAPH_DATABASE_API DataBase_GetAllItemID(OUT std::vector<CString>& vecID)
 {
 	return DataBaseManager::Instance().GetAllItemID(vecID);

@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "SceneRender\DXRenderEngineSoftAPI.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 htable g_SoftDeviceHT;
 TCHAR g_szPathEffect[MAX_PATH] = {0};	
 CDeviceLock g_DeviceTableLock;

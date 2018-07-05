@@ -29,6 +29,12 @@ distribution.
 
 #include "Common\tinyxml.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 //#define DEBUG_PARSER
 #if defined( DEBUG_PARSER )
 #	if defined( DEBUG ) && defined( _MSC_VER )

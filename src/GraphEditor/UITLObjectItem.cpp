@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "UITLObjectItem.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 UITLObjectItem::UITLObjectItem()
 	: m_strObjID(_T(""))
 	, m_bHasTrack(false)// «∑Ò”–πÏµ¿

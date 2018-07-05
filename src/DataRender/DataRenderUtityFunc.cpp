@@ -6,6 +6,12 @@
 #include "DataRender\Arc2BezierAPI.h"
 #include "CalculatorTitleWord.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 #define		SYLINE_SOLID					0
 #define		SYLINE_DASH						1
 #define		SYLINE_DASHDOT					2

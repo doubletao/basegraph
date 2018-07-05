@@ -4,6 +4,12 @@
 #include "UICheckColorButton.h"
 #include "UIComboxFontSel.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 UIPropertyViewElement::UIPropertyViewElement()
 	: m_strObjID()
 	, m_emObjType(BaseGraph_DataBase::ObjectType_Err)

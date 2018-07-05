@@ -4,6 +4,12 @@
 #include "IntIDGenerator.h"
 #include <assert.h>
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 DataBaseManager::DataBaseManager()
 	: m_nSceneWidth(1920)
 	, m_nSceneHeight(1080)

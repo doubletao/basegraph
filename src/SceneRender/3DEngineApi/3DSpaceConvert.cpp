@@ -2,6 +2,12 @@
 #include "SceneRender\3DSpaceConvert.h"
 #include "SceneRender\3DInterSection.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */ 
 									const float3* pInVec, /*源向量 */ 
 									const SYSpaceConvertParam* pParam, /*空间状态 */ 

@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "C3DViewBufferInfo.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 C3DViewBufferInfo::C3DViewBufferInfo()
 	: m_nEditBuffer(0)
 	, m_hEditTexture(0)

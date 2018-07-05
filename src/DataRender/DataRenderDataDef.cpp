@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "DataRender\DataRenderDataDef.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 BASEGRAPH_DATARENDER_API void tag_sy2dunit::Reset()
 {
 	memset(this, 0, sizeof(tag_sy2dunit));

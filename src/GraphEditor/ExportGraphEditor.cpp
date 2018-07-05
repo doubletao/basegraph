@@ -2,6 +2,12 @@
 #include "ExportGraphEditor.h"
 #include "GraphEditor.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 CGraphEditorApp * g_pEditorApp = nullptr;
 
 BASEGRAPH_GRAPHEDITOR_API bool GraphEditor_Initialize()

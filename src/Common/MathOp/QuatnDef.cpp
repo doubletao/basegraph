@@ -5,6 +5,12 @@
 #include <assert.h>
 #include "MathOpASM64.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 #define RADIAN_HALF_PI 1.5707963267948966192313216916398f 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	…Ë÷√

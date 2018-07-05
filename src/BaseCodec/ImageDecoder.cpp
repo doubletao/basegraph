@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "ImageDecoder.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 std::vector<std::pair<CString, CString>> ImageDecoder::m_vecSupportExt;
 
 ImageDecoder::ImageDecoder()

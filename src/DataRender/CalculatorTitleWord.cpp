@@ -2,6 +2,12 @@
 #include "CalculatorTitleWord.h"
 #include "CalculatorManager.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 CalculatorTitleword::CalculatorTitleword(CString strObjID)
 	: ObjectCalculator(strObjID)
 	, m_nFontWidth(0)

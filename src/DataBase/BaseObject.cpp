@@ -3,6 +3,12 @@
 #include "IntIDGenerator.h"
 #include "ObjectFactory.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 BaseGraph_DataBase::BaseObject::BaseObject()
 	: m_nParentID(_T(""))
 {

@@ -2,6 +2,12 @@
 #include "ExportBaseCodec.h"
 #include "ImageDecoder.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 bool BASEGRAPH_BASECODEC_API BaseCodec_QueryImageSupport(IN LPCTSTR strExt, IN bool bDecode)
 {
 	return ImageDecoder::QueryImageSupport(strExt, bDecode);

@@ -5,6 +5,12 @@
 #include "SceneRender\3DSpaceConvert.h"
 #include "MessageHandlerManager.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 IMPLEMENT_DYNCREATE(C3DSceneViewWnd, CWnd)
 
 const int CGSceneViewRenderPoolSize = 2;

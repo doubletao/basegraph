@@ -4,6 +4,12 @@
 #include "Common\2DBufferAPI.h"
 #include "Common\ColorDef.h"
 #include "Common\PlaneDef.h"
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 //////////////////////////////////////////////////////////////////////////
 void SYBufferDef32_Init(SYBufferDef32* pBuffer32)
 {

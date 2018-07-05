@@ -11,6 +11,12 @@
 #include "..\BufferRipRender.h"
 #include <assert.h>
 #include "Common\ColorDef.h"
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 //////////////////////////////////////////////////////////////////////////
 // 不缩放时的范围剪切，可选目标裁减矩形。
 // 如果裁减矩形为空指针，则表示裁减区覆盖整个目标。

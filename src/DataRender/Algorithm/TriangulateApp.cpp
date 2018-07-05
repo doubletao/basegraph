@@ -3,6 +3,12 @@
 #include "DataRender\OffsetCurve.h"
 #include "DataRender\DataRenderUtityFunc.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 typedef struct tag_EnvelopeNode
 {
 	int nCellIndex;

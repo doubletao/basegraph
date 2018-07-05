@@ -2,6 +2,12 @@
 #include "UIControl\UIRectDrawer.h"
 #include "ThemeManager.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 UIRectDrawer::UIRectDrawer(int nResID/* = 0*/)
 	: UIDrawer(nResID)
 {

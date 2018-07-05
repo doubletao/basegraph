@@ -3,6 +3,12 @@
 #include "GraphEditorCommonDef.h"
 #include "UITLRuler.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 UITimeLine::UITimeLine()
 	: m_pTimeCode(nullptr)
 	, m_pScrollHor(nullptr)

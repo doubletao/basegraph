@@ -2,6 +2,12 @@
 #include "UIPropertyView.h"
 #include "UIPropertyDynamicViewElement.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 UIPropertyView::UIPropertyView()
 	: m_pPropertyTabBar(nullptr)
 	, m_pColorElement(nullptr)

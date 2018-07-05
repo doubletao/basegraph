@@ -3,6 +3,12 @@
 #include "Common\BufferFunction.h"
 #include "BufferSSE2.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 __declspec(align(16)) DWORD*	BufferMemSSE::g_pdwMixGainTable = nullptr;
 static const double MIX_TABLE_SCALE_COEF = ((1 << 15) - 1) * 255.0;
 

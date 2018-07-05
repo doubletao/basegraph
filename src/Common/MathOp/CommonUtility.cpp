@@ -2,6 +2,12 @@
 #include <assert.h>
 #include "Common\CommonUtility.h"
 
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 void SYPtCopyPt2f(point2 &P,point2f &FP)
 {
 	FP.x = (float)P.x;

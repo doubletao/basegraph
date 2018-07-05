@@ -1,6 +1,12 @@
 #include "..\..\include\Common\CommonFunction.h"
 #include "stdafx.h"
 #include "Common\CommonFunction.h"
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
 #pragma comment(lib, "Rpcrt4.lib")
 
 CommonFunction::CommonFunction()
