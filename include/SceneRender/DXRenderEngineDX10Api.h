@@ -265,7 +265,7 @@ inline void ReleaseShader(SY_DeviceDX10* pDevice,int hShader)
 			return;
 
 		SYHash_RemoveAt(pDevice->ShaderHash, (void *)pShader->pShaderName, TRUE);
-		//SAFEDELETE_ARRAY(pShader->pShaderName);
+		SAFEDELETE_ARRAY(pShader->pShaderName);
 		switch (pShader->nType)
 		{
 		case DXShaderType_VertexShader:

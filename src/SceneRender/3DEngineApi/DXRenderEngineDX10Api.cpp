@@ -455,8 +455,6 @@ int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileN
 	pNewShader->pShaderName = new TCHAR[nNameLenth];
 	_tcscpy_s(pNewShader->pShaderName,nNameLenth,shaderName);
 	int hShader = (int)SYHTable_Insert(&pDevice->htShaderTable,pNewShader);
-	//if(hShader == 21)
-	//	int a = 0;
 	pShaderHashValue = new shaderhash;
 	pShaderHashValue->hHandle = hShader;
 	pShaderHashValue->nCount = 1;
