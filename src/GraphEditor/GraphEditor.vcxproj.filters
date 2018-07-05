@@ -43,7 +43,7 @@
     <Filter Include="SceneMessageHandler\ObjectEditor">
       <UniqueIdentifier>{0907be5f-2875-488e-acd9-ada980fb421d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PropertyView\UIColorCtrl">
+    <Filter Include="PropertyView\UIPropertyCtrl">
       <UniqueIdentifier>{20f2cc58-ae8b-4d46-ab5c-3a3f867de8c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -133,7 +133,7 @@
       <Filter>TimeLine</Filter>
     </ClCompile>
     <ClCompile Include="UICheckColorButton.cpp">
-      <Filter>PropertyView\UIColorCtrl</Filter>
+      <Filter>PropertyView\UIPropertyCtrl</Filter>
     </ClCompile>
     <ClCompile Include="MessageHandlerDefault.cpp">
       <Filter>SceneMessageHandler\ActionTool</Filter>
@@ -142,7 +142,7 @@
       <Filter>SceneMessageHandler\ObjectTool</Filter>
     </ClCompile>
     <ClCompile Include="UIComboxFontSel.cpp">
-      <Filter>PropertyView\UIColorCtrl</Filter>
+      <Filter>PropertyView\UIPropertyCtrl</Filter>
     </ClCompile>
     <ClCompile Include="MessageHandlerTitlewordEditor.cpp">
       <Filter>SceneMessageHandler\ObjectEditor</Filter>
@@ -246,7 +246,7 @@
       <Filter>TimeLine</Filter>
     </ClInclude>
     <ClInclude Include="UICheckColorButton.h">
-      <Filter>PropertyView\UIColorCtrl</Filter>
+      <Filter>PropertyView\UIPropertyCtrl</Filter>
     </ClInclude>
     <ClInclude Include="MessageHandlerDefault.h">
       <Filter>SceneMessageHandler\ActionTool</Filter>
@@ -255,7 +255,7 @@
       <Filter>SceneMessageHandler\ObjectTool</Filter>
     </ClInclude>
     <ClInclude Include="UIComboxFontSel.h">
-      <Filter>PropertyView\UIColorCtrl</Filter>
+      <Filter>PropertyView\UIPropertyCtrl</Filter>
     </ClInclude>
     <ClInclude Include="MessageHandlerTitlewordEditor.h">
       <Filter>SceneMessageHandler\ObjectEditor</Filter>

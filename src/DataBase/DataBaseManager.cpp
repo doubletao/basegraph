@@ -185,6 +185,8 @@ bool DataBaseManager::DeleteItem(IN CString strID)
 		{
 			if (pObj->GetItemID() == strID)
 			{
+				delete pObj;
+				pObj = nullptr;
 				m_vecObject.erase(it);
 				break;
 			}
