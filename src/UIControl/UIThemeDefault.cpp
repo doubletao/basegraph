@@ -112,7 +112,8 @@ bool UIThemeDefault::Initialize()
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeWidth, 449));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeHeight, 50));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeCodeLeftGap, 10));
-	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeScrollHeight, 10));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemBarEndAreaWidth, 10));
+	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineTimeScrollHeight, 8));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionHeight, 28));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemActionGap, 1));
 	m_mapIntValue.insert(std::make_pair(ThemeInt_TimeLineItemTrackHeight, 28));

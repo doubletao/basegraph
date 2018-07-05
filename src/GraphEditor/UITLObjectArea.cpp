@@ -15,6 +15,7 @@ UITLObjectArea::UITLObjectArea()
 	, m_pRightArea(nullptr)
 	, m_nVScrollHeight(0)
 {
+	m_nItemBarEndAreaWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemBarEndAreaWidth);
 }
 
 
@@ -71,13 +72,32 @@ void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	//如果点中了某个物件，则清掉其他选中物件并将该物件置为选中状态，如果没有点中物件，则清掉所有物件的选中状态
 	CString strHitID;
 	DataRender_ClearAllSelect();
-	if (ObjectArea_HitNull != ObjectHittest(lParam, &strHitID))
+	if (ObjectArea_HitItem == ObjectHittest(lParam, &strHitID)
+		|| ObjectArea_HitItemBarMiddle == ObjectHittest(lParam, &strHitID))
 	{
-		DataRender_SetItemSelected(strHitID, true);		
+		DataRender_SetItemSelected(strHitID, true);
+	}
+	else if (ObjectArea_HitItemBarLeftEnd == ObjectHittest(lParam, &strHitID))
+	{
+		//点中左边
+		DataRender_SetItemSelected(strHitID, true);
+	}
+	else if (ObjectArea_HitItemBarRightEnd == ObjectHittest(lParam, &strHitID))
+	{
+		//点中右边
+		DataRender_SetItemSelected(strHitID, true);
 	}
 	//广播通知选中项变更
 	UIControl_BroadcastMsg(WM_MSG_OnSelectChanged, 0, 0, this);
 	Refresh();
+}
+
+void UITLObjectArea::OnLButtonUp(WPARAM wParam, LPARAM lParam)
+{
+}
+
+void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
+{
 }
 
 void UITLObjectArea::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
@@ -103,14 +123,40 @@ ObjectAreaHittestType UITLObjectArea::ObjectHittest(CPoint ptHit, CString * pStr
 		UITLObjectItem * pObjDrawer = it->second;
 		if (pObjDrawer)
 		{
-			if (pObjDrawer->rtLeft.PtInRect(ptHit)
-				|| pObjDrawer->rtRight.PtInRect(ptHit))
+			if (pObjDrawer->rtLeft.PtInRect(ptHit))
 			{
+				//如果左侧区域被点中，则是物件被点中
 				emHitRet = ObjectArea_HitItem;
 				if (pStrID)
 				{
 					*pStrID = pObjDrawer->m_strObjID;
 				}
+				break;
+			}
+			//如果右侧区域被点中，则分情况处理，判定是左端点，右端点还是中部
+			else if (pObjDrawer->rtRight.PtInRect(ptHit))
+			{
+				if (ptHit.x > pObjDrawer->rtActionBar.right - m_nItemBarEndAreaWidth && ptHit.x < pObjDrawer->rtActionBar.right)
+				{
+					emHitRet = ObjectArea_HitItemBarRightEnd;
+				}
+				else if (ptHit.x > pObjDrawer->rtActionBar.left && ptHit.x < pObjDrawer->rtActionBar.left + m_nItemBarEndAreaWidth)
+				{
+					emHitRet = ObjectArea_HitItemBarLeftEnd;
+				}
+				else if (pObjDrawer->rtActionBar.PtInRect(ptHit))
+				{
+					emHitRet = ObjectArea_HitItemBarMiddle;
+				}
+				else
+				{
+					emHitRet = ObjectArea_HitItem;
+				}
+				if (pStrID)
+				{
+					*pStrID = pObjDrawer->m_strObjID;
+				}
+				break;
 			}
 		}
 	}
@@ -206,8 +252,10 @@ EmUIElementMsgRet UITLObjectArea::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lPa
 			OnLButtonDown(wParam, lParam);
 			break;
 		case WM_LBUTTONUP:
+			OnLButtonUp(wParam, lParam);
 			break;
 		case WM_MOUSEMOVE:
+			OnMouseMove(wParam, lParam);
 			break;
 		default:
 			break;

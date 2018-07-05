@@ -32,6 +32,7 @@ enum ThemeIntValueDef
 	ThemeInt_TimeLineTimeCodeHeight,
 	ThemeInt_TimeLineTimeCodeLeftGap,
 	ThemeInt_TimeLineTimeScrollHeight,
+	ThemeInt_TimeLineItemBarEndAreaWidth,//时间线物件条两端的敏感区域宽度
 	ThemeInt_TimeLineItemActionHeight,//时间线物件条高度
 	ThemeInt_TimeLineItemActionGap,//时间线物件条缝隙
 	ThemeInt_TimeLineItemTrackHeight,//时间线物件关键帧轨道高度
