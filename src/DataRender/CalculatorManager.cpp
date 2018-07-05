@@ -321,27 +321,31 @@ bool CalculatorManager::IsItemNeedRender(IN CString strObjID)
 EmHittestRetType CalculatorManager::HitTest(IN pointf ptHit, OPTIONAL CString & strID, OPTIONAL EmCtrlPointIndex & emCtrlPoint)
 {
 	//遍历物件执行hittest点测试，如果strID不为空，则从strID的下一个开始执行遍历到strID的上一个结束
-	if (strID.IsEmpty())
+	std::vector<CString> vecObjID;
+	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
 	{
-		//指定ID为空，直接遍历calculate就可以
-		for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
+		std::reverse(vecObjID.begin(), vecObjID.end());
+		if (strID.IsEmpty())
 		{
-			if (it->second)
+			//指定ID为空，直接遍历就可以
+			for (auto it : vecObjID)
 			{
-				if (it->second->HitTest(ptHit))
+				if (m_mapObjCalculator.count(it) > 0)
 				{
-					strID = it->first;
-					return Hittest_Object;
+					if (m_mapObjCalculator[it])
+					{
+						if (m_mapObjCalculator[it]->HitTest(ptHit))
+						{
+							strID = it;
+							return Hittest_Object;
+						}
+					}
 				}
 			}
 		}
-	} 
-	else
-	{
-		//指定ID不为空，则需要考虑层次，此时需要遍历物件集合
-		std::vector<CString> vecObjID;
-		if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
+		else
 		{
+			//指定ID不为空，则需要考虑层次，此时需要遍历物件集合
 			std::vector<CString>::iterator itFind = std::find(vecObjID.begin(), vecObjID.end(), strID);
 			if (itFind == vecObjID.end())
 			{

@@ -24,7 +24,14 @@ MessageHandlerDefault::~MessageHandlerDefault()
 void MessageHandlerDefault::DrawSelectBox(C3DSceneViewWnd * pWnd, pointf ptBegin, pointf ptEnd)
 {
 	EditorSettingParam stuDrawerParam = CGraphEditorApp::GetBaseGraphFrameWnd()->GetEditorSettingParam();
-	DrawBoxToEditBuf(pWnd, ptBegin, ptEnd, PS_DASH, 1, stuDrawerParam.nColorBoxSelect);
+	if (ptEnd.x < ptBegin.x && ptEnd.y > ptBegin.y)
+	{
+		DrawBoxToEditBuf(pWnd, ptBegin, ptEnd, PS_DASH, 1, stuDrawerParam.nColorBoxSelect);
+	}
+	else
+	{
+		DrawBoxToEditBuf(pWnd, ptBegin, ptEnd, PS_SOLID, 1, stuDrawerParam.nColorBoxSelect);
+	}
 }
 
 void MessageHandlerDefault::SelectObjectByBox(pointf ptBegin, pointf ptEnd, bool bPreSelect)
