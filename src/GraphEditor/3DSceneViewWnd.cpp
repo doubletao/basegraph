@@ -304,6 +304,13 @@ C3DSceneViewWnd::C3DSceneViewWnd()
 	, m_hDefaultCur(nullptr)
 	, m_hHandDragCurOpen(nullptr)
 	, m_hHandDragCurClose(nullptr)
+	, m_hCurNWSE(nullptr)
+	, m_hCurNESW(nullptr)
+	, m_hCurWE(nullptr)
+	, m_hCurNS(nullptr)
+	, m_hCurALL(nullptr)
+	, m_hExitPreDecoderEvent(nullptr)
+	, m_hSeekReadyEvent(nullptr)
 {
 	InitializeCriticalSection(&m_lockRendCount);
 	m_thPreDecoderThread = NULL;

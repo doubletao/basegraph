@@ -64,6 +64,7 @@ ThreadPool_Worker::ThreadPool_Worker(ThreadPool * pPool)
 	, m_hEnd(nullptr)
 	, m_hRun(nullptr)
 	, m_hThread(nullptr)
+	, m_pTask(nullptr)
 {
 	m_hEnd = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	::ResetEvent(m_hEnd);
