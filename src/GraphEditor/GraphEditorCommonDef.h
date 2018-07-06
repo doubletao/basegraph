@@ -57,7 +57,7 @@ enum UIElementMsgDef
 	WM_MSG_SerRenderTask,//触发一次刷新
 	WM_MSG_ExcuteRenderTask,//窗口的刷新消息
 	WM_MSG_FrameChanged,//wParam为帧数，lParam为引发change的控件ID
-	WM_MSG_WholeFrameLengthChanged,//wParam为帧数，lParam为引发change的控件ID
+	WM_MSG_WholeFrameLengthChanged,//wParam为帧数，lParam为引发change的控件ID，这个消息应当发给mainframe，由mainframe计算出总长后再广播出去
 	WM_MSG_OnSelectChanged,//选中项发生变化
 	WM_MSG_OnMessageHandlerChg,//当前消息处理器发生变化
 	WM_MSG_TimeLinePointerChanged,//通知时间线刷新一下pointer

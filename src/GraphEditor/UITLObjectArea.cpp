@@ -14,6 +14,8 @@ UITLObjectArea::UITLObjectArea()
 	: m_pLeftArea(nullptr)
 	, m_pRightArea(nullptr)
 	, m_nVScrollHeight(0)
+	, m_emBarMoveState(MoveState_Null)
+	, m_ptBegin(0)
 {
 	m_nItemBarEndAreaWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemBarEndAreaWidth);
 }
@@ -59,32 +61,48 @@ UITLObjectItem * UITLObjectArea::CreateObjectItem(CString strID)
 
 void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 {
+	CString strHitID;
+	bool bSel = false;
+	auto DealHitObjectBar = [&](ObjectBarMoveState emMoveState)
+	{
+		m_emBarMoveState = emMoveState;
+		SetElementCapture();
+		m_ptBegin = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		m_strHitObjectID = strHitID;
+		bSel = true;
+	};
+	//点在物件区域外，直接返回
 	if (!HitTest(lParam))
 	{
 		return;
 	}
-	if (false)
+	//检测是否点中物件
+	ObjectAreaHittestType emHitType = ObjectHittest(lParam, &strHitID);
+	switch (emHitType)
 	{
-		CString strDebug;
-		strDebug.Format(_T("OnLButtonDown\n"));
-		OutputDebugString(strDebug);
+	case ObjectArea_HitNull:
+		break;
+	case ObjectArea_HitItem:
+		bSel = true;
+		m_emBarMoveState = MoveState_Null;
+		break;
+	case ObjectArea_HitItemBarLeftEnd:
+		DealHitObjectBar(MoveState_ActionLeftEndMove);
+		break;
+	case ObjectArea_HitItemBarMiddle:
+		DealHitObjectBar(MoveState_ActionBarMove);
+		break;
+	case ObjectArea_HitItemBarRightEnd:
+		DealHitObjectBar(MoveState_ActionRightMove);
+		break;
+	default:
+		break;
 	}
-	//如果点中了某个物件，则清掉其他选中物件并将该物件置为选中状态，如果没有点中物件，则清掉所有物件的选中状态
-	CString strHitID;
+	//清空现有选中项
 	DataRender_ClearAllSelect();
-	if (ObjectArea_HitItem == ObjectHittest(lParam, &strHitID)
-		|| ObjectArea_HitItemBarMiddle == ObjectHittest(lParam, &strHitID))
+	if (bSel)
 	{
-		DataRender_SetItemSelected(strHitID, true);
-	}
-	else if (ObjectArea_HitItemBarLeftEnd == ObjectHittest(lParam, &strHitID))
-	{
-		//点中左边
-		DataRender_SetItemSelected(strHitID, true);
-	}
-	else if (ObjectArea_HitItemBarRightEnd == ObjectHittest(lParam, &strHitID))
-	{
-		//点中右边
+		//如果需要则选中当前项
 		DataRender_SetItemSelected(strHitID, true);
 	}
 	//广播通知选中项变更
@@ -94,10 +112,89 @@ void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 
 void UITLObjectArea::OnLButtonUp(WPARAM wParam, LPARAM lParam)
 {
+	m_emBarMoveState = MoveState_Null;
+	ReleaseElementCapture();
+	m_ptBegin = CPoint(0, 0);
 }
 
 void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 {
+	bool bRefresh = false;
+	switch (m_emBarMoveState)
+	{
+	case MoveState_Null:
+	{
+		CString strHitID;
+		ObjectAreaHittestType emHitType = ObjectHittest(lParam, &strHitID);
+		OnSetCursor(emHitType);
+	}
+		break;
+	case MoveState_ActionBarMove:
+	{
+		CPoint ptEnd = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		float fXOffset = ptEnd.x - m_ptBegin.x;
+		int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		m_ptBegin = ptEnd;
+		BaseGraph_Common::Value value;
+		if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+		{
+			int nBeginFrame = value.ToInt();
+			if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+			{
+				int nEndFrame = value.ToInt();
+
+				nBeginFrame += nOffsetFrame;
+				value = nBeginFrame;
+				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+				{
+					nEndFrame += nOffsetFrame;
+					value = nEndFrame;
+					if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+					{
+						bRefresh = true;
+					}
+				}
+			}
+		}
+	}
+		break;
+	case MoveState_ActionLeftEndMove:
+	{
+		bRefresh = true;
+	}
+		break;
+	case MoveState_ActionRightMove:
+	{
+		bRefresh = true;
+	}
+		break;
+	default:
+		break;
+	}
+	if (bRefresh)
+	{
+		//广播通知物件长度变动
+		UIControl_SendMsgTo(UIElementMsg_BaseGraphMainFrame, WM_MSG_WholeFrameLengthChanged, 0, 0, UIElementMsg_TimeLineObjectArea);
+		Refresh();
+	}
+}
+
+void UITLObjectArea::OnSetCursor(ObjectAreaHittestType emHittestType)
+{
+	//目前就两种指针，普通指针和左右指针
+	switch (emHittestType)
+	{
+	case ObjectArea_HitItemBarLeftEnd:
+	case ObjectArea_HitItemBarRightEnd:
+		::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+		break;
+	case ObjectArea_HitItemBarMiddle:
+	case ObjectArea_HitNull:
+	case ObjectArea_HitItem:
+	default:
+		::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+		break;
+	}
 }
 
 void UITLObjectArea::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)

@@ -12,6 +12,14 @@ enum ObjectAreaHittestType
 	ObjectArea_HitItemBarRightEnd,//点中的物件bar的右端点
 };
 
+enum ObjectBarMoveState
+{
+	MoveState_Null,//默认空白值
+	MoveState_ActionBarMove,//物件action被移动
+	MoveState_ActionLeftEndMove,//物件action左端点被移动
+	MoveState_ActionRightMove,//物件action右端点被移动
+};
+
 class UITLObjectArea :
 	public UIElement
 {
@@ -23,13 +31,17 @@ protected:
 	UITLObjectLeftArea * m_pLeftArea;
 	UITLObjectRightArea * m_pRightArea;
 	int m_nVScrollHeight;//记录当前最大y值,用于计算垂直滚动条
-	int m_nItemBarEndAreaWidth;
+	int m_nItemBarEndAreaWidth;//action bar两端的敏感区域宽度，进入此区域后视为调整action端点的行为
+	ObjectBarMoveState m_emBarMoveState;//当前操作状态
+	CPoint m_ptBegin;//鼠标点下的点
+	CString m_strHitObjectID;//当前点中的物件
 protected:
 	virtual void RearrangeChildPos();
 	UITLObjectItem * CreateObjectItem(CString strID);
 	void OnLButtonDown(WPARAM wParam, LPARAM lParam);
 	void OnLButtonUp(WPARAM wParam, LPARAM lParam);
 	void OnMouseMove(WPARAM wParam, LPARAM lParam);
+	void OnSetCursor(ObjectAreaHittestType emHittestType);
 public:
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	ObjectAreaHittestType ObjectHittest(CPoint ptHit, CString * pStrID = nullptr);
