@@ -356,6 +356,20 @@ int UITLRuler::FrameToRulerPos(int nFrame)
 	return nPos;
 }
 
+int UITLRuler::GetCurLogicWholeLength()
+{
+	int nFrameLength = 0;
+	if (DataBase_GetItemLength(nFrameLength))
+	{
+		nFrameLength = nFrameLength / 2;
+	}
+	else
+	{
+		nFrameLength = 5;
+	}
+	return nFrameLength;
+}
+
 UITimeLine * UITLRuler::GetTimeLine()
 {
 	return m_pTimeLine;

@@ -163,13 +163,13 @@ void UITimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nID
 	case WM_MSG_WholeFrameLengthChanged:
 		if (nIDFrom != GetMsgDispatchID())
 		{
-			AdjustScrollZoom();
+			AdjustScrollZoomKeepPixPerFrame();
 		}
 		break;
 	case WM_MSG_ObjectCreateDelete:
 		if (nIDFrom != GetMsgDispatchID())
 		{
-			AdjustScrollZoom();
+			AdjustScrollZoomKeepPixPerFrame();
 		}
 		break;
 	case WM_MSG_FrameChanged:
@@ -206,6 +206,14 @@ void UITimeLine::AdjustScrollZoom(int nDeta)
 		fCurPercent += nDeta * 1.0f / 100;
 		m_pObjectArea->AdjustScrollZoom(fCurPercent);
 		m_pObjectArea->SetScrollInfo();
+	}
+}
+
+void UITimeLine::AdjustScrollZoomKeepPixPerFrame()
+{
+	if (m_pObjectArea)
+	{
+		m_pObjectArea->AdjustScrollZoomKeepPixPerFrame();
 	}
 }
 

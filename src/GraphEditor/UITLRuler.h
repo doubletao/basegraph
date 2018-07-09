@@ -45,4 +45,5 @@ public:
 	UITimeLine * GetTimeLine();
 	int RulerPosToFrame(int nX);//注意，单位是场
 	int FrameToRulerPos(int nFrame);//注意，单位是场
+	int GetCurLogicWholeLength();//取得当前的物件总长，注意，单位是帧（放在这里方便各窗口调用）
 };

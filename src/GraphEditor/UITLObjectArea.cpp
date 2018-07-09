@@ -510,12 +510,36 @@ void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
 	int nFrameLength = UITLRuler::Instance().GetDispFrameLength();
 	int nAdjustPreservePercent = UIControl_GetIntValue(ThemeInt_TimeLineAdjustPreservePercent);
 
-	nFrameLength = int(nFrameLength * (1 + 10 / 100.0));
+	nFrameLength = int(nFrameLength * (1 + nAdjustPreservePercent / 100.0));
 	fScrollPercent = UITLRuler::Instance().RecalPixelPerFrame(nRightWidth, nFrameLength, fScrollPercent);
+
+	if (fScrollPercent > 1.0f)
+	{
+		fScrollPercent = 1.0f;
+	}
+	else if (fScrollPercent < 0.01f)
+	{
+		fScrollPercent = 0.01f;
+	}
+
 	if (m_pRightArea && UITLRuler::Instance().GetHScrollBar())
 	{
 		UITLRuler::Instance().GetHScrollBar()->ResetScroll(int(m_pRightArea->GetWidth() / fScrollPercent), m_pRightArea->GetWidth());
 	}
+}
+
+void UITLObjectArea::AdjustScrollZoomKeepPixPerFrame()
+{
+	//拿到当前每帧像素数
+	float fPixPerFrame = UITLRuler::Instance().GetPixelPerFrame();
+	//拿到新的逻辑及实际长度
+	float fWholeWidth = UITLRuler::Instance().GetCurLogicWholeLength() * fPixPerFrame;
+	int nAdjustPreservePercent = UIControl_GetIntValue(ThemeInt_TimeLineAdjustPreservePercent);
+	fWholeWidth = int(fWholeWidth * (1 + nAdjustPreservePercent / 100.0));
+	float fPageWidth = m_pRightArea->GetWidth();
+	float fCurPercent = fPageWidth / fWholeWidth;
+	AdjustScrollZoom(fCurPercent);
+	SetScrollInfo();
 }
 
 float UITLObjectArea::GetCurrentPercent()

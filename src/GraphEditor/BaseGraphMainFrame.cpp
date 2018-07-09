@@ -2,7 +2,7 @@
 #include "BaseGraphMainFrame.h"
 #include "GraphEditorStatusManager.h"
 #include "MessageHandlerManager.h"
-
+#include "UITLRuler.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -724,15 +724,7 @@ LRESULT BaseGraphMainFrame::OnUIElementSetCapture(WPARAM wParam, LPARAM lParam)
 
 void BaseGraphMainFrame::OnUpdateWholeLength()
 {
-	int nFrameLength = 0;
-	if (DataBase_GetItemLength(nFrameLength))
-	{
-		nFrameLength = nFrameLength / 2;
-	}
-	else
-	{
-		nFrameLength = 5;
-	}
+	int nFrameLength = UITLRuler::Instance().GetCurLogicWholeLength();
 	if (m_nWholeFrame != nFrameLength)
 	{
 		m_nWholeFrame = nFrameLength;
