@@ -29,6 +29,7 @@
 #include "UIControl\UICheckBtnBar.h"
 #include "UIControl\UIScrollElement.h"
 #include "UIControl\UIScrollBar.h"
+#include "UIControl\UIFlexibleScrollBar.h"
 #include "UIControl\UIControlDef.h"
 #include "UIControl\MsgDispatcher.h"
 #include "UIControl\UIEdit.h"

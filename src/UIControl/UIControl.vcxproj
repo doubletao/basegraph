@@ -147,6 +147,7 @@
     <ClCompile Include="UIEditNumSpin.cpp" />
     <ClCompile Include="UIEditPath.cpp" />
     <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="UIFlexibleScrollBar.cpp" />
     <ClCompile Include="UIImageDrawer.cpp" />
     <ClCompile Include="UIRectDrawer.cpp" />
     <ClCompile Include="UIScrollBar.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="..\..\include\UIControl\UIEditPath.h" />
     <ClInclude Include="..\..\include\UIControl\UIEditSingleLine.h" />
     <ClInclude Include="..\..\include\UIControl\UIElement.h" />
+    <ClInclude Include="..\..\include\UIControl\UIFlexibleScrollBar.h" />
     <ClInclude Include="..\..\include\UIControl\UIImageDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIRectDrawer.h" />
     <ClInclude Include="..\..\include\UIControl\UIScrollBar.h" />

@@ -150,6 +150,9 @@
     <ClCompile Include="UIEditPath.cpp">
       <Filter>UIElementCombinedCtrl</Filter>
     </ClCompile>
+    <ClCompile Include="UIFlexibleScrollBar.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UIControl.h">
@@ -280,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="UISysFontObtainer.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIFlexibleScrollBar.h">
+      <Filter>UIElementCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

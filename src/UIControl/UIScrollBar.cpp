@@ -20,7 +20,6 @@ UIScrollBar::UIScrollBar()
 	, m_nStep(50)
 	, m_bMoving(false)
 	, m_ptBegin(0)
-	, m_ptEnd(0)
 {
 }
 
@@ -233,32 +232,6 @@ bool UIScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLeng
 EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	bool bContinue = true;
-	auto BtnHandleMsg = [&](UIElement * pElement)->bool
-	{
-		if (pElement)
-		{
-			if (UIElementMsgSuccBreak == pElement->HandleMsg(nMsg, wParam, lParam))
-			{
-				bContinue = false;
-			}
-			return true;
-		}
-		return false;
-	};
-	auto BtnEnterLeaveMsg = [&](UIElement * pElement)
-	{
-		if (pElement)
-		{
-			if (pElement->HitTest(lParam))
-			{
-				pElement->OnMouseHover();
-			}
-			else
-			{
-				pElement->OnMouseLeave();
-			}
-		}
-	};
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
 		if (bContinue)
@@ -274,16 +247,6 @@ bool UIScrollBar::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (emMsg)
 	{
-	case EmUIElementMsg_BtnClick:
-		if (EmLeftTopButton == wParam)
-		{
-			MoveStep(false);
-		}
-		else if (EmRightBottomButton == wParam)
-		{
-			MoveStep(true);
-		}
-		break;
 	default:
 		break;
 	}

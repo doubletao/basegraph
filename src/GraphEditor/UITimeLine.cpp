@@ -53,7 +53,7 @@ void UITimeLine::InitializeObject()
 	m_pTimeCode->Create(0, 0, 100, 100, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pTimeCode);
 
-	m_pScrollHor = new UIScrollBar;
+	m_pScrollHor = new UIFlexibleScrollBar;
 	m_pScrollHor->Create(0, 0, 10, 10, 10, 10, UIElementMsg_TimeLineHorScroll, true, m_hParentWnd, this);
 	m_vecChildElement.push_back(m_pScrollHor);
 
