@@ -142,7 +142,11 @@ void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 			if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
 			{
 				int nEndFrame = value.ToInt();
-
+				//移动动作不能把begin变成负数
+				if (nBeginFrame + nOffsetFrame < 0)
+				{
+					nOffsetFrame = -nBeginFrame;
+				}
 				nBeginFrame += nOffsetFrame;
 				value = nBeginFrame;
 				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
