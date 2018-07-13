@@ -144,6 +144,7 @@ bool UIThemeDefault::Initialize()
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_F, RGB(0x60, 0x60, 0x60)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_D, RGB(0x4b, 0x4b, 0x4b)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollThumbColor_X, RGB(0x54, 0x54, 0x54)));
+	m_mapColorList.insert(std::make_pair(ThemeColor_FlexibleScrollThumbColor, RGB(49, 151, 252)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_ScrollBkColor, RGB(0x2c, 0x2c, 0x2c)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderLightArea, RGB(0x78, 0xe3, 0x73)));
 	m_mapColorList.insert(std::make_pair(ThemeColor_SliderDarkArea, RGB(0x44, 0x44, 0x44)));

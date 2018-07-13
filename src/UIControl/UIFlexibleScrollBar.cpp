@@ -180,6 +180,7 @@ void UIFlexibleScrollThumbButton::DrawElement(CDC * pDC)
 		COLORREF clThumb_F = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_F);
 		COLORREF clThumb_D = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_D);
 		COLORREF clThumb_X = ThemeManager::Instance().GetColor(ThemeColor_ScrollThumbColor_X);
+		COLORREF clThumbEndArea = ThemeManager::Instance().GetColor(ThemeColor_FlexibleScrollThumbColor);//两端半圆的颜色
 		//根据状态变换颜色
 		COLORREF clThumb = clThumb_N;
 		switch (m_nState)
@@ -203,12 +204,12 @@ void UIFlexibleScrollThumbButton::DrawElement(CDC * pDC)
 		//为了解决锯齿问题，两头的圆拿gdi+画
 		Gdiplus::Graphics graphics(pDC->GetSafeHdc());
 		graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
-		Gdiplus::SolidBrush brush(Gdiplus::Color(255, GetRValue(clThumb), GetGValue(clThumb), GetBValue(clThumb)));
+		Gdiplus::SolidBrush brush(Gdiplus::Color(255, GetRValue(clThumbEndArea), GetGValue(clThumbEndArea), GetBValue(clThumbEndArea)));
 
 		//绘制方式是两个圆一个矩形
 		int nX = GetRealX();
 		int nY = GetRealY();
-		HBRUSH hBrush = CreateSolidBrush(clThumb);
+		HBRUSH hBrush = CreateSolidBrush(clThumbEndArea);
 		HPEN hPen = CreatePen(PS_NULL, 0, 0);
 		HGDIOBJ hOldBrush = pDC->SelectObject(hBrush);
 		HGDIOBJ hOldPen = pDC->SelectObject(hPen);

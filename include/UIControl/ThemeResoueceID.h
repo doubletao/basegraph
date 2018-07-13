@@ -68,12 +68,13 @@ enum ThemeColorValueDef
 	ThemeColor_TimeLineObjectTrackText_Nor,
 	ThemeColor_TimeLineObjectTrackText_Sel,
 	ThemeColor_TimeLineRulerLine,
-	ThemeColor_TimeLinePointerLine,//时间线指针颜色
+	ThemeColor_TimeLinePointerLine,				//时间线指针颜色
 	ThemeColor_TimeLineRulerText,
 	ThemeColor_ScrollThumbColor_N,
 	ThemeColor_ScrollThumbColor_F,
 	ThemeColor_ScrollThumbColor_D,
 	ThemeColor_ScrollThumbColor_X,
+	ThemeColor_FlexibleScrollThumbColor,		//可拉伸滚动条的两端颜色
 	ThemeColor_ScrollBkColor,
 	ThemeColor_SliderLightArea,
 	ThemeColor_SliderDarkArea,
