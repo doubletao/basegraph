@@ -24,6 +24,7 @@ enum UIElementMsgDef
 	UIElementMsg_PlayCtrlPlayPause,
 	UIElementMsg_PlayCtrlNextFrame,
 	UIElementMsg_PlayCtrlLastFrame,
+	UIElementMsg_PlayCtrlLoopPlay,
 
 	UIElementMsg_SimpleTimeLine,
 	UIElementMsg_SimpleTimeLineSlider,
