@@ -532,6 +532,12 @@ void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
 	}
 }
 
+void UITLObjectArea::OnScrollFlexed()
+{
+	float fNewPagePercent = UITLRuler::Instance().GetHScrollBar()->GetPagePercent();
+	AdjustScrollZoom(fNewPagePercent);
+}
+
 void UITLObjectArea::AdjustScrollZoomKeepPixPerFrame()
 {
 	//拿到当前每帧像素数

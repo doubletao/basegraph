@@ -13,6 +13,7 @@ enum EmUIElementMsg
 	EmUIElementMsg_OnHScroll,
 	EmUIElementMsg_OnVScroll,
 	EmUIElementMsg_OnDBLClickScroll,//双击滚动条
+	EmUIElementMsg_OnScrollFlexed,//滚动条伸缩了
 	EmUIElementMsg_OnSliderChanging,
 	EmUIElementMsg_OnSliderChanged,
 	EmUIElementMsg_OnEditEnded,

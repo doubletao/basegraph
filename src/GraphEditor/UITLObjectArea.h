@@ -62,6 +62,7 @@ public:
 	int GetVScrollHeight();
 
 	void AdjustScrollZoom(float fScrollPercent);//按比例缩放frame总长使得横向滚动条满屏
+	void OnScrollFlexed();//滚动条发生了伸缩变换
 	void AdjustScrollZoomKeepPixPerFrame();//保持当前像素与帧数比值
 	float GetCurrentPercent();
 	std::map<CString, UITLObjectItem *> & GetObjDrawerInfo();

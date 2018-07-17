@@ -97,29 +97,76 @@ bool UIFlexibleScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM w
 			if (EmMouseClick_Thumb == m_emMouseClickType)
 			{
 				::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+				float fRatio = 1.0f;
 				int nOffset = 0;
 				if (m_bHorScroll)
 				{
-					float fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
+					fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
 					nOffset = ptMsg.x - m_ptBegin.x;
-					int nPos = m_nLogicPos + int(nOffset / fRatio);
-					SetPos(nPos);
 				}
 				else
 				{
-					float fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
+					fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
 					nOffset = ptMsg.y - m_ptBegin.y;
-					int nPos = m_nLogicPos + int(nOffset / fRatio);
-					SetPos(nPos);
 				}
+				if (fRatio < 0.001f)
+				{
+					fRatio = 0.001f;
+				}
+				int nPos = m_nLogicPos + int(nOffset / fRatio);
+				SetPos(nPos);
 			}
 			else if (EmMouseClick_Thumb_LeftEnd == m_emMouseClickType)
 			{
 				::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+				//对于左端点来说，应该是pos和pagelength一起在改变
+				float fRatio = 1.0f;
+				int nOffset = 0;
+				if (m_bHorScroll)
+				{
+					fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
+					nOffset = ptMsg.x - m_ptBegin.x;
+				}
+				else
+				{
+					fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
+					nOffset = ptMsg.y - m_ptBegin.y;
+				}
+				if (fRatio < 0.001f)
+				{
+					fRatio = 0.001f;
+				}
+				int nPageLengh = m_nPageLength - int(nOffset / fRatio);
+				SetPageLength(nPageLengh, false);
+				int nPos = m_nLogicPos + int(nOffset / fRatio);
+				SetPos(nPos);
+				EmitMsg(EmUIElementMsg_OnScrollFlexed, m_nID, 0);
 			}
 			else if (EmMouseClick_Thumb_RightEnd == m_emMouseClickType)
 			{
 				::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+				//对于右端点来说，应该是pos不动，pagelength在改变
+				::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+				//对于左端点来说，应该是pos和pagelength一起在改变
+				float fRatio = 1.0f;
+				int nOffset = 0;
+				if (m_bHorScroll)
+				{
+					fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
+					nOffset = ptMsg.x - m_ptBegin.x;
+				}
+				else
+				{
+					fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
+					nOffset = ptMsg.y - m_ptBegin.y;
+				}
+				if (fRatio < 0.001f)
+				{
+					fRatio = 0.001f;
+				}
+				int nPageLengh = m_nPageLength + int(nOffset / fRatio);
+				SetPageLength(nPageLengh, false);
+				EmitMsg(EmUIElementMsg_OnScrollFlexed, m_nID, 0);
 			}
 			else
 			{

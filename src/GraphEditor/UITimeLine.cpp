@@ -142,7 +142,11 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 	else if (EmUIElementMsg_OnDBLClickScroll == emMsg)//滚动条的双击事件，视为重适应滚动条
 	{ 
 		AdjustScrollZoom();
-	}		
+	}
+	else if (EmUIElementMsg_OnScrollFlexed == emMsg)
+	{
+		OnScrollFlexed();//滚动条发生了伸缩变换
+	}
 	return false;
 }
 
@@ -198,6 +202,15 @@ void UITimeLine::AdjustScrollZoom()
 	if (m_pObjectArea)
 	{
 		m_pObjectArea->AdjustScrollZoom(1.0f);
+		m_pObjectArea->SetScrollInfo();
+	}
+}
+
+void UITimeLine::OnScrollFlexed()
+{
+	if (m_pObjectArea)
+	{
+		m_pObjectArea->OnScrollFlexed();
 		m_pObjectArea->SetScrollInfo();
 	}
 }
