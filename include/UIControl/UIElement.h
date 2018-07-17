@@ -12,6 +12,7 @@ enum EmUIElementMsg
 	EmUIElementMsg_SetCapture,//wParam为set和release，lParam为需要capture的element指针
 	EmUIElementMsg_OnHScroll,
 	EmUIElementMsg_OnVScroll,
+	EmUIElementMsg_OnDBLClickScroll,//双击滚动条
 	EmUIElementMsg_OnSliderChanging,
 	EmUIElementMsg_OnSliderChanged,
 	EmUIElementMsg_OnEditEnded,
@@ -85,6 +86,8 @@ public:
 	virtual bool EmitMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	virtual void SetVisible(bool bVisible, bool bRefresh = true);
+	//向上追溯添加自己的敏感消息
+	virtual void RegistWndMsg(DWORD nMsg);
 	int GetMsgID();
 	int GetWidth();
 	int GetHeight();

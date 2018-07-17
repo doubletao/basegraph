@@ -322,6 +322,16 @@ void UIElement::OnMouseLeave()
 {
 }
 
+void UIElement::RegistWndMsg(DWORD nMsg)
+{
+	//给自己加上，如果有父，则也给父加上
+	m_setMsgFilter.insert(nMsg);
+	if (m_pParentElement)
+	{
+		m_pParentElement->RegistWndMsg(nMsg);
+	}
+}
+
 int UIElement::GetMsgID()
 {
 	return m_nID;

@@ -31,9 +31,9 @@ UIScrollBar::~UIScrollBar()
 void UIScrollBar::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent)
 {
 	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
-	m_setMsgFilter.insert(WM_LBUTTONDOWN);
-	m_setMsgFilter.insert(WM_LBUTTONUP);
-	m_setMsgFilter.insert(WM_MOUSEMOVE);
+	RegistWndMsg(WM_LBUTTONDOWN);
+	RegistWndMsg(WM_LBUTTONUP);
+	RegistWndMsg(WM_MOUSEMOVE);
 }
 
 void UIScrollBar::RearrangeChildPos()
@@ -241,16 +241,6 @@ EmUIElementMsgRet UIScrollBar::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam
 		return UIElementMsgSuccBreak;
 	}
 	return UIElementMsgSuccContinue;
-}
-
-bool UIScrollBar::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (emMsg)
-	{
-	default:
-		break;
-	}
-	return true;
 }
 
 void UIScrollBar::ResetScroll(int nWholeLength, int nPageLength, int nPos/* = -1*/, bool bRefresh/* = true*/)

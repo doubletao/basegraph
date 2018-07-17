@@ -22,8 +22,8 @@ UIButton::~UIButton()
 void UIButton::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent/* = nullptr*/)
 {
 	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
-	m_setMsgFilter.insert(WM_LBUTTONDOWN);
-	m_setMsgFilter.insert(WM_LBUTTONUP);
+	RegistWndMsg(WM_LBUTTONDOWN);
+	RegistWndMsg(WM_LBUTTONUP);
 }
 
 void UIButton::OnButtonClickDown()

@@ -165,9 +165,9 @@ bool UIPropertyViewElement::Create(int nX, int nY, int nWidth, int nHeight, int 
 	bool bRet = false;
 	if (!m_bCreated)
 	{
-		m_setMsgFilter.insert(WM_LBUTTONDOWN);
-		m_setMsgFilter.insert(WM_LBUTTONUP);
-		m_setMsgFilter.insert(WM_MOUSEMOVE);
+		RegistWndMsg(WM_LBUTTONDOWN);
+		RegistWndMsg(WM_LBUTTONUP);
+		RegistWndMsg(WM_MOUSEMOVE);
 		m_nParamIDBegin = nParamIDBegin;
 		m_nParamIDEnd = nParamIDEnd;
 		Initialize(nX, nY, nWidth, nHeight, m_nID, hParentWnd, pParent);

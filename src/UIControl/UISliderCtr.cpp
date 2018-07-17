@@ -190,9 +190,9 @@ bool UISliderCtr::Create(int nX, int nY, int nWidth, int nHeight, int nMin, int 
 	if (!m_bCreated)
 	{
 		UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
-		m_setMsgFilter.insert(WM_LBUTTONDOWN);
-		m_setMsgFilter.insert(WM_LBUTTONUP);
-		m_setMsgFilter.insert(WM_MOUSEMOVE);
+		RegistWndMsg(WM_LBUTTONDOWN);
+		RegistWndMsg(WM_LBUTTONUP);
+		RegistWndMsg(WM_MOUSEMOVE);
 
 		m_nMin = nMin;
 		m_nMax = nMax;

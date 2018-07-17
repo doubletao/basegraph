@@ -101,9 +101,9 @@ bool UICheckColorButton::Create(int nID, HWND hParentWnd, UIElement * pParent)
 		m_pColorButton->Create(0, 0, 100, 100, 0, hParentWnd, this);
 		m_vecChildElement.push_back(m_pColorButton);
 
-		m_setMsgFilter.insert(WM_LBUTTONDOWN);
-		m_setMsgFilter.insert(WM_LBUTTONUP);
-		m_setMsgFilter.insert(WM_MOUSEMOVE);
+		RegistWndMsg(WM_LBUTTONDOWN);
+		RegistWndMsg(WM_LBUTTONUP);
+		RegistWndMsg(WM_MOUSEMOVE);
 		return true;
 	}
 	return false;

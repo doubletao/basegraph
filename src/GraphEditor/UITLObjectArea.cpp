@@ -371,9 +371,9 @@ bool UITLObjectArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HW
 	if (!m_bCreated)
 	{
 		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParentElement);
-		m_setMsgFilter.insert(WM_LBUTTONDOWN);
-		m_setMsgFilter.insert(WM_LBUTTONUP);
-		m_setMsgFilter.insert(WM_MOUSEMOVE);
+		RegistWndMsg(WM_LBUTTONDOWN);
+		RegistWndMsg(WM_LBUTTONUP);
+		RegistWndMsg(WM_MOUSEMOVE);
 
 		m_pLeftArea = new UITLObjectLeftArea;
 		m_pLeftArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectLeftArea, hParentWnd, this);

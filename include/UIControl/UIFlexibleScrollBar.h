@@ -18,12 +18,22 @@ class BASEGRAPH_UICONTROL_API UIFlexibleScrollBar :
 	public UIScrollBar
 {
 public:
+	enum EmMouseClickType
+	{
+		EmMouseClick_Null,
+		EmMouseClick_Thumb,
+		EmMouseClick_Thumb_LeftEnd,
+		EmMouseClick_Thumb_RightEnd,
+	};
+public:
 	UIFlexibleScrollBar();
 	virtual ~UIFlexibleScrollBar();
 protected:
+	EmMouseClickType m_emMouseClickType;
+protected:
 	virtual void Initialize(int nX, int nY, int nWidth, int nHeight, int nID = 0, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);
 	virtual bool ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam);
+	EmMouseClickType ScrollBarHittest(CPoint ptHit);
 public:
 	virtual bool Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID = 0, bool bHorizon = false, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);
-	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 };

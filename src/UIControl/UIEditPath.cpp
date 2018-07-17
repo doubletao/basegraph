@@ -39,9 +39,9 @@ bool UIEditPath::Create(CString strTitle, CString strFilter, int nTitleWidth, in
 		m_pUIButton->Create(0, 0, 10, 10, 0, nullptr, ThemeImage_BtnPathSel_N, ThemeImage_BtnPathSel_F, ThemeImage_BtnPathSel_D, ThemeImage_BtnPathSel_X, this);
 		m_vecChildElement.push_back(m_pUIButton);
 
-		m_setMsgFilter.insert(WM_LBUTTONDOWN);
-		m_setMsgFilter.insert(WM_LBUTTONUP);
-		m_setMsgFilter.insert(WM_MOUSEMOVE);
+		RegistWndMsg(WM_LBUTTONDOWN);
+		RegistWndMsg(WM_LBUTTONUP);
+		RegistWndMsg(WM_MOUSEMOVE);
 		m_bCreated = true;
 		return true;
 	}

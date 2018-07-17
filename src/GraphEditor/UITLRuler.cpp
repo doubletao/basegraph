@@ -140,10 +140,10 @@ void UITLRuler::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hP
 {
 	Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
 	m_pTimeLine = pParent;
-	m_setMsgFilter.insert(WM_LBUTTONDOWN);
-	m_setMsgFilter.insert(WM_LBUTTONUP);
-	m_setMsgFilter.insert(WM_MOUSEMOVE);
-	m_setMsgFilter.insert(WM_MOUSEWHEEL);
+	RegistWndMsg(WM_LBUTTONDOWN);
+	RegistWndMsg(WM_LBUTTONUP);
+	RegistWndMsg(WM_MOUSEMOVE);
+	RegistWndMsg(WM_MOUSEWHEEL);
 	//注册消息中心
 	UIControl_RegistMsgDispatcher(this);
 }

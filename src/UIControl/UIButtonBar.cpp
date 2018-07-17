@@ -23,9 +23,9 @@ UIButtonBar::~UIButtonBar()
 void UIButtonBar::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
 {
 	UIElement::Initialize(nX, nY, nWidth, nHeight, 0, hParentWnd);
-	m_setMsgFilter.insert(WM_LBUTTONDOWN);
-	m_setMsgFilter.insert(WM_LBUTTONUP);
-	m_setMsgFilter.insert(WM_MOUSEMOVE);
+	RegistWndMsg(WM_LBUTTONDOWN);
+	RegistWndMsg(WM_LBUTTONUP);
+	RegistWndMsg(WM_MOUSEMOVE);
 }
 
 void UIButtonBar::AddSplitLine(int nWidth, int nHeight, COLORREF clColor)

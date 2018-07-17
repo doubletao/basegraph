@@ -35,10 +35,10 @@ void UITimeLine::Release()
 void UITimeLine::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd)
 {
 	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd);
-	m_setMsgFilter.insert(WM_LBUTTONDOWN);
-	m_setMsgFilter.insert(WM_LBUTTONUP);
-	m_setMsgFilter.insert(WM_MOUSEMOVE);
-	m_setMsgFilter.insert(WM_MOUSEWHEEL);
+	RegistWndMsg(WM_LBUTTONDOWN);
+	RegistWndMsg(WM_LBUTTONUP);
+	RegistWndMsg(WM_MOUSEMOVE);
+	RegistWndMsg(WM_MOUSEWHEEL);
 	//注册消息中心
 	UIControl_RegistMsgDispatcher(this);
 }
@@ -139,6 +139,10 @@ bool UITimeLine::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 		}
 		return true;
 	}
+	else if (EmUIElementMsg_OnDBLClickScroll == emMsg)//滚动条的双击事件，视为重适应滚动条
+	{ 
+		AdjustScrollZoom();
+	}		
 	return false;
 }
 
@@ -311,17 +315,7 @@ EmUIElementMsgRet UITimeLine::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (m_setMsgFilter.count(nMsg) > 0)
 	{
-		switch (nMsg)
-		{
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_MOUSEMOVE:
-		case WM_MOUSEWHEEL:
-			ChildHandleMsg(nMsg, wParam, lParam);
-			break;
-		default:
-			break;
-		}
+		ChildHandleMsg(nMsg, wParam, lParam);
 		return UIElementMsgSuccBreak;
 	}
 	return UIElementMsgSuccContinue;

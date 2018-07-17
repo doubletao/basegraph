@@ -12,6 +12,7 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 UIFlexibleScrollBar::UIFlexibleScrollBar()
+	: m_emMouseClickType(EmMouseClick_Null)
 {
 }
 
@@ -23,10 +24,10 @@ UIFlexibleScrollBar::~UIFlexibleScrollBar()
 void UIFlexibleScrollBar::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent)
 {
 	UIElement::Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParent);
-	m_setMsgFilter.insert(WM_LBUTTONDBLCLK);
-	m_setMsgFilter.insert(WM_LBUTTONDOWN);
-	m_setMsgFilter.insert(WM_LBUTTONUP);
-	m_setMsgFilter.insert(WM_MOUSEMOVE);
+	RegistWndMsg(WM_LBUTTONDBLCLK);
+	RegistWndMsg(WM_LBUTTONDOWN);
+	RegistWndMsg(WM_LBUTTONUP);
+	RegistWndMsg(WM_MOUSEMOVE);
 }
 
 bool UIFlexibleScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM wParam)
@@ -43,7 +44,8 @@ bool UIFlexibleScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM w
 	case WM_LBUTTONDOWN:
 		if (rtThumbArea.PtInRect(ptMsg))
 		{
-			if (rtThumb.PtInRect(ptMsg))
+			m_emMouseClickType = ScrollBarHittest(ptMsg);
+			if (m_emMouseClickType != EmMouseClick_Null)
 			{
 				SetElementCapture();
 				if (m_pBtnThumb)
@@ -51,7 +53,6 @@ bool UIFlexibleScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM w
 					m_pBtnThumb->SetState(UIButton::UIElement_BtnDown, true);
 				}
 				m_ptBegin = ptMsg;
-				m_bMoving = true;
 				return true;
 			}
 			if (m_bHorScroll)
@@ -76,48 +77,120 @@ bool UIFlexibleScrollBar::ThumbAreaMsgHandler(UINT nMsg, LPARAM lParam, WPARAM w
 					MovePage(true);
 				}
 			}
-			
-			m_bMoving = false;
+			m_emMouseClickType = EmMouseClick_Null;
 			return true;
 		}
 		break;
 	case WM_LBUTTONUP:
-		if (m_bMoving && m_pBtnThumb)
+		if (m_emMouseClickType != EmMouseClick_Null && m_pBtnThumb)
 		{
 			ReleaseElementCapture();
 			m_pBtnThumb->SetState(UIButton::UIElement_BtnFloat, true);
 			m_ptBegin = 0;
-			m_bMoving = false;
+			m_emMouseClickType = EmMouseClick_Null;
 			return true;
 		}
 		break;
 	case WM_MOUSEMOVE:
-		if (m_bMoving)
+		if (m_emMouseClickType != EmMouseClick_Null)
 		{
-			int nOffset = 0;
-			if (m_bHorScroll)
+			if (EmMouseClick_Thumb == m_emMouseClickType)
 			{
-				float fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
-				nOffset = ptMsg.x - m_ptBegin.x;
-				int nPos = m_nLogicPos + int(nOffset / fRatio);
-				SetPos(nPos);
+				::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+				int nOffset = 0;
+				if (m_bHorScroll)
+				{
+					float fRatio = (m_nWidth - m_nHeight * 2) * 1.0f / m_nWholeLength;
+					nOffset = ptMsg.x - m_ptBegin.x;
+					int nPos = m_nLogicPos + int(nOffset / fRatio);
+					SetPos(nPos);
+				}
+				else
+				{
+					float fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
+					nOffset = ptMsg.y - m_ptBegin.y;
+					int nPos = m_nLogicPos + int(nOffset / fRatio);
+					SetPos(nPos);
+				}
+			}
+			else if (EmMouseClick_Thumb_LeftEnd == m_emMouseClickType)
+			{
+				::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+			}
+			else if (EmMouseClick_Thumb_RightEnd == m_emMouseClickType)
+			{
+				::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
 			}
 			else
 			{
-				float fRatio = (m_nHeight - m_nWidth * 2) * 1.0f / m_nWholeLength;
-				nOffset = ptMsg.y - m_ptBegin.y;
-				int nPos = m_nLogicPos + int(nOffset / fRatio);
-				SetPos(nPos);
+				::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 			}
 			m_ptBegin = ptMsg;
 			Refresh();
 			return true;
+		}
+		else
+		{
+			if (HitTest(lParam))
+			{
+				EmMouseClickType emMouseClickType = ScrollBarHittest(ptMsg);
+				switch (emMouseClickType)
+				{
+				case UIFlexibleScrollBar::EmMouseClick_Null:
+					::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+					break;
+				case UIFlexibleScrollBar::EmMouseClick_Thumb:
+					::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+					break;
+				case UIFlexibleScrollBar::EmMouseClick_Thumb_LeftEnd:
+					::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+					break;
+				case UIFlexibleScrollBar::EmMouseClick_Thumb_RightEnd:
+					::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+					break;
+				default:
+					::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+					break;
+				}
+			}
+		}
+		break;
+	case WM_LBUTTONDBLCLK:
+		if (rtThumbArea.PtInRect(ptMsg))
+		{
+			EmitMsg(EmUIElementMsg_OnDBLClickScroll, m_nID, 0);
 		}
 		break;
 	default:
 		break;
 	}
 	return false;
+}
+
+UIFlexibleScrollBar::EmMouseClickType UIFlexibleScrollBar::ScrollBarHittest(CPoint ptHit)
+{
+	EmMouseClickType emRet = EmMouseClick_Null;
+	int nRealX = GetRealX();
+	int nRealY = GetRealY();
+	CRect rtThumb = GetThumbRect();
+	rtThumb.OffsetRect(nRealX, nRealY);
+	if (rtThumb.PtInRect(ptHit))
+	{
+		int nEndArea = m_nHeight / 2;//两端的区域其实是两端圆的直径的一半，直径就是滚动条高
+		if (ptHit.x > rtThumb.left + nEndArea && ptHit.x < rtThumb.right - nEndArea)
+		{
+			emRet = EmMouseClick_Thumb;
+		}
+		else if (ptHit.x <= rtThumb.left + nEndArea)
+		{
+			emRet = EmMouseClick_Thumb_LeftEnd;
+		}
+		else if (ptHit.x >= rtThumb.right - nEndArea)
+		{
+			emRet = EmMouseClick_Thumb_RightEnd;
+		}
+	}
+	return emRet;
 }
 
 bool UIFlexibleScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID, bool bHorizon, HWND hParentWnd, UIElement * pParent)
@@ -138,16 +211,6 @@ bool UIFlexibleScrollBar::Create(int nX, int nY, int nWidth, int nHeight, int nW
 		return true;
 	}
 	return false;
-}
-
-bool UIFlexibleScrollBar::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (emMsg)
-	{
-	default:
-		break;
-	}
-	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -47,7 +47,6 @@ protected:
 public:
 	virtual bool Create(int nX, int nY, int nWidth, int nHeight, int nWholeLength, int nPageLength, int nID = 0, bool bHorizon = false, HWND hParentWnd = nullptr, UIElement * pParent = nullptr);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
-	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	void ResetScroll(int nWholeLength, int nPageLength, int nPos = -1, bool bRefresh = true);
 	void SetPos(int nPos, bool bRefresh = true);
 	int GetPos();

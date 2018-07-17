@@ -47,9 +47,9 @@ bool UIEditNumSpin::Create(CString strTitle, int nTitleWidth, DWORD dwStyleEs, i
 			m_pUIStatic->Create(0, 0, nTitleWidth, 10, 0, nullptr, this, strTitle, ThemeFont_CustomEditCtr, ThemeManager::Instance().GetColor(ThemeColor_CustomStatic));
 			m_vecChildElement.push_back(m_pUIStatic);
 		}
-		m_setMsgFilter.insert(WM_LBUTTONDOWN);
-		m_setMsgFilter.insert(WM_LBUTTONUP);
-		m_setMsgFilter.insert(WM_MOUSEMOVE);
+		RegistWndMsg(WM_LBUTTONDOWN);
+		RegistWndMsg(WM_LBUTTONUP);
+		RegistWndMsg(WM_MOUSEMOVE);
 		m_bCreated = true;
 		bRet = true;
 	}
