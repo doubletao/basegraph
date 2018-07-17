@@ -164,12 +164,65 @@ void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 		break;
 	case MoveState_ActionLeftEndMove:
 	{
-		bRefresh = true;
+		CPoint ptEnd = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		float fXOffset = ptEnd.x - m_ptBegin.x;
+		int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		m_ptBegin = ptEnd;
+		BaseGraph_Common::Value value;
+		if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+		{
+			int nBeginFrame = value.ToInt();
+			if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+			{
+				int nEndFrame = value.ToInt();
+				//移动动作不能把begin变成负数
+				if (nBeginFrame + nOffsetFrame < 0)
+				{
+					nOffsetFrame = -nBeginFrame;
+				}
+				//也不能将物件action长度修改的小于最短长度
+				int nMinActionLength = DataBase_GetGlobalConfig().m_nMinActionLenth;
+				if (nBeginFrame + nOffsetFrame > nEndFrame - nMinActionLength)
+				{
+					nOffsetFrame = nEndFrame - nMinActionLength - nBeginFrame;
+				}
+				nBeginFrame += nOffsetFrame;
+				value = nBeginFrame;
+				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+				{
+					bRefresh = true;
+				}
+			}
+		}
 	}
 		break;
 	case MoveState_ActionRightMove:
 	{
-		bRefresh = true;
+		CPoint ptEnd = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		float fXOffset = ptEnd.x - m_ptBegin.x;
+		int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		m_ptBegin = ptEnd;
+		BaseGraph_Common::Value value;
+		if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+		{
+			int nBeginFrame = value.ToInt();
+			if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+			{
+				int nEndFrame = value.ToInt();
+				//不能将物件action长度修改的小于最短长度
+				int nMinActionLength = DataBase_GetGlobalConfig().m_nMinActionLenth;
+				if (nEndFrame + nOffsetFrame < nBeginFrame + nMinActionLength)
+				{
+					nOffsetFrame = nMinActionLength + nBeginFrame - nEndFrame;
+				}
+				nEndFrame += nOffsetFrame;
+				value = nEndFrame;
+				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+				{
+					bRefresh = true;
+				}
+			}
+		}
 	}
 		break;
 	default:

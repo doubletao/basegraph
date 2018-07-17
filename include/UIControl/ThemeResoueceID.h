@@ -10,7 +10,6 @@ enum ThemeIntValueDef
 	ThemeInt_ActionBarButtonGap,
 	ThemeInt_ActionBarSplitWidth,
 	ThemeInt_ActionBarSplitHeight,
-	ThemeInt_TimeLineHeight,
 	ThemeInt_PlayControlBarWidth,
 	ThemeInt_PlayControlBarHeight,
 	ThemeInt_PropretyViewWidth,
@@ -28,6 +27,7 @@ enum ThemeIntValueDef
 	ThemeInt_PropertyViewComboBoxBtnHeight,//属性窗下拉选框高度
 	ThemeInt_PropertyViewStaticTextHeight,	//属性窗静态文本控件高度
 	ThemeInt_PropertyViewTitlewordMutiEditHeight,//属性窗多行文本编辑框高度
+	ThemeInt_TimeLineHeight,
 	ThemeInt_TimeLineTimeCodeWidth,
 	ThemeInt_TimeLineTimeCodeHeight,
 	ThemeInt_TimeLineTimeCodeLeftGap,

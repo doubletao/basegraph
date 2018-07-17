@@ -202,3 +202,10 @@ bool BASEGRAPH_DATABASE_API DataBase_UnlockData()
 	DataBaseManager::Instance().Unlock();
 	return false;
 }
+
+StuDataBaseGlobalConfigValue BASEGRAPH_DATABASE_API DataBase_GetGlobalConfig()
+{
+	StuDataBaseGlobalConfigValue stuRet;
+	stuRet.m_nMinActionLenth = 5;
+	return stuRet;
+}

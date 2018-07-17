@@ -71,3 +71,9 @@ std::map<BaseGraph_DataBase::ParamValueDef, Value> BASEGRAPH_DATABASE_API DataBa
 //锁
 bool BASEGRAPH_DATABASE_API DataBase_LockData();
 bool BASEGRAPH_DATABASE_API DataBase_UnlockData();
+//一些全局配置值
+struct StuDataBaseGlobalConfigValue
+{
+	int m_nMinActionLenth;
+};
+StuDataBaseGlobalConfigValue BASEGRAPH_DATABASE_API DataBase_GetGlobalConfig();

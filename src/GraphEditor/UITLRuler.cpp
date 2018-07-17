@@ -365,7 +365,7 @@ int UITLRuler::GetCurLogicWholeLength()
 	}
 	else
 	{
-		nFrameLength = 5;
+		nFrameLength = DataBase_GetGlobalConfig().m_nMinActionLenth;
 	}
 	return nFrameLength;
 }
