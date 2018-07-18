@@ -9,12 +9,65 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 UIPlayControlBar::UIPlayControlBar()
+	: m_pThreadPlay(nullptr)
+	, m_evtPlayQuit(FALSE, TRUE, NULL, NULL)
+	, m_evtLoop(FALSE, TRUE, NULL, NULL)
+	, m_pBtnPlay(nullptr)
+	, m_pBtnLoop(nullptr)
 {
 }
 
 
 UIPlayControlBar::~UIPlayControlBar()
 {
+	StopPlay();
+	m_pBtnPlay = nullptr;
+	m_pBtnPlay = nullptr;
+}
+
+UINT UIPlayControlBar::PlayThread(LPVOID pParam)
+{
+	UIPlayControlBar * pThis = (UIPlayControlBar *)pParam;
+	if (pThis)
+	{
+		pThis->DoPlay();
+	}
+	return 0;
+}
+
+void UIPlayControlBar::DoPlay()
+{
+	int nFrameGap = 40;//40ms一帧
+	while (true)
+	{
+		if (WaitForSingleObject(m_evtPlayQuit, nFrameGap) == WAIT_OBJECT_0)
+		{
+			break;
+		}
+		//每40ms扔个消息出去
+		UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_PlayThreadTimeup, 0, 0);
+	}
+}
+
+void UIPlayControlBar::StartPlay()
+{
+	StopPlay();
+	assert(m_pThreadPlay == nullptr);
+	if (m_pThreadPlay == nullptr)
+	{
+		m_evtPlayQuit.ResetEvent();
+		m_pThreadPlay = ::AfxBeginThread(UIPlayControlBar::PlayThread, this);
+	}
+}
+
+void UIPlayControlBar::StopPlay()
+{
+	if (m_pThreadPlay)
+	{
+		m_evtPlayQuit.SetEvent();
+		WaitForSingleObject(m_pThreadPlay->m_hThread, INFINITE);
+		m_pThreadPlay = nullptr;
+	}
 }
 
 void UIPlayControlBar::InitializeObject()
@@ -33,17 +86,23 @@ void UIPlayControlBar::InitializeObject()
 				nImgHeight = pImg->GetHeight();
 			}
 		}
-		UIButton * pCheck = new UIButton;
-		pCheck->Create(0, 0, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
-		m_vecChildElement.push_back(pCheck);
+		UIButton * pBtn = new UIButton;
+		pBtn->Create(0, 0, nImgWidth, nImgHeight, emMsg, m_hParentWnd, nBKImgN, nBKImgF, nBKImgD, nBKImgX, this);
+		return pBtn;
 	};
 
-	AddOneObjectBtn(UIElementMsg_PlayCtrlFirstFrame, ThemeImage_BtnFirstFrame_N, ThemeImage_BtnFirstFrame_F, ThemeImage_BtnFirstFrame_D, ThemeImage_BtnFirstFrame_X);
-	AddOneObjectBtn(UIElementMsg_PlayCtrlPreFrame, ThemeImage_BtnPreFrame_N, ThemeImage_BtnPreFrame_F, ThemeImage_BtnPreFrame_D, ThemeImage_BtnPreFrame_X);
-	AddOneObjectBtn(UIElementMsg_PlayCtrlPlayPause, ThemeImage_BtnPlay_N, ThemeImage_BtnPlay_F, ThemeImage_BtnPlay_D, ThemeImage_BtnPlay_X);
-	AddOneObjectBtn(UIElementMsg_PlayCtrlNextFrame, ThemeImage_BtnNextFrame_N, ThemeImage_BtnNextFrame_F, ThemeImage_BtnNextFrame_D, ThemeImage_BtnNextFrame_X);
-	AddOneObjectBtn(UIElementMsg_PlayCtrlLastFrame, ThemeImage_BtnLastFrame_N, ThemeImage_BtnLastFrame_F, ThemeImage_BtnLastFrame_D, ThemeImage_BtnLastFrame_X);
-	AddOneObjectBtn(UIElementMsg_PlayCtrlLoopPlay, ThemeImage_BtnLoopPlay_N, ThemeImage_BtnLoopPlay_F, ThemeImage_BtnLoopPlay_D, ThemeImage_BtnLoopPlay_X);
+	UIButton * pBtn = AddOneObjectBtn(UIElementMsg_PlayCtrlFirstFrame, ThemeImage_BtnFirstFrame_N, ThemeImage_BtnFirstFrame_F, ThemeImage_BtnFirstFrame_D, ThemeImage_BtnFirstFrame_X);
+	m_vecChildElement.push_back(pBtn);
+	pBtn = AddOneObjectBtn(UIElementMsg_PlayCtrlPreFrame, ThemeImage_BtnPreFrame_N, ThemeImage_BtnPreFrame_F, ThemeImage_BtnPreFrame_D, ThemeImage_BtnPreFrame_X);
+	m_vecChildElement.push_back(pBtn);
+	m_pBtnPlay = AddOneObjectBtn(UIElementMsg_PlayCtrlPlayPause, ThemeImage_BtnPlay_N, ThemeImage_BtnPlay_F, ThemeImage_BtnPlay_D, ThemeImage_BtnPlay_X);
+	m_vecChildElement.push_back(m_pBtnPlay);
+	pBtn = AddOneObjectBtn(UIElementMsg_PlayCtrlNextFrame, ThemeImage_BtnNextFrame_N, ThemeImage_BtnNextFrame_F, ThemeImage_BtnNextFrame_D, ThemeImage_BtnNextFrame_X);
+	m_vecChildElement.push_back(pBtn);
+	pBtn = AddOneObjectBtn(UIElementMsg_PlayCtrlLastFrame, ThemeImage_BtnLastFrame_N, ThemeImage_BtnLastFrame_F, ThemeImage_BtnLastFrame_D, ThemeImage_BtnLastFrame_X);
+	m_vecChildElement.push_back(pBtn);
+	m_pBtnLoop = AddOneObjectBtn(UIElementMsg_PlayCtrlLoopPlay, ThemeImage_BtnLoopPlay_N, ThemeImage_BtnLoopPlay_F, ThemeImage_BtnLoopPlay_D, ThemeImage_BtnLoopPlay_X);
+	m_vecChildElement.push_back(m_pBtnLoop);
 }
 
 void UIPlayControlBar::RearrangeChildPos()
@@ -96,6 +155,27 @@ bool UIPlayControlBar::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lP
 	return false;
 }
 
+bool UIPlayControlBar::IsLoop()
+{
+	if (WaitForSingleObject(m_evtLoop, 0) == WAIT_OBJECT_0)
+	{
+		return true;
+	}
+	return false;
+}
+
+void UIPlayControlBar::SetLoop(bool bLoop)
+{
+	if (bLoop)
+	{
+		m_evtLoop.SetEvent();
+	}
+	else
+	{
+		m_evtLoop.ResetEvent();
+	}
+}
+
 void UIPlayControlBar::OnBtnClickedFirstFrame()
 {
 	int nFrame = 0;
@@ -117,6 +197,7 @@ void UIPlayControlBar::OnBtnClickedPreFrame()
 
 void UIPlayControlBar::OnBtnClickedPlayPause()
 {
+	StartPlay();
 }
 
 void UIPlayControlBar::OnBtnClickedNextFrame()
@@ -140,4 +221,21 @@ void UIPlayControlBar::OnBtnClickedLastFrame()
 
 void UIPlayControlBar::OnBtnClickedLoopPlay()
 {
+	if (IsLoop())
+	{
+		SetLoop(false);
+	}
+	else
+	{
+		SetLoop(true);
+	}
+}
+
+bool UIPlayControlBar::IsPlaying()
+{
+	if (WaitForSingleObject(m_evtPlayQuit, 0) == WAIT_OBJECT_0)
+	{
+		return false;
+	}
+	return true;
 }

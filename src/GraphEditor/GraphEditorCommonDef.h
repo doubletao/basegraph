@@ -65,4 +65,5 @@ enum UIElementMsgDef
 	WM_MSG_ObjectSpaceChanged,//空间属性变更
 	WM_MSG_OnCreateObjTool,//创建物件工具被加载
 	WM_MSG_ObjectCreateDelete,//物件增删动作
+	WM_MSG_PlayThreadTimeup,//播放线程的一个时钟周期
 };

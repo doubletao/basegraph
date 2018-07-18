@@ -13,7 +13,9 @@ protected:
 	CWinThread * m_pThreadPlay;//线程
 	CEvent m_evtPlayQuit;//停止标记
 	CEvent m_evtLoop;//循环标记
-	static DWORD WINAPI PlayThread(LPVOID pParam);//播放线程
+	UIButton * m_pBtnPlay;
+	UIButton * m_pBtnLoop;
+	static UINT PlayThread(LPVOID pParam);//播放线程
 	void DoPlay();//播放执行函数
 	void StartPlay();//启动线程
 	void StopPlay();//结束线程
@@ -21,6 +23,8 @@ protected:
 	virtual void InitializeObject();
 	virtual void RearrangeChildPos();
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
+	bool IsLoop();
+	void SetLoop(bool bLoop);
 public:
 	void OnBtnClickedFirstFrame();
 	void OnBtnClickedPreFrame();
