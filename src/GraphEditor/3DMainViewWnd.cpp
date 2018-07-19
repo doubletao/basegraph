@@ -87,6 +87,12 @@ void C3DMainViewWnd::RecalcLayout()
 
 void C3DMainViewWnd::OnFrameChanged(int nFrame)
 {
+	int nCurFrame = DataRender_GetCurField() / 2;
+	if (nCurFrame != nFrame)
+	{
+		DataRender_SetField(nFrame * 2);
+		UIControl_BroadcastMsg(WM_MSG_FrameChanged, nFrame, GetMsgDispatchID(), this);
+	}
 	for (size_t i = 0; i < m_vecSceneViewWnd.size(); i++)
 	{
 		C3DSceneViewWnd *& pViewWnd = m_vecSceneViewWnd[i];

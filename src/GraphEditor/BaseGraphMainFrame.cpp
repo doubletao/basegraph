@@ -28,6 +28,7 @@ BEGIN_MESSAGE_MAP(BaseGraphMainFrame, CSkinFrameWnd)
 	ON_WM_DESTROY()
 	ON_MESSAGE(EmUIElementMsg_BtnClick, BaseGraphMainFrame::OnUIElementBtnClicked)
 	ON_MESSAGE(EmUIElementMsg_SetCapture, BaseGraphMainFrame::OnUIElementSetCapture)
+	ON_MESSAGE(WM_MSG_PlayThreadChangeFrame, BaseGraphMainFrame::OnPlayThreadChangeFrame)
 	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
@@ -722,6 +723,17 @@ LRESULT BaseGraphMainFrame::OnUIElementSetCapture(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+LRESULT BaseGraphMainFrame::OnPlayThreadChangeFrame(WPARAM wParam, LPARAM lParam)
+{
+	int nFrame = (int)wParam;
+	UIControl_BroadcastMsg(WM_MSG_FrameChanged, nFrame, GetMsgDispatchID(), this);
+	if (!m_uiPlayControlBar.IsPlaying())
+	{
+		m_uiPlayControlBar.StopPlay();
+	}
+	return 0;
+}
+
 void BaseGraphMainFrame::OnUpdateWholeLength()
 {
 	int nFrameLength = UITLRuler::Instance().GetCurLogicWholeLength();
@@ -738,6 +750,11 @@ void BaseGraphMainFrame::OnUpdateBarStatus()
 	m_uiActionBar.UpdateStatus();
 	m_uiPropertyView.UpdateStatus();
 	OnNcPaint();
+}
+
+void BaseGraphMainFrame::OnPlayThreadTimeup(WPARAM wpFrame)
+{
+	PostMessage(WM_MSG_PlayThreadChangeFrame, wpFrame, 0);
 }
 
 void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
@@ -760,6 +777,12 @@ void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam,
 		if (nIDFrom != GetMsgDispatchID())
 		{
 			OnUpdateBarStatus();
+		}
+		break;
+	case WM_MSG_PlayThreadTimeup:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			OnPlayThreadTimeup(wParam);
 		}
 		break;
 	default:

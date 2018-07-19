@@ -267,15 +267,20 @@ void CalculatorManager::SetScale(const float & fScale)
 	m_fScale = fScale;
 }
 
-void CalculatorManager::SetFrame(const int & nField)
+void CalculatorManager::SetField(const int & nField)
 {
+	m_lockField.Lock();
 	m_nField = nField;
+	m_lockField.Unlock();
 	Update2DRenderMatrix(m_fScale);
 }
 
-int CalculatorManager::GetFrame()
+int CalculatorManager::GetField()
 {
-	return m_nField;
+	m_lockField.Lock();
+	int nField = m_nField;
+	m_lockField.Unlock();
+	return nField;
 }
 
 bool CalculatorManager::GetOriBound(IN CString strObjID, OUT rectf & rtBoundf)

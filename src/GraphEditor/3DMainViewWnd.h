@@ -22,7 +22,7 @@ public:
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 protected:
 	void RecalcLayout();
-	void OnFrameChanged(int nFrame);
+	void OnFrameChanged(int nFrame);//µ¥Î»ÊÇÖ¡
 protected:
 	afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDestroy();

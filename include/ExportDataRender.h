@@ -64,8 +64,8 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetSelectObj(OUT std::vector<CString> &
 BASEGRAPH_DATARENDER_API bool DataRender_ClearAllSelect();
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, OPTIONAL bool & bSel);//bSel会返回之前的状态
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, IN const bool & bSel);
-BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame();//注意，单位是场
-BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nField);//注意，单位是场
+BASEGRAPH_DATARENDER_API int DataRender_GetCurField();//注意，单位是场
+BASEGRAPH_DATARENDER_API bool DataRender_SetField(const int & nField);//注意，单位是场
 BASEGRAPH_DATARENDER_API bool DataRender_SetScale(const float & fScale);
 BASEGRAPH_DATARENDER_API bool DataRender_GetOriBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound（不考虑旋转缩放等因素）
 BASEGRAPH_DATARENDER_API bool DataRender_IsItemNeedRender(IN CString strObjID);

@@ -124,14 +124,14 @@ BASEGRAPH_DATARENDER_API bool DataRender_SetItemSelected(IN CString strID, IN co
 	return CalculatorManager::Instance().SetItemSelected(strID, bSel);
 }
 
-BASEGRAPH_DATARENDER_API int DataRender_GetCurFrame()
+BASEGRAPH_DATARENDER_API int DataRender_GetCurField()
 {
-	return CalculatorManager::Instance().GetFrame();
+	return CalculatorManager::Instance().GetField();
 }
 
-BASEGRAPH_DATARENDER_API bool DataRender_SetFrame(const int & nField)
+BASEGRAPH_DATARENDER_API bool DataRender_SetField(const int & nField)
 {
-	CalculatorManager::Instance().SetFrame(nField);
+	CalculatorManager::Instance().SetField(nField);
 	return true;
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include "ObjectCalculator.h"
+#include <afxmt.h>
 
 class CalculatorManager
 {
@@ -8,6 +9,7 @@ private:
 	std::map<CString, ObjectCalculator * > m_mapObjCalculator;//物件ID和物件计算器的键值对
 	float m_fScale;//当前缩放系数
 	int m_nField;//以场为单位的当前帧号
+	CCriticalSection m_lockField;
 	bool m_bStaticMode;//静态模式标记
 	CString m_strCurParentCalcID;//当前父物件ID
 private:
@@ -42,8 +44,8 @@ public:
 
 	float GetScale();
 	void SetScale(const float & fScale);
-	void SetFrame(const int & nField);
-	int GetFrame();
+	void SetField(const int & nField);
+	int GetField();
 
 	bool GetOriBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件原始bound
 	bool GetSceneBound(IN CString strObjID, OUT rectf & rtBoundf);//获取物件的场景bound

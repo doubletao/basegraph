@@ -252,8 +252,8 @@ void C3DSceneViewWnd::UpdateAllItemToHal(std::vector<CString> vecObjID, float fS
 	//设置缩放
 	DataRender_SetScale(fScale);
 	//设置帧号SetFrame
-	int nCurFrame = DataRender_GetCurFrame();
-	DataRender_SetFrame(nCurFrame);
+	int nCurFrame = DataRender_GetCurField();
+	DataRender_SetField(nCurFrame);
 	//遍历并生成物件贴片
 	for (size_t i = 0; i < vecObjID.size(); i++)
 	{

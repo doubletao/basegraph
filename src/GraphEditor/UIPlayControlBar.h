@@ -13,10 +13,11 @@ protected:
 	CWinThread * m_pThreadPlay;//线程
 	CEvent m_evtPlayQuit;//停止标记
 	CEvent m_evtLoop;//循环标记
-	UIButton * m_pBtnPlay;
-	UIButton * m_pBtnLoop;
+	UICheckBtn * m_pBtnPlay;
+	UICheckBtn * m_pBtnLoop;
 	static UINT PlayThread(LPVOID pParam);//播放线程
 	void DoPlay();//播放执行函数
+public:
 	void StartPlay();//启动线程
 	void StopPlay();//结束线程
 protected:

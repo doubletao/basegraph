@@ -100,9 +100,11 @@ public:
 protected:
 	afx_msg LRESULT OnUIElementBtnClicked(WPARAM wParam = 0, LPARAM lParam = 0);
 	afx_msg LRESULT OnUIElementSetCapture(WPARAM wParam = 0, LPARAM lParam = 0);
+	afx_msg LRESULT OnPlayThreadChangeFrame(WPARAM wParam = 0, LPARAM lParam = 0);
 protected:
 	void OnUpdateWholeLength();
 	void OnUpdateBarStatus();
+	void OnPlayThreadTimeup(WPARAM wpFrame);
 public:
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	void OnBtnCreateTitle();

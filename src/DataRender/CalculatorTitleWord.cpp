@@ -1047,7 +1047,7 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 			pitch,
 			CalculatorManager::Instance().GetScale(),
 			ptOrg,
-			CalculatorManager::Instance().GetFrame());
+			CalculatorManager::Instance().GetField());
 
 		if (0)
 		{

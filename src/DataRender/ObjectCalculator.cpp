@@ -446,7 +446,7 @@ inline bool ObjectCalculator::ValidAction()
 		BaseGraph_Common::Value valueEndFrame;
 		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Obj_ActionEnd_Int, valueEndFrame))
 		{
-			int nCurFrame = CalculatorManager::Instance().GetFrame();
+			int nCurFrame = CalculatorManager::Instance().GetField();
 			int nBeginFrame = valueBeginFrame.ToInt();
 			int nEndFrame = valueEndFrame.ToInt();
 			if (nCurFrame < nBeginFrame || nCurFrame > nEndFrame)

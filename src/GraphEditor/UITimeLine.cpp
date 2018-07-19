@@ -104,7 +104,7 @@ void UITimeLine::RearrangeChildPos()
 	if (m_pLinePointer)
 	{
 		int nTimeLinePointerWidth = UIControl_GetIntValue(ThemeInt_TimeLinePointerWidth);
-		int nPos = GetTimeLinePointerPos(DataRender_GetCurFrame() / 2);
+		int nPos = GetTimeLinePointerPos(DataRender_GetCurField() / 2);
 		m_pLinePointer->MoveTo(nPos, nScrollHeight, nTimeLinePointerWidth, m_nHeight - nScrollHeight - nGap * 2);
 	}
 }
@@ -189,7 +189,7 @@ void UITimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nID
 	case WM_MSG_TimeLinePointerChanged:
 		if (nIDFrom != GetMsgDispatchID())
 		{
-			SetFrame(DataRender_GetCurFrame() / 2);
+			SetFrame(DataRender_GetCurField() / 2);
 		}
 		break;
 	default:
@@ -236,7 +236,7 @@ void UITimeLine::AdjustScrollZoomKeepPixPerFrame()
 
 void UITimeLine::SetFrame(int nFrame, float fFPS)
 {
-	DataRender_SetFrame(nFrame * 2);
+	DataRender_SetField(nFrame * 2);
 	if (m_pTimeCode)
 	{
 		m_pTimeCode->SetFrame(nFrame, fFPS);
