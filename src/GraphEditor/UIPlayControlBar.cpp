@@ -89,6 +89,7 @@ void UIPlayControlBar::StartPlay()
 		{
 			m_pBtnPlay->SetCheck(true);
 		}
+		UIControl_SendMsgTo(UIElementMsg_BaseGraphMainFrame, WM_MSG_EnterPlayMode, TRUE, 0);
 	}
 }
 
@@ -104,6 +105,7 @@ void UIPlayControlBar::StopPlay()
 		{
 			m_pBtnPlay->SetCheck(false);
 		}
+		UIControl_SendMsgTo(UIElementMsg_BaseGraphMainFrame, WM_MSG_EnterPlayMode, FALSE, 0);
 	}
 	UIControl_SendMsgTo(UIElementMsg_MainViewWnd, WM_MSG_SerRenderTask, 0, 0);//停止后再扔个刷新消息出去
 }
@@ -297,4 +299,16 @@ bool UIPlayControlBar::IsPlaying()
 		return false;
 	}
 	return true;
+}
+
+void UIPlayControlBar::EnterLeavePlayMode(BOOL bEnter)
+{
+	for (int i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIElement * pElem = m_vecChildElement[i];
+		if (pElem && pElem != m_pBtnPlay && pElem != m_pBtnLoop)
+		{
+			pElem->SetEnable(!bEnter);
+		}
+	}
 }

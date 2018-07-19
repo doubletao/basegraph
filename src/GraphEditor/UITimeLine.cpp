@@ -326,7 +326,7 @@ void UITimeLine::DrawElement(CDC * pDC)
 
 EmUIElementMsgRet UITimeLine::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (m_setMsgFilter.count(nMsg) > 0)
+	if (m_bEnable && m_setMsgFilter.count(nMsg) > 0)
 	{
 		ChildHandleMsg(nMsg, wParam, lParam);
 		return UIElementMsgSuccBreak;

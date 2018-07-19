@@ -757,6 +757,25 @@ void BaseGraphMainFrame::OnPlayThreadTimeup(WPARAM wpFrame)
 	PostMessage(WM_MSG_PlayThreadChangeFrame, wpFrame, 0);
 }
 
+void BaseGraphMainFrame::EnterLeavePlayMode(BOOL bEnter)
+{
+	//如果是播放，退回到默认工具并清空选中项
+	if (bEnter)
+	{
+		DataRender_ClearAllSelect();
+		UIControl_BroadcastMsg(WM_MSG_OnSelectChanged, 0, 0, nullptr);//广播通知选中项变更
+		MessageHandlerManager::Instance().ClearHandlerTo(MessageHandlerType_Default);
+	}
+	//正在播放时，界面上大部分按钮停止响应，消息处理器停止消息传递
+	m_uiObjectBar.SetEnable(!bEnter);
+	m_uiActionBar.SetEnable(!bEnter);
+	m_uiSimpleTimeLine.SetEnable(!bEnter);
+	m_uiPropertyView.SetEnable(!bEnter);
+	m_uiTimeLine.SetEnable(!bEnter);
+	MessageHandlerManager::Instance().EnterLeavePlayMode(bEnter);
+	m_uiPlayControlBar.EnterLeavePlayMode(bEnter);
+}
+
 void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
 {
 	switch (nMsgID)
@@ -783,6 +802,18 @@ void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam,
 		if (nIDFrom != GetMsgDispatchID())
 		{
 			OnPlayThreadTimeup(wParam);
+		}
+		break;
+	case WM_MSG_StartStopPlayThread:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			m_uiPlayControlBar.OnBtnClickedPlayPause();
+		}
+		break;
+	case WM_MSG_EnterPlayMode:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			EnterLeavePlayMode(wParam);
 		}
 		break;
 	default:

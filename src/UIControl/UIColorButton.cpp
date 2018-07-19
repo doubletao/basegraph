@@ -91,7 +91,7 @@ bool UIColorButton::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWN
 
 EmUIElementMsgRet UIColorButton::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (m_setMsgFilter.count(nMsg) > 0)
+	if (m_bEnable && m_setMsgFilter.count(nMsg) > 0)
 	{
 		switch (nMsg)
 		{

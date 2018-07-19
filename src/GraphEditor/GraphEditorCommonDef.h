@@ -66,5 +66,7 @@ enum UIElementMsgDef
 	WM_MSG_OnCreateObjTool,//创建物件工具被加载
 	WM_MSG_ObjectCreateDelete,//物件增删动作
 	WM_MSG_PlayThreadTimeup,//播放线程的一个时钟周期
-	WM_MSG_PlayThreadChangeFrame,
+	WM_MSG_PlayThreadChangeFrame,//主窗口收到播放线程消息后的处理消息
+	WM_MSG_StartStopPlayThread,//开始或停止播放
+	WM_MSG_EnterPlayMode,//进入或退出播放模式,wParam指定是进入还是退出
 };

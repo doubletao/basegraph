@@ -48,6 +48,7 @@ protected:
 	CString m_strText;
 	bool m_bCreated;
 	bool m_bVisible;
+	bool m_bEnable;
 	std::vector<UIElement *> m_vecChildElement;//子控件
 	std::map<int, std::vector<UIDrawer *>> m_mapDrawer;//绘制管理器
 	std::set<UINT> m_setMsgFilter;//消息过滤器
@@ -87,6 +88,7 @@ public:
 	virtual bool EmitMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	virtual bool OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam);
 	virtual void SetVisible(bool bVisible, bool bRefresh = true);
+	virtual void SetEnable(bool bEnable, bool bRefresh = true);
 	//向上追溯添加自己的敏感消息
 	virtual void RegistWndMsg(DWORD nMsg);
 	int GetMsgID();

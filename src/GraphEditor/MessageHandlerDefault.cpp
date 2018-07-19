@@ -181,5 +181,10 @@ EmMessageHandlerResult MessageHandlerDefault::OnKeyDown(IN C3DSceneViewWnd * pWn
 		UIControl_BroadcastMsg(WM_MSG_ObjectCreateDelete, 0, 0, nullptr);//通知物件变动
 		return Msg_Handle_Break;
 	}
+	else if (nChar == VK_SPACE)
+	{
+		//默认工具对于空格的处理应当是播放和暂停
+		UIControl_SendMsgTo(UIElementMsg_BaseGraphMainFrame, WM_MSG_StartStopPlayThread, 0, 0);
+	}
 	return Msg_Handle_Continue;
 }

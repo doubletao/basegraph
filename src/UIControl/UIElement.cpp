@@ -209,6 +209,7 @@ UIElement::UIElement()
 	, m_strText(_T(""))
 	, m_bCreated(false)
 	, m_bVisible(true)
+	, m_bEnable(true)
 {
 }
 
@@ -371,6 +372,15 @@ void UIElement::ReleaseElementCapture()
 void UIElement::SetVisible(bool bVisible, bool bRefresh/* = true*/)
 {
 	m_bVisible = bVisible;
+	if (bRefresh)
+	{
+		Refresh();
+	}
+}
+
+void UIElement::SetEnable(bool bEnable, bool bRefresh)
+{
+	m_bEnable = bEnable;
 	if (bRefresh)
 	{
 		Refresh();

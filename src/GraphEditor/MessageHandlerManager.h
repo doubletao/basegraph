@@ -28,6 +28,7 @@ private:
 protected:
 	std::stack<EmMessageHandlerType> m_stkHandler;//当前handler队列
 	std::map<EmMessageHandlerType, ISceneMessageHandler *> m_mapHandlerStorage;//handler存储，存放已经创建出来的handler，等着最终一起释放
+	bool m_bPlayMode;
 	ISceneMessageHandler * GetHandler(EmMessageHandlerType emHandlerType);
 	ISceneMessageHandler * GetTopHanderPointer();//获取当前handler指针
 public:
@@ -37,6 +38,7 @@ public:
 	void ChangeHandler(EmMessageHandlerType emHandlerType);//修改一个handler（先出后入）
 	void ClearHandlerTo(EmMessageHandlerType emHandlerType);//清空handler栈到指定handler
 	EmMessageHandlerType GetTopHandlerType();//获取当前handler类型
+	void EnterLeavePlayMode(BOOL bEnter);//进入了播放模式
 public:
 	//鼠标
 	virtual EmMessageHandlerResult OnMouseMove(IN C3DSceneViewWnd * pWnd, UINT nFlags, pointf point);

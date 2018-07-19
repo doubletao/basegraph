@@ -10,6 +10,7 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 MessageHandlerManager::MessageHandlerManager()
+	: m_bPlayMode(false)
 {
 }
 
@@ -127,6 +128,12 @@ EmMessageHandlerType MessageHandlerManager::GetTopHandlerType()
 	return emHandler;
 }
 
+void MessageHandlerManager::EnterLeavePlayMode(BOOL bEnter)
+{
+	//进入播放模式，除了空格键，其他消息都不再响应
+	m_bPlayMode = bEnter;
+}
+
 ISceneMessageHandler * MessageHandlerManager::GetTopHanderPointer()
 {
 	EmMessageHandlerType emTopHandler = GetTopHandlerType();
@@ -138,7 +145,7 @@ EmMessageHandlerResult MessageHandlerManager::OnMouseMove(IN C3DSceneViewWnd * p
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnMouseMove(pWnd, nFlags, point);
 		//如果需要退出，则退出
@@ -154,7 +161,7 @@ EmMessageHandlerResult MessageHandlerManager::OnMouseWheel(IN C3DSceneViewWnd * 
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnMouseWheel(pWnd, nFlags, zDelta, pt);
 		//如果需要退出，则退出
@@ -170,7 +177,7 @@ EmMessageHandlerResult MessageHandlerManager::OnLButtonDown(IN C3DSceneViewWnd *
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnLButtonDown(pWnd, nFlags, point);
 		//如果需要退出，则退出
@@ -186,7 +193,7 @@ EmMessageHandlerResult MessageHandlerManager::OnLButtonUp(IN C3DSceneViewWnd * p
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnLButtonUp(pWnd, nFlags, point);
 		//如果需要退出，则退出
@@ -202,7 +209,7 @@ EmMessageHandlerResult MessageHandlerManager::OnLButtonDblClk(IN C3DSceneViewWnd
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnLButtonDblClk(pWnd, nFlags, point);
 		//如果需要退出，则退出
@@ -218,7 +225,7 @@ EmMessageHandlerResult MessageHandlerManager::OnRButtonDown(IN C3DSceneViewWnd *
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnRButtonDown(pWnd, nFlags, point);
 		//如果需要退出，则退出
@@ -234,7 +241,7 @@ EmMessageHandlerResult MessageHandlerManager::OnRButtonUp(IN C3DSceneViewWnd * p
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnRButtonUp(pWnd, nFlags, point);
 		//如果需要退出，则退出
@@ -250,7 +257,7 @@ EmMessageHandlerResult MessageHandlerManager::OnRButtonDblClk(IN C3DSceneViewWnd
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnRButtonDblClk(pWnd, nFlags, point);
 		//如果需要退出，则退出
@@ -274,12 +281,22 @@ EmMessageHandlerResult MessageHandlerManager::OnKeyDown(IN C3DSceneViewWnd * pWn
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
 	if (pHandler)
 	{
-		emRet = pHandler->OnKeyDown(pWnd, nChar, nRepCnt, nFlags);
-		//如果需要退出，则退出
-		if (emRet == Msg_Handle_Exit)
+		do 
 		{
-			PopHandler();
-		}
+			if (m_bPlayMode)
+			{
+				if (nChar != VK_SPACE)
+				{
+					break;
+				}
+			}
+			emRet = pHandler->OnKeyDown(pWnd, nChar, nRepCnt, nFlags);
+			//如果需要退出，则退出
+			if (emRet == Msg_Handle_Exit)
+			{
+				PopHandler();
+			}
+		} while (false);
 	}
 	return emRet;
 }
@@ -288,7 +305,7 @@ EmMessageHandlerResult MessageHandlerManager::OnKeyUp(IN C3DSceneViewWnd * pWnd,
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnKeyUp(pWnd, nChar, nRepCnt, nFlags);
 		//如果需要退出，则退出
@@ -304,7 +321,7 @@ EmMessageHandlerResult MessageHandlerManager::OnChar(IN C3DSceneViewWnd * pWnd, 
 {
 	EmMessageHandlerResult emRet = Msg_Handle_Continue;
 	ISceneMessageHandler * pHandler = GetTopHanderPointer();
-	if (pHandler)
+	if (!m_bPlayMode && pHandler)
 	{
 		emRet = pHandler->OnChar(pWnd, nChar, nRepCnt, nFlags);
 		//如果需要退出，则退出

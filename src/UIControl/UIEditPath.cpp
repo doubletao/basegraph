@@ -77,7 +77,7 @@ bool UIEditPath::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
 
 EmUIElementMsgRet UIEditPath::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (m_setMsgFilter.count(nMsg) > 0)
+	if (m_bEnable && m_setMsgFilter.count(nMsg) > 0)
 	{
 		switch (nMsg)
 		{

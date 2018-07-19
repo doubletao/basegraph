@@ -34,5 +34,6 @@ public:
 	void OnBtnClickedLastFrame();
 	void OnBtnClickedLoopPlay();
 	bool IsPlaying();//ÕýÔÚ²¥·Å
+	void EnterLeavePlayMode(BOOL bEnter);
 };
 
