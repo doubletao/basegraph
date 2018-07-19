@@ -795,7 +795,10 @@ int C3DSceneViewWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	CWnd::OnCreate(lpCreateStruct);
 
-	m_BufferInfo.Initialize(DataBase_GetSceneWidth(), DataBase_GetSceneHeight());
+	//m_BufferInfo.Initialize(DataBase_GetSceneWidth(), DataBase_GetSceneHeight());
+	int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+	m_BufferInfo.Initialize(nScreenWidth, nScreenHeight);
 
 	m_thPreDecoderThread = CreateThread(NULL, 0, PreDecoderThread, this, 0, NULL);
 	::SetThreadPriority(m_thPreDecoderThread, THREAD_PRIORITY_TIME_CRITICAL);

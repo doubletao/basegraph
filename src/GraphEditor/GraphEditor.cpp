@@ -64,7 +64,10 @@ BOOL CGraphEditorApp::InitInstance()
 	//初始化材质
 	SYMaterialModuleInit(strBinPath + _T("\\FX\\"));
 	//初始化主device
-	DX3DEngine_Initialize3DDevice(DataBase_GetSceneWidth(), DataBase_GetSceneHeight());
+	//DX3DEngine_Initialize3DDevice(DataBase_GetSceneWidth(), DataBase_GetSceneHeight());
+	int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+	DX3DEngine_Initialize3DDevice(nScreenWidth, nScreenHeight);
 
 	if (nullptr != m_pMainFrame)
 	{

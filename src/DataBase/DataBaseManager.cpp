@@ -15,6 +15,8 @@ DataBaseManager::DataBaseManager()
 	, m_nSceneHeight(1080)
 {
 	InitializeCriticalSection(&m_lockData);
+	m_nSceneWidth = 720;
+	m_nSceneHeight = 576;
 }
 
 
