@@ -44,10 +44,10 @@
     <ClInclude Include="BaseGraphInterface.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="BaseGraphDecoderAPI.h">
+    <ClInclude Include="BaseGraphDecoder.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="BaseGraphDecoder.h">
+    <ClInclude Include="..\..\BaseGraphInterface\include\BaseGraphDecoderAPI.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

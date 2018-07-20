@@ -1,70 +1,4 @@
 #pragma once
-
-//宏函数，方便串入串出
-#define SERIALIZE_PARAM_GET_SIZE(size, param) \
-{	\
-	size += sizeof(param);	\
-}
-
-#define SERIALIZE_PARAM_TO_BUF(pBuf, size, param) \
-{	\
-	memcpy(pBuf + size, &param, sizeof(param));	\
-	size += sizeof(param);	\
-}
-
-#define SERIALIZE_BUF_TO_PARAM(pBuf, size, param) \
-{	\
-	memcpy(&param, pBuf + size, sizeof(param));	\
-	size += sizeof(param);	\
-}
-
-#define SERIALIZE_PARAM_GET_SIZE_STU(size, param) \
-{	\
-	size += param.GetSerializeSize();	\
-}
-
-#define SERIALIZE_PARAM_TO_BUF_STU(pBuf, size, param) \
-{	\
-	int nParSize = param.GetSerializeSize();	\
-	param.GetSerializeBuf(pBuf + size, nParSize);	\
-	size += nParSize;	\
-}
-
-#define SERIALIZE_BUF_TO_PARAM_STU(pBuf, size, param) \
-{	\
-	int nParSize = param.GetSerializeSize();	\
-	param.RecoverFromBuf(pBuf + size, nParSize);	\
-	size += nParSize;	\
-}
-
-#define SERIALIZE_PARAM_GET_SIZE_STU_ARR(size, param, count) \
-{	\
-	assert(count > 0);	\
-	size += param[0].GetSerializeSize() * count;	\
-}
-
-#define SERIALIZE_PARAM_TO_BUF_STU_ARR(pBuf, size, param, count) \
-{	\
-	assert(count > 0);	\
-	for (int i = 0; i < count; i++)	\
-	{	\
-		int nParSize = param[i].GetSerializeSize();	\
-		param[i].GetSerializeBuf(pBuf + size, nParSize);	\
-		size += nParSize;	\
-	}	\
-}
-
-#define SERIALIZE_BUF_TO_PARAM_STU_ARR(pBuf, size, param, count) \
-{	\
-	assert(count > 0);	\
-	for (int i = 0; i < count; i++)	\
-	{	\
-		int nParSize = param[i].GetSerializeSize();	\
-		param[i].RecoverFromBuf(pBuf + size, nParSize);	\
-		size += nParSize;	\
-	}	\
-}
-
 namespace BaseGraph_Common
 {
 	struct ValueAbleInterface
@@ -136,3 +70,68 @@ namespace BaseGraph_Common
 		bool Serialize(CArchive & archive);
 	};
 };
+
+//宏函数，方便串入串出
+#define SERIALIZE_PARAM_GET_SIZE(size, param) \
+{	\
+	size += sizeof(param);	\
+}
+
+#define SERIALIZE_PARAM_TO_BUF(pBuf, size, param) \
+{	\
+	memcpy(pBuf + size, &param, sizeof(param));	\
+	size += sizeof(param);	\
+}
+
+#define SERIALIZE_BUF_TO_PARAM(pBuf, size, param) \
+{	\
+	memcpy(&param, pBuf + size, sizeof(param));	\
+	size += sizeof(param);	\
+}
+
+#define SERIALIZE_PARAM_GET_SIZE_STU(size, param) \
+{	\
+	size += param.GetSerializeSize();	\
+}
+
+#define SERIALIZE_PARAM_TO_BUF_STU(pBuf, size, param) \
+{	\
+	int nParSize = param.GetSerializeSize();	\
+	param.GetSerializeBuf(pBuf + size, nParSize);	\
+	size += nParSize;	\
+}
+
+#define SERIALIZE_BUF_TO_PARAM_STU(pBuf, size, param) \
+{	\
+	int nParSize = param.GetSerializeSize();	\
+	param.RecoverFromBuf(pBuf + size, nParSize);	\
+	size += nParSize;	\
+}
+
+#define SERIALIZE_PARAM_GET_SIZE_STU_ARR(size, param, count) \
+{	\
+	assert(count > 0);	\
+	size += param[0].GetSerializeSize() * count;	\
+}
+
+#define SERIALIZE_PARAM_TO_BUF_STU_ARR(pBuf, size, param, count) \
+{	\
+	assert(count > 0);	\
+	for (int i = 0; i < count; i++)	\
+	{	\
+		int nParSize = param[i].GetSerializeSize();	\
+		param[i].GetSerializeBuf(pBuf + size, nParSize);	\
+		size += nParSize;	\
+	}	\
+}
+
+#define SERIALIZE_BUF_TO_PARAM_STU_ARR(pBuf, size, param, count) \
+{	\
+	assert(count > 0);	\
+	for (int i = 0; i < count; i++)	\
+	{	\
+		int nParSize = param[i].GetSerializeSize();	\
+		param[i].RecoverFromBuf(pBuf + size, nParSize);	\
+		size += nParSize;	\
+	}	\
+}
