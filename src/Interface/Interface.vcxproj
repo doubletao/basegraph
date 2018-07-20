@@ -77,6 +77,10 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PreBuildEvent>
+      <Command>CopyBin.bat</Command>
+      <Message>拷贝运行环境</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -104,6 +108,10 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PreBuildEvent>
+      <Command>CopyBin.bat</Command>
+      <Message>拷贝运行环境</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
