@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "Interface.h"
+#include "BaseGraphInterface.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
