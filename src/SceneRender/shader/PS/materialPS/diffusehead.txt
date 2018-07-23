@@ -1,0 +1,7 @@
+cbuffer diffuseSample : register(b0)
+{
+	float4x4 DiffuseMat;
+};
+
+sampler diffuseSample : register(s0) ;
+Texture2D <float4> diffuseTex: register(t0);

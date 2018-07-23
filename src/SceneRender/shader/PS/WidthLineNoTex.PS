@@ -1,0 +1,23 @@
+cbuffer cb0
+{
+	float fSoftRadio;
+}
+
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float4 color		 : COLOR0;
+	float2	tex		: TEXCOORD0;
+};
+
+
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 color = vIN.color;
+	color.a = clamp(abs(vIN.tex.y - 1 * (vIN.tex.y > 0.5)) / fSoftRadio,0.05,1);
+//	color.a = vIN.tex.y;
+	return color;
+//	return 1;
+}
+

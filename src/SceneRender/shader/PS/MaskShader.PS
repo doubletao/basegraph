@@ -1,0 +1,17 @@
+//用来渲染mask 物件
+struct PS_INPUT
+{
+	float4 Position  :		SV_Position;
+	float3 NorWorld  :      NORMAL;  //涓栫晫鍧愭爣绯绘硶鍚戦噺
+	float2 Texcoord  :      TEXCOORD0;	//绾圭悊鍧愭爣
+	float3 RPosWorld :      TEXCOORD1;	//涓栫晫鍧愭爣绯讳綅缃?
+	float3 ItemPos   :      TEXCOORD2;	//鍘熷鍧愭爣
+	float3 tangent 	 : 		TEXCOORD3;
+	float3 binormal  : 		TEXCOORD4;
+};
+
+float4 main( PS_INPUT Input ):SV_Target
+{
+	return 1;
+}
+

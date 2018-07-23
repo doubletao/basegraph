@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ActionBar">
+      <UniqueIdentifier>{8997408e-56c9-47a3-88d4-fe63cbdbb873}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayControl">
+      <UniqueIdentifier>{a9236722-ea18-4949-908a-2baaeaf02d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TimeLine">
+      <UniqueIdentifier>{69d795ab-55e4-40d1-bb6d-7b5f84d313eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PropertyView">
+      <UniqueIdentifier>{e93391d7-ef61-4e05-ac9d-e4632c0a3237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneView">
+      <UniqueIdentifier>{fcc553c9-9225-4921-8181-e7a3ab508681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ObjectBar">
+      <UniqueIdentifier>{a4623c5d-f605-4efe-af61-208b1ced5d9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneMessageHandler">
+      <UniqueIdentifier>{5ebde4c5-39bc-45ff-89b8-ccbd60e4ad39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneMessageHandler\ActionTool">
+      <UniqueIdentifier>{4c5d13f2-fff6-457a-ac7c-7474efb98101}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneMessageHandler\ObjectTool">
+      <UniqueIdentifier>{00e0b418-6902-46ae-88a1-79e5baac813f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneMessageHandler\ObjectEditor">
+      <UniqueIdentifier>{0907be5f-2875-488e-acd9-ada980fb421d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PropertyView\UIPropertyCtrl">
+      <UniqueIdentifier>{20f2cc58-ae8b-4d46-ab5c-3a3f867de8c5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GraphEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseGraphMainFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportGraphEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIObjectBar.cpp">
+      <Filter>ObjectBar</Filter>
+    </ClCompile>
+    <ClCompile Include="UIActionBar.cpp">
+      <Filter>ActionBar</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphEditorStatusManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPlayControlBar.cpp">
+      <Filter>PlayControl</Filter>
+    </ClCompile>
+    <ClCompile Include="UISimpleTimeLine.cpp">
+      <Filter>PlayControl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPropertyView.cpp">
+      <Filter>PropertyView</Filter>
+    </ClCompile>
+    <ClCompile Include="UITimeLine.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPropertyTabBar.cpp">
+      <Filter>PropertyView</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLTimeCode.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLRuler.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLObjectArea.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLObjectLeftArea.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLObjectRightArea.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLObjectItem.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="3DSceneViewWnd.cpp">
+      <Filter>SceneView</Filter>
+    </ClCompile>
+    <ClCompile Include="3DMainViewWnd.cpp">
+      <Filter>SceneView</Filter>
+    </ClCompile>
+    <ClCompile Include="C3DViewBufferInfo.cpp">
+      <Filter>SceneView</Filter>
+    </ClCompile>
+    <ClCompile Include="C3DViewInfo.cpp">
+      <Filter>SceneView</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPropertyViewElement.cpp">
+      <Filter>PropertyView</Filter>
+    </ClCompile>
+    <ClCompile Include="ISceneMessageHandler.cpp">
+      <Filter>SceneMessageHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerFactory.cpp">
+      <Filter>SceneMessageHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerManager.cpp">
+      <Filter>SceneMessageHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="UITLTimeLinePointer.cpp">
+      <Filter>TimeLine</Filter>
+    </ClCompile>
+    <ClCompile Include="UICheckColorButton.cpp">
+      <Filter>PropertyView\UIPropertyCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerDefault.cpp">
+      <Filter>SceneMessageHandler\ActionTool</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerTitlewordTool.cpp">
+      <Filter>SceneMessageHandler\ObjectTool</Filter>
+    </ClCompile>
+    <ClCompile Include="UIComboxFontSel.cpp">
+      <Filter>PropertyView\UIPropertyCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerTitlewordEditor.cpp">
+      <Filter>SceneMessageHandler\ObjectEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPropertyDynamicViewElement.cpp">
+      <Filter>PropertyView</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlerImageTool.cpp">
+      <Filter>SceneMessageHandler\ObjectTool</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GraphEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseGraphMainFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ExportGraphEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObjectBar.h">
+      <Filter>ObjectBar</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphEditorCommonDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIActionBar.h">
+      <Filter>ActionBar</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphEditorStatusManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPlayControlBar.h">
+      <Filter>PlayControl</Filter>
+    </ClInclude>
+    <ClInclude Include="UISimpleTimeLine.h">
+      <Filter>PlayControl</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyView.h">
+      <Filter>PropertyView</Filter>
+    </ClInclude>
+    <ClInclude Include="UITimeLine.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyTabBar.h">
+      <Filter>PropertyView</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLTimeCode.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLRuler.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLObjectArea.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLObjectItem.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLObjectLeftArea.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLObjectRightArea.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="3DMainViewWnd.h">
+      <Filter>SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="3DSceneViewWnd.h">
+      <Filter>SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="C3DViewInfo.h">
+      <Filter>SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="C3DViewBufferInfo.h">
+      <Filter>SceneView</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyViewElement.h">
+      <Filter>PropertyView</Filter>
+    </ClInclude>
+    <ClInclude Include="ISceneMessageHandler.h">
+      <Filter>SceneMessageHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerManager.h">
+      <Filter>SceneMessageHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerFactory.h">
+      <Filter>SceneMessageHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="UITLTimeLinePointer.h">
+      <Filter>TimeLine</Filter>
+    </ClInclude>
+    <ClInclude Include="UICheckColorButton.h">
+      <Filter>PropertyView\UIPropertyCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerDefault.h">
+      <Filter>SceneMessageHandler\ActionTool</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerTitlewordTool.h">
+      <Filter>SceneMessageHandler\ObjectTool</Filter>
+    </ClInclude>
+    <ClInclude Include="UIComboxFontSel.h">
+      <Filter>PropertyView\UIPropertyCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerTitlewordEditor.h">
+      <Filter>SceneMessageHandler\ObjectEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPropertyDynamicViewElement.h">
+      <Filter>PropertyView</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlerImageTool.h">
+      <Filter>SceneMessageHandler\ObjectTool</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GraphEditor.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="res\GraphEditor.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GraphEditor.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

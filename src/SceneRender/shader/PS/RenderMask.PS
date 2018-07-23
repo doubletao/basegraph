@@ -1,0 +1,20 @@
+//用来做纹理掩模
+struct PS_INPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+	float2 OrginTex : TEXCOORD1;
+};
+
+sampler texSample;
+Texture2D <float4> src : register(t0);;
+Texture2D <float4> mask : register(t1);;
+
+float4 main( PS_INPUT vIN ):SV_Target
+{
+	float4 srcC = src.Sample(texSample,vIN.OrginTex);
+	float4 maskC = mask.Sample(texSample,vIN.tex);
+	srcC.a *= maskC.r;
+	//return maskC.r;
+	return srcC;
+}

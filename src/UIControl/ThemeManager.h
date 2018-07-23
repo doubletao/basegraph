@@ -1,0 +1,27 @@
+#pragma once
+#include <vector>
+#include "UITheme.h"
+#include "UIControl\ThemeResoueceID.h"
+
+class ThemeManager
+{
+private:
+	int m_nCurrentTheme;
+	std::vector<UITheme *> m_vecTheme;
+private:
+	ThemeManager();
+	~ThemeManager();
+protected:
+	UITheme * GetCurTheme();
+	void InitialThemeList();
+public:
+	static ThemeManager & Instance();
+	bool SwitchTheme(int nTheme);
+	LOGFONT GetFont(int nFontID);
+	COLORREF GetColor(int nColorID);
+	CImage * GetImage(int nImgID);
+	int GetIntValue(int nIntID);
+	CString GetCStringValue(int nCStringID);
+	CString GetThemePath();
+};
+

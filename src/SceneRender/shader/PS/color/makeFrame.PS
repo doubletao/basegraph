@@ -1,0 +1,33 @@
+struct VS_OUTPUT
+
+{
+
+	float4 Position : SV_Position;
+
+	float2 tex : TEXCOORD0;
+
+};
+
+
+Texture2D <float4> Tex1;
+
+Texture2D <float4> Tex2;
+
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+
+{
+
+	uint2 xy = uint2(vIN.Position.xy);
+
+	float4 texColor1 = Tex1.Load(uint3(xy,0));
+
+	float4 texColor2 = Tex2.Load(uint3(xy,0));
+
+	float fFactor = frac(xy.y / 2) * 2;
+
+	float4 color = lerp(texColor1,texColor2,fFactor);
+
+	return color;
+
+}

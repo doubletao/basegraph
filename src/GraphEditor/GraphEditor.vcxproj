@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9B288E74-5045-4D56-BF2F-615EEFCEABC6}</ProjectGuid>
+    <RootNamespace>GraphEditor</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <Keyword>MFCDLLProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\bin\</OutDir>
+    <TargetName>$(ProjectName)D</TargetName>
+    <IntDir>..\..\interdir\debug\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\bin\</OutDir>
+    <IntDir>..\..\interdir\release\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <ModuleDefinitionFile>.\GraphEditor.def</ModuleDefinitionFile>
+      <ProgramDatabaseFile>..\..\interdir\Debug\PDB\$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\GraphEditor.def</ModuleDefinitionFile>
+      <ProgramDatabaseFile>..\..\interdir\Release\PDB\$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="3DMainViewWnd.cpp" />
+    <ClCompile Include="3DSceneViewWnd.cpp" />
+    <ClCompile Include="BaseGraphMainFrame.cpp" />
+    <ClCompile Include="C3DViewBufferInfo.cpp" />
+    <ClCompile Include="C3DViewInfo.cpp" />
+    <ClCompile Include="ExportGraphEditor.cpp" />
+    <ClCompile Include="GraphEditor.cpp" />
+    <ClCompile Include="GraphEditorStatusManager.cpp" />
+    <ClCompile Include="ISceneMessageHandler.cpp" />
+    <ClCompile Include="MessageHandlerDefault.cpp" />
+    <ClCompile Include="MessageHandlerFactory.cpp" />
+    <ClCompile Include="MessageHandlerImageTool.cpp" />
+    <ClCompile Include="MessageHandlerManager.cpp" />
+    <ClCompile Include="MessageHandlerTitlewordEditor.cpp" />
+    <ClCompile Include="MessageHandlerTitlewordTool.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="UIActionBar.cpp" />
+    <ClCompile Include="UICheckColorButton.cpp" />
+    <ClCompile Include="UIComboxFontSel.cpp" />
+    <ClCompile Include="UIObjectBar.cpp" />
+    <ClCompile Include="UIPlayControlBar.cpp" />
+    <ClCompile Include="UIPropertyDynamicViewElement.cpp" />
+    <ClCompile Include="UIPropertyTabBar.cpp" />
+    <ClCompile Include="UIPropertyView.cpp" />
+    <ClCompile Include="UIPropertyViewElement.cpp" />
+    <ClCompile Include="UISimpleTimeLine.cpp" />
+    <ClCompile Include="UITimeLine.cpp" />
+    <ClCompile Include="UITLObjectArea.cpp" />
+    <ClCompile Include="UITLObjectItem.cpp" />
+    <ClCompile Include="UITLObjectLeftArea.cpp" />
+    <ClCompile Include="UITLObjectRightArea.cpp" />
+    <ClCompile Include="UITLRuler.cpp" />
+    <ClCompile Include="UITLTimeCode.cpp" />
+    <ClCompile Include="UITLTimeLinePointer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\ExportGraphEditor.h" />
+    <ClInclude Include="3DSceneViewWnd.h" />
+    <ClInclude Include="BaseGraphMainFrame.h" />
+    <ClInclude Include="C3DViewBufferInfo.h" />
+    <ClInclude Include="C3DViewInfo.h" />
+    <ClInclude Include="GraphEditor.h" />
+    <ClInclude Include="GraphEditorStatusManager.h" />
+    <ClInclude Include="3DMainViewWnd.h" />
+    <ClInclude Include="ISceneMessageHandler.h" />
+    <ClInclude Include="MessageHandlerDefault.h" />
+    <ClInclude Include="MessageHandlerFactory.h" />
+    <ClInclude Include="MessageHandlerImageTool.h" />
+    <ClInclude Include="MessageHandlerManager.h" />
+    <ClInclude Include="MessageHandlerTitlewordEditor.h" />
+    <ClInclude Include="MessageHandlerTitlewordTool.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="GraphEditorCommonDef.h" />
+    <ClInclude Include="UIActionBar.h" />
+    <ClInclude Include="UICheckColorButton.h" />
+    <ClInclude Include="UIComboxFontSel.h" />
+    <ClInclude Include="UIObjectBar.h" />
+    <ClInclude Include="UIPlayControlBar.h" />
+    <ClInclude Include="UIPropertyDynamicViewElement.h" />
+    <ClInclude Include="UIPropertyTabBar.h" />
+    <ClInclude Include="UIPropertyView.h" />
+    <ClInclude Include="UIPropertyViewElement.h" />
+    <ClInclude Include="UISimpleTimeLine.h" />
+    <ClInclude Include="UITimeLine.h" />
+    <ClInclude Include="UITLObjectArea.h" />
+    <ClInclude Include="UITLObjectItem.h" />
+    <ClInclude Include="UITLObjectLeftArea.h" />
+    <ClInclude Include="UITLObjectRightArea.h" />
+    <ClInclude Include="UITLRuler.h" />
+    <ClInclude Include="UITLTimeCode.h" />
+    <ClInclude Include="UITLTimeLinePointer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GraphEditor.def" />
+    <None Include="res\GraphEditor.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GraphEditor.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,19 @@
+float4 main( PS_INPUT Input ):SV_Target
+{
+  float4 fDiffContrib = 1.f, fSpecContrib = 0.f,fEmissiveContrib =0;
+  float4 fAmbient = 0;
+  float4 fResult = 0.f;
+  float3 Nn = Input.NorWorld, ViewDir = normalize( EyeWorld - Input.RPosWorld );
+  //begin add subTex
+
+  //end add
+  //return lightParam[0].LightDiff;
+  //return float4(Input.tangent,1);
+  fResult = fDiffContrib + fSpecContrib + fEmissiveContrib + fAmbient;
+  fResult.a = fDiffContrib.a * fAlpha;
+	//if(fResult.a < 0.01)
+	//	discard;
+ // return DiffuseRef;
+ //return (float4(Nn,1) + 1) / 2;
+  return fResult;
+}

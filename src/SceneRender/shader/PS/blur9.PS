@@ -1,0 +1,58 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+
+sampler texSample;
+Texture2D <float4> tex;
+
+cbuffer cb0:register(b0)
+{
+	float PixelX;
+	float PixelY;
+	float2 vCenter;
+	float k;
+	float4 sp;
+};
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float2 oldTex = vIN.tex - vCenter;
+	float2 NewTex;
+	float fx2 = oldTex.x * oldTex.x;
+	float fy2 = oldTex.y * oldTex.y;
+	float fMod = fx2 + fy2;
+	float fxy = oldTex.x * oldTex.y;
+	NewTex.x = sp.x * fMod + 2 * sp.z * fxy + sp.w * oldTex.y * fy2 + 3 * sp.w * fx2 + k * oldTex.x * fMod + vIN.tex.x;  
+	NewTex.y = sp.y * fMod + 2 * sp.w * fxy + sp.z * oldTex.x * fx2 + 3 * sp.z * fy2 + k * oldTex.y * fMod + vIN.tex.y;  
+	float4 texColor1 = tex.Sample(texSample,float2(NewTex.x  , NewTex.y )) * 4;
+
+	float4 texColor2 = tex.Sample(texSample,float2(NewTex.x + PixelX , NewTex.y )) * 2;
+	float4 texColor3 = tex.Sample(texSample,float2(NewTex.x - PixelX , NewTex.y )) * 2;
+	float4 texColor4 = tex.Sample(texSample,float2(NewTex.x  , NewTex.y + PixelY)) * 2;
+	float4 texColor5 = tex.Sample(texSample,float2(NewTex.x , NewTex.y - PixelY)) * 2;
+
+	float4 texColor6 = tex.Sample(texSample,float2(NewTex.x - PixelX , NewTex.y - PixelY));
+	float4 texColor8 = tex.Sample(texSample,float2(NewTex.x + PixelX, NewTex.y - PixelY));
+	float4 texColor7 = tex.Sample(texSample,float2(NewTex.x - PixelX, NewTex.y + PixelY));
+	float4 texColor9 = tex.Sample(texSample,float2(NewTex.x + PixelX, NewTex.y + PixelY));
+
+	float4 outColor = (texColor1 + texColor2 + texColor3 + texColor4 + texColor5 + texColor6 + texColor7 + texColor8 + texColor9) / 16 ;
+
+	//outColor.rgb /= outColor.a;
+	return outColor;
+}
+
+//float4 main(in VS_OUTPUT vIN) : SV_Target
+//{
+//	float4 texColor1 = tex.Sample(texSample,float2(vIN.tex.x  , vIN.tex.y ));
+//	float4 texColor2 = tex.Sample(texSample,float2(vIN.tex.x + PixelX , vIN.tex.y ));
+//	float4 texColor3 = tex.Sample(texSample,float2(vIN.tex.x - PixelX , vIN.tex.y ));
+//	float4 texColor4 = tex.Sample(texSample,float2(vIN.tex.x  , vIN.tex.y + PixelY));
+//	float4 texColor5 = tex.Sample(texSample,float2(vIN.tex.x , vIN.tex.y - PixelY));
+//	float4 outColor = (texColor1 + texColor2 + texColor3 + texColor4 + texColor5 ) / 5 ;
+//
+//	return outColor;
+//}

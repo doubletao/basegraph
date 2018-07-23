@@ -1,0 +1,615 @@
+#include "stdafx.h"
+#include "UITLObjectArea.h"
+#include "UITLRuler.h"
+#include <assert.h>
+#include "GraphEditorCommonDef.h"
+
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
+UITLObjectArea::UITLObjectArea()
+	: m_pLeftArea(nullptr)
+	, m_pRightArea(nullptr)
+	, m_nVScrollHeight(0)
+	, m_emBarMoveState(MoveState_Null)
+	, m_ptBegin(0)
+{
+	m_nItemBarEndAreaWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemBarEndAreaWidth);
+}
+
+
+UITLObjectArea::~UITLObjectArea()
+{
+	for (std::map<CString, UITLObjectItem *>::iterator it = m_mapObjDrawerInfo.begin(); it != m_mapObjDrawerInfo.end(); it++)
+	{
+		UITLObjectItem *& pObjEle = it->second;
+		if (pObjEle)
+		{
+			delete pObjEle;
+			pObjEle = nullptr;
+		}
+	}
+	m_mapObjDrawerInfo.clear();
+	if (m_pLeftArea)
+	{
+		delete m_pLeftArea;
+		m_pLeftArea = nullptr;
+	}
+	if (m_pRightArea)
+	{
+		delete m_pRightArea;
+		m_pRightArea = nullptr;
+	}
+}
+
+UITLObjectItem * UITLObjectArea::CreateObjectItem(CString strID)
+{
+	UITLObjectItem * pObjectItem = new UITLObjectItem;
+	pObjectItem->m_strObjID = strID;
+	if (DataBase_HasSubItem(strID))
+	{
+		pObjectItem->m_bHasSub = true;
+		pObjectItem->m_bExpandSub = true;
+		//轨道暂时不实现
+	}
+	m_mapObjDrawerInfo.insert(std::make_pair(strID, pObjectItem));
+	return pObjectItem;
+}
+
+void UITLObjectArea::OnLButtonDown(WPARAM wParam, LPARAM lParam)
+{
+	CString strHitID;
+	bool bSel = false;
+	auto DealHitObjectBar = [&](ObjectBarMoveState emMoveState)
+	{
+		m_emBarMoveState = emMoveState;
+		SetElementCapture();
+		m_ptBegin = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		m_strHitObjectID = strHitID;
+		bSel = true;
+	};
+	//点在物件区域外，直接返回
+	if (!HitTest(lParam))
+	{
+		return;
+	}
+	//检测是否点中物件
+	ObjectAreaHittestType emHitType = ObjectHittest(lParam, &strHitID);
+	switch (emHitType)
+	{
+	case ObjectArea_HitNull:
+		break;
+	case ObjectArea_HitItem:
+		bSel = true;
+		m_emBarMoveState = MoveState_Null;
+		break;
+	case ObjectArea_HitItemBarLeftEnd:
+		DealHitObjectBar(MoveState_ActionLeftEndMove);
+		break;
+	case ObjectArea_HitItemBarMiddle:
+		DealHitObjectBar(MoveState_ActionBarMove);
+		break;
+	case ObjectArea_HitItemBarRightEnd:
+		DealHitObjectBar(MoveState_ActionRightMove);
+		break;
+	default:
+		break;
+	}
+	//清空现有选中项
+	DataRender_ClearAllSelect();
+	if (bSel)
+	{
+		//如果需要则选中当前项
+		DataRender_SetItemSelected(strHitID, true);
+	}
+	//广播通知选中项变更
+	UIControl_BroadcastMsg(WM_MSG_OnSelectChanged, 0, 0, this);
+	Refresh();
+}
+
+void UITLObjectArea::OnLButtonUp(WPARAM wParam, LPARAM lParam)
+{
+	m_emBarMoveState = MoveState_Null;
+	ReleaseElementCapture();
+	m_ptBegin = CPoint(0, 0);
+}
+
+void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
+{
+	bool bRefresh = false;
+	switch (m_emBarMoveState)
+	{
+	case MoveState_Null:
+	{
+		CString strHitID;
+		ObjectAreaHittestType emHitType = ObjectHittest(lParam, &strHitID);
+		OnSetCursor(emHitType);
+	}
+		break;
+	case MoveState_ActionBarMove:
+	{
+		CPoint ptEnd = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		float fXOffset = ptEnd.x - m_ptBegin.x;
+		int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		m_ptBegin = ptEnd;
+		BaseGraph_Common::Value value;
+		if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+		{
+			int nBeginFrame = value.ToInt();
+			if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+			{
+				int nEndFrame = value.ToInt();
+				//移动动作不能把begin变成负数
+				if (nBeginFrame + nOffsetFrame < 0)
+				{
+					nOffsetFrame = -nBeginFrame;
+				}
+				nBeginFrame += nOffsetFrame;
+				value = nBeginFrame;
+				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+				{
+					nEndFrame += nOffsetFrame;
+					value = nEndFrame;
+					if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+					{
+						bRefresh = true;
+					}
+				}
+			}
+		}
+	}
+		break;
+	case MoveState_ActionLeftEndMove:
+	{
+		CPoint ptEnd = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		float fXOffset = ptEnd.x - m_ptBegin.x;
+		int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		m_ptBegin = ptEnd;
+		BaseGraph_Common::Value value;
+		if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+		{
+			int nBeginFrame = value.ToInt();
+			if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+			{
+				int nEndFrame = value.ToInt();
+				//移动动作不能把begin变成负数
+				if (nBeginFrame + nOffsetFrame < 0)
+				{
+					nOffsetFrame = -nBeginFrame;
+				}
+				//也不能将物件action长度修改的小于最短长度
+				int nMinActionLength = DataBase_GetGlobalConfig().m_nMinActionLenth;
+				if (nBeginFrame + nOffsetFrame > nEndFrame - nMinActionLength)
+				{
+					nOffsetFrame = nEndFrame - nMinActionLength - nBeginFrame;
+				}
+				nBeginFrame += nOffsetFrame;
+				value = nBeginFrame;
+				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+				{
+					bRefresh = true;
+				}
+			}
+		}
+	}
+		break;
+	case MoveState_ActionRightMove:
+	{
+		CPoint ptEnd = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		float fXOffset = ptEnd.x - m_ptBegin.x;
+		int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		m_ptBegin = ptEnd;
+		BaseGraph_Common::Value value;
+		if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
+		{
+			int nBeginFrame = value.ToInt();
+			if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+			{
+				int nEndFrame = value.ToInt();
+				//不能将物件action长度修改的小于最短长度
+				int nMinActionLength = DataBase_GetGlobalConfig().m_nMinActionLenth;
+				if (nEndFrame + nOffsetFrame < nBeginFrame + nMinActionLength)
+				{
+					nOffsetFrame = nMinActionLength + nBeginFrame - nEndFrame;
+				}
+				nEndFrame += nOffsetFrame;
+				value = nEndFrame;
+				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
+				{
+					bRefresh = true;
+				}
+			}
+		}
+	}
+		break;
+	default:
+		break;
+	}
+	if (bRefresh)
+	{
+		//广播通知物件长度变动
+		UIControl_SendMsgTo(UIElementMsg_BaseGraphMainFrame, WM_MSG_WholeFrameLengthChanged, 0, 0, UIElementMsg_TimeLineObjectArea);
+		Refresh();
+	}
+}
+
+void UITLObjectArea::OnSetCursor(ObjectAreaHittestType emHittestType)
+{
+	//目前就两种指针，普通指针和左右指针
+	switch (emHittestType)
+	{
+	case ObjectArea_HitItemBarLeftEnd:
+	case ObjectArea_HitItemBarRightEnd:
+		::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+		break;
+	case ObjectArea_HitItemBarMiddle:
+	case ObjectArea_HitNull:
+	case ObjectArea_HitItem:
+	default:
+		::SetCursor(::AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+		break;
+	}
+}
+
+void UITLObjectArea::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
+{
+	switch (nMsgID)
+	{
+	case WM_MSG_OnSelectChanged:
+		if (nIDFrom != GetMsgDispatchID())
+		{
+			Refresh();
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+ObjectAreaHittestType UITLObjectArea::ObjectHittest(CPoint ptHit, CString * pStrID)
+{
+	ObjectAreaHittestType emHitRet = ObjectArea_HitNull;
+	for (std::map<CString, UITLObjectItem *>::iterator it = m_mapObjDrawerInfo.begin(); it != m_mapObjDrawerInfo.end(); it++)
+	{
+		UITLObjectItem * pObjDrawer = it->second;
+		if (pObjDrawer)
+		{
+			if (pObjDrawer->rtLeft.PtInRect(ptHit))
+			{
+				//如果左侧区域被点中，则是物件被点中
+				emHitRet = ObjectArea_HitItem;
+				if (pStrID)
+				{
+					*pStrID = pObjDrawer->m_strObjID;
+				}
+				break;
+			}
+			//如果右侧区域被点中，则分情况处理，判定是左端点，右端点还是中部
+			else if (pObjDrawer->rtRight.PtInRect(ptHit))
+			{
+				if (ptHit.x > pObjDrawer->rtActionBar.right - m_nItemBarEndAreaWidth && ptHit.x < pObjDrawer->rtActionBar.right)
+				{
+					emHitRet = ObjectArea_HitItemBarRightEnd;
+				}
+				else if (ptHit.x > pObjDrawer->rtActionBar.left && ptHit.x < pObjDrawer->rtActionBar.left + m_nItemBarEndAreaWidth)
+				{
+					emHitRet = ObjectArea_HitItemBarLeftEnd;
+				}
+				else if (pObjDrawer->rtActionBar.PtInRect(ptHit))
+				{
+					emHitRet = ObjectArea_HitItemBarMiddle;
+				}
+				else
+				{
+					emHitRet = ObjectArea_HitItem;
+				}
+				if (pStrID)
+				{
+					*pStrID = pObjDrawer->m_strObjID;
+				}
+				break;
+			}
+		}
+	}
+	return emHitRet;
+}
+
+ObjectAreaHittestType UITLObjectArea::ObjectHittest(int x, int y, CString * strID)
+{
+	return ObjectHittest(CPoint(x, y), strID);
+}
+
+ObjectAreaHittestType UITLObjectArea::ObjectHittest(LPARAM lParam, CString * strID)
+{
+	return ObjectHittest(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), strID);
+}
+
+std::map<CString, UITLObjectItem*>& UITLObjectArea::GetObjDrawerInfo()
+{
+	return m_mapObjDrawerInfo;
+}
+
+UITLObjectItem * UITLObjectArea::GetObjDrawerInfo(CString strID)
+{
+	if (m_mapObjDrawerInfo.count(strID) > 0)
+	{
+		return m_mapObjDrawerInfo[strID];
+	}
+	else
+	{
+		return CreateObjectItem(strID);
+	}
+}
+
+bool UITLObjectArea::DeleteObjDrawerInfo(CString strID)
+{
+	std::map<CString, UITLObjectItem *>::iterator it = m_mapObjDrawerInfo.find(strID);
+	if (it != m_mapObjDrawerInfo.end())
+	{
+		UITLObjectItem *& pObjEle = it->second;
+		if (pObjEle)
+		{
+			delete pObjEle;
+			pObjEle = nullptr;
+		}
+		m_mapObjDrawerInfo.erase(it);
+		return true;
+	}
+	return false;
+}
+
+void UITLObjectArea::RearrangeChildPos()
+{
+	if (UITLRuler::Instance().GetHScrollBar())
+	{
+		AdjustScrollZoom(UITLRuler::Instance().GetHScrollBar()->GetPagePercent());
+	}
+	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
+	int nGap = UIControl_GetIntValue(ThemeInt_UIModualGap);
+	if (m_pLeftArea)
+	{
+		m_pLeftArea->MoveTo(0, 0, nItemTreeWidth, m_nHeight);
+	}
+	if (m_pRightArea)
+	{
+		m_pRightArea->MoveTo(nItemTreeWidth + nGap, 0, m_nWidth - nItemTreeWidth - nGap, m_nHeight);
+	}
+}
+
+void UITLObjectArea::DrawElement(CDC * pDC)
+{
+	if (m_bVisible)
+	{
+		if (m_pLeftArea)
+		{
+			m_pLeftArea->DrawElement(pDC);
+		}
+		if (m_pRightArea)
+		{
+			m_pRightArea->DrawElement(pDC);
+		}
+		//标尺的绘制逻辑放在这里调用
+		UITLRuler::Instance().DrawElement(pDC);
+	}
+}
+
+EmUIElementMsgRet UITLObjectArea::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (m_bEnable && m_setMsgFilter.count(nMsg) > 0)
+	{
+		switch (nMsg)
+		{
+		case WM_LBUTTONDOWN:
+			OnLButtonDown(wParam, lParam);
+			break;
+		case WM_LBUTTONUP:
+			OnLButtonUp(wParam, lParam);
+			break;
+		case WM_MOUSEMOVE:
+			OnMouseMove(wParam, lParam);
+			break;
+		default:
+			break;
+		}
+		return UIElementMsgSuccBreak;
+	}
+	return UIElementMsgSuccContinue;
+}
+
+bool UITLObjectArea::Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParentElement)
+{
+	if (!m_bCreated)
+	{
+		Initialize(nX, nY, nWidth, nHeight, nID, hParentWnd, pParentElement);
+		RegistWndMsg(WM_LBUTTONDOWN);
+		RegistWndMsg(WM_LBUTTONUP);
+		RegistWndMsg(WM_MOUSEMOVE);
+
+		m_pLeftArea = new UITLObjectLeftArea;
+		m_pLeftArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectLeftArea, hParentWnd, this);
+
+		m_pRightArea = new UITLObjectRightArea;
+		m_pRightArea->Create(0, 0, 10, 10, UIElementMsg_TimeLineObjectRightArea, hParentWnd, this);
+
+		//注册消息中心
+		UIControl_RegistMsgDispatcher(this);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool UITLObjectArea::SetScrollInfo(bool bRefresh)
+{
+	float fXRatio = 1.0f;
+	float fYRatio = 1.0f;
+
+	if (UITLRuler::Instance().GetHScrollBar())
+	{
+		fXRatio = UITLRuler::Instance().GetHScrollBar()->GetPagePercent();
+	}
+	if (UITLRuler::Instance().GetVScrollBar())
+	{
+		fYRatio = UITLRuler::Instance().GetVScrollBar()->GetPagePercent();
+	}
+
+	int nLogicHeight = int(m_nHeight / fYRatio);
+
+	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
+	if (m_pLeftArea)
+	{
+		m_pLeftArea->SetScrollInfo(nItemTreeWidth, nLogicHeight, bRefresh);
+	}
+	if (m_pRightArea)
+	{
+		int nLogicWidth = int(m_pRightArea->GetWidth() / fXRatio);
+		m_pRightArea->SetScrollInfo(nLogicWidth, nLogicHeight, bRefresh);
+		nLogicWidth = int(UITLRuler::Instance().GetWidth() / fXRatio);
+		UITLRuler::Instance().SetScrollInfo(nLogicWidth, UITLRuler::Instance().GetHeight(), bRefresh);
+	}
+	if (bRefresh)
+	{
+		//通知时间线刷新一下pointer的位置
+		UIControl_SendMsgTo(UIElementMsg_TimeLine, WM_MSG_TimeLinePointerChanged, 0, 0, 0);
+	}
+	return true;
+}
+
+bool UITLObjectArea::SetScrollXPos(int nXPos, bool bRefresh)
+{
+	if (m_pLeftArea)
+	{
+		m_pLeftArea->SetScrollXPos(nXPos, bRefresh);
+	}
+	if (m_pRightArea)
+	{
+		m_pRightArea->SetScrollXPos(nXPos, bRefresh);
+	}
+	//尺子的滚动也跟着物件区一起走
+	UITLRuler::Instance().SetScrollXPos(nXPos, bRefresh);
+	//通知时间线刷新一下pointer的位置
+	UIControl_SendMsgTo(UIElementMsg_TimeLine, WM_MSG_TimeLinePointerChanged, 0, 0, 0);
+	return true;
+}
+
+bool UITLObjectArea::SetScrollYPos(int nYPos, bool bRefresh)
+{
+	if (m_pLeftArea)
+	{
+		m_pLeftArea->SetScrollYPos(nYPos, bRefresh);
+	}
+	if (m_pRightArea)
+	{
+		m_pRightArea->SetScrollYPos(nYPos, bRefresh);
+	}
+	return true;
+}
+
+int UITLObjectArea::GetScrollXPos()
+{
+	if (m_pRightArea)
+	{
+		return m_pRightArea->GetScrollXPos();
+	}
+	return 0;
+}
+
+int UITLObjectArea::GetScrollYPos()
+{
+	if (m_pRightArea)
+	{
+		return m_pRightArea->GetScrollYPos();
+	}
+	return 0;
+}
+
+void UITLObjectArea::SetVScrollHeight(int nHeight/* = 0*/, bool bReset/* = false*/)
+{
+	if (bReset)
+	{
+		m_nVScrollHeight = nHeight;
+	}
+	else
+	{
+		if (nHeight > m_nVScrollHeight)
+		{
+			m_nVScrollHeight = nHeight;
+		}
+	}
+}
+
+int UITLObjectArea::GetVScrollHeight()
+{
+	if (m_nVScrollHeight < m_nHeight)
+	{
+		m_nVScrollHeight = m_nHeight;
+	}
+	return m_nVScrollHeight;
+}
+
+void UITLObjectArea::AdjustScrollZoom(float fScrollPercent)
+{
+	if (fScrollPercent > 1.0f)
+	{
+		fScrollPercent = 1.0f;
+	}
+	else if (fScrollPercent < 0.01f)
+	{
+		fScrollPercent = 0.01f;
+	}
+	
+	int nItemTreeWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemTreeWidth);
+	int nRightWidth = m_nWidth - nItemTreeWidth;
+	int nFrameLength = UITLRuler::Instance().GetDispFrameLength();
+	int nAdjustPreservePercent = UIControl_GetIntValue(ThemeInt_TimeLineAdjustPreservePercent);
+
+	nFrameLength = int(nFrameLength * (1 + nAdjustPreservePercent / 100.0));
+	fScrollPercent = UITLRuler::Instance().RecalPixelPerFrame(nRightWidth, nFrameLength, fScrollPercent);
+
+	if (fScrollPercent > 1.0f)
+	{
+		fScrollPercent = 1.0f;
+	}
+	else if (fScrollPercent < 0.01f)
+	{
+		fScrollPercent = 0.01f;
+	}
+
+	if (m_pRightArea && UITLRuler::Instance().GetHScrollBar())
+	{
+		UITLRuler::Instance().GetHScrollBar()->ResetScroll(int(m_pRightArea->GetWidth() / fScrollPercent), m_pRightArea->GetWidth());
+	}
+}
+
+void UITLObjectArea::OnScrollFlexed()
+{
+	float fNewPagePercent = UITLRuler::Instance().GetHScrollBar()->GetPagePercent();
+	AdjustScrollZoom(fNewPagePercent);
+}
+
+void UITLObjectArea::AdjustScrollZoomKeepPixPerFrame()
+{
+	//拿到当前每帧像素数
+	float fPixPerFrame = UITLRuler::Instance().GetPixelPerFrame();
+	//拿到新的逻辑及实际长度
+	float fWholeWidth = UITLRuler::Instance().GetCurLogicWholeLength() * fPixPerFrame;
+	int nAdjustPreservePercent = UIControl_GetIntValue(ThemeInt_TimeLineAdjustPreservePercent);
+	fWholeWidth = int(fWholeWidth * (1 + nAdjustPreservePercent / 100.0));
+	float fPageWidth = m_pRightArea->GetWidth();
+	float fCurPercent = fPageWidth / fWholeWidth;
+	AdjustScrollZoom(fCurPercent);
+	SetScrollInfo();
+}
+
+float UITLObjectArea::GetCurrentPercent()
+{
+	if (UITLRuler::Instance().GetHScrollBar())
+	{
+		return UITLRuler::Instance().GetHScrollBar()->GetPagePercent();
+	}
+	return 1.0f;
+}

@@ -1,0 +1,20 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+cbuffer cb:register(b0)
+{
+	float fAlpha;
+}
+
+sampler texSample;
+Texture2D <float4> tex;
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 texColor = tex.Sample(texSample,vIN.tex);
+	texColor.a *= fAlpha;
+	return texColor;
+}

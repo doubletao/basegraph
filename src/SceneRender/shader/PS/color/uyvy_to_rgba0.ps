@@ -1,0 +1,48 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+cbuffer cb0
+{
+	float4x4	color_covert_mat;	// ÑÕÉ«×ª»»¾ØÕó
+};
+
+sampler texSample;
+Texture2D <float4> tex;
+
+float3 uyvy_to_rgb(float4 uyvy,  int2 pos)
+{
+	int x	=	 round(pos.x);
+	int x0	=	 round(fmod(x+1,2));
+	int x1	=	 round(fmod(x,2));
+
+	float4 c;
+	c.r = (x0*uyvy.g+x1*uyvy.a)-0.0627451;
+	c.g = uyvy.r-0.50196078;
+	c.b = uyvy.b-0.50196078;
+	c.a = 1;
+
+	c = mul( color_covert_mat, c);
+	
+	return c.bgr;
+}
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 c_rgba	=	1.0f;
+	
+//	float4 texColor = tex.Sample(texSample,vIN.tex);
+//	float4 keyColor = tex.Sample(texSample,vIN.tex);
+//
+	int2 rgba_pos = vIN.Position.xy;
+	int2 src_pos = int2(uint(rgba_pos.x)/2,(uint)rgba_pos.y / 2);
+	int yOffset = rgba_pos.y - src_pos.y * 2;
+	int2 envpos = src_pos + int2(0,yOffset);
+	float4 c_src0 = tex.Load(int3(src_pos,0));
+	float4 c_src1 = tex.Load(int3(envpos,0));
+	float4 c_src = (c_src0 + c_src1) / 2;
+	c_rgba.rgb	= uyvy_to_rgb(c_src,rgba_pos);
+	return c_rgba;
+}

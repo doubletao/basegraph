@@ -1,0 +1,131 @@
+#include "stdafx.h"
+#include "ObjectBuffer.h"
+#include "DataBufferManager.h"
+#include <assert.h>
+
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
+static const int BUFFER_AREA_RATIO = 4;//面积系数，当前设为4，即reserve面积小于等于实际使用面积的4倍(这个4是经验值，按照当前的宽高种子比值，宽高从1*1递增到1920*1080过程中，按照当前规则最大出现3.9的情况)
+static const int BUFFER_DEPTH = 4;//默认未RGBA，4字节
+
+ObjectBuffer::ObjectBuffer()
+	: m_nWidth(0)
+	, m_nHeight(0)
+	, m_nReserveWidth(0)
+	, m_nReserveHeight(0)
+	, m_bUsed(false)
+	, m_pBuffer(nullptr)
+{
+	ReleaseBuffer();
+}
+
+
+ObjectBuffer::~ObjectBuffer()
+{
+	ReleaseBuffer();
+}
+
+bool ObjectBuffer::InitializeBuffer(int nWidth, int nHeight)
+{
+	assert(nWidth);
+	assert(nHeight);
+	ReleaseBuffer();
+	m_pBuffer = new byte[nWidth * nHeight * BUFFER_DEPTH];
+	if (m_pBuffer)
+	{
+		m_nReserveWidth = nWidth;
+		m_nReserveHeight = nHeight;
+		memset(m_pBuffer, 255, nWidth * nHeight * BUFFER_DEPTH);
+		return true;
+	}
+	return false;
+}
+
+void ObjectBuffer::ReleaseBuffer()
+{
+	m_nWidth = 0;
+	m_nHeight = 0;
+	m_nReserveWidth = 0;
+	m_nReserveHeight = 0;
+	m_bUsed = false;
+	delete[] m_pBuffer;
+	m_pBuffer = nullptr;
+}
+
+bool ObjectBuffer::SetUsed(int nWidth, int nHeight)
+{
+	assert(nWidth);
+	assert(nHeight);
+	if (m_nReserveWidth >= nWidth
+		&& m_nReserveHeight >= nHeight)
+	{
+		m_nWidth = nWidth;
+		m_nHeight = nHeight;
+		m_bUsed = true;
+	}
+	return false;
+}
+
+void ObjectBuffer::ReleaseUse()
+{
+	m_nWidth = 0;
+	m_nHeight = 0;
+	m_bUsed = false;
+}
+
+bool ObjectBuffer::IsUsed()
+{
+	return m_bUsed;
+}
+
+bool ObjectBuffer::FitIn(int nReqWidth, int nReqHeight)
+{
+	assert(nReqWidth);
+	assert(nReqHeight);
+	//当前的fit标准为宽高合适且面积在2倍以内
+	if (!m_bUsed
+		&& m_nReserveWidth >= nReqWidth
+		&& m_nReserveHeight >= nReqHeight
+		//避免浪费的检测规则为留存空间小于需要空间的BUFFER_AREA_RATIO倍。但当需要空间的宽或者高比种子还小时，不适用
+		&& (nReqWidth < DataBufferManager::Instance().GetWidthGrowSeed()
+			|| nReqHeight < DataBufferManager::Instance().GetHeightGrowSeed()
+			|| m_nReserveWidth * m_nReserveHeight <= nReqWidth * nReqHeight * BUFFER_AREA_RATIO)
+		)
+	{
+		return true;
+	}
+	return false;
+}
+
+byte * ObjectBuffer::GetBuffer()
+{
+	assert(m_pBuffer);
+	return m_pBuffer;
+}
+
+int ObjectBuffer::GetWidth()
+{
+	assert(m_nWidth);
+	return m_nWidth;
+}
+
+int ObjectBuffer::GetHeight()
+{
+	assert(m_nHeight);
+	return m_nHeight;
+}
+
+void ObjectBuffer::Clear(COLORREF color)
+{
+	DWORD * pBuf = (DWORD *)m_pBuffer;
+	std::fill(pBuf, pBuf + m_nWidth * m_nHeight, color);
+}
+
+void ObjectBuffer::DebugWriteImage(CString strPath)
+{
+	BufferFunction::WriteBitmap(strPath, GetWidth(), GetHeight(), 32, GetBuffer());
+}

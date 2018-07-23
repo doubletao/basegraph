@@ -1,0 +1,433 @@
+#include "stdafx.h"
+#include "UIControl\UIElement.h"
+
+
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#endif
+int UIElement::GetMsgDispatchID()
+{
+	return m_nID;
+}
+
+void UIElement::Release()
+{
+	IMsgDispatchObject::UnRegistDispatchObj();
+	EraseAllChild();
+
+	for (std::map<int, std::vector<UIDrawer *>>::iterator it = m_mapDrawer.begin(); it != m_mapDrawer.end(); it++)
+	{
+		std::vector<UIDrawer *> & vecDrawer = it->second;
+		for (size_t i = 0; i < vecDrawer.size(); i++)
+		{
+			UIDrawer * & pDrawer = vecDrawer[i];
+			if (pDrawer)
+			{
+				delete pDrawer;
+				pDrawer = nullptr;
+			}
+		}
+	}
+	m_mapDrawer.clear();
+	m_nX = 0;
+	m_nY = 0;
+	m_nWidth = 1;
+	m_nHeight = 1;
+	m_nID = 0;
+	m_hParentWnd = nullptr;
+	m_nState = 0;
+	m_bCreated = false;
+}
+
+void UIElement::Initialize(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd/* = nullptr*/, UIElement * pParent/* = nullptr*/)
+{
+	m_nX = nX;
+	m_nY = nY;
+	m_nWidth = nWidth;
+	m_nHeight = nHeight;
+	m_nID = nID;
+	m_hParentWnd = hParentWnd;
+	m_pParentElement = pParent;
+	m_nState = 0;
+	m_bCreated = true;
+}
+
+void UIElement::SetText(CString strText)
+{
+	m_strText = strText;
+	Refresh();
+}
+
+void UIElement::Refresh()
+{
+#if 1
+	if (m_pParentElement)
+	{
+		//如果有父物件，就通知父物件刷新
+		m_pParentElement->Refresh();
+	}
+	else
+	{
+		//如果已经是顶层，则刷新自己的区域
+		InvalidateRect(m_hParentWnd, CRect(m_nX, m_nY, m_nX + m_nWidth, m_nY + m_nHeight), false);
+	}
+#else
+	//刷新自己的区域
+	int nRealX = GetRealX();
+	int nRealY = GetRealY();
+	InvalidateRect(m_hParentWnd, CRect(nRealX, nRealY, nRealX + m_nWidth, nRealY + m_nHeight), false);
+#endif
+	EmitMsg(EmUIElementMsg_BtnRefresh, m_nID, 0);
+}
+
+void UIElement::ChildHandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
+{
+	for (size_t i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIElement * pChild = m_vecChildElement[i];
+		if (pChild)
+		{
+			pChild->HandleMsg(nMsg, wParam, lParam);
+		}
+	}
+}
+
+void UIElement::EnterLeaveChild(UINT nMsg, LPARAM lParam, WPARAM wParam)
+{
+	for (size_t i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIElement *& pChild = m_vecChildElement[i];
+		if (pChild && pChild->HitTest(lParam))
+		{
+			pChild->OnMouseHover();
+		}
+		else
+		{
+			pChild->OnMouseLeave();
+		}
+	}
+}
+
+void UIElement::EraseChild(UIElement * pChild)
+{
+	for (auto it = m_vecChildElement.begin(); it != m_vecChildElement.end(); it++)
+	{
+		if (*it == pChild)
+		{
+			delete *it;
+			*it = nullptr;
+			m_vecChildElement.erase(it);
+			break;
+		}
+	}
+}
+
+void UIElement::EraseChild(std::set<UIElement*> setChildPointer)
+{
+	for (auto it = m_vecChildElement.begin(); it != m_vecChildElement.end();)
+	{
+		if (setChildPointer.count(*it) > 0)
+		{
+			delete *it;
+			*it = nullptr;
+			it = m_vecChildElement.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
+}
+
+void UIElement::EraseAllChild()
+{
+	for (size_t i = 0; i < m_vecChildElement.size(); i++)
+	{
+		UIElement * & pChild = m_vecChildElement[i];
+		if (pChild)
+		{
+			delete pChild;
+			pChild = nullptr;
+		}
+	}
+	m_vecChildElement.clear();
+}
+
+int UIElement::GetRealX()
+{
+	if (m_pParentElement)
+	{
+		return m_nX + m_pParentElement->GetRealX();
+	}
+	return m_nX;
+}
+
+int UIElement::GetRealY()
+{
+	if (m_pParentElement)
+	{
+		return m_nY + m_pParentElement->GetRealY();
+	}
+	return m_nY;
+}
+
+bool UIElement::EmitMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+	{
+		::SendMessage(m_hParentWnd, emMsg, wParam, lParam);
+	}
+	if (m_pParentElement)
+	{
+		m_pParentElement->OnChildMsg(emMsg, wParam, lParam);
+	}
+	return true;
+}
+
+bool UIElement::OnChildMsg(EmUIElementMsg emMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (m_pParentElement)
+	{
+		//默认就把消息往上扔
+		return m_pParentElement->OnChildMsg(emMsg, wParam, lParam);
+	}
+	return false;
+}
+
+UIElement::UIElement()
+	: m_hParentWnd(nullptr)
+	, m_pParentElement(nullptr)
+	, m_nID(0)
+	, m_nX(0)
+	, m_nY(0)
+	, m_nWidth(1)
+	, m_nHeight(1)
+	, m_nState(0)
+	, m_strText(_T(""))
+	, m_bCreated(false)
+	, m_bVisible(true)
+	, m_bEnable(true)
+{
+}
+
+
+UIElement::~UIElement()
+{
+	Release();
+}
+
+void UIElement::RearrangeChildPos()
+{
+}
+
+EmUIElementMsgRet UIElement::HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam)
+{
+	return UIElementMsgSuccContinue;
+}
+
+bool UIElement::IsSucceed(EmUIElementMsgRet emMsgRet)
+{
+	if (emMsgRet | UIElementMsgSucc)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool UIElement::NeedContinue(EmUIElementMsgRet emMsgRet)
+{
+	if (emMsgRet | UIElementMsgContinue)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool UIElement::HitTest(CPoint point)
+{
+	if (false)
+	{
+		CRect rtTest = GetRect();
+		BOOL bTest = rtTest.PtInRect(point);
+		int i = 0;
+		i++;
+	}
+	//不可见的物件hittest不响应
+	if (m_bVisible && GetRect().PtInRect(point))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool UIElement::HitTest(int nX, int nY)
+{
+	return HitTest(CPoint(nX, nY));
+}
+
+bool UIElement::HitTest(LPARAM lParam)
+{
+	return HitTest(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+}
+
+void UIElement::DrawElement(CDC * pDC)
+{
+	if (m_bVisible)
+	{
+		if (false)
+		{
+			CString strDebug;
+			strDebug.Format(_T("m_nState:%d, m_nID:%d, m_strText:%s, GetRealX():%d, GetRealY():%d\n"), m_nState, m_nID, m_strText, GetRealX(), GetRealY());
+			OutputDebugString(strDebug);
+		}
+		//先画自己
+		if (m_mapDrawer.count(m_nState))
+		{
+			std::vector<UIDrawer *> & vecDrawer = m_mapDrawer[m_nState];
+			for (size_t i = 0; i < vecDrawer.size(); i++)
+			{
+				UIDrawer * & pDrawer = vecDrawer[i];
+				if (pDrawer)
+				{
+					pDrawer->Draw(pDC, GetRealX(), GetRealY(), m_nWidth, m_nHeight, m_strText);
+				}
+			}
+		}
+		//再画子
+		for (size_t i = 0; i < m_vecChildElement.size(); i++)
+		{
+			UIElement * & pChild = m_vecChildElement[i];
+			if (pChild)
+			{
+				pChild->DrawElement(pDC);
+			}
+		}
+		if (false)
+		{
+			CImage img;
+			img.Attach((HBITMAP)pDC->GetCurrentBitmap()->GetSafeHandle());
+			img.Save(_T("F:\\test.bmp"));
+			img.Detach();
+		}
+	}
+}
+
+void UIElement::OnMouseHover()
+{
+}
+
+void UIElement::OnMouseLeave()
+{
+}
+
+void UIElement::RegistWndMsg(DWORD nMsg)
+{
+	//给自己加上，如果有父，则也给父加上
+	m_setMsgFilter.insert(nMsg);
+	if (m_pParentElement)
+	{
+		m_pParentElement->RegistWndMsg(nMsg);
+	}
+}
+
+int UIElement::GetMsgID()
+{
+	return m_nID;
+}
+
+int UIElement::GetWidth()
+{
+	return m_nWidth;
+}
+
+int UIElement::GetHeight()
+{
+	return m_nHeight;
+}
+
+void UIElement::InsertDrawer(int nState, UIDrawer * pDrawer)
+{
+	m_mapDrawer[m_nState].push_back(pDrawer);
+}
+
+void UIElement::SetElementCapture()
+{
+	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+	{
+		::SendMessage(m_hParentWnd, EmUIElementMsg_SetCapture, TRUE, (LPARAM)this);
+	}
+}
+
+void UIElement::ReleaseElementCapture()
+{
+	if (m_hParentWnd && ::IsWindow(m_hParentWnd))
+	{
+		::SendMessage(m_hParentWnd, EmUIElementMsg_SetCapture, FALSE, (LPARAM)this);
+	}
+}
+
+void UIElement::SetVisible(bool bVisible, bool bRefresh/* = true*/)
+{
+	m_bVisible = bVisible;
+	if (bRefresh)
+	{
+		Refresh();
+	}
+}
+
+void UIElement::SetEnable(bool bEnable, bool bRefresh)
+{
+	m_bEnable = bEnable;
+	if (bRefresh)
+	{
+		Refresh();
+	}
+}
+
+CRect UIElement::GetRect()
+{
+	int nX = GetRealX();
+	int nY = GetRealY();
+	return CRect(nX, nY, nX + m_nWidth, nY + m_nHeight);
+}
+
+inline void UIElement::MoveTo(CRect rtNew, bool bRefresh/* = true*/)
+{
+	m_nX = rtNew.left;
+	m_nY = rtNew.top;
+	m_nWidth = rtNew.Width();
+	m_nHeight = rtNew.Height();
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
+}
+
+inline void UIElement::MoveTo(int nX, int nY, bool bRefresh/* = true*/)
+{
+	m_nX = nX;
+	m_nY = nY;
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
+}
+
+inline void UIElement::MoveTo(int nX, int nY, int nWidth, int nHeight, bool bRefresh/* = true*/)
+{
+	m_nX = nX;
+	m_nY = nY;
+	m_nWidth = nWidth;
+	m_nHeight = nHeight;
+	if (bRefresh)
+	{
+		RearrangeChildPos();
+		Refresh();
+	}
+}
+

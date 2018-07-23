@@ -1,0 +1,74 @@
+struct VS_OUTPUT
+{
+	float4 Position : SV_Position;
+	float2 tex : TEXCOORD0;
+};
+
+#define MSCOUNT 4
+cbuffer cb:register(b0)
+{
+	float fAlpha;
+	float fFirstField;
+}
+Texture2DMS <float4,MSCOUNT> tex;
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+{
+	float4 c = 0;
+	int nCheck=round(fFirstField);
+	if(nCheck==1)
+	{
+	int y	= round(fmod(vIN.Position.y,2));
+	if(y==2)
+	{
+	int width,height,samples;
+	tex.GetDimensions(width, height, samples);
+	float2 realPt = float2(vIN.tex.x * width,vIN.tex.y * height);
+	for(int i = 0; i<MSCOUNT ;i++ )
+	{
+		c += tex.Load(realPt,i);
+	}
+	c /= MSCOUNT;
+	c.rgb /= c.a;
+	}
+	else
+	{
+	 
+	}
+	}
+	else if(nCheck==-1)
+	{
+	int y	= round(fmod(vIN.Position.y,2));
+	if(y==0)
+	{	
+	int width,height,samples;
+	tex.GetDimensions(width, height, samples);
+	float2 realPt = float2(vIN.tex.x * width,vIN.tex.y * height);
+	//tex.Load(vIN.Position.xy);
+	for(int i = 0; i<MSCOUNT ;i++ )
+	{
+		c += tex.Load(realPt,i);
+	}
+	c /= MSCOUNT;
+	c.rgb /= c.a;
+	}
+	else
+	{
+	}
+	}
+	else
+	{
+	int width,height,samples;
+	tex.GetDimensions(width, height, samples);
+	float2 realPt = float2(vIN.tex.x * width,vIN.tex.y * height);
+	//tex.Load(vIN.Position.xy);
+	for(int i = 0; i<MSCOUNT ;i++ )
+	{
+		c += tex.Load(realPt,i);
+	}
+	c /= MSCOUNT;
+	c.rgb /= c.a;
+	}	
+	return c;			
+}
+

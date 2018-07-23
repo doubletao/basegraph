@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Image">
+      <UniqueIdentifier>{9ca61d38-22cc-4354-b438-0f4d0abbfa05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TitleWord">
+      <UniqueIdentifier>{15c2b1cd-80c4-4390-8c03-6e160e735c7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Algorithm">
+      <UniqueIdentifier>{720b081a-83a3-4cba-b2c9-3b953e4edad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SpaceConvert">
+      <UniqueIdentifier>{a8810432-14e8-4dc0-83d8-fb151bbc34e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layer">
+      <UniqueIdentifier>{16edef2e-5c60-4d75-a83f-c50bf8485557}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DataRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectCalculator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DataBufferManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatorFactory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportDataRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatorManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatorImage.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="CalculatorTitleWord.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextParagraph.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextTypeset.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextTypesetDataAPI.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextUsp.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRenderDataDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawTextDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DataRenderUtityFunc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\AlgorithmRip.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\OffsetCurve.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\3DGeometry.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\BevelPoly.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\TriangulateApp.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\Arc2BezierAPI.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\ShapeForm.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\3DPieModeling.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithm\LineAPI.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextDrawer.cpp">
+      <Filter>TitleWord</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleSpaceConvert.cpp">
+      <Filter>SpaceConvert</Filter>
+    </ClCompile>
+    <ClCompile Include="Calculator2DLayer.cpp">
+      <Filter>Layer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DataRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectCalculator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DataBufferManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ExportDataRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorImage.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="CalculatorTitleWord.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="Typeset\TextParagraph.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="Typeset\TextTypeset.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="Typeset\TextTypesetDataAPI.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="Typeset\TextUsp.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\DrawTextDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\DataRenderDataDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\MaterialDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\DataRenderUtityFunc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\AlgorithmRip.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\OffsetCurve.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\RipRender.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\3DGeometry.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\BevelPoly.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\TriangulateApp.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\Arc2BezierAPI.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\ShapeForm.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\3DPieModeling.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\LineAPI.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\TextDrawer.h">
+      <Filter>TitleWord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\DataRender\SimpleSpaceConvert.h">
+      <Filter>SpaceConvert</Filter>
+    </ClInclude>
+    <ClInclude Include="Calculator2DLayer.h">
+      <Filter>Layer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DataRender.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="res\DataRender.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DataRender.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Algorithm\RipRender.asm">
+      <Filter>Algorithm</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

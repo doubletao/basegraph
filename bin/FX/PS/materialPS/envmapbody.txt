@@ -1,0 +1,12 @@
+{
+	float3 vR = normalize(reflect( ViewDir, Nn));
+	/*float2 vTex;*/
+	/*vTex.y = asin(vR.y) / 1.57 ;*/
+	/*vTex.x = atan2(vR.z,vR.x) / 3.14 ;*/
+	vR.z += 1;
+	float m = 2 * length(vR);
+
+	float4 c = EnvMapTex.Sample(EnvMapSample,vR.xy / m + 0.5f);
+	/*float4 c = EnvMapTex.Sample(EnvMapSample,vTex);*/
+	fDiffContrib.rgb  = lerp( fDiffContrib.rgb, c.rgb, EnvMapFactor );
+}

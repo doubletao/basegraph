@@ -1,0 +1,276 @@
+#pragma once
+enum ThemeIntValueDef
+{
+	ThemeInt_SkinWndTitleHeight,
+	ThemeInt_SkinWndFrameWidth,
+	ThemeInt_SkinWndFrameSysBtnGap,
+	ThemeInt_SkinWndTitleObjectBarX,
+	ThemeInt_UIModualGap,
+	ThemeInt_ActionBarWidth,
+	ThemeInt_ActionBarButtonGap,
+	ThemeInt_ActionBarSplitWidth,
+	ThemeInt_ActionBarSplitHeight,
+	ThemeInt_PlayControlBarWidth,
+	ThemeInt_PlayControlBarHeight,
+	ThemeInt_PropretyViewWidth,
+	ThemeInt_PropretyViewTabWidth,
+	ThemeInt_PropretyViewTabGap,
+	ThemeInt_PropretyViewControlLeftTopGap,
+	ThemeInt_PropretyViewTabSplitWidth,
+	ThemeInt_PropretyViewTabSplitHeight,
+	ThemeInt_PropertyViewCtrlGap,
+	ThemeInt_PropertyViewCtrlTitleWidth,//属性窗控件左侧文本宽度
+	ThemeInt_PropertyViewCtrlNumEditWidth,//属性窗数字edit宽度
+	ThemeInt_PropertyViewCtrlColorBtnWidth,//属性窗颜色选择按钮宽度
+	ThemeInt_PropertyViewCtrlColorBtnHeight,//属性窗颜色选择按钮高度
+	ThemeInt_PropertyViewComboBoxBtnWidth,//属性窗下拉选框宽度
+	ThemeInt_PropertyViewComboBoxBtnHeight,//属性窗下拉选框高度
+	ThemeInt_PropertyViewStaticTextHeight,	//属性窗静态文本控件高度
+	ThemeInt_PropertyViewTitlewordMutiEditHeight,//属性窗多行文本编辑框高度
+	ThemeInt_TimeLineHeight,
+	ThemeInt_TimeLineTimeCodeWidth,
+	ThemeInt_TimeLineTimeCodeHeight,
+	ThemeInt_TimeLineTimeCodeLeftGap,
+	ThemeInt_TimeLineTimeScrollHeight,
+	ThemeInt_TimeLineItemBarEndAreaWidth,//时间线物件条两端的敏感区域宽度
+	ThemeInt_TimeLineItemActionHeight,//时间线物件条高度
+	ThemeInt_TimeLineItemActionGap,//时间线物件条缝隙
+	ThemeInt_TimeLineItemTrackHeight,//时间线物件关键帧轨道高度
+	ThemeInt_TimeLineItemTreeTabWidth,//时间线物件tree的tab宽度
+	ThemeInt_TimeLineItemTreeWidth,//时间线物件tree的宽度
+	ThemeInt_TimeLinePixelPerFrameMax,//时间线比例尺每帧最多对应的像素数(放大100倍取整)
+	ThemeInt_TimeLinePixelPerFrameMin,//时间线比例尺每像素最多对应的帧数(放大100倍取整)
+	ThemeInt_TimeLineAdjustPreservePercent,//时间线adjust横向滚动条后预留的空间百分比
+	ThemeInt_TimeLineRulerShortLineLength,//时间线刻度尺短线长
+	ThemeInt_TimeLineRulerLongLineLength,//时间线刻度尺长线长
+	ThemeInt_TimeLineRulerGapMinPixel,//时间线刻度尺每刻度的最小像素数
+	ThemeInt_TimeLineRulerGapMaxPixel,//时间线刻度尺每刻度的最大像素数
+	ThemeInt_TimeLinePointerWidth,//时间线指针宽度
+	ThemeInt_SimpleTimeLineHorGap,
+	ThemeInt_SimpleTimeLineHeight,
+};
+
+enum ThemeFontValueDef
+{
+	ThemeFont_SkinWndTitleText,
+	ThemeFont_TimeLineTimeCode,
+	ThemeFont_TimeLineObjectTrackText,
+	ThemeFont_TimeLineRuler,//时间线刻度尺字体
+	ThemeFont_CustomEditCtr,
+	ThemeFont_CustomStatic,
+};
+
+enum ThemeColorValueDef
+{
+	ThemeColor_SkinWndTitleText,
+	ThemeColor_ButtonBarSplitLine,
+	ThemeColor_TimeLineTimeCodeText,
+	ThemeColor_TimeLineObjectTrackText_Nor,
+	ThemeColor_TimeLineObjectTrackText_Sel,
+	ThemeColor_TimeLineRulerLine,
+	ThemeColor_TimeLinePointerLine,				//时间线指针颜色
+	ThemeColor_TimeLineRulerText,
+	ThemeColor_ScrollThumbColor_N,
+	ThemeColor_ScrollThumbColor_F,
+	ThemeColor_ScrollThumbColor_D,
+	ThemeColor_ScrollThumbColor_X,
+	ThemeColor_FlexibleScrollThumbColor,		//可拉伸滚动条的两端颜色
+	ThemeColor_ScrollBkColor,
+	ThemeColor_SliderLightArea,
+	ThemeColor_SliderDarkArea,
+	ThemeColor_SliderButton_N,
+	ThemeColor_SliderButton_F,
+	ThemeColor_SliderButton_D,
+	ThemeColor_SliderButton_X,
+	ThemeColor_CustomEditBk,					//编辑框背景色
+	ThemeColor_CustomEditBkFocus,				//有焦点的编辑框背景色
+	ThemeColor_CustomEditGray,					//无效编辑框背景色
+	ThemeColor_CustomEditNorText,				//正常文本色
+	ThemeColor_CustomEditHighLightText,			//选中状态颜色
+	ThemeColor_CustomEditGrayText,				//无效状态下文本色
+	ThemeColor_CustomEditTopLeftBoard,			//3D编辑框左上角
+	ThemeColor_CustomEditBottomRightBoard,		//3D编辑框右下角
+	ThemeColor_CustomEditTopLeftBoardGray,		//编辑框无效状态左上边框
+	ThemeColor_CustomEditBottomRightBoardGray,	//编辑框无效状态右下边框
+	ThemeColor_CustomEditUnderLay,				//编辑框衬底边框
+	ThemeColor_CustomStatic,					//static字色
+	ThemeColor_CustomDropDownWndBk,				//combox下拉窗底色
+	ThemeColor_CustomDropGreyBk,
+	ThemeColor_CustomDropText,
+	ThemeColor_CustomDropGreyText,
+	ThemeColor_CustomDropSelectText,
+	ThemeColor_CustomDropNorBk,
+	ThemeColor_CustomComboxBk,
+};
+
+enum ThemeCStringValueDef
+{
+	ThemeCString_CursorOpenHandName,
+	ThemeCString_CursorCloseHandName,
+};
+
+enum ThemeImageValueDef
+{
+	ThemeImage_SkinWndNcBkgrd,
+	ThemeImage_SkinFrameDefaultIcon,
+
+	ThemeImage_SkinWndCloseBtn_N,
+	ThemeImage_SkinWndCloseBtn_F,
+	ThemeImage_SkinWndCloseBtn_D,
+	ThemeImage_SkinWndCloseBtn_X,
+
+	ThemeImage_SkinWndMinizeBtn_N,
+	ThemeImage_SkinWndMinizeBtn_F,
+	ThemeImage_SkinWndMinizeBtn_D,
+	ThemeImage_SkinWndMinizeBtn_X,
+
+	ThemeImage_SkinWndMaxizeBtn_N,
+	ThemeImage_SkinWndMaxizeBtn_F,
+	ThemeImage_SkinWndMaxizeBtn_D,
+	ThemeImage_SkinWndMaxizeBtn_X,
+
+	ThemeImage_BtnNewFile_N,
+	ThemeImage_BtnNewFile_F,
+	ThemeImage_BtnNewFile_D,
+	ThemeImage_BtnNewFile_X,
+	ThemeImage_BtnSave_N,
+	ThemeImage_BtnSave_F,
+	ThemeImage_BtnSave_D,
+	ThemeImage_BtnSave_X,
+	ThemeImage_BtnSaveAs_N,
+	ThemeImage_BtnSaveAs_F,
+	ThemeImage_BtnSaveAs_D,
+	ThemeImage_BtnSaveAs_X,
+	ThemeImage_BtnDefaultAction_N,
+	ThemeImage_BtnDefaultAction_F,
+	ThemeImage_BtnDefaultAction_D,
+	ThemeImage_BtnDefaultAction_X,
+	ThemeImage_BtnScaleAction_N,
+	ThemeImage_BtnScaleAction_F,
+	ThemeImage_BtnScaleAction_D,
+	ThemeImage_BtnScaleAction_X,
+	ThemeImage_BtnRotateAction_N,
+	ThemeImage_BtnRotateAction_F,
+	ThemeImage_BtnRotateAction_D,
+	ThemeImage_BtnRotateAction_X,
+	ThemeImage_BtnSysSetting_N,
+	ThemeImage_BtnSysSetting_F,
+	ThemeImage_BtnSysSetting_D,
+	ThemeImage_BtnSysSetting_X,
+	ThemeImage_BtnObjTitleWord_N,
+	ThemeImage_BtnObjTitleWord_F,
+	ThemeImage_BtnObjTitleWord_D,
+	ThemeImage_BtnObjTitleWord_X,
+	ThemeImage_BtnObjScroll_N,
+	ThemeImage_BtnObjScroll_F,
+	ThemeImage_BtnObjScroll_D,
+	ThemeImage_BtnObjScroll_X,
+	ThemeImage_BtnObjImage_N,
+	ThemeImage_BtnObjImage_F,
+	ThemeImage_BtnObjImage_D,
+	ThemeImage_BtnObjImage_X,
+	ThemeImage_BtnFirstFrame_N,
+	ThemeImage_BtnFirstFrame_F,
+	ThemeImage_BtnFirstFrame_D,
+	ThemeImage_BtnFirstFrame_X,
+	ThemeImage_BtnPreFrame_N,
+	ThemeImage_BtnPreFrame_F,
+	ThemeImage_BtnPreFrame_D,
+	ThemeImage_BtnPreFrame_X,
+	ThemeImage_BtnPlay_N,
+	ThemeImage_BtnPlay_F,
+	ThemeImage_BtnPlay_D,
+	ThemeImage_BtnPlay_X,
+	ThemeImage_BtnNextFrame_N,
+	ThemeImage_BtnNextFrame_F,
+	ThemeImage_BtnNextFrame_D,
+	ThemeImage_BtnNextFrame_X,
+	ThemeImage_BtnLastFrame_N,
+	ThemeImage_BtnLastFrame_F,
+	ThemeImage_BtnLastFrame_D,
+	ThemeImage_BtnLastFrame_X,
+	ThemeImage_BtnLoopPlay_N,
+	ThemeImage_BtnLoopPlay_F,
+	ThemeImage_BtnLoopPlay_D,
+	ThemeImage_BtnLoopPlay_X,
+	ThemeImage_BtnSpinUp_N,
+	ThemeImage_BtnSpinUp_F,
+	ThemeImage_BtnSpinUp_D,
+	ThemeImage_BtnSpinUp_X,
+	ThemeImage_BtnSpinDown_N,
+	ThemeImage_BtnSpinDown_F,
+	ThemeImage_BtnSpinDown_D,
+	ThemeImage_BtnSpinDown_X,
+	ThemeImage_ScrollBk,
+	ThemeImage_ScrollBkHot,
+	ThemeImage_ScrollBottomArrow,
+	ThemeImage_ScrollBottomArrowHot,
+	ThemeImage_ScrollLeftArrow,
+	ThemeImage_ScrollLeftArrowHot,
+	ThemeImage_ScrollRightArrow,
+	ThemeImage_ScrollRightArrowHot,
+	ThemeImage_ScrollThumb,
+	ThemeImage_ScrollThumbHot,
+	ThemeImage_ScrollTopArrow,
+	ThemeImage_ScrollTopArrowHot,
+	ThemeImage_CheckBtn_Bk_N,
+	ThemeImage_CheckBtn_Bk_F,
+	ThemeImage_CheckBtn_Bk_D,
+	ThemeImage_CheckBtn_Bk_X,
+	ThemeImage_CheckBtn_Fore_N,
+	ThemeImage_CheckBtn_Fore_F,
+	ThemeImage_CheckBtn_Fore_D,
+	ThemeImage_CheckBtn_Fore_X,
+	ThemeImage_BtnPathSel_N,
+	ThemeImage_BtnPathSel_F,
+	ThemeImage_BtnPathSel_D,
+	ThemeImage_BtnPathSel_X,
+
+	ThemeImage_TabBtnColor_N,
+	ThemeImage_TabBtnColor_F,
+	ThemeImage_TabBtnColor_D,
+	ThemeImage_TabBtnColor_X,
+	ThemeImage_TabBtnObject_N,
+	ThemeImage_TabBtnObject_F,
+	ThemeImage_TabBtnObject_D,
+	ThemeImage_TabBtnObject_X,
+	ThemeImage_TabBtnSpace_N,
+	ThemeImage_TabBtnSpace_F,
+	ThemeImage_TabBtnSpace_D,
+	ThemeImage_TabBtnSpace_X,
+	ThemeImage_TabBtnEffect_N,
+	ThemeImage_TabBtnEffect_F,
+	ThemeImage_TabBtnEffect_D,
+	ThemeImage_TabBtnEffect_X,
+	ThemeImage_TabBtnText_N,
+	ThemeImage_TabBtnText_F,
+	ThemeImage_TabBtnText_D,
+	ThemeImage_TabBtnText_X,
+
+	ThemeImage_ElementArea,
+
+	ThemeImage_TimeLineTimeCodeBk,
+
+	ThemeImage_TimeLineLeftObjectBkGnd_Nor,
+	ThemeImage_TimeLineLeftObjectBkGnd_Sel,
+	ThemeImage_TimeLineRightObjectBkGnd_Nor,
+	ThemeImage_TimeLineRightObjectBkGnd_Sel,
+	ThemeImage_TimeLineObjectActionBar_TotalLength,
+	ThemeImage_TimeLineObjectActionBar_Nor,
+	ThemeImage_TimeLineObjectActionBar_Sel,
+	ThemeImage_TimeLineObjectActionBar_Group_Nor,
+	ThemeImage_TimeLineObjectActionBar_Group_Sel,
+	ThemeImage_TimeLineObjectActionBar_Lock,
+	ThemeImage_TimeLineObjectLeftAreaBk,
+	ThemeImage_TimeLineObjectRightAreaBk,
+	ThemeImage_TimeLineRulerBk,
+	ThemeImage_TimeLinePointerHeader,
+
+	ThemeImage_SceneLayoutBk,
+	ThemeImage_ColorButtonTranspBmp,
+
+	ThemeImage_ComboxDropDownBtn_U,
+	ThemeImage_ComboxDropDownBtn_D,
+	ThemeImage_ComboxDropDownBtn_F,
+	ThemeImage_ComboxDropDownBtn_X,
+};

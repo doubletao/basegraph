@@ -1,0 +1,125 @@
+struct VS_OUTPUT
+
+{
+	
+	float4 Position : SV_Position;
+	
+	float2 tex : TEXCOORD0;
+
+};
+
+
+cbuffer cb0
+
+{
+	
+	float4x4	color_covert_mat;	// ÑÕÉ«×ª»»¾ØÕó
+	
+	float		field;
+
+};
+
+
+Texture2D <float4> tex;
+
+
+float4  rgba_to_yuayva4224(uint x,uint y)
+
+{
+
+	float4 c = (float4)0;
+
+
+	uint n0 =  uint(fmod(x,6));
+
+	uint n1 =  uint(x/6);
+
+
+	uint x0,x1,x2,x3;
+
+
+	if(4 > n0)
+
+	{
+
+		x0 = n1*8 + n0*2;
+
+		x1 = x0 + 1;
+
+		x2 = 0;
+
+		x3 = 0;
+
+	}
+
+	else
+
+	{
+
+		x0 = n1*8 + (n0-4)*4;
+
+		x1 = x0 + 1;
+
+		x2 = x0 + 2;
+
+		x3 = x0 + 3;
+
+	}
+	
+
+float4 c0 = tex.Load(int3(x0,y,0),0);
+
+	float4 c1 = tex.Load(int3(x1,y,0),0);
+
+	float4 c2 = tex.Load(int3(x2,y,0),0);
+
+	float4 c3 = tex.Load(int3(x3,y,0),0);
+
+
+	if(4 > n0)
+
+	{
+
+		c0 = mul(color_covert_mat, float4(c0.bgr,1));
+
+		c1 = mul(color_covert_mat, float4(c1.bgr,1));
+
+		c = float4(c0.x,c0.y+c1.y,c1.x,c0.z+c1.z);
+
+	}
+
+	else
+
+	{
+
+		c = float4(c0.a,c1.a,c2.a,c3.a);
+
+	}
+
+	return c;
+
+}
+
+
+
+float4 main(in VS_OUTPUT vIN) : SV_Target
+
+{
+	
+	float4 c = 0;
+
+
+	uint x = vIN.Position.x;
+
+	uint y = vIN.Position.y;
+
+
+	y = y*2 + field;
+
+
+	c = rgba_to_yuayva4224(x,y);
+
+
+	return c;
+
+}

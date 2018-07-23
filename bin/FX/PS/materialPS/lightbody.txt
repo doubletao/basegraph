@@ -1,0 +1,22 @@
+{
+	float diff = 0, spec = 0;
+	float4 fLightDiff = 0;
+
+	for( int i = 0; i < #1; i++ )
+	{
+		if( abs(lightParam[i].LightType) < 0.00001 )
+			PointLight( Input, ViewDir, Nn, i, diff, spec );
+		else if( abs( lightParam[i].LightType - 1 ) < 0.00001 )
+			LineLight( ViewDir, Nn, i, diff, spec );
+		else if( abs( lightParam[i].LightType - 2 ) < 0.00001 )
+			SpotLight( Input, ViewDir, Nn, i, diff, spec );
+		fLightDiff  += ( diff * lightParam[i].LightDiff * DiffuseRef );
+		fSpecContrib += spec * lightParam[i].LightSpec * SpeculRef;
+	}
+	//fLightDiff.a = 1;
+	fAmbient = LightAmbient * AmbientRef;
+	fDiffContrib = fDiffContrib * fLightDiff ;
+	fDiffContrib.a = DiffuseRef.a;
+	fSpecContrib.a = SpeculRef.a;
+	fEmissiveContrib = Emissive;	
+}

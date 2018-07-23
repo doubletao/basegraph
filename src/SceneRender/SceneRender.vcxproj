@@ -1,0 +1,457 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9E59FA57-527E-4020-B210-C856453DC2D6}</ProjectGuid>
+    <RootNamespace>SceneRender</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <Keyword>MFCDLLProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\bin\</OutDir>
+    <TargetName>$(ProjectName)D</TargetName>
+    <IncludePath>$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)lib\x64;$(LibraryPath)</LibraryPath>
+    <IntDir>..\..\interdir\debug\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\bin\</OutDir>
+    <IncludePath>$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)lib\x64;$(LibraryPath)</LibraryPath>
+    <IntDir>..\..\interdir\release\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <ModuleDefinitionFile>.\SceneRender.def</ModuleDefinitionFile>
+      <ProgramDatabaseFile>..\..\interdir\Debug\PDB\$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\SceneRender.def</ModuleDefinitionFile>
+      <ProgramDatabaseFile>..\..\interdir\Release\PDB\$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="3DEngineApi\3DInterSection.cpp" />
+    <ClCompile Include="3DEngineApi\3DSpaceConvert.cpp" />
+    <ClCompile Include="3DEngineApi\DXEffectManager.cpp" />
+    <ClCompile Include="3DEngineApi\DXEngineManagerAPI.cpp" />
+    <ClCompile Include="3DEngineApi\DXRenderEngineDX10Api.cpp" />
+    <ClCompile Include="3DEngineApi\DXRenderEngineSoftAPI.cpp" />
+    <ClCompile Include="DXEngineDeviceManager.cpp" />
+    <ClCompile Include="ExportSceneRender.cpp" />
+    <ClCompile Include="SceneRender.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\ExportSceneRender.h" />
+    <ClInclude Include="..\..\include\SceneRender\3DInterSection.h" />
+    <ClInclude Include="..\..\include\SceneRender\3DSpaceConvert.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXEffectManager.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXEngineDataDef.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXEngineManagerAPI.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXRenderEngineDX10Api.h" />
+    <ClInclude Include="..\..\include\SceneRender\DXRenderEngineSoftAPI.h" />
+    <ClInclude Include="DXEngineDeviceManager.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SceneRender.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\SceneRender.rc2" />
+    <None Include="SceneRender.def" />
+    <None Include="shader\GS\WidthLine.GS" />
+    <CustomBuild Include="shader\PS\3DVision.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\blur.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\blur9.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\BoardMaskDepth.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\clearscreen.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\field_add_key.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\keyout.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\makeFrame.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\rgbaframe_to_uyvy.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\rgba_to_yuayva4224.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvyframe_to_rgba.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_bright.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_to_rgba0.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_to_rgba1.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_to_rgba_with_key0.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\color\uyvy_to_rgba_with_key1.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\convert.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\COORD.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\DynamicTex.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\Easy.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\Easy2.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\MaskShader.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\pos_normal_mask_tex.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\pos_normal_tex_tang_bi.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\RenderMask.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\RenderTex.ps">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\screen.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\screenAdjustColor.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\screenMS.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\PS\WidthLineNoTex.PS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T ps_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).pso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).pso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\Cloud2D.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\Cloud3D.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\Easy.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\Easy2.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\EasyTex.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\LineWithGS.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\pie.vs">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\pos_normal_tex.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\pos_normal_tex_tang_bi.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\pos_normal_tex_tang_bi_Instance.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\RenderTex.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="shader\VS\screen.VS">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fxc /T vs_4_0 /Fo "..\\..\\Bin\\FX\\%(Filename).vso" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\\..\\bin\\FX\\%(Filename).vso</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SceneRender.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

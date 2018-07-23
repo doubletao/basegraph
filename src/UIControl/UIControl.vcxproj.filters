@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="UIElementBase">
+      <UniqueIdentifier>{be7f15b4-d1de-4f95-a7a5-e4f23ee2f020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIElementCtrl">
+      <UniqueIdentifier>{2eec88f4-6427-4715-95d5-79044e052ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UITheme">
+      <UniqueIdentifier>{4b664a96-0c7a-4b96-909f-30316d5217fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SkinedWindow">
+      <UniqueIdentifier>{21a04262-ed02-4fc5-a5eb-630616da53e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIElementCombinedCtrl">
+      <UniqueIdentifier>{577b64a6-8b00-4243-8dd5-29f7ab75d5f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIMFControl">
+      <UniqueIdentifier>{e5b6c443-feb5-47aa-a0f1-adbf1e4b173a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="UIControl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinDlgWnd.cpp">
+      <Filter>SkinedWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinFrameWnd.cpp">
+      <Filter>SkinedWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="UITheme.cpp">
+      <Filter>UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="ThemeManager.cpp">
+      <Filter>UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinWnd.cpp">
+      <Filter>SkinedWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="UIDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIThemeDefault.cpp">
+      <Filter>UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="UITextDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIImageDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIColorDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportUIControl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UICheckBtn.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UICheckBtnBar.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButtonBar.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIScrollElement.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIScrollBar.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRectDrawer.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UISliderCtr.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="MsgDispatcher.cpp">
+      <Filter>UIElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEdit.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIStatic.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEditNum.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEditNumSpin.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomEdit.cpp">
+      <Filter>UIMFControl</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomScrollBar.cpp">
+      <Filter>UIMFControl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEditNumSlider.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UICombinedCtrl.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIColorButton.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomComboBox.cpp">
+      <Filter>UIMFControl</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomDropDownWnd.cpp">
+      <Filter>UIMFControl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIComboBox.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UISysFontObtainer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEditMutiLine.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEditPath.cpp">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UIFlexibleScrollBar.cpp">
+      <Filter>UIElementCtrl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="UIControl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UITheme.h">
+      <Filter>UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="ThemeManager.h">
+      <Filter>UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="UIThemeDefault.h">
+      <Filter>UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\SkinDlgWnd.h">
+      <Filter>SkinedWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\SkinFrameWnd.h">
+      <Filter>SkinedWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\SkinWnd.h">
+      <Filter>SkinedWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIElement.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIImageDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UITextDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIButton.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\ThemeResoueceID.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ExportUIControl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UICheckBtn.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIButtonBar.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIScrollElement.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIScrollBar.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIControlDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIRectDrawer.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UISliderCtr.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\MsgDispatcher.h">
+      <Filter>UIElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIEdit.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIStatic.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIEditMutiLine.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIEditNum.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIEditNumSlider.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIEditNumSpin.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIEditPath.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIEditSingleLine.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UICombinedCtrl.h">
+      <Filter>UIElementCombinedCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\CustomEdit.h">
+      <Filter>UIMFControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\CustomScrollBar.h">
+      <Filter>UIMFControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIColorButton.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\CustomComboBox.h">
+      <Filter>UIMFControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\CustomDropDownWnd.h">
+      <Filter>UIMFControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIComboBox.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UISysFontObtainer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\UIControl\UIFlexibleScrollBar.h">
+      <Filter>UIElementCtrl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UIControl.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="res\UIControl.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UIControl.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

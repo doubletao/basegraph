@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7FA0A333-FFA2-4911-A805-7FBA7FC6E9FF}</ProjectGuid>
+    <RootNamespace>UIControl</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <Keyword>MFCDLLProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\bin\</OutDir>
+    <TargetName>$(ProjectName)D</TargetName>
+    <IntDir>..\..\interdir\debug\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\bin\</OutDir>
+    <IntDir>..\..\interdir\release\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <ModuleDefinitionFile>.\UIControl.def</ModuleDefinitionFile>
+      <ProgramDatabaseFile>..\..\interdir\Debug\PDB\$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\UIControl.def</ModuleDefinitionFile>
+      <ProgramDatabaseFile>..\..\interdir\Release\PDB\$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CustomEdit.cpp" />
+    <ClCompile Include="CustomScrollBar.cpp" />
+    <ClCompile Include="ExportUIControl.cpp" />
+    <ClCompile Include="MsgDispatcher.cpp" />
+    <ClCompile Include="SkinDlgWnd.cpp" />
+    <ClCompile Include="SkinFrameWnd.cpp" />
+    <ClCompile Include="SkinWnd.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ThemeManager.cpp" />
+    <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIButtonBar.cpp" />
+    <ClCompile Include="UICheckBtn.cpp" />
+    <ClCompile Include="UICheckBtnBar.cpp" />
+    <ClCompile Include="UIColorButton.cpp" />
+    <ClCompile Include="UIColorDrawer.cpp" />
+    <ClCompile Include="UICombinedCtrl.cpp" />
+    <ClCompile Include="CustomComboBox.cpp" />
+    <ClCompile Include="UIComboBox.cpp" />
+    <ClCompile Include="UIControl.cpp" />
+    <ClCompile Include="UIDrawer.cpp" />
+    <ClCompile Include="CustomDropDownWnd.cpp" />
+    <ClCompile Include="UIEdit.cpp" />
+    <ClCompile Include="UIEditMutiLine.cpp" />
+    <ClCompile Include="UIEditNum.cpp" />
+    <ClCompile Include="UIEditNumSlider.cpp" />
+    <ClCompile Include="UIEditNumSpin.cpp" />
+    <ClCompile Include="UIEditPath.cpp" />
+    <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="UIFlexibleScrollBar.cpp" />
+    <ClCompile Include="UIImageDrawer.cpp" />
+    <ClCompile Include="UIRectDrawer.cpp" />
+    <ClCompile Include="UIScrollBar.cpp" />
+    <ClCompile Include="UIScrollElement.cpp" />
+    <ClCompile Include="UISliderCtr.cpp" />
+    <ClCompile Include="UIStatic.cpp" />
+    <ClCompile Include="UISysFontObtainer.cpp" />
+    <ClCompile Include="UITextDrawer.cpp" />
+    <ClCompile Include="UITheme.cpp" />
+    <ClCompile Include="UIThemeDefault.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\ExportUIControl.h" />
+    <ClInclude Include="..\..\include\UIControl\CustomEdit.h" />
+    <ClInclude Include="..\..\include\UIControl\CustomScrollBar.h" />
+    <ClInclude Include="..\..\include\UIControl\MsgDispatcher.h" />
+    <ClInclude Include="..\..\include\UIControl\SkinDlgWnd.h" />
+    <ClInclude Include="..\..\include\UIControl\SkinFrameWnd.h" />
+    <ClInclude Include="..\..\include\UIControl\SkinWnd.h" />
+    <ClInclude Include="..\..\include\UIControl\ThemeResoueceID.h" />
+    <ClInclude Include="..\..\include\UIControl\UIButton.h" />
+    <ClInclude Include="..\..\include\UIControl\UIButtonBar.h" />
+    <ClInclude Include="..\..\include\UIControl\UICheckBtn.h" />
+    <ClInclude Include="..\..\include\UIControl\UICheckBtnBar.h" />
+    <ClInclude Include="..\..\include\UIControl\UIColorButton.h" />
+    <ClInclude Include="..\..\include\UIControl\UIColorDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UICombinedCtrl.h" />
+    <ClInclude Include="..\..\include\UIControl\CustomComboBox.h" />
+    <ClInclude Include="..\..\include\UIControl\UIComboBox.h" />
+    <ClInclude Include="..\..\include\UIControl\UIControlDef.h" />
+    <ClInclude Include="..\..\include\UIControl\UIDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\CustomDropDownWnd.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEdit.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditMutiLine.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditNum.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditNumSlider.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditNumSpin.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditPath.h" />
+    <ClInclude Include="..\..\include\UIControl\UIEditSingleLine.h" />
+    <ClInclude Include="..\..\include\UIControl\UIElement.h" />
+    <ClInclude Include="..\..\include\UIControl\UIFlexibleScrollBar.h" />
+    <ClInclude Include="..\..\include\UIControl\UIImageDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UIRectDrawer.h" />
+    <ClInclude Include="..\..\include\UIControl\UIScrollBar.h" />
+    <ClInclude Include="..\..\include\UIControl\UIScrollElement.h" />
+    <ClInclude Include="..\..\include\UIControl\UISliderCtr.h" />
+    <ClInclude Include="..\..\include\UIControl\UIStatic.h" />
+    <ClInclude Include="..\..\include\UIControl\UITextDrawer.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="ThemeManager.h" />
+    <ClInclude Include="UIControl.h" />
+    <ClInclude Include="UISysFontObtainer.h" />
+    <ClInclude Include="UITheme.h" />
+    <ClInclude Include="UIThemeDefault.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\UIControl.rc2" />
+    <None Include="UIControl.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UIControl.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

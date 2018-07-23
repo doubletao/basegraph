@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F7EB57E0-9C5A-471F-972A-2E9E19FB2CEB}</ProjectGuid>
+    <RootNamespace>DataRender</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <Keyword>MFCDLLProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\bin\</OutDir>
+    <TargetName>$(ProjectName)D</TargetName>
+    <IntDir>..\..\interdir\debug\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\bin\</OutDir>
+    <IntDir>..\..\interdir\release\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <ModuleDefinitionFile>.\DataRender.def</ModuleDefinitionFile>
+      <ProgramDatabaseFile>..\..\interdir\Debug\PDB\$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\DataRender.def</ModuleDefinitionFile>
+      <ProgramDatabaseFile>..\..\interdir\Release\PDB\$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>..\..\lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>..\..\lib\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Algorithm\3DGeometry.cpp" />
+    <ClCompile Include="Algorithm\3DPieModeling.cpp" />
+    <ClCompile Include="Algorithm\AlgorithmRip.cpp" />
+    <ClCompile Include="Algorithm\Arc2BezierAPI.cpp" />
+    <ClCompile Include="Algorithm\BevelPoly.cpp" />
+    <ClCompile Include="Algorithm\LineAPI.cpp" />
+    <ClCompile Include="Algorithm\OffsetCurve.cpp" />
+    <ClCompile Include="Algorithm\ShapeForm.cpp" />
+    <ClCompile Include="Algorithm\TriangulateApp.cpp" />
+    <ClCompile Include="Calculator2DLayer.cpp" />
+    <ClCompile Include="CalculatorFactory.cpp" />
+    <ClCompile Include="CalculatorManager.cpp" />
+    <ClCompile Include="CalculatorTitleWord.cpp" />
+    <ClCompile Include="DataBufferManager.cpp" />
+    <ClCompile Include="DataRender.cpp" />
+    <ClCompile Include="DataRenderDataDef.cpp" />
+    <ClCompile Include="DataRenderUtityFunc.cpp" />
+    <ClCompile Include="DrawTextDef.cpp" />
+    <ClCompile Include="ExportDataRender.cpp" />
+    <ClCompile Include="CalculatorImage.cpp" />
+    <ClCompile Include="MaterialDef.cpp" />
+    <ClCompile Include="ObjectBuffer.cpp" />
+    <ClCompile Include="ObjectCalculator.cpp" />
+    <ClCompile Include="SimpleSpaceConvert.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Typeset\TextDrawer.cpp" />
+    <ClCompile Include="Typeset\TextParagraph.cpp" />
+    <ClCompile Include="Typeset\TextTypeset.cpp" />
+    <ClCompile Include="Typeset\TextTypesetDataAPI.cpp" />
+    <ClCompile Include="Typeset\TextUsp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\DataRender\3DGeometry.h" />
+    <ClInclude Include="..\..\include\DataRender\3DPieModeling.h" />
+    <ClInclude Include="..\..\include\DataRender\AlgorithmRip.h" />
+    <ClInclude Include="..\..\include\DataRender\Arc2BezierAPI.h" />
+    <ClInclude Include="..\..\include\DataRender\BevelPoly.h" />
+    <ClInclude Include="..\..\include\DataRender\DataRenderDataDef.h" />
+    <ClInclude Include="..\..\include\DataRender\DataRenderUtityFunc.h" />
+    <ClInclude Include="..\..\include\DataRender\DrawTextDef.h" />
+    <ClInclude Include="..\..\include\DataRender\LineAPI.h" />
+    <ClInclude Include="..\..\include\DataRender\MaterialDef.h" />
+    <ClInclude Include="..\..\include\DataRender\OffsetCurve.h" />
+    <ClInclude Include="..\..\include\DataRender\RipRender.h" />
+    <ClInclude Include="..\..\include\DataRender\ShapeForm.h" />
+    <ClInclude Include="..\..\include\DataRender\SimpleSpaceConvert.h" />
+    <ClInclude Include="..\..\include\DataRender\TextDrawer.h" />
+    <ClInclude Include="..\..\include\DataRender\TriangulateApp.h" />
+    <ClInclude Include="..\..\include\ExportDataRender.h" />
+    <ClInclude Include="Calculator2DLayer.h" />
+    <ClInclude Include="CalculatorFactory.h" />
+    <ClInclude Include="CalculatorManager.h" />
+    <ClInclude Include="CalculatorTitleWord.h" />
+    <ClInclude Include="DataBufferManager.h" />
+    <ClInclude Include="DataRender.h" />
+    <ClInclude Include="CalculatorImage.h" />
+    <ClInclude Include="ObjectBuffer.h" />
+    <ClInclude Include="ObjectCalculator.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Typeset\TextParagraph.h" />
+    <ClInclude Include="Typeset\TextTypeset.h" />
+    <ClInclude Include="Typeset\TextTypesetDataAPI.h" />
+    <ClInclude Include="Typeset\TextUsp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Algorithm\RipRender.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ml64.exe /c  /nologo /Fo"$(IntDir)\%(Filename).obj" /W3 /Zi /errorReport:prompt  /Ta Algorithm/%(Filename)%(Extension)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64.exe /c  /nologo /Fo"$(IntDir)\%(Filename).obj" /W3 /Zi /errorReport:prompt  /Ta Algorithm/%(Filename)%(Extension)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+    </CustomBuild>
+    <None Include="DataRender.def" />
+    <None Include="res\DataRender.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DataRender.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
