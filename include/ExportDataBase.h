@@ -12,6 +12,7 @@
 #endif // BASEGRAPH_AUTO_LOAD
 #endif // BASEGRAPH_COMMON_EXPORTS
 
+#include "DataBase\DataTypeDefDetail.h"
 #include "DataBase\DataTypeDef.h"
 
 //物件管理

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "DataBase\DataTypeDefDetail.h"
 #include "DataBase\DataTypeDef.h"
 
 

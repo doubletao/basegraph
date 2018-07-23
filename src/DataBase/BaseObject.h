@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
+#include "DataBase\DataTypeDefDetail.h"
 #include "DataBase\DataTypeDef.h"
 using BaseGraph_Common::Value;
 
