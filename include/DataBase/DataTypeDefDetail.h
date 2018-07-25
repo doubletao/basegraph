@@ -9,17 +9,17 @@ namespace BaseGraph_DataBase
 		ITEM_FORMTYPE_3DIN2D,
 		ITEM_FORMTYPE_LIGHT,
 		ITEM_FORMTYPE_CAMERA,
-		ITEM_FORMTYPE_2DRENDERBY3D,//ä»¥ä¸‰ç»´çš„æ–¹å¼æ¸²æŸ“2Dä¿æŒçºµæ·±æ•ˆæœå‡ºæ¥
+		ITEM_FORMTYPE_2DRENDERBY3D,//ÒÔÈıÎ¬µÄ·½Ê½äÖÈ¾2D±£³Ö×İÉîĞ§¹û³öÀ´
 		ITEM_FORMTYPE_UNKNOW,
 	};
 
 	enum GRAPH_ART_PROC_TYPE
 	{
-		ARTNULL,             //æ— 
-		CONCAVO,			//å‡¹
-		CONVEX,				//å‡¸
-		BRIGHT_EDGE,		//äº®è¾¹
-		BEVAL_3D 			//ç«‹ä½“è¾¹
+		ARTNULL,             //ÎŞ
+		CONCAVO,			//°¼
+		CONVEX,				//Í¹
+		BRIGHT_EDGE,		//ÁÁ±ß
+		BEVAL_3D 			//Á¢Ìå±ß
 	};
 
 	struct metallight : public BaseGraph_Common::ValueAbleInterface
@@ -52,12 +52,12 @@ namespace BaseGraph_DataBase
 
 	struct artinfo : public BaseGraph_Common::ValueAbleInterface
 	{
-		GRAPH_ART_PROC_TYPE		type;		//æ•ˆæœç±»å‹
-		DWORD					cv_height;   //å‡¹å‡¸é«˜åº¦       
-		float 					cu_angle;	//å‡¹å‡¸è§’åº¦
-		int 					soft;		//è™šè¾¹å®½
-		DWORD					color;		//å‡¹å‡¸å•è‰²,ä¸é€æ˜
-		metalinfo				metal;		//ç«‹ä½“è¾¹
+		GRAPH_ART_PROC_TYPE		type;		//Ğ§¹ûÀàĞÍ
+		DWORD					cv_height;   //°¼Í¹¸ß¶È       
+		float 					cu_angle;	//°¼Í¹½Ç¶È
+		int 					soft;		//Ğé±ß¿í
+		DWORD					color;		//°¼Í¹µ¥É«,²»Í¸Ã÷
+		metalinfo				metal;		//Á¢Ìå±ß
 		BASEGRAPH_DATABASE_API artinfo();
 		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
@@ -87,7 +87,7 @@ namespace BaseGraph_DataBase
 		int		soft;
 		int		linestyle;
 		float	width;
-		float   interval;//ç‚¹çº¿çš„é—´è·
+		float   interval;//µãÏßµÄ¼ä¾à
 		DWORD	effect_type;
 		int		effect_width;
 		DWORD	avcolor;
@@ -102,7 +102,7 @@ namespace BaseGraph_DataBase
 
 	struct shadowinfo : public BaseGraph_Common::ValueAbleInterface
 	{
-		///æ³¨æ„æº¢å‡º
+		///×¢ÒâÒç³ö
 		int		disable;
 		int 	soft;
 		int		offsetx;
@@ -142,9 +142,9 @@ namespace BaseGraph_DataBase
 
 	struct lightinfo : public BaseGraph_Common::ValueAbleInterface
 	{
-		DWORD ambience;	//ç¯é•œå•è‰²,ä¸é€æ˜
-		DWORD ambience_degree;  //æ˜äº®ç¨‹åº¦1-100
-		DWORD reflectcolor;		//åå°„å•è‰²,ä¸é€æ˜
+		DWORD ambience;	//»·¾µµ¥É«,²»Í¸Ã÷
+		DWORD ambience_degree;  //Ã÷ÁÁ³Ì¶È1-100
+		DWORD reflectcolor;		//·´Éäµ¥É«,²»Í¸Ã÷
 		DWORD dwReverse1;
 		DWORD dwReverse2;
 		TCHAR szPath[512];
@@ -188,7 +188,7 @@ namespace BaseGraph_DataBase
 		float speed;
 		float offsetx;
 		float offsety;
-		float vRunDirx;		// ä»¥æ­¤è¡¨ç¤ºæ–¹å‘è§’åº¦ï¼ŒYæš‚ä¸ç”¨
+		float vRunDirx;		// ÒÔ´Ë±íÊ¾·½Ïò½Ç¶È£¬YÔİ²»ÓÃ
 		float vRunDiry;
 		float scalex;
 		float scaley;
