@@ -126,7 +126,6 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CommonFunction.cpp" />
     <ClCompile Include="CommonDataContainer.cpp" />
-    <ClCompile Include="DataDef.cpp" />
     <ClCompile Include="ExportCommon.cpp" />
     <ClCompile Include="MathOp\BezierDef.cpp" />
     <ClCompile Include="MathOp\CommonUtility.cpp" />

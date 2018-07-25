@@ -36,9 +36,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DataDef.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CommonFunction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
