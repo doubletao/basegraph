@@ -536,7 +536,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_PowerFill_Q(OUT DWORD* pDes,		// 目标
 
 // 采用递归法对浮点颜色进行插值
 // 公式 f(x) = A * (x - B) + C		A = 0.5 * (c1 - c0) / (fPEnd - fPStart)
-BASEGRAPH_COMMON_API void SYBGRA32_LineSYAR_Recursive(OUT DWORD* pDes,		// 目标
+BASEGRAPH_COMMON_API void SYBGRA32_LineBaseAR_Recursive(OUT DWORD* pDes,		// 目标
 												   IN float* pfCr0,		// 起点颜色
 												   IN float* pfCr1,		// 终点颜色
 												   IN float fX,			// X 的起始点（像素索引）
@@ -551,12 +551,12 @@ BASEGRAPH_COMMON_API void SYBGRA32_LineSYAR_Recursive(OUT DWORD* pDes,		// 目标
 // 新接口（ Buffer 信息存在结构里）
 
 // 采用双线性拉伸
-BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标 Buffer
+BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// 目标 Buffer
 								     IN int nDesX,
 									 IN int nDesY,
 									 IN int nDesWidth,					// 目标操作大小
 									 IN int nDesHeight,
-									 IN SYBufferDef32* pSrcBuf,			// 源 Buffer
+									 IN CommonBufferDef32* pSrcBuf,			// 源 Buffer
 									 IN int nSrcX,
 									 IN int nSrcY,
 									 IN int nSrcWidth,					// 源操作大小
@@ -606,12 +606,12 @@ BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标 Buf
 }
 
 // 采用双线性拉伸
-BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标 Buffer
+BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// 目标 Buffer
 									     IN int nDesX,
 										 IN int nDesY,
 										 IN int nDesWidth,					// 目标操作大小
 										 IN int nDesHeight,
-										 IN SYBufferDef32* pSrcBuf,			// 源 Buffer
+										 IN CommonBufferDef32* pSrcBuf,			// 源 Buffer
 										 IN int nSrcX,
 										 IN int nSrcY,
 										 IN int nSrcWidth,					// 源操作大小
@@ -661,12 +661,12 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标
 }
 
 // 采用权重总和的均值拉伸
-BASEGRAPH_COMMON_API BOOL SY_StretchBlt_Mean(IN OUT SYBufferDef32* pDesBuf,		// 目标 Buffer
+BASEGRAPH_COMMON_API BOOL SY_StretchBlt_Mean(IN OUT CommonBufferDef32* pDesBuf,		// 目标 Buffer
 											IN int nDesX,
 											IN int nDesY,
 											IN int nDesWidth,					// 目标操作大小
 											IN int nDesHeight,
-											IN SYBufferDef32* pSrcBuf,			// 源 Buffer
+											IN CommonBufferDef32* pSrcBuf,			// 源 Buffer
 											IN int nSrcX,
 											IN int nSrcY,
 											IN int nSrcWidth,					// 源操作大小
@@ -851,16 +851,16 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt(IN OUT DWORD* pdwDesBuffer,		// 目标缓存
 // RightTop(1), RightBottom(2), LeftBottom(3).
 // The coordinates are formed by 4 floats cell, like this: struct vc{ float x, y, z, w; },
 // it's compitable with "vector4f" declared in the project "SYCommon\TPVector".
-// To get low coupling between "SYCommon" and "SYBufferOperate", this declaration
-// is very important, and it makes "SYBufferOperate" independent.
-BASEGRAPH_COMMON_API BOOL SY_BufferTransform(IN OUT SYBufferDef32* pDesBuf,			// 目标缓存
+// To get low coupling between "SYCommon" and "CommonBufferOperate", this declaration
+// is very important, and it makes "CommonBufferOperate" independent.
+BASEGRAPH_COMMON_API BOOL SY_BufferTransform(IN OUT CommonBufferDef32* pDesBuf,			// 目标缓存
 											IN int nOffsetLeft,						// 目标缓存在投影平面坐标系下的位置
 											IN int nOffsetTop,
-											IN SYBufferDef32* pSrcBuf,				// 源缓存
+											IN CommonBufferDef32* pSrcBuf,				// 源缓存
 											IN int nSrcWidth,						// 源操作区域大小（相对于缓存起点而言）
 											IN int nSrcHeight,
 											IN void* pvfXYZW,						// 源操作区域的四个角点经过一系列变换后的顶点数据（必须有四个，顺序为(0,0),(w,0),(w,h),(h,0)）
-											IN SYBufferDef32* pMaskBuf)				// 掩码缓存
+											IN CommonBufferDef32* pMaskBuf)				// 掩码缓存
 {
 	if ((pDesBuf == NULL) || (pDesBuf->m_dwBuffer == NULL)
 		|| (pSrcBuf == NULL) || (pSrcBuf->m_dwBuffer == NULL)
@@ -955,22 +955,22 @@ struct STU_deltaUV
 	float dyv; //目标buffer中y方向单位长度增量引起的源buffer中位置的y方向增量
 };
 
-inline int SYBufferDef32_AreaW(const SYBufferDef32* p)
+inline int CommonBufferDef32_AreaW(const CommonBufferDef32* p)
 {
 	return (int)(p->m_rtBound.right - p->m_rtBound.left);
 }
 
-inline int SYBufferDef32_AreaH(const SYBufferDef32* p)
+inline int CommonBufferDef32_AreaH(const CommonBufferDef32* p)
 {
 	return (int)(p->m_rtBound.bottom - p->m_rtBound.top);
 }
 
-inline int SYBufferDef32_AreaX(const SYBufferDef32* p)
+inline int CommonBufferDef32_AreaX(const CommonBufferDef32* p)
 {
 	return (int)(p->m_nOriginX + p->m_rtBound.left);
 }
 
-inline int SYBufferDef32_AreaY(const SYBufferDef32* p)
+inline int CommonBufferDef32_AreaY(const CommonBufferDef32* p)
 {
 	return (int)(p->m_nOriginY + p->m_rtBound.top);
 }
@@ -995,14 +995,14 @@ inline int SYBufferDef32_AreaY(const SYBufferDef32* p)
 	}while(false)
 
 void RefillTransparentPixel(DWORD& left_top, DWORD& right_top, DWORD& left_bottom, DWORD& right_bottom);
-BOOL SY_BufferTransformLineSYAR_cuda(IN OUT SYBufferDef32* pDesBuf,			// 目标缓存
+BOOL SY_BufferTransformLineBaseAR_cuda(IN OUT CommonBufferDef32* pDesBuf,			// 目标缓存
 	IN int nOffsetLeft,						// 目标缓存在投影平面坐标系下的位置
 	IN int nOffsetTop,
-	IN SYBufferDef32* pSrcBuf,				// 源缓存
+	IN CommonBufferDef32* pSrcBuf,				// 源缓存
 	IN int nSrcWidth,							// 源操作区域大小（相对于缓存起点而言）
 	IN int nSrcHeight,
 	IN vector4f* pvfXYZW,					// 源操作区域的四个角点经过一系列变换后的顶点数据（必须有四个，顺序为(0,0),(w,0),(w,h),(h,0)）
-	IN SYBufferDef32* pMaskBuf);				// 掩码缓存
+	IN CommonBufferDef32* pMaskBuf);				// 掩码缓存
 
 DWORD Bilinear_interpolate(DWORD left_top,			//左上角插值点颜色，RGBA
 	DWORD right_top,			//左上角插值点颜色，RGBA
@@ -1360,7 +1360,7 @@ void Fill_inner_pixel(DWORD* t_pDst, DWORD* t_pSrc, Edge_info* edge_info,
 
 //------------------------------------------------------------------------
 //测试：填充目标区域的边界方便观察
-void Test_FillDstBound(SYBufferDef32* pDesBuf)
+void Test_FillDstBound(CommonBufferDef32* pDesBuf)
 {
 	DWORD* dst_head = pDesBuf->m_dwBuffer;
 	int width = pDesBuf->m_nWidth;
@@ -1377,7 +1377,7 @@ void Test_FillDstBound(SYBufferDef32* pDesBuf)
 	memset(dst_head, -1, sizeof(DWORD)*width);
 }
 
-void CalcMinBoundingBox(LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, SYBufferDef32* pSrcBuf, SYBufferDef32* pDesBuf, int nOffsetLeft, int nOffsetTop)
+void CalcMinBoundingBox(LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, CommonBufferDef32* pSrcBuf, CommonBufferDef32* pDesBuf, int nOffsetLeft, int nOffsetTop)
 {
 	//------------------------------------------------------------------------
 	// 计算四个目标点的最小包围矩形box的左上角点坐标和长宽
@@ -1399,12 +1399,12 @@ void CalcMinBoundingBox(LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, SYBufferDef32
 	{
 		float dx = fabs(t_pvfXYZW[0].x - t_pvfXYZW[1].x);
 		float dy = fabs(t_pvfXYZW[0].y - t_pvfXYZW[1].y);
-		int dlen = CEIL_F2I(sqrtf(dx*dx + dy*dy) / SYBufferDef32_AreaW(pSrcBuf));
+		int dlen = CEIL_F2I(sqrtf(dx*dx + dy*dy) / CommonBufferDef32_AreaW(pSrcBuf));
 		box.left -= dlen;
 		box.width += dlen << 1;
 		dx = fabs(t_pvfXYZW[2].x - t_pvfXYZW[1].x);
 		dy = fabs(t_pvfXYZW[2].y - t_pvfXYZW[1].y);
-		dlen = CEIL_F2I(sqrtf(dx*dx + dy*dy) / SYBufferDef32_AreaH(pSrcBuf));
+		dlen = CEIL_F2I(sqrtf(dx*dx + dy*dy) / CommonBufferDef32_AreaH(pSrcBuf));
 		box.top -= dlen;
 		box.height += dlen << 1;
 	}
@@ -1438,7 +1438,7 @@ void CalcMinBoundingBox(LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, SYBufferDef32
 
 //------------------------------------------------------------------------
 //测试：把源图像直接填充到目标区域看看
-void Test_FillDstWithSrc(DWORD* t_pSrc, DWORD* t_pDst, SYBufferDef32* pSrcBuf, SYBufferDef32* pDesBuf)
+void Test_FillDstWithSrc(DWORD* t_pSrc, DWORD* t_pDst, CommonBufferDef32* pSrcBuf, CommonBufferDef32* pDesBuf)
 {
 	DWORD* pSrc = NULL;
 	DWORD* pDst = NULL;
@@ -1464,7 +1464,7 @@ void Test_FillDstWithSrc(DWORD* t_pSrc, DWORD* t_pDst, SYBufferDef32* pSrcBuf, S
 
 //------------------------------------------------------------------------
 //计算最小包围矩形box的左上角点的U,V和全局的dU,dV（因为是线性变换，所以全局dUdV是相同的）
-void CalcDeltaUV(SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv)
+void CalcDeltaUV(CommonBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv)
 {
 	/* mathematica中求解得到的符号解
 	x0\x1\x3\y0\y1\y3是变换后四个角点的坐标
@@ -1498,8 +1498,8 @@ void CalcDeltaUV(SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &b
 	ult->	mx * (xlt (-y0+y3)+x3 (y0-ylt)+x0 (-y3+ylt))/denominator,
 	vlt->	my * (xlt (y0-y1)+x0 (y1-ylt)+x1 (-y0+ylt)))/denominator
 	*/
-	const int max_x = SYBufferDef32_AreaW(pSrcBuf) - 1;
-	const int max_y = SYBufferDef32_AreaH(pSrcBuf) - 1;
+	const int max_x = CommonBufferDef32_AreaW(pSrcBuf) - 1;
+	const int max_y = CommonBufferDef32_AreaH(pSrcBuf) - 1;
 	const float& x0 = t_pvfXYZW[0].x;
 	const float& y0 = t_pvfXYZW[0].y;
 	const float& x1 = t_pvfXYZW[1].x;
@@ -1521,7 +1521,7 @@ void CalcDeltaUV(SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &b
 
 //------------------------------------------------------------------------
 //计算最小包围矩形box的左上角点的U,V和全局的dU,dV（因为是线性变换，所以全局dUdV是相同的）,采用[0,1)区间规范化的结果
-void CalcDeltaUVandLTUV(SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv, float& ult, float& vlt)
+void CalcDeltaUVandLTUV(CommonBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv, float& ult, float& vlt)
 {
 	const int max_x = pSrcBuf->m_nWidth - 1;
 	const int max_y = pSrcBuf->m_nHeight - 1;
@@ -1551,14 +1551,14 @@ void CalcDeltaUVandLTUV(SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_
 //完全点：指其UV映射的坐标在源buffer中都是有效的坐标，不会超出边界
 //之所以没有使用之前的行扫描并根据u和v的取值范围反算出完全点区间，是由于
 //这个反算过程中有除法，相当影响效率的
-void CalcEdge(Edge_info* edge_info, STU_Rect &box, SYBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_deltaUV &duv)
+void CalcEdge(Edge_info* edge_info, STU_Rect &box, CommonBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_deltaUV &duv)
 {
 	memset(edge_info, 0, sizeof(Edge_info)*box.height);
 
-	const int src_width = SYBufferDef32_AreaW(pSrcBuf);
-	const int src_height = SYBufferDef32_AreaH(pSrcBuf);
-	const int src_x = SYBufferDef32_AreaX(pSrcBuf);
-	const int src_y = SYBufferDef32_AreaY(pSrcBuf);
+	const int src_width = CommonBufferDef32_AreaW(pSrcBuf);
+	const int src_height = CommonBufferDef32_AreaH(pSrcBuf);
+	const int src_x = CommonBufferDef32_AreaX(pSrcBuf);
+	const int src_y = CommonBufferDef32_AreaY(pSrcBuf);
 	//遍历四条边，计算每行的完全点坐标范围。每条边只处理起点和中间部分，不处理终点
 	const struct { int idx; float u; float v; } vertex_index[5] =
 	{
@@ -1770,15 +1770,15 @@ void RefillTransparentPixel(DWORD& left_top, DWORD& right_top, DWORD& left_botto
 
 //------------------------------------------------------------------------
 //遍历边界并渲染边缘
-void RenderEdge(SYBufferDef32* pSrcBuf, SYBufferDef32* pDesBuf, Edge_info* edge_info, DWORD* t_pDst, STU_Rect &box, DWORD* t_pSrc, STU_deltaUV &duv)
+void RenderEdge(CommonBufferDef32* pSrcBuf, CommonBufferDef32* pDesBuf, Edge_info* edge_info, DWORD* t_pDst, STU_Rect &box, DWORD* t_pSrc, STU_deltaUV &duv)
 {
 	const int src_buff_width = pSrcBuf->m_nPitch >> 2; //源buffer的原始区域宽度
 	const int dst_buff_width = pDesBuf->m_nPitch >> 2; //目标buffer的原始区域宽度
 
-	const int src_width = SYBufferDef32_AreaW(pSrcBuf);
-	const int src_height = SYBufferDef32_AreaH(pSrcBuf);
-	const int src_x = SYBufferDef32_AreaX(pSrcBuf);
-	const int src_y = SYBufferDef32_AreaY(pSrcBuf);
+	const int src_width = CommonBufferDef32_AreaW(pSrcBuf);
+	const int src_height = CommonBufferDef32_AreaH(pSrcBuf);
+	const int src_x = CommonBufferDef32_AreaX(pSrcBuf);
+	const int src_y = CommonBufferDef32_AreaY(pSrcBuf);
 
 	Edge_info* p_cur_edge_info = edge_info;
 	DWORD* dst_line_head = t_pDst;
@@ -1919,14 +1919,14 @@ void RenderEdge(SYBufferDef32* pSrcBuf, SYBufferDef32* pDesBuf, Edge_info* edge_
 
 //------------------------------------------------------------------------
 //计算源区域buffer的起始点指针
-DWORD* CalcSrcHead(SYBufferDef32* pSrcBuf)
+DWORD* CalcSrcHead(CommonBufferDef32* pSrcBuf)
 {
-	return pSrcBuf->m_dwBuffer + (SYBufferDef32_AreaY(pSrcBuf)*pSrcBuf->m_nPitch / sizeof(DWORD) + SYBufferDef32_AreaX(pSrcBuf));
+	return pSrcBuf->m_dwBuffer + (CommonBufferDef32_AreaY(pSrcBuf)*pSrcBuf->m_nPitch / sizeof(DWORD) + CommonBufferDef32_AreaX(pSrcBuf));
 }
 
 //------------------------------------------------------------------------
 //计算目标区域buffer的起始点指针
-DWORD* CalcDstHead(SYBufferDef32* pDesBuf, STU_Rect &box, int nOffsetTop, int nOffsetLeft)
+DWORD* CalcDstHead(CommonBufferDef32* pDesBuf, STU_Rect &box, int nOffsetTop, int nOffsetLeft)
 {
 	DWORD* t_pDst = pDesBuf->m_dwBuffer;
 	{
@@ -1939,7 +1939,7 @@ DWORD* CalcDstHead(SYBufferDef32* pDesBuf, STU_Rect &box, int nOffsetTop, int nO
 
 //------------------------------------------------------------------------
 //计算是否是不放大并且足够小的buffer，如果是则可以不使用双线性插值并且不渲染边界
-bool JudgeSimpleTrans(STU_Rect &box, LPSYINNERVERTEX &t_pvfXYZW, SYBufferDef32* pSrcBuf)
+bool JudgeSimpleTrans(STU_Rect &box, LPSYINNERVERTEX &t_pvfXYZW, CommonBufferDef32* pSrcBuf)
 {
 	bool bSimpleTrans = false;
 	if (box.width < 55 && box.height < 55)
@@ -1957,10 +1957,10 @@ bool JudgeSimpleTrans(STU_Rect &box, LPSYINNERVERTEX &t_pvfXYZW, SYBufferDef32* 
 	return bSimpleTrans;
 }
 
-BASEGRAPH_COMMON_API BOOL SY_BufferTransformLinear(IN OUT SYBufferDef32 * pDesBuf, IN int nOffsetLeft, IN int nOffsetTop, IN SYBufferDef32 * pSrcBuf, IN int nSrcWidth, IN int nSrcHeight, IN vector4f * pvfXYZW, IN SYBufferDef32 * pMaskBuf)
+BASEGRAPH_COMMON_API BOOL SY_BufferTransformLinear(IN OUT CommonBufferDef32 * pDesBuf, IN int nOffsetLeft, IN int nOffsetTop, IN CommonBufferDef32 * pSrcBuf, IN int nSrcWidth, IN int nSrcHeight, IN vector4f * pvfXYZW, IN CommonBufferDef32 * pMaskBuf)
 {
-	if (SYBufferDef32_AreaW(pDesBuf) <= 0 || SYBufferDef32_AreaH(pDesBuf) <= 0
-		|| SYBufferDef32_AreaW(pSrcBuf) <= 0 || SYBufferDef32_AreaH(pSrcBuf) <= 0)
+	if (CommonBufferDef32_AreaW(pDesBuf) <= 0 || CommonBufferDef32_AreaH(pDesBuf) <= 0
+		|| CommonBufferDef32_AreaW(pSrcBuf) <= 0 || CommonBufferDef32_AreaH(pSrcBuf) <= 0)
 	{
 		//assert(0 && "输入buffer或者输出buffer的裁剪后区域高或者宽不大于0");
 		return FALSE;

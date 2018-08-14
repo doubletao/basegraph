@@ -11,19 +11,19 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 //////////////////////////////////////////////////////////////////////////
-void SYBufferDef32_Init(SYBufferDef32* pBuffer32)
+void CommonBufferDef32_Init(CommonBufferDef32* pBuffer32)
 {
-	memset(pBuffer32,0,sizeof(SYBufferDef32));
+	memset(pBuffer32,0,sizeof(CommonBufferDef32));
 }
 
-void SYBufferDef32_Release(SYBufferDef32* pBuffer32)
+void CommonBufferDef32_Release(CommonBufferDef32* pBuffer32)
 {
 	if (pBuffer32->m_dwBuffer)
 		delete[] pBuffer32->m_dwBuffer;
-	memset(pBuffer32,0,sizeof(SYBufferDef32));
+	memset(pBuffer32,0,sizeof(CommonBufferDef32));
 }
 
-void SYBufferDef32_Reset(SYBufferDef32* pBuffer32, int nWidth, int nHeight)
+void CommonBufferDef32_Reset(CommonBufferDef32* pBuffer32, int nWidth, int nHeight)
 {
 	if (pBuffer32->m_nWidth != nWidth
 		|| pBuffer32->m_nHeight != nHeight)
@@ -48,7 +48,7 @@ void SYBufferDef32_Reset(SYBufferDef32* pBuffer32, int nWidth, int nHeight)
 	}
 }
 
-void SYBufferDef32_CopyParam(SYBufferDef32* pDes, SYBufferDef32* pSrc)
+void CommonBufferDef32_CopyParam(CommonBufferDef32* pDes, CommonBufferDef32* pSrc)
 {
 	pDes->m_nWidth = pSrc->m_nWidth;
 	pDes->m_nHeight = pSrc->m_nHeight;
@@ -60,7 +60,7 @@ void SYBufferDef32_CopyParam(SYBufferDef32* pDes, SYBufferDef32* pSrc)
 	pDes->m_fScale = pSrc->m_fScale;
 }
 
-BASEGRAPH_COMMON_API BOOL SYBufferDef32_Compare(SYBufferDef32* pBuff1, SYBufferDef32* pBuff2)
+BASEGRAPH_COMMON_API BOOL CommonBufferDef32_Compare(CommonBufferDef32* pBuff1, CommonBufferDef32* pBuff2)
 {
 	if (pBuff1 == NULL || pBuff2 == NULL)
 	{
@@ -85,7 +85,7 @@ BASEGRAPH_COMMON_API BOOL SYBufferDef32_Compare(SYBufferDef32* pBuff1, SYBufferD
 }
 
 ///≤Ÿ◊˜buffer
-CSYBuffer::CSYBuffer()
+CCommonBuffer::CCommonBuffer()
 {
 	m_bUsed = FALSE;
 	m_dwBuffer = NULL;
@@ -108,7 +108,7 @@ CSYBuffer::CSYBuffer()
 	InitializeCriticalSection(&m_Lock);
 
 }
-CSYBuffer::CSYBuffer(int nWidth, int nHeight,LPDWORD lpData)
+CCommonBuffer::CCommonBuffer(int nWidth, int nHeight,LPDWORD lpData)
 {
 	m_dwBuffer = lpData;
 	m_nWidth = nWidth;
@@ -133,7 +133,7 @@ CSYBuffer::CSYBuffer(int nWidth, int nHeight,LPDWORD lpData)
 	InitializeCriticalSection(&m_Lock);
 
 }
-CSYBuffer::CSYBuffer(int nWidth, int nHeight)
+CCommonBuffer::CCommonBuffer(int nWidth, int nHeight)
 {
 	m_nWidth = nWidth;
 	m_nHeight = nHeight;
@@ -159,12 +159,12 @@ CSYBuffer::CSYBuffer(int nWidth, int nHeight)
 	InitializeCriticalSection(&m_Lock);
 }
 
-void CSYBuffer::Resize(int nWidth,int nHeight)
+void CCommonBuffer::Resize(int nWidth,int nHeight)
 {
-	SYBufferDef32_Reset(this,nWidth,nHeight);
+	CommonBufferDef32_Reset(this,nWidth,nHeight);
 }
 
-CSYBuffer::CSYBuffer(SYBufferDef32 *pBuffer)
+CCommonBuffer::CCommonBuffer(CommonBufferDef32 *pBuffer)
 {
 	m_nWidth			= pBuffer->m_nWidth;
 	m_nHeight			= pBuffer->m_nHeight;
@@ -186,20 +186,20 @@ CSYBuffer::CSYBuffer(SYBufferDef32 *pBuffer)
 	InitializeCriticalSection(&m_Lock);
 }
 
-CSYBuffer::~CSYBuffer()
+CCommonBuffer::~CCommonBuffer()
 {
 	Release();
 	DeleteCriticalSection(&m_Lock);
 }
-void	CSYBuffer::Lock()
+void	CCommonBuffer::Lock()
 {
 	EnterCriticalSection(&m_Lock);
 }
-void	CSYBuffer::UnLock()
+void	CCommonBuffer::UnLock()
 {
 	LeaveCriticalSection(&m_Lock);
 }
-BOOL	CSYBuffer::Create(int nSize)
+BOOL	CCommonBuffer::Create(int nSize)
 {
 	if(m_dwBuffer)
 		Release();
@@ -219,7 +219,7 @@ BOOL	CSYBuffer::Create(int nSize)
 	UnLock();
 	return TRUE;
 }
-BOOL	CSYBuffer::Create(int nWidth,int nHeight)
+BOOL	CCommonBuffer::Create(int nWidth,int nHeight)
 {
 	int nOldSize = m_nWidth * m_nHeight;
 	int nSize = nWidth * nHeight;
@@ -258,7 +258,7 @@ BOOL	CSYBuffer::Create(int nWidth,int nHeight)
 	UnLock();
 	return TRUE;
 }
-BOOL	CSYBuffer::Release()
+BOOL	CCommonBuffer::Release()
 {
 	Lock();
 	if(m_bAutoDelete&&m_dwBuffer)
@@ -272,7 +272,7 @@ BOOL	CSYBuffer::Release()
 	return TRUE;
 }
 
-void CSYBuffer::Clear( DWORD color ,RECT* pRect)
+void CCommonBuffer::Clear( DWORD color ,RECT* pRect)
 {
 	Lock();
 	if(!pRect)
@@ -301,26 +301,26 @@ void CSYBuffer::Clear( DWORD color ,RECT* pRect)
 	UnLock();
 }
 
-void CSYBuffer::SetUsed()
+void CCommonBuffer::SetUsed()
 {
 	Lock();
 	m_bUsed = TRUE;
 	UnLock();
 }
-void CSYBuffer::UnsetUsed()
+void CCommonBuffer::UnsetUsed()
 {
 	Lock();
 	m_bUsed = FALSE;
 	UnLock();
 }
-void CSYBuffer::SetDirty(RECT rtDirty)
+void CCommonBuffer::SetDirty(RECT rtDirty)
 {
 	//UnionRect(&m_rtDirty, &rtDirty, &m_rtDirty);
 //	m_rtOldDirty = m_rtDirty;
 	m_rtDirty = rtDirty;
 }
 
-void CSYBuffer::SetDirtyAll()
+void CCommonBuffer::SetDirtyAll()
 {
 	Lock();
 
@@ -333,7 +333,7 @@ void CSYBuffer::SetDirtyAll()
 	UnLock();
 }
 
-BOOL	CSYBuffer::Query(BOOL bNeedRender)
+BOOL	CCommonBuffer::Query(BOOL bNeedRender)
 {
 	Lock();
 	if(!m_bUsed)
@@ -348,7 +348,7 @@ BOOL	CSYBuffer::Query(BOOL bNeedRender)
 	return FALSE;
 }
 
-void	CSYBuffer::UnQuery()
+void	CCommonBuffer::UnQuery()
 {
 	Lock();
 	m_bNeedRender = FALSE;
@@ -359,12 +359,12 @@ void	CSYBuffer::UnQuery()
 }
 
 
-BOOL	CSYBuffer::BitBlt(	
+BOOL	CCommonBuffer::BitBlt(	
 						  long desx,
 						  long desy,
 						  long deswidth,
 						  long desheight,
-						  SYBufferDef32* pBuffer,
+						  CommonBufferDef32* pBuffer,
 						  long srcx, 
 						  long srcy, 
 						  long srcwidth , 
@@ -395,9 +395,9 @@ BOOL	CSYBuffer::BitBlt(
 }
 
 //Copy pBuffer to self Buffer, fieldFlag is the field of self target Buffer
-BOOL	CSYBuffer::BitBlt(	
+BOOL	CCommonBuffer::BitBlt(	
 						  RECT*	rtDes,
-						  SYBufferDef32*	pBuffer,
+						  CommonBufferDef32*	pBuffer,
 						  RECT* rtSrc,
 						  IN BUFFER_MODE eMode,
 						  BUFFER_PARITY_STYLE fieldFlag,
@@ -456,7 +456,7 @@ static	DWORD	RB_dwColorBarColor[] =
 
 //ø’––±ÿ–Î¡Ù
 //////////////////////////////////////////////////////////////////////////
-BOOL	CSYBuffer::BitBltToDC(
+BOOL	CCommonBuffer::BitBltToDC(
 							  HDC	hDC,
 							  LPCRECT lprtDes,
 							  LPCRECT lprtSrc,
@@ -498,7 +498,7 @@ BOOL	CSYBuffer::BitBltToDC(
 	return 1;
 }
 
-BOOL CSYBuffer::StretchBltToDC(
+BOOL CCommonBuffer::StretchBltToDC(
 	HDC	hDC,
 	LPCRECT lprtDes /*= NULL*/,
 	LPCRECT lprtSrc /*= NULL*/,
@@ -565,13 +565,13 @@ BOOL CSYBuffer::StretchBltToDC(
 }
 
 //Mix one color value to self Buffer, fieldFlag is the field of self target Buffer
-void	CSYBuffer::MixColor(DWORD color,RECT* lprtMixRect,DWORD dwFlags,BUFFER_PARITY_STYLE fieldFlag)
+void	CCommonBuffer::MixColor(DWORD color,RECT* lprtMixRect,DWORD dwFlags,BUFFER_PARITY_STYLE fieldFlag)
 {
 
 }
 //#define COLORABGR_A(pcr)  *((BYTE*)pcr + 4)
 // Reverse Buffer Key 
-void	CSYBuffer::ReverseKey()
+void	CCommonBuffer::ReverseKey()
 {
 	if(	m_dwBuffer == NULL ) 
 		return;
@@ -587,7 +587,7 @@ void	CSYBuffer::ReverseKey()
 }
 
 //If same color value, clear all self Buffer, fieldFlag is the field of self target Buffer
-void    CSYBuffer::ClearAll(DWORD color,RECT* rtRect,BUFFER_PARITY_STYLE fieldFlag )
+void    CCommonBuffer::ClearAll(DWORD color,RECT* rtRect,BUFFER_PARITY_STYLE fieldFlag )
 {
 	if(m_nWidth <= 0 || m_nHeight <=0 || m_nPitch <= 0 || m_dwBuffer == NULL)
 		return;
@@ -651,7 +651,7 @@ void    CSYBuffer::ClearAll(DWORD color,RECT* rtRect,BUFFER_PARITY_STYLE fieldFl
 }
 
 //Write colorbar to self Buffer£¨fieldFlag is the field of self target Buffer
-void	CSYBuffer::ColorBar(RECT* lprtScreen)
+void	CCommonBuffer::ColorBar(RECT* lprtScreen)
 {
 	if(m_nWidth <= 0 || m_nHeight <=0 || m_nPitch <= 0 || m_dwBuffer == NULL)
 		return;
@@ -694,12 +694,12 @@ void	CSYBuffer::ColorBar(RECT* lprtScreen)
 	}
 }
 
-void	CSYBuffer::Empty()
+void	CCommonBuffer::Empty()
 {
 
 }
 
-UINT CSYBuffer::GetSerializeSize()
+UINT CCommonBuffer::GetSerializeSize()
 {
 	UINT nSizeRet = 0;
 
@@ -719,7 +719,7 @@ UINT CSYBuffer::GetSerializeSize()
 	return nSizeRet;
 }
 
-char * CSYBuffer::GetSerializeBuffer()
+char * CCommonBuffer::GetSerializeBuffer()
 {
 	if (m_dwBuffer == NULL)
 	{
@@ -765,7 +765,7 @@ char * CSYBuffer::GetSerializeBuffer()
 	return pBuffer;
 }
 
-int CSYBuffer::RestoreFromSerializeBuffer(char * pBuffer)
+int CCommonBuffer::RestoreFromSerializeBuffer(char * pBuffer)
 {
 	ASSERT(m_dwBuffer == NULL);
 

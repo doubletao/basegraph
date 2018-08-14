@@ -17,7 +17,7 @@ typedef struct tag_OffsetNode
 	BOOL    bStart;       //环路起始点: TRUE
 }OffsetNode;
 
-typedef CSYArray<OffsetNode *> COffsetNodeArray;
+typedef CBaseARray<OffsetNode *> COffsetNodeArray;
 
 //------------------------------------------------------------------
 //功能：得到一个点列最小y值点对应的序号
@@ -175,7 +175,7 @@ BOOL SYOC_NearLine(IN point2f* ptf )
 } // end of SYOC_NearLine
 
 
-void AddCurve2PtfPoly(OUT SYArray * pptrPoly, OUT SYArray * pptrPolyNorm, IN pointf * ctrlPoints,float* falllength)
+void AddCurve2PtfPoly(OUT BaseARray * pptrPoly, OUT BaseARray * pptrPolyNorm, IN pointf * ctrlPoints,float* falllength)
 {
 	// 接近直线，则直接加入
 	// 否则分成两段，递归调用
@@ -202,17 +202,17 @@ void AddCurve2PtfPoly(OUT SYArray * pptrPoly, OUT SYArray * pptrPolyNorm, IN poi
 				float3fFromfloat2fEx(ptfNew,&ctrlPoints[3],flength,Plane_XY);
 				//*ptfNew = ctrlPoints[3];
 				
-				SYAR_Add(pptrPoly,ptfNew);
+				BaseAR_Add(pptrPoly,ptfNew);
 				//pptrPoly->Add(ptfNew);
 
 				if(pptrPolyNorm)
 				{
 					point2f* ptfNormal1 = new pointf;
 					*ptfNormal1 = ptNormal;
-					SYAR_Add(pptrPolyNorm,ptfNormal1);
+					BaseAR_Add(pptrPolyNorm,ptfNormal1);
 					point2f* ptfNormal2 = new pointf;
 					*ptfNormal2 = ptNormal;
-					SYAR_Add(pptrPolyNorm,ptfNormal2);
+					BaseAR_Add(pptrPolyNorm,ptfNormal2);
 				}
 				
 				break;
@@ -258,7 +258,7 @@ void AddCurve2PtfPoly(OUT SYArray * pptrPoly, OUT SYArray * pptrPolyNorm, IN poi
 
 
 
-void AddCurve2PtlfPoly(OUT SYArray * pptrPoly, OUT SYArray * pptrPolyNorm, IN pointf * ctrlPoints,float* falllength)
+void AddCurve2PtlfPoly(OUT BaseARray * pptrPoly, OUT BaseARray * pptrPolyNorm, IN pointf * ctrlPoints,float* falllength)
 {
 	// 接近直线，则直接加入
 	// 否则分成两段，递归调用
@@ -285,17 +285,17 @@ void AddCurve2PtlfPoly(OUT SYArray * pptrPoly, OUT SYArray * pptrPolyNorm, IN po
 				v2tov3(ptfNew,&ctrlPoints[3],flength,Plane_XY);
 				//*ptfNew = ctrlPoints[3];
 				
-				SYAR_Add(pptrPoly,ptfNew);
+				BaseAR_Add(pptrPoly,ptfNew);
 				//pptrPoly->Add(ptfNew);
 
 				if(pptrPolyNorm)
 				{
 					point2f* ptfNormal1 = new pointf;
 					*ptfNormal1 = ptNormal;
-					SYAR_Add(pptrPolyNorm,ptfNormal1);
+					BaseAR_Add(pptrPolyNorm,ptfNormal1);
 					point2f* ptfNormal2 = new pointf;
 					*ptfNormal2 = ptNormal;
-					SYAR_Add(pptrPolyNorm,ptfNormal2);
+					BaseAR_Add(pptrPolyNorm,ptfNormal2);
 				}
 				
 				break;
@@ -400,7 +400,7 @@ void SYOC_AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, IN point2f * ctrlP
 //输入：
 //输出：point3f,x,y为转换后x，y值，z为到开头长度。
 //------------------------------------------------------------------
-void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT SYArray * pptrPolyNorm,int* pMidPtIndex)
+void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex)
 {
 	int i, j;
 	point3f * pptf = NULL;
@@ -415,7 +415,7 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT SY
 	pptf = new point3f;
 	float3fFromfloat2fEx(pptf,&pCurveCell->point[0],0,Plane_XY);
 	//*pptf = pCurveCell->point[0];
-	SYAR_Add(pptrPoly,pptf);
+	BaseAR_Add(pptrPoly,pptf);
 	float falllength = 0;
 
 
@@ -423,7 +423,7 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT SY
 	{
 		if(pMidPtIndex && *pMidPtIndex == i)
 		{
-			nPolyBack = SYAR_GetSize(pptrPoly);
+			nPolyBack = BaseAR_GetSize(pptrPoly);
 		}
 		if (pCurveCell->pttype[i] == point_line)
 		{
@@ -436,15 +436,15 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT SY
 				float3fFromfloat2fEx(pptf,&pCurveCell->point[(i + 1)%nSize],falllength,Plane_XY);
 				
 				//*pptf = pCurveCell->point[(i + 1)%nSize];
-				SYAR_Add(pptrPoly,pptf);
+				BaseAR_Add(pptrPoly,pptf);
 
 				if(pptrPolyNorm)
 				{
 					pointf* pptnormal1 = new pointf;
 					pointf* pptnormal2 = new pointf;
 					*pptnormal2 = *pptnormal1 = ptNormal;
-					SYAR_Add(pptrPolyNorm,pptnormal1);
-					SYAR_Add(pptrPolyNorm,pptnormal2);			
+					BaseAR_Add(pptrPolyNorm,pptnormal1);
+					BaseAR_Add(pptrPolyNorm,pptnormal2);			
 				}
 			}
 		}
@@ -503,22 +503,22 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT SY
 
 	
 
-	nSize = SYAR_GetSize(pptrPoly);
+	nSize = BaseAR_GetSize(pptrPoly);
 	if(nSize > 0)
 	{
 	
-		point2f *p2 = (point2f*)SYAR_GetAt(pptrPoly,nSize - 1);
+		point2f *p2 = (point2f*)BaseAR_GetAt(pptrPoly,nSize - 1);
 		if(p2)
 		{
 			delete p2;
 			p2 = NULL;
-			SYAR_RemoveAt(pptrPoly,nSize -1 ,1);
+			BaseAR_RemoveAt(pptrPoly,nSize -1 ,1);
 		}
 	}
 } // END OF Cell2PtfPoly 
 
 
-void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT SYArray * pptrPolyNorm,int* pMidPtIndex)
+void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex)
 {
 	int i, j;
 	point3lf * pptf = NULL;
@@ -530,7 +530,7 @@ void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT S
 	v2tov3(pptf,&pCurveCell->point[0],0,Plane_XY);
 	//float3fFromfloat2fEx(pptf,pCurveCell->point[0],0,Plane_XY);
 	//*pptf = pCurveCell->point[0];
-	SYAR_Add(pptrPoly,pptf);
+	BaseAR_Add(pptrPoly,pptf);
 	float falllength = 0;
 
 
@@ -538,7 +538,7 @@ void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT S
 	{
 		if(pMidPtIndex && *pMidPtIndex == i)
 		{
-			nPolyBack = SYAR_GetSize(pptrPoly);
+			nPolyBack = BaseAR_GetSize(pptrPoly);
 		}
 		if (pCurveCell->pttype[i] == point_line)
 		{
@@ -551,15 +551,15 @@ void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT S
 				v2tov3(pptf,&pCurveCell->point[(i + 1)%nSize],falllength,Plane_XY);
 				
 				//*pptf = pCurveCell->point[(i + 1)%nSize];
-				SYAR_Add(pptrPoly,pptf);
+				BaseAR_Add(pptrPoly,pptf);
 
 				if(pptrPolyNorm)
 				{
 					pointf* pptnormal1 = new pointf;
 					pointf* pptnormal2 = new pointf;
 					*pptnormal2 = *pptnormal1 = ptNormal;
-					SYAR_Add(pptrPolyNorm,pptnormal1);
-					SYAR_Add(pptrPolyNorm,pptnormal2);
+					BaseAR_Add(pptrPolyNorm,pptnormal1);
+					BaseAR_Add(pptrPolyNorm,pptnormal2);
 				}
 			}
 		}
@@ -623,46 +623,46 @@ void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT S
 
 	
 
-	nSize = SYAR_GetSize(pptrPoly);
+	nSize = BaseAR_GetSize(pptrPoly);
 	if(nSize > 0)
 	{
-		point2f *p2 = (point2f*)SYAR_GetAt(pptrPoly,nSize - 1);
+		point2f *p2 = (point2f*)BaseAR_GetAt(pptrPoly,nSize - 1);
 		if(p2)
 		{
 			delete p2;
 			p2 = NULL;
-			SYAR_RemoveAt(pptrPoly,nSize -1 ,1);
+			BaseAR_RemoveAt(pptrPoly,nSize -1 ,1);
 		}
 	}
 } // END OF Cell2PtfPoly 
 
-void SYOC_DelColine(IN OUT SYArray *pptfArr,int* pMidPtIndex)
+void SYOC_DelColine(IN OUT BaseARray *pptfArr,int* pMidPtIndex)
 {
 	int i;
 	pointf *prePt = NULL;
 	pointf *curPt = NULL;
 	pointf *nextPt = NULL;
 	float fRight = 0;
-	int nSize = (int)SYAR_GetSize(pptfArr);
+	int nSize = (int)BaseAR_GetSize(pptfArr);
 	for (i = nSize - 1; i>-1; i--)
 	{
 		if(i == 0) 
 		{
-			prePt = (pointf*)SYAR_GetAt(pptfArr,nSize-1);
-			curPt = (pointf*)SYAR_GetAt(pptfArr,0);
-			nextPt = (pointf*)SYAR_GetAt(pptfArr,1);
+			prePt = (pointf*)BaseAR_GetAt(pptfArr,nSize-1);
+			curPt = (pointf*)BaseAR_GetAt(pptfArr,0);
+			nextPt = (pointf*)BaseAR_GetAt(pptfArr,1);
 		}
 		else if(i == nSize-1)
 		{
-			prePt = (pointf*)SYAR_GetAt(pptfArr,nSize-2);
-			curPt = (pointf*)SYAR_GetAt(pptfArr,nSize-1);
-			nextPt = (pointf*)SYAR_GetAt(pptfArr,0);
+			prePt = (pointf*)BaseAR_GetAt(pptfArr,nSize-2);
+			curPt = (pointf*)BaseAR_GetAt(pptfArr,nSize-1);
+			nextPt = (pointf*)BaseAR_GetAt(pptfArr,0);
 		}
 		else
 		{
-			prePt = (pointf*)SYAR_GetAt(pptfArr,i-1);
-			curPt = (pointf*)SYAR_GetAt(pptfArr,i);
-			nextPt = (pointf*)SYAR_GetAt(pptfArr,i+1);
+			prePt = (pointf*)BaseAR_GetAt(pptfArr,i-1);
+			curPt = (pointf*)BaseAR_GetAt(pptfArr,i);
+			nextPt = (pointf*)BaseAR_GetAt(pptfArr,i+1);
 		}
 
 
@@ -670,12 +670,12 @@ void SYOC_DelColine(IN OUT SYArray *pptfArr,int* pMidPtIndex)
 		if(fRight> -0.01f && fRight< 0.01f )
 		{//连续三点共线
 			
-			SYAR_RemoveAt(pptfArr,i,1);
+			BaseAR_RemoveAt(pptfArr,i,1);
 			if(pMidPtIndex && *pMidPtIndex > i)
 				*pMidPtIndex--;
 			delete curPt;
 			curPt = NULL;
-			nSize = (int)SYAR_GetSize(pptfArr);
+			nSize = (int)BaseAR_GetSize(pptfArr);
 			if (nSize < 3) 
 			{
 				return;
@@ -850,24 +850,24 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT point2f * pptPoly, OUT in
 //输出：
 //返回值：
 //------------------------------------------------------------------
-void SYOC_DelOverlap(IN OUT SYArray *pptrOutlineArray, // point2f*型
+void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray, // point2f*型
 					 IN OUT int* pMidIndex)
 {
-	int nPtCount = (int)SYAR_GetSize(pptrOutlineArray);
+	int nPtCount = (int)BaseAR_GetSize(pptrOutlineArray);
 	// 去掉相邻重合点
 	int nDel = 0;
 	for(int j = nPtCount - 1; j>= 0; j --)
 	{
 		nDel = 0;
-		point2f* pptf = (point2f*)SYAR_GetAt(pptrOutlineArray,j);
+		point2f* pptf = (point2f*)BaseAR_GetAt(pptrOutlineArray,j);
 		for (int k = j - 1; k>=0; k--)
 		{
-			point2f* pptfk = (point2f*)SYAR_GetAt(pptrOutlineArray,k);
+			point2f* pptfk = (point2f*)BaseAR_GetAt(pptrOutlineArray,k);
 			if(fabs(pptf->x - pptfk->x) < ABS_FLOAT_0 && fabs(pptf->y - pptfk->y) < ABS_FLOAT_0 )
 			{
 				if(pMidIndex && k < *pMidIndex)
 					*pMidIndex--;
-				SYAR_RemoveAt(pptrOutlineArray,k,1);
+				BaseAR_RemoveAt(pptrOutlineArray,k,1);
 				delete pptfk;
 				pptfk = NULL;		
 				nDel++;
@@ -888,34 +888,34 @@ void SYOC_DelOverlap(IN OUT SYArray *pptrOutlineArray, // point2f*型
 //输出：
 //返回值：
 //------------------------------------------------------------------
-void SYOC_DelOverlap(IN OUT SYArray *pptrOutlineArray,  // point2f*型
-					 IN OUT SYArray *pptrNormArray  // point2f*型
+void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,  // point2f*型
+					 IN OUT BaseARray *pptrNormArray  // point2f*型
 					 )
 {
-	int nPtCount = (int)SYAR_GetSize(pptrOutlineArray);
+	int nPtCount = (int)BaseAR_GetSize(pptrOutlineArray);
 	// 去掉相邻重合点
 	int nDel = 0;
 	for(int j = nPtCount - 1; j>= 0; j --)
 	{
 		nDel = 0;
-		point2f* pptf = (point2f*)SYAR_GetAt(pptrOutlineArray,j);
+		point2f* pptf = (point2f*)BaseAR_GetAt(pptrOutlineArray,j);
 		for (int k = j - 1; k>=0; k--)
 		{
-			point2f* pptfk = (point2f*)SYAR_GetAt(pptrOutlineArray,k);
+			point2f* pptfk = (point2f*)BaseAR_GetAt(pptrOutlineArray,k);
 			if(fabs(pptf->x - pptfk->x) < ABS_FLOAT_0 && fabs(pptf->y - pptfk->y) < ABS_FLOAT_0 )
 			{
-				SYAR_RemoveAt(pptrOutlineArray,k,1);
+				BaseAR_RemoveAt(pptrOutlineArray,k,1);
 				delete pptfk;
 				nDel++;
 
-				pptfk = (point2f*)SYAR_GetAt(pptrNormArray,2*k + 1);
+				pptfk = (point2f*)BaseAR_GetAt(pptrNormArray,2*k + 1);
 				delete pptfk;
-				SYAR_RemoveAt(pptrNormArray,2*k + 1,1);
+				BaseAR_RemoveAt(pptrNormArray,2*k + 1,1);
 
-				pptfk = (point2f*)SYAR_GetAt(pptrNormArray,2*k);
+				pptfk = (point2f*)BaseAR_GetAt(pptrNormArray,2*k);
 				delete pptfk;
 				pptfk = NULL;
-				SYAR_RemoveAt(pptrNormArray,2*k,1);
+				BaseAR_RemoveAt(pptrNormArray,2*k,1);
 			}
 			else
 			{
@@ -991,14 +991,14 @@ void SYOC_DelColine(IN OUT CSYPoint2fPtrArray *pptfArr)
 //输出：
 //返回值：
 //------------------------------------------------------------------
-void SYOC_DelColine(IN OUT SYArray *pptfArr, IN OUT SYArray *pptfArrNorm)
+void SYOC_DelColine(IN OUT BaseARray *pptfArr, IN OUT BaseARray *pptfArrNorm)
 {
 	int i;
 	point2f *prePt = NULL;
 	point2f *curPt = NULL;
 	point2f *nextPt = NULL;
 	float fRight = 0;
-	int nSize = (int)SYAR_GetSize(pptfArr);
+	int nSize = (int)BaseAR_GetSize(pptfArr);
 	for (i = nSize - 1; i>-1; i--)
 	{
 		if (nSize <= 2) 
@@ -1008,21 +1008,21 @@ void SYOC_DelColine(IN OUT SYArray *pptfArr, IN OUT SYArray *pptfArrNorm)
 
 		if(i == 0) 
 		{
-			prePt = (point2f*)SYAR_GetAt(pptfArr,nSize-1);
-			curPt = (point2f*)SYAR_GetAt(pptfArr,0);
-			nextPt = (point2f*)SYAR_GetAt(pptfArr,1);
+			prePt = (point2f*)BaseAR_GetAt(pptfArr,nSize-1);
+			curPt = (point2f*)BaseAR_GetAt(pptfArr,0);
+			nextPt = (point2f*)BaseAR_GetAt(pptfArr,1);
 		}
 		else if(i == nSize-1)
 		{
-			prePt = (point2f*)SYAR_GetAt(pptfArr,nSize-2);
-			curPt = (point2f*)SYAR_GetAt(pptfArr,nSize-1);
-			nextPt = (point2f*)SYAR_GetAt(pptfArr,0);
+			prePt = (point2f*)BaseAR_GetAt(pptfArr,nSize-2);
+			curPt = (point2f*)BaseAR_GetAt(pptfArr,nSize-1);
+			nextPt = (point2f*)BaseAR_GetAt(pptfArr,0);
 		}
 		else
 		{
-			prePt = (point2f*)SYAR_GetAt(pptfArr,i-1);
-			curPt = (point2f*)SYAR_GetAt(pptfArr,i);
-			nextPt = (point2f*)SYAR_GetAt(pptfArr,i+1);
+			prePt = (point2f*)BaseAR_GetAt(pptfArr,i-1);
+			curPt = (point2f*)BaseAR_GetAt(pptfArr,i);
+			nextPt = (point2f*)BaseAR_GetAt(pptfArr,i+1);
 		}
 
 
@@ -1031,19 +1031,19 @@ void SYOC_DelColine(IN OUT SYArray *pptfArr, IN OUT SYArray *pptfArrNorm)
 			&& (curPt->x <= prePt->x && curPt->x >= nextPt->x || curPt->x >= prePt->x && curPt->x <= nextPt->x)
 			&& (curPt->y <= prePt->y && curPt->y >= nextPt->y || curPt->y >= prePt->y && curPt->y <= nextPt->y))
 		{//连续三点共线
-			SYAR_RemoveAt(pptfArr,i,1);
+			BaseAR_RemoveAt(pptfArr,i,1);
 			delete curPt;
 
-			curPt = (point2f*)SYAR_GetAt(pptfArrNorm,2*i + 1);
+			curPt = (point2f*)BaseAR_GetAt(pptfArrNorm,2*i + 1);
 			delete curPt;
-			SYAR_RemoveAt(pptfArrNorm,2*i + 1,1);
+			BaseAR_RemoveAt(pptfArrNorm,2*i + 1,1);
 
-			curPt = (point2f*)SYAR_GetAt(pptfArrNorm,2*i);
+			curPt = (point2f*)BaseAR_GetAt(pptfArrNorm,2*i);
 			delete curPt;
 			curPt = NULL;
-			SYAR_RemoveAt(pptfArrNorm,2*i,1);
+			BaseAR_RemoveAt(pptfArrNorm,2*i,1);
 
-			nSize = (int)SYAR_GetSize(pptfArr);
+			nSize = (int)BaseAR_GetSize(pptfArr);
 			if (nSize < 3) 
 			{
 				return;
@@ -1447,7 +1447,7 @@ int SYOC_makearc(COffsetNodeArray* parray,point2f ptcenter,point2f ptstart,point
 //输出：
 //返回值：
 //------------------------------------------------------------------
-void SYOC_ShiftData(IN SYArray *pptSrcArr, 
+void SYOC_ShiftData(IN BaseARray *pptSrcArr, 
 				   OUT COffsetNodeArray *pOffsetArray, // OffsetNode*型
 				   IN float fDis,
 				   IN int ndirect
@@ -1465,7 +1465,7 @@ void SYOC_ShiftData(IN SYArray *pptSrcArr,
 
 	float fRight = 0;
 	//float fV1,fV2;//Pi+1Pi 及 Pi+1Pi+2 长度
-	int nPtCount = (int)SYAR_GetSize(pptSrcArr);
+	int nPtCount = (int)BaseAR_GetSize(pptSrcArr);
 	if(nPtCount<2) 
 	{
 		return;
@@ -1476,11 +1476,11 @@ void SYOC_ShiftData(IN SYArray *pptSrcArr,
 	OffsetNode * pNode = NULL;
 	point2f ptstart, ptend;
 	float fD = 0.f;
-	prePt = (point2f*)SYAR_GetAt(pptSrcArr,nPtCount-1);
+	prePt = (point2f*)BaseAR_GetAt(pptSrcArr,nPtCount-1);
 	p[0] = *prePt;
-	prePt = (point2f*)SYAR_GetAt(pptSrcArr,0);
+	prePt = (point2f*)BaseAR_GetAt(pptSrcArr,0);
 	p[1] = *prePt;
-	prePt = (point2f*)SYAR_GetAt(pptSrcArr,1);
+	prePt = (point2f*)BaseAR_GetAt(pptSrcArr,1);
 	p[2] = *prePt;
 	
 	// 先加起点
@@ -1499,7 +1499,7 @@ void SYOC_ShiftData(IN SYArray *pptSrcArr,
 	else
 	{
 		// 闭合
-		prePt = (point2f*)SYAR_GetAt(pptSrcArr,nPtCount-2);
+		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,nPtCount-2);
 		p[0] = *prePt;
 		
 		if (   ( !SYOC_PtOnRight(p[0],p[1],p[2]) && (ndirect == -1) )
@@ -1560,13 +1560,13 @@ void SYOC_ShiftData(IN SYArray *pptSrcArr,
 	// 另外还需要考虑的是闭合非闭合. 
 	for(int i=1; i<nPtCount-2; i++)
 	{
-		prePt = (point2f*)SYAR_GetAt(pptSrcArr,i-1);
+		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,i-1);
 		p[0] = *prePt;
-		prePt = (point2f*)SYAR_GetAt(pptSrcArr,i);
+		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,i);
 		p[1] = *prePt;
-		prePt = (point2f*)SYAR_GetAt(pptSrcArr,i+1);
+		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,i+1);
 		p[2] = *prePt;
-		prePt = (point2f*)SYAR_GetAt(pptSrcArr,i+2);
+		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,i+2);
 		p[3] = *prePt;
 
 		//fRight = (curPt->x - prePt->x)*(nextPt->y - prePt->y) - (curPt->y - prePt->y)*(nextPt->x - prePt->x);
@@ -1654,11 +1654,11 @@ void SYOC_ShiftData(IN SYArray *pptSrcArr,
 	// 当输入点总数为3个点时, 忽略了中间一个点对应点的生成
 	if (nPtCount == 3)
 	{
-		prePt = (point2f*)SYAR_GetAt(pptSrcArr,0);
+		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,0);
 		p[0] = *prePt;
-		prePt = (point2f*)SYAR_GetAt(pptSrcArr,1);
+		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,1);
 		p[1] = *prePt;
-		prePt = (point2f*)SYAR_GetAt(pptSrcArr,2);
+		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,2);
 		p[2] = *prePt;
 		// 凹侧生成一个点, 凸侧生成圆弧.
 		//给定一个端点的方向, 求点. 首先, 求对角线的单位向量. 然后求单位向量对应的点, 到线的距离. 然后求出所求的点是多少倍的单位向量.
@@ -1690,11 +1690,11 @@ void SYOC_ShiftData(IN SYArray *pptSrcArr,
 	}
 
 	// 再加终点
-	prePt = (point2f*)SYAR_GetAt(pptSrcArr,nPtCount-2);
+	prePt = (point2f*)BaseAR_GetAt(pptSrcArr,nPtCount-2);
 	p[0] = *prePt;
-	prePt = (point2f*)SYAR_GetAt(pptSrcArr,nPtCount-1);
+	prePt = (point2f*)BaseAR_GetAt(pptSrcArr,nPtCount-1);
 	p[1] = *prePt;
-	prePt = (point2f*)SYAR_GetAt(pptSrcArr,0);
+	prePt = (point2f*)BaseAR_GetAt(pptSrcArr,0);
 	p[2] = *prePt;
 	if ( abs( p[1].x - p[2].x ) + abs (p[1].y - p[2].y) < ABS_FLOAT_0)
 	{
@@ -2232,8 +2232,8 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // 输入曲
 			continue;
 		}
 
-		SYArray ptrPoly;
-		SYAR_GetSize(&ptrPoly);
+		BaseARray ptrPoly;
+		BaseAR_GetSize(&ptrPoly);
 		SYOC_Cell2PtfPoly(pCell, &ptrPoly,NULL,NULL);
 
 		// 去掉重合点
@@ -2242,7 +2242,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // 输入曲
 		SYOC_DelColine(&ptrPoly,(int*)NULL);
 
 		//偏移得到初步偏移曲线
-		int nPtCount = (int)SYAR_GetSize(&ptrPoly);
+		int nPtCount = (int)BaseAR_GetSize(&ptrPoly);
 		float fShiftDis = fDis; 
 		//if(!bAntiClockwise) // 顺时针 bAntiClockwise
 		//{
@@ -2262,9 +2262,9 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // 输入曲
 		// 反向做一次
 		for(int i = 1; i < nPtCount; i++)
 		{
-			point2f* pPt = (point2f*)SYAR_GetAt(&ptrPoly,i);
-			SYAR_RemoveAt(&ptrPoly,i,1);
-			SYAR_InsertAt(&ptrPoly,0, pPt,1);
+			point2f* pPt = (point2f*)BaseAR_GetAt(&ptrPoly,i);
+			BaseAR_RemoveAt(&ptrPoly,i,1);
+			BaseAR_InsertAt(&ptrPoly,0, pPt,1);
 		}
 
 		SYOC_ShiftData(&ptrPoly, &OffsetArray, fDis, 1);
@@ -2277,14 +2277,14 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // 输入曲
 		}
 
 		//释放ptrPoly
-		nSize = (int)SYAR_GetSize(&ptrPoly);
+		nSize = (int)BaseAR_GetSize(&ptrPoly);
 		for (j=0; j<nSize; j++)
 		{
-			point2f * pptf = (point2f *)SYAR_GetAt(&ptrPoly,j);
+			point2f * pptf = (point2f *)BaseAR_GetAt(&ptrPoly,j);
 			delete pptf;
 			pptf = NULL;
 		}
-		SYAR_RemoveAll(&ptrPoly);
+		BaseAR_RemoveAll(&ptrPoly);
 	} // end of outer-for
 	//// 得到的是多边形数组,形成cell,填入到pGraphOffset
 	SYOC_Poly2Fig(pGraphOffset, &OffsetArray);
@@ -2713,8 +2713,8 @@ int SYOC_makearc(CSYPoint2fPtrArray & aptShift, CSYPoint2fPtrArray & aptShiftNor
 //输出：
 //返回值：
 //------------------------------------------------------------------
-void SYOC_ShiftData(IN SYArray &aptOrig, 
-				   IN SYArray &aptOrigNorm, //原始边离散点
+void SYOC_ShiftData(IN BaseARray &aptOrig, 
+				   IN BaseARray &aptOrigNorm, //原始边离散点
 				   OUT CSYPoint2fPtrArray &aptShift, //偏移边离散点
 				   OUT CSYPoint2fPtrArray &aptShiftNorm, //偏移边离散点
 				   OUT CSYDWORDPtrArray &aOrigIndex,
@@ -2734,7 +2734,7 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 
 	float fRight = 0;
 	//float fV1,fV2;//Pi+1Pi 及 Pi+1Pi+2 长度
-	int nPtCount = (int)SYAR_GetSize(&aptOrig);
+	int nPtCount = (int)BaseAR_GetSize(&aptOrig);
 	if(nPtCount<2) 
 	{
 		return;
@@ -2747,9 +2747,9 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 	point2f* pptfNorm = NULL;
 
 	// 先加起点
-	prePt = (point2f*)SYAR_GetAt(&aptOrig,0);
+	prePt = (point2f*)BaseAR_GetAt(&aptOrig,0);
 	p[0] = *prePt;
-	prePt = (point2f*)SYAR_GetAt(&aptOrig,1);
+	prePt = (point2f*)BaseAR_GetAt(&aptOrig,1);
 	p[1] = *prePt;
 	float fD = (p[1].x - p[0].x) * (p[1].x - p[0].x) + (p[1].y - p[0].y) * (p[1].y - p[0].y);
 	fD = sqrtf(fD);
@@ -2763,12 +2763,12 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 	aOrigIndex.Add(pdw);
 
 	// 法线: 非圆弧处, 与原同. 圆弧处, 为径向
-	pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,0);
+	pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,0);
 	pptf = new point2f;
 	*pptf = *pptfNorm;
 	aptShiftNorm.Add(pptf);
 
-	pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,1);
+	pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,1);
 	pptf = new point2f;
 	*pptf = *pptfNorm;
 	aptShiftNorm.Add(pptf);
@@ -2777,13 +2777,13 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 	// 另外还需要考虑的是闭合非闭合. 
 	for(int i=1; i<nPtCount-2; i++)
 	{
-		prePt = (point2f*)SYAR_GetAt(&aptOrig,i-1);
+		prePt = (point2f*)BaseAR_GetAt(&aptOrig,i-1);
 		p[0] = *prePt;
-		prePt = (point2f*)SYAR_GetAt(&aptOrig,i);
+		prePt = (point2f*)BaseAR_GetAt(&aptOrig,i);
 		p[1] = *prePt;
-		prePt = (point2f*)SYAR_GetAt(&aptOrig,i+1);
+		prePt = (point2f*)BaseAR_GetAt(&aptOrig,i+1);
 		p[2] = *prePt;
-		prePt = (point2f*)SYAR_GetAt(&aptOrig,i+2);
+		prePt = (point2f*)BaseAR_GetAt(&aptOrig,i+2);
 		p[3] = *prePt;
 
 		//fRight = (curPt->x - prePt->x)*(nextPt->y - prePt->y) - (curPt->y - prePt->y)*(nextPt->x - prePt->x);
@@ -2827,12 +2827,12 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 			aOrigIndex.Add(pdw);
 
 			// 法线 与原同
-			pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*i);
+			pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*i);
 			pptf = new point2f;
 			*pptf = *pptfNorm;
 			aptShiftNorm.Add(pptf);
 
-			pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*i+1);
+			pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*i+1);
 			pptf = new point2f;
 			*pptf = *pptfNorm;
 			aptShiftNorm.Add(pptf);
@@ -2856,12 +2856,12 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 			aOrigIndex.Add(pdw);
 
 			// 法线 与原同
-			pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*i);
+			pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*i);
 			pptf = new point2f;
 			*pptf = *pptfNorm;
 			aptShiftNorm.Add(pptf);
 
-			pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*i+1);
+			pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*i+1);
 			pptf = new point2f;
 			*pptf = *pptfNorm;
 			aptShiftNorm.Add(pptf);
@@ -2888,12 +2888,12 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 				aOrigIndex.Add(pdw);
 
 				// 法线 与原同
-				pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*(i+1));
+				pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*(i+1));
 				pptf = new point2f;
 				*pptf = *pptfNorm;
 				aptShiftNorm.Add(pptf);
 
-				pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*(i+1)+1);
+				pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*(i+1)+1);
 				pptf = new point2f;
 				*pptf = *pptfNorm;
 				aptShiftNorm.Add(pptf);
@@ -2916,12 +2916,12 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 				aOrigIndex.Add(pdw);
 
 				// 法线 与原同
-				pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*(i+1));
+				pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*(i+1));
 				pptf = new point2f;
 				*pptf = *pptfNorm;
 				aptShiftNorm.Add(pptf);
 
-				pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*(i+1)+1);
+				pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*(i+1)+1);
 				pptf = new point2f;
 				*pptf = *pptfNorm;
 				aptShiftNorm.Add(pptf);
@@ -2929,9 +2929,9 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 		}
 	}
 	// 再加终点
-	prePt = (point2f*)SYAR_GetAt(&aptOrig,nPtCount-2);
+	prePt = (point2f*)BaseAR_GetAt(&aptOrig,nPtCount-2);
 	p[0] = *prePt;
-	prePt = (point2f*)SYAR_GetAt(&aptOrig,nPtCount-1);
+	prePt = (point2f*)BaseAR_GetAt(&aptOrig,nPtCount-1);
 	p[1] = *prePt;
 	fD = (p[1].x - p[0].x) * (p[1].x - p[0].x) + (p[1].y - p[0].y) * (p[1].y - p[0].y);
 	fD = sqrtf(fD);
@@ -2945,12 +2945,12 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 	aOrigIndex.Add(pdw);
 
 	// 法线 与原同
-	pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*(nPtCount-1));
+	pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*(nPtCount-1));
 	pptf = new point2f;
 	*pptf = *pptfNorm;
 	aptShiftNorm.Add(pptf);
 
-	pptfNorm = (point2f*)SYAR_GetAt(&aptOrigNorm,2*(nPtCount-1)+1);
+	pptfNorm = (point2f*)BaseAR_GetAt(&aptOrigNorm,2*(nPtCount-1)+1);
 	pptf = new point2f;
 	*pptf = *pptfNorm;
 	aptShiftNorm.Add(pptf);
@@ -2962,8 +2962,8 @@ void SYOC_ShiftData(IN SYArray &aptOrig,
 //------------------------------------------------------------------
 BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // 输入曲线
 									IN float fDis,  // 偏移距离
-									OUT SYArray &aptOrig, //原始边离散点
-									OUT SYArray &aptOrigNorm, //原始边离散点
+									OUT BaseARray &aptOrig, //原始边离散点
+									OUT BaseARray &aptOrigNorm, //原始边离散点
 									OUT CSYPoint2fPtrArray &aptShift, //偏移边离散点
 									OUT CSYPoint2fPtrArray &aptShiftNorm, //偏移边离散点
 									OUT CSYDWORDPtrArray &aOrigIndex,
@@ -2995,16 +2995,16 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // 输入曲线
 	// 去掉重合点
 	SYOC_DelOverlap(&aptOrig, &aptOrigNorm);
 
-	nSize = (int)SYAR_GetSize(&aptOrig);
+	nSize = (int)BaseAR_GetSize(&aptOrig);
 	if(nSize < 2)
 		return;
 	// 预处理：去掉连续共线点
 	SYOC_DelColine(&aptOrig, &aptOrigNorm);
-	nSize = (int)SYAR_GetSize(&aptOrig);
+	nSize = (int)BaseAR_GetSize(&aptOrig);
 	if(nSize < 2)
 		return;
 
-	nSize = (int)SYAR_GetSize(&aptOrig);
+	nSize = (int)BaseAR_GetSize(&aptOrig);
 
 	if (nSize < 2) 
 	{
@@ -3014,8 +3014,8 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // 输入曲线
 	if (pCellIn->type != uncloss_line) 
 	{
 		//如果是闭合回路, 再加入起始点. 或者最后一段曲线?
-		point2f * ppt0 = (point2f *)SYAR_GetAt(&aptOrig,0);
-		point2f * ppt1 = (point2f *)SYAR_GetAt(&aptOrig,nSize - 1);
+		point2f * ppt0 = (point2f *)BaseAR_GetAt(&aptOrig,0);
+		point2f * ppt1 = (point2f *)BaseAR_GetAt(&aptOrig,nSize - 1);
 
 		if ( abs(ppt0->x - ppt1->x) < ABS_FLOAT_0 && abs(ppt0->y - ppt1->y) < ABS_FLOAT_0 ) 
 		{
@@ -3024,24 +3024,24 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // 输入曲线
 		{
 			point2f *pptTemp = new point2f;
 			*pptTemp = *ppt0;
-			SYAR_Add(&aptOrig,pptTemp);
+			BaseAR_Add(&aptOrig,pptTemp);
 
 			pptTemp = new point2f;
 			pptTemp->x = ppt0->y - ppt1->y;
 			pptTemp->y = ppt1->x - ppt0->x;
-			SYAR_Add(&aptOrigNorm,pptTemp);
+			BaseAR_Add(&aptOrigNorm,pptTemp);
 			
 			pptTemp = new point2f;
 			pptTemp->x = ppt0->y - ppt1->y;
 			pptTemp->y = ppt1->x - ppt0->x;
-			SYAR_Add(&aptOrigNorm,pptTemp);
+			BaseAR_Add(&aptOrigNorm,pptTemp);
 
 			// 记得三角化时干掉
 		}
 	}
 
 	//偏移得到初步偏移曲线
-	int nPtCount = (int)SYAR_GetSize(&aptOrig);
+	int nPtCount = (int)BaseAR_GetSize(&aptOrig);
 	float fShiftDis = fDis; 
 
 	// 先记录开始点

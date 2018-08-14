@@ -41,8 +41,8 @@ BASEGRAPH_DATARENDER_API void SYOffsetCellCube(IN vectorcell* pCellIn,  //  ‰»Î«
 //------------------------------------------------------------------
 BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  //  ‰»Î«˙œﬂ
 									IN float fDis,  // ∆´“∆æ‡¿Î
-									OUT SYArray &aptOrig, //‘≠ º±ﬂ¿Î…¢µ„
-									OUT SYArray &aptOrigNorm, //‘≠ º±ﬂ¿Î…¢µ„
+									OUT BaseARray &aptOrig, //‘≠ º±ﬂ¿Î…¢µ„
+									OUT BaseARray &aptOrigNorm, //‘≠ º±ﬂ¿Î…¢µ„
 									OUT CSYPoint2fPtrArray &aptShift, //∆´“∆±ﬂ¿Î…¢µ„
 									OUT CSYPoint2fPtrArray &aptShiftNorm, //∆´“∆±ﬂ¿Î…¢µ„
 									OUT CSYDWORDPtrArray &aOrigIndex,
@@ -53,10 +53,10 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  //  ‰»Î«˙œﬂ
 //// ƒ⁄≤ø µœ÷
 //BASEGRAPH_DATARENDER_API int SolveSqure(double a, double b, double c, double *xx);
 BASEGRAPH_DATARENDER_API BOOL SYOC_PtOnRight(IN point2f pt0,IN point2f pt1,IN point2f pt2);//≈–∂œ◊Û≤‡ «∑ÒÕ‚≤‡
-BASEGRAPH_DATARENDER_API void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT SYArray * pptrPolyNorm,IN OUT int* pMidPtIndex);
-BASEGRAPH_DATARENDER_API void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT SYArray * pptrPoly,OUT SYArray * pptrPolyNorm,int* pMidPtIndex);
-BASEGRAPH_DATARENDER_API void SYOC_DelColine(IN OUT SYArray *pptfArr,int* pMidPtIndex);
-BASEGRAPH_DATARENDER_API void SYOC_DelOverlap(IN OUT SYArray *pptrOutlineArray,int* pMidPtIndex);
+BASEGRAPH_DATARENDER_API void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,IN OUT int* pMidPtIndex);
+BASEGRAPH_DATARENDER_API void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex);
+BASEGRAPH_DATARENDER_API void SYOC_DelColine(IN OUT BaseARray *pptfArr,int* pMidPtIndex);
+BASEGRAPH_DATARENDER_API void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,int* pMidPtIndex);
 //////////////////////////////////////////////////////////////////////////
 //Œ™Ã·∏ﬂ–ß¬ ≤…»°µƒŒ˛…¸≤ø∑÷’π æ–ßπ˚µƒø™πÿ
 BASEGRAPH_DATARENDER_API void SYOC_CloseNearLine();//πÿ±’NearLine∫Ø ˝

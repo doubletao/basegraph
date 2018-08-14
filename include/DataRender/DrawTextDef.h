@@ -278,7 +278,7 @@ typedef enum e_text_align_vertical
 }E_TextAlignVeritical;
 #define ARTPATHTYPECNT	2
 //艺术与路径曲线样式
-enum  eSYArtTypesetPath
+enum  eBaseARtTypesetPath
 {
 	SYPATH_NULL,
 	SYPATH_ARC,				//弧
@@ -296,11 +296,11 @@ enum  eSYArtTypesetPath
 typedef struct sy_text_prop_def
 {
 	DWORD		dwVersion;			//版本号
-	SYArray		arFont;				//字体表
-	SYArray		ar2DColor;			//2D颜色表
-	SYArray		ar3DColor;			//3D颜色表
-	SYArray		arUnderLine;		//下划线表
-	SYArray		arIndex;			//属性检索表
+	BaseARray		arFont;				//字体表
+	BaseARray		ar2DColor;			//2D颜色表
+	BaseARray		ar3DColor;			//3D颜色表
+	BaseARray		arUnderLine;		//下划线表
+	BaseARray		arIndex;			//属性检索表
 	sy_text_prop_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }SYTextProp, *LPSYTextProp;
@@ -321,16 +321,16 @@ typedef enum e_text_under_line
 typedef struct sy_art_typeset_def
 {
 	DWORD				dwVersion;			//版本号
-	eSYArtTypesetPath	ePath;				//排版路径曲线类型
+	eBaseARtTypesetPath	ePath;				//排版路径曲线类型
 	BOOL				bRotate;			//是否旋转
 	float				fPitch;				//字间距0-0.5,曲线长度的百分比。
-	SYArray				arHandlePointUp;		//关键点位置数组
-	SYArray				arHandlePointDown;		//关键点位置数组
+	BaseARray				arHandlePointUp;		//关键点位置数组
+	BaseARray				arHandlePointDown;		//关键点位置数组
 	LPVOID				pTitleCurve;			// 曲线文字，专用
 	sy_art_typeset_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYArtTypeset, *LPSYArtTypeset;
-typedef const SYArtTypeset* LPCSYArtTypeset;
+}BaseARtTypeset, *LPBaseARtTypeset;
+typedef const BaseARtTypeset* LPCBaseARtTypeset;
 
 //文本排版原始数据结构
 typedef struct sy_text_def
@@ -359,7 +359,7 @@ typedef struct sy_text_def
 	PI_Quality			nSmallFontQuality;	//小字抗闪质量
 	BOOL				bSmallFontCalcBorder;//小字清晰
 
-	SYArray				arParagraph;			//段落数组
+	BaseARray				arParagraph;			//段落数组
 	SYTextProp			stuTextProp;			//属性数据集合
 
 	point2f				vGraphScale;			//图形放缩
@@ -379,10 +379,10 @@ typedef struct sy_text_def
 	LPSYStretchParam	pStretch;			//3D拉伸属性
 	LPSYSpecialEffect	pSpecialEffect;		//特殊效果（引用）
 
-	SYArray				ar2DUnit;			//2d unit数组，Unit序列：文字的，下划线的，其它的。
-	SYArray				ar2DUnitTemp;		//临时数组，公告板专用
+	BaseARray				ar2DUnit;			//2d unit数组，Unit序列：文字的，下划线的，其它的。
+	BaseARray				ar2DUnitTemp;		//临时数组，公告板专用
 	BOOL				bStartEdit;			//临时变量，双机进入编辑，公告板专用
-	SYArray				ar3DUnit;			//3d unit数组
+	BaseARray				ar3DUnit;			//3d unit数组
 	int					nTextUnitCnt;		//文字Unit个数（界定文字与下划线Unit在数组中的范围）
 	int					nUnderlineUnitCnt;	//下划线Unit个数
 	int					nSpecialUnitCnt;	//特殊效果Unit个数
@@ -433,7 +433,7 @@ typedef struct sy_textparagraph_def
 }SYTextParagraph, *LPSYTextParagraph;
 typedef struct  tag_SYTypesetPrivate
 {
-	SYArray				m_arParagraph;		//段落
+	BaseARray				m_arParagraph;		//段落
 	LPVOID				lpParam;			//需要做同步的Env
 	rectf				rtTypesetBorder;	//排版实际使用的矩形
 }SYTypesetPrivate, *LPSYTypesetPrivate;

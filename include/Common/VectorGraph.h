@@ -80,11 +80,11 @@ BASEGRAPH_COMMON_API void __cdecl vg_merge(vectorgraph* des, const vectorgraph* 
 BASEGRAPH_COMMON_API void __cdecl vg_reverse(vectorgraph* vg);
 BASEGRAPH_COMMON_API void __cdecl vg_rotate_angle(vectorgraph* vg,float x,float y,float z,float xoffset,float yoffset,float zoffset);
 BASEGRAPH_COMMON_API void __cdecl vg_rotate_matrix(vectorgraph* vg,matrix4f* matrix);
-BASEGRAPH_COMMON_API void __cdecl vg_fromarray(vectorgraph* pvg,SYArray* ptar);
+BASEGRAPH_COMMON_API void __cdecl vg_fromarray(vectorgraph* pvg,BaseARray* ptar);
 
-BASEGRAPH_COMMON_API int __cdecl vg_tobezier(SYArray* ptarray,vectorgraph* pvg,size_t nIndex);
-BASEGRAPH_COMMON_API void __cdecl vg_from_point2f_bezier(vectorgraph* pvg,SYArray* ptarray);
-BASEGRAPH_COMMON_API void __cdecl vg_from_point3fpoly(vectorgraph* pvg,SYArray* ptarray);
+BASEGRAPH_COMMON_API int __cdecl vg_tobezier(BaseARray* ptarray,vectorgraph* pvg,size_t nIndex);
+BASEGRAPH_COMMON_API void __cdecl vg_from_point2f_bezier(vectorgraph* pvg,BaseARray* ptarray);
+BASEGRAPH_COMMON_API void __cdecl vg_from_point3fpoly(vectorgraph* pvg,BaseARray* ptarray);
 BASEGRAPH_COMMON_API void __cdecl cell_release(vectorcell* cell);
 BASEGRAPH_COMMON_API void __cdecl vg_release(vectorgraph* graph);
 BASEGRAPH_COMMON_API bool __cdecl vg_remove_cell(vectorgraph* vg, vectorcell* cell);

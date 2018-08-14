@@ -323,7 +323,7 @@ BOOL CSimpleSpaceConvert::CheckPtInView( const float3* vPt,int nCount )
 /************************************************************************/
 /* CUnitSCMatrix                                                        */
 /************************************************************************/
-CUnitSpaceConvertMatrix::CUnitSpaceConvertMatrix( ObjectCalculator *pCalculator, LPSYARRAY pary3DUnit, int nIndex ):CSpaceConvertMatrix( pCalculator )
+CUnitSpaceConvertMatrix::CUnitSpaceConvertMatrix( ObjectCalculator *pCalculator, LPBaseARRAY pary3DUnit, int nIndex ):CSpaceConvertMatrix( pCalculator )
 {
 	m_pary3DUnit = pary3DUnit;
 	m_nUnitIndex = nIndex;
@@ -336,7 +336,7 @@ CUnitSpaceConvertMatrix::~CUnitSpaceConvertMatrix()
 
 matrix4f CUnitSpaceConvertMatrix::GetOriginWorld()
 {
-	SYItemRenderUnit* pRenderUnit  = (SYItemRenderUnit*)SYAR_GetAt( m_pary3DUnit, m_nUnitIndex );
+	SYItemRenderUnit* pRenderUnit  = (SYItemRenderUnit*)BaseAR_GetAt( m_pary3DUnit, m_nUnitIndex );
 	matrix4f matWorld = pRenderUnit->unit3D.Mat_RenderV;
 	return matWorld;
 }

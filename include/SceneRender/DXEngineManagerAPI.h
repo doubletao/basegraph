@@ -32,7 +32,7 @@ public:
 	int  GetWidth() {return m_nWidth;};
 	int  GetHeight() {return m_nHeight;};
 	int	 GetMaxFactor(){return m_nMaxFactor;}
-	int  GetCount() {return (int)SYAR_GetSize(&m_arResource);};
+	int  GetCount() {return (int)BaseAR_GetSize(&m_arResource);};
 	int  GetResource(IN int nIndex);
 	int  GetResourceFactor(IN int nIndex);
 	bool ResourceIsUsed(IN int nIndex);
@@ -42,11 +42,11 @@ public:
 	void Lock(){EnterCriticalSection(&m_Lock);}
 	void UnLock(){LeaveCriticalSection(&m_Lock);}
 protected:
-	CSingleResource* GetSingleResource(int nIndex){return (CSingleResource*)SYAR_GetAt(&m_arResource,nIndex);}
+	CSingleResource* GetSingleResource(int nIndex){return (CSingleResource*)BaseAR_GetAt(&m_arResource,nIndex);}
 	int  m_hDevice;
 	int  m_nWidth;
 	int  m_nHeight;
-	SYArray m_arResource;//CSingleResource数组
+	BaseARray m_arResource;//CSingleResource数组
 	int	 m_nMaxFactor;
 	CRITICAL_SECTION m_Lock;
 };

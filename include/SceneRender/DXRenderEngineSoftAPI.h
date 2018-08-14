@@ -163,9 +163,9 @@ struct SY_DeviceSoft
 	htable			htModel;
 	htable			htShaderTable;
 	htable			htContexTable;
-	SYHash*			ShaderHash;
-	SYHash*			TextureFromFileHash;
-	SYHash*			BumpTextureFromFileHash;
+	BaseHash*			ShaderHash;
+	BaseHash*			TextureFromFileHash;
+	BaseHash*			BumpTextureFromFileHash;
 	htable			htBuffer;
 	CDeviceLock		ResLock;
 	std::map<DWORD,SYDeviceContex*> mapContext;
@@ -181,7 +181,7 @@ struct SYSoftTexture
 	TCHAR*						pTexFile;
 	DXTextureType				nType;
 	BOOL						bRecentRT;
-	CSYBuffer*					pTexture;
+	CCommonBuffer*					pTexture;
 };
 
 typedef SYSoftTexture SYSoftSwapChain ;
@@ -196,7 +196,7 @@ struct SYSoftBuffer
 //inline function
 inline bool ModifyBuffer(SY_DeviceSoft* pDevice,int hBuffer,void* pMemBuffer)
 {
-	SYSoftBuffer* pBuffer = (SYSoftBuffer*) SYHTable_GetAt(&pDevice->htBuffer,hBuffer);
+	SYSoftBuffer* pBuffer = (SYSoftBuffer*) BseeHTable_GetAt(&pDevice->htBuffer,hBuffer);
 	memcpy(pBuffer->pBuffer,pMemBuffer,pBuffer->nBufferSize);
 	return true;
 }
@@ -204,7 +204,7 @@ inline void ReleaseBuffer(SY_DeviceSoft* pDevice,int hBuffer)
 {
 	if (!hBuffer)
 		return;
-	SYSoftBuffer* pBuffer = (SYSoftBuffer*)SYHTable_RemoveAt(&pDevice->htBuffer,hBuffer);
+	SYSoftBuffer* pBuffer = (SYSoftBuffer*)BseeHTable_RemoveAt(&pDevice->htBuffer,hBuffer);
 	switch(pBuffer->nType)
 	{
 	case DXVertexBuffer:
@@ -230,14 +230,14 @@ END:
 	SAFEDELETE_ARRAY(pBuffer->pBuffer);
 	SAFE_DELETE(pBuffer);
 }
-inline CSYBuffer* getTexture(SY_DeviceSoft* pDevice,int hTexture)
+inline CCommonBuffer* getTexture(SY_DeviceSoft* pDevice,int hTexture)
 {
-	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)SYHTable_GetAt(&pDevice->httexture,hTexture);
+	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
 	if (!pSrcWDTexture)
 		return NULL;
 	return pSrcWDTexture->pTexture;
 }
-inline void getTextureInfo(CSYBuffer* pTexture,int* pWidth,int* pHeight)
+inline void getTextureInfo(CCommonBuffer* pTexture,int* pWidth,int* pHeight)
 {
 	if(pWidth)
 		*pWidth = pTexture->m_nWidth;

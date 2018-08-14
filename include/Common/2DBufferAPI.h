@@ -165,7 +165,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_PowerFill_Q(OUT DWORD* pDes,		// 目标
 											  IN int nWidth);		// 像素个数
 // 采用递归法对浮点颜色进行插值
 // 公式 f(x) = A * (c1 - c0) * (x - B) + C
-BASEGRAPH_COMMON_API void SYBGRA32_LineSYAR_Recursive(OUT DWORD* pDes,		// 目标
+BASEGRAPH_COMMON_API void SYBGRA32_LineBaseAR_Recursive(OUT DWORD* pDes,		// 目标
 												   IN float* pfCr0,	// 起点颜色
 												   IN float* pfCr1,	// 终点颜色
 												   IN float fX,		// X 的起始点（像素索引）
@@ -177,32 +177,32 @@ BASEGRAPH_COMMON_API void SYBGRA32_LineSYAR_Recursive(OUT DWORD* pDes,		// 目标
 // 新接口（ Buffer 信息存在结构里）
 
 // 采用双线性拉伸
-BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标 Buffer
+BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// 目标 Buffer
 									 IN int nDesWidth,			// 目标操作大小
 									 IN int nDesHeight,
-									 IN SYBufferDef32* pSrcBuf,	// 源 Buffer
+									 IN CommonBufferDef32* pSrcBuf,	// 源 Buffer
 									 IN int nSrcWidth,			// 源操作大小
 									 IN int nSrcHeight,
 									 IN BUFFER_MODE eMode,		// 混合操作类型
 									 IN BUFFER_PARITY_STYLE eParity);	// 奇偶场类型
 
 // 采用双线性拉伸
-BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT SYBufferDef32* pDesBuf,	// 目标 Buffer
+BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// 目标 Buffer
 										 IN int nDesWidth,			// 目标操作大小
 										 IN int nDesHeight,
-										 IN SYBufferDef32* pSrcBuf,	// 源 Buffer
+										 IN CommonBufferDef32* pSrcBuf,	// 源 Buffer
 										 IN int nSrcWidth,			// 源操作大小
 										 IN int nSrcHeight,
 										 IN BUFFER_MODE eMode,		// 混合操作类型
 										 IN BUFFER_PARITY_STYLE eParity);	// 奇偶场类型
 
 // 采用权重总和的均值拉伸
-BASEGRAPH_COMMON_API BOOL SY_StretchBlt_Mean(IN OUT SYBufferDef32* pDesBuf,	// 目标 Buffer
+BASEGRAPH_COMMON_API BOOL SY_StretchBlt_Mean(IN OUT CommonBufferDef32* pDesBuf,	// 目标 Buffer
 											IN int nDesX,
 											IN int nDesY,
 											IN int nDesWidth,			// 目标操作大小
 											IN int nDesHeight,
-											IN SYBufferDef32* pSrcBuf,	// 源 Buffer
+											IN CommonBufferDef32* pSrcBuf,	// 源 Buffer
 											IN int nSrcX,
 											IN int nSrcY,
 											IN int nSrcWidth,			// 源操作大小
@@ -270,22 +270,22 @@ BASEGRAPH_COMMON_API BOOL rgba_mean_copy(OUT DWORD* pDest,
 								   IN int nSrcBufferHeight,
 								   IN int eParity);
 
-BASEGRAPH_COMMON_API BOOL SY_BufferTransform(IN OUT SYBufferDef32* pDesBuf,			// 目标缓存
+BASEGRAPH_COMMON_API BOOL SY_BufferTransform(IN OUT CommonBufferDef32* pDesBuf,			// 目标缓存
 											IN int nOffsetLeft,				// 目标缓存在投影平面坐标系下的位置
 											IN int nOffsetTop,
-											IN SYBufferDef32* pSrcBuf,			// 源缓存
+											IN CommonBufferDef32* pSrcBuf,			// 源缓存
 											IN int nSrcWidth,					// 源操作区域大小（相对于缓存起点而言）
 											IN int nSrcHeight,
 											IN void* pvfXYZW,					// 源操作区域的四个角点经过一系列变换后的顶点数据（必须有四个，顺序为(0,0),(w,0),(w,h),(h,0)）
-											IN SYBufferDef32* pMaskBuf = NULL);	// 掩码缓存
-BASEGRAPH_COMMON_API BOOL SY_BufferTransformLinear(IN OUT SYBufferDef32* pDesBuf,	// 目标缓存
+											IN CommonBufferDef32* pMaskBuf = NULL);	// 掩码缓存
+BASEGRAPH_COMMON_API BOOL SY_BufferTransformLinear(IN OUT CommonBufferDef32* pDesBuf,	// 目标缓存
 												  IN int nOffsetLeft,			// 目标缓存在投影平面坐标系下的位置
 												  IN int nOffsetTop,
-												  IN SYBufferDef32* pSrcBuf,	// 源缓存
+												  IN CommonBufferDef32* pSrcBuf,	// 源缓存
 												  IN int nSrcWidth,			// 源操作区域大小（相对于缓存起点而言）
 												  IN int nSrcHeight,
 												  IN vector4f* pvfXYZW,		// 源操作区域的四个角点经过一系列变换后的顶点数据（必须有四个，顺序为(0,0),(w,0),(w,h),(h,0)）
-												  IN SYBufferDef32* pMaskBuf);	// 掩码缓存
+												  IN CommonBufferDef32* pMaskBuf);	// 掩码缓存
 
 // 使用某个值填充内存中的某块区域，可指定裁剪区域。
 BASEGRAPH_COMMON_API void SYBGRA32_FillRect(IN OUT DWORD* pdwBuf,	// 操作缓存

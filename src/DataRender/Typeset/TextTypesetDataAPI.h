@@ -4,7 +4,7 @@
 #include "DataRender\DrawTextDef.h"
 #include "DataRender\MaterialDef.h"
 
-typedef CSYArray<curCtrl*,curCtrl*> CurveAr;
+typedef CBaseARray<curCtrl*,curCtrl*> CurveAr;
 
 //////////////////////////////////////////////////////////////////////////
 /************************SYText*******************************/
@@ -92,7 +92,7 @@ typedef CSYArray<curCtrl*,curCtrl*> CurveAr;
 //取指定字符的字体、2D颜色、3D颜色或者下划线属性
  LPVOID	SYTextProp_GetProp(LPSYTextProp pProp,  int nCharIdx,  E_TextPropType eType);
 //取指定字符属性索引结构（索引越界时取边界值）
- LPSYTextPropIndex	SYTextProp_GetPropIndex(SYArray* paryIndex, int nCharIdx);
+ LPSYTextPropIndex	SYTextProp_GetPropIndex(BaseARray* paryIndex, int nCharIdx);
 //删除一个属性索引
  BOOL	SYTextProp_EmptyPropIndex(LPSYTextProp pProp, LPSYTextPropIndex pPropIdx, BOOL bReserve2DClr);
 //属性表长度调整
@@ -120,27 +120,27 @@ typedef CSYArray<curCtrl*,curCtrl*> CurveAr;
  void	SYTextProp_SetUnderLine(LPSYTextProp pProp, int nCharIdx, int nCount, LPCSYUnderLine lpUnderLine, DWORD dwMask = SYTEXTFONTMASK_UNDERLINE_ALL);
  void	SYTextProp_SetUnderLineProperty(LPSYTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, DWORD dwMask);
 //从前向后查找第1个相同字体（不得与自己比较）
- int	SYTextProp_FindSameFont(SYArray* paryFont, LPCSYFont pCompFont, LPVOID* pSame);
+ int	SYTextProp_FindSameFont(BaseARray* paryFont, LPCSYFont pCompFont, LPVOID* pSame);
 //从前向后查找第1个相同2D颜色（不得与自己比较）
- int	SYTextProp_FindSame2DColor(SYArray* paryColor, LPCSYStaticEffect pCompColor, LPVOID* pSame);
+ int	SYTextProp_FindSame2DColor(BaseARray* paryColor, LPCSYStaticEffect pCompColor, LPVOID* pSame);
 //从前向后查找第1个相同3D颜色（不得与自己比较）
- int	SYTextProp_FindSame3DColor(SYArray* paryColor, const SYMaterial* pCompColor, LPVOID* pSame);
+ int	SYTextProp_FindSame3DColor(BaseARray* paryColor, const SYMaterial* pCompColor, LPVOID* pSame);
 //从前向后查找第1个相同下划线（不得与自己比较）
- int	SYTextProp_FindSameUnderLine(SYArray* paryUnderLine, LPCSYUnderLine pUnderLine, LPVOID* pSame);
+ int	SYTextProp_FindSameUnderLine(BaseARray* paryUnderLine, LPCSYUnderLine pUnderLine, LPVOID* pSame);
 //根据掩码拷贝2D颜色子属性
  void	SYText2DColor_CopyValue(LPSYStaticEffect pDesColor, LPCSYStaticEffect pSrcColor, DWORD dwMask);
 //从字体表中删除1个
- BOOL	SYTextProp_RemoveFont(SYArray* paryFont, int nIndex);
- BOOL	SYTextProp_RemoveFont(SYArray* paryFont, LPSYFont pFont);
+ BOOL	SYTextProp_RemoveFont(BaseARray* paryFont, int nIndex);
+ BOOL	SYTextProp_RemoveFont(BaseARray* paryFont, LPSYFont pFont);
 //从2D颜色表中删除1个
- BOOL	SYTextProp_Remove2DColor(SYArray* pary2DColor, int nIndex);
- BOOL	SYTextProp_Remove2DColor(SYArray* pary2DColor, LPSYStaticEffect p2DColor);
+ BOOL	SYTextProp_Remove2DColor(BaseARray* pary2DColor, int nIndex);
+ BOOL	SYTextProp_Remove2DColor(BaseARray* pary2DColor, LPSYStaticEffect p2DColor);
 //从3D颜色表中删除1个
- BOOL	SYTextProp_Remove3DColor(SYArray* pary3DColor, int nIndex);
- BOOL	SYTextProp_Remove3DColor(SYArray* pary3DColor, SYMaterial* p3DColor);
+ BOOL	SYTextProp_Remove3DColor(BaseARray* pary3DColor, int nIndex);
+ BOOL	SYTextProp_Remove3DColor(BaseARray* pary3DColor, SYMaterial* p3DColor);
 //从下划线表中删除1个
- BOOL	SYTextProp_RemoveUnderLine(SYArray* paryUnderLine, int nIndex);
- BOOL	SYTextProp_RemoveUnderLine(SYArray* paryUnderLine, LPSYUnderLine pUnderLine);
+ BOOL	SYTextProp_RemoveUnderLine(BaseARray* paryUnderLine, int nIndex);
+ BOOL	SYTextProp_RemoveUnderLine(BaseARray* paryUnderLine, LPSYUnderLine pUnderLine);
 
 /*********************SYTextPropIndex*************************/
  void	SYTextPropIndex_Init(LPSYTextPropIndex pPropIdx);
@@ -148,16 +148,16 @@ typedef CSYArray<curCtrl*,curCtrl*> CurveAr;
  void	SYTextPropIndex_Copy(LPSYTextPropIndex pDes, LPCSYTextPropIndex pSrc);
  BOOL	SYTextPropIndex_Compare(LPCSYTextPropIndex pPropIdx1, LPCSYTextPropIndex pPropIdx2);
 
-/***********************SYArtTypeset**************************/
- void	SYArtTypeset_Init(LPSYArtTypeset pArt);
- void	SYArtTypeset_Create(LPSYArtTypeset pArt, eSYArtTypesetPath ePath);
- void	SYArtTypeset_Create(LPSYArtTypeset pPath, CurveAr* pCurveAry, BOOL bRotate = TRUE);
- void	SYArtTypeset_Release(LPSYArtTypeset pArt);
- void	SYArtTypeset_Copy(LPSYArtTypeset pDes, LPCSYArtTypeset pSrc);
- BOOL	SYArtTypeset_Compare(LPCSYArtTypeset pArt1, LPCSYArtTypeset pArt2);
+/***********************BaseARtTypeset**************************/
+ void	BaseARtTypeset_Init(LPBaseARtTypeset pArt);
+ void	BaseARtTypeset_Create(LPBaseARtTypeset pArt, eBaseARtTypesetPath ePath);
+ void	BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRotate = TRUE);
+ void	BaseARtTypeset_Release(LPBaseARtTypeset pArt);
+ void	BaseARtTypeset_Copy(LPBaseARtTypeset pDes, LPCBaseARtTypeset pSrc);
+ BOOL	BaseARtTypeset_Compare(LPCBaseARtTypeset pArt1, LPCBaseARtTypeset pArt2);
 
 /*********************SYGlyphSpace****************************/
- void	BASEGRAPH_DATARENDER_API SYGlyphSpace_ReleaseAll(SYArray& artGlyphSpace);
+ void	BASEGRAPH_DATARENDER_API SYGlyphSpace_ReleaseAll(BaseARray& artGlyphSpace);
 
 /***********************其它导出******************************/
 //字符串按回车换行符拆分

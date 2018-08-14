@@ -172,7 +172,7 @@ struct SYMatTex
 		TCHAR* pTexPath;
 		TCHAR* pTexSrc;
 		int		nChannel;
-		SYBufferDef32* pBufferDef;
+		CommonBufferDef32* pBufferDef;
 	};
 	float2		TexOffset;
 	float2		TexScale;
@@ -243,7 +243,7 @@ typedef struct tag_SYMaterialParam
 	//	param_def	Emissive;
 	//	param_def	fAlpha;
 	//}common;
-	SYArray texParam[SYMATERIAL_TEX_COUNT];//曲线数组
+	BaseARray texParam[SYMATERIAL_TEX_COUNT];//曲线数组
 }SYMaterialParam,*LPSYMaterialParam;
 typedef struct tag_SYSubModelParam
 {
@@ -290,7 +290,7 @@ struct SYMovieSeekData
 	int				nWidth;
 	int				nHeight;
 	int				nTotalFrame;
-	CSYBuffer		movie_buffer;
+	CCommonBuffer		movie_buffer;
 };
 struct SYSpecTexPrivateData 
 {
@@ -409,8 +409,8 @@ BASEGRAPH_DATARENDER_API void		SYMaterial_CreateVideoMat( SYVideoMaterial* pVide
 BASEGRAPH_DATARENDER_API void		SYMaterial_ReleaseVideoMat(SYVideoMaterial* pVideoMat);
 BASEGRAPH_DATARENDER_API int		SYMaterial_VideoMatUpdateCopyVideo(SYVideoMaterial* pVideoMatDes, double dFrame,float fFrameRate,float fAlpha,int nLightNum,SYMaterialParam* param,void* pEnvParam,SYVideoMaterial* pVideoMatSrc);
 BASEGRAPH_DATARENDER_API int		SYMaterial_UpdateFrame( SYVideoMaterial* pVideoMat,double dFrame,float fFrameRate,float fAlpha,int nLightNum,SYMaterialParam* param,void* pEnvParam, LPRECT pBound = NULL);
-BASEGRAPH_DATARENDER_API BOOL		SYMaterial_UpdateTex(SYBufferDef32* pSrcBufferDef,DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate,SYVideoMaterial* pVideoMat,void* param,BOOL isForceUpdate = FALSE, LPRECT pBound = NULL);
-BASEGRAPH_DATARENDER_API BOOL		SYMaterial_UpdateTexCopyVideo(SYBufferDef32* pSrcBufferDef,DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate,SYVideoMaterial* pVideoMat,SYVideoMaterial* pVideoMatSrc,void* param,BOOL isForceUpdate = FALSE);
+BASEGRAPH_DATARENDER_API BOOL		SYMaterial_UpdateTex(CommonBufferDef32* pSrcBufferDef,DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate,SYVideoMaterial* pVideoMat,void* param,BOOL isForceUpdate = FALSE, LPRECT pBound = NULL);
+BASEGRAPH_DATARENDER_API BOOL		SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* pSrcBufferDef,DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate,SYVideoMaterial* pVideoMat,SYVideoMaterial* pVideoMatSrc,void* param,BOOL isForceUpdate = FALSE);
 BASEGRAPH_DATARENDER_API BOOL		SYMaterial_SetTex(int hTex,const RECT& pValidRt,int nOriginX, int nOriginY, SYVideoMaterial* pVideoMat, int nTexIndex,BOOL bNeedRelease = TRUE);
 BASEGRAPH_DATARENDER_API BOOL		SYMaterial_SetTex(int hTex,const rectf& pValidRt,int nOriginX, int nOriginY, SYVideoMaterial* pVideoMat, int nTexIndex,BOOL bNeedRelease = TRUE);
 

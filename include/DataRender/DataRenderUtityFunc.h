@@ -44,7 +44,7 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel* pDst, const SYModel* pSrc)
 //cell
 BASEGRAPH_DATARENDER_API int sy_release_cell(vectorcell* pcell);
 BASEGRAPH_DATARENDER_API int cell_line_extend_close(OUT vectorcell* descell1, OUT vectorcell* descell2, IN vectorcell*	srccell, vector2f* vOffset, IN int ndirect, IN float fwidth);
-BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT SYArray*	ptarray, OUT SYArray*	lenarray, IN  vectorcell*	srccell, IN  int ndirect, IN  float fwidth);
+BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT BaseARray*	ptarray, OUT BaseARray*	lenarray, IN  vectorcell*	srccell, IN  int ndirect, IN  float fwidth);
 BASEGRAPH_DATARENDER_API void SYCurveCell_Init(vectorcell* pCell);
 BASEGRAPH_DATARENDER_API void SYCurveCell_Release(vectorcell* pCell);
 //bone
@@ -57,11 +57,11 @@ BASEGRAPH_DATARENDER_API void sy_channelinfo_copy(BaseGraph_DataBase::channelinf
 BASEGRAPH_DATARENDER_API void sy_materialinfo_copy(BaseGraph_DataBase::materialinfo* pDes, const BaseGraph_DataBase::materialinfo* pSrc);
 //draw
 BASEGRAPH_DATARENDER_API void SYRender_GetGraph_RenderInfo(vectorgraph* pGraph, float fscale, int& w, int& h, RECT& rtBound);
-BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph* pGraph, IN static_effect* effect, OUT CSYBuffer*& pResultPool, OUT RECT &rtOutBound, OUT int &nWidth, OUT int &nHeight, OUT int &nPitch, IN float fscale, OUT pointf& ptOrg, IN double dFrame, IN BOOL bShadowBaseline = FALSE, IN sy_render_channel** pChannelPool = FALSE);
-BASEGRAPH_DATARENDER_API void SYData_ReleaseCalcBuffer(CSYBuffer* pBuffer);
+BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph* pGraph, IN static_effect* effect, OUT CCommonBuffer*& pResultPool, OUT RECT &rtOutBound, OUT int &nWidth, OUT int &nHeight, OUT int &nPitch, IN float fscale, OUT pointf& ptOrg, IN double dFrame, IN BOOL bShadowBaseline = FALSE, IN sy_render_channel** pChannelPool = FALSE);
+BASEGRAPH_DATARENDER_API void Data_ReleaseCalcBuffer(CCommonBuffer* pBuffer);
 BASEGRAPH_DATARENDER_API void SYRender_GenCubeGraph(vectorgraph* des, vectorgraph* src, vector2f* voffset, BaseGraph_DataBase::cubeinfo* pinfo);
 BASEGRAPH_DATARENDER_API void SYRender_GenBorderGraph(vectorgraph* des, vectorgraph* src, vector2f* voffset, float fwidth, float finterval, int nLineStyle, BOOL bSingleLine);
-BASEGRAPH_DATARENDER_API CSYBuffer* SYData_QueryCalcBuffer(int nSize, BOOL bMustSuccess = TRUE);
+BASEGRAPH_DATARENDER_API CCommonBuffer* Data_QueryCalcBuffer(int nSize, BOOL bMustSuccess = TRUE);
 BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph* pGraph,
 	DWORD* pBuffer,
 	int w,
@@ -75,19 +75,19 @@ BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph* pGraph,
 	float effect_angle,
 	DWORD effectcolor,
 	int nframe,
-	CSYBuffer** pRetMaskPool = NULL,
+	CCommonBuffer** pRetMaskPool = NULL,
 	int* nRetMaskWidth = NULL,
 	int* nRetMaskHeight = NULL);
 void Light(DWORD* dwBuffer, int nWidth, int nHeight, BaseGraph_DataBase::metalinfo* pinfo);
 BASEGRAPH_DATARENDER_API int  cell_line_extend_close(OUT vectorcell* descell1, OUT vectorcell* descell2, IN vectorcell*	srccell, vector2f* vOffset, IN int ndirect, IN float fwidth);
-BASEGRAPH_DATARENDER_API void	GetImagPointsByStyle(IN const SYArray& pptfArr1, IN const int nStyle, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr);
-BASEGRAPH_DATARENDER_API void	GetImagPointsDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr, float *fIntervalAr, int intCount);
-BASEGRAPH_DATARENDER_API void	GetImagPointsDASHDOT(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr);
-BASEGRAPH_DATARENDER_API void	GetImagPointsLDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr);
-BASEGRAPH_DATARENDER_API void	GetImagPointsLDASHDOT(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr);
-BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr);
+BASEGRAPH_DATARENDER_API void	GetImagPointsByStyle(IN const BaseARray& pptfArr1, IN const int nStyle, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr);
+BASEGRAPH_DATARENDER_API void	GetImagPointsDASH(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr, float *fIntervalAr, int intCount);
+BASEGRAPH_DATARENDER_API void	GetImagPointsDASHDOT(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr);
+BASEGRAPH_DATARENDER_API void	GetImagPointsLDASH(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr);
+BASEGRAPH_DATARENDER_API void	GetImagPointsLDASHDOT(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr);
+BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr);
 BASEGRAPH_DATARENDER_API float GetDistace(const pointf* ptf1, const pointf* ptf2);
-BASEGRAPH_DATARENDER_API float	GetCurveDistance(const SYArray* pptrArr);
+BASEGRAPH_DATARENDER_API float	GetCurveDistance(const BaseARray* pptrArr);
 BASEGRAPH_DATARENDER_API void CopyCell(vectorcell* pdescell, vectorcell* psrccell);
 BASEGRAPH_DATARENDER_API void  effect_convex(unsigned char* pmask,
 	int nmaskpitch,

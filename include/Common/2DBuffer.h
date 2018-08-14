@@ -3,7 +3,7 @@
 
 #include "Common\BufferCommonDef.h"
 //////////////////////////////////////////////////////////////////////////
-struct SYBufferDef32
+struct CommonBufferDef32
 {
 	DWORD*	m_dwBuffer;
 	int		m_nWidth;
@@ -14,12 +14,12 @@ struct SYBufferDef32
 	int		m_nOriginY;
 	int		m_nMaxSize;
 	float	m_fScale;
-	SYBufferDef32()
+	CommonBufferDef32()
 	{
-		memset(this, 0, sizeof(SYBufferDef32));
+		memset(this, 0, sizeof(CommonBufferDef32));
 	}
 };
-struct SYBufferDef8
+struct CommonBufferDef8
 {
 	BYTE*	m_pMaskBuffer; 
 	int		m_nWidth;
@@ -29,26 +29,26 @@ struct SYBufferDef8
 	int		m_nOriginX;
 	int		m_nOriginY;
 	float	m_fScale;
-	SYBufferDef8()
+	CommonBufferDef8()
 	{
-		memset(this, 0, sizeof(SYBufferDef8));
+		memset(this, 0, sizeof(CommonBufferDef8));
 	}
 };
-BASEGRAPH_COMMON_API void SYBufferDef32_Init(SYBufferDef32* pBuffer32);
-BASEGRAPH_COMMON_API void SYBufferDef32_Release(SYBufferDef32* pBuffer32);
-BASEGRAPH_COMMON_API void SYBufferDef32_Reset(SYBufferDef32* pBuffer32, int nWidth, int nHeight);
-BASEGRAPH_COMMON_API void SYBufferDef32_CopyParam(SYBufferDef32* pDes, SYBufferDef32* pSrc);
-BASEGRAPH_COMMON_API BOOL SYBufferDef32_Compare(SYBufferDef32* pBuff1, SYBufferDef32* pBuff2);
+BASEGRAPH_COMMON_API void CommonBufferDef32_Init(CommonBufferDef32* pBuffer32);
+BASEGRAPH_COMMON_API void CommonBufferDef32_Release(CommonBufferDef32* pBuffer32);
+BASEGRAPH_COMMON_API void CommonBufferDef32_Reset(CommonBufferDef32* pBuffer32, int nWidth, int nHeight);
+BASEGRAPH_COMMON_API void CommonBufferDef32_CopyParam(CommonBufferDef32* pDes, CommonBufferDef32* pSrc);
+BASEGRAPH_COMMON_API BOOL CommonBufferDef32_Compare(CommonBufferDef32* pBuff1, CommonBufferDef32* pBuff2);
 
-class  BASEGRAPH_COMMON_API CSYBuffer:public SYBufferDef32
+class  BASEGRAPH_COMMON_API CCommonBuffer:public CommonBufferDef32
 {
 public:
-	CSYBuffer();
-	CSYBuffer(int nWidth, int nHeight,LPDWORD lpData);
-	CSYBuffer(int nWidth, int nHeight);
-	CSYBuffer(SYBufferDef32 *pBuffer);
+	CCommonBuffer();
+	CCommonBuffer(int nWidth, int nHeight,LPDWORD lpData);
+	CCommonBuffer(int nWidth, int nHeight);
+	CCommonBuffer(CommonBufferDef32 *pBuffer);
 
-	~CSYBuffer();
+	~CCommonBuffer();
 protected:
 	CRITICAL_SECTION m_Lock;
 	//是否已经被使用
@@ -67,7 +67,7 @@ public:
 	void	Resize(int nWidth,int nHeight);
 	void	Clear( DWORD color,RECT* pRect);
 	//Set operation buffer
-	BOOL	Attach(SYBufferDef32 *pBuffer);
+	BOOL	Attach(CommonBufferDef32 *pBuffer);
 	void	SetAutoDelete(BOOL bDelete){m_bAutoDelete = bDelete;};
 	BOOL	IsNeedRender(){return m_bNeedRender;};
 	void	SetNeedRender(BOOL bNeedRender){m_bNeedRender = bNeedRender;};
@@ -96,11 +96,11 @@ public:
 
 public:
 	BOOL	BitBlt(	long desx,long desy,long deswidth,long desheight,
-		SYBufferDef32* pBuffer,long srcx, long srcy, long srcwidth , 
+		CommonBufferDef32* pBuffer,long srcx, long srcy, long srcwidth , 
 		long srcheight,  IN BUFFER_MODE eMode,BUFFER_PARITY_STYLE fieldFlag,RECT* lpDesCrop);
 
 	//Copy pBuffer to self Buffer, fieldFlag is the field of self target Buffer
-	BOOL	BitBlt(	RECT*	rtDes,SYBufferDef32*	pBuffer,RECT* rtSrc,
+	BOOL	BitBlt(	RECT*	rtDes,CommonBufferDef32*	pBuffer,RECT* rtSrc,
 		IN BUFFER_MODE eMode,BUFFER_PARITY_STYLE fieldFlag,RECT* lpDesCrop);
 
 	// Copy pBuffer to DC

@@ -1567,7 +1567,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 	return TRUE;
 }
 
-BOOL BufferMemSSE::Buffer_Trans_CalcBorder(IN SYBufferDef32 * pDesBuf, IN int nOffsetLeft, IN int nOffsetTop, IN LPSYINNERVERTEX pvVertexes, OUT LPSYINNERVERTEX pvLeftEdgeUVW, OUT LPSYINNERVERTEX pvDeltaUVW, OUT DWORD ** ppdwDesLeftEdge, OUT int * pnLinePixels, OUT int * pnMaxLinePixels)
+BOOL BufferMemSSE::Buffer_Trans_CalcBorder(IN CommonBufferDef32 * pDesBuf, IN int nOffsetLeft, IN int nOffsetTop, IN LPSYINNERVERTEX pvVertexes, OUT LPSYINNERVERTEX pvLeftEdgeUVW, OUT LPSYINNERVERTEX pvDeltaUVW, OUT DWORD ** ppdwDesLeftEdge, OUT int * pnLinePixels, OUT int * pnMaxLinePixels)
 {
 	return FALSE;
 }

@@ -14,8 +14,8 @@ const float SY_ABS_DOUBLE_0 = 1.1e-8f;		// float 精度为 6 到 7 位
 #define ABS_DOUBLE_0	1.0e-3f
 #define SYMAXUINT		((UINT)~((UINT)0))
 #define SYMAXINT		((INT)(SYMAXUINT >> 1))
-#define MSYARAMMAX		65535
-#define MSYARAMMIN		-65535
+#define MBaseARAMMAX		65535
+#define MBaseARAMMIN		-65535
 											// 数据类型取值范围、精度等
 #define SY_INT_MAX		INT_MAX		/* maximum (signed) int value */
 #define SY_INT_MIN		INT_MIN		/* minimum (signed) int value */

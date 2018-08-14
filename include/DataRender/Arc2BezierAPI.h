@@ -1,5 +1,5 @@
-#ifndef _SYARC2BEZIER_H
-#define _SYARC2BEZIER_H
+#ifndef _BaseARC2BEZIER_H
+#define _BaseARC2BEZIER_H
 // 象限. 注意: 并非屏幕坐标系的象限.
 enum ARCLOC
 {
@@ -37,7 +37,7 @@ BASEGRAPH_DATARENDER_API void DividCircle2Bezier(
     IN const point2f ptCenter,       // 圆心
     IN const float fRadius_a,       // 沿x轴半径
     IN const float fRadius_b,       // 沿y轴半径
-    OUT SYArray &aBezier，          // 逼近结果 4个point2f型顶点 
+    OUT BaseARray &aBezier，          // 逼近结果 4个point2f型顶点 
     );
 
 //----------------------------------
@@ -48,7 +48,7 @@ BASEGRAPH_DATARENDER_API void DividQuarterArc2Bezier(
     IN  const float  fRadius_a,     // 半径
     IN  const float  fRadius_b,     // 半径
     IN  ARCLOC       loc,           // 圆弧位置
-    OUT SYArray&     arPt
+    OUT BaseARray&     arPt
     );
 
 //----------------------------------
@@ -60,7 +60,7 @@ BASEGRAPH_DATARENDER_API void DividArc2Bezier(
     IN const float fRadius_b,       // 沿y轴半径
 	IN const float fStartRadIn,		// 起始弧度
 	IN const float fEndRad,			// 终止弧度
-    OUT SYArray &aBezier			// 逼近结果 4个point2f型顶点 
+    OUT BaseARray &aBezier			// 逼近结果 4个point2f型顶点 
     );
 
 //////////////////////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ BASEGRAPH_DATARENDER_API int	line_extend(OUT point2f& ptoutstart,point2f& ptoute
 								 IN point2f& ptinstart,point2f& ptinend,
 								 IN int ndirect,IN float fwidth);
 BASEGRAPH_DATARENDER_API int	arc_near_line(const point2f& ptcenter,const point2f& ptstart,const point2f& ptend,float frad);
-int BASEGRAPH_DATARENDER_API	cell_makearc(SYArray* parray,const point2f& ptcenter,const point2f& ptstart,const point2f& ptend,float rad);
+int BASEGRAPH_DATARENDER_API	cell_makearc(BaseARray* parray,const point2f& ptcenter,const point2f& ptstart,const point2f& ptend,float rad);
 //-----------------------------------------------------------------------------
 // 计算三次Bezier曲线的最小外包矩形
 //-----------------------------------------------------------------------------

@@ -54,13 +54,13 @@ public:
 						int nIndex, BOOL bIsLineEndPos, BOOL bLinearTypeset,
 						float fCaretHalfWidth	//光标半宽
 						);
-	BOOL	GetSelSpaceInfoByGlyphIndex(int nBeginIndex, int nEndIndex,SYArray* pArInfo, BOOL bLinearTypeset);
+	BOOL	GetSelSpaceInfoByGlyphIndex(int nBeginIndex, int nEndIndex,BaseARray* pArInfo, BOOL bLinearTypeset);
 	BOOL	GetGlyphSpaceInfo(int nIndex, LPSYGlyphSpace pSpaceInfo);
 	BOOL	IsGlyphIndexAtLineEnd(int nIndex);
 	BOOL	IsGlyphIndexInLine(int nIndex, BOOL bIsLineEndPos);
 public:
-	SYArray	m_arGlyphSpace;		//空间信息
-	SYArray	m_arULInfo;			//下划线Info数组
+	BaseARray	m_arGlyphSpace;		//空间信息
+	BaseARray	m_arULInfo;			//下划线Info数组
 private:
 	CSYTextParagraph*	m_pTextParagraph;		//行所在的段排版对象
 	int				m_nBeginIndex;		//行的字形起始索引（相对于段）
@@ -93,8 +93,8 @@ public:
 	inline void		SetTextObj(LPSYText pTextObj) { m_pTextObj = pTextObj; }
 	LPSYText			GetTextObj();
 	LPSYTextParagraph	GetParagraphObj();
-	SYArray*			GetLineArray() { return &m_arLine; }
-	int				GetLineCount() { return SYAR_GetCount(&m_arLine); }
+	BaseARray*			GetLineArray() { return &m_arLine; }
+	int				GetLineCount() { return BaseAR_GetCount(&m_arLine); }
 
 	float	GetRealHeight();
 	float	GetRealWidth();
@@ -146,7 +146,7 @@ public:
 						BOOL bLinearTypeset, 
 						float fCaretHalfWidth		//光标半宽
 						);
-	BOOL	GetSelSpaceInfoByCharPos(int nBeginIndex, int nEndIndex, SYArray* pArInfo, BOOL bLinearTypeset);
+	BOOL	GetSelSpaceInfoByCharPos(int nBeginIndex, int nEndIndex, BaseARray* pArInfo, BOOL bLinearTypeset);
 	BOOL	GetCharPosSpaceInfo(int nCharIndex, LPSYGlyphSpace pSpaceInfo);
 private:
 	void	ReleaseTempData();
@@ -155,7 +155,7 @@ private:
 	void	AddBlankLine(CSYTextLine* pLine);
 public:
 	SYSCRIPTRESULT	m_uspResult;
-	SYArray			m_arWordInfo;			//字符WordInfo数组
+	BaseARray			m_arWordInfo;			//字符WordInfo数组
 	int				m_nPreAllWordInfoCnt;	//本段之前所有WordInfo元素个数（便于推算Unit）
 	int				m_nChgLevel;			//修改等级
 private:
@@ -167,6 +167,6 @@ private:
 	float			m_fRealHeight;		//..............高度
 	point2f			m_ptOffset;
 	rectf			m_rtBorder;			//段占据的矩形
-	SYArray			m_arLine;
+	BaseARray			m_arLine;
 };
 #endif //_SYTEXTPARAGRAPH_INC_

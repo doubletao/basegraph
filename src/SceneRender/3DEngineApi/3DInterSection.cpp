@@ -582,24 +582,24 @@ SYHitPoint::~SYHitPoint()
 	int nCount = GetPointCount();
 	for (int i = 0; i < nCount; i++)
 	{
-		float3* pPoint = (float3*)SYAR_GetAt(&m_arHitPoint,i);
+		float3* pPoint = (float3*)BaseAR_GetAt(&m_arHitPoint,i);
 		SAFE_DELETE(pPoint);
 	}
-	SYAR_RemoveAll(&m_arHitPoint);
+	BaseAR_RemoveAll(&m_arHitPoint);
 }
 
 int SYHitPoint::AddPoint( const float3* pHitPoint )
 {
 	float3* newPoint = new float3;
 	memcpy(newPoint,pHitPoint,sizeof(float3));
-	return (int)SYAR_Add(&m_arHitPoint,newPoint);
+	return (int)BaseAR_Add(&m_arHitPoint,newPoint);
 }
 
 bool SYHitPoint::DelPoint( int nIndex )
 {
-	float3* removePoint = (float3*)SYAR_GetAt(&m_arHitPoint,nIndex);
+	float3* removePoint = (float3*)BaseAR_GetAt(&m_arHitPoint,nIndex);
 	SAFE_DELETE(removePoint);
-	SYAR_RemoveAt(&m_arHitPoint,nIndex,1);
+	BaseAR_RemoveAt(&m_arHitPoint,nIndex,1);
 	return true;
 }
 
@@ -746,8 +746,8 @@ int SY3DModelHitTest( int nSubModel,
 	 const SYRay& ray = *pRay;
 
 	 SYHitPoint HitPoint;
-	 SYArray arHitModel;
-	 SYAR_Init(&arHitModel);
+	 BaseARray arHitModel;
+	 BaseAR_Init(&arHitModel);
 	 float3 vPoint;
 	 for (int j = 0; j < nSubModel; j++)
 	 {
@@ -771,7 +771,7 @@ int SY3DModelHitTest( int nSubModel,
 					 if (isHitReturn)
 						 return j;
 					 HitPoint.AddPoint(&vPoint);
-					 SYAR_Add(&arHitModel,(SYAR_ELEMENT)j);
+					 BaseAR_Add(&arHitModel,(BaseAR_ELEMENT)j);
 				 }
 			 }
 		 }
@@ -789,7 +789,7 @@ int SY3DModelHitTest( int nSubModel,
 					 if (isHitReturn)
 						 return j;
 					 HitPoint.AddPoint(&vPoint);
-					 SYAR_Add(&arHitModel,(SYAR_ELEMENT)j);
+					 BaseAR_Add(&arHitModel,(BaseAR_ELEMENT)j);
 				 }
 			 }
 		 }
@@ -808,7 +808,7 @@ int SY3DModelHitTest( int nSubModel,
 					 if (isHitReturn)
 						 return j;
 					 HitPoint.AddPoint(&vPoint);
-					 SYAR_Add(&arHitModel,(SYAR_ELEMENT)j);
+					 BaseAR_Add(&arHitModel,(BaseAR_ELEMENT)j);
 				 }
 			 }
 		 }
@@ -821,8 +821,8 @@ int SY3DModelHitTest( int nSubModel,
 
 		 if(pOutPt)
 			 *pOutPt = HitPoint[nearestPoint];
-		 int nHitSubModel = (int)SYAR_GetAt(&arHitModel,nearestPoint);
-		 SYAR_RemoveAll(&arHitModel);
+		 int nHitSubModel = (int)BaseAR_GetAt(&arHitModel,nearestPoint);
+		 BaseAR_RemoveAll(&arHitModel);
 		 return nHitSubModel;
 	 }
 	 return -1;

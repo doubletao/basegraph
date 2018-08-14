@@ -113,7 +113,7 @@ typedef struct tag_symodel
 	DWORD*		    pdwBoneIndex;	// bone indexes for each vertexes, the array size is "vcount"
 	DWORD*		    pdwBoneWeight;	// weight indexes for each vertexes, the array size is "vcount"
 
-	SYArray		    bonearray;					//¹Ç÷ÀÐÅÏ¢
+	BaseARray		    bonearray;					//¹Ç÷ÀÐÅÏ¢
 
 	int			    nBoneGroupCount;	// bone group definition
 	DWORD*		    pdwBoneGroup;		// 4 bytes of one cell, each byte indicates a bone index
@@ -218,7 +218,7 @@ struct SYRender2DUnit
 	int			 width;
 	int			 height;
 	RECT		 bound;
-	SYHash		 channel;
+	BaseHash		 channel;
 	SYRenderStaticEffect effect;
 };
 typedef struct tag_syrender3dunit
@@ -348,7 +348,7 @@ enum CONE_ITEM_PART
 #define		SY_CONE_LAYER_NUM				3
 #define		SYBOXWITHBEVEL_CIRCLEPTNUM		5//Ô²½Ç¾ØÐÎµÄÔ²½ÇµÄÆÊ·Ö³Ì¶È
 #define		SY_ROUNDRECT_NUM				2 * SYBOXWITHBEVEL_CIRCLEPTNUM//Ô²½Ç¾ØÐÎµÄÊýÁ¿£¬Á½¸öµ¹½Ç
-#define		SY_FIRSSYART_ARC				0//µÚÒ»¸ùºá»¡
+#define		SY_FIRSBaseART_ARC				0//µÚÒ»¸ùºá»¡
 #define		SY_SECONDPART_ARC				1//µÚÒ»¸ùÊú»¡
 #define		SY_THIRDPART_ARC				2//µÚ¶þ¸ùºá»¡
 #define		SY_FOUTHPART_ARC				3//µÚ¶þ¸ùÊú»¡
@@ -378,7 +378,7 @@ enum CONE_ITEM_PART
 #define		SY_CONE_LAYER_NUM				3
 #define		SYBOXWITHBEVEL_CIRCLEPTNUM		5//Ô²½Ç¾ØÐÎµÄÔ²½ÇµÄÆÊ·Ö³Ì¶È
 #define		SY_ROUNDRECT_NUM				2 * SYBOXWITHBEVEL_CIRCLEPTNUM//Ô²½Ç¾ØÐÎµÄÊýÁ¿£¬Á½¸öµ¹½Ç
-#define		SY_FIRSSYART_ARC				0//µÚÒ»¸ùºá»¡
+#define		SY_FIRSBaseART_ARC				0//µÚÒ»¸ùºá»¡
 #define		SY_SECONDPART_ARC				1//µÚÒ»¸ùÊú»¡
 #define		SY_THIRDPART_ARC				2//µÚ¶þ¸ùºá»¡
 #define		SY_FOUTHPART_ARC				3//µÚ¶þ¸ùÊú»¡
@@ -521,7 +521,7 @@ const int g_nSegment_Vertex_Num = SY_SEGMENT_ROW_NUM * SY_SEGMENT_COLUMN_NUM;//×
 const int g_nSegment_Index_Num = (SY_SEGMENT_ROW_NUM - 1) * (SY_SEGMENT_COLUMN_NUM - 1) * 6;//×ÜµÄ¶¥µã¸öÊý
 const SYSubModel g_stuSegmentSubs[SEGMENT_MATERIAL_COUNT] =
 {
-	{ 0, g_nSegment_Vertex_Num, 0, g_nSegment_Index_Num, SY_TRIANGLE_LIST, g_nSegment_Index_Num / 3, SYHTable_null },
+	{ 0, g_nSegment_Vertex_Num, 0, g_nSegment_Index_Num, SY_TRIANGLE_LIST, g_nSegment_Index_Num / 3, BseeHTable_null },
 };
 // 3DÃæ
 enum FACETS_PART
@@ -534,8 +534,8 @@ const int g_n3DFacets_Vertex_Num = SY_SEGMENT_ROW_NUM * SY_SEGMENT_COLUMN_NUM;//
 const int g_n3DFacets_Index_Num = (SY_SEGMENT_ROW_NUM - 1) * (SY_SEGMENT_COLUMN_NUM - 1) * 6;//×ÜµÄ¶¥µã¸öÊý
 const SYSubModel g_stu3DFacetsSubs[FACETS_MATERIAL_COUNT] =
 {
-	{ 0, g_n3DFacets_Vertex_Num, 0, g_n3DFacets_Index_Num, SY_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, SYHTable_null },
-	{ g_n3DFacets_Vertex_Num, g_n3DFacets_Vertex_Num, g_n3DFacets_Index_Num, g_n3DFacets_Index_Num, SY_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, SYHTable_null },
+	{ 0, g_n3DFacets_Vertex_Num, 0, g_n3DFacets_Index_Num, SY_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, BseeHTable_null },
+	{ g_n3DFacets_Vertex_Num, g_n3DFacets_Vertex_Num, g_n3DFacets_Index_Num, g_n3DFacets_Index_Num, SY_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, BseeHTable_null },
 };
 enum QUADRANG_PARAM_PART
 {
@@ -571,7 +571,7 @@ const LPTSTR conewidthbevelMatString[CONEWITHBEVEL_MATERIAL_COUNT] =
 
 const SYSubModel g_stuSphereSubs[SPHERE_MATERIAL_COUNT] =
 {
-	{ 0, g_nSphere_Vertex_Num, 0, g_nSphere_Index_Num, SY_TRIANGLE_LIST, g_nSphere_Index_Num / 3, SYHTable_null },
+	{ 0, g_nSphere_Vertex_Num, 0, g_nSphere_Index_Num, SY_TRIANGLE_LIST, g_nSphere_Index_Num / 3, BseeHTable_null },
 };
 #define		SY_QUADRANG_ROW_NUM				2
 #define		SY_QUADRANG_COLUMN_NUM			2
@@ -582,12 +582,12 @@ const int g_nQuad_BaseTopVertex_Num = SY_QUADRANG_ROW_NUM   * SY_QUADRANG_COLUMN
 
 const SYSubModel g_stuQuadSubs[QUAD_MATERIAL_COUNT] =
 {
-	{ 0,                                                                                             g_nQuad_FrontBackVertex_Num, 0,                                                                                                  g_nQuad_FrontBackVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, SYHTable_null },
-	{ g_nQuad_FrontBackVertex_Num,                                                                   g_nQuad_RightLeftVertex_Num, g_nQuad_FrontBackVertex_Num + 2,                                                                    g_nQuad_RightLeftVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, SYHTable_null },
-	{ g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num,                                     g_nQuad_FrontBackVertex_Num, g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num + 4,                                      g_nQuad_FrontBackVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, SYHTable_null },
-	{ 2 * g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num,                                 g_nQuad_RightLeftVertex_Num, 2 * g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num + 6,                                  g_nQuad_RightLeftVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, SYHTable_null },
-	{ 2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num,                             g_nQuad_BaseTopVertex_Num,   2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + 8,                              g_nQuad_BaseTopVertex_Num + 2,   SY_TRIANGLE_LIST, (g_nQuad_BaseTopVertex_Num + 2) / 3,   SYHTable_null },
-	{ 2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + g_nQuad_BaseTopVertex_Num, g_nQuad_BaseTopVertex_Num,   2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + g_nQuad_BaseTopVertex_Num + 10, g_nQuad_BaseTopVertex_Num + 2,   SY_TRIANGLE_LIST, (g_nQuad_BaseTopVertex_Num + 2) / 3,   SYHTable_null },
+	{ 0,                                                                                             g_nQuad_FrontBackVertex_Num, 0,                                                                                                  g_nQuad_FrontBackVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, BseeHTable_null },
+	{ g_nQuad_FrontBackVertex_Num,                                                                   g_nQuad_RightLeftVertex_Num, g_nQuad_FrontBackVertex_Num + 2,                                                                    g_nQuad_RightLeftVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, BseeHTable_null },
+	{ g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num,                                     g_nQuad_FrontBackVertex_Num, g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num + 4,                                      g_nQuad_FrontBackVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, BseeHTable_null },
+	{ 2 * g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num,                                 g_nQuad_RightLeftVertex_Num, 2 * g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num + 6,                                  g_nQuad_RightLeftVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, BseeHTable_null },
+	{ 2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num,                             g_nQuad_BaseTopVertex_Num,   2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + 8,                              g_nQuad_BaseTopVertex_Num + 2,   SY_TRIANGLE_LIST, (g_nQuad_BaseTopVertex_Num + 2) / 3,   BseeHTable_null },
+	{ 2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + g_nQuad_BaseTopVertex_Num, g_nQuad_BaseTopVertex_Num,   2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + g_nQuad_BaseTopVertex_Num + 10, g_nQuad_BaseTopVertex_Num + 2,   SY_TRIANGLE_LIST, (g_nQuad_BaseTopVertex_Num + 2) / 3,   BseeHTable_null },
 };
 const int g_nCone_CirclePt_Num = SY_CONE_FAN_NUM + 2;//Ô²µÄ¶¥µã¸öÊý
 const int g_nCone_CircleIndex_Num = SY_CONE_FAN_NUM + 2;//Ô²µÄ¶¥µãË÷Òý¸öÊý
@@ -601,17 +601,17 @@ const int g_nCone_SecIndex_Num = 3 * 4 * (SY_CONE_LAYER_NUM - 1);//ÆÊÃæµÄ¶¥µãË÷Ò
 
 const SYSubModel g_stuConeSubs[CONE_MATERIAL_COUNT] =
 {
-	{ 0,                                            g_nCone_CirclePt_Num, 0,                                                  g_nCone_CircleIndex_Num, SY_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, SYHTable_null },
-	{ g_nCone_CirclePt_Num,                         g_nCone_FanPt_Num,    g_nCone_CircleIndex_Num,                            g_nCone_FanIndex_Num,    SY_TRIANGLE_LIST,  g_nCone_FanIndex_Num / 3,    SYHTable_null },
-	{ g_nCone_CirclePt_Num + g_nCone_FanPt_Num,     g_nCone_CirclePt_Num, g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num,     g_nCone_CircleIndex_Num, SY_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, SYHTable_null },
-	{ 2 * g_nCone_CirclePt_Num + g_nCone_FanPt_Num, g_nCone_SecPt_Num,    2 * g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num, g_nCone_SecIndex_Num,    SY_TRIANGLE_LIST,  g_nCone_SecIndex_Num / 3,    SYHTable_null },
+	{ 0,                                            g_nCone_CirclePt_Num, 0,                                                  g_nCone_CircleIndex_Num, SY_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, BseeHTable_null },
+	{ g_nCone_CirclePt_Num,                         g_nCone_FanPt_Num,    g_nCone_CircleIndex_Num,                            g_nCone_FanIndex_Num,    SY_TRIANGLE_LIST,  g_nCone_FanIndex_Num / 3,    BseeHTable_null },
+	{ g_nCone_CirclePt_Num + g_nCone_FanPt_Num,     g_nCone_CirclePt_Num, g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num,     g_nCone_CircleIndex_Num, SY_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, BseeHTable_null },
+	{ 2 * g_nCone_CirclePt_Num + g_nCone_FanPt_Num, g_nCone_SecPt_Num,    2 * g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num, g_nCone_SecIndex_Num,    SY_TRIANGLE_LIST,  g_nCone_SecIndex_Num / 3,    BseeHTable_null },
 };
 
 const SYSubModel g_stuBoxWidthBevelSubs[BOXWITHBEVEL_MATERIAL_COUNT] =
 {
-	{ 0, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, 0, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_TRIANGLE_FAN, SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, SYHTable_null },//¶¥ÃæÔ²
-	{ SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM * SY_ROUNDRECT_NUM, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, SY_TRIANGLE_LIST, (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2, SYHTable_null },
-	{ SY_PER_ROUNDRECT_VERTEX_MAX_NUM * (SY_ROUNDRECT_NUM + 1) + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1 + (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_TRIANGLE_FAN, SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, SYHTable_null },
+	{ 0, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, 0, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_TRIANGLE_FAN, SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, BseeHTable_null },//¶¥ÃæÔ²
+	{ SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM * SY_ROUNDRECT_NUM, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, SY_TRIANGLE_LIST, (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2, BseeHTable_null },
+	{ SY_PER_ROUNDRECT_VERTEX_MAX_NUM * (SY_ROUNDRECT_NUM + 1) + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1 + (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_TRIANGLE_FAN, SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, BseeHTable_null },
 };
 enum TUBE_ITEM_PART
 {
@@ -630,14 +630,14 @@ enum TUBE_ITEM_PART
 };
 const SYSubModel g_stuTubeSubs[TUBE_MATERIAL_COUNT] =
 {
-	{ 0,											SY_TUBE_TRIP_NUM,		0,											SY_TUBE_TRIP_NUM,			SY_TRIANGLE_STRIP,SY_TUBE_TRIP_NUM - 2,		SYHTable_null },
-	{ SY_TUBE_TRIP_NUM,							SY_TUBE_TRIP_NUM,		SY_TUBE_TRIP_NUM,								SY_TUBE_TRIP_NUM,			SY_TRIANGLE_STRIP,SY_TUBE_TRIP_NUM - 2,		SYHTable_null },
-	{ SY_TUBE_TRIP_NUM * 2,							SY_TUBE_PROFILE_PT_NUM,SY_TUBE_TRIP_NUM * 2,							SY_TUBE_PROFILE_INDEX_NUM,	SY_TRIANGLE_STRIP,SY_TUBE_PROFILE_TRI_NUM,	SYHTable_null },
-	{ SY_TUBE_TRIP_NUM * 2 + SY_TUBE_PROFILE_PT_NUM,	SY_TUBE_PROFILE_PT_NUM,SY_TUBE_TRIP_NUM * 2 + SY_TUBE_PROFILE_INDEX_NUM,SY_TUBE_PROFILE_INDEX_NUM,	SY_TRIANGLE_STRIP,SY_TUBE_PROFILE_TRI_NUM,	SYHTable_null },
+	{ 0,											SY_TUBE_TRIP_NUM,		0,											SY_TUBE_TRIP_NUM,			SY_TRIANGLE_STRIP,SY_TUBE_TRIP_NUM - 2,		BseeHTable_null },
+	{ SY_TUBE_TRIP_NUM,							SY_TUBE_TRIP_NUM,		SY_TUBE_TRIP_NUM,								SY_TUBE_TRIP_NUM,			SY_TRIANGLE_STRIP,SY_TUBE_TRIP_NUM - 2,		BseeHTable_null },
+	{ SY_TUBE_TRIP_NUM * 2,							SY_TUBE_PROFILE_PT_NUM,SY_TUBE_TRIP_NUM * 2,							SY_TUBE_PROFILE_INDEX_NUM,	SY_TRIANGLE_STRIP,SY_TUBE_PROFILE_TRI_NUM,	BseeHTable_null },
+	{ SY_TUBE_TRIP_NUM * 2 + SY_TUBE_PROFILE_PT_NUM,	SY_TUBE_PROFILE_PT_NUM,SY_TUBE_TRIP_NUM * 2 + SY_TUBE_PROFILE_INDEX_NUM,SY_TUBE_PROFILE_INDEX_NUM,	SY_TRIANGLE_STRIP,SY_TUBE_PROFILE_TRI_NUM,	BseeHTable_null },
 };
 const SYSubModel g_stuConeWidthBevelSubs[CONEWITHBEVEL_MATERIAL_COUNT] =
 {
-	{ 0, SY_TB_NUM, 0, SY_TB_NUM, SY_TRIANGLE_FAN, SY_TB_NUM - 2, SYHTable_null },//¶¥ÃæÔ²
-	{ SY_TB_NUM, SY_FAN_COLUMN * SY_FAN_ROW, SY_TB_NUM, (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 6, SY_TRIANGLE_LIST, (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 2, SYHTable_null },
-	{ SY_TB_NUM + SY_FAN_COLUMN * SY_FAN_ROW, SY_TB_NUM, SY_TB_NUM + (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 6, SY_TB_NUM, SY_TRIANGLE_FAN, SY_TB_NUM - 2, SYHTable_null },
+	{ 0, SY_TB_NUM, 0, SY_TB_NUM, SY_TRIANGLE_FAN, SY_TB_NUM - 2, BseeHTable_null },//¶¥ÃæÔ²
+	{ SY_TB_NUM, SY_FAN_COLUMN * SY_FAN_ROW, SY_TB_NUM, (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 6, SY_TRIANGLE_LIST, (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 2, BseeHTable_null },
+	{ SY_TB_NUM + SY_FAN_COLUMN * SY_FAN_ROW, SY_TB_NUM, SY_TB_NUM + (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 6, SY_TB_NUM, SY_TRIANGLE_FAN, SY_TB_NUM - 2, BseeHTable_null },
 };

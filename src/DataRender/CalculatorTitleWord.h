@@ -12,8 +12,8 @@ protected:
 	CSYTypeset m_TypeSet;
 	SYText m_text;
 	rectf m_rtUnitBound;//根据unit算出来的静态bound
-	SYArray m_2DTextRenderUnitArray;
-	SYArray m_arWholeRenderTextGraph;	//文字整体渲染时的临时Graph（可以从零散Graph重建得到）
+	BaseARray m_2DTextRenderUnitArray;
+	BaseARray m_arWholeRenderTextGraph;	//文字整体渲染时的临时Graph（可以从零散Graph重建得到）
 protected:
 	///文字属性
 	//基本属性
@@ -54,7 +54,7 @@ public:
 	virtual BOOL _trans_calcunit_matrix(matrix4f * pVMatrix, int* pdwMatrixType, double dFrame, int nUnitIndex, int nOrderIndex);
 	virtual void GetRenderUnitOrder(CSYIntArray& arOrder);
 	virtual void DeleteWholeRenderGraph();
-	virtual BOOL UpdateWholeRenderGraph(SYArray* pRenderUnitArray);
+	virtual BOOL UpdateWholeRenderGraph(BaseARray* pRenderUnitArray);
 	virtual void UpdateItemGpuBuffer(BOOL bLock = FALSE);
 	SYItemRenderUnit * GetRenderUnit(int nIndex);
 	virtual int Get2DTextUnitCount();
@@ -62,7 +62,7 @@ public:
 	virtual int GetWidth();
 	virtual int GetHeight();
 	virtual SYText * GetText();
-	virtual SYArray * Get2DTextUnitArray();
+	virtual BaseARray * Get2DTextUnitArray();
 	virtual SYUnit*	GetUnit(int nIndex);
 	virtual void DeleteRenderUnitView(LPCTSTR szUnitID);
 	virtual void RenderUnitBufferForGpu();

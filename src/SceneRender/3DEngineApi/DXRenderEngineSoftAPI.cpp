@@ -71,7 +71,7 @@ void SYDeviceContex::SetRenderTarget(SY_DeviceSoft* pDevice,int hRT,int hDepth)
 
 	if(hRT == 0)
 		return;
-	CSYBuffer* pTexture = getTexture(pDevice,hRT);
+	CCommonBuffer* pTexture = getTexture(pDevice,hRT);
 	getTextureInfo(pTexture,&nWidth,&nHeight);
 	SetViewPort(0,0,nWidth,nHeight);
 }
@@ -235,7 +235,7 @@ inline int CreateBuffer(SY_DeviceSoft* pDevice,int nSize,int nNum,void* pBuffer,
 		assert(0);
 		return 0;
 	}
-	int hBuffer = (int)SYHTable_Insert(&pDevice->htBuffer,pVideoBuffer);
+	int hBuffer = (int)BseeHTable_Insert(&pDevice->htBuffer,pVideoBuffer);
 
 	return hBuffer;
 }
@@ -347,7 +347,7 @@ bool Render_init(void* paramin,void* paramout)
 	_tcscpy_s(g_szPathEffect,lpPathShader);
 	_tcscat_s(g_szPathEffect,_T("\\Effect"));
 
-	SYHTable_Init(&g_SoftDeviceHT);
+	BseeHTable_Init(&g_SoftDeviceHT);
 
 	return true;
 }
@@ -356,7 +356,7 @@ void Soft_ReleaseTexture(SYSoftTexture* pWDTexture)
 {
 	SAFEDELETE_ARRAY(pWDTexture->pTexFile);
 
-	CSYBuffer* pTexture = pWDTexture->pTexture;
+	CCommonBuffer* pTexture = pWDTexture->pTexture;
 	SAFE_DELETE(pTexture);
 	SAFE_DELETE(pWDTexture);
 }
@@ -365,65 +365,65 @@ void Render_ReleaseDevice(SY_DeviceSoft* pDevice)
 {
 	if (!pDevice )
 		return;
-	UINT firstSwapChain = SYHTable_GetFirstValid(&pDevice->htSwapChain);		
-	SYSoftSwapChain* pSwapTexture = (SYSoftSwapChain*)SYHTable_GetAt(&pDevice->htSwapChain,firstSwapChain);
+	UINT firstSwapChain = BseeHTable_GetFirstValid(&pDevice->htSwapChain);		
+	SYSoftSwapChain* pSwapTexture = (SYSoftSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,firstSwapChain);
 	while(pSwapTexture)
 	{
 		SAFE_DELETE(pSwapTexture->pTexture);
 		SAFE_DELETE(pSwapTexture);
-		pSwapTexture = (SYSoftSwapChain*)SYHTable_GetNextValid(&pDevice->htSwapChain,&firstSwapChain);
+		pSwapTexture = (SYSoftSwapChain*)BseeHTable_GetNextValid(&pDevice->htSwapChain,&firstSwapChain);
 	}
 
-	UINT firstTexture = SYHTable_GetFirstValid(&pDevice->httexture);		
-	SYSoftTexture* pTexture = (SYSoftTexture*)SYHTable_GetAt(&pDevice->httexture,firstTexture);
+	UINT firstTexture = BseeHTable_GetFirstValid(&pDevice->httexture);		
+	SYSoftTexture* pTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,firstTexture);
 	while(pTexture)
 	{
 		Soft_ReleaseTexture(pTexture);
-		pTexture = (SYSoftTexture*)SYHTable_GetNextValid(&pDevice->httexture,&firstTexture);
+		pTexture = (SYSoftTexture*)BseeHTable_GetNextValid(&pDevice->httexture,&firstTexture);
 	}
 
-	UINT nShdCount = SYHTable_GetCount(&pDevice->htShaderTable);
-	UINT firstShade = SYHTable_GetFirstValid(&pDevice->htShaderTable);		
+	UINT nShdCount = BseeHTable_GetCount(&pDevice->htShaderTable);
+	UINT firstShade = BseeHTable_GetFirstValid(&pDevice->htShaderTable);		
 	while(firstShade)
 	{
 		//ReleaseShader(pDevice,firstShade);
-		SYHTable_GetNextValid(&pDevice->htShaderTable,&firstShade);
+		BseeHTable_GetNextValid(&pDevice->htShaderTable,&firstShade);
 	}
 	
-	UINT nBufCount = SYHTable_GetCount(&pDevice->htBuffer);
-	UINT firstBuf = SYHTable_GetFirstValid(&pDevice->htBuffer);		
+	UINT nBufCount = BseeHTable_GetCount(&pDevice->htBuffer);
+	UINT firstBuf = BseeHTable_GetFirstValid(&pDevice->htBuffer);		
 	while(firstBuf)
 	{
 		int a = 0;
 		ReleaseBuffer(pDevice,firstBuf);
-		SYHTable_GetNextValid(&pDevice->htBuffer,&firstBuf);
+		BseeHTable_GetNextValid(&pDevice->htBuffer,&firstBuf);
 	}
 
 	assert(nShdCount <= 0 && nBufCount <= 0);
 	
-	SYHash_Delete(pDevice->ShaderHash,TRUE);
-	SYHash_Delete(pDevice->TextureFromFileHash,TRUE);
-	SYHash_Delete(pDevice->BumpTextureFromFileHash,TRUE);
+	BaseHash_Delete(pDevice->ShaderHash,TRUE);
+	BaseHash_Delete(pDevice->TextureFromFileHash,TRUE);
+	BaseHash_Delete(pDevice->BumpTextureFromFileHash,TRUE);
 	
-	SYHTable_Release(&pDevice->httexture);
-	SYHTable_Release(&pDevice->htModel);
-	SYHTable_Release(&pDevice->htShaderTable);
-	SYHTable_Release(&pDevice->htBuffer);
-	SYHTable_Release(&pDevice->htSwapChain);
+	BseeHTable_Release(&pDevice->httexture);
+	BseeHTable_Release(&pDevice->htModel);
+	BseeHTable_Release(&pDevice->htShaderTable);
+	BseeHTable_Release(&pDevice->htBuffer);
+	BseeHTable_Release(&pDevice->htSwapChain);
 	SAFE_DELETE(pDevice);
 }
 
 bool Render_Release(void* paramin,void* paramout)
 {
-	UINT firstDevice = SYHTable_GetFirstValid(&g_SoftDeviceHT);		
-	SY_DeviceSoft* pNowDevice = (SY_DeviceSoft*)SYHTable_GetAt(&g_SoftDeviceHT,firstDevice);
+	UINT firstDevice = BseeHTable_GetFirstValid(&g_SoftDeviceHT);		
+	SY_DeviceSoft* pNowDevice = (SY_DeviceSoft*)BseeHTable_GetAt(&g_SoftDeviceHT,firstDevice);
 	do 
 	{
 		Render_ReleaseDevice(pNowDevice);
-		pNowDevice = (SY_DeviceSoft*)SYHTable_GetNextValid(&g_SoftDeviceHT,&firstDevice);
+		pNowDevice = (SY_DeviceSoft*)BseeHTable_GetNextValid(&g_SoftDeviceHT,&firstDevice);
 	} while (pNowDevice);
 
-	SYHTable_Release(&g_SoftDeviceHT);
+	BseeHTable_Release(&g_SoftDeviceHT);
 	return true;
 }
 
@@ -435,17 +435,17 @@ bool Render_CreateDevice(void* paramin,void* paramout)
 	SY_DeviceSoft* pNewDevice = NULL;
 	pNewDevice = new SY_DeviceSoft;
 
-	SYHTable_Init(&pNewDevice->httexture);
-	SYHTable_Init(&pNewDevice->htModel);
-	SYHTable_Init(&pNewDevice->htShaderTable);
-	SYHTable_Init(&pNewDevice->htSwapChain);
-	SYHTable_Init(&pNewDevice->htContexTable);
+	BseeHTable_Init(&pNewDevice->httexture);
+	BseeHTable_Init(&pNewDevice->htModel);
+	BseeHTable_Init(&pNewDevice->htShaderTable);
+	BseeHTable_Init(&pNewDevice->htSwapChain);
+	BseeHTable_Init(&pNewDevice->htContexTable);
 
-	pNewDevice->ShaderHash = SYHash_Create(1,NULL,NULL, NULL, NULL, SoftShaderHashRelease);
-	pNewDevice->TextureFromFileHash = SYHash_Create(1,NULL,NULL, NULL, NULL, SoftShaderHashRelease);
-	pNewDevice->BumpTextureFromFileHash = SYHash_Create(1,NULL,NULL, NULL, NULL, SoftShaderHashRelease);
+	pNewDevice->ShaderHash = BaseHash_Create(1,NULL,NULL, NULL, NULL, SoftShaderHashRelease);
+	pNewDevice->TextureFromFileHash = BaseHash_Create(1,NULL,NULL, NULL, NULL, SoftShaderHashRelease);
+	pNewDevice->BumpTextureFromFileHash = BaseHash_Create(1,NULL,NULL, NULL, NULL, SoftShaderHashRelease);
 
-	int hNewDevice = (int)SYHTable_Insert(&g_SoftDeviceHT,pNewDevice);
+	int hNewDevice = (int)BseeHTable_Insert(&g_SoftDeviceHT,pNewDevice);
 	*(int*)paramout = hNewDevice;
 	return true;
 }
@@ -454,7 +454,7 @@ bool Render_GetSwapChainDesc(SY_DeviceSoft* pDevice,void* paramin,void* paramout
 {
 	createSwapChainIn* pIn = (createSwapChainIn*)paramin;
 	createSwapChainIn* pOut = (createSwapChainIn*)paramout;
-	SYSoftSwapChain* pWDSwapChain = (SYSoftSwapChain*)SYHTable_GetAt(&pDevice->htSwapChain,(int)pIn->hWnd);
+	SYSoftSwapChain* pWDSwapChain = (SYSoftSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,(int)pIn->hWnd);
 	if(pWDSwapChain)
 	{
 		pOut->bWindowed = FALSE;
@@ -472,8 +472,8 @@ bool Render_CreateSwapChain(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 
 	SYSoftSwapChain* pWDSwapChain = new SYSoftSwapChain;
 	memset(pWDSwapChain,0,sizeof(SYSoftSwapChain));
-	pWDSwapChain->pTexture = new CSYBuffer(pIn->nWidth,pIn->nHeight);
-	int hNewSwapChain = (int)SYHTable_Insert(&pDevice->htSwapChain,pWDSwapChain);
+	pWDSwapChain->pTexture = new CCommonBuffer(pIn->nWidth,pIn->nHeight);
+	int hNewSwapChain = (int)BseeHTable_Insert(&pDevice->htSwapChain,pWDSwapChain);
 	*(int*)paramout = hNewSwapChain;
 	return true;
 }
@@ -490,7 +490,7 @@ bool Render_SetRenderTarget(SY_DeviceSoft* pDevice, SYDeviceContex* pDeviceConte
 bool Render_CreateTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	createTextureIn* param = (createTextureIn*)paramin;
-	CSYBuffer* pNewTexture = new CSYBuffer(param->nWidth,param->nHeight);
+	CCommonBuffer* pNewTexture = new CCommonBuffer(param->nWidth,param->nHeight);
 	if(!pNewTexture)
 	{
 		*(int*)paramout = 0;
@@ -501,7 +501,7 @@ bool Render_CreateTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 	pWDSwapChain->pTexture = pNewTexture;
 	pWDSwapChain->nType = param->nType;
 
-	int hNewSwapChain = (int)SYHTable_Insert(&pDevice->httexture,pWDSwapChain);
+	int hNewSwapChain = (int)BseeHTable_Insert(&pDevice->httexture,pWDSwapChain);
 	*(int*)paramout = hNewSwapChain;
 	return true;
 }
@@ -509,17 +509,17 @@ bool Render_CreateTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 bool render_ClearTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	clearTextureIn* param = (clearTextureIn*)paramin;
-	CSYBuffer* pBuffer = getTexture(pDevice,param->hTexture);
+	CCommonBuffer* pBuffer = getTexture(pDevice,param->hTexture);
 	pBuffer->Clear(*(DWORD*)param->pData,NULL);
 	return true;
 }
 
 bool render_GetTextureInfo(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
-	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)SYHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	getTextureInfoOut* pOut = (getTextureInfoOut*)paramout;
 	
-	CSYBuffer* pDesTexture = (CSYBuffer*)pSrcWDTexture->pTexture;
+	CCommonBuffer* pDesTexture = (CCommonBuffer*)pSrcWDTexture->pTexture;
 	getTextureInfo(pDesTexture,pOut->nWidth,pOut->nHeight); 
 	if (pOut->nType)
 		*pOut->nType = pSrcWDTexture->nType;
@@ -534,8 +534,8 @@ bool Render_CopyTexture(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,vo
 	copyTexture* param = (copyTexture*)paramin;
 	DXSingleLock resLock(pDevice->ResLock,false);
 	resLock.Lock();
-	CSYBuffer* pSrcTexture = getTexture(pDevice,param->hSrcTex);
-	CSYBuffer* pDestTexture = getTexture(pDevice,param->hDesTex);
+	CCommonBuffer* pSrcTexture = getTexture(pDevice,param->hSrcTex);
+	CCommonBuffer* pDestTexture = getTexture(pDevice,param->hDesTex);
 	resLock.UnLock();
 
 	pDeviceContext->RenderMix(pDestTexture->m_dwBuffer,param->nDesOffsetX,param->nDesOffsetY,param->nDesWidth,param->nDesHeight,pDestTexture->m_nWidth,pDestTexture->m_nHeight,
@@ -546,7 +546,7 @@ bool render_DumpTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	LPCTSTR szFile = ((DXDumpIn*)paramin)->szFile;
 	int hTexture = ((DXDumpIn*)paramin)->hTexture;
-	CSYBuffer* pTexture = getTexture(pDevice,hTexture);
+	CCommonBuffer* pTexture = getTexture(pDevice,hTexture);
 	//CString path(L"e:\\testTex.bmp");
 	static const TCHAR* path = _T("e:\\testTex.TGA");
 	BufferFunction::WriteBitmap(szFile == NULL ? path : szFile, pTexture->m_nWidth, pTexture->m_nHeight, pTexture->m_nPitch, (BYTE *)pTexture->m_dwBuffer);
@@ -554,7 +554,7 @@ bool render_DumpTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 }
 bool Render_ReleaseSwapChain(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
-	SYSoftSwapChain* pSrcWDTexture = (SYSoftSwapChain*)SYHTable_RemoveAt(&pDevice->htSwapChain,*(int*)paramin);
+	SYSoftSwapChain* pSrcWDTexture = (SYSoftSwapChain*)BseeHTable_RemoveAt(&pDevice->htSwapChain,*(int*)paramin);
 
 	SAFE_DELETE(pSrcWDTexture->pTexture);
 	SAFE_DELETE(pSrcWDTexture);
@@ -564,23 +564,23 @@ bool Render_ReleaseSwapChain(SY_DeviceSoft* pDevice,void* paramin,void* paramout
 
 bool RenderSoft_ReleaseTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
-	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)SYHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	assert(pSrcWDTexture);
 	if (pSrcWDTexture&&pSrcWDTexture->pTexFile)//有pSrcWDTexture == NULL的时候
 	{
-		SYHash*	pHash = NULL;		
+		BaseHash*	pHash = NULL;		
 		if(pSrcWDTexture->nType == DXTexture_2DDumpReadOnly)
 			pHash = pDevice->BumpTextureFromFileHash;
 		else if(pSrcWDTexture->nType == DXTexture_2DReadOnly)
 			pHash = pDevice->TextureFromFileHash;
 
-		HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(void *)pSrcWDTexture->pTexFile);
+		HandleHash* pTexHashValue = (HandleHash*)BaseHash_Search(pHash,(void *)pSrcWDTexture->pTexFile);
 		--(pTexHashValue->nCount);
 		if (pTexHashValue->nCount != 0)
 		{
 			return true;
 		}
-		SYHash_RemoveAt(pHash,(void *)pSrcWDTexture->pTexFile,TRUE);
+		BaseHash_RemoveAt(pHash,(void *)pSrcWDTexture->pTexFile,TRUE);
 		Soft_ReleaseTexture(pSrcWDTexture);
 	}
 	else if(pSrcWDTexture)
@@ -589,7 +589,7 @@ bool RenderSoft_ReleaseTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramo
 	}
 	
 	//Soft_ReleaseTexture(pSrcWDTexture);//有pSrcWDTexture == NULL的时候
-	SYHTable_RemoveAt(&pDevice->httexture,*(int*)paramin);
+	BseeHTable_RemoveAt(&pDevice->httexture,*(int*)paramin);
 	return true;
 
 }
@@ -605,11 +605,11 @@ bool Render_RenderTex(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void
 {
 	renderTextureIn* pIn = (renderTextureIn*)paramin;
 
-	CSYBuffer* pSrcTex = getTexture(pDevice,pIn->hTex);
+	CCommonBuffer* pSrcTex = getTexture(pDevice,pIn->hTex);
 	int nSrcWidth,nSrcHeight;
 	getTextureInfo(pSrcTex,&nSrcWidth,&nSrcHeight);
 
- 	CSYBuffer* pRTTex = getTexture(pDevice,pDeviceContext->GetRenderTarget());
+ 	CCommonBuffer* pRTTex = getTexture(pDevice,pDeviceContext->GetRenderTarget());
  	int nRTWidth,nRTHeight;
 	getTextureInfo(pRTTex,&nRTWidth,&nRTHeight);
 	
@@ -703,7 +703,7 @@ bool Render_UpLoad(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* p
 
 	DXSingleLock resLock(pDevice->ResLock,false);
 	resLock.Lock();
-	CSYBuffer* pDstTexture = getTexture(pDevice,pIn->hDestTex);
+	CCommonBuffer* pDstTexture = getTexture(pDevice,pIn->hDestTex);
 	resLock.UnLock();
 	pDeviceContext->RenderMix(pDstTexture->m_dwBuffer,pIn->destOffsetX,pIn->destOffsetY,pIn->srcWidth,pIn->srcHeight,pIn->srcWidth,pDstTexture->m_nHeight,
 			pIn->srcBuffer,pIn->srcOffsetX,pIn->srcOffsetY,pIn->srcWidth,pIn->srcHeight,pIn->srcBufferWidth,pIn->srcBufferHeight,BUFFER_COPY,NULL);
@@ -743,7 +743,7 @@ BOOL Render_ClearScreen(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,vo
 	{
 		RECT clearRT;
 		IntersectRect(&clearRT,&pDeviceContext->GetViewPort(),&pDeviceContext->GetScissor());
-		CSYBuffer* pBuffer = getTexture(pDevice,pDeviceContext->GetRenderTarget());
+		CCommonBuffer* pBuffer = getTexture(pDevice,pDeviceContext->GetRenderTarget());
 		pBuffer->Clear(pParam->nColor,&clearRT);
 	}
 	if(pDeviceContext->GetDepth() && (pParam->nType == DX_CLEAR_DEPTH_ONLY || pParam->nType == DX_CLEAR_ALL))
@@ -798,7 +798,7 @@ BOOL Render_RenderUnLock(SYDeviceContex* pDeviceContext)
 
 BOOL Render_GetMemTexBuffer(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
-	SYSoftTexture* pTexture = (SYSoftTexture*)SYHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	SYSoftTexture* pTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	DXGetMemTexBufferOut* pBuffer = (DXGetMemTexBufferOut*)paramout;
 	pBuffer->ptr = pTexture->pTexture->m_dwBuffer;
 	pBuffer->pitch = pTexture->pTexture->m_nPitch ;
@@ -807,7 +807,7 @@ BOOL Render_GetMemTexBuffer(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 
 void GetTexInfo(SY_DeviceSoft* pDevice,int hTex,int* pWidth,int* pHeight)
 {
-	CSYBuffer* pSrcTex = getTexture(pDevice,hTex);
+	CCommonBuffer* pSrcTex = getTexture(pDevice,hTex);
 	getTextureInfo(pSrcTex,pWidth,pHeight);
 }
 
@@ -815,7 +815,7 @@ void GetTexInfo(SY_DeviceSoft* pDevice,int hTex,int* pWidth,int* pHeight)
 BOOL Render_GetSwapChainBufferTex(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	int* hSwapChain = (int*)paramin;
-	SYSoftSwapChain* pSwapChain = (SYSoftSwapChain*)SYHTable_GetAt(&pDevice->htSwapChain,*hSwapChain);
+	SYSoftSwapChain* pSwapChain = (SYSoftSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,*hSwapChain);
 	int* pOut = (int*)paramout;
 	*pOut = *hSwapChain;
 	return TRUE;
@@ -833,14 +833,14 @@ bool Render_CreateTexFromFile(SY_DeviceSoft* pDevice,void* paramin,void* paramou
 	createTextureFromFileIn* param = (createTextureFromFileIn*)paramin;
 	TCHAR* pPath = param->pPath;
 
-	SYHash*	pHash = NULL;		
+	BaseHash*	pHash = NULL;		
 	DXTextureType nType = param->bNormalMap ? DXTexture_2DDumpReadOnly : DXTexture_2DReadOnly;
 	if(nType == DXTexture_2DDumpReadOnly)
 		pHash = pDevice->BumpTextureFromFileHash;
 	else if(nType == DXTexture_2DReadOnly)
 		pHash = pDevice->TextureFromFileHash;
 
-	HandleHash* pTexHashValue = (HandleHash*)SYHash_Search(pHash,(void *)pPath);
+	HandleHash* pTexHashValue = (HandleHash*)BaseHash_Search(pHash,(void *)pPath);
 	if (pTexHashValue)
 	{
 		++(pTexHashValue->nCount) ;
@@ -864,7 +864,7 @@ bool Render_CreateTexFromFile(SY_DeviceSoft* pDevice,void* paramin,void* paramou
 
 	SYSoftTexture* pFileTex = new SYSoftTexture;
 	memset(pFileTex,0,sizeof(SYSoftTexture));
-	pFileTex->pTexture = new CSYBuffer(nImgWidth,nImgHeight);
+	pFileTex->pTexture = new CCommonBuffer(nImgWidth,nImgHeight);
 	BaseCodec_ReadImage(pPath, nImgWidth, nImgHeight, pFileTex->pTexture->m_dwBuffer);
 	pFileTex->nType = nType;
 
@@ -872,20 +872,20 @@ bool Render_CreateTexFromFile(SY_DeviceSoft* pDevice,void* paramin,void* paramou
 	pFileTex->pTexFile = new TCHAR[nLength];
 	_tcscpy_s(pFileTex->pTexFile,nLength,pPath);
 
-	int hNewSwapChain = (int)SYHTable_Insert(&pDevice->httexture,pFileTex);
+	int hNewSwapChain = (int)BseeHTable_Insert(&pDevice->httexture,pFileTex);
 	*(int*)paramout = hNewSwapChain;
 
 	pTexHashValue = new HandleHash;
 	pTexHashValue->hHandle = hNewSwapChain;
 	pTexHashValue->nCount = 1;
-	SYHash_Insert(pHash,pFileTex->pTexFile,pTexHashValue);
+	BaseHash_Insert(pHash,pFileTex->pTexFile,pTexHashValue);
 	return true;
 }
 
 BOOL Render_CreateContext(SY_DeviceSoft* pDevice,void* paramout)
 {
 	SYDeviceContex* pDeviceContext = new SYDeviceContex;
-	UINT hContext = SYHTable_Insert(&pDevice->htContexTable,pDeviceContext);
+	UINT hContext = BseeHTable_Insert(&pDevice->htContexTable,pDeviceContext);
 	*(int*)paramout = hContext;
 	return TRUE;
 }
@@ -893,7 +893,7 @@ BOOL Render_CreateContext(SY_DeviceSoft* pDevice,void* paramout)
 BOOL Render_ReleaseContext(SY_DeviceSoft* pDevice,void* paramin)
 {
 	UINT hContext = *(UINT*)paramin;
-	SYDeviceContex* pDeviceContext = (SYDeviceContex*)SYHTable_RemoveAt(&pDevice->htContexTable,hContext);
+	SYDeviceContex* pDeviceContext = (SYDeviceContex*)BseeHTable_RemoveAt(&pDevice->htContexTable,hContext);
 	for(auto it = pDevice->mapContext.begin(); it != pDevice->mapContext.end();)
 	{
 		if(it->second == pDeviceContext)
@@ -909,7 +909,7 @@ BOOL Render_ReleaseContext(SY_DeviceSoft* pDevice,void* paramin)
 BOOL Render_SetContext(SY_DeviceSoft* pDevice,void* paramin)
 {
 	UINT hContext = *(UINT*)paramin;
-	SYDeviceContex* pDeviceContext = (SYDeviceContex*)SYHTable_GetAt(&pDevice->htContexTable,hContext);
+	SYDeviceContex* pDeviceContext = (SYDeviceContex*)BseeHTable_GetAt(&pDevice->htContexTable,hContext);
 	DWORD id = GetCurrentThreadId(); 
 	pDevice->mapContext[id] = pDeviceContext;
 	return TRUE;
@@ -927,7 +927,7 @@ BOOL RenderSoftEngine_Main( int ncmd, int hDevice, void* paramin, void* paramout
 	else if(ncmd == RENDERENGINE_CREATEDEVICE)
 		return Render_CreateDevice(paramin,paramout);
 
-	SY_DeviceSoft* pDevice = (SY_DeviceSoft*)SYHTable_GetAt(&g_SoftDeviceHT,hDevice);
+	SY_DeviceSoft* pDevice = (SY_DeviceSoft*)BseeHTable_GetAt(&g_SoftDeviceHT,hDevice);
 	lock.UnLock();
 	//////////////////////////////////////////////////////////////////////////
 	if(!pDevice)

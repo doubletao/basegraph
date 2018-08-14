@@ -19,7 +19,7 @@ typedef struct tag_EnvelopeNode
 	tag_EnvelopeNode * nextNode;
 }EnvelopeNode; 
 
-typedef CSYArray<EnvelopeNode*> CSYEnvelopeArray;
+typedef CBaseARray<EnvelopeNode*> CSYEnvelopeArray;
 
 template<typename t1>
 void floatcross(t1& vresult,t1 pt1,t1 pt2)
@@ -259,7 +259,7 @@ BOOL SYTriangulateApp::PtsOnDiffSide(IN point3f p1, IN point3f p2, IN point3f l1
 //--------------------------------------------------------------------------------
 void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri, 
 						CPtNodeArray &ptPolyArray, //ptfArray中的顶点加入到ptPolyArray
-						SYArray &ptfArray, 
+						BaseARray &ptfArray, 
 						int nMinXIndex, // ptfArray中最小x值点的序号
 						float fMinX, // ptfArray中最小x值
 						CSYPoint2fPtrArray &ptfArrAddedMinPts)
@@ -275,8 +275,8 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 	pointf startPt, endPt;
 	pointf searchPt;
 	
-	int nInSize = (int)SYAR_GetSize(&ptfArray);
-	pptf = (pointf * )SYAR_GetAt(&ptfArray,nMinXIndex);
+	int nInSize = (int)BaseAR_GetSize(&ptfArray);
+	pptf = (pointf * )BaseAR_GetAt(&ptfArray,nMinXIndex);
 	startPt = *pptf;
 	// 从外环上找到一点P, 使得Px<Lx(即fMinX), 并且PL不与外环相交
 	int nSize = (int)ptPolyArray.GetSize();
@@ -417,7 +417,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 						lpPtf3D->z = endPt.y;
 						pptrTri->Add(lpPtf3D);
 						// 2. 在nIndex处插入内环
-						pptf = (pointf * )SYAR_GetAt(&ptfArray,nMinXIndex );
+						pptf = (pointf * )BaseAR_GetAt(&ptfArray,nMinXIndex );
 						pPtNode = new PtNode;
 						pPtNode->pt.x = pptf->x;
 						pPtNode->pt.y = pptf->y;
@@ -433,7 +433,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 						//for ( j = 0; j < nInSize; j++) 
 						for ( j = nInSize - 1; j >= 0; j--) 
 						{
-							pptf = (pointf * )SYAR_GetAt(&ptfArray,(j+nMinXIndex)%nInSize );
+							pptf = (pointf * )BaseAR_GetAt(&ptfArray,(j+nMinXIndex)%nInSize );
 							pPtNode = new PtNode;
 							pPtNode->pt.x = pptf->x;
 							pPtNode->pt.y = pptf->y;
@@ -477,7 +477,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 						lpPtf3D->z = endPt.y;
 						pptrTri->Add(lpPtf3D);
 						// 在nIndex处插入A点,再插入内环
-						pptf = (pointf * )SYAR_GetAt(&ptfArray,nMinXIndex );
+						pptf = (pointf * )BaseAR_GetAt(&ptfArray,nMinXIndex );
 						pPtNode = new PtNode;
 						pPtNode->pt.x = pptf->x;
 						pPtNode->pt.y = pptf->y;
@@ -494,7 +494,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 						//for ( j = 0; j < nInSize; j++) 
 						for ( j = nInSize - 1; j >= 0; j--) 
 						{
-							pptf = (pointf * )SYAR_GetAt(&ptfArray,(j+nMinXIndex)%nInSize );
+							pptf = (pointf * )BaseAR_GetAt(&ptfArray,(j+nMinXIndex)%nInSize );
 							pPtNode = new PtNode;
 							pPtNode->pt.x = pptf->x;
 							pPtNode->pt.y = pptf->y;
@@ -549,7 +549,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 							lpPtf3D->z = pPostNode->pt.y;
 							pptrTri->Add(lpPtf3D);
 							// 2. 在nIndex+1处插入内环
-							pptf = (pointf * )SYAR_GetAt(&ptfArray,nMinXIndex );
+							pptf = (pointf * )BaseAR_GetAt(&ptfArray,nMinXIndex );
 							pPtNode = new PtNode;
 							pPtNode->pt.x = pptf->x;
 							pPtNode->pt.y = pptf->y;
@@ -567,7 +567,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 							//for ( j = 0; j < nInSize; j++) 
 							for ( j = nInSize - 1; j >= 0; j--) 
 							{
-								pptf = (pointf * )SYAR_GetAt(&ptfArray,(j+nMinXIndex)%nInSize );
+								pptf = (pointf * )BaseAR_GetAt(&ptfArray,(j+nMinXIndex)%nInSize );
 								pPtNode = new PtNode;
 								pPtNode->pt.x = pptf->x;
 								pPtNode->pt.y = pptf->y;
@@ -625,7 +625,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 								ptPolyArray.InsertAt((nIndex+1)%nSize, pPtNode);
 							}
 
-							pptf = (pointf * )SYAR_GetAt(&ptfArray,nMinXIndex );
+							pptf = (pointf * )BaseAR_GetAt(&ptfArray,nMinXIndex );
 							pPtNode = new PtNode;
 							pPtNode->pt.x = pptf->x;
 							pPtNode->pt.y = pptf->y;
@@ -641,7 +641,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 							//for ( j = 0; j < nInSize; j++) 
 							for ( j = nInSize - 1; j >= 0; j--) 
 							{
-								pptf = (pointf * )SYAR_GetAt(&ptfArray,(j+nMinXIndex)%nInSize );
+								pptf = (pointf * )BaseAR_GetAt(&ptfArray,(j+nMinXIndex)%nInSize );
 								pPtNode = new PtNode;
 								pPtNode->pt.x = pptf->x;
 								pPtNode->pt.y = pptf->y;
@@ -668,7 +668,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 			}
 		}
 	}
-	pptf = (pointf * )SYAR_GetAt(&ptfArray,nMinXIndex);
+	pptf = (pointf * )BaseAR_GetAt(&ptfArray,nMinXIndex);
 	pointf * pptTempNew = new pointf;
 	*pptTempNew = *pptf;
 	ptfArrAddedMinPts.Add(pptTempNew);
@@ -702,10 +702,10 @@ void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CSYPoin
 	int i;//, j;
 	vectorcell* pCell = NULL;
 	PtNode* pPtNode = NULL;
-	SYArray ptfArray; // 将一个cell转化为多边形顶点
-	SYArray lenArray; // 将一个cell转化为多边形顶点
-	SYAR_Init(&ptfArray);
-	SYAR_Init(&lenArray);
+	BaseARray ptfArray; // 将一个cell转化为多边形顶点
+	BaseARray lenArray; // 将一个cell转化为多边形顶点
+	BaseAR_Init(&ptfArray);
+	BaseAR_Init(&lenArray);
 
 	CSYEnvelopeArray lineelopeArr;
 	EnvelopeNode * pEnvelopeNode = NULL;
@@ -713,13 +713,13 @@ void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CSYPoin
 	//先把外环加入队列中,把线单独列出
 	for(i = 0; i < nCellNum; i++)
 	{
-		int nPtSize = SYAR_GetSize(&ptfArray);
+		int nPtSize = BaseAR_GetSize(&ptfArray);
 		for(int j = 0; j< nPtSize;j ++)
 		{
-			point2f* pt = (point2f*)SYAR_GetAt(&ptfArray,j);
+			point2f* pt = (point2f*)BaseAR_GetAt(&ptfArray,j);
 			delete pt;
 		}
-		SYAR_RemoveAll(&ptfArray);
+		BaseAR_RemoveAll(&ptfArray);
 		
 		if(pGraph->cell[i].type == uncloss_line || pGraph->cell[i].type == close_line)
 		{
@@ -730,11 +730,11 @@ void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CSYPoin
 				1,
 				pGraph->cell[i].width*0.5f);
 
-			int nsize =  (int)SYAR_GetSize(&lenArray);
-			void* pdata = SYAR_GetAt(&lenArray,nsize -1);
+			int nsize =  (int)BaseAR_GetSize(&lenArray);
+			void* pdata = BaseAR_GetAt(&lenArray,nsize -1);
 			float falllen = *(float*)(void**)&pdata;
 			float falllend = 1/falllen;
-			int nSize = (int)SYAR_GetSize(&ptfArray);
+			int nSize = (int)BaseAR_GetSize(&ptfArray);
 			int nLoopCount = nSize - 3;
 			if(pGraph->cell[i].type == close_line)
 				nLoopCount = nSize - 1;
@@ -745,14 +745,14 @@ void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CSYPoin
 				int nIndex_1 = (k + 1)%nSize;
 				int nIndex_2 = (k + 2)%nSize;
 				int nIndex_3 = (k + 3)%nSize;
-				point2f* pt1 = (point2f*)SYAR_GetAt(&ptfArray,nIndex);
-				point2f* pt2 = (point2f*)SYAR_GetAt(&ptfArray,nIndex_1);
-				point2f* pt3 = (point2f*)SYAR_GetAt(&ptfArray,nIndex_2);
-				point2f* pt4 = (point2f*)SYAR_GetAt(&ptfArray,nIndex_3);
+				point2f* pt1 = (point2f*)BaseAR_GetAt(&ptfArray,nIndex);
+				point2f* pt2 = (point2f*)BaseAR_GetAt(&ptfArray,nIndex_1);
+				point2f* pt3 = (point2f*)BaseAR_GetAt(&ptfArray,nIndex_2);
+				point2f* pt4 = (point2f*)BaseAR_GetAt(&ptfArray,nIndex_3);
 
-				void* pdata = SYAR_GetAt(&lenArray,k>>1);
+				void* pdata = BaseAR_GetAt(&lenArray,k>>1);
 				float flen1 = *(float*)(void**)&pdata;
-				pdata = SYAR_GetAt(&lenArray,(k>>1) + 1);
+				pdata = BaseAR_GetAt(&lenArray,(k>>1) + 1);
 				float flen2 = *(float*)(void**)&pdata;
 
 				point3f* pnewf1 = new point3f;
@@ -815,29 +815,29 @@ void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CSYPoin
 
 	//删除顶点
 	{
-		int nPtSize = SYAR_GetSize(&ptfArray);
+		int nPtSize = BaseAR_GetSize(&ptfArray);
 		for (int i = 0; i < nPtSize; i++)
 		{
-			point2f * pt = (point2f*)SYAR_GetAt(&ptfArray, i);
+			point2f * pt = (point2f*)BaseAR_GetAt(&ptfArray, i);
 			SAFE_DELETE(pt);
 		}
-		SYAR_RemoveAll(&ptfArray);
+		BaseAR_RemoveAll(&ptfArray);
 	}
 	{
-		int nPtSize = SYAR_GetSize(&lenArray);
+		int nPtSize = BaseAR_GetSize(&lenArray);
 		for (int i = 0; i < nPtSize; i++)
 		{
-			point2f * pt = (point2f*)SYAR_GetAt(&lenArray, i);
+			point2f * pt = (point2f*)BaseAR_GetAt(&lenArray, i);
 			//SAFE_DELETE(pt);
 		}
-		SYAR_RemoveAll(&lenArray);
+		BaseAR_RemoveAll(&lenArray);
 	}
 }
 //顶点的回调函数
 struct PolyDivInfo
 {
-	SYArray m_IndexAr;
-	SYArray m_PolyVectorAr;
+	BaseARray m_IndexAr;
+	BaseARray m_PolyVectorAr;
 };
 #include "gl/gl.h"
 #include "gl/glu.h"
@@ -845,7 +845,7 @@ struct PolyDivInfo
 
 void __stdcall begincallback(GLenum type,PolyDivInfo* caller)
 {
-	SYAR_Init(&caller->m_IndexAr);
+	BaseAR_Init(&caller->m_IndexAr);
 }
 
 void __stdcall edgeflagcallback(GLboolean flag,
@@ -857,7 +857,7 @@ void __stdcall edgeflagcallback(GLboolean flag,
 void __stdcall vectorcallback(unsigned int vertexIndex,
 										PolyDivInfo* caller)
 {
-	SYAR_Add(&caller->m_IndexAr,(void*)vertexIndex);
+	BaseAR_Add(&caller->m_IndexAr,(void*)vertexIndex);
 }
 
 
@@ -871,7 +871,7 @@ void __stdcall combinecallback(GLdouble coords[3],unsigned int vertexData[4],GLf
 	pvertex->x = coords[0];
 	pvertex->y = coords[1];
 	pvertex->z = coords[2];
-	SYAR_Add(&caller->m_PolyVectorAr,pvertex);
+	BaseAR_Add(&caller->m_PolyVectorAr,pvertex);
 	//FontVertex newVertex;
 	//newVertex.x = coords[0];
 	//newVertex.y = coords[1];
@@ -898,7 +898,7 @@ void __stdcall combinecallback(GLdouble coords[3],unsigned int vertexData[4],GLf
 
 	//// pass back the index of the new vertex; it will be passed
 	//// as the vertexIndex parameter to VertexCB in turn
-	*outData =  (int)SYAR_GetSize(&caller->m_PolyVectorAr) - 1;
+	*outData =  (int)BaseAR_GetSize(&caller->m_PolyVectorAr) - 1;
 	//*outData = (unsigned int)caller->m_Vertices.size() - 1;
 }
 
@@ -910,8 +910,8 @@ void __stdcall errorcallback(GLenum errno, PolyDivInfo* caller)
 typedef void (__stdcall *GluTessCallbackType)();
 void DivGraphics(vectorgraph* pGraph,PolyDivInfo* infov)
 {
-	SYArray ptfArray; // 将一个cell转化为多边形顶点
-	SYAR_Init(&ptfArray);
+	BaseARray ptfArray; // 将一个cell转化为多边形顶点
+	BaseAR_Init(&ptfArray);
 	
 	GLUtesselator * tessobj;
 	tessobj = gluNewTess();
@@ -925,8 +925,8 @@ void DivGraphics(vectorgraph* pGraph,PolyDivInfo* infov)
 	gluTessCallback(tessobj, GLU_TESS_ERROR_DATA, (GluTessCallbackType)errorcallback);
 
 	memset(infov,0,sizeof(PolyDivInfo));
-	SYAR_Init(&infov->m_IndexAr);
-	SYAR_Init(&infov->m_PolyVectorAr);
+	BaseAR_Init(&infov->m_IndexAr);
+	BaseAR_Init(&infov->m_PolyVectorAr);
 
 	//设置环绕规则
 	gluTessProperty(tessobj, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO);
@@ -945,15 +945,15 @@ void DivGraphics(vectorgraph* pGraph,PolyDivInfo* infov)
 		//SYOC_DelOverlap(&ptfArray,NULL);
 		//SYOC_DelColine(&ptfArray,NULL);
 
-		int nPoint = SYAR_GetSize(&ptfArray);
-		int nstartindex = SYAR_GetSize(&infov->m_PolyVectorAr);
-		SYAR_Append(&infov->m_PolyVectorAr,&ptfArray);
+		int nPoint = BaseAR_GetSize(&ptfArray);
+		int nstartindex = BaseAR_GetSize(&infov->m_PolyVectorAr);
+		BaseAR_Append(&infov->m_PolyVectorAr,&ptfArray);
 
 		point3lf* prv = NULL;
 		gluTessBeginContour(tessobj);
 		for(int k = 0;k< nPoint;k ++)
 		{
-			point3lf* p = (point3lf*)SYAR_GetAt(&ptfArray,k);
+			point3lf* p = (point3lf*)BaseAR_GetAt(&ptfArray,k);
 			p->z = 0;
 			gluTessVertex(tessobj,(GLdouble*)p,(void*)(k + nstartindex));
 
@@ -964,7 +964,7 @@ void DivGraphics(vectorgraph* pGraph,PolyDivInfo* infov)
 			//prv = p;
 			
 		}
-		SYAR_RemoveAll(&ptfArray);
+		BaseAR_RemoveAll(&ptfArray);
 		gluTessEndContour(tessobj);
 	}
 	gluTessEndPolygon(tessobj);
@@ -976,16 +976,16 @@ void SYTriangulateApp::SYTriangulateGL(IN vectorgraph* pGraph, OUT CSYPoint3fPtr
 	PolyDivInfo	infov;
 	bAntiClockwise = FALSE;
 	DivGraphics(pGraph,&infov);
-	int nSize = SYAR_GetSize(&infov.m_IndexAr);
+	int nSize = BaseAR_GetSize(&infov.m_IndexAr);
 	for(int i = 0;i < nSize;i += 3)
 	{
-		int nI1 = (int)SYAR_GetAt(&infov.m_IndexAr,i);
-		int nI2 = (int)SYAR_GetAt(&infov.m_IndexAr,i + 1);
-		int nI3 = (int)SYAR_GetAt(&infov.m_IndexAr,i + 2);
+		int nI1 = (int)BaseAR_GetAt(&infov.m_IndexAr,i);
+		int nI2 = (int)BaseAR_GetAt(&infov.m_IndexAr,i + 1);
+		int nI3 = (int)BaseAR_GetAt(&infov.m_IndexAr,i + 2);
 
-		point3lf* p1 = (point3lf*)SYAR_GetAt(&infov.m_PolyVectorAr,nI1);
-		point3lf* p2 = (point3lf*)SYAR_GetAt(&infov.m_PolyVectorAr,nI2);
-		point3lf* p3 = (point3lf*)SYAR_GetAt(&infov.m_PolyVectorAr,nI3);
+		point3lf* p1 = (point3lf*)BaseAR_GetAt(&infov.m_PolyVectorAr,nI1);
+		point3lf* p2 = (point3lf*)BaseAR_GetAt(&infov.m_PolyVectorAr,nI2);
+		point3lf* p3 = (point3lf*)BaseAR_GetAt(&infov.m_PolyVectorAr,nI3);
 
 		point3f* pnew1 = new point3f;
 		pnew1->x = p1->x;
@@ -1012,15 +1012,15 @@ void SYTriangulateApp::SYTriangulateGL(IN vectorgraph* pGraph, OUT CSYPoint3fPtr
 			pptrTri->Add(pnew2);
 		}
 	}
-	nSize = SYAR_GetSize(&infov.m_IndexAr);
-	SYAR_RemoveAll(&infov.m_IndexAr);
-	nSize = SYAR_GetSize(&infov.m_PolyVectorAr);
+	nSize = BaseAR_GetSize(&infov.m_IndexAr);
+	BaseAR_RemoveAll(&infov.m_IndexAr);
+	nSize = BaseAR_GetSize(&infov.m_PolyVectorAr);
 	for(int i = 0;i < nSize;i ++)
 	{
-		point3lf* p1 = (point3lf*)SYAR_GetAt(&infov.m_PolyVectorAr,i);
+		point3lf* p1 = (point3lf*)BaseAR_GetAt(&infov.m_PolyVectorAr,i);
 		delete p1;
 	}
-	SYAR_RemoveAll(&infov.m_PolyVectorAr);
+	BaseAR_RemoveAll(&infov.m_PolyVectorAr);
 }
 void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrArray *pptrTri,OUT CSYPoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
 {
@@ -1033,8 +1033,8 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrAr
 	int i, j;
 	vectorcell* pCell = NULL;
 	PtNode* pPtNode = NULL;
-	SYArray ptfArray; // 将一个cell转化为多边形顶点
-	SYAR_Init(&ptfArray);
+	BaseARray ptfArray; // 将一个cell转化为多边形顶点
+	BaseAR_Init(&ptfArray);
 	CPtNodeArray ptPolyArray; // 顶点数组. 将一个处理单元内各Cell转化出来的顶点,全部放在内
 	CLineNodeArray lineArray; // 边数组
 	CTriangleArray TriangleArray; // 三角形数组
@@ -1175,35 +1175,35 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrAr
 			ptOld.x = 999999.0f;
 			ptOld.y = 999999.0f;
 
-			int nSize = (int)SYAR_GetSize(&ptfArray);
+			int nSize = (int)BaseAR_GetSize(&ptfArray);
 			if (nSize < 3) 
 			{
 				// 释放
 				for (j = 0; j<nSize; j++)
 				{
-					pointf* pptf = (pointf*)SYAR_GetAt(&ptfArray,j);
+					pointf* pptf = (pointf*)BaseAR_GetAt(&ptfArray,j);
 					delete pptf;
 					pptf = NULL;
 				}
-				SYAR_RemoveAll(&ptfArray);
+				BaseAR_RemoveAll(&ptfArray);
 				pEnvelopeNode = pEnvelopeNode->nextNode;
 				continue;
 			}
-			pointf* pptf0 = (pointf * )SYAR_GetAt(&ptfArray,0);
-			pointf* pptf1 = (pointf * )SYAR_GetAt(&ptfArray,nSize - 1);
+			pointf* pptf0 = (pointf * )BaseAR_GetAt(&ptfArray,0);
+			pointf* pptf1 = (pointf * )BaseAR_GetAt(&ptfArray,nSize - 1);
 			if (fabs(pptf0->x - pptf1->x) < ABS_FLOAT_0 && fabs(pptf0->y - pptf1->y) < ABS_FLOAT_0)
 			{
-				SYAR_RemoveAt(&ptfArray,nSize - 1,1);
+				BaseAR_RemoveAt(&ptfArray,nSize - 1,1);
 				delete pptf1;
 				pptf1 = NULL;
 			}
 
-			nSize = (int)SYAR_GetSize(&ptfArray);
+			nSize = (int)BaseAR_GetSize(&ptfArray);
 			if (bOut) 
 			{
 				for(j = 0 ;j< nSize;j ++)
 				{
-					point3f* pptf = (point3f * )SYAR_GetAt(&ptfArray,j);
+					point3f* pptf = (point3f * )BaseAR_GetAt(&ptfArray,j);
 					if(fabs(pptf->x - ptOld.x) < ABS_FLOAT_0 && fabs(pptf->y - ptOld.y) < ABS_FLOAT_0)
 						continue;
 					pPtNode = new PtNode;
@@ -1230,7 +1230,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrAr
 				int nMinXIndex = 0;
 				for(j = 0 ;j< nSize;j ++)
 				{
-					pointf* pptf = (pointf * )SYAR_GetAt(&ptfArray,j);
+					pointf* pptf = (pointf * )BaseAR_GetAt(&ptfArray,j);
 					if(fabs(pptf->x - ptOld.x) < ABS_FLOAT_0 && fabs(pptf->y - ptOld.y) < ABS_FLOAT_0)
 						continue;
 					if (pptf->x < fMinX) 
@@ -1246,14 +1246,14 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrAr
 			}
 			
 			// 释放
-			nSize = (int)SYAR_GetSize(&ptfArray);
+			nSize = (int)BaseAR_GetSize(&ptfArray);
 			for (j = 0; j<nSize; j++)
 			{
-				pointf* pptf = (pointf*)SYAR_GetAt(&ptfArray,j);
+				pointf* pptf = (pointf*)BaseAR_GetAt(&ptfArray,j);
 				delete pptf;
 				pptf = NULL;
 			}
-			SYAR_RemoveAll(&ptfArray);
+			BaseAR_RemoveAll(&ptfArray);
 			if(pEnvelopeNode)
 				pEnvelopeNode = pEnvelopeNode->nextNode;
 		} // end of while
@@ -1363,7 +1363,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 	int i, j;
 	vectorcell* pCell = NULL;
 	PtNode* pPtNode = NULL;
-	SYArray ptfArray; // 将一个cell转化为多边形顶点
+	BaseARray ptfArray; // 将一个cell转化为多边形顶点
 	CPtNodeArray ptPolyArray; // 顶点数组. 将一个处理单元内各Cell转化出来的顶点,全部放在内
 	CLineNodeArray lineArray; // 边数组
 	CTriangleArray TriangleArray; // 三角形数组
@@ -1509,25 +1509,25 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 			{
 				pointf *pptf = new pointf;
 				*pptf = pt[kkk];
-				SYAR_Add(&ptfArray,pptf);
+				BaseAR_Add(&ptfArray,pptf);
 			}
 
 			int nDesSize = (int)ptPolyArray.GetSize();
 			pointf ptOld;
 			ptOld.x = 999999.0f;
 			ptOld.y = 999999.0f;
-			int nSize = (int)SYAR_GetSize(&ptfArray);
+			int nSize = (int)BaseAR_GetSize(&ptfArray);
 			j = nSize - 1;
 			for(j = nSize - 1; j>= 0; j --)
 			while (j) 
 			{
-				pointf* pptf = (pointf*)SYAR_GetAt(&ptfArray,j);
+				pointf* pptf = (pointf*)BaseAR_GetAt(&ptfArray,j);
 				for (int k = j - 1; k>=0; k--)
 				{
-					pointf* pptfk = (pointf*)SYAR_GetAt(&ptfArray,k);
+					pointf* pptfk = (pointf*)BaseAR_GetAt(&ptfArray,k);
 					if(fabs(pptf->x - pptfk->x) < ABS_FLOAT_0 && fabs(pptf->y - pptfk->y) < ABS_FLOAT_0)
 					{
-						SYAR_RemoveAt(&ptfArray,k,1);
+						BaseAR_RemoveAt(&ptfArray,k,1);
 						delete pptfk;
 						pptfk = NULL;					
 					}
@@ -1541,34 +1541,34 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 
 			SYOC_DelColine(&ptfArray,NULL);
 
-			nSize = (int)SYAR_GetSize(&ptfArray);
+			nSize = (int)BaseAR_GetSize(&ptfArray);
 			if (nSize < 3) 
 			{
 				for (j = 0; j<nSize; j++)
 				{
-					pointf* pptf = (pointf*)SYAR_GetAt(&ptfArray,j);
+					pointf* pptf = (pointf*)BaseAR_GetAt(&ptfArray,j);
 					delete pptf;
 					pptf = NULL;
 				}
-				SYAR_RemoveAll(&ptfArray);
+				BaseAR_RemoveAll(&ptfArray);
 				pEnvelopeNode = pEnvelopeNode->nextNode;
 				continue;
 			}
-			pointf* pptf0 = (pointf * )SYAR_GetAt(&ptfArray,0);
-			pointf* pptf1 = (pointf * )SYAR_GetAt(&ptfArray,nSize - 1);
+			pointf* pptf0 = (pointf * )BaseAR_GetAt(&ptfArray,0);
+			pointf* pptf1 = (pointf * )BaseAR_GetAt(&ptfArray,nSize - 1);
 			if (fabs(pptf0->x - pptf1->x) < ABS_FLOAT_0 && fabs(pptf0->y - pptf1->y) < ABS_FLOAT_0)
 			{
-				SYAR_RemoveAt(&ptfArray,nSize - 1,1);
+				BaseAR_RemoveAt(&ptfArray,nSize - 1,1);
 				delete pptf1;
 				pptf1 = NULL;
 			}
 
-			nSize = (int)SYAR_GetSize(&ptfArray);
+			nSize = (int)BaseAR_GetSize(&ptfArray);
 			if (bOut) 
 			{
 				for(j = 0 ;j< nSize;j ++)
 				{
-					pointf* pptf = (pointf * )SYAR_GetAt(&ptfArray,j);
+					pointf* pptf = (pointf * )BaseAR_GetAt(&ptfArray,j);
 					if(fabs(pptf->x - ptOld.x) < ABS_FLOAT_0 && fabs(pptf->y - ptOld.y) < ABS_FLOAT_0)
 						continue;
 					pPtNode = new PtNode;
@@ -1608,7 +1608,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 				int nMinXIndex = 0;
 				for(j = 0 ;j< nSize;j ++)
 				{
-					pointf* pptf = (pointf * )SYAR_GetAt(&ptfArray,j);
+					pointf* pptf = (pointf * )BaseAR_GetAt(&ptfArray,j);
 					if(fabs(pptf->x - ptOld.x) < ABS_FLOAT_0 && fabs(pptf->y - ptOld.y) < ABS_FLOAT_0)
 						continue;
 					if (pptf->x < fMinX) 
@@ -1624,14 +1624,14 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 			}
 			
 			// 释放
-			nSize = (int)SYAR_GetSize(&ptfArray);
+			nSize = (int)BaseAR_GetSize(&ptfArray);
 			for (j = 0; j<nSize; j++)
 			{
-				pointf* pptf = (pointf*)SYAR_GetAt(&ptfArray,j);
+				pointf* pptf = (pointf*)BaseAR_GetAt(&ptfArray,j);
 				delete pptf;
 				pptf = NULL;
 			}
-			SYAR_RemoveAll(&ptfArray);
+			BaseAR_RemoveAll(&ptfArray);
 			pEnvelopeNode = pEnvelopeNode->nextNode;
 		} // end of while
 

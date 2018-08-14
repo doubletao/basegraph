@@ -249,12 +249,12 @@ BOOL  SYCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int 
 
 		if(nSize == 0)
 			continue;
-		int nFaceIndex = (int)(pArVerOfTri + i)->GetAt(0);//(int)SYAR_GetAt(pArVerOfTri + i,0);
+		int nFaceIndex = (int)(pArVerOfTri + i)->GetAt(0);//(int)BaseAR_GetAt(pArVerOfTri + i,0);
 		tempV = pTriangle[nFaceIndex].tangent;
 		tempV2 = pTriangle[nFaceIndex].binormal;
 		for(int k = 1; k < nSize; k++)
 		{
-			int nFaceIndex = (int)(pArVerOfTri + i)->GetAt(k);//(int)SYAR_GetAt(pArVerOfTri + i,k);
+			int nFaceIndex = (int)(pArVerOfTri + i)->GetAt(k);//(int)BaseAR_GetAt(pArVerOfTri + i,k);
 			assert(nFaceIndex < nFaceNum);
 			tempV += pTriangle[nFaceIndex].tangent;
 			tempV2 += pTriangle[nFaceIndex].binormal;
@@ -269,7 +269,7 @@ BOOL  SYCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int 
 	//SAFEDELETE_ARRAY(pTriangle);
 	//for(int i = 0; i < nVNum;i++)
 	//{
-	//	//SYAR_RemoveAll(pArVerOfTri + i);
+	//	//BaseAR_RemoveAll(pArVerOfTri + i);
 	//	(pArVerOfTri + i)->RemoveAll();
 	//}
 	//SAFEDELETE_ARRAY(pArVerOfTri);
@@ -284,7 +284,7 @@ void NewVertexIndex( IN OUT SYModel* pMod, IN int nGraphType , int nLevel = 1)
 	int sphereIndexNum = ( g_nSphere_Circle_Num * nLevel - 1 ) * ( g_nSphere_Per_Circle_VertexNum * nLevel - 1 ) * 6;
 	SYSubModel stuSphereSubs[SPHERE_MATERIAL_COUNT] = 
 	{
-		{ 0, sphereVertexNum, 0, sphereIndexNum, SY_TRIANGLE_LIST, sphereIndexNum / 3, SYHTable_null },
+		{ 0, sphereVertexNum, 0, sphereIndexNum, SY_TRIANGLE_LIST, sphereIndexNum / 3, BseeHTable_null },
 	};
 
 	switch (nGraphType)
@@ -940,32 +940,32 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CSYPoint3fPtrArray* pptrTri, IN OU
 			for(int k = 0;k < calccount;k ++)
 			{
 				// 这里还应该加上一段函数，把cell变成多边形曲线
-				SYArray ptrPoly;
-				SYArray ptrPolyNorm;
-				SYAR_Init(&ptrPoly);
-				SYAR_Init(&ptrPolyNorm);
+				BaseARray ptrPoly;
+				BaseARray ptrPolyNorm;
+				BaseAR_Init(&ptrPoly);
+				BaseAR_Init(&ptrPolyNorm);
 				SYOC_Cell2PtfPoly(pCurveCell, &ptrPoly, &ptrPolyNorm,NULL);
-				nSize = (int)SYAR_GetSize(&ptrPoly);
+				nSize = (int)BaseAR_GetSize(&ptrPoly);
 				if (nSize<3) 
 				{
 					//注意释放
-					nSize = (int)SYAR_GetSize(&ptrPoly);
+					nSize = (int)BaseAR_GetSize(&ptrPoly);
 					for (j=0; j<nSize; j++)
 					{
-						pointf * pptf = (pointf * )SYAR_GetAt(&ptrPoly,j);
+						pointf * pptf = (pointf * )BaseAR_GetAt(&ptrPoly,j);
 						delete pptf;
 						pptf = NULL;
 					}
-					SYAR_RemoveAll(&ptrPoly);
+					BaseAR_RemoveAll(&ptrPoly);
 
-					nSize = (int)SYAR_GetSize(&ptrPolyNorm);
+					nSize = (int)BaseAR_GetSize(&ptrPolyNorm);
 					for (j=0; j<nSize; j++)
 					{
-						pointf * pptf = (pointf * )SYAR_GetAt(&ptrPolyNorm,j);
+						pointf * pptf = (pointf * )BaseAR_GetAt(&ptrPolyNorm,j);
 						delete pptf;
 						pptf = NULL;
 					}
-					SYAR_RemoveAll(&ptrPolyNorm);
+					BaseAR_RemoveAll(&ptrPolyNorm);
 
 					cell_release(&cellline[k]);
 					memset(&cellline[k],0,sizeof(vectorcell));
@@ -980,8 +980,8 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CSYPoint3fPtrArray* pptrTri, IN OU
 
 				for ( j = 0; j < nSize; j++ )
 				{
-					pptf1 = (pointf * )SYAR_GetAt(&ptrPoly,j);
-					pptf2 = (pointf * )SYAR_GetAt(&ptrPoly,(j+1)%nSize);
+					pptf1 = (pointf * )BaseAR_GetAt(&ptrPoly,j);
+					pptf2 = (pointf * )BaseAR_GetAt(&ptrPoly,(j+1)%nSize);
 					// 第一个面片
 					point3f* p1 = new point3f;
 					float3fFromfloat2fEx(p1,pptf1,0,Plane_XZ);
@@ -1024,8 +1024,8 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CSYPoint3fPtrArray* pptrTri, IN OU
 						pptrTri->Add(p2);
 					}
 					// 法线
-					pptf1 = (pointf * )SYAR_GetAt(&ptrPolyNorm,2*j);  
-					pptf2 = (pointf * )SYAR_GetAt(&ptrPolyNorm,2*j+1);
+					pptf1 = (pointf * )BaseAR_GetAt(&ptrPolyNorm,2*j);  
+					pptf2 = (pointf * )BaseAR_GetAt(&ptrPolyNorm,2*j+1);
 					// 第一个面片
 					p1 = new point3f;
 					float3fFromfloat2fEx(p1,pptf1,0,Plane_XZ);
@@ -1086,8 +1086,8 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CSYPoint3fPtrArray* pptrTri, IN OU
 				}
 				// 最后一个点，要特殊处理一下
 				{
-					pptf1 = (pointf * )SYAR_GetAt(&ptrPoly,nSize - 1);
-					pptf2 = (pointf * )SYAR_GetAt(&ptrPoly,0);
+					pptf1 = (pointf * )BaseAR_GetAt(&ptrPoly,nSize - 1);
+					pptf2 = (pointf * )BaseAR_GetAt(&ptrPoly,0);
 
 					point3f* p1 = new point3f;
 					float3fFromfloat2fEx(p1,pptf1,0,Plane_XZ);
@@ -1131,8 +1131,8 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CSYPoint3fPtrArray* pptrTri, IN OU
 					}
 
 					// 法线
-					pptf1 = (pointf * )SYAR_GetAt(&ptrPolyNorm,2*nSize - 2);
-					pptf2 = (pointf * )SYAR_GetAt(&ptrPolyNorm,2*nSize - 1);
+					pptf1 = (pointf * )BaseAR_GetAt(&ptrPolyNorm,2*nSize - 2);
+					pptf2 = (pointf * )BaseAR_GetAt(&ptrPolyNorm,2*nSize - 1);
 					// 第一个面片
 					p1 = new point3f;
 					float3fFromfloat2fEx(p1,pptf1,0,Plane_XZ);
@@ -1191,23 +1191,23 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CSYPoint3fPtrArray* pptrTri, IN OU
 					}
 				}
 				// 释放
-				nSize = (int)SYAR_GetSize(&ptrPoly);
+				nSize = (int)BaseAR_GetSize(&ptrPoly);
 				for (j=0; j<nSize; j++)
 				{
-					pointf * pptf = (pointf * )SYAR_GetAt(&ptrPoly,j);
+					pointf * pptf = (pointf * )BaseAR_GetAt(&ptrPoly,j);
 					delete pptf;
 					pptf = NULL;
 				}
-				SYAR_RemoveAll(&ptrPoly);
+				BaseAR_RemoveAll(&ptrPoly);
 
-				nSize = (int)SYAR_GetSize(&ptrPolyNorm);
+				nSize = (int)BaseAR_GetSize(&ptrPolyNorm);
 				for (j=0; j<nSize; j++)
 				{
-					pointf * pptf = (pointf * )SYAR_GetAt(&ptrPolyNorm,j);
+					pointf * pptf = (pointf * )BaseAR_GetAt(&ptrPolyNorm,j);
 					delete pptf;
 					pptf = NULL;
 				}
-				SYAR_RemoveAll(&ptrPolyNorm);
+				BaseAR_RemoveAll(&ptrPolyNorm);
 
 				cell_release(&cellline[k]);
 				memset(&cellline[k],0,sizeof(vectorcell));

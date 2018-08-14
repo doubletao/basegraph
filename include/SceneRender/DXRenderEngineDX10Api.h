@@ -24,9 +24,9 @@ struct SY_DeviceDX10
 	htable			htSwapChain;
 	htable			htModel;
 	htable			htShaderTable;
-	SYHash*			ShaderHash; 
-	SYHash*			TextureFromFileHash;
-	SYHash*			BumpTextureFromFileHash;
+	BaseHash*			ShaderHash; 
+	BaseHash*			TextureFromFileHash;
+	BaseHash*			BumpTextureFromFileHash;
 	htable			htBuffer;
 	//state
 	ID3D10DepthStencilState* pDepthState[DXDepthStateCount];
@@ -139,7 +139,7 @@ struct SYSwapChain
 	int				hBufferTexture;
 };
 
-struct SYBuffer
+struct CommonBuffer
 {
 	DXBufferType nType;
 	int			nVertexSize;
@@ -169,7 +169,7 @@ inline bool SetSamplerState(SY_DeviceDX10* pDevice,int nState,int nType,int nSam
 inline BOOL SetVertexBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer);
 inline bool ModifyBuffer(SY_DeviceDX10* pDevice,int hBuffer,void* pMemBuffer)
 {
-	SYBuffer* pBuffer = (SYBuffer*) SYHTable_GetAt(&pDevice->htBuffer,hBuffer);
+	CommonBuffer* pBuffer = (CommonBuffer*) BseeHTable_GetAt(&pDevice->htBuffer,hBuffer);
 	//从效率考虑,暂不支持indexbuffer的更新
 	if(pBuffer->nType == DXIndexBuffer)
 		return false;
@@ -227,7 +227,7 @@ inline void ReleaseBuffer(SY_DeviceDX10* pDevice,int hBuffer)
 {
 	if (!hBuffer)
 		return;
-	SYBuffer* pBuffer = (SYBuffer*)SYHTable_RemoveAt(&pDevice->htBuffer,hBuffer);
+	CommonBuffer* pBuffer = (CommonBuffer*)BseeHTable_RemoveAt(&pDevice->htBuffer,hBuffer);
 	if (!pBuffer)
 		return;
 	
@@ -255,16 +255,16 @@ inline void ReleaseBuffer(SY_DeviceDX10* pDevice,int hBuffer)
 }
 inline void ReleaseShader(SY_DeviceDX10* pDevice,int hShader)
 {
-	SYShader* pShader = (SYShader*)SYHTable_GetAt(&pDevice->htShaderTable,hShader);
+	SYShader* pShader = (SYShader*)BseeHTable_GetAt(&pDevice->htShaderTable,hShader);
 	if (pShader)
 	{
 		assert(pShader);
-		shaderhash* pShaderHashValue = (shaderhash*)SYHash_Search(pDevice->ShaderHash, (void *)pShader->pShaderName);
+		shaderhash* pShaderHashValue = (shaderhash*)BaseHash_Search(pDevice->ShaderHash, (void *)pShader->pShaderName);
 		--(pShaderHashValue->nCount);
 		if (pShaderHashValue->nCount != 0)
 			return;
 
-		SYHash_RemoveAt(pDevice->ShaderHash, (void *)pShader->pShaderName, TRUE);
+		BaseHash_RemoveAt(pDevice->ShaderHash, (void *)pShader->pShaderName, TRUE);
 		SAFEDELETE_ARRAY(pShader->pShaderName);
 		switch (pShader->nType)
 		{
@@ -288,13 +288,13 @@ inline void ReleaseShader(SY_DeviceDX10* pDevice,int hShader)
 		break;
 		}
 		SAFE_DELETE(pShader);
-		SYHTable_RemoveAt(&pDevice->htShaderTable, hShader);
+		BseeHTable_RemoveAt(&pDevice->htShaderTable, hShader);
 	}
 }
 
 inline BOOL IsNeedScaleTexParam(SY_DeviceDX10* pDevice,int hTex,float& fScale)
 {
-	SYTexture* pTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,hTex);
+	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTex);
 	if(!pTexture)
 	{
 		fScale = 1;
@@ -358,7 +358,7 @@ inline void SetScissor(SY_DeviceDX10* pDevice,const RECT* pRect)
 
 inline ID3D10Texture2D* getTexture(SY_DeviceDX10* pDevice,int hTexture)
 {
-	SYTexture* pSrcWDTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,hTexture);
+	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
 	if (!pSrcWDTexture)
 		return NULL;
 	return (ID3D10Texture2D*)pSrcWDTexture->pTexture;
@@ -368,7 +368,7 @@ inline void getTextureInfo(SY_DeviceDX10* pDevice,int hTexture,int* pWidth,int* 
 {
 	if(hTexture <= 0)
 		return;
-	SYTexture* pSrcWDTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,hTexture);
+	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
 	ID3D10Texture2D* pTexture = (ID3D10Texture2D*)(pSrcWDTexture->pTexture);
 	D3D10_TEXTURE2D_DESC desc;
 	pTexture->GetDesc(&desc);
@@ -390,14 +390,14 @@ inline void SetRenderTarget(SY_DeviceDX10* pDevice,int hRT,int hDepth)
 	}
 	if (hRT > 0)
 	{
-		SYTexture* pTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,hRT);
+		SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hRT);
 		pTexture->bRecentRT = TRUE;
 		pRenderTarget = (ID3D10RenderTargetView*)pTexture->pRenderTarget;
 	}
 
 	if (hDepth > 0)
 	{
-		SYTexture* pTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,hDepth);
+		SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hDepth);
 		pDepth = (ID3D10DepthStencilView*)pTexture->pRenderTarget;
 	}
 	pDevice->pDevice->OMSetRenderTargets(1,&pRenderTarget,pDepth);
@@ -530,7 +530,7 @@ inline BOOL SetShader(SY_DeviceDX10* pDevice,int nShaderType,int hShader)
 		return TRUE;
 	}
 
-	SYShader* pShader = (SYShader*)SYHTable_GetAt(&pDevice->htShaderTable,hShader);
+	SYShader* pShader = (SYShader*)BseeHTable_GetAt(&pDevice->htShaderTable,hShader);
 	switch(nShaderType)
 	{
 	case DXShaderType_VertexShader:
@@ -556,7 +556,7 @@ inline BOOL SetIndexBuffer(SY_DeviceDX10* pDevice,int hIndexBuffer)
 	{
 		return TRUE;
 	}
-	SYBuffer* pIB = (SYBuffer*)SYHTable_GetAt(&pDevice->htBuffer,hIndexBuffer);
+	CommonBuffer* pIB = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,hIndexBuffer);
 	pDevice->pDevice->IASetIndexBuffer(pIB->pBuffer,DXGI_FORMAT_R32_UINT,0);
 	pDevice->hNowIndexBuffer = hIndexBuffer;
 	return TRUE;
@@ -568,7 +568,7 @@ inline BOOL SetVertexBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer)
 	{
 		return TRUE;
 	}
-	SYBuffer* pVB = (SYBuffer*)SYHTable_GetAt(&pDevice->htBuffer,hVertexBuffer);
+	CommonBuffer* pVB = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,hVertexBuffer);
 	UINT offsets[1] = {0};
 	UINT strides[1] = { pVB->nVertexSize };
 	pDevice->pDevice->IASetVertexBuffers(0,1,&pVB->pBuffer,strides,offsets);
@@ -578,8 +578,8 @@ inline BOOL SetVertexBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer)
 
 inline BOOL SetVertexInstanceBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer,int hInstanceBuffer)
 {
-	SYBuffer* pVB0 = (SYBuffer*)SYHTable_GetAt(&pDevice->htBuffer,hVertexBuffer);
-	SYBuffer* pVB1 = (SYBuffer*)SYHTable_GetAt(&pDevice->htBuffer,hInstanceBuffer);
+	CommonBuffer* pVB0 = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,hVertexBuffer);
+	CommonBuffer* pVB1 = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,hInstanceBuffer);
 
 	ID3D10Buffer* vb[] = {pVB0->pBuffer,pVB1->pBuffer};
 	UINT strides[] = {pVB0->nVertexSize, pVB1->nVertexSize};
@@ -592,7 +592,7 @@ inline BOOL SetVertexInstanceBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer,int
 
 inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,DXShaderType nShaderType,int nRegIndex)
 {
-	SYTexture* pTexture = (SYTexture*)SYHTable_GetAt(&pDevice->httexture,hTex);
+	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTex);
 	ID3D10ShaderResourceView* pView = NULL;
 	if(pTexture)
 	{

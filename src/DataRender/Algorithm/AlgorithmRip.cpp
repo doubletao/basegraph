@@ -1532,9 +1532,9 @@ int  cell_get_group_ptcount(vectorcell*	srccell, int nstart, int type)
 	return ncurvercount;
 }
 
-int  conic_extend(SYArray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf startoffset, pointf endoffset, float fwidth, int ndirect, SYArray* lenArray = NULL, float* fAllLen = NULL);
+int  conic_extend(BaseARray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf startoffset, pointf endoffset, float fwidth, int ndirect, BaseARray* lenArray = NULL, float* fAllLen = NULL);
 
-int  conic_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, SYArray* plenArray, float* pfalllen)
+int  conic_group_extend(OUT BaseARray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, BaseARray* plenArray, float* pfalllen)
 {
 
 	pointf pt1, pt2, pt3;
@@ -1634,11 +1634,11 @@ int  conic_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstar
 	return nstart + ncurvercount - 1;
 }
 
-int  bezier_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, SYArray* lenArray, float* falllen, pointf* ptlast = NULL);
+int  bezier_group_extend(OUT BaseARray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, BaseARray* lenArray, float* falllen, pointf* ptlast = NULL);
 
-int cell_makecell(LPSYARRAY ptarray, vectorcell* pcell)
+int cell_makecell(LPBaseARRAY ptarray, vectorcell* pcell)
 {
-	int narcount = (int)SYAR_GetSize(ptarray);
+	int narcount = (int)BaseAR_GetSize(ptarray);
 	pcell->npoint = narcount;
 	pcell->point = new pointf[narcount];
 	pcell->pttype = new unsigned long[narcount];
@@ -1648,7 +1648,7 @@ int cell_makecell(LPSYARRAY ptarray, vectorcell* pcell)
 	pcell->bound.bottom = -65535.0f;
 	for (int i = 0; i < pcell->npoint; i++)
 	{
-		pointf* ptresult = (pointf*)SYAR_GetAt(ptarray, i);
+		pointf* ptresult = (pointf*)BaseAR_GetAt(ptarray, i);
 		pcell->point[i] = *ptresult;
 		pcell->pttype[i] = point_line;
 		pcell->bound.left = min(pcell->bound.left, ptresult->x);
@@ -1657,8 +1657,8 @@ int cell_makecell(LPSYARRAY ptarray, vectorcell* pcell)
 		pcell->bound.bottom = max(pcell->bound.bottom, ptresult->y);
 		delete ptresult;
 	}
-	SYAR_RemoveAll(ptarray);
-	SYAR_Release(ptarray);
+	BaseAR_RemoveAll(ptarray);
+	BaseAR_Release(ptarray);
 	return 1;
 }
 
@@ -1687,7 +1687,7 @@ int BASEGRAPH_DATARENDER_API cell_extend(OUT vectorcell * descell, IN vectorcell
 	}
 
 
-	LPSYARRAY ptarray = SYAR_Create(); // 临时array, 用于保存偏移后的顶点, 最后再转化成cell
+	LPBaseARRAY ptarray = BaseAR_Create(); // 临时array, 用于保存偏移后的顶点, 最后再转化成cell
 	pointf ptend;
 
 	//cell's last offsetpt ,for calc last->start arc
@@ -1717,7 +1717,7 @@ int BASEGRAPH_DATARENDER_API cell_extend(OUT vectorcell * descell, IN vectorcell
 		ptprvline[1] = ptlastoffset;
 		/*pointf* pt = new pointf;
 		*pt = ptlastoffset;*/
-		//SYAR_Add(ptarray,pt);
+		//BaseAR_Add(ptarray,pt);
 
 		bPrvLine = TRUE;
 
@@ -1736,7 +1736,7 @@ int BASEGRAPH_DATARENDER_API cell_extend(OUT vectorcell * descell, IN vectorcell
 		pointf* ptstart = new pointf;
 		pointf  ptuncloseend;
 		line_extend(*ptstart, ptuncloseend, srccell->point[nindex], srccell->point[(nindex + 1) % nptcount], ndirect, fwidth);
-		SYAR_Add(ptarray, ptstart);
+		BaseAR_Add(ptarray, ptstart);
 	}
 	int nprecount = nptcount;
 	if (srccell->type == uncloss_line)
@@ -1791,7 +1791,7 @@ int BASEGRAPH_DATARENDER_API cell_extend(OUT vectorcell * descell, IN vectorcell
 				{
 					pointf* ptnewout = new pointf;
 					*ptnewout = ptout;
-					SYAR_Add(ptarray, ptnewout);
+					BaseAR_Add(ptarray, ptnewout);
 				}
 				else
 				{
@@ -1851,36 +1851,36 @@ int BASEGRAPH_DATARENDER_API cell_extend(OUT vectorcell * descell, IN vectorcell
 				}
 				cell_makearc(ptarray, srccell->point[i], ptprvline[1], ptoffset, fwidth);
 			}
-			//			bezier_group_extend(OUT SYArray* ptArray,IN vectorcell* cell,IN  int nstart,float fwidth,int ndirect,SYArray* lenArray,float* falllen,pointf* ptlast = NULL)
+			//			bezier_group_extend(OUT BaseARray* ptArray,IN vectorcell* cell,IN  int nstart,float fwidth,int ndirect,BaseARray* lenArray,float* falllen,pointf* ptlast = NULL)
 			//pointf ptemp = ptprvline[1];
 			i = bezier_group_extend(ptarray, srccell, i, fwidth, ndirect, NULL, NULL, NULL);
 			bPrvLine = FALSE;
-			int nCount = SYAR_GetSize(ptarray);
+			int nCount = BaseAR_GetSize(ptarray);
 			if (nCount >= 2)
 			{
-				ptprvline[0] = *(pointf*)SYAR_GetAt(ptarray, nCount - 2);
-				ptprvline[1] = *(pointf*)SYAR_GetAt(ptarray, nCount - 1);
+				ptprvline[0] = *(pointf*)BaseAR_GetAt(ptarray, nCount - 2);
+				ptprvline[1] = *(pointf*)BaseAR_GetAt(ptarray, nCount - 1);
 				bPrvLine = TRUE;
 			}
 
 		}
 		if (i < 0)
 			break;
-		ptlast = (pointf*)SYAR_GetAt(ptarray, SYAR_GetSize(ptarray) - 1);
+		ptlast = (pointf*)BaseAR_GetAt(ptarray, BaseAR_GetSize(ptarray) - 1);
 	}
 	if (srccell->type == uncloss_line && bPrvLine)
 	{
 		pointf* ptadd = new pointf;
 		*ptadd = ptprvline[1];
-		SYAR_Add(ptarray, ptadd);
+		BaseAR_Add(ptarray, ptadd);
 	}
 	// 格式转换:　array --> cell
 	cell_makecell(ptarray, descell);
 	//for(int i = 0;i < ptarray->m_nSize;i ++)
 	//{
-	//	delete (pointf * )SYAR_GetAt(ptarray,i);
+	//	delete (pointf * )BaseAR_GetAt(ptarray,i);
 	//}
-	//SYAR_Release(ptarray);
+	//BaseAR_Release(ptarray);
 	descell->type = srccell->type;
 	descell->width = srccell->width;
 	return 1;
@@ -1924,7 +1924,7 @@ void BASEGRAPH_DATARENDER_API cell_merge(vectorcell * descell, const vectorcell 
 	descell->bound.bottom = max(srccell1->bound.bottom, srccell2->bound.bottom);
 }
 
-//void BASEGRAPH_DATARENDER_API rip_draw_figure(IN vectorgraph * figure, IN float offsetx, IN float offsety, IN CSYBufferDC * bufferDC)
+//void BASEGRAPH_DATARENDER_API rip_draw_figure(IN vectorgraph * figure, IN float offsetx, IN float offsety, IN CCommonBufferDC * bufferDC)
 //{
 //	vectorcell cellline;
 //	memset(&cellline, 0, sizeof(vectorcell));
@@ -2054,7 +2054,7 @@ rip_edge_node* rip_malloc_node(unsigned char*&	pool,unsigned char* poolend)
 	return pnode;
 }
 
-//void rip_draw_splitbezier(IN OUT CSYBufferDC* bufferDC,IN pointf* pt,float offsetx,float offsety)
+//void rip_draw_splitbezier(IN OUT CCommonBufferDC* bufferDC,IN pointf* pt,float offsetx,float offsety)
 //{
 //	BOOL bNearline = SY_Beizer3IsNearLine(pt,1.0f);
 //	if(bNearline)
@@ -2071,7 +2071,7 @@ rip_edge_node* rip_malloc_node(unsigned char*&	pool,unsigned char* poolend)
 //		rip_draw_splitbezier(bufferDC,pttempafter,offsetx,offsety);
 //	}
 //}
-//BASEGRAPH_DATARENDER_API void  rip_draw_bezier(IN OUT CSYBufferDC* bufferDC,IN pointf* pt,int count,float offsetx,float offsety)
+//BASEGRAPH_DATARENDER_API void  rip_draw_bezier(IN OUT CCommonBufferDC* bufferDC,IN pointf* pt,int count,float offsetx,float offsety)
 //{
 //	int nremaincount = count;
 //	int nindex = 0;
@@ -2085,7 +2085,7 @@ rip_edge_node* rip_malloc_node(unsigned char*&	pool,unsigned char* poolend)
 //		nindex += 3;
 //	}
 //}
-//void rip_draw_splitconic(CSYBufferDC* bufferDC,pointf* pconicf,float offsetx,float offsety)
+//void rip_draw_splitconic(CCommonBufferDC* bufferDC,pointf* pconicf,float offsetx,float offsety)
 //{
 //	pointf mid = pconicf[2]*0.25;
 //	if(fabs(mid.x)>0.05|| fabs(mid.y)>0.05)
@@ -2105,7 +2105,7 @@ rip_edge_node* rip_malloc_node(unsigned char*&	pool,unsigned char* poolend)
 //		bufferDC->LineTo(pconicf[1].x + offsetx,pconicf[1].y + offsety);
 //	}
 //}
-//BASEGRAPH_DATARENDER_API void  rip_draw_conic(IN OUT CSYBufferDC* bufferDC,IN pointf* pt,int count,float offsetx,float offsety)
+//BASEGRAPH_DATARENDER_API void  rip_draw_conic(IN OUT CCommonBufferDC* bufferDC,IN pointf* pt,int count,float offsetx,float offsety)
 //{
 //	pointf pf[3];
 //	pointf ptcalc[3];
@@ -2875,7 +2875,7 @@ long BASEGRAPH_DATARENDER_API rip_trans_float_to_fix(float f)
 	return SY_FToI(f * 64);
 }
 
-//void BASEGRAPH_DATARENDER_API rip_draw_figure(IN vectorgraph*	figure,	IN float offsetx,IN float offsety,IN CSYBufferDC* bufferDC)
+//void BASEGRAPH_DATARENDER_API rip_draw_figure(IN vectorgraph*	figure,	IN float offsetx,IN float offsety,IN CCommonBufferDC* bufferDC)
 //{
 //	vectorcell cellline;
 //	memset(&cellline,0,sizeof(vectorcell));

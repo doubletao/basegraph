@@ -19,9 +19,9 @@ typedef struct tag_ResultNode
 	float fParam; 
 }ResultNode;
 
-typedef CSYArray<Index3*> CSYIndex3Array;
-typedef CSYArray<IntersectNode*> CSYIntersectNodeArray;
-typedef CSYArray<ResultNode*> CSYResultNodeArray;
+typedef CBaseARray<Index3*> CSYIndex3Array;
+typedef CBaseARray<IntersectNode*> CSYIntersectNodeArray;
+typedef CBaseARray<ResultNode*> CSYResultNodeArray;
 class SYBevelPoly
 {
 public:
@@ -31,14 +31,14 @@ public:
 protected:
 	BOOL NearLine(IN pointf* ptf ) ;
 	void AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, OUT CSYPoint2fPtrArray * pptrPolyNorm, IN pointf * ctrlPoints);//AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, IN pointf * ctrlPoints);
-	void GenerateRudeBevel4(IN SYArray * pptrPoly, IN float fWidth, IN float fHeight, 
+	void GenerateRudeBevel4(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
 		OUT CSYPoint3fPtrArray * pptrArrRude4/*, OUT CPtrArray * pptrArrBox4*/ );
-	void GenerateRudeBevel3(IN SYArray * pptrPoly, IN float fWidth, IN float fHeight, 
+	void GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
 		OUT CSYPoint3fPtrArray * pptrArrRude3, /*OUT CPtrArray * pptrArrBox3, */OUT CSYIndex3Array *pptrArrIndex3 );
-	void CutToTri4(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+	void CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
 		IN CSYPoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CSYIndex3Array *pptrArrIndex3,
 		IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray * pptrTri ) ;
-	void CutToTri3(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+	void CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
 		IN CSYPoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CSYIndex3Array *pptrArrIndex3,
 		IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray * pptrTri ) ;
 	int MakeASlope(OUT CSYPoint3fPtrArray *ptArr,IN pointf* pCenter, IN pointf* pStartPt,IN pointf* pEndPt,IN float fDis, IN float fHeight,IN int nDirect);

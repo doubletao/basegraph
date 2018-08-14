@@ -59,37 +59,37 @@ BASEGRAPH_DATARENDER_API BOOL IsRaySegmentIntersection(IN point2f ptRay0,IN poin
 //    返回： 返回相交点的个数                                                                   
 //    输入： 线段两点坐标 pt0，pt1；  线段数组pArSeg（数组元素为point2lf*）                                         
 //    输出： 输出相交点数组arOut（数组元素为point2f*） ，输出数组按离线段第一个点pt0的距离从近到远排序                                    
-BASEGRAPH_DATARENDER_API int IsSegmentRegionIntersection(IN point2f pt0,IN point2f pt1,IN SYArray* pArSeg,OUT SYArray* pArOut);
+BASEGRAPH_DATARENDER_API int IsSegmentRegionIntersection(IN point2f pt0,IN point2f pt1,IN BaseARray* pArSeg,OUT BaseARray* pArOut);
 //////////////////////////////////////////////////////////////////////////
 //    功能： 判断射线是否与区域（线段组）相交                                                 
 //    返回： 返回相交点的个数                                                                   
 //    输入： 射线两点坐标 ptRay0，ptRay1；  线段数组pArSeg（数组元素为point2lf*）                                         
 //    输出： 输出相交点数组arOut（数组元素为point2f*） ，输出数组按离线段第一个点的距离从近到远排序                                    
-BASEGRAPH_DATARENDER_API BOOL IsRayRegionIntersection(IN point2f ptRay0,IN point2f ptRay1,IN SYArray* pArSeg,OUT point2f* pPtOut);
+BASEGRAPH_DATARENDER_API BOOL IsRayRegionIntersection(IN point2f ptRay0,IN point2f ptRay1,IN BaseARray* pArSeg,OUT point2f* pPtOut);
 //////////////////////////////////////////////////////////////////////////
 //    功能： 判断点pt是否位于区域（线段组）上                                                        
 //    返回： 在则返回TRUE，否则FALSE                                                               
 //    输入： 点坐标pt，线段数组pArSeg（数组元素为point2lf*）                                                     
 //    输出： 无   
-BASEGRAPH_DATARENDER_API BOOL IsPointOnRegion(IN point2f pt,IN SYArray* pArSeg);
+BASEGRAPH_DATARENDER_API BOOL IsPointOnRegion(IN point2f pt,IN BaseARray* pArSeg);
 //////////////////////////////////////////////////////////////////////////
 //    功能： 判断点pt是否位于区域（线段组）内                                                        
 //    返回： 在则返回TRUE，否则FALSE                                                               
 //    输入： 点坐标pt，线段数组pArSeg（数组元素为point2lf*）                                                     
 //    输出： 无   
-BASEGRAPH_DATARENDER_API BOOL IsPointInRegionLF(IN point2f pt,IN SYArray* pArSeg);
+BASEGRAPH_DATARENDER_API BOOL IsPointInRegionLF(IN point2f pt,IN BaseARray* pArSeg);
 
 //////////////////////////////////////////////////////////////////////////
 //    功能： 判断点pt是否位于区域（线段组）内                                                        
 //    返回： 在则返回TRUE，否则FALSE                                                               
 //    输入： 点坐标pt，线段数组pArSeg（数组元素为point2f*）                                                     
 //    输出： 无   
-BASEGRAPH_DATARENDER_API BOOL IsPointInRegionF(IN point2f pt,IN SYArray* pArSeg);
+BASEGRAPH_DATARENDER_API BOOL IsPointInRegionF(IN point2f pt,IN BaseARray* pArSeg);
 //////////////////////////////////////////////////////////////////////////
 //    功能： 给一条连续的线段和一个连续的封闭区域（线段组），求出线段在区域（线段组）内的部分                                                    
 //    返回： 无                                                             
 //    输入： 原始线段数组pArLine（数组元素为point2f*），区域线段数组pArSeg（数组元素为point2lf*）                                                     
-//    输出： 原始线段在区域（线段组）内的部分，有可能被截为多段线段数组，即返回线段数组的数组pArOut（数组元素为SYArray*）；
+//    输出： 原始线段在区域（线段组）内的部分，有可能被截为多段线段数组，即返回线段数组的数组pArOut（数组元素为BaseARray*）；
 //			 数组元素的元素为（point2f*）
-BASEGRAPH_DATARENDER_API void GetSegmentInRegion(IN SYArray* pArLine,IN SYArray* pArSeg,OUT SYArray* pArOut);
+BASEGRAPH_DATARENDER_API void GetSegmentInRegion(IN BaseARray* pArLine,IN BaseARray* pArSeg,OUT BaseARray* pArOut);
 //////////////////////////////////////////////////////////////////////////

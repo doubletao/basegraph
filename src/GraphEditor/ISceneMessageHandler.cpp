@@ -29,7 +29,7 @@ void ISceneMessageHandler::DrawBoxToEditBuf(C3DSceneViewWnd * pWnd, pointf ptBeg
 		SceneToBuffer(&ptEnd, &ptEnd, nWidth / 2, nHeight / 2, 1.0f);
 		int nEditBuffer = pWnd->GetViewBufInfo().GetEditMemBuffer();
 		//准备好DC
-		CSYBufferDC bufferDC;
+		CCommonBufferDC bufferDC;
 		//清空画布
 		DataRender_Clear2DBuf(nEditBuffer, 0);
 		// 先画出编辑控制线，后画选中。

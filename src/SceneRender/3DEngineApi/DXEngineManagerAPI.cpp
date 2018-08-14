@@ -26,21 +26,21 @@ CTextureSet::CTextureSet()
 	m_hDevice = 0;
 	m_nWidth  = 0;
 	m_nHeight = 0;
-	SYAR_Init(&m_arResource);
+	BaseAR_Init(&m_arResource);
 }
 CTextureSet::~CTextureSet()
 {
-	int nCount = (int)SYAR_GetSize(&m_arResource);
+	int nCount = (int)BaseAR_GetSize(&m_arResource);
 	for (int i = 0; i < nCount; i++)
 	{
-		CSingleResource* pResource = (CSingleResource*)SYAR_GetAt(&m_arResource,i);
+		CSingleResource* pResource = (CSingleResource*)BaseAR_GetAt(&m_arResource,i);
 #ifdef _DEBUG
 		assert(!pResource->bUsed);
 #endif // _DEBUG
 		DX3DEngine_ReleaseTexture(m_hDevice,pResource->hResource);
 		SAFE_DELETE(pResource);
 	}
-	SYAR_RemoveAll(&m_arResource);
+	BaseAR_RemoveAll(&m_arResource);
 	DeleteCriticalSection(&m_Lock);
 }
 BOOL CTextureSet::Init( IN int hDevice, IN int nWidth, IN int nHeight,int nAAFactor )
@@ -91,14 +91,14 @@ int CTextureSet::AddResource(int hResource,int nFactor)
 	newResoure->hResource = hResource;
 	newResoure->nFactor = nFactor;
 	UnLock();
-	return (int)SYAR_Add(&m_arResource,newResoure);
+	return (int)BaseAR_Add(&m_arResource,newResoure);
 }
 void CTextureSet::RemoveResource(int nIndex)
 {
 	CSingleResource* pResource = GetSingleResource(nIndex);
 	DX3DEngine_ReleaseTexture(m_hDevice,pResource->hResource);
 	SAFE_DELETE(pResource);
-	SYAR_RemoveAt(&m_arResource,nIndex,1);
+	BaseAR_RemoveAt(&m_arResource,nIndex,1);
 }
 //////////////////////////////////////////////////////////////////////////
 //SY3DLineManager·â×°Àà

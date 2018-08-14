@@ -239,20 +239,20 @@ BASEGRAPH_DATARENDER_API void DividCircle2Bezier(
     IN const point2f ptCenter, //圆心
     IN const float fRadius_a, // 半径
     IN const float fRadius_b, // 半径
-    OUT SYArray &aBezier // 逼近结果 4个point2f型顶点 
+    OUT BaseARray &aBezier // 逼近结果 4个point2f型顶点 
     )
 {
     DividQuarterArc2Bezier(ptCenter, fRadius_a, fRadius_b, ARCLOC_RIGHTTOP, aBezier);  //第一象限
-	point2f* pPt = (point2f*)SYAR_GetAt(&aBezier, (int)SYAR_GetSize(&aBezier) - 1);
-    SYAR_RemoveAt(&aBezier, (int)SYAR_GetSize(&aBezier) - 1 , 1);                    //移除最后一个点
+	point2f* pPt = (point2f*)BaseAR_GetAt(&aBezier, (int)BaseAR_GetSize(&aBezier) - 1);
+    BaseAR_RemoveAt(&aBezier, (int)BaseAR_GetSize(&aBezier) - 1 , 1);                    //移除最后一个点
 	delete pPt;    
 	DividQuarterArc2Bezier(ptCenter, fRadius_a, fRadius_b, ARCLOC_LEFTTOP, aBezier);   //第二象限
-	pPt = (point2f*)SYAR_GetAt(&aBezier, (int)SYAR_GetSize(&aBezier) - 1);
-    SYAR_RemoveAt(&aBezier, (int)SYAR_GetSize(&aBezier) - 1, 1);                    //移除最后一个点
+	pPt = (point2f*)BaseAR_GetAt(&aBezier, (int)BaseAR_GetSize(&aBezier) - 1);
+    BaseAR_RemoveAt(&aBezier, (int)BaseAR_GetSize(&aBezier) - 1, 1);                    //移除最后一个点
 	delete pPt;
     DividQuarterArc2Bezier(ptCenter, fRadius_a, fRadius_b, ARCLOC_LEFTBOTTOM, aBezier);   //第三象限
-	pPt = (point2f*)SYAR_GetAt(&aBezier, (int)SYAR_GetSize(&aBezier) - 1);
-    SYAR_RemoveAt(&aBezier, (int)SYAR_GetSize(&aBezier) - 1, 1);                    //移除最后一个点
+	pPt = (point2f*)BaseAR_GetAt(&aBezier, (int)BaseAR_GetSize(&aBezier) - 1);
+    BaseAR_RemoveAt(&aBezier, (int)BaseAR_GetSize(&aBezier) - 1, 1);                    //移除最后一个点
 	delete pPt;
     DividQuarterArc2Bezier(ptCenter, fRadius_a, fRadius_b, ARCLOC_RIGHTBOTTOM, aBezier);   //第四象限
 }
@@ -464,16 +464,16 @@ BASEGRAPH_DATARENDER_API void DividArc2Bezier(
     IN const float fRadius_b,       // 沿y轴半径
 	IN const float fStartRadIn,		// 起始弧度
 	IN const float fEndRad,			// 终止弧度
-    OUT SYArray &aBezier			// 逼近结果 4个point2f型顶点 
+    OUT BaseARray &aBezier			// 逼近结果 4个point2f型顶点 
     )
 {
-	int nSize = (int)SYAR_GetSize(&aBezier);
+	int nSize = (int)BaseAR_GetSize(&aBezier);
 	for (int i = 0; i < nSize; i++)
 	{
-		point2f * pptf = (point2f *)SYAR_GetAt( &aBezier, i);
+		point2f * pptf = (point2f *)BaseAR_GetAt( &aBezier, i);
 		delete pptf;
 	}
-	SYAR_RemoveAll(&aBezier);
+	BaseAR_RemoveAll(&aBezier);
 
 	// 一个问题: 如果fStartRad == fEndRad, 怎么处理?
 	float fStartRad = fStartRadIn;
@@ -583,8 +583,8 @@ BASEGRAPH_DATARENDER_API void DividArc2Bezier(
             {
                 DividQuarterArc2Bezier(ptCenter, fRadius_a, fRadius_b, (ARCLOC) (i % 4), aBezier); 
             }
-			point2f* pPt = (point2f*)SYAR_GetAt(&aBezier, (int)SYAR_GetSize(&aBezier) - 1);
-			SYAR_RemoveAt(&aBezier, (int)SYAR_GetSize(&aBezier) - 1 , 1);
+			point2f* pPt = (point2f*)BaseAR_GetAt(&aBezier, (int)BaseAR_GetSize(&aBezier) - 1);
+			BaseAR_RemoveAt(&aBezier, (int)BaseAR_GetSize(&aBezier) - 1 , 1);
 			//内存泄漏
 			if (pPt)
 				SAFE_DELETE(pPt);
@@ -605,7 +605,7 @@ BASEGRAPH_DATARENDER_API void DividArc2Bezier(
 	// 取出前面四个点
 	for (int i = 0; i < 4; i++)
 	{
-		pptf = (point2f *)SYAR_GetAt(&aBezier, i);
+		pptf = (point2f *)BaseAR_GetAt(&aBezier, i);
 		ptfBezier[i] = *pptf;
 	}
 
@@ -617,16 +617,16 @@ BASEGRAPH_DATARENDER_API void DividArc2Bezier(
 	
 	for (int i = 0; i < 3; i++)
 	{
-		pptf = (point2f *)SYAR_GetAt(&aBezier, i);
+		pptf = (point2f *)BaseAR_GetAt(&aBezier, i);
 		*pptf = ptNew2[i];
 	}
 
 	// 用终点剪裁最后一个半圆弧
 	// 取出最后四个点
-	nSize = (int)SYAR_GetSize(&aBezier);
+	nSize = (int)BaseAR_GetSize(&aBezier);
 	for (int i = 0; i < 4; i++)
 	{
-		pptf = (point2f *)SYAR_GetAt(&aBezier, nSize - 4 + i);
+		pptf = (point2f *)BaseAR_GetAt(&aBezier, nSize - 4 + i);
 		ptfBezier[i] = *pptf;
 	}
 	
@@ -636,7 +636,7 @@ BASEGRAPH_DATARENDER_API void DividArc2Bezier(
 	
 	for (int i = 1; i < 4; i++)
 	{
-		pptf = (point2f *)SYAR_GetAt(&aBezier, nSize - 4 + i);
+		pptf = (point2f *)BaseAR_GetAt(&aBezier, nSize - 4 + i);
 		*pptf = ptNew1[i];
 	}
 }
@@ -649,7 +649,7 @@ BASEGRAPH_DATARENDER_API void DividQuarterArc2Bezier(
                     IN  const float  fRadius_a,   // 半径
                     IN  const float  fRadius_b,   // 半径
                     IN  ARCLOC       loc,        //圆弧位置
-                    OUT SYArray&     arPt
+                    OUT BaseARray&     arPt
 					   )
 {
     float fTemp = (sqrtf(2.f) - 1) * 4 / 3.f;
@@ -659,59 +659,59 @@ BASEGRAPH_DATARENDER_API void DividQuarterArc2Bezier(
     switch(loc)
     {
     case ARCLOC_RIGHTTOP:              //第一象限
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = fRadius_a + ptCenter.x;    pPt->y = ptCenter.y;
         
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = fRadius_a + ptCenter.x;    pPt->y = - b + ptCenter.y;
         
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = a + ptCenter.x;            pPt->y = - fRadius_b + ptCenter.y;
         
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = ptCenter.x;                pPt->y = - fRadius_b + ptCenter.y;
         
         break;  
     case ARCLOC_LEFTTOP:               //第二象限
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = ptCenter.x;                pPt->y = - fRadius_b + ptCenter.y;
         
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = - a + ptCenter.x;          pPt->y = - fRadius_b + ptCenter.y;
         
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = -fRadius_a + ptCenter.x;   pPt->y = -b + ptCenter.y;
         
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = -fRadius_a  + ptCenter.x;  pPt->y = ptCenter.y;
         
         break;
     case ARCLOC_LEFTBOTTOM:            //第三象限
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = -fRadius_a + ptCenter.x;   pPt->y = ptCenter.y;
         
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = -fRadius_a + ptCenter.x;   pPt->y = b + ptCenter.y;
 
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = - a + ptCenter.x;          pPt->y = fRadius_b + ptCenter.y;
         
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = ptCenter.x;                pPt->y = fRadius_b + ptCenter.y;
         
         break;
 
     case ARCLOC_RIGHTBOTTOM:           //第四象限
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = ptCenter.x;                pPt->y = fRadius_b + ptCenter.y;
 
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = a + ptCenter.x;            pPt->y = fRadius_b + ptCenter.y;
 
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = fRadius_a + ptCenter.x;    pPt->y = b + ptCenter.y;
 
-        pPt = new point2f;                   SYAR_Add(&arPt, pPt);
+        pPt = new point2f;                   BaseAR_Add(&arPt, pPt);
         pPt->x = fRadius_a + ptCenter.x;    pPt->y = ptCenter.y;
 
         break;
@@ -1097,7 +1097,7 @@ int	BASEGRAPH_DATARENDER_API arc_near_line(const point2f& ptcenter,const point2f
 
 }
 
-int BASEGRAPH_DATARENDER_API cell_makearc(SYArray* parray,const point2f& ptcenter,const point2f& ptstart,const point2f& ptend,float rad)
+int BASEGRAPH_DATARENDER_API cell_makearc(BaseARray* parray,const point2f& ptcenter,const point2f& ptstart,const point2f& ptend,float rad)
 {
 	///////////////////////////////////////////////////////// begin
 	// 有Action播放时出错。 原因在于传入此处的ptcenter并非在ptstart,ptend的垂直平分线上
@@ -1121,7 +1121,7 @@ int BASEGRAPH_DATARENDER_API cell_makearc(SYArray* parray,const point2f& ptcente
 	{
 		point2f* pptend = new point2f;
 		*pptend = ptend;
-		SYAR_Add(parray,pptend);
+		BaseAR_Add(parray,pptend);
 		return 1;
 	}
 	point2f ptmid = (ptstart + ptend)*0.5f;

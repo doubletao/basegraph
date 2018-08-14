@@ -89,7 +89,7 @@ void SYColor_FillGradLinear(IN SYColor* pColor,		// 填充颜色
 // 采用浮点颜色递归运算进行行填充
 // （1）在中间点左边时（x < m）：0.5*(c1-c0)/(m-p0) * (x-p0) + c0 = A1 * (x - B1) + C1
 // （2）在中间点右边时（y > m）：0.5*(c1-c0)/(p1-m) * (y-p1) + c1 = A2 * (y - B2) + C2
-void SYColor_FillLineSYAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
+void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
 									IN int nBufWidth,
 									IN DWORD *pdwColor,		// 单色组
 									IN float *pfPos,		// 位置组

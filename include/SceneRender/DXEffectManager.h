@@ -99,7 +99,7 @@ public:
 	void	ReleaseAll();
 	T1*	GetResource(LPCTSTR strResName);
 protected:	
-	CSYArray<T1*,T1*> m_arResPool;
+	CBaseARray<T1*,T1*> m_arResPool;
 	int  search_resource(LPCTSTR strResName);
 	int  insert_resource(T1* pResUnit);
 	CRITICAL_SECTION m_csLock;

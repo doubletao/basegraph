@@ -10,7 +10,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //hashtable
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-UINT64 __cdecl SYHash_HashStr(SYHash_key pk);			// key
+UINT64 __cdecl BaseHash_HashStr(BaseHash_key pk);			// key
 														// 素数表
 static const unsigned int PRIMES[] =
 {
@@ -26,17 +26,17 @@ static const unsigned int PRIMES[] =
 const unsigned int PRIME_TABLE_LENGTH = (int)(sizeof(PRIMES) / sizeof(PRIMES[0]));
 const float MAX_LOAD_FACTOR = 0.65f;			// 最大负载因子
 const float MIN_LOAD_FACTOR = 0.15f;			// 最小负载因子
-BOOL SYHash_Init_Int(SYHash* ph, unsigned int minsize)
+BOOL BaseHash_Init_Int(BaseHash* ph, unsigned int minsize)
 {
-	return SYHash_Init(ph, minsize, SYHash_HashInt, SYHash_EqualInt, SYHash_DuplicateInt, SYHash_FreeKeyInt, SYHash_FreeValueInt);
+	return BaseHash_Init(ph, minsize, BaseHash_HashInt, BaseHash_EqualInt, BaseHash_DuplicateInt, BaseHash_FreeKeyInt, BaseHash_FreeValueInt);
 }
-BOOL SYHash_Init(SYHash* ph,
+BOOL BaseHash_Init(BaseHash* ph,
 	unsigned int minsize,					// 表初始大小
-	UINT64(*SYHash_make)(SYHash_key),		// Hash值计算函函数
-	BOOL(*key_compare)(SYHash_key, SYHash_key),	// key 比较函数
-	SYHash_key(*key_dup)(SYHash_key),		// key 拷贝函数
-	void(*key_free)(SYHash_key),			// key 释放函数
-	void(*value_free)(SYHash_value))		// value 释放函数
+	UINT64(*BaseHash_make)(BaseHash_key),		// Hash值计算函函数
+	BOOL(*key_compare)(BaseHash_key, BaseHash_key),	// key 比较函数
+	BaseHash_key(*key_dup)(BaseHash_key),		// key 拷贝函数
+	void(*key_free)(BaseHash_key),			// key 释放函数
+	void(*value_free)(BaseHash_value))		// value 释放函数
 {
 	// 确保表不要过大
 	if (minsize > (1U << 30))
@@ -73,16 +73,16 @@ BOOL SYHash_Init(SYHash* ph,
 	ph->limit = (unsigned int)ceilf(unSize * MAX_LOAD_FACTOR);
 	ph->lower = (unsigned int)ceilf(unSize * MIN_LOAD_FACTOR);
 	// 初始化接口指针
-	ph->hashfn = (SYHash_make == NULL) ? SYHash_HashStr : SYHash_make;
-	ph->eqfn = (key_compare == NULL) ? SYHash_EqualStr : key_compare;
-	ph->dupfn = (key_dup == NULL) ? SYHash_DuplicateStr : key_dup;
-	ph->freekeyfn = (key_free == NULL) ? SYHash_FreeKeyStr : key_free;
-	ph->freevaluefn = (value_free == NULL) ? SYHash_FreeValueStr : value_free;
+	ph->hashfn = (BaseHash_make == NULL) ? BaseHash_HashStr : BaseHash_make;
+	ph->eqfn = (key_compare == NULL) ? BaseHash_EqualStr : key_compare;
+	ph->dupfn = (key_dup == NULL) ? BaseHash_DuplicateStr : key_dup;
+	ph->freekeyfn = (key_free == NULL) ? BaseHash_FreeKeyStr : key_free;
+	ph->freevaluefn = (value_free == NULL) ? BaseHash_FreeValueStr : value_free;
 
 	return TRUE;
 }
 
-BOOL __cdecl SYHash_SetPool(SYHash* ph, unsigned char*  pool, unsigned char* poolend, BOOL dupKey)
+BOOL __cdecl BaseHash_SetPool(BaseHash* ph, unsigned char*  pool, unsigned char* poolend, BOOL dupKey)
 {
 	ph->pool = pool;
 	ph->poolend = poolend;
@@ -92,14 +92,14 @@ BOOL __cdecl SYHash_SetPool(SYHash* ph, unsigned char*  pool, unsigned char* poo
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	创建新 Hash 表
 //
-// 返回值:	PSYHash			新表指针
+// 返回值:	PBaseHash			新表指针
 ///////////////////////////////////////////////////////////////////////////////
-PSYHash __cdecl SYHash_Create(unsigned int minsize,					// 表初始大小
-	UINT64(*SYHash_make)(SYHash_key),		// Hash值计算函函数
-	BOOL(*key_compare)(SYHash_key, SYHash_key),	// key 比较函数
-	SYHash_key(*key_dup)(SYHash_key),		// key 拷贝函数
-	void(*key_free)(SYHash_key),			// key 释放函数
-	void(*value_free)(SYHash_value))		// value 释放函数
+PBaseHash __cdecl BaseHash_Create(unsigned int minsize,					// 表初始大小
+	UINT64(*BaseHash_make)(BaseHash_key),		// Hash值计算函函数
+	BOOL(*key_compare)(BaseHash_key, BaseHash_key),	// key 比较函数
+	BaseHash_key(*key_dup)(BaseHash_key),		// key 拷贝函数
+	void(*key_free)(BaseHash_key),			// key 释放函数
+	void(*value_free)(BaseHash_value))		// value 释放函数
 {
 	// 确保表不要过大
 	if (minsize > (1U << 30))
@@ -117,7 +117,7 @@ PSYHash __cdecl SYHash_Create(unsigned int minsize,					// 表初始大小
 		}
 	}
 	// 创建表结构
-	PSYHash ph = (PSYHash)malloc(sizeof(SYHash));
+	PBaseHash ph = (PBaseHash)malloc(sizeof(BaseHash));
 
 	if (NULL == ph)
 		return NULL;
@@ -139,11 +139,11 @@ PSYHash __cdecl SYHash_Create(unsigned int minsize,					// 表初始大小
 	ph->poolend = NULL;
 	ph->dupkey = TRUE;
 	// 初始化接口指针
-	ph->hashfn = (SYHash_make == NULL) ? SYHash_HashStr : SYHash_make;
-	ph->eqfn = (key_compare == NULL) ? SYHash_EqualStr : key_compare;
-	ph->dupfn = (key_dup == NULL) ? SYHash_DuplicateStr : key_dup;
-	ph->freekeyfn = (key_free == NULL) ? SYHash_FreeKeyStr : key_free;
-	ph->freevaluefn = (value_free == NULL) ? SYHash_FreeValueStr : value_free;
+	ph->hashfn = (BaseHash_make == NULL) ? BaseHash_HashStr : BaseHash_make;
+	ph->eqfn = (key_compare == NULL) ? BaseHash_EqualStr : key_compare;
+	ph->dupfn = (key_dup == NULL) ? BaseHash_DuplicateStr : key_dup;
+	ph->freekeyfn = (key_free == NULL) ? BaseHash_FreeKeyStr : key_free;
+	ph->freevaluefn = (value_free == NULL) ? BaseHash_FreeValueStr : value_free;
 
 	return ph;
 }
@@ -153,8 +153,8 @@ PSYHash __cdecl SYHash_Create(unsigned int minsize,					// 表初始大小
 //
 // 返回值:	unsigned int		key 对应的 Hash 值
 ///////////////////////////////////////////////////////////////////////////////
-UINT64 __cdecl SYHash_Hash(const SYHash* ph,			// Hash 表指针
-	SYHash_key pk)			// key
+UINT64 __cdecl BaseHash_Hash(const BaseHash* ph,			// Hash 表指针
+	BaseHash_key pk)			// key
 {
 
 
@@ -173,7 +173,7 @@ UINT64 __cdecl SYHash_Hash(const SYHash* ph,			// Hash 表指针
 //
 // 返回值:	unsigned int		key 对应的 Hash 值
 ///////////////////////////////////////////////////////////////////////////////
-UINT64 __cdecl SYHash_HashStr(SYHash_key pk)			// key
+UINT64 __cdecl BaseHash_HashStr(BaseHash_key pk)			// key
 {
 	unsigned int h(0);
 	LPTSTR p = (LPTSTR)pk;
@@ -191,8 +191,8 @@ UINT64 __cdecl SYHash_HashStr(SYHash_key pk)			// key
 // 返回值:	TRUE		相等
 //			FALSE		不等
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYHash_EqualStr(SYHash_key pK1,				// key
-	SYHash_key pK2)				// key
+BOOL __cdecl BaseHash_EqualStr(BaseHash_key pK1,				// key
+	BaseHash_key pK2)				// key
 {
 	return (pK1 == pK2 || _tcscmp((LPTSTR)pK1, (LPTSTR)pK2) == 0);
 }
@@ -200,9 +200,9 @@ BOOL __cdecl SYHash_EqualStr(SYHash_key pK1,				// key
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	缺省的 key 拷贝函数（字符串）
 //
-// 返回值:	SYHash_key
+// 返回值:	BaseHash_key
 ///////////////////////////////////////////////////////////////////////////////
-SYHash_key __cdecl SYHash_DuplicateStr(SYHash_key pk)		// key
+BaseHash_key __cdecl BaseHash_DuplicateStr(BaseHash_key pk)		// key
 {
 	LPTSTR szKey = (LPTSTR)pk;
 
@@ -210,7 +210,7 @@ SYHash_key __cdecl SYHash_DuplicateStr(SYHash_key pk)		// key
 
 	_tcscpy_s(szNewKey, _tcslen(szKey) + 1, szKey);
 
-	return (SYHash_key)szNewKey;
+	return (BaseHash_key)szNewKey;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -218,7 +218,7 @@ SYHash_key __cdecl SYHash_DuplicateStr(SYHash_key pk)		// key
 //
 // 返回值:	void
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYHash_FreeKeyStr(SYHash_key pk)			// key
+void __cdecl BaseHash_FreeKeyStr(BaseHash_key pk)			// key
 {
 	free(pk);
 }
@@ -228,28 +228,28 @@ void __cdecl SYHash_FreeKeyStr(SYHash_key pk)			// key
 //
 // 返回值:	void
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYHash_FreeValueStr(SYHash_value pV)		// key
+void __cdecl BaseHash_FreeValueStr(BaseHash_value pV)		// key
 {
 	free(pV);
 }
-UINT64 __cdecl SYHash_HashInt(SYHash_key pk)			// key
+UINT64 __cdecl BaseHash_HashInt(BaseHash_key pk)			// key
 {
 	return (UINT64)pk;
 }
 
-BOOL __cdecl SYHash_EqualInt(SYHash_key pK1,				// key
-	SYHash_key pK2)				// key
+BOOL __cdecl BaseHash_EqualInt(BaseHash_key pK1,				// key
+	BaseHash_key pK2)				// key
 {
 	return pK1 == pK2;
 }
 
-SYHash_key __cdecl SYHash_DuplicateInt(SYHash_key pk)		// key
+BaseHash_key __cdecl BaseHash_DuplicateInt(BaseHash_key pk)		// key
 {
-	SYHash_key NewKey = pk;
+	BaseHash_key NewKey = pk;
 	return NewKey;
 }
 
-void __cdecl SYHash_FreeKeyInt(SYHash_key pk)			// key
+void __cdecl BaseHash_FreeKeyInt(BaseHash_key pk)			// key
 {
 }
 
@@ -258,7 +258,7 @@ void __cdecl SYHash_FreeKeyInt(SYHash_key pk)			// key
 //
 // 返回值:	void
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYHash_FreeValueInt(SYHash_value pV)		// key
+void __cdecl BaseHash_FreeValueInt(BaseHash_value pV)		// key
 {
 	free(pV);
 }
@@ -268,7 +268,7 @@ void __cdecl SYHash_FreeValueInt(SYHash_value pV)		// key
 //
 // 返回值:	unsigned int
 ///////////////////////////////////////////////////////////////////////////////
-unsigned int __cdecl SYHash_GetCount(PSYHash ph)		// Hash 表指针
+unsigned int __cdecl BaseHash_GetCount(PBaseHash ph)		// Hash 表指针
 {
 
 
@@ -278,9 +278,9 @@ unsigned int __cdecl SYHash_GetCount(PSYHash ph)		// Hash 表指针
 //////////////////////////////////////////////////////////////////////////
 // 描述：	获取第一个入口点的位置
 //
-// 返回值：	SYHash_pos
+// 返回值：	BaseHash_pos
 //////////////////////////////////////////////////////////////////////////
-SYHash_pos __cdecl SYHash_GetHeadPosition(PSYHash ph)		// Hash 表指针
+BaseHash_pos __cdecl BaseHash_GetHeadPosition(PBaseHash ph)		// Hash 表指针
 {
 
 
@@ -301,9 +301,9 @@ SYHash_pos __cdecl SYHash_GetHeadPosition(PSYHash ph)		// Hash 表指针
 //////////////////////////////////////////////////////////////////////////
 // 描述：	获取第一个入口点的数据
 //
-// 返回值：	SYHash_key / SYHash_value
+// 返回值：	BaseHash_key / BaseHash_value
 //////////////////////////////////////////////////////////////////////////
-SYHash_key __cdecl SYHash_GetHeadKey(PSYHash ph)		// Hash 表指针
+BaseHash_key __cdecl BaseHash_GetHeadKey(PBaseHash ph)		// Hash 表指针
 {
 
 
@@ -320,7 +320,7 @@ SYHash_key __cdecl SYHash_GetHeadKey(PSYHash ph)		// Hash 表指针
 	}
 	return NULL;
 }
-SYHash_value __cdecl SYHash_GetHeadValue(PSYHash ph)	// Hash 表指针
+BaseHash_value __cdecl BaseHash_GetHeadValue(PBaseHash ph)	// Hash 表指针
 {
 
 
@@ -341,10 +341,10 @@ SYHash_value __cdecl SYHash_GetHeadValue(PSYHash ph)	// Hash 表指针
 //////////////////////////////////////////////////////////////////////////
 // 描述：	获取下个位置或当前位置数据，获取数据时会自动更新位置。
 //
-// 返回值：	SYHash_pos / SYHash_key / SYHash_value
+// 返回值：	BaseHash_pos / BaseHash_key / BaseHash_value
 //////////////////////////////////////////////////////////////////////////
-SYHash_value __cdecl SYHash_GetNextPosition(PSYHash ph,			// Hash 表指针
-	SYHash_pos* pPos)		// 当前位置
+BaseHash_value __cdecl BaseHash_GetNextPosition(PBaseHash ph,			// Hash 表指针
+	BaseHash_pos* pPos)		// 当前位置
 {
 
 
@@ -370,8 +370,8 @@ SYHash_value __cdecl SYHash_GetNextPosition(PSYHash ph,			// Hash 表指针
 	*pPos = pNext;
 	return pEntry->pValue;
 }
-SYHash_key __cdecl SYHash_GetPosKey(PSYHash ph,			// Hash 表指针
-	SYHash_pos pos)		// 当前位置
+BaseHash_key __cdecl BaseHash_GetPosKey(PBaseHash ph,			// Hash 表指针
+	BaseHash_pos pos)		// 当前位置
 {
 
 
@@ -382,8 +382,8 @@ SYHash_key __cdecl SYHash_GetPosKey(PSYHash ph,			// Hash 表指针
 
 	return pEntry->pKey;
 }
-SYHash_value __cdecl SYHash_GetPosValue(PSYHash ph,			// Hash 表指针
-	SYHash_pos pos)		// 当前位置
+BaseHash_value __cdecl BaseHash_GetPosValue(PBaseHash ph,			// Hash 表指针
+	BaseHash_pos pos)		// 当前位置
 {
 
 
@@ -401,7 +401,7 @@ SYHash_value __cdecl SYHash_GetPosValue(PSYHash ph,			// Hash 表指针
 // 返回值:	TRUE			扩充成功
 //			FALSE			扩充失败
 ///////////////////////////////////////////////////////////////////////////////
-static BOOL SYHash_expand(PSYHash ph)			// Hash 表指针
+static BOOL BaseHash_expand(PBaseHash ph)			// Hash 表指针
 {
 
 
@@ -475,7 +475,7 @@ static BOOL SYHash_expand(PSYHash ph)			// Hash 表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-static void SYHash_compact(PSYHash ph)			// Hash 表指针
+static void BaseHash_compact(PBaseHash ph)			// Hash 表指针
 {
 
 
@@ -521,9 +521,9 @@ static void SYHash_compact(PSYHash ph)			// Hash 表指针
 // 返回值:	TRUE			插入成功
 //			FALSE			插入失败
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYHash_Insert(PSYHash ph,			// Hash 表指针
-	SYHash_key pk,		// key
-	SYHash_value pV)		// 绑定 key 的值
+BOOL __cdecl BaseHash_Insert(PBaseHash ph,			// Hash 表指针
+	BaseHash_key pk,		// key
+	BaseHash_value pV)		// 绑定 key 的值
 {
 
 
@@ -534,7 +534,7 @@ BOOL __cdecl SYHash_Insert(PSYHash ph,			// Hash 表指针
 	if ((++(ph->count)) > ph->limit)
 	{
 		// 如果扩充失败则下次插入时会重新扩充
-		SYHash_expand(ph);
+		BaseHash_expand(ph);
 	}
 
 	int nsize = sizeof(entry);
@@ -552,7 +552,7 @@ BOOL __cdecl SYHash_Insert(PSYHash ph,			// Hash 表指针
 		return FALSE;
 	}
 	// 计算 Hash 值及桶入口点
-	pE->unHashValue = SYHash_Hash(ph, pk);
+	pE->unHashValue = BaseHash_Hash(ph, pk);
 	unIndex = pE->unHashValue % ph->tablelen;
 	// 拷贝一份 key 进行保存，由外部释放
 	if (ph->dupkey)
@@ -570,12 +570,12 @@ BOOL __cdecl SYHash_Insert(PSYHash ph,			// Hash 表指针
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	通过 key 查找数据
 //
-// 返回值:	SYHash_value
+// 返回值:	BaseHash_value
 ///////////////////////////////////////////////////////////////////////////////
-SYHash_value SYHash_Search(const SYHash* ph,			// Hash 表指针
-	SYHash_key pk)		// key
+BaseHash_value BaseHash_Search(const BaseHash* ph,			// Hash 表指针
+	BaseHash_key pk)		// key
 {
-	UINT64 unHashValue = SYHash_Hash(ph, pk);
+	UINT64 unHashValue = BaseHash_Hash(ph, pk);
 	pentry pE = ph->table[unHashValue % ph->tablelen];
 
 	while (NULL != pE)
@@ -595,18 +595,18 @@ SYHash_value SYHash_Search(const SYHash* ph,			// Hash 表指针
 // 描述：	删除为 key 的入口点并返回相应的数据，如有必要则压缩 Hash 表的容量
 //			允许释放数据，但使用缺省函数时要小心，释放后返回 NULL
 //
-// 返回值:	SYHash_value
+// 返回值:	BaseHash_value
 ///////////////////////////////////////////////////////////////////////////////
-SYHash_value __cdecl SYHash_RemoveAt(PSYHash ph,			// Hash 表指针
-	SYHash_key pk,			// key
+BaseHash_value __cdecl BaseHash_RemoveAt(PBaseHash ph,			// Hash 表指针
+	BaseHash_key pk,			// key
 	BOOL bFreeValue)		// 释放元素值内存的标志
 {
 
 
-	UINT64 unHashValue = SYHash_Hash(ph, pk);
+	UINT64 unHashValue = BaseHash_Hash(ph, pk);
 	pentry* pPE = ph->table + unHashValue % ph->tablelen;	// 记录可能发生匹配的入口点指针的地址
 	pentry pE = *pPE;
-	SYHash_value pV = NULL;
+	BaseHash_value pV = NULL;
 
 	while (NULL != pE)
 	{
@@ -629,7 +629,7 @@ SYHash_value __cdecl SYHash_RemoveAt(PSYHash ph,			// Hash 表指针
 				free(pE);
 			if (ph->count < ph->lower)
 			{
-				SYHash_compact(ph);
+				BaseHash_compact(ph);
 			}
 			return pV;
 		}
@@ -644,7 +644,7 @@ SYHash_value __cdecl SYHash_RemoveAt(PSYHash ph,			// Hash 表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYHash_RemoveAll(PSYHash ph,			// Hash 表指针
+void __cdecl BaseHash_RemoveAll(PBaseHash ph,			// Hash 表指针
 	BOOL bFreeValue)		// 释放元素值内存的标志
 {
 	if (ph == NULL)
@@ -696,7 +696,7 @@ void __cdecl SYHash_RemoveAll(PSYHash ph,			// Hash 表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYHash_Release(PSYHash ph,				// Hash 表指针
+void __cdecl BaseHash_Release(PBaseHash ph,				// Hash 表指针
 	BOOL bFreeValue)			// 释放元素值内存的标志
 {
 	if (ph == NULL)
@@ -743,30 +743,30 @@ void __cdecl SYHash_Release(PSYHash ph,				// Hash 表指针
 	//free(ph);
 }
 
-void __cdecl SYHash_Delete(PSYHash ph,				// Hash 表指针
+void __cdecl BaseHash_Delete(PBaseHash ph,				// Hash 表指针
 	BOOL bFreeValue)			// 释放元素值内存的标志
 {
 	if (!ph)
 		return;
-	SYHash_Release(ph, bFreeValue);
+	BaseHash_Release(ph, bFreeValue);
 	free(ph);
 }
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	更改绑定 key 的值并返回原值
 //			允许释放数据，但使用缺省函数时要小心，释放后返回 NULL
 //
-// 返回值:	SYHash_value
+// 返回值:	BaseHash_value
 ///////////////////////////////////////////////////////////////////////////////
-SYHash_value __cdecl SYHash_ChangeValue(PSYHash ph,		// Hash 表指针
-	SYHash_key pk,		// key
-	SYHash_value pV,	// 欲更改的值
+BaseHash_value __cdecl BaseHash_ChangeValue(PBaseHash ph,		// Hash 表指针
+	BaseHash_key pk,		// key
+	BaseHash_value pV,	// 欲更改的值
 	BOOL bFreeValue)	// 释放元素值内存的标志
 {
 
 
-	UINT64 unHashValue = SYHash_Hash(ph, pk);
+	UINT64 unHashValue = BaseHash_Hash(ph, pk);
 	pentry pE = ph->table[unHashValue % ph->tablelen];
-	SYHash_value pTmpV = NULL;
+	BaseHash_value pTmpV = NULL;
 
 	while (NULL != pE)
 	{
@@ -808,7 +808,7 @@ void* __cdecl pool_malloc(unsigned char** pool, int size, BOOL bfromsystem)
 //
 // 返回值:	phtable			新表指针
 ///////////////////////////////////////////////////////////////////////////////
-phtable __cdecl SYHTable_Create(UINT maxsize)		// 数组空间大小
+phtable __cdecl BseeHTable_Create(UINT maxsize)		// 数组空间大小
 {
 	phtable p = (phtable)malloc(sizeof(htable));
 
@@ -817,13 +817,13 @@ phtable __cdecl SYHTable_Create(UINT maxsize)		// 数组空间大小
 		memset(p, 0, sizeof(htable));
 		if (maxsize > 0)
 		{
-			p->eles = (SYHTable_ele_ptr)malloc(sizeof(SYHTable_element) * maxsize);
+			p->eles = (BseeHTable_ele_ptr)malloc(sizeof(BseeHTable_element) * maxsize);
 			if (NULL == p->eles)
 			{
 				free(p);
 				return NULL;
 			}
-			memset(p->eles, 0, sizeof(SYHTable_element) * maxsize);
+			memset(p->eles, 0, sizeof(BseeHTable_element) * maxsize);
 			p->maxsize = maxsize;
 		}
 	}
@@ -835,7 +835,7 @@ phtable __cdecl SYHTable_Create(UINT maxsize)		// 数组空间大小
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYHTable_Delete(phtable pHT)
+void __cdecl BseeHTable_Delete(phtable pHT)
 {
 	if (pHT->eles != NULL)
 	{
@@ -843,7 +843,7 @@ void __cdecl SYHTable_Delete(phtable pHT)
 	}
 	free(pHT);
 }
-void __cdecl SYHTable_Release(phtable pHT)			// 表指针
+void __cdecl BseeHTable_Release(phtable pHT)			// 表指针
 {
 	if (pHT->eles != NULL)
 	{
@@ -857,33 +857,33 @@ void __cdecl SYHTable_Release(phtable pHT)			// 表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYHTable_Init(phtable p)			// 表指针
+void __cdecl BseeHTable_Init(phtable p)			// 表指针
 {
 	memset(p, 0, sizeof(htable));
 }
 
-void __cdecl SYHTable_SetSize(phtable p,		// 表指针
+void __cdecl BseeHTable_SetSize(phtable p,		// 表指针
 	UINT nMaxSize)		// 数组大小
 {
 	if (p->maxsize == 0)	// 原来没有元素
 	{
-		p->eles = (SYHTable_ele_ptr)malloc(sizeof(SYHTable_element) * nMaxSize);
+		p->eles = (BseeHTable_ele_ptr)malloc(sizeof(BseeHTable_element) * nMaxSize);
 		if (NULL == p->eles)
 			return;
 
-		memset(p->eles, 0, sizeof(SYHTable_element)*nMaxSize);
+		memset(p->eles, 0, sizeof(BseeHTable_element)*nMaxSize);
 		p->maxsize = nMaxSize;
 	}
 	else	// 扩充原来的数组
 	{
-		SYHTable_ele_ptr pTmpAr = (SYHTable_ele_ptr)malloc(sizeof(SYHTable_element) * nMaxSize);
+		BseeHTable_ele_ptr pTmpAr = (BseeHTable_ele_ptr)malloc(sizeof(BseeHTable_element) * nMaxSize);
 
 		if (NULL == pTmpAr)
 			return;
 
 		// 移动数据
-		memcpy(pTmpAr, p->eles, sizeof(SYHTable_element) * p->count);
-		memset((pTmpAr + p->count), 0, sizeof(SYHTable_element) * (nMaxSize - p->count));
+		memcpy(pTmpAr, p->eles, sizeof(BseeHTable_element) * p->count);
+		memset((pTmpAr + p->count), 0, sizeof(BseeHTable_element) * (nMaxSize - p->count));
 		free(p->eles);
 		p->eles = pTmpAr;
 		p->maxsize = nMaxSize;
@@ -896,7 +896,7 @@ void __cdecl SYHTable_SetSize(phtable p,		// 表指针
 // 返回值:	TRUE			是
 //			FALSE			否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYHTable_IsFull(phtable p)			// 表指针
+BOOL __cdecl BseeHTable_IsFull(phtable p)			// 表指针
 {
 	return (p->count == p->maxsize);
 }
@@ -907,7 +907,7 @@ BOOL __cdecl SYHTable_IsFull(phtable p)			// 表指针
 // 返回值:	TRUE			是
 //			FALSE			否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYHTable_IsEmpty(phtable p)			// 表指针
+BOOL __cdecl BseeHTable_IsEmpty(phtable p)			// 表指针
 {
 	return (p->count == 0);
 }
@@ -917,7 +917,7 @@ BOOL __cdecl SYHTable_IsEmpty(phtable p)			// 表指针
 //
 // 返回值:	UINT
 ///////////////////////////////////////////////////////////////////////////////
-UINT __cdecl SYHTable_GetCount(phtable p)			// 表指针
+UINT __cdecl BseeHTable_GetCount(phtable p)			// 表指针
 {
 	return p->count;
 }
@@ -927,8 +927,8 @@ UINT __cdecl SYHTable_GetCount(phtable p)			// 表指针
 //
 // 返回值:	UINT
 ///////////////////////////////////////////////////////////////////////////////
-UINT __cdecl SYHTable_Insert(phtable p,				// 表指针
-	SYHTable_element e)			// 待插入的数据
+UINT __cdecl BseeHTable_Insert(phtable p,				// 表指针
+	BseeHTable_element e)			// 待插入的数据
 {
 	if (p->count < p->maxsize)
 	{
@@ -946,21 +946,21 @@ UINT __cdecl SYHTable_Insert(phtable p,				// 表指针
 	else		// Expand the table size automatically.
 	{
 		UINT newMaxSize = p->maxsize > 0 ? (p->maxsize << 1) : 1;
-		SYHTable_SetSize(p, newMaxSize);
+		BseeHTable_SetSize(p, newMaxSize);
 		p->eles[p->count] = e;
 		p->count++;
 
 		return p->count;
 	}
-	return SYHTable_null;
+	return BseeHTable_null;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	获取某个句柄的数据
 //
-// 返回值:	SYHTable_element
+// 返回值:	BseeHTable_element
 ///////////////////////////////////////////////////////////////////////////////
-SYHTable_element __cdecl SYHTable_GetAt(phtable p,			// 表指针
+BseeHTable_element __cdecl BseeHTable_GetAt(phtable p,			// 表指针
 	UINT nIndex)			// 句柄
 {
 	if ((p == NULL) || (p->eles == NULL) || (nIndex <= 0) || (nIndex > p->maxsize))
@@ -972,12 +972,12 @@ SYHTable_element __cdecl SYHTable_GetAt(phtable p,			// 表指针
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	删除某个句柄并返回数据
 //
-// 返回值:	SYHTable_element
+// 返回值:	BseeHTable_element
 ///////////////////////////////////////////////////////////////////////////////
-SYHTable_element __cdecl SYHTable_RemoveAt(phtable p,		// 表指针
+BseeHTable_element __cdecl BseeHTable_RemoveAt(phtable p,		// 表指针
 	UINT nIndex)		// 位置
 {
-	SYHTable_element e = p->eles[nIndex - 1];
+	BseeHTable_element e = p->eles[nIndex - 1];
 
 	p->eles[nIndex - 1] = NULL;
 	p->count--;
@@ -990,22 +990,22 @@ SYHTable_element __cdecl SYHTable_RemoveAt(phtable p,		// 表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYHTable_RemoveAll(phtable p)			// 表指针
+void __cdecl BseeHTable_RemoveAll(phtable p)			// 表指针
 {
-	memset(p->eles, 0, sizeof(SYHTable_element)*p->maxsize);
+	memset(p->eles, 0, sizeof(BseeHTable_element)*p->maxsize);
 	p->count = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	设置某个句柄的数据值并返回原值
 //
-// 返回值:	SYHTable_element
+// 返回值:	BseeHTable_element
 ///////////////////////////////////////////////////////////////////////////////
-SYHTable_element __cdecl SYHTable_SetAt(phtable p,			// 表指针
+BseeHTable_element __cdecl BseeHTable_SetAt(phtable p,			// 表指针
 	UINT nIndex,			// 句柄
-	SYHTable_element e)		// 数据
+	BseeHTable_element e)		// 数据
 {
-	SYHTable_element tmpE = p->eles[nIndex - 1];
+	BseeHTable_element tmpE = p->eles[nIndex - 1];
 	p->eles[nIndex - 1] = e;
 	return tmpE;
 }
@@ -1013,10 +1013,10 @@ SYHTable_element __cdecl SYHTable_SetAt(phtable p,			// 表指针
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	哈希表中的有效句柄遍历
 //
-// 返回值:	UINT / SYHTable_element
+// 返回值:	UINT / BseeHTable_element
 ///////////////////////////////////////////////////////////////////////////////
 // 得到第一个有效的句柄
-UINT __cdecl SYHTable_GetFirstValid(phtable p)		// 表指针
+UINT __cdecl BseeHTable_GetFirstValid(phtable p)		// 表指针
 {
 	if (p->count > 0)
 	{
@@ -1028,15 +1028,15 @@ UINT __cdecl SYHTable_GetFirstValid(phtable p)		// 表指针
 			}
 		}
 	}
-	return SYHTable_null;
+	return BseeHTable_null;
 }
 // 遍历下一个有效的句柄
-SYHTable_element __cdecl SYHTable_GetNextValid(phtable p,		// 表指针
+BseeHTable_element __cdecl BseeHTable_GetNextValid(phtable p,		// 表指针
 	UINT *pnIndex)	// 句柄
 {
 	UINT i = *pnIndex;
 
-	*pnIndex = SYHTable_null;
+	*pnIndex = BseeHTable_null;
 	if (p->count > 0)
 	{
 		for (; i<p->maxsize; i++)
@@ -1061,9 +1061,9 @@ SYHTable_element __cdecl SYHTable_GetNextValid(phtable p,		// 表指针
 // 返回值：	NULL		创建失败（内存不足）
 //			pA			创建的空数组的指针
 ///////////////////////////////////////////////////////////////////////////////
-LPSYARRAY __cdecl SYAR_Create()
+LPBaseARRAY __cdecl BaseAR_Create()
 {
-	LPSYARRAY pA = (LPSYARRAY)malloc((size_t)sizeof(SYArray));
+	LPBaseARRAY pA = (LPBaseARRAY)malloc((size_t)sizeof(BaseARray));
 
 	if (pA != NULL)
 	{
@@ -1077,29 +1077,29 @@ LPSYARRAY __cdecl SYAR_Create()
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	初始化一个空数组
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_Init(LPSYARRAY pA)			// 数组结构指针
+int __cdecl BaseAR_Init(LPBaseARRAY pA)			// 数组结构指针
 {
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
-	memset(pA, 0, sizeof(SYArray));
+	memset(pA, 0, sizeof(BaseARray));
 
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	删除一个数组
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_Release(LPSYARRAY pA)			// 数组结构指针
+int __cdecl BaseAR_Release(LPBaseARRAY pA)			// 数组结构指针
 {
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (pA->m_pData != NULL)
 	{
@@ -1107,30 +1107,30 @@ int __cdecl SYAR_Release(LPSYARRAY pA)			// 数组结构指针
 	}
 	free(pA);
 
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	实现数组大小的设定
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_INVALID_PARAM	无效参数
-//			SYAR_MEMORY_ERROR	内存错误
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_INVALID_PARAM	无效参数
+//			BaseAR_MEMORY_ERROR	内存错误
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_SetSize(LPSYARRAY pA,			// 数组结构指针
+int __cdecl BaseAR_SetSize(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR nNewSize,		// 新的数组大小
 	INT_PTR nGrowBy)		// 需要增大数组时增加的元素个数
 {
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (nNewSize < 0)
-		return SYAR_INVALID_PARAM;
+		return BaseAR_INVALID_PARAM;
 
 	size_t nAllocSize(0);
 	INT_PTR nNewMax(0);
-	SYAR_ELE_PTR pNewData = NULL;
+	BaseAR_ELE_PTR pNewData = NULL;
 
 	if (nGrowBy >= 0)
 	{
@@ -1151,10 +1151,10 @@ int __cdecl SYAR_SetSize(LPSYARRAY pA,			// 数组结构指针
 	{
 		// 申请足够的空间来满足 nNewSize 或 m_nGrowBy 的要求
 		nNewMax = (nNewSize > pA->m_nGrowBy) ? nNewSize : pA->m_nGrowBy;
-		nAllocSize = (size_t)nNewMax * SYAR_ELE_LEN;
-		pA->m_pData = (SYAR_ELE_PTR)malloc(nAllocSize);
+		nAllocSize = (size_t)nNewMax * BaseAR_ELE_LEN;
+		pA->m_pData = (BaseAR_ELE_PTR)malloc(nAllocSize);
 		if (pA->m_pData == NULL)
-			return SYAR_MEMORY_ERROR;
+			return BaseAR_MEMORY_ERROR;
 
 		memset((void*)pA->m_pData, 0, nAllocSize);
 		pA->m_nSize = nNewSize;
@@ -1168,7 +1168,7 @@ int __cdecl SYAR_SetSize(LPSYARRAY pA,			// 数组结构指针
 			// 初始化要扩展的元素空间
 			memset((void*)(pA->m_pData + pA->m_nSize),
 				0,
-				(size_t)(nNewSize - pA->m_nSize) * SYAR_ELE_LEN);
+				(size_t)(nNewSize - pA->m_nSize) * BaseAR_ELE_LEN);
 		}
 		pA->m_nSize = nNewSize;
 	}
@@ -1187,42 +1187,42 @@ int __cdecl SYAR_SetSize(LPSYARRAY pA,			// 数组结构指针
 		nNewMax = (nNewMax > nNewSize) ? nNewMax : nNewSize;
 		//////assert(nNewMax >= pA->m_nMaxSize);
 		// 重新申请内存并拷贝数据
-		pNewData = (SYAR_ELE_PTR)malloc((size_t)nNewMax * SYAR_ELE_LEN);
+		pNewData = (BaseAR_ELE_PTR)malloc((size_t)nNewMax * BaseAR_ELE_LEN);
 		if (pNewData == NULL)
-			return SYAR_MEMORY_ERROR;
+			return BaseAR_MEMORY_ERROR;
 
 		memcpy((void*)pNewData,
 			(void*)pA->m_pData,
-			(size_t)pA->m_nSize * SYAR_ELE_LEN);
+			(size_t)pA->m_nSize * BaseAR_ELE_LEN);
 		memset((void*)(pNewData + pA->m_nSize),
 			0,
-			(size_t)(nNewSize - pA->m_nSize) * SYAR_ELE_LEN);
+			(size_t)(nNewSize - pA->m_nSize) * BaseAR_ELE_LEN);
 		free(pA->m_pData);
 		pA->m_pData = pNewData;
 		pA->m_nSize = nNewSize;
 		pA->m_nMaxSize = nNewMax;
 	}
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	获取数组大小
 //
 // 返回值：	m_nSize			数组大小
-//			SYAR_NULL		pA == NULL
+//			BaseAR_NULL		pA == NULL
 ///////////////////////////////////////////////////////////////////////////////
-INT_PTR	__cdecl SYAR_GetSize(const SYArray* pA)		// 数组结构指针
+INT_PTR	__cdecl BaseAR_GetSize(const BaseARray* pA)		// 数组结构指针
 {
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	return pA->m_nSize;
 }
 
-int	__cdecl SYAR_GetCount(const SYArray* pA)		// 数组结构指针
+int	__cdecl BaseAR_GetCount(const BaseARray* pA)		// 数组结构指针
 {
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	return (int)pA->m_nSize;
 }
@@ -1231,13 +1231,13 @@ int	__cdecl SYAR_GetCount(const SYArray* pA)		// 数组结构指针
 // 描述：	获取数组的上界
 //
 // 返回值：	m_nSize-1		数组上界
-//			SYAR_NULL		pA == NULL
-//			SYAR_EMPTY		空数组（-1）
+//			BaseAR_NULL		pA == NULL
+//			BaseAR_EMPTY		空数组（-1）
 ///////////////////////////////////////////////////////////////////////////////
-INT_PTR	__cdecl SYAR_GetUpperBound(LPSYARRAY pA)	// 数组结构指针
+INT_PTR	__cdecl BaseAR_GetUpperBound(LPBaseARRAY pA)	// 数组结构指针
 {
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	return (pA->m_nSize - 1);
 }
@@ -1248,7 +1248,7 @@ INT_PTR	__cdecl SYAR_GetUpperBound(LPSYARRAY pA)	// 数组结构指针
 // 返回值：	TRUE		为空
 //			FALSE		不为空
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYAR_IsEmpty(LPSYARRAY pA)			// 数组结构指针
+BOOL __cdecl BaseAR_IsEmpty(LPBaseARRAY pA)			// 数组结构指针
 {
 	return (pA == NULL || pA->m_pData == NULL);
 }
@@ -1256,29 +1256,29 @@ BOOL __cdecl SYAR_IsEmpty(LPSYARRAY pA)			// 数组结构指针
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	释放超越上界的元素的内存
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_MEMORY_ERROR	内存错误
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_MEMORY_ERROR	内存错误
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_FreeExtra(LPSYARRAY pA)		// 数组结构指针
+int __cdecl BaseAR_FreeExtra(LPBaseARRAY pA)		// 数组结构指针
 {
 	//////assert(pA != NULL);
 
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (pA->m_nSize < pA->m_nMaxSize)
 	{
-		SYAR_ELE_PTR pNewData = NULL;
+		BaseAR_ELE_PTR pNewData = NULL;
 
 		if (pA->m_nSize != 0)
 		{
-			size_t nAllocSize = (size_t)pA->m_nSize * SYAR_ELE_LEN;
+			size_t nAllocSize = (size_t)pA->m_nSize * BaseAR_ELE_LEN;
 
 			// 重新申请内存并拷贝数据
-			pNewData = (SYAR_ELE_PTR)malloc(nAllocSize);
+			pNewData = (BaseAR_ELE_PTR)malloc(nAllocSize);
 			if (pNewData == NULL)
-				return SYAR_MEMORY_ERROR;
+				return BaseAR_MEMORY_ERROR;
 
 			memcpy((void*)pNewData, (void*)pA->m_pData, nAllocSize);
 		}
@@ -1287,21 +1287,21 @@ int __cdecl SYAR_FreeExtra(LPSYARRAY pA)		// 数组结构指针
 		pA->m_pData = pNewData;
 		pA->m_nMaxSize = pA->m_nSize;
 	}
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	释放所有元素的内存
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_RemoveAll(LPSYARRAY pA)		// 数组结构指针
+int __cdecl BaseAR_RemoveAll(LPBaseARRAY pA)		// 数组结构指针
 {
 	//////assert(pA != NULL);
 
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (pA->m_pData != NULL)
 	{
@@ -1309,16 +1309,16 @@ int __cdecl SYAR_RemoveAll(LPSYARRAY pA)		// 数组结构指针
 		pA->m_pData = NULL;
 		pA->m_nMaxSize = pA->m_nSize = 0;
 	}
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	获取数据指针
 //
 // 返回值：	NULL			pA == NULL
-//			SYAR_ELE_PTR	当前数据指针
+//			BaseAR_ELE_PTR	当前数据指针
 ///////////////////////////////////////////////////////////////////////////////
-SYAR_ELE_PTR __cdecl SYAR_GetData(LPSYARRAY pA)		// 数组结构指针
+BaseAR_ELE_PTR __cdecl BaseAR_GetData(LPBaseARRAY pA)		// 数组结构指针
 {
 	//////assert(pA != NULL);
 
@@ -1331,9 +1331,9 @@ SYAR_ELE_PTR __cdecl SYAR_GetData(LPSYARRAY pA)		// 数组结构指针
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	获取某一元素
 //
-// 返回值：	SYAR_ELEMENT		索引元素数据
+// 返回值：	BaseAR_ELEMENT		索引元素数据
 ///////////////////////////////////////////////////////////////////////////////
-SYAR_ELEMENT __cdecl SYAR_GetAt(const SYArray* pA,		// 数组结构指针
+BaseAR_ELEMENT __cdecl BaseAR_GetAt(const BaseARray* pA,		// 数组结构指针
 	INT_PTR nIndex)		// 元素索引号
 {
 	//////assert(pA != NULL);
@@ -1348,11 +1348,11 @@ SYAR_ELEMENT __cdecl SYAR_GetAt(const SYArray* pA,		// 数组结构指针
 // 描述：	设置某一非越界元素的值
 //
 // 返回值：	NULL				失败
-//			SYAR_ELEMENT		旧元素数据
+//			BaseAR_ELEMENT		旧元素数据
 ///////////////////////////////////////////////////////////////////////////////
-SYAR_ELEMENT __cdecl SYAR_SetAt(LPSYARRAY pA,				// 数组结构指针
+BaseAR_ELEMENT __cdecl BaseAR_SetAt(LPBaseARRAY pA,				// 数组结构指针
 	INT_PTR nIndex,				// 元素索引号
-	SYAR_ELEMENT newData)		// 预设元素值
+	BaseAR_ELEMENT newData)		// 预设元素值
 {
 	//////assert(pA != NULL);
 	//////assert(nIndex >= 0 && nIndex < pA->m_nSize);
@@ -1360,7 +1360,7 @@ SYAR_ELEMENT __cdecl SYAR_SetAt(LPSYARRAY pA,				// 数组结构指针
 	if (pA == NULL || nIndex < 0 || nIndex >= pA->m_nSize)
 		return NULL;
 
-	SYAR_ELEMENT oldData = pA->m_pData[nIndex];
+	BaseAR_ELEMENT oldData = pA->m_pData[nIndex];
 
 	pA->m_pData[nIndex] = newData;
 
@@ -1371,18 +1371,18 @@ SYAR_ELEMENT __cdecl SYAR_SetAt(LPSYARRAY pA,				// 数组结构指针
 // 描述：	在数组尾扩充添加一个元素
 //
 // 返回值：	索引			添加成功
-//			SYAR_NULL		空指针
-//			SYAR_FAILED		失败
+//			BaseAR_NULL		空指针
+//			BaseAR_FAILED		失败
 ///////////////////////////////////////////////////////////////////////////////
-INT_PTR __cdecl SYAR_Add(LPSYARRAY pA,				// 数组结构指针
-	SYAR_ELEMENT newData)		// 预设元素值
+INT_PTR __cdecl BaseAR_Add(LPBaseARRAY pA,				// 数组结构指针
+	BaseAR_ELEMENT newData)		// 预设元素值
 {
 	//////assert(pA != NULL);
 
-	INT_PTR nRet = (INT_PTR)SYAR_SetSize(pA, pA->m_nSize + 1, -1);
+	INT_PTR nRet = (INT_PTR)BaseAR_SetSize(pA, pA->m_nSize + 1, -1);
 
-	if (nRet != SYAR_SUCCESS)
-		return SYAR_FAILED;
+	if (nRet != BaseAR_SUCCESS)
+		return BaseAR_FAILED;
 
 	nRet = pA->m_nSize - 1;
 	pA->m_pData[nRet] = newData;
@@ -1393,94 +1393,94 @@ INT_PTR __cdecl SYAR_Add(LPSYARRAY pA,				// 数组结构指针
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	在数组尾扩充添加另一个数组
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_FAILED			失败
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_FAILED			失败
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_Append(LPSYARRAY pA,			// 数组结构指针
-	LPSYARRAY pSrc)			// 预添加的数组
+int __cdecl BaseAR_Append(LPBaseARRAY pA,			// 数组结构指针
+	LPBaseARRAY pSrc)			// 预添加的数组
 {
 	//////assert(pA != NULL && pA != pSrc && pSrc != NULL);
 
 	if (pA == NULL || pSrc == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (pA == pSrc)
-		return SYAR_FAILED;
+		return BaseAR_FAILED;
 
 	INT_PTR nOldSize = pA->m_nSize;
 
-	if (SYAR_SetSize(pA, nOldSize + pSrc->m_nSize, -1) != SYAR_SUCCESS)
-		return SYAR_FAILED;
+	if (BaseAR_SetSize(pA, nOldSize + pSrc->m_nSize, -1) != BaseAR_SUCCESS)
+		return BaseAR_FAILED;
 
 	memcpy((void*)(pA->m_pData + nOldSize),
 		(void*)pSrc->m_pData,
-		(size_t)pSrc->m_nSize * SYAR_ELE_LEN);
+		(size_t)pSrc->m_nSize * BaseAR_ELE_LEN);
 
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	复制另一个数组的内容
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_FAILED			失败
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_FAILED			失败
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_Copy(LPSYARRAY pA,			// 数组结构指针
-	LPSYARRAY pSrc)		// 预复制的数组
+int __cdecl BaseAR_Copy(LPBaseARRAY pA,			// 数组结构指针
+	LPBaseARRAY pSrc)		// 预复制的数组
 {
 	//////assert(pA != NULL && pA != pSrc && pSrc != NULL);
 
 	if (pA == NULL || pSrc == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (pA == pSrc)
-		return SYAR_FAILED;
+		return BaseAR_FAILED;
 
-	if (SYAR_SetSize(pA, pSrc->m_nSize, -1) != SYAR_SUCCESS)
+	if (BaseAR_SetSize(pA, pSrc->m_nSize, -1) != BaseAR_SUCCESS)
 		return FALSE;
 
 	memcpy((void*)(pA->m_pData),
 		(void*)pSrc->m_pData,
-		(size_t)pSrc->m_nSize * SYAR_ELE_LEN);
+		(size_t)pSrc->m_nSize * BaseAR_ELE_LEN);
 
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	在某一非越界元素前或者最后一个元素后插入几个新元素
 //
 // 返回值：	索引				最后一个插入的元素
-//			SYAR_NULL			空指针
-//			SYAR_FAILED			失败
-//			SYAR_INVALID_PARAM	无效参数
+//			BaseAR_NULL			空指针
+//			BaseAR_FAILED			失败
+//			BaseAR_INVALID_PARAM	无效参数
 ///////////////////////////////////////////////////////////////////////////////
-INT_PTR __cdecl SYAR_InsertAt(LPSYARRAY pA,				// 数组结构指针
+INT_PTR __cdecl BaseAR_InsertAt(LPBaseARRAY pA,				// 数组结构指针
 	INT_PTR nIndex,			// 元素索引号
-	SYAR_ELEMENT newData,		// 预插入元素值
+	BaseAR_ELEMENT newData,		// 预插入元素值
 	INT_PTR nCount)			// 预插入的元素个数
 {
 	//////assert(pA != NULL);
 	//////assert((nIndex >= 0) && (nCount > 0));
 
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if ((nIndex < 0) || (nCount <= 0))
-		return SYAR_INVALID_PARAM;
+		return BaseAR_INVALID_PARAM;
 
 	if (nIndex < pA->m_nSize)		// 非越界元素前
 	{
 		INT_PTR nOldSize = pA->m_nSize;
 
-		if (SYAR_SetSize(pA, nOldSize + nCount, -1) != SYAR_SUCCESS)
-			return SYAR_FAILED;
+		if (BaseAR_SetSize(pA, nOldSize + nCount, -1) != BaseAR_SUCCESS)
+			return BaseAR_FAILED;
 
 		// 移动后面的元素
 		memmove((void*)(pA->m_pData + nIndex + nCount),
 			(void*)(pA->m_pData + nIndex),
-			(size_t)(nOldSize - nIndex) * SYAR_ELE_LEN);
+			(size_t)(nOldSize - nIndex) * BaseAR_ELE_LEN);
 		// 循环设置新元素值
 		while (nCount--)
 		{
@@ -1489,13 +1489,13 @@ INT_PTR __cdecl SYAR_InsertAt(LPSYARRAY pA,				// 数组结构指针
 		return (nIndex - 1);
 	}
 	// 否则在最后一个元素后
-	nIndex = SYAR_Add(pA, newData);
+	nIndex = BaseAR_Add(pA, newData);
 	if (nIndex < 0)
-		return SYAR_FAILED;
+		return BaseAR_FAILED;
 
 	nCount--;
 	if (nCount > 0)		// 如果添加多个，则在添加后进行插入，减少数组的扩大次数
-		return SYAR_InsertAt(pA, nIndex, newData, nCount);
+		return BaseAR_InsertAt(pA, nIndex, newData, nCount);
 
 	return nIndex;
 }
@@ -1503,47 +1503,47 @@ INT_PTR __cdecl SYAR_InsertAt(LPSYARRAY pA,				// 数组结构指针
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	在某一非越界元素前或者最后一个元素后插入一个数组
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_FAILED			失败
-//			SYAR_INVALID_PARAM	无效参数
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_FAILED			失败
+//			BaseAR_INVALID_PARAM	无效参数
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_InsertArrayAt(LPSYARRAY pA,			// 数组结构指针
+int __cdecl BaseAR_InsertArrayAt(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR nIndex,			// 元素索引号
-	LPSYARRAY pSrc)			// 预插入数组
+	LPBaseARRAY pSrc)			// 预插入数组
 {
 	if (pA == NULL || pSrc == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (pA == pSrc || nIndex < 0)
-		return SYAR_INVALID_PARAM;
+		return BaseAR_INVALID_PARAM;
 
 	if (nIndex < pA->m_nSize)	// 非越界元素前
 	{
 		// 先扩充数组大小
-		if (SYAR_InsertAt(pA, nIndex, pSrc->m_pData[0], pSrc->m_nSize) < 0)
-			return SYAR_FAILED;
+		if (BaseAR_InsertAt(pA, nIndex, pSrc->m_pData[0], pSrc->m_nSize) < 0)
+			return BaseAR_FAILED;
 
 		// 逐个填充新元素
 		for (INT_PTR i = 1; i<pSrc->m_nSize; i++)
 		{
 			pA->m_pData[++nIndex] = pSrc->m_pData[i];
 		}
-		return SYAR_SUCCESS;
+		return BaseAR_SUCCESS;
 	}
 	// 否则在最后一个元素后
-	return SYAR_Append(pA, pSrc);
+	return BaseAR_Append(pA, pSrc);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	从某一非越界元素开始删除几个元素
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_FAILED			失败
-//			SYAR_INVALID_PARAM	无效参数
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_FAILED			失败
+//			BaseAR_INVALID_PARAM	无效参数
 ///////////////////////////////////////////////////////////////////////////////
-SYAR_ELEMENT __cdecl SYAR_RemoveAt(LPSYARRAY pA,			// 数组结构指针
+BaseAR_ELEMENT __cdecl BaseAR_RemoveAt(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR nIndex,		// 元素索引号
 	INT_PTR nCount)		// 预删除的元素个数
 {
@@ -1554,18 +1554,18 @@ SYAR_ELEMENT __cdecl SYAR_RemoveAt(LPSYARRAY pA,			// 数组结构指针
 		return NULL;
 
 	INT_PTR nMoveCount = pA->m_nSize - (nIndex + nCount);
-	SYAR_ELEMENT e = NULL;
+	BaseAR_ELEMENT e = NULL;
 	if (nMoveCount > 0)		// 如果需要移动的数量为 0 说明需要删除最后几个元素
 	{
-		e = SYAR_GetAt(pA, nIndex);
+		e = BaseAR_GetAt(pA, nIndex);
 		memmove((void*)(pA->m_pData + nIndex),
 			(void*)(pA->m_pData + nIndex + nCount),
-			(size_t)nMoveCount * SYAR_ELE_LEN);
+			(size_t)nMoveCount * BaseAR_ELE_LEN);
 		pA->m_nSize -= nCount;
 	}
 	else	// Remove all the data after "nIndex" (include "nIndex").
 	{
-		e = SYAR_GetAt(pA, nIndex);
+		e = BaseAR_GetAt(pA, nIndex);
 		pA->m_nSize = nIndex;
 
 	}
@@ -1575,43 +1575,43 @@ SYAR_ELEMENT __cdecl SYAR_RemoveAt(LPSYARRAY pA,			// 数组结构指针
 //////////////////////////////////////////////////////////////////////////
 // 描述：	交换两个非越界元素的值
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_INVALID_PARAM	无效参数
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_INVALID_PARAM	无效参数
 //////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_Swap(LPSYARRAY pA,			// 数组结构指针
+int __cdecl BaseAR_Swap(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR i,			// 元素索引号
 	INT_PTR j)
 {
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (i < 0 || j < 0 || i >= pA->m_nSize || j >= pA->m_nSize)
-		return SYAR_INVALID_PARAM;
+		return BaseAR_INVALID_PARAM;
 
-	SYAR_ELEMENT tmpData = pA->m_pData[j];
+	BaseAR_ELEMENT tmpData = pA->m_pData[j];
 
 	pA->m_pData[j] = pA->m_pData[i];
 	pA->m_pData[i] = tmpData;
 
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 描述：	翻转数组
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
 //////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_Reverse(LPSYARRAY pA)		// 数组结构指针
+int __cdecl BaseAR_Reverse(LPBaseARRAY pA)		// 数组结构指针
 {
 	if (pA != NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (pA->m_nSize > 1)	// 多于一个元素时才需要翻转
 	{
 		INT_PTR nHalfSize = (pA->m_nSize >> 1);
-		SYAR_ELEMENT tmpData = NULL;
+		BaseAR_ELEMENT tmpData = NULL;
 
 		for (INT_PTR i = 0, j = (pA->m_nSize - i - 1); i<nHalfSize; i++, j--)
 		{
@@ -1620,13 +1620,13 @@ int __cdecl SYAR_Reverse(LPSYARRAY pA)		// 数组结构指针
 			pA->m_pData[i] = tmpData;
 		}
 	}
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
-int __cdecl SYAR_Clear(LPSYARRAY par)
+int __cdecl BaseAR_Clear(LPBaseARRAY par)
 {
 	par->m_nSize = 0;
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
 
@@ -1638,7 +1638,7 @@ int __cdecl SYAR_Clear(LPSYARRAY par)
 // 示例：	对于数组[1,2,3,4,5]，如果i=3,j=1则得到：[1,4,2,3,5]
 //			如果i=1,j=3,则得到：[1,3,2,4,5]，注意结果中2的位置并不是(j==3)
 //////////////////////////////////////////////////////////////////////////
-void __cdecl SYAR_MoveElement(LPSYARRAY pA,		// 数组结构指针
+void __cdecl BaseAR_MoveElement(LPBaseARRAY pA,		// 数组结构指针
 	size_t i,			// 要移动的元素的索引，应该属于[0,size)
 	size_t j)		// 要移动到的位置，应该属于[0,size]
 {
@@ -1647,7 +1647,7 @@ void __cdecl SYAR_MoveElement(LPSYARRAY pA,		// 数组结构指针
 	void* pSrc = NULL;
 	void* pDst = NULL;
 	size_t nCount = 0;
-	SYAR_ELEMENT temp = pA->m_pData[i];
+	BaseAR_ELEMENT temp = pA->m_pData[i];
 	if (i < j)
 	{
 		pSrc = pA->m_pData + i + 1;
@@ -1660,41 +1660,41 @@ void __cdecl SYAR_MoveElement(LPSYARRAY pA,		// 数组结构指针
 		pDst = pA->m_pData + j + 1;
 		nCount = i - j;
 	}
-	memmove(pDst, pSrc, sizeof(SYAR_ELEMENT) * nCount);
+	memmove(pDst, pSrc, sizeof(BaseAR_ELEMENT) * nCount);
 	pA->m_pData[j] = temp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	设置最大数组大小，不会添加数组元素
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_INVALID_PARAM	无效参数
-//			SYAR_MEMORY_ERROR	内存错误
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_INVALID_PARAM	无效参数
+//			BaseAR_MEMORY_ERROR	内存错误
 ///////////////////////////////////////////////////////////////////////////////
-int __cdecl SYAR_SetMaxSize(LPSYARRAY pA,			// 数组结构指针
+int __cdecl BaseAR_SetMaxSize(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR nNewSize		// 新的数组大小
 )
 {
 	if (pA == NULL)
-		return SYAR_NULL;
+		return BaseAR_NULL;
 
 	if (nNewSize <= 0)
-		return SYAR_INVALID_PARAM;
+		return BaseAR_INVALID_PARAM;
 
 	size_t nAllocSize(0);
-	SYAR_ELE_PTR pNewData = NULL;
+	BaseAR_ELE_PTR pNewData = NULL;
 	if (nNewSize < pA->m_nSize)
-		return SYAR_INVALID_PARAM;
+		return BaseAR_INVALID_PARAM;
 
 	if (nNewSize == pA->m_nMaxSize)
-		return SYAR_SUCCESS;
+		return BaseAR_SUCCESS;
 	if (pA->m_pData == NULL)
 	{
-		nAllocSize = (size_t)nNewSize * SYAR_ELE_LEN;
-		pA->m_pData = (SYAR_ELE_PTR)malloc(nAllocSize);
+		nAllocSize = (size_t)nNewSize * BaseAR_ELE_LEN;
+		pA->m_pData = (BaseAR_ELE_PTR)malloc(nAllocSize);
 		if (pA->m_pData == NULL)
-			return SYAR_MEMORY_ERROR;
+			return BaseAR_MEMORY_ERROR;
 
 		memset((void*)pA->m_pData, 0, nAllocSize);
 		pA->m_nSize = 0;
@@ -1703,28 +1703,28 @@ int __cdecl SYAR_SetMaxSize(LPSYARRAY pA,			// 数组结构指针
 	else
 	{
 		// 重新申请内存并拷贝数据
-		pNewData = (SYAR_ELE_PTR)malloc((size_t)nNewSize * SYAR_ELE_LEN);
+		pNewData = (BaseAR_ELE_PTR)malloc((size_t)nNewSize * BaseAR_ELE_LEN);
 		if (pNewData == NULL)
-			return SYAR_MEMORY_ERROR;
+			return BaseAR_MEMORY_ERROR;
 
 		memcpy((void*)pNewData,
 			(void*)pA->m_pData,
-			(size_t)pA->m_nSize * SYAR_ELE_LEN);
+			(size_t)pA->m_nSize * BaseAR_ELE_LEN);
 		memset((void*)(pNewData + pA->m_nSize),
 			0,
-			(size_t)(nNewSize - pA->m_nSize) * SYAR_ELE_LEN);
+			(size_t)(nNewSize - pA->m_nSize) * BaseAR_ELE_LEN);
 		free(pA->m_pData);
 		pA->m_pData = pNewData;
 		pA->m_nMaxSize = nNewSize;
 	}
-	return SYAR_SUCCESS;
+	return BaseAR_SUCCESS;
 }
 
-void __cdecl SYAR_Sort(LPSYARRAY pA, SYCompareFun fun)
+void __cdecl BaseAR_Sort(LPBaseARRAY pA, SYCompareFun fun)
 {
 	if (pA->m_nSize <= 0)
 		return;
-	qsort(pA->m_pData, pA->m_nSize, sizeof(SYAR_ELEMENT), fun);
+	qsort(pA->m_pData, pA->m_nSize, sizeof(BaseAR_ELEMENT), fun);
 }
 
 void __cdecl SYStrAR_Release(CSYStrArray& ary)

@@ -123,10 +123,10 @@ struct CSYMaskHandle
 	}
 };
 typedef CSYMaskHandle*   LPSYMaskHandle;
-typedef CSYArray<CSYMaskHandle, CSYMaskHandle>  CSYMaskHandleArray;
+typedef CBaseARray<CSYMaskHandle, CSYMaskHandle>  CSYMaskHandleArray;
 
 
-point2f*	__cdecl	SYMaskHandleGetControlPt(SYArray &HandleArray, BOOL bClose, int &nCount);
+point2f*	__cdecl	SYMaskHandleGetControlPt(BaseARray &HandleArray, BOOL bClose, int &nCount);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -150,7 +150,7 @@ struct SPLITE_BEZIER3_NODE
 	}
 };
 
-typedef CSYArray<SPLITE_BEZIER3_NODE, SPLITE_BEZIER3_NODE> CSYBezierSplitArray;
+typedef CBaseARray<SPLITE_BEZIER3_NODE, SPLITE_BEZIER3_NODE> CSYBezierSplitArray;
 
 //Bezier split line info define
 struct SBEIZER3_LINE_INFO
@@ -159,7 +159,7 @@ struct SBEIZER3_LINE_INFO
 	float ft;
 };
 
-typedef CSYArray<SBEIZER3_LINE_INFO, SBEIZER3_LINE_INFO> CSYBezier3LineArray;
+typedef CBaseARray<SBEIZER3_LINE_INFO, SBEIZER3_LINE_INFO> CSYBezier3LineArray;
 
 //////////////////////////////////////////////////////////////////////////
 void				SYBezierGet3Sp(point2f CtrlPt[], CSYBezierSplitArray& Bezier_SplitArray);
@@ -176,8 +176,8 @@ BASEGRAPH_COMMON_API	point2f	__cdecl		SYBezierGetValue(point2f Pt[4], float t);
 BASEGRAPH_COMMON_API point2f	__cdecl		SYBezierGetCutValue( point2f Pt[4], float t);
 BASEGRAPH_COMMON_API void	__cdecl		SYBezierCut(point2f pt[4], point2f pt1[4], point2f pt2[4], float t);
 BASEGRAPH_COMMON_API float	__cdecl		SYBezierPtIn(const point2f  &pt0, point2f pt[4], float r, float t1, float t2);
-BASEGRAPH_COMMON_API void	__cdecl		SYBezierGetPtArray(SYArray &HandleArray, int nIndex, point2f CtrlPt[4]);
-point2f*			SYBezierGetPtList(SYArray &HandleArray);
+BASEGRAPH_COMMON_API void	__cdecl		SYBezierGetPtArray(BaseARray &HandleArray, int nIndex, point2f CtrlPt[4]);
+point2f*			SYBezierGetPtList(BaseARray &HandleArray);
 
 BASEGRAPH_COMMON_API float	__cdecl		SYBezierGetYValueFromX(point2f CtrlPt[], float fX);
 

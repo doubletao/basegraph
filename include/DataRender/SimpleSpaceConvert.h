@@ -28,12 +28,12 @@ protected:
 class BASEGRAPH_DATARENDER_API CUnitSpaceConvertMatrix : public CSpaceConvertMatrix
 {
 public:
-	CUnitSpaceConvertMatrix( ObjectCalculator *pCalculator, LPSYARRAY pary3DUnit, int nIndex );
+	CUnitSpaceConvertMatrix( ObjectCalculator *pCalculator, LPBaseARRAY pary3DUnit, int nIndex );
 	virtual ~CUnitSpaceConvertMatrix();
 protected:
 	virtual matrix4f GetOriginWorld();
 private:
-	LPSYARRAY m_pary3DUnit;
+	LPBaseARRAY m_pary3DUnit;
 	int		  m_nUnitIndex;
 };
 

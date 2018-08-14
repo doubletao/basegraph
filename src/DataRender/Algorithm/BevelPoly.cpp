@@ -24,12 +24,12 @@ void SYBevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN f
 	{
 		return;
 	}
-	SYArray ptrPoly;
-	SYArray ptrPolyNorm;
-	SYAR_Init(&ptrPoly);
-	SYAR_Init(&ptrPolyNorm);
+	BaseARray ptrPoly;
+	BaseARray ptrPolyNorm;
+	BaseAR_Init(&ptrPoly);
+	BaseAR_Init(&ptrPolyNorm);
 	SYOC_Cell2PtfPoly(pCurveCell, &ptrPoly, &ptrPolyNorm,NULL);
-	int nSize = (int)SYAR_GetSize(&ptrPoly);
+	int nSize = (int)BaseAR_GetSize(&ptrPoly);
 	if (nSize<3) 
 	{
 		return;
@@ -44,8 +44,8 @@ void SYBevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN f
 		point2f* pptf2 ;
 		for (i=0; i<nSize/2; i++)
 		{
-			pptf1 = (point2f*)SYAR_GetAt(&ptrPoly,i);
-			pptf2 = (point2f*)SYAR_GetAt(&ptrPoly,nSize - 1 -i);
+			pptf1 = (point2f*)BaseAR_GetAt(&ptrPoly,i);
+			pptf2 = (point2f*)BaseAR_GetAt(&ptrPoly,nSize - 1 -i);
 			ptfTemp.x = pptf1->x;
 			ptfTemp.y = pptf1->y;
 
@@ -55,18 +55,18 @@ void SYBevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN f
 			pptf2->x = ptfTemp.x;
 			pptf2->y = ptfTemp.y;
 		}
-		pptf2 = (point2f*)SYAR_RemoveAt(&ptrPoly,nSize - 1,1);
-		//pptf2 = (point2f*)SYAR_GetAt(&ptrPoly,nSize - 1);
-		SYAR_InsertAt(&ptrPoly,0,pptf2,1);
-//		point2f* pRemovePt = (point2f*)SYAR_GetAt(&ptrPoly,nSize);
+		pptf2 = (point2f*)BaseAR_RemoveAt(&ptrPoly,nSize - 1,1);
+		//pptf2 = (point2f*)BaseAR_GetAt(&ptrPoly,nSize - 1);
+		BaseAR_InsertAt(&ptrPoly,0,pptf2,1);
+//		point2f* pRemovePt = (point2f*)BaseAR_GetAt(&ptrPoly,nSize);
 //		SAFE_DELETE(pRemovePt);
-//		SYAR_RemoveAt(&ptrPoly,nSize,1);
+//		BaseAR_RemoveAt(&ptrPoly,nSize,1);
 
-		int nNormalSize = SYAR_GetSize(&ptrPolyNorm);
+		int nNormalSize = BaseAR_GetSize(&ptrPolyNorm);
 		for (i=0; i<nNormalSize/2; i++)
 		{
-			pptf1 = (point2f*)SYAR_GetAt(&ptrPolyNorm,i);
-			pptf2 = (point2f*)SYAR_GetAt(&ptrPolyNorm,nNormalSize - 1 -i);
+			pptf1 = (point2f*)BaseAR_GetAt(&ptrPolyNorm,i);
+			pptf2 = (point2f*)BaseAR_GetAt(&ptrPolyNorm,nNormalSize - 1 -i);
 			ptfTemp = *pptf1;
 			*pptf1 = *pptf2;
 			*pptf1 *= -1;
@@ -160,23 +160,23 @@ void SYBevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN f
 	}
 	ptrTri.RemoveAll();
 
-	nSize = (int)SYAR_GetSize(&ptrPoly);
+	nSize = (int)BaseAR_GetSize(&ptrPoly);
 	for (i=0; i<nSize; i++)
 	{
-		pointf * pptf = (pointf * )SYAR_GetAt(&ptrPoly,i);
+		pointf * pptf = (pointf * )BaseAR_GetAt(&ptrPoly,i);
 		delete pptf;
 		pptf = NULL;
 	}
-	SYAR_RemoveAll(&ptrPoly);
+	BaseAR_RemoveAll(&ptrPoly);
 
-	nSize = (int)SYAR_GetSize(&ptrPolyNorm);
+	nSize = (int)BaseAR_GetSize(&ptrPolyNorm);
 	for (i=0; i<nSize; i++)
 	{
-		pointf * pptf = (pointf * )SYAR_GetAt(&ptrPolyNorm,i);
+		pointf * pptf = (pointf * )BaseAR_GetAt(&ptrPolyNorm,i);
 		delete pptf;
 		pptf = NULL;
 	}
-	SYAR_RemoveAll(&ptrPolyNorm);
+	BaseAR_RemoveAll(&ptrPolyNorm);
 
 } // END OF BevelPolyAPI 
 
@@ -301,10 +301,10 @@ void SYBevelPoly::AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, OUT CSYPoi
 	}
 } // END OF AddCurve2PtfPoly
 
-void SYBevelPoly::GenerateRudeBevel4(IN SYArray * pptrPoly, IN float fWidth, IN float fHeight, 
+void SYBevelPoly::GenerateRudeBevel4(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
 								 OUT CSYPoint3fPtrArray * pptrArrRude4/*, OUT CPtrArray * pptrArrBox4*/ )
 {
-	int nSize = (int)SYAR_GetSize(pptrPoly);
+	int nSize = (int)BaseAR_GetSize(pptrPoly);
 
 	pointf* ppt0 = NULL;
 	pointf* ppt1 = NULL;
@@ -316,14 +316,14 @@ void SYBevelPoly::GenerateRudeBevel4(IN SYArray * pptrPoly, IN float fWidth, IN 
 
 	for (int i=0; i<nSize; i++)
 	{
-		ppt0 = (pointf*)SYAR_GetAt(pptrPoly,i);
+		ppt0 = (pointf*)BaseAR_GetAt(pptrPoly,i);
 		if (i<nSize-1) 
 		{
-			ppt1 = (pointf*)SYAR_GetAt(pptrPoly,i+1);
+			ppt1 = (pointf*)BaseAR_GetAt(pptrPoly,i+1);
 		}
 		else
 		{
-			ppt1 = (pointf*)SYAR_GetAt(pptrPoly,0);
+			ppt1 = (pointf*)BaseAR_GetAt(pptrPoly,0);
 		}		
 
 		r = 1.f / sqrt( (float)( (ppt1->x - ppt0->x)*(ppt1->x - ppt0->x) + (ppt0->y - ppt1->y)*(ppt0->y - ppt1->y) ) );
@@ -372,10 +372,10 @@ void SYBevelPoly::GenerateRudeBevel4(IN SYArray * pptrPoly, IN float fWidth, IN 
 	}
 } // END OF GenerateRudeBevel4
 
-void SYBevelPoly::GenerateRudeBevel3(IN SYArray * pptrPoly, IN float fWidth, IN float fHeight, 
+void SYBevelPoly::GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
 								 OUT CSYPoint3fPtrArray * pptrArrRude3, /*OUT CPtrArray * pptrArrBox3, */OUT CSYIndex3Array *pptrArrIndex3 )
 {
-	int nSize = (int)SYAR_GetSize(pptrPoly);
+	int nSize = (int)BaseAR_GetSize(pptrPoly);
 	pointf *prePt = NULL;
 	pointf *curPt = NULL;
 	pointf *nextPt = NULL;
@@ -386,21 +386,21 @@ void SYBevelPoly::GenerateRudeBevel3(IN SYArray * pptrPoly, IN float fWidth, IN 
 	{
 		if (i == 0) 
 		{
-			prePt = (pointf*)SYAR_GetAt(pptrPoly,nSize-1);
-			curPt = (pointf*)SYAR_GetAt(pptrPoly,0);
-			nextPt = (pointf*)SYAR_GetAt(pptrPoly,1);
+			prePt = (pointf*)BaseAR_GetAt(pptrPoly,nSize-1);
+			curPt = (pointf*)BaseAR_GetAt(pptrPoly,0);
+			nextPt = (pointf*)BaseAR_GetAt(pptrPoly,1);
 		}
 		else if(i == nSize-1)
 		{
-			prePt = (pointf*)SYAR_GetAt(pptrPoly,nSize-2);
-			curPt = (pointf*)SYAR_GetAt(pptrPoly,nSize-1);
-			nextPt = (pointf*)SYAR_GetAt(pptrPoly,0);
+			prePt = (pointf*)BaseAR_GetAt(pptrPoly,nSize-2);
+			curPt = (pointf*)BaseAR_GetAt(pptrPoly,nSize-1);
+			nextPt = (pointf*)BaseAR_GetAt(pptrPoly,0);
 		}
 		else
 		{
-			prePt = (pointf*)SYAR_GetAt(pptrPoly,i-1);
-			curPt = (pointf*)SYAR_GetAt(pptrPoly,i);
-			nextPt = (pointf*)SYAR_GetAt(pptrPoly,i+1);
+			prePt = (pointf*)BaseAR_GetAt(pptrPoly,i-1);
+			curPt = (pointf*)BaseAR_GetAt(pptrPoly,i);
+			nextPt = (pointf*)BaseAR_GetAt(pptrPoly,i+1);
 		}
 
 		float fRight = (curPt->x - prePt->x)*(nextPt->y - prePt->y) - (curPt->y - prePt->y)*(nextPt->x - prePt->x);
@@ -709,7 +709,7 @@ void SYBevelPoly::CutUnSeenByOne(IN point3f* ptfFish, IN point3f* ptfKnife, IN i
 } // END OF CutUnSeenByOne
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::CutToTri4(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+void SYBevelPoly::CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
 						IN CSYPoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CSYIndex3Array *pptrArrIndex3,
 						IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray * pptrTri ) 
 {
@@ -793,14 +793,14 @@ void SYBevelPoly::CutToTri4(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN
 
 		///////////////////////////////////////////////////////////////////////////////////////////////// end
 
-		ppt0 = (pointf *)SYAR_GetAt(pptrPoly,i);
+		ppt0 = (pointf *)BaseAR_GetAt(pptrPoly,i);
 		if (i == nSize-1) 
 		{
-			ppt1 = (pointf *)SYAR_GetAt(pptrPoly,0);
+			ppt1 = (pointf *)BaseAR_GetAt(pptrPoly,0);
 		}
 		else
 		{
-			ppt1 = (pointf *)SYAR_GetAt(pptrPoly,i+1);
+			ppt1 = (pointf *)BaseAR_GetAt(pptrPoly,i+1);
 		}
 
 		ptfFormer0.x = (float)ppt0->x;
@@ -808,8 +808,8 @@ void SYBevelPoly::CutToTri4(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN
 		ptfFormer1.x = (float)ppt1->x;
 		ptfFormer1.y = (float)ppt1->y;
 
-		pointf *pptfNorm0 = (pointf * )SYAR_GetAt(pptrPolyNorm,2*i);
-		pointf *pptfNorm1 = (pointf * )SYAR_GetAt(pptrPolyNorm,2*i+1);
+		pointf *pptfNorm0 = (pointf * )BaseAR_GetAt(pptrPolyNorm,2*i);
+		pointf *pptfNorm1 = (pointf * )BaseAR_GetAt(pptrPolyNorm,2*i+1);
 		GetResultTri4(ptfFormer0, ptfFormer1, *pptfNorm0, *pptfNorm1, &ptrCutLineSegArr,  &ptrIntersectPtArr, fWidth, fHeight, pptrTri );
 		// ÊÍ·ÅptrCutLineSegArr
 		pointf* ppttTemp = NULL;
@@ -837,7 +837,7 @@ void SYBevelPoly::CutToTri4(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN
 } // END OF CutToTri4
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::CutToTri3(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+void SYBevelPoly::CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
 						IN CSYPoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CSYIndex3Array *pptrArrIndex3,
 						IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray * pptrTri ) 
 {
@@ -953,13 +953,13 @@ void SYBevelPoly::CutToTri3(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN
 			pointf *pptfNorm0;
 			if (pIndex3->nPolyIndex != 0 ) 
 			{
-				pptfNorm0 = (pointf * )SYAR_GetAt(pptrPolyNorm,2*pIndex3->nPolyIndex-1);
+				pptfNorm0 = (pointf * )BaseAR_GetAt(pptrPolyNorm,2*pIndex3->nPolyIndex-1);
 			}
 			else
 			{
-				pptfNorm0 = (pointf * )SYAR_GetAt(pptrPolyNorm,SYAR_GetSize(pptrPolyNorm)-1);
+				pptfNorm0 = (pointf * )BaseAR_GetAt(pptrPolyNorm,BaseAR_GetSize(pptrPolyNorm)-1);
 			}
-			pointf *pptfNorm = (pointf * )SYAR_GetAt(pptrPolyNorm,2*pIndex3->nPolyIndex);
+			pointf *pptfNorm = (pointf * )BaseAR_GetAt(pptrPolyNorm,2*pIndex3->nPolyIndex);
 			GetResultTri3(ptfConeHead, *pptfNorm, ptfFormer0, ptfFormer1, &ptrCutLineSegArr,  &ptrIntersectPtArr, fWidth, fHeight, pptrTri );
 			// ÊÍ·ÅptrCutLineSegArr
 			pointf* ppttTemp = NULL;
@@ -992,13 +992,13 @@ void SYBevelPoly::CutToTri3(IN SYArray * pptrPoly, IN SYArray * pptrPolyNorm, IN
 			pointf *pptfNorm0;
 			if (pIndex3->nPolyIndex != 0 ) 
 			{
-				pptfNorm0 = (pointf * )SYAR_GetAt(pptrPolyNorm,2*pIndex3->nPolyIndex-1);
+				pptfNorm0 = (pointf * )BaseAR_GetAt(pptrPolyNorm,2*pIndex3->nPolyIndex-1);
 			}
 			else
 			{
-				pptfNorm0 = (pointf * )SYAR_GetAt(pptrPolyNorm,SYAR_GetSize(pptrPolyNorm)-1);
+				pptfNorm0 = (pointf * )BaseAR_GetAt(pptrPolyNorm,BaseAR_GetSize(pptrPolyNorm)-1);
 			}
-			pointf *pptfNorm1 = (pointf * )SYAR_GetAt(pptrPolyNorm,2*pIndex3->nPolyIndex);
+			pointf *pptfNorm1 = (pointf * )BaseAR_GetAt(pptrPolyNorm,2*pIndex3->nPolyIndex);
 
 			float fdHeight = 1.f / fHeight;
 			pptf3d = (point3f*)pptrTri->GetAt(nResultNum+4);

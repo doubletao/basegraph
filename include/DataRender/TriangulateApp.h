@@ -21,9 +21,9 @@ typedef struct tag_Triangle
 	int nPt3;//点3 在输入多边形顶点数组中的  序号
 }Triangle;//三角形(三个顶点序号)
 
-typedef CSYArray<PtNode*> CPtNodeArray;
-typedef CSYArray<LineNode*> CLineNodeArray;
-typedef CSYArray<Triangle*> CTriangleArray;
+typedef CBaseARray<PtNode*> CPtNodeArray;
+typedef CBaseARray<LineNode*> CLineNodeArray;
+typedef CBaseARray<Triangle*> CTriangleArray;
 
 class SYTriangulateApp
 {
@@ -57,7 +57,7 @@ protected:
 	//--------------------------------------------------------------------------------
 	void BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri, 
 		CPtNodeArray &ptPolyArray, //ptfArray中的顶点加入到ptPolyArray
-		SYArray &ptfArray, 
+		BaseARray &ptfArray, 
 		int nMinXIndex, // ptfArray中最小x值点的序号
 		float fMinX, // ptfArray中最小x值
 		CSYPoint2fPtrArray &ptfArrAddedMinPts);

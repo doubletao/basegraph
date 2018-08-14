@@ -256,7 +256,7 @@ public:
 		// 缓存变换时的裁减与边界计算、双线性权重与索引计算、双线性插值计算
 		//////////////////////////////////////////////////////////////////////////
 
-	static BOOL Buffer_Trans_CalcBorder(IN SYBufferDef32* pDesBuf,			// 目标缓存
+	static BOOL Buffer_Trans_CalcBorder(IN CommonBufferDef32* pDesBuf,			// 目标缓存
 		IN int nOffsetLeft,					// 目标缓存在投影平面坐标系下的位置
 		IN int nOffsetTop,
 		IN LPSYINNERVERTEX pvVertexes,		// 投影顶点组（顺时针：(0,0),(1,0),(1,1),(0,1)）

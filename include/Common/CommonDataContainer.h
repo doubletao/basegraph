@@ -1,13 +1,13 @@
 #pragma once
 /////////////////////////////hash////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef void*		SYHash_key;			// Hash 表入口点 key 的类型
-typedef void*		SYHash_value;		// Hash 表绑定 key 的值的类型
-typedef void*		SYHash_pos;			// Hash 表遍历时的位置（LPDSENTRY）
+typedef void*		BaseHash_key;			// Hash 表入口点 key 的类型
+typedef void*		BaseHash_value;		// Hash 表绑定 key 的值的类型
+typedef void*		BaseHash_pos;			// Hash 表遍历时的位置（LPDSENTRY）
 
 typedef struct tag_entry				// 存储数据的 Hash 表入口点
 {
-	SYHash_key			pKey;			// key
-	SYHash_value		pValue;			// 绑定 key 的值
+	BaseHash_key			pKey;			// key
+	BaseHash_value		pValue;			// 绑定 key 的值
 	UINT64				unHashValue;	// Hash 值
 	int					needrelease;
 	struct tag_entry*	pNextEntry;		// 下一个入口点
@@ -26,57 +26,57 @@ typedef struct tag_hash				// 拉链法 Hash 表结构
 	unsigned char*  pool;
 	unsigned char*  poolend;
 	int				dupkey;
-	UINT64(*hashfn)(SYHash_key k);				// Hash 函数指针
-	BOOL(*eqfn)(SYHash_key k1, SYHash_key k2);	// key 比较函数指针
-	SYHash_key(*dupfn)(SYHash_key k);					// 拷贝一份 key
-	void(*freekeyfn)(SYHash_key k);				// 释放 key
-	void(*freevaluefn)(SYHash_value v);			// 释放 value
-}SYHash, *PSYHash, *LPSYHASH;
-BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Init_Int(SYHash* ph, unsigned int minsize);
+	UINT64(*hashfn)(BaseHash_key k);				// Hash 函数指针
+	BOOL(*eqfn)(BaseHash_key k1, BaseHash_key k2);	// key 比较函数指针
+	BaseHash_key(*dupfn)(BaseHash_key k);					// 拷贝一份 key
+	void(*freekeyfn)(BaseHash_key k);				// 释放 key
+	void(*freevaluefn)(BaseHash_value v);			// 释放 value
+}BaseHash, *PBaseHash, *LPBaseHash;
+BASEGRAPH_COMMON_API BOOL __cdecl BaseHash_Init_Int(BaseHash* ph, unsigned int minsize);
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	初始化 Hash 表（函数指针为 NULL 时表示使用系统缺省函数）
 //
 // 返回值:	成功为TRUE，失败为FALSE
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Init(SYHash* ph,
+BASEGRAPH_COMMON_API BOOL __cdecl BaseHash_Init(BaseHash* ph,
 	unsigned int minsize,					// 表初始大小
-	UINT64(*SYHash_make)(SYHash_key),		// Hash值计算函函数
-	BOOL(*key_compare)(SYHash_key, SYHash_key),	// key 比较函数
-	SYHash_key(*key_dup)(SYHash_key),		// key 拷贝函数
-	void(*key_free)(SYHash_key),			// key 释放函数
-	void(*value_free)(SYHash_value));		// value 释放函数
+	UINT64(*BaseHash_make)(BaseHash_key),		// Hash值计算函函数
+	BOOL(*key_compare)(BaseHash_key, BaseHash_key),	// key 比较函数
+	BaseHash_key(*key_dup)(BaseHash_key),		// key 拷贝函数
+	void(*key_free)(BaseHash_key),			// key 释放函数
+	void(*value_free)(BaseHash_value));		// value 释放函数
 
 
-BASEGRAPH_COMMON_API BOOL __cdecl SYHash_SetPool(SYHash* ph, char*  pool, char* poolend, BOOL dupKey);
+BASEGRAPH_COMMON_API BOOL __cdecl BaseHash_SetPool(BaseHash* ph, char*  pool, char* poolend, BOOL dupKey);
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	创建新 Hash 表（函数指针为 NULL 时表示使用系统缺省函数）
 //
-// 返回值:	PSYHash			新表指针
+// 返回值:	PBaseHash			新表指针
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API PSYHash __cdecl SYHash_Create(unsigned int unMinSize,					// 表初始大小
-	UINT64(*hashF)(SYHash_key),		// Hash 值计算函函数
-	BOOL(*keyEqF)(SYHash_key, SYHash_key),	// key 比较函数
-	SYHash_key(*keyDupF)(SYHash_key),		// key 拷贝函数
-	void(*keyFreeF)(SYHash_key),			// key 释放函数
-	void(*valueFreeF)(SYHash_value));		// value 释放函数
+BASEGRAPH_COMMON_API PBaseHash __cdecl BaseHash_Create(unsigned int unMinSize,					// 表初始大小
+	UINT64(*hashF)(BaseHash_key),		// Hash 值计算函函数
+	BOOL(*keyEqF)(BaseHash_key, BaseHash_key),	// key 比较函数
+	BaseHash_key(*keyDupF)(BaseHash_key),		// key 拷贝函数
+	void(*keyFreeF)(BaseHash_key),			// key 释放函数
+	void(*valueFreeF)(BaseHash_value));		// value 释放函数
 
 
-BASEGRAPH_COMMON_API BOOL __cdecl SYHash_SetPool(SYHash* ph, unsigned char*  pool, unsigned char* poolend, BOOL bdupKey);
+BASEGRAPH_COMMON_API BOOL __cdecl BaseHash_SetPool(BaseHash* ph, unsigned char*  pool, unsigned char* poolend, BOOL bdupKey);
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	Hash 值求解
 //
 // 返回值:	unsigned int		key 对应的 Hash 值
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API UINT64 __cdecl SYHash_Hash(const SYHash* pH,			// Hash 表指针
-	SYHash_key pK);		// key
+BASEGRAPH_COMMON_API UINT64 __cdecl BaseHash_Hash(const BaseHash* pH,			// Hash 表指针
+	BaseHash_key pK);		// key
 
 						///////////////////////////////////////////////////////////////////////////////
 						// 描述：	缺省的 Hash 值求解函数（字符串）
 						//
 						// 返回值:	unsigned int		key 对应的 Hash 值
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API UINT64 __cdecl SYHash_HashStr(SYHash_key pK);			// key
+BASEGRAPH_COMMON_API UINT64 __cdecl BaseHash_HashStr(BaseHash_key pK);			// key
 
 																		///////////////////////////////////////////////////////////////////////////////
 																		// 描述：	缺省的 key 比较函数（字符串）
@@ -84,68 +84,68 @@ BASEGRAPH_COMMON_API UINT64 __cdecl SYHash_HashStr(SYHash_key pK);			// key
 																		// 返回值:	TRUE		相等
 																		//			FALSE		不等
 																		///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYHash_EqualStr(SYHash_key pK1,				// key
-	SYHash_key pK2);				// key
+BASEGRAPH_COMMON_API BOOL __cdecl BaseHash_EqualStr(BaseHash_key pK1,				// key
+	BaseHash_key pK2);				// key
 
 									///////////////////////////////////////////////////////////////////////////////
 									// 描述：	缺省的 key 拷贝函数（字符串）
 									//
-									// 返回值:	SYHash_key
+									// 返回值:	BaseHash_key
 									///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHash_key __cdecl SYHash_DuplicateStr(SYHash_key pK);		// key
+BASEGRAPH_COMMON_API BaseHash_key __cdecl BaseHash_DuplicateStr(BaseHash_key pK);		// key
 
 																			///////////////////////////////////////////////////////////////////////////////
 																			// 描述：	缺省的 key 释放函数（字符串）
 																			//
 																			// 返回值:	void
 																			///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYHash_FreeKeyStr(SYHash_key pK);			// key
+BASEGRAPH_COMMON_API void __cdecl BaseHash_FreeKeyStr(BaseHash_key pK);			// key
 
 																		///////////////////////////////////////////////////////////////////////////////
 																		// 描述：	缺省的 value 释放函数（只能释放由 malloc 申请的内存空间）
 																		//
 																		// 返回值:	void
 																		///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYHash_FreeValueStr(SYHash_value pV);		// value
+BASEGRAPH_COMMON_API void __cdecl BaseHash_FreeValueStr(BaseHash_value pV);		// value
 
-UINT64 __cdecl SYHash_HashInt(SYHash_key pk);
-BOOL __cdecl SYHash_EqualInt(SYHash_key pK1, SYHash_key pK2);
-SYHash_key __cdecl SYHash_DuplicateInt(SYHash_key pk);
-void __cdecl SYHash_FreeKeyInt(SYHash_key pk);
-void __cdecl SYHash_FreeValueInt(SYHash_value pV);
+UINT64 __cdecl BaseHash_HashInt(BaseHash_key pk);
+BOOL __cdecl BaseHash_EqualInt(BaseHash_key pK1, BaseHash_key pK2);
+BaseHash_key __cdecl BaseHash_DuplicateInt(BaseHash_key pk);
+void __cdecl BaseHash_FreeKeyInt(BaseHash_key pk);
+void __cdecl BaseHash_FreeValueInt(BaseHash_value pV);
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	获取入口点总数
 //
 // 返回值:	unsigned int
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API unsigned int __cdecl SYHash_GetCount(PSYHash pH);		// Hash 表指针
+BASEGRAPH_COMMON_API unsigned int __cdecl BaseHash_GetCount(PBaseHash pH);		// Hash 表指针
 
 																		//////////////////////////////////////////////////////////////////////////
 																		// 描述：	获取第一个入口点的位置
 																		//
-																		// 返回值：	SYHash_pos
+																		// 返回值：	BaseHash_pos
 																		//////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHash_pos __cdecl SYHash_GetHeadPosition(PSYHash ph);		// Hash 表指针
+BASEGRAPH_COMMON_API BaseHash_pos __cdecl BaseHash_GetHeadPosition(PBaseHash ph);		// Hash 表指针
 
 																			//////////////////////////////////////////////////////////////////////////
 																			// 描述：	获取第一个入口点的数据
 																			//
-																			// 返回值：	SYHash_key / SYHash_value
+																			// 返回值：	BaseHash_key / BaseHash_value
 																			//////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHash_key __cdecl SYHash_GetHeadKey(PSYHash ph);		// Hash 表指针
-BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_GetHeadValue(PSYHash ph);	// Hash 表指针
+BASEGRAPH_COMMON_API BaseHash_key __cdecl BaseHash_GetHeadKey(PBaseHash ph);		// Hash 表指针
+BASEGRAPH_COMMON_API BaseHash_value __cdecl BaseHash_GetHeadValue(PBaseHash ph);	// Hash 表指针
 
 																		//////////////////////////////////////////////////////////////////////////
 																		// 描述：	获取下个位置或当前位置数据，获取数据时不会自动更新位置。
 																		//
-																		// 返回值：	SYHash_pos / SYHash_key / SYHash_value
+																		// 返回值：	BaseHash_pos / BaseHash_key / BaseHash_value
 																		//////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_GetNextPosition(PSYHash ph,		// Hash 表指针
-	SYHash_pos* ppos);	// 当前位置
-BASEGRAPH_COMMON_API SYHash_key __cdecl SYHash_GetPosKey(PSYHash ph,			// Hash 表指针
-	SYHash_pos pos);		// 当前位置
-BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_GetPosValue(PSYHash ph,		// Hash 表指针
-	SYHash_pos pos);	// 当前位置
+BASEGRAPH_COMMON_API BaseHash_value __cdecl BaseHash_GetNextPosition(PBaseHash ph,		// Hash 表指针
+	BaseHash_pos* ppos);	// 当前位置
+BASEGRAPH_COMMON_API BaseHash_key __cdecl BaseHash_GetPosKey(PBaseHash ph,			// Hash 表指针
+	BaseHash_pos pos);		// 当前位置
+BASEGRAPH_COMMON_API BaseHash_value __cdecl BaseHash_GetPosValue(PBaseHash ph,		// Hash 表指针
+	BaseHash_pos pos);	// 当前位置
 
 						///////////////////////////////////////////////////////////////////////////////
 						// 描述：	插入一个数据，允许重复插入同一个 key
@@ -153,26 +153,26 @@ BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_GetPosValue(PSYHash ph,		// Has
 						// 返回值:	TRUE			插入成功
 						//			FALSE			插入失败
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYHash_Insert(PSYHash ph,			// Hash 表指针
-	SYHash_key pk,		// key
-	SYHash_value pv);	// 绑定 key 的值
+BASEGRAPH_COMMON_API BOOL __cdecl BaseHash_Insert(PBaseHash ph,			// Hash 表指针
+	BaseHash_key pk,		// key
+	BaseHash_value pv);	// 绑定 key 的值
 
 						///////////////////////////////////////////////////////////////////////////////
 						// 描述：	通过 key 查找数据
 						//
-						// 返回值:	SYHash_value
+						// 返回值:	BaseHash_value
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_Search(const SYHash* ph,			// Hash 表指针
-	SYHash_key pk);		// key
+BASEGRAPH_COMMON_API BaseHash_value __cdecl BaseHash_Search(const BaseHash* ph,			// Hash 表指针
+	BaseHash_key pk);		// key
 
 						///////////////////////////////////////////////////////////////////////////////
 						// 描述：	删除为 key 的入口点并返回相应的数据，如有必要则压缩 Hash 表的容量
 						//			允许释放数据，但使用缺省函数时要小心，释放后返回 NULL
 						//
-						// 返回值:	SYHash_value
+						// 返回值:	BaseHash_value
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_RemoveAt(PSYHash ph,			// Hash 表指针
-	SYHash_key pk,			// key
+BASEGRAPH_COMMON_API BaseHash_value __cdecl BaseHash_RemoveAt(PBaseHash ph,			// Hash 表指针
+	BaseHash_key pk,			// key
 	BOOL bFreeValue);		// 释放元素值内存的标志
 
 							///////////////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_RemoveAt(PSYHash ph,			// Hash 
 							//
 							// 返回值:	无
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYHash_RemoveAll(PSYHash ph,			// Hash 表指针
+BASEGRAPH_COMMON_API void __cdecl BaseHash_RemoveAll(PBaseHash ph,			// Hash 表指针
 	BOOL bFreeValue);		// 释放元素值内存的标志
 
 							///////////////////////////////////////////////////////////////////////////////
@@ -188,20 +188,20 @@ BASEGRAPH_COMMON_API void __cdecl SYHash_RemoveAll(PSYHash ph,			// Hash 表指针
 							//
 							// 返回值:	无
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYHash_Release(PSYHash ph,				// Hash 表指针
+BASEGRAPH_COMMON_API void __cdecl BaseHash_Release(PBaseHash ph,				// Hash 表指针
 	BOOL bFreeValue);			// 释放元素值内存的标志
 
-BASEGRAPH_COMMON_API void __cdecl SYHash_Delete(PSYHash ph,				// Hash 表指针
+BASEGRAPH_COMMON_API void __cdecl BaseHash_Delete(PBaseHash ph,				// Hash 表指针
 	BOOL bFreeValue);			// 释放元素值内存的标志
 								///////////////////////////////////////////////////////////////////////////////
 								// 描述：	更改绑定 key 的值并返回原值
 								//			允许释放数据，但使用缺省函数时要小心，释放后返回 NULL
 								//
-								// 返回值:	SYHash_value
+								// 返回值:	BaseHash_value
 								///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHash_value __cdecl SYHash_ChangeValue(PSYHash ph,		// Hash 表指针
-	SYHash_key pk,		// key
-	SYHash_value pnewv,	// 欲更改的值
+BASEGRAPH_COMMON_API BaseHash_value __cdecl BaseHash_ChangeValue(PBaseHash ph,		// Hash 表指针
+	BaseHash_key pk,		// key
+	BaseHash_value pnewv,	// 欲更改的值
 	BOOL bFreeValue);	// 释放元素值内存的标志
 
 
@@ -209,40 +209,40 @@ BASEGRAPH_COMMON_API void* __cdecl pool_malloc(unsigned char** pool, int size, B
 
 /////////////////////////////htable////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define SYHTable_null		0						// 空句柄
-typedef void*				SYHTable_element;		// 元素类型
-typedef SYHTable_element*		SYHTable_ele_ptr;		// 元素指针
+#define BseeHTable_null		0						// 空句柄
+typedef void*				BseeHTable_element;		// 元素类型
+typedef BseeHTable_element*		BseeHTable_ele_ptr;		// 元素指针
 
 
 typedef struct tag_htable {
 	UINT				maxsize;			// 数组空间大小
 	UINT				count;			// 元素个数
-	SYHTable_ele_ptr		eles;		// 元素数组指针
-}htable, *phtable, *LPSYHTABLE;
+	BseeHTable_ele_ptr		eles;		// 元素数组指针
+}htable, *phtable, *LPBseeHTable;
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	创建新句柄管理表
 //
 // 返回值:	phtable			新表指针
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API phtable __cdecl SYHTable_Create(UINT nMaxSize);			// 数组空间大小
+BASEGRAPH_COMMON_API phtable __cdecl BseeHTable_Create(UINT nMaxSize);			// 数组空间大小
 
 																		///////////////////////////////////////////////////////////////////////////////
 																		// 描述：	释放句柄管理表
 																		//
 																		// 返回值:	无
 																		///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYHTable_Delete(phtable pHT);			// 表指针
-BASEGRAPH_COMMON_API void __cdecl SYHTable_Release(phtable pHT);			// 表指针
+BASEGRAPH_COMMON_API void __cdecl BseeHTable_Delete(phtable pHT);			// 表指针
+BASEGRAPH_COMMON_API void __cdecl BseeHTable_Release(phtable pHT);			// 表指针
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// 描述：	初始化句柄管理表
 																	//
 																	// 返回值:	无
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYHTable_Init(phtable pHT);			// 表指针
+BASEGRAPH_COMMON_API void __cdecl BseeHTable_Init(phtable pHT);			// 表指针
 
-BASEGRAPH_COMMON_API void __cdecl SYHTable_SetSize(phtable pHT,		// 表指针
+BASEGRAPH_COMMON_API void __cdecl BseeHTable_SetSize(phtable pHT,		// 表指针
 	UINT nMaxSize);	// 数组大小
 
 					///////////////////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ BASEGRAPH_COMMON_API void __cdecl SYHTable_SetSize(phtable pHT,		// 表指针
 					// 返回值:	TRUE			是
 					//			FALSE			否
 					///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYHTable_IsFull(phtable pHT);			// 表指针
+BASEGRAPH_COMMON_API BOOL __cdecl BseeHTable_IsFull(phtable pHT);			// 表指针
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// 描述：	是否空表
@@ -259,37 +259,37 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYHTable_IsFull(phtable pHT);			// 表指针
 																	// 返回值:	TRUE			是
 																	//			FALSE			否
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYHTable_IsEmpty(phtable pHT);			// 表指针
+BASEGRAPH_COMMON_API BOOL __cdecl BseeHTable_IsEmpty(phtable pHT);			// 表指针
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// 描述：	获取句柄总数
 																	//
 																	// 返回值:	UINT
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API UINT __cdecl SYHTable_GetCount(phtable pHT);			// 表指针
+BASEGRAPH_COMMON_API UINT __cdecl BseeHTable_GetCount(phtable pHT);			// 表指针
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// 描述：	就近插入数据并返回句柄
 																	//
 																	// 返回值:	UINT
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API UINT __cdecl SYHTable_Insert(phtable pHT,				// 表指针
-	SYHTable_element e);		// 待插入的数据
+BASEGRAPH_COMMON_API UINT __cdecl BseeHTable_Insert(phtable pHT,				// 表指针
+	BseeHTable_element e);		// 待插入的数据
 
 								///////////////////////////////////////////////////////////////////////////////
 								// 描述：	获取某个句柄的数据
 								//
-								// 返回值:	SYHTable_element
+								// 返回值:	BseeHTable_element
 								///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_GetAt(phtable pHT,			// 表指针
+BASEGRAPH_COMMON_API BseeHTable_element __cdecl BseeHTable_GetAt(phtable pHT,			// 表指针
 	UINT nIndex);		// 句柄
 
 						///////////////////////////////////////////////////////////////////////////////
 						// 描述：	删除某个句柄并返回数据
 						//
-						// 返回值:	SYHTable_element
+						// 返回值:	BseeHTable_element
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_RemoveAt(phtable pHT,		// 表指针
+BASEGRAPH_COMMON_API BseeHTable_element __cdecl BseeHTable_RemoveAt(phtable pHT,		// 表指针
 	UINT nIndex);		// 句柄
 
 						///////////////////////////////////////////////////////////////////////////////
@@ -297,26 +297,26 @@ BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_RemoveAt(phtable pHT,		//
 						//
 						// 返回值:	无
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYHTable_RemoveAll(phtable pHT);			// 表指针
+BASEGRAPH_COMMON_API void __cdecl BseeHTable_RemoveAll(phtable pHT);			// 表指针
 
 																		///////////////////////////////////////////////////////////////////////////////
 																		// 描述：	设置某个句柄的数据值并返回原值
 																		//
-																		// 返回值:	SYHTable_element
+																		// 返回值:	BseeHTable_element
 																		///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_SetAt(phtable pHT,			// 表指针
+BASEGRAPH_COMMON_API BseeHTable_element __cdecl BseeHTable_SetAt(phtable pHT,			// 表指针
 	UINT nIndex,			// 句柄
-	SYHTable_element e);	// 数据
+	BseeHTable_element e);	// 数据
 
 							///////////////////////////////////////////////////////////////////////////////
 							// 描述：	哈希表中的有效句柄遍历
 							//
-							// 返回值:	UINT / SYHTable_element
+							// 返回值:	UINT / BseeHTable_element
 							///////////////////////////////////////////////////////////////////////////////
 							// 得到第一个有效的句柄
-BASEGRAPH_COMMON_API UINT __cdecl SYHTable_GetFirstValid(phtable pHT);		// 表指针
+BASEGRAPH_COMMON_API UINT __cdecl BseeHTable_GetFirstValid(phtable pHT);		// 表指针
 																		// 遍历下一个有效的句柄
-BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_GetNextValid(phtable pHT,		// 表指针
+BASEGRAPH_COMMON_API BseeHTable_element __cdecl BseeHTable_GetNextValid(phtable pHT,		// 表指针
 	UINT *pnIndex);	// 句柄
 
 
@@ -324,25 +324,25 @@ BASEGRAPH_COMMON_API SYHTable_element __cdecl SYHTable_GetNextValid(phtable pHT,
 
 //array相关，随后要干掉
 // 元素定义
-#define SYAR_ELE_LEN	sizeof(void*)		// 元素类型的长度
-typedef void*			SYAR_ELEMENT;		// 定义元素的类型
-typedef SYAR_ELEMENT*	SYAR_ELE_PTR;
+#define BaseAR_ELE_LEN	sizeof(void*)		// 元素类型的长度
+typedef void*			BaseAR_ELEMENT;		// 定义元素的类型
+typedef BaseAR_ELEMENT*	BaseAR_ELE_PTR;
 
 // 返回值定义
-#define SYAR_SUCCESS			0			// 成功（只会在不返回索引的接口中使用）
-#define SYAR_EMPTY				-1			// 空数组
-#define SYAR_FAILED				-2			// 失败
-#define SYAR_NULL				-3			// 不存在的数组
-#define SYAR_INVALID_PARAM		-4			// 无效参数
-#define SYAR_MEMORY_ERROR		-5			// 内存错误
+#define BaseAR_SUCCESS			0			// 成功（只会在不返回索引的接口中使用）
+#define BaseAR_EMPTY				-1			// 空数组
+#define BaseAR_FAILED				-2			// 失败
+#define BaseAR_NULL				-3			// 不存在的数组
+#define BaseAR_INVALID_PARAM		-4			// 无效参数
+#define BaseAR_MEMORY_ERROR		-5			// 内存错误
 
 // 数据结构定义
-typedef struct tag_SYArray {
-	SYAR_ELE_PTR	m_pData;				// 元素组指针
+typedef struct tag_BaseARray {
+	BaseAR_ELE_PTR	m_pData;				// 元素组指针
 	INT_PTR			m_nSize;				// 用户当前占用的数组大小
 	INT_PTR			m_nMaxSize;				// 当前实际分配的数组大小
 	INT_PTR			m_nGrowBy;				// 分配内存时增长的元素个数
-}SYArray, *LPSYARRAY;
+}BaseARray, *LPBaseARRAY;
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	创建一个空数组
@@ -350,49 +350,49 @@ typedef struct tag_SYArray {
 // 返回值：	NULL		创建失败（内存不足）
 //			pA			创建的空数组的指针
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LPSYARRAY __cdecl SYAR_Create();
+BASEGRAPH_COMMON_API LPBaseARRAY __cdecl BaseAR_Create();
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	初始化一个空数组
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_Init(LPSYARRAY pA);			// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_Init(LPBaseARRAY pA);			// 数组结构指针
 
 															///////////////////////////////////////////////////////////////////////////////
 															// 描述：	删除一个数组
 															//
-															// 返回值：	SYAR_SUCCESS		成功
-															//			SYAR_NULL			空指针
+															// 返回值：	BaseAR_SUCCESS		成功
+															//			BaseAR_NULL			空指针
 															///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_Release(LPSYARRAY pA);			// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_Release(LPBaseARRAY pA);			// 数组结构指针
 
 																//////////////////////////////////////////////////////////////////////////
 																//清除数组内容，保留内存大小
-BASEGRAPH_COMMON_API int __cdecl SYAR_Clear(LPSYARRAY par);
+BASEGRAPH_COMMON_API int __cdecl BaseAR_Clear(LPBaseARRAY par);
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	实现数组大小的设定
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
-//			SYAR_INVALID_PARAM	无效参数
-//			SYAR_MEMORY_ERROR	内存错误
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
+//			BaseAR_INVALID_PARAM	无效参数
+//			BaseAR_MEMORY_ERROR	内存错误
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_SetSize(LPSYARRAY pA,			// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_SetSize(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR nNewSize,		// 新的数组大小
 	INT_PTR nGrowBy);		// 需要增大数组时增加的元素个数
 
 							///////////////////////////////////////////////////////////////////////////////
 							// 描述：	设置最大数组大小，不会添加数组元素
 							//
-							// 返回值：	SYAR_SUCCESS		成功
-							//			SYAR_NULL			空指针
-							//			SYAR_INVALID_PARAM	无效参数
-							//			SYAR_MEMORY_ERROR	内存错误
+							// 返回值：	BaseAR_SUCCESS		成功
+							//			BaseAR_NULL			空指针
+							//			BaseAR_INVALID_PARAM	无效参数
+							//			BaseAR_MEMORY_ERROR	内存错误
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_SetMaxSize(LPSYARRAY pA,			// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_SetMaxSize(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR nNewSize		// 新的数组大小
 );
 
@@ -402,19 +402,19 @@ BASEGRAPH_COMMON_API int __cdecl SYAR_SetMaxSize(LPSYARRAY pA,			// 数组结构指针
 // 描述：	获取数组大小
 //
 // 返回值：	m_nSize			数组大小
-//			SYAR_NULL		pA == NULL
+//			BaseAR_NULL		pA == NULL
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API INT_PTR	__cdecl SYAR_GetSize(const SYArray* pA);		// 数组结构指针
-BASEGRAPH_COMMON_API int	__cdecl SYAR_GetCount(const SYArray* pA);	// 数组结构指针
+BASEGRAPH_COMMON_API INT_PTR	__cdecl BaseAR_GetSize(const BaseARray* pA);		// 数组结构指针
+BASEGRAPH_COMMON_API int	__cdecl BaseAR_GetCount(const BaseARray* pA);	// 数组结构指针
 
 																///////////////////////////////////////////////////////////////////////////////
 																// 描述：	获取数组的上界
 																//
 																// 返回值：	m_nSize-1		数组上界
-																//			SYAR_NULL		pA == NULL
-																//			SYAR_EMPTY		空数组（-1）
+																//			BaseAR_NULL		pA == NULL
+																//			BaseAR_EMPTY		空数组（-1）
 																///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API INT_PTR	__cdecl SYAR_GetUpperBound(LPSYARRAY pA);	// 数组结构指针
+BASEGRAPH_COMMON_API INT_PTR	__cdecl BaseAR_GetUpperBound(LPBaseARRAY pA);	// 数组结构指针
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// 描述：	判断是否为空数组
@@ -422,137 +422,137 @@ BASEGRAPH_COMMON_API INT_PTR	__cdecl SYAR_GetUpperBound(LPSYARRAY pA);	// 数组结
 																	// 返回值：	TRUE		为空
 																	//			FALSE		不为空
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYAR_IsEmpty(LPSYARRAY pA);			// 数组结构指针
+BASEGRAPH_COMMON_API BOOL __cdecl BaseAR_IsEmpty(LPBaseARRAY pA);			// 数组结构指针
 
 																///////////////////////////////////////////////////////////////////////////////
 																// 描述：	释放超越上界的元素的内存
 																//
-																// 返回值：	SYAR_SUCCESS		成功
-																//			SYAR_NULL			空指针
-																//			SYAR_MEMORY_ERROR	内存错误
+																// 返回值：	BaseAR_SUCCESS		成功
+																//			BaseAR_NULL			空指针
+																//			BaseAR_MEMORY_ERROR	内存错误
 																///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_FreeExtra(LPSYARRAY pA);		// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_FreeExtra(LPBaseARRAY pA);		// 数组结构指针
 
 																///////////////////////////////////////////////////////////////////////////////
 																// 描述：	释放所有元素的内存
 																//
-																// 返回值：	SYAR_SUCCESS		成功
-																//			SYAR_NULL			空指针
+																// 返回值：	BaseAR_SUCCESS		成功
+																//			BaseAR_NULL			空指针
 																///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_RemoveAll(LPSYARRAY pA);		// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_RemoveAll(LPBaseARRAY pA);		// 数组结构指针
 
 																///////////////////////////////////////////////////////////////////////////////
 																// 描述：	获取数据指针
 																//
 																// 返回值：	NULL			pA == NULL
-																//			SYAR_ELE_PTR	当前数据指针
+																//			BaseAR_ELE_PTR	当前数据指针
 																///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYAR_ELE_PTR __cdecl SYAR_GetData(LPSYARRAY pA);		// 数组结构指针
+BASEGRAPH_COMMON_API BaseAR_ELE_PTR __cdecl BaseAR_GetData(LPBaseARRAY pA);		// 数组结构指针
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// 描述：	获取某一元素
 																	//
-																	// 返回值：	SYAR_ELEMENT		索引元素数据
+																	// 返回值：	BaseAR_ELEMENT		索引元素数据
 																	//			NULL				pA == NULL || nIndex 无效
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYAR_ELEMENT __cdecl SYAR_GetAt(const SYArray* pA,		// 数组结构指针
+BASEGRAPH_COMMON_API BaseAR_ELEMENT __cdecl BaseAR_GetAt(const BaseARray* pA,		// 数组结构指针
 	INT_PTR nIndex);	// 元素索引号
 
 						///////////////////////////////////////////////////////////////////////////////
 						// 描述：	设置某一非越界元素的值
 						//
 						// 返回值：	NULL				失败
-						//			SYAR_ELEMENT		旧元素数据
+						//			BaseAR_ELEMENT		旧元素数据
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYAR_ELEMENT __cdecl SYAR_SetAt(LPSYARRAY pA,				// 数组结构指针
+BASEGRAPH_COMMON_API BaseAR_ELEMENT __cdecl BaseAR_SetAt(LPBaseARRAY pA,				// 数组结构指针
 	INT_PTR nIndex,				// 元素索引号
-	SYAR_ELEMENT newData);		// 预设元素值
+	BaseAR_ELEMENT newData);		// 预设元素值
 
 								///////////////////////////////////////////////////////////////////////////////
 								// 描述：	在数组尾扩充添加一个元素
 								//
 								// 返回值：	索引				添加成功
-								//			SYAR_NULL			空指针
-								//			SYAR_FAILED			失败
+								//			BaseAR_NULL			空指针
+								//			BaseAR_FAILED			失败
 								///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API INT_PTR __cdecl SYAR_Add(LPSYARRAY pA,				// 数组结构指针
-	SYAR_ELEMENT newData);		// 预设元素值
+BASEGRAPH_COMMON_API INT_PTR __cdecl BaseAR_Add(LPBaseARRAY pA,				// 数组结构指针
+	BaseAR_ELEMENT newData);		// 预设元素值
 
 								///////////////////////////////////////////////////////////////////////////////
 								// 描述：	在数组尾扩充添加另一个数组
 								//
-								// 返回值：	SYAR_SUCCESS		成功
-								//			SYAR_NULL			空指针
-								//			SYAR_FAILED			失败
+								// 返回值：	BaseAR_SUCCESS		成功
+								//			BaseAR_NULL			空指针
+								//			BaseAR_FAILED			失败
 								///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_Append(LPSYARRAY pA,			// 数组结构指针
-	LPSYARRAY pSrc);		// 预添加的数组
+BASEGRAPH_COMMON_API int __cdecl BaseAR_Append(LPBaseARRAY pA,			// 数组结构指针
+	LPBaseARRAY pSrc);		// 预添加的数组
 
 							///////////////////////////////////////////////////////////////////////////////
 							// 描述：	复制另一个数组的内容
 							//
-							// 返回值：	SYAR_SUCCESS		成功
-							//			SYAR_NULL			空指针
-							//			SYAR_FAILED			失败
+							// 返回值：	BaseAR_SUCCESS		成功
+							//			BaseAR_NULL			空指针
+							//			BaseAR_FAILED			失败
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_Copy(LPSYARRAY pA,			// 数组结构指针
-	LPSYARRAY pSrc);		// 预复制的数组
+BASEGRAPH_COMMON_API int __cdecl BaseAR_Copy(LPBaseARRAY pA,			// 数组结构指针
+	LPBaseARRAY pSrc);		// 预复制的数组
 
 							///////////////////////////////////////////////////////////////////////////////
 							// 描述：	在某一非越界元素前或者最后一个元素后插入几个新元素
 							//
 							// 返回值：	索引				最后一个插入的元素
-							//			SYAR_NULL			空指针
-							//			SYAR_FAILED			失败
-							//			SYAR_INVALID_PARAM	无效参数
+							//			BaseAR_NULL			空指针
+							//			BaseAR_FAILED			失败
+							//			BaseAR_INVALID_PARAM	无效参数
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API INT_PTR __cdecl SYAR_InsertAt(LPSYARRAY pA,				// 数组结构指针
+BASEGRAPH_COMMON_API INT_PTR __cdecl BaseAR_InsertAt(LPBaseARRAY pA,				// 数组结构指针
 	INT_PTR nIndex,			// 元素索引号
-	SYAR_ELEMENT newData,		// 预插入元素值
+	BaseAR_ELEMENT newData,		// 预插入元素值
 	INT_PTR nCount);			// 预插入的元素个数
 
 								///////////////////////////////////////////////////////////////////////////////
 								// 描述：	在某一非越界元素前或者最后一个元素后插入一个数组
 								//
-								// 返回值：	SYAR_SUCCESS		成功
-								//			SYAR_NULL			空指针
-								//			SYAR_FAILED			失败
-								//			SYAR_INVALID_PARAM	无效参数
+								// 返回值：	BaseAR_SUCCESS		成功
+								//			BaseAR_NULL			空指针
+								//			BaseAR_FAILED			失败
+								//			BaseAR_INVALID_PARAM	无效参数
 								///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_InsertArrayAt(LPSYARRAY pA,			// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_InsertArrayAt(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR nIndex,			// 元素索引号
-	LPSYARRAY pSrc);			// 预插入数组
+	LPBaseARRAY pSrc);			// 预插入数组
 
 								///////////////////////////////////////////////////////////////////////////////
 								// 描述：	从某一非越界元素开始删除几个元素
 								//
-								// 返回值：	SYAR_SUCCESS		成功
-								//			SYAR_NULL			空指针
-								//			SYAR_FAILED			失败
-								//			SYAR_INVALID_PARAM	无效参数
+								// 返回值：	BaseAR_SUCCESS		成功
+								//			BaseAR_NULL			空指针
+								//			BaseAR_FAILED			失败
+								//			BaseAR_INVALID_PARAM	无效参数
 								///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API SYAR_ELEMENT __cdecl SYAR_RemoveAt(LPSYARRAY pA,			// 数组结构指针
+BASEGRAPH_COMMON_API BaseAR_ELEMENT __cdecl BaseAR_RemoveAt(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR nIndex,		// 元素索引号
 	INT_PTR nCount);		// 预删除的元素个数
 
 							//////////////////////////////////////////////////////////////////////////
 							// 描述：	交换两个非越界元素的值
 							//
-							// 返回值：	SYAR_SUCCESS		成功
-							//			SYAR_NULL			空指针
-							//			SYAR_INVALID_PARAM	无效参数
+							// 返回值：	BaseAR_SUCCESS		成功
+							//			BaseAR_NULL			空指针
+							//			BaseAR_INVALID_PARAM	无效参数
 							//////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_Swap(LPSYARRAY pA,			// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_Swap(LPBaseARRAY pA,			// 数组结构指针
 	INT_PTR i,			// 元素索引号
 	INT_PTR j);
 
 //////////////////////////////////////////////////////////////////////////
 // 描述：	翻转数组
 //
-// 返回值：	SYAR_SUCCESS		成功
-//			SYAR_NULL			空指针
+// 返回值：	BaseAR_SUCCESS		成功
+//			BaseAR_NULL			空指针
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API int __cdecl SYAR_Reverse(LPSYARRAY pA);		// 数组结构指针
+BASEGRAPH_COMMON_API int __cdecl BaseAR_Reverse(LPBaseARRAY pA);		// 数组结构指针
 
 															//////////////////////////////////////////////////////////////////////////
 															// 描述：	移动数组内元素的位置：把a[i]移动到a[j]之前紧靠a[j]的位置 
@@ -562,22 +562,22 @@ BASEGRAPH_COMMON_API int __cdecl SYAR_Reverse(LPSYARRAY pA);		// 数组结构指针
 															// 示例：	对于数组[1,2,3,4,5]，如果i=3,j=1则得到：[1,4,2,3,5]
 															//			如果i=1,j=3,则得到：[1,3,2,4,5]，注意结果中2的位置并不是(j==3)
 															//////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYAR_MoveElement(LPSYARRAY pA,		// 数组结构指针
+BASEGRAPH_COMMON_API void __cdecl BaseAR_MoveElement(LPBaseARRAY pA,		// 数组结构指针
 	size_t i,			// 要移动的元素的索引，应该属于[0,size)
 	size_t j);		// 要移动到的位置，应该属于[0,size]
 
 typedef int(*SYCompareFun)(const void*, const void*);
-BASEGRAPH_COMMON_API void __cdecl SYAR_Sort(LPSYARRAY pA, SYCompareFun fun);
+BASEGRAPH_COMMON_API void __cdecl BaseAR_Sort(LPBaseARRAY pA, SYCompareFun fun);
 ///////////////////////////////////////////////////////////////////////////////
 // 类封装
 #ifdef __cplusplus
 
 template<class TYPE, class ARG_TYPE = const TYPE&>
-class CSYArray
+class CBaseARray
 {
 public:
-	CSYArray();
-	~CSYArray();
+	CBaseARray();
+	~CBaseARray();
 
 	INT_PTR	GetSize() const;
 	int		GetCount() const;
@@ -600,20 +600,20 @@ public:
 	TYPE*	GetData();
 
 	INT_PTR	Add(ARG_TYPE newElement);
-	INT_PTR Append(const CSYArray& src);
-	INT_PTR Append(const SYArray& src);
-	void	Copy(const CSYArray& src);
+	INT_PTR Append(const CBaseARray& src);
+	INT_PTR Append(const BaseARray& src);
+	void	Copy(const CBaseARray& src);
 
 	const	TYPE& operator[](INT_PTR nIndex) const;
 	TYPE&	operator[](INT_PTR nIndex);
 
 	INT_PTR	InsertAt(INT_PTR nIndex, ARG_TYPE newElement, INT_PTR nCount = 1);
 	void	RemoveAt(INT_PTR nIndex, INT_PTR nCount = 1);
-	void	InsertAt(INT_PTR nStartIndex, CSYArray* pNewArray);
+	void	InsertAt(INT_PTR nStartIndex, CBaseARray* pNewArray);
 
 	void	Swap(INT_PTR i, INT_PTR j);
 	void	Reverse();
-	void	MoveElement(INT_PTR i, INT_PTR j); //说明参见SYAR_MoveElement
+	void	MoveElement(INT_PTR i, INT_PTR j); //说明参见BaseAR_MoveElement
 
 											   // Purpose:
 											   // 使用数组之前，预设数组大小后， 设定m_nSize = 0;
@@ -630,37 +630,37 @@ protected:
 // inline implementions.
 
 template<class TYPE, class ARG_TYPE>
-inline INT_PTR CSYArray<TYPE, ARG_TYPE>::GetSize() const
+inline INT_PTR CBaseARray<TYPE, ARG_TYPE>::GetSize() const
 {
 	return m_nSize;
 }
 
 template<class TYPE, class ARG_TYPE>
-inline int CSYArray<TYPE, ARG_TYPE>::GetCount() const
+inline int CBaseARray<TYPE, ARG_TYPE>::GetCount() const
 {
 	return (int)m_nSize;
 }
 
 template<class TYPE, class ARG_TYPE>
-inline BOOL CSYArray<TYPE, ARG_TYPE>::IsEmpty()
+inline BOOL CBaseARray<TYPE, ARG_TYPE>::IsEmpty()
 {
 	return (m_nSize == 0);
 }
 
 template<class TYPE, class ARG_TYPE>
-inline INT_PTR CSYArray<TYPE, ARG_TYPE>::GetUpperBound() const
+inline INT_PTR CBaseARray<TYPE, ARG_TYPE>::GetUpperBound() const
 {
 	return (m_nSize - 1);
 }
 
 template<class TYPE, class ARG_TYPE>
-inline void CSYArray<TYPE, ARG_TYPE>::RemoveAll()
+inline void CBaseARray<TYPE, ARG_TYPE>::RemoveAll()
 {
 	SetSize(0, -1);
 }
 
 template<class TYPE, class ARG_TYPE>
-inline const TYPE& CSYArray<TYPE, ARG_TYPE>::ElementAt(INT_PTR nIndex) const
+inline const TYPE& CBaseARray<TYPE, ARG_TYPE>::ElementAt(INT_PTR nIndex) const
 {
 	//assert((nIndex >= 0) && (nIndex < m_nSize));
 
@@ -676,7 +676,7 @@ inline const TYPE& CSYArray<TYPE, ARG_TYPE>::ElementAt(INT_PTR nIndex) const
 }
 
 template<class TYPE, class ARG_TYPE>
-inline TYPE& CSYArray<TYPE, ARG_TYPE>::ElementAt(INT_PTR nIndex)
+inline TYPE& CBaseARray<TYPE, ARG_TYPE>::ElementAt(INT_PTR nIndex)
 {
 	//assert((nIndex >= 0) && (nIndex < m_nSize));
 
@@ -692,7 +692,7 @@ inline TYPE& CSYArray<TYPE, ARG_TYPE>::ElementAt(INT_PTR nIndex)
 }
 
 template<class TYPE, class ARG_TYPE>
-inline const TYPE& CSYArray<TYPE, ARG_TYPE>::GetAt(INT_PTR nIndex) const
+inline const TYPE& CBaseARray<TYPE, ARG_TYPE>::GetAt(INT_PTR nIndex) const
 {
 	//assert((nIndex >= 0) && (nIndex < m_nSize));
 
@@ -708,7 +708,7 @@ inline const TYPE& CSYArray<TYPE, ARG_TYPE>::GetAt(INT_PTR nIndex) const
 }
 
 template<class TYPE, class ARG_TYPE>
-inline TYPE& CSYArray<TYPE, ARG_TYPE>::GetAt(INT_PTR nIndex)
+inline TYPE& CBaseARray<TYPE, ARG_TYPE>::GetAt(INT_PTR nIndex)
 {
 	//assert((nIndex >= 0) && (nIndex < m_nSize));
 
@@ -724,7 +724,7 @@ inline TYPE& CSYArray<TYPE, ARG_TYPE>::GetAt(INT_PTR nIndex)
 }
 
 template<class TYPE, class ARG_TYPE>
-inline TYPE CSYArray<TYPE, ARG_TYPE>::SetAt(INT_PTR nIndex, ARG_TYPE newElement)
+inline TYPE CBaseARray<TYPE, ARG_TYPE>::SetAt(INT_PTR nIndex, ARG_TYPE newElement)
 {
 	//assert((nIndex >= 0) && (nIndex < m_nSize));
 
@@ -740,19 +740,19 @@ inline TYPE CSYArray<TYPE, ARG_TYPE>::SetAt(INT_PTR nIndex, ARG_TYPE newElement)
 }
 
 template<class TYPE, class ARG_TYPE>
-inline const TYPE* CSYArray<TYPE, ARG_TYPE>::GetData() const
+inline const TYPE* CBaseARray<TYPE, ARG_TYPE>::GetData() const
 {
 	return (const TYPE*)m_pData;
 }
 
 template<class TYPE, class ARG_TYPE>
-inline TYPE* CSYArray<TYPE, ARG_TYPE>::GetData()
+inline TYPE* CBaseARray<TYPE, ARG_TYPE>::GetData()
 {
 	return (TYPE*)m_pData;
 }
 
 template<class TYPE, class ARG_TYPE>
-inline INT_PTR CSYArray<TYPE, ARG_TYPE>::Add(ARG_TYPE newElement)
+inline INT_PTR CBaseARray<TYPE, ARG_TYPE>::Add(ARG_TYPE newElement)
 {
 	INT_PTR nIndex = m_nSize;
 
@@ -763,13 +763,13 @@ inline INT_PTR CSYArray<TYPE, ARG_TYPE>::Add(ARG_TYPE newElement)
 }
 
 template<class TYPE, class ARG_TYPE>
-inline const TYPE& CSYArray<TYPE, ARG_TYPE>::operator[](INT_PTR nIndex) const
+inline const TYPE& CBaseARray<TYPE, ARG_TYPE>::operator[](INT_PTR nIndex) const
 {
 	return GetAt(nIndex);
 }
 
 template<class TYPE, class ARG_TYPE>
-inline TYPE& CSYArray<TYPE, ARG_TYPE>::operator[](INT_PTR nIndex)
+inline TYPE& CBaseARray<TYPE, ARG_TYPE>::operator[](INT_PTR nIndex)
 {
 	return ElementAt(nIndex);
 }
@@ -777,14 +777,14 @@ inline TYPE& CSYArray<TYPE, ARG_TYPE>::operator[](INT_PTR nIndex)
 // out-of-inline implementions.
 
 template<class TYPE, class ARG_TYPE>
-CSYArray<TYPE, ARG_TYPE>::CSYArray()
+CBaseARray<TYPE, ARG_TYPE>::CBaseARray()
 {
 	m_pData = NULL;
 	m_nSize = m_nMaxSize = m_nGrowBy = 0;
 }
 
 template<class TYPE, class ARG_TYPE>
-CSYArray<TYPE, ARG_TYPE>::~CSYArray()
+CBaseARray<TYPE, ARG_TYPE>::~CBaseARray()
 {
 	if (m_pData != NULL)
 	{
@@ -793,7 +793,7 @@ CSYArray<TYPE, ARG_TYPE>::~CSYArray()
 }
 
 template<class TYPE, class ARG_TYPE>
-void CSYArray<TYPE, ARG_TYPE>::SetSize(INT_PTR nNewSize, INT_PTR nGrowBy)
+void CBaseARray<TYPE, ARG_TYPE>::SetSize(INT_PTR nNewSize, INT_PTR nGrowBy)
 {
 	//assert(nNewSize >= 0);
 
@@ -904,7 +904,7 @@ void CSYArray<TYPE, ARG_TYPE>::SetSize(INT_PTR nNewSize, INT_PTR nGrowBy)
 }
 
 template<class TYPE, class ARG_TYPE>
-void CSYArray<TYPE, ARG_TYPE>::FreeExtra()
+void CBaseARray<TYPE, ARG_TYPE>::FreeExtra()
 {
 	if (m_nSize != m_nMaxSize)
 	{
@@ -924,12 +924,12 @@ void CSYArray<TYPE, ARG_TYPE>::FreeExtra()
 }
 
 template<class TYPE, class ARG_TYPE>
-INT_PTR CSYArray<TYPE, ARG_TYPE>::Append(const CSYArray& src)
+INT_PTR CBaseARray<TYPE, ARG_TYPE>::Append(const CBaseARray& src)
 {
 	//assert(this != &src);   // cannot append to itself
 
 	if (this == &src)
-		return SYAR_INVALID_PARAM;
+		return BaseAR_INVALID_PARAM;
 
 	INT_PTR nOldSize = m_nSize;
 
@@ -943,7 +943,7 @@ INT_PTR CSYArray<TYPE, ARG_TYPE>::Append(const CSYArray& src)
 
 
 template<class TYPE, class ARG_TYPE>
-INT_PTR CSYArray<TYPE, ARG_TYPE>::Append(const SYArray& src)
+INT_PTR CBaseARray<TYPE, ARG_TYPE>::Append(const BaseARray& src)
 {
 	//assert(this != &src);   // cannot append to itself
 
@@ -959,7 +959,7 @@ INT_PTR CSYArray<TYPE, ARG_TYPE>::Append(const SYArray& src)
 
 
 template<class TYPE, class ARG_TYPE>
-void CSYArray<TYPE, ARG_TYPE>::Copy(const CSYArray& src)
+void CBaseARray<TYPE, ARG_TYPE>::Copy(const CBaseARray& src)
 {
 	//assert(this != &src);   // cannot copy itself
 
@@ -973,13 +973,13 @@ void CSYArray<TYPE, ARG_TYPE>::Copy(const CSYArray& src)
 }
 
 template<class TYPE, class ARG_TYPE>
-INT_PTR CSYArray<TYPE, ARG_TYPE>::InsertAt(INT_PTR nIndex, ARG_TYPE newElement, INT_PTR nCount /*=1*/)
+INT_PTR CBaseARray<TYPE, ARG_TYPE>::InsertAt(INT_PTR nIndex, ARG_TYPE newElement, INT_PTR nCount /*=1*/)
 {
 	//assert(nIndex >= 0);    // will expand to meet need
 	//assert(nCount > 0);     // zero or negative size not allowed
 
 	if ((nIndex < 0) || (nCount <= 0))
-		return SYAR_INVALID_PARAM;
+		return BaseAR_INVALID_PARAM;
 
 	if (nIndex < m_nSize)		// inserting in the middle of the array
 	{
@@ -1012,7 +1012,7 @@ INT_PTR CSYArray<TYPE, ARG_TYPE>::InsertAt(INT_PTR nIndex, ARG_TYPE newElement, 
 }
 
 template<class TYPE, class ARG_TYPE>
-void CSYArray<TYPE, ARG_TYPE>::RemoveAt(INT_PTR nIndex, INT_PTR nCount)
+void CBaseARray<TYPE, ARG_TYPE>::RemoveAt(INT_PTR nIndex, INT_PTR nCount)
 {
 	//assert((nIndex >= 0) && (nIndex < m_nSize));
 	//assert((nCount > 0) && ((nIndex + nCount) <= m_nSize));
@@ -1033,7 +1033,7 @@ void CSYArray<TYPE, ARG_TYPE>::RemoveAt(INT_PTR nIndex, INT_PTR nCount)
 }
 
 template<class TYPE, class ARG_TYPE>
-void CSYArray<TYPE, ARG_TYPE>::InsertAt(INT_PTR nStartIndex, CSYArray* pNewArray)
+void CBaseARray<TYPE, ARG_TYPE>::InsertAt(INT_PTR nStartIndex, CBaseARray* pNewArray)
 {
 	//assert(pNewArray != NULL);
 	//assert((nStartIndex >= 0) && (nStartIndex <= m_nSize));
@@ -1062,7 +1062,7 @@ void CSYArray<TYPE, ARG_TYPE>::InsertAt(INT_PTR nStartIndex, CSYArray* pNewArray
 }
 
 template<class TYPE, class ARG_TYPE>
-void CSYArray<TYPE, ARG_TYPE>::Swap(INT_PTR i, INT_PTR j)
+void CBaseARray<TYPE, ARG_TYPE>::Swap(INT_PTR i, INT_PTR j)
 {
 	//assert((i >= 0) && (j >= 0) && (i < m_nSize) && (j < m_nSize));
 
@@ -1076,7 +1076,7 @@ void CSYArray<TYPE, ARG_TYPE>::Swap(INT_PTR i, INT_PTR j)
 }
 
 template<class TYPE, class ARG_TYPE>
-void CSYArray<TYPE, ARG_TYPE>::Reverse()
+void CBaseARray<TYPE, ARG_TYPE>::Reverse()
 {
 	if (m_nSize <= 1)
 		return;
@@ -1094,7 +1094,7 @@ void CSYArray<TYPE, ARG_TYPE>::Reverse()
 }
 
 template<class TYPE, class ARG_TYPE>
-void CSYArray<TYPE, ARG_TYPE>::MoveElement(INT_PTR i, INT_PTR j)
+void CBaseARray<TYPE, ARG_TYPE>::MoveElement(INT_PTR i, INT_PTR j)
 {
 	//如果索引不合法，则不需要处理
 	if (i < 0 || i >= m_nSize || j < 0 || j > m_nSize) //j允许定于m_nSize，此时表示移动到末尾
@@ -1119,19 +1119,19 @@ void CSYArray<TYPE, ARG_TYPE>::MoveElement(INT_PTR i, INT_PTR j)
 	}
 }
 
-typedef CSYArray<int, int>				CSYIntArray;
-typedef CSYArray<float, float>			CSYFloatArray;
-typedef CSYArray<double, double>		CSYDoubleArray;
-typedef CSYArray<BYTE, BYTE>			CSYBYTEArray;
-typedef CSYArray<DWORD, DWORD>			CSYDWORDArray;
-typedef CSYArray<void*, void*>			CSYPtrArray;
-typedef CSYArray<int*, int*>			CSYIntPtrArray;
-typedef CSYArray<float*, float*>		CSYFloatPtrArray;
-typedef CSYArray<double*, double*>		CSYDoublePtrArray;
-typedef CSYArray<BYTE*, BYTE*>			CSYBYTEPtrArray;
-typedef CSYArray<DWORD*, DWORD*>		CSYDWORDPtrArray;
-typedef CSYArray<LPTSTR, LPTSTR>		CSYStrArray;
-typedef CSYArray<LPCTSTR, LPCTSTR>		CSYConstStrArray;
+typedef CBaseARray<int, int>				CSYIntArray;
+typedef CBaseARray<float, float>			CSYFloatArray;
+typedef CBaseARray<double, double>		CSYDoubleArray;
+typedef CBaseARray<BYTE, BYTE>			CSYBYTEArray;
+typedef CBaseARray<DWORD, DWORD>			CSYDWORDArray;
+typedef CBaseARray<void*, void*>			CSYPtrArray;
+typedef CBaseARray<int*, int*>			CSYIntPtrArray;
+typedef CBaseARray<float*, float*>		CSYFloatPtrArray;
+typedef CBaseARray<double*, double*>		CSYDoublePtrArray;
+typedef CBaseARray<BYTE*, BYTE*>			CSYBYTEPtrArray;
+typedef CBaseARray<DWORD*, DWORD*>		CSYDWORDPtrArray;
+typedef CBaseARray<LPTSTR, LPTSTR>		CSYStrArray;
+typedef CBaseARray<LPCTSTR, LPCTSTR>		CSYConstStrArray;
 
 BASEGRAPH_COMMON_API void __cdecl SYStrAR_Release(CSYStrArray& ary);
 

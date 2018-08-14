@@ -1,7 +1,7 @@
 #ifndef __SY_RIP_INC__
 #define __SY_RIP_INC__
 
-//#include "SYBufferDC.h"
+//#include "CommonBufferDC.h"
 
 //得到图形外包矩形
 int BASEGRAPH_DATARENDER_API rip_getfigurebound(IN	vectorgraph* figure,OUT	rectf* rect);
@@ -54,7 +54,7 @@ void	BASEGRAPH_DATARENDER_API rip_offsetfigure(IN vectorgraph* figure,float fx,f
 void	BASEGRAPH_DATARENDER_API rip_scalefigure(IN	vectorgraph* figure,float fx,float fy);
 void	BASEGRAPH_DATARENDER_API rip_recalcbound(vectorgraph* figure);
 void	BASEGRAPH_DATARENDER_API rip_mul_matrix(vectorgraph* pgraph,matrix4f* pmatrix);
-//void	BASEGRAPH_DATARENDER_API rip_draw_figure(IN vectorgraph*	figure,	IN float offsetx,IN float offsety,IN CSYBufferDC* bufferDC);
+//void	BASEGRAPH_DATARENDER_API rip_draw_figure(IN vectorgraph*	figure,	IN float offsetx,IN float offsety,IN CCommonBufferDC* bufferDC);
 int		BASEGRAPH_DATARENDER_API cell_extend(OUT vectorcell*	descell,IN  vectorcell* srccell,IN  int ndirect,IN  float fwidth);
 void	BASEGRAPH_DATARENDER_API cell_reverse(vectorcell* pcell);
 void	BASEGRAPH_DATARENDER_API cell_merge(vectorcell* descell, const vectorcell* srccell1,vectorcell* srccell2);

@@ -29,11 +29,11 @@
 #include "Common\2DBufferAPI.h"
 #include "Common\BezierDef.h"
 
-class BASEGRAPH_COMMON_API CSYBufferDC
+class BASEGRAPH_COMMON_API CCommonBufferDC
 {
 public:
-	CSYBufferDC(void);
-	virtual ~CSYBufferDC(void);
+	CCommonBufferDC(void);
+	virtual ~CCommonBufferDC(void);
 
 	enum SYBORDER_STYLE		// 边框类型
 	{
@@ -664,56 +664,56 @@ private:
 // 通用属性访问接口
 
 // 获取绑定对象的属性
-inline DWORD* CSYBufferDC::GetBuffer() const
+inline DWORD* CCommonBufferDC::GetBuffer() const
 {
 	return m_pdwBuffer;
 }
-inline int CSYBufferDC::GetBufferWidth() const
+inline int CCommonBufferDC::GetBufferWidth() const
 {
 	return m_nWidth;
 }
-inline int CSYBufferDC::GetBufferHeight() const
+inline int CCommonBufferDC::GetBufferHeight() const
 {
 	return m_nHeight;
 }
-inline void CSYBufferDC::GetBufferSize(OUT int &nWidth, OUT int &nHeight)
+inline void CCommonBufferDC::GetBufferSize(OUT int &nWidth, OUT int &nHeight)
 {
 	nWidth = m_nWidth;
 	nHeight = m_nHeight;
 }
 
 // 将屏幕设为某一种颜色
-inline void CSYBufferDC::ClearBuffer(IN DWORD dwColor)
+inline void CCommonBufferDC::ClearBuffer(IN DWORD dwColor)
 {
 	//SYBGRA32_FillRect(m_pdwBuffer, 0, 0, m_nWidth, m_nHeight, m_nWidth, m_nHeight, NULL, dwColor);
 }
-inline void CSYBufferDC::ClearRect(IN int x, IN int y, IN int nWidth, IN int nHeight, IN DWORD dwColor)
+inline void CCommonBufferDC::ClearRect(IN int x, IN int y, IN int nWidth, IN int nHeight, IN DWORD dwColor)
 {
 	//SYBGRA32_FillRect(m_pdwBuffer, x, y, nWidth, nHeight, m_nWidth, m_nHeight, NULL, dwColor);
 }
 
 // 获取绘制的裁剪区域，裁剪区域为左上闭右下开。
-inline void CSYBufferDC::GetClipRect(OUT RECT& rcClip)
+inline void CCommonBufferDC::GetClipRect(OUT RECT& rcClip)
 {
 	rcClip = m_rcClip;
 }
-inline const RECT& CSYBufferDC::GetClipRect() const
+inline const RECT& CCommonBufferDC::GetClipRect() const
 {
 	return m_rcClip;
 }
 
 // 设置获取绘制后的有效图像区域，用于最后提取有效图像（左上闭右下开）。
-inline void CSYBufferDC::GetValidRect(OUT RECT &rcValid)
+inline void CCommonBufferDC::GetValidRect(OUT RECT &rcValid)
 {
 	rcValid = m_rcValid;
 }
-inline const RECT& CSYBufferDC::GetValidRect() const
+inline const RECT& CCommonBufferDC::GetValidRect() const
 {
 	return m_rcValid;
 }
 
 // 设置获取绘制坐标系的参考信息
-inline POINT CSYBufferDC::SetOffsetRef(IN int x, IN int y)
+inline POINT CCommonBufferDC::SetOffsetRef(IN int x, IN int y)
 {
 	POINT ptOld = m_ptOffsetRef;
 
@@ -723,7 +723,7 @@ inline POINT CSYBufferDC::SetOffsetRef(IN int x, IN int y)
 	return ptOld;
 }
 
-inline POINT CSYBufferDC::SetOffsetRef(IN float x, IN float y)
+inline POINT CCommonBufferDC::SetOffsetRef(IN float x, IN float y)
 {
 	POINT ptOld = m_ptOffsetRef;
 
@@ -733,7 +733,7 @@ inline POINT CSYBufferDC::SetOffsetRef(IN float x, IN float y)
 	return ptOld;
 }
 
-inline POINT CSYBufferDC::SetOffsetRef(IN POINT pt)
+inline POINT CCommonBufferDC::SetOffsetRef(IN POINT pt)
 {
 	POINT ptOld = m_ptOffsetRef;
 
@@ -741,11 +741,11 @@ inline POINT CSYBufferDC::SetOffsetRef(IN POINT pt)
 
 	return ptOld;
 }
-inline POINT CSYBufferDC::GetOffsetRef() const
+inline POINT CCommonBufferDC::GetOffsetRef() const
 {
 	return m_ptOffsetRef;
 }
-inline float CSYBufferDC::SetZoomRef(IN float fZoom)
+inline float CCommonBufferDC::SetZoomRef(IN float fZoom)
 {
 	float fOld = m_fZoomRef;
 
@@ -753,17 +753,17 @@ inline float CSYBufferDC::SetZoomRef(IN float fZoom)
 
 	return fOld;
 }
-inline float CSYBufferDC::GetZoomRef() const
+inline float CCommonBufferDC::GetZoomRef() const
 {
 	return m_fZoomRef;
 }
 
 // 设置获取画笔的属性（返回旧属性）
-inline int CSYBufferDC::GetPenStyle() const
+inline int CCommonBufferDC::GetPenStyle() const
 {
 	return m_nPenStyle;
 }
-inline int CSYBufferDC::SetPenWidth(IN int nWidth)
+inline int CCommonBufferDC::SetPenWidth(IN int nWidth)
 {
 	int nTmp = m_nPenWidth;
 
@@ -771,11 +771,11 @@ inline int CSYBufferDC::SetPenWidth(IN int nWidth)
 
 	return nTmp;
 }
-inline int CSYBufferDC::GetPenWidth() const
+inline int CCommonBufferDC::GetPenWidth() const
 {
 	return m_nPenWidth;
 }
-inline DWORD CSYBufferDC::SetPenColor(IN DWORD dwColor)
+inline DWORD CCommonBufferDC::SetPenColor(IN DWORD dwColor)
 {
 	DWORD dwTmp = m_dwPenColor;
 
@@ -783,13 +783,13 @@ inline DWORD CSYBufferDC::SetPenColor(IN DWORD dwColor)
 
 	return dwTmp;
 }
-inline DWORD CSYBufferDC::GetPenColor() const
+inline DWORD CCommonBufferDC::GetPenColor() const
 {
 	return m_dwPenColor;
 }
 
 // 设置获取背景属性（返回旧属性）
-inline DWORD CSYBufferDC::SetBkColor(IN DWORD dwColor)
+inline DWORD CCommonBufferDC::SetBkColor(IN DWORD dwColor)
 {
 	DWORD dwTmp = m_dwBkColor;
 
@@ -797,11 +797,11 @@ inline DWORD CSYBufferDC::SetBkColor(IN DWORD dwColor)
 
 	return dwTmp;
 }
-inline DWORD CSYBufferDC::GetBkColor() const
+inline DWORD CCommonBufferDC::GetBkColor() const
 {
 	return m_dwBkColor;
 }
-inline int CSYBufferDC::SetBkMode(IN int nBkMode)
+inline int CCommonBufferDC::SetBkMode(IN int nBkMode)
 {
 	int nTmp = m_nBkMode;
 
@@ -809,13 +809,13 @@ inline int CSYBufferDC::SetBkMode(IN int nBkMode)
 
 	return nTmp;
 }
-inline int CSYBufferDC::GetBkMode() const
+inline int CCommonBufferDC::GetBkMode() const
 {
 	return m_nBkMode;
 }
 
 // 设置获取填充属性（返回旧属性）（模式与背景相同）
-inline DWORD CSYBufferDC::SetFillColor(IN DWORD dwColor)
+inline DWORD CCommonBufferDC::SetFillColor(IN DWORD dwColor)
 {
 	DWORD dwTmp = m_dwFillColor;
 
@@ -823,11 +823,11 @@ inline DWORD CSYBufferDC::SetFillColor(IN DWORD dwColor)
 
 	return dwTmp;
 }
-inline DWORD CSYBufferDC::GetFillColor() const
+inline DWORD CCommonBufferDC::GetFillColor() const
 {
 	return m_dwFillColor;
 }
-inline int CSYBufferDC::SetFillMode(IN int nFillMode)
+inline int CCommonBufferDC::SetFillMode(IN int nFillMode)
 {
 	int nTmp = m_nFillMode;
 
@@ -835,13 +835,13 @@ inline int CSYBufferDC::SetFillMode(IN int nFillMode)
 
 	return nTmp;
 }
-inline int CSYBufferDC::GetFillMode() const
+inline int CCommonBufferDC::GetFillMode() const
 {
 	return m_nFillMode;
 }
 
 // 设置获取绘制模式（返回旧模式）
-inline int CSYBufferDC::SetROP2(IN int nDrawMode)
+inline int CCommonBufferDC::SetROP2(IN int nDrawMode)
 {
 	//assert(nDrawMode > 0 && nDrawMode <= R2_LAST);
 
@@ -851,13 +851,13 @@ inline int CSYBufferDC::SetROP2(IN int nDrawMode)
 
 	return nTmp;
 }
-inline int CSYBufferDC::GetROP2() const
+inline int CCommonBufferDC::GetROP2() const
 {
 	return m_nDrawMode;
 }
 
 // 设置自定义线型（一个像素宽的直线）{ 直线段、虚线段、直线段、…… }
-inline BOOL CSYBufferDC::SetLinePattern(IN const int *pPattern,		// 线型数组
+inline BOOL CCommonBufferDC::SetLinePattern(IN const int *pPattern,		// 线型数组
 										IN int nPatCount)			// 数组大小
 {
 	if (pPattern == NULL || nPatCount <= 0)
@@ -870,11 +870,11 @@ inline BOOL CSYBufferDC::SetLinePattern(IN const int *pPattern,		// 线型数组
 }
 
 // 文本绘制
-inline HFONT CSYBufferDC::GetFont() const
+inline HFONT CCommonBufferDC::GetFont() const
 {
 	return m_hFont;
 }
-inline DWORD CSYBufferDC::SetTextColor(IN DWORD dwColor)		// 文本颜色
+inline DWORD CCommonBufferDC::SetTextColor(IN DWORD dwColor)		// 文本颜色
 {
 	DWORD dwOldColor = m_dwTextColor;
 
@@ -882,7 +882,7 @@ inline DWORD CSYBufferDC::SetTextColor(IN DWORD dwColor)		// 文本颜色
 
 	return dwOldColor;
 }
-inline DWORD CSYBufferDC::GetTextColor() const
+inline DWORD CCommonBufferDC::GetTextColor() const
 {
 	return m_dwTextColor;
 }
@@ -891,7 +891,7 @@ inline DWORD CSYBufferDC::GetTextColor() const
 // 客户坐标系下的绘制接口
 
 // 贴图
-inline BOOL CSYBufferDC::BitBlt(IN int x,					// 目标位置
+inline BOOL CCommonBufferDC::BitBlt(IN int x,					// 目标位置
 								IN int y,
 								IN int nWidth,				// 目标区域大小
 								IN int nHeight,
@@ -917,7 +917,7 @@ inline BOOL CSYBufferDC::BitBlt(IN int x,					// 目标位置
 }
 
 // 设置某一点（点在有效区域内时返回 TRUE）
-inline BOOL CSYBufferDC::SetPixel(IN float x,			// 点位置
+inline BOOL CCommonBufferDC::SetPixel(IN float x,			// 点位置
 								  IN float y,
 								  IN DWORD dwColor)		// 颜色
 {
@@ -925,12 +925,12 @@ inline BOOL CSYBufferDC::SetPixel(IN float x,			// 点位置
 
 	return _SetPixel(SY_FToI(x), SY_FToI(y), dwColor);
 }
-inline BOOL CSYBufferDC::SetPixel(IN const pointf &pt,	// 点位置
+inline BOOL CCommonBufferDC::SetPixel(IN const pointf &pt,	// 点位置
 								  IN DWORD dwColor)			// 颜色
 {
 	return SetPixel(pt.x, pt.y, dwColor);
 }
-inline BOOL CSYBufferDC::SetPixel(IN int x,				// 点位置
+inline BOOL CCommonBufferDC::SetPixel(IN int x,				// 点位置
                                   IN int y,
 								  IN DWORD dwColor)		// 颜色
 {
@@ -938,114 +938,114 @@ inline BOOL CSYBufferDC::SetPixel(IN int x,				// 点位置
 
 	return _SetPixel(x, y, dwColor);
 }
-inline BOOL CSYBufferDC::SetPixel(IN const POINT &pt,	// 点位置
+inline BOOL CCommonBufferDC::SetPixel(IN const POINT &pt,	// 点位置
 								  IN DWORD dwColor)		// 颜色
 {
 	return SetPixel(pt.x, pt.y, dwColor);
 }
 
 // 画线
-inline void CSYBufferDC::MoveTo(IN float x, IN float y)
+inline void CCommonBufferDC::MoveTo(IN float x, IN float y)
 {
 	ClientToScreen(x, y);
 	_MoveTo(SY_FToI(x), SY_FToI(y));
 }
-inline void CSYBufferDC::MoveTo(IN const pointf &pt)
+inline void CCommonBufferDC::MoveTo(IN const pointf &pt)
 {
 	MoveTo(pt.x, pt.y);
 }
-inline void CSYBufferDC::MoveTo(IN int x, IN int y)
+inline void CCommonBufferDC::MoveTo(IN int x, IN int y)
 {
 	ClientToScreen(x, y);
 	_MoveTo(x, y);
 }
-inline void CSYBufferDC::MoveTo(IN const POINT &pt)
+inline void CCommonBufferDC::MoveTo(IN const POINT &pt)
 {
 	MoveTo((int)pt.x, (int)pt.y);
 }
-inline BOOL CSYBufferDC::LineTo(IN float x, IN float y)
+inline BOOL CCommonBufferDC::LineTo(IN float x, IN float y)
 {
 	ClientToScreen(x, y);
 
 	return _LineTo(SY_FToI(x), SY_FToI(y));
 }
-inline BOOL CSYBufferDC::LineTo(IN const pointf &pt)
+inline BOOL CCommonBufferDC::LineTo(IN const pointf &pt)
 {
 	return LineTo(pt.x, pt.y);
 }
-inline BOOL CSYBufferDC::LineTo(IN int x, IN int y)
+inline BOOL CCommonBufferDC::LineTo(IN int x, IN int y)
 {
 	ClientToScreen(x, y);
 
 	return _LineTo(x, y);
 }
-inline BOOL CSYBufferDC::LineTo(IN const POINT &pt)
+inline BOOL CCommonBufferDC::LineTo(IN const POINT &pt)
 {
 	return LineTo((int)pt.x, (int)pt.y);
 }
 
 // 画矩形
-inline void CSYBufferDC::DrawRect(IN float l, IN float t, IN float r, IN float b)
+inline void CCommonBufferDC::DrawRect(IN float l, IN float t, IN float r, IN float b)
 {
 	ClientToScreen(l, t);
 	ClientToScreen(r, b);
 	_DrawRect(SY_FToI(l), SY_FToI(t), SY_FToI(r), SY_FToI(b));
 }
-inline void CSYBufferDC::DrawRect(IN const pointf &ptLT, IN const pointf &ptRB)
+inline void CCommonBufferDC::DrawRect(IN const pointf &ptLT, IN const pointf &ptRB)
 {
 	DrawRect(ptLT.x, ptLT.y, ptRB.x, ptRB.y);
 }
-inline void CSYBufferDC::DrawRect(IN const rectf &rc)
+inline void CCommonBufferDC::DrawRect(IN const rectf &rc)
 {
 	DrawRect(rc.left, rc.top, rc.right, rc.bottom);
 }
-inline void CSYBufferDC::DrawRect(IN int l, IN int t, IN int r, IN int b)
+inline void CCommonBufferDC::DrawRect(IN int l, IN int t, IN int r, IN int b)
 {
 	ClientToScreen(l, t);
 	ClientToScreen(r, b);
 	_DrawRect(l, t, r, b);
 }
-inline void CSYBufferDC::DrawRect(IN const POINT &ptLT, IN const POINT &ptRB)
+inline void CCommonBufferDC::DrawRect(IN const POINT &ptLT, IN const POINT &ptRB)
 {
 	DrawRect((int)ptLT.x, (int)ptLT.y, (int)ptRB.x, (int)ptRB.y);
 }
-inline void CSYBufferDC::DrawRect(IN const RECT &rc)
+inline void CCommonBufferDC::DrawRect(IN const RECT &rc)
 {
 	DrawRect((int)rc.left, (int)rc.top, (int)rc.right, (int)rc.bottom);
 }
 
 // 填充矩形，此处填充色与内部填充色变量m_dwFillColor无关
-inline void CSYBufferDC::FillRect(IN float l, IN float t, IN float r, IN float b, IN DWORD dwColor)
+inline void CCommonBufferDC::FillRect(IN float l, IN float t, IN float r, IN float b, IN DWORD dwColor)
 {
 	ClientToScreen(l, t);
 	ClientToScreen(r, b);
 	_FillRect(SY_FToI(l), SY_FToI(t), SY_FToI(r), SY_FToI(b), dwColor);
 }
-inline void CSYBufferDC::FillRect(IN const pointf &ptLT, IN const pointf &ptRB, IN DWORD dwColor)
+inline void CCommonBufferDC::FillRect(IN const pointf &ptLT, IN const pointf &ptRB, IN DWORD dwColor)
 {
 	FillRect(ptLT.x, ptLT.y, ptRB.x, ptRB.y, dwColor);
 }
-inline void CSYBufferDC::FillRect(IN const rectf& rc, IN DWORD dwColor)
+inline void CCommonBufferDC::FillRect(IN const rectf& rc, IN DWORD dwColor)
 {
 	FillRect(rc.left, rc.top, rc.right, rc.bottom, dwColor);
 }
-inline void CSYBufferDC::FillRect(IN int l, IN int t, IN int r, IN int b, IN DWORD dwColor)
+inline void CCommonBufferDC::FillRect(IN int l, IN int t, IN int r, IN int b, IN DWORD dwColor)
 {
 	ClientToScreen(l, t);
 	ClientToScreen(r, b);
 	_FillRect(l, t, r, b, dwColor);
 }
-inline void CSYBufferDC::FillRect(IN const POINT &ptLT, IN const POINT &ptRB, IN DWORD dwColor)
+inline void CCommonBufferDC::FillRect(IN const POINT &ptLT, IN const POINT &ptRB, IN DWORD dwColor)
 {
 	FillRect((int)ptLT.x, (int)ptLT.y, (int)ptRB.x, (int)ptRB.y, dwColor);
 }
-inline void CSYBufferDC::FillRect(IN const RECT& rc, IN DWORD dwColor)
+inline void CCommonBufferDC::FillRect(IN const RECT& rc, IN DWORD dwColor)
 {
 	FillRect((int)rc.left, (int)rc.top, (int)rc.right, (int)rc.bottom, dwColor);
 }
 
 // 画圆
-inline void CSYBufferDC::DrawCircle(IN float xc,					// 圆心
+inline void CCommonBufferDC::DrawCircle(IN float xc,					// 圆心
 									IN float yc,
 									IN int r,						// 半径
 									IN BOOL bOddDia/* = TRUE*/)		// 直径为奇数（即 d = 2r + 1）
@@ -1055,13 +1055,13 @@ inline void CSYBufferDC::DrawCircle(IN float xc,					// 圆心
 	ClientToScreen(xc, yc);
 	_DrawCircle(SY_FToI(xc), SY_FToI(yc), (d >> 1), ((d & 1) != 0));
 }
-inline void CSYBufferDC::DrawCircle(IN const pointf &ptC,			// 圆心
+inline void CCommonBufferDC::DrawCircle(IN const pointf &ptC,			// 圆心
 									IN int r,						// 半径
 									IN BOOL bOddDia/* = TRUE*/)		// 直径为奇数（即 d = 2r + 1）
 {
 	DrawCircle(ptC.x, ptC.y, r, bOddDia);
 }
-inline void CSYBufferDC::DrawCircle(IN int xc,						// 圆心
+inline void CCommonBufferDC::DrawCircle(IN int xc,						// 圆心
 									IN int yc,
 									IN int r,						// 半径
 									IN BOOL bOddDia/* = TRUE*/)		// 直径为奇数（即 d = 2r + 1）
@@ -1071,14 +1071,14 @@ inline void CSYBufferDC::DrawCircle(IN int xc,						// 圆心
 	ClientToScreen(xc, yc);
 	_DrawCircle(xc, yc, (d >> 1), ((d & 1) != 0));
 }
-inline void CSYBufferDC::DrawCircle(IN const POINT &ptC,		// 圆心
+inline void CCommonBufferDC::DrawCircle(IN const POINT &ptC,		// 圆心
 									IN int r,					// 半径
 									IN BOOL bOddDia/* = TRUE*/)	// 直径为奇数（即 d = 2r + 1）
 {
 	DrawCircle((int)ptC.x, (int)ptC.y, r, bOddDia);
 }
 
-inline void CSYBufferDC::DrawEllipse(IN float xc,					// 圆心
+inline void CCommonBufferDC::DrawEllipse(IN float xc,					// 圆心
 									IN float yc,
 									IN int a,										// 长轴
 									IN int b,										// 短轴
@@ -1091,7 +1091,7 @@ inline void CSYBufferDC::DrawEllipse(IN float xc,					// 圆心
 	ClientToScreen(xc, yc);
 	_DrawEllipse(SY_FToI(xc), SY_FToI(yc), (d_a >> 1), (d_b >> 1), ((d_a & 1) != 0), ((d_b & 1) != 0));
 }
-inline void CSYBufferDC::DrawEllipse(IN const pointf &ptC,		// 圆心
+inline void CCommonBufferDC::DrawEllipse(IN const pointf &ptC,		// 圆心
 									IN int a,										// 长轴
 									IN int b,										// 短轴
 									IN BOOL bOdda/* = TRUE*/,			// 长轴为奇数
@@ -1099,7 +1099,7 @@ inline void CSYBufferDC::DrawEllipse(IN const pointf &ptC,		// 圆心
 {
 	DrawEllipse(ptC.x, ptC.y, a, b, bOdda, bOddb);
 }
-inline void CSYBufferDC::DrawEllipse(IN int xc,						// 圆心
+inline void CCommonBufferDC::DrawEllipse(IN int xc,						// 圆心
 									IN int yc,
 									IN int a,										// 长轴
 									IN int b,										// 短轴
@@ -1112,7 +1112,7 @@ inline void CSYBufferDC::DrawEllipse(IN int xc,						// 圆心
 	ClientToScreen(xc, yc);
 	_DrawEllipse(xc, yc, (d_a >> 1), (d_b >> 1), ((d_a & 1) != 0), ((d_b & 1) != 0));
 }
-inline void CSYBufferDC::DrawEllipse(IN const POINT &ptC,		// 圆心
+inline void CCommonBufferDC::DrawEllipse(IN const POINT &ptC,		// 圆心
 									IN int a,										// 长轴
 									IN int b,										// 短轴
 									IN BOOL bOdda/* = TRUE*/,			// 长轴为奇数
@@ -1121,7 +1121,7 @@ inline void CSYBufferDC::DrawEllipse(IN const POINT &ptC,		// 圆心
 	DrawEllipse((int)ptC.x, (int)ptC.y, a, b, bOdda, bOddb);
 }
 
-inline void CSYBufferDC::DrawArc(IN int nCenterX, 
+inline void CCommonBufferDC::DrawArc(IN int nCenterX, 
 								 IN int nCenterY, 
 								 IN pointf ptStart, 
 								 IN pointf ptEnd)
@@ -1155,7 +1155,7 @@ inline void CSYBufferDC::DrawArc(IN int nCenterX,
 
 //画扇形
 // 按角度来进行绘制
-inline void CSYBufferDC::DrawSector(int nCenterX, int nCenterY, int nRadius, float fBeginAngle, float fEndAngle)
+inline void CCommonBufferDC::DrawSector(int nCenterX, int nCenterY, int nRadius, float fBeginAngle, float fEndAngle)
 {
 	ClientToScreen(nCenterX, nCenterY);
 
@@ -1165,7 +1165,7 @@ inline void CSYBufferDC::DrawSector(int nCenterX, int nCenterY, int nRadius, flo
 }
 
 // 按起始终止点来绘制
-inline void CSYBufferDC::DrawSector(int nCenterX, int nCenterY, int nRadius, POINT ptBegin, POINT ptEnd)
+inline void CCommonBufferDC::DrawSector(int nCenterX, int nCenterY, int nRadius, POINT ptBegin, POINT ptEnd)
 {
 	ClientToScreen(nCenterX, nCenterY);
 	int ptBegin_x, ptBegin_y;
@@ -1194,7 +1194,7 @@ inline void CSYBufferDC::DrawSector(int nCenterX, int nCenterY, int nRadius, POI
 }
 
 // 画边框
-inline void CSYBufferDC::DrawBorder(IN float l,						// 目标区域
+inline void CCommonBufferDC::DrawBorder(IN float l,						// 目标区域
 									IN float t,
 									IN float r,
 									IN float b,
@@ -1207,7 +1207,7 @@ inline void CSYBufferDC::DrawBorder(IN float l,						// 目标区域
 	ClientToScreen(r, b);
 	_DrawBorder(SY_FToI(l), SY_FToI(t), SY_FToI(r), SY_FToI(b), dwShadowColor, dwLightColor, eStyle, nBorderWidth);
 }
-inline void CSYBufferDC::DrawBorder(IN const rectf &rcDest,		// 目标区域
+inline void CCommonBufferDC::DrawBorder(IN const rectf &rcDest,		// 目标区域
 									IN DWORD dwShadowColor,			// 暗色
 									IN DWORD dwLightColor,			// 亮色
 									IN SYBORDER_STYLE eStyle,		// 风格
@@ -1215,7 +1215,7 @@ inline void CSYBufferDC::DrawBorder(IN const rectf &rcDest,		// 目标区域
 {
 	DrawBorder(rcDest.left, rcDest.top, rcDest.top, rcDest.bottom, dwShadowColor, dwLightColor, eStyle, nBorderWidth);
 }
-inline void CSYBufferDC::DrawBorder(IN int l,					// 目标区域
+inline void CCommonBufferDC::DrawBorder(IN int l,					// 目标区域
 									IN int t,
 									IN int r,
 									IN int b,
@@ -1228,7 +1228,7 @@ inline void CSYBufferDC::DrawBorder(IN int l,					// 目标区域
 	ClientToScreen(r, b);
 	_DrawBorder(l, t, r, b, dwShadowColor, dwLightColor, eStyle, nBorderWidth);
 }
-inline void CSYBufferDC::DrawBorder(IN const RECT &rcDest,			// 目标区域
+inline void CCommonBufferDC::DrawBorder(IN const RECT &rcDest,			// 目标区域
 									IN DWORD dwShadowColor,			// 暗色
 									IN DWORD dwLightColor,			// 亮色
 									IN SYBORDER_STYLE eStyle,		// 风格
@@ -1239,7 +1239,7 @@ inline void CSYBufferDC::DrawBorder(IN const RECT &rcDest,			// 目标区域
 }
 
 // 如果成功则返回文本高度，否则返回0。
-inline int CSYBufferDC::DrawText(IN LPCTSTR lpszString,		// 文本
+inline int CCommonBufferDC::DrawText(IN LPCTSTR lpszString,		// 文本
 								 IN int nCount,
 								 IN OUT LPRECT lpRect,		// 目标区域
 								 IN UINT uFormat,			// 格式（兼容GDI）
@@ -1270,24 +1270,24 @@ inline int CSYBufferDC::DrawText(IN LPCTSTR lpszString,		// 文本
 
 
 // 判断点或矩形是否可见
-inline BOOL CSYBufferDC::_PixelVisible(IN POINT pt)			// 像素位置
+inline BOOL CCommonBufferDC::_PixelVisible(IN POINT pt)			// 像素位置
 {
 	return ((pt.x >= m_rcClip.left) && (pt.x < m_rcClip.right)
 			&& (pt.y >= m_rcClip.top) && (pt.y < m_rcClip.bottom));
 }
-inline BOOL CSYBufferDC::_PixelVisible(IN int x, IN int y)	// 像素位置
+inline BOOL CCommonBufferDC::_PixelVisible(IN int x, IN int y)	// 像素位置
 {
 	return ((x >= m_rcClip.left) && (x < m_rcClip.right)
 			&& (y >= m_rcClip.top) && (y < m_rcClip.bottom));
 }
-inline BOOL CSYBufferDC::_RectVisible(IN const RECT& rc)		// 矩形区域
+inline BOOL CCommonBufferDC::_RectVisible(IN const RECT& rc)		// 矩形区域
 {
 	return !((rc.left >= m_rcClip.right) || (rc.right <= m_rcClip.left)
 			|| (rc.top >= m_rcClip.bottom) || (rc.bottom <= m_rcClip.top));
 }
 
 // 贴图
-inline BOOL CSYBufferDC::_BitBlt(IN int x,						// 目标位置
+inline BOOL CCommonBufferDC::_BitBlt(IN int x,						// 目标位置
 								 IN int y,
 								 IN int nWidth,				// 目标区域大小
 								 IN int nHeight,
@@ -1311,20 +1311,20 @@ inline BOOL CSYBufferDC::_BitBlt(IN int x,						// 目标位置
 
 
 // 画线
-inline void CSYBufferDC::_MoveTo(IN int x, IN int y)
+inline void CCommonBufferDC::_MoveTo(IN int x, IN int y)
 {
 	m_ptStart.x = (LONG)x;
 	m_ptStart.y = (LONG)y;
 }
 
 // 填充矩形，此处填充色与内部填充色变量m_dwFillColor无关
-inline void CSYBufferDC::_FillRect(IN int l, IN int t, IN int r, IN int b, IN DWORD dwColor)
+inline void CCommonBufferDC::_FillRect(IN int l, IN int t, IN int r, IN int b, IN DWORD dwColor)
 {
 	SYBGRA32_FillRect(m_pdwBuffer, l, t, (r - l), (b - t), m_nWidth, m_nHeight, &m_rcClip, dwColor);
 }
 
 // 画圆（由于采用对称算法，只会画出偶数直径的圆）
-inline void CSYBufferDC::_DrawCircle(IN int xc,			// 圆心
+inline void CCommonBufferDC::_DrawCircle(IN int xc,			// 圆心
 									 IN int yc,
 									 IN int r,			// 半径
 									 IN BOOL bOddDia)	// 直径为奇数（即 d = 2r + 1）
@@ -1336,7 +1336,7 @@ inline void CSYBufferDC::_DrawCircle(IN int xc,			// 圆心
 }
 
 // 画椭圆（由于采用四象限对称算法，只会画出偶数长短轴的椭圆）
-inline void CSYBufferDC::_DrawEllipse(IN int xc,			// 圆心
+inline void CCommonBufferDC::_DrawEllipse(IN int xc,			// 圆心
 									 IN int yc,
 									 IN int a,							// 长径
 									 IN int b,							// 短轴
@@ -1352,29 +1352,29 @@ inline void CSYBufferDC::_DrawEllipse(IN int xc,			// 圆心
 // Protected
 
 // 裁减坐标的分量
-inline int CSYBufferDC::ClipPixelX(IN int x)
+inline int CCommonBufferDC::ClipPixelX(IN int x)
 {
 	return (x < m_rcClip.left) ? m_rcClip.left : ((x > m_rcClip.right) ? m_rcClip.right : x);
 }
-inline int CSYBufferDC::ClipPixelY(IN int y)
+inline int CCommonBufferDC::ClipPixelY(IN int y)
 {
 	return (y < m_rcClip.top) ? m_rcClip.top : ((y > m_rcClip.bottom) ? m_rcClip.bottom : y);
 }
 
 // 判断点是否在裁减矩形内
-inline BOOL CSYBufferDC::PixelInClipRect(IN POINT pt)			// 像素位置
+inline BOOL CCommonBufferDC::PixelInClipRect(IN POINT pt)			// 像素位置
 {
 	return ((pt.x >= m_rcClip.left) && (pt.x < m_rcClip.right)
 			&& (pt.y >= m_rcClip.top) && (pt.y < m_rcClip.bottom));
 }
-inline BOOL CSYBufferDC::PixelInClipRect(IN int x, IN int y)	// 像素位置
+inline BOOL CCommonBufferDC::PixelInClipRect(IN int x, IN int y)	// 像素位置
 {
 	return ((x >= m_rcClip.left) && (x < m_rcClip.right)
 			&& (y >= m_rcClip.top) && (y < m_rcClip.bottom));
 }
 
 // 往栈内推点，如果栈满则返回 TRUE，默认栈存在且是安全的。
-inline BOOL CSYBufferDC::PushPtInStack(IN int x, IN int y)
+inline BOOL CCommonBufferDC::PushPtInStack(IN int x, IN int y)
 {
 	// 先不画线而将点推入栈，如果栈满则画线
 	m_pPtStack[m_nTop].x = x;
@@ -1384,27 +1384,27 @@ inline BOOL CSYBufferDC::PushPtInStack(IN int x, IN int y)
 }
 
 // 坐标系转换（先缩放后平移）
-inline void CSYBufferDC::ClientToScreen(IN OUT float &x, IN OUT float &y)
+inline void CCommonBufferDC::ClientToScreen(IN OUT float &x, IN OUT float &y)
 {
 	x = DoZoomRef(x) + (float)m_ptOffsetRef.x;
 	y = DoZoomRef(y) + (float)m_ptOffsetRef.y;
 }
-inline void CSYBufferDC::ClientToScreen(IN OUT pointf &pt)
+inline void CCommonBufferDC::ClientToScreen(IN OUT pointf &pt)
 {
 	ClientToScreen(pt.x, pt.y);
 }
-inline void CSYBufferDC::ClientToScreen(IN OUT rectf &rc)
+inline void CCommonBufferDC::ClientToScreen(IN OUT rectf &rc)
 {
 	// 将矩形视为左上点与右下点的组合
 	ClientToScreen(rc.left, rc.top);
 	ClientToScreen(rc.right, rc.bottom);
 }
-inline void CSYBufferDC::ClientToScreen(IN OUT int &x, IN OUT int &y)
+inline void CCommonBufferDC::ClientToScreen(IN OUT int &x, IN OUT int &y)
 {
 	x = SY_FToI(DoZoomRef((float)x) + (float)m_ptOffsetRef.x);
 	y = SY_FToI(DoZoomRef((float)y) + (float)m_ptOffsetRef.y);
 }
-inline void CSYBufferDC::ClientToScreen(IN OUT POINT &pt)
+inline void CCommonBufferDC::ClientToScreen(IN OUT POINT &pt)
 {
 	int x = (int)pt.x, y = (int)pt.y;
 
@@ -1412,7 +1412,7 @@ inline void CSYBufferDC::ClientToScreen(IN OUT POINT &pt)
 	pt.x = (LONG)x;
 	pt.y = (LONG)y;
 }
-inline void CSYBufferDC::ClientToScreen(IN OUT RECT &rc)
+inline void CCommonBufferDC::ClientToScreen(IN OUT RECT &rc)
 {
 	int x = (int)rc.left, y = (int)rc.top;
 
@@ -1426,7 +1426,7 @@ inline void CSYBufferDC::ClientToScreen(IN OUT RECT &rc)
 	rc.right = (LONG)x;
 	rc.bottom = (LONG)y;
 }
-inline float CSYBufferDC::DoZoomRef(IN float x)
+inline float CCommonBufferDC::DoZoomRef(IN float x)
 {
 	return (SY_IsEqual_F(m_fZoomRef, 1.f) ? x : (x * m_fZoomRef));
 }

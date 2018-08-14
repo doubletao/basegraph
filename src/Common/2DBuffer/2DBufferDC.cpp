@@ -72,9 +72,9 @@ enum SYTEXT_DIRECTION		// Œƒ±æ∑ΩœÚ
 };
 
 //////////////////////////////////////////////////////////////////////////
-// CSYBufferDC
+// CCommonBufferDC
 
-CSYBufferDC::CSYBufferDC(void)
+CCommonBufferDC::CCommonBufferDC(void)
 	: m_bAttached(FALSE)			// ∞Û∂®≤Œ ˝
 	, m_pdwBuffer(NULL)
 	, m_nWidth(0)
@@ -121,7 +121,7 @@ CSYBufferDC::CSYBufferDC(void)
 	m_pPtStack = new POINT[m_nPtStackSize];
 }
 
-CSYBufferDC::~CSYBufferDC(void)
+CCommonBufferDC::~CCommonBufferDC(void)
 {
 	DetachBuffer();
 	// «Âø’ƒ⁄¥Ê
@@ -138,7 +138,7 @@ CSYBufferDC::~CSYBufferDC(void)
 // Õ®”√ Ù–‘∑√Œ Ω”ø⁄
 
 // ∞Û∂® Buffer£¨»Áπ˚“—æ≠”–∞Û∂®∑µªÿ FALSE
-BOOL CSYBufferDC::AttachBuffer(IN DWORD *pdwBuffer,		// ÷∏∂®ƒ⁄¥Ê
+BOOL CCommonBufferDC::AttachBuffer(IN DWORD *pdwBuffer,		// ÷∏∂®ƒ⁄¥Ê
 							   IN int nWidth,			// ƒ⁄¥Ê¥Û–°
 							   IN int nHeight)
 {
@@ -161,7 +161,7 @@ BOOL CSYBufferDC::AttachBuffer(IN DWORD *pdwBuffer,		// ÷∏∂®ƒ⁄¥Ê
 	return TRUE;
 }
 // Ω‚≥˝∞Û∂®£®∑µªÿ∞Û∂®µƒƒ⁄¥Ê£©
-DWORD* CSYBufferDC::DetachBuffer()
+DWORD* CCommonBufferDC::DetachBuffer()
 {
 	if (!m_bAttached)
 		return NULL;
@@ -184,7 +184,7 @@ DWORD* CSYBufferDC::DetachBuffer()
 }
 
 // …Ë÷√ªÊ÷∆µƒ≤√ºÙ«¯”Ú£¨ ‰»Î NULL  ±Œ™»´∆¡ø…º˚£¨≤√ºÙ«¯”ÚŒ™◊Û…œ±’”“œ¬ø™°£
-void CSYBufferDC::SetClipRect(IN const RECT* prcClip)
+void CCommonBufferDC::SetClipRect(IN const RECT* prcClip)
 {
 	if (prcClip == NULL)	// …Ë÷√ NULL  ±Œ™»´∆¡ø…º˚
 	{
@@ -219,7 +219,7 @@ void CSYBufferDC::SetClipRect(IN const RECT* prcClip)
 }
 
 // …Ë÷√ªÒ»°ªÊ÷∆∫Ûµƒ”––ßÕºœÒ«¯”Ú£¨”√”⁄◊Ó∫ÛÃ·»°”––ßÕºœÒ£®◊Û…œ±’”“œ¬ø™£©°£
-void CSYBufferDC::InitValidRect(IN const RECT *prcValid)	// Œ™ NULL  ±±Ì æø’æÿ–Œ
+void CCommonBufferDC::InitValidRect(IN const RECT *prcValid)	// Œ™ NULL  ±±Ì æø’æÿ–Œ
 {
 	if (prcValid == NULL)
 	{
@@ -233,7 +233,7 @@ void CSYBufferDC::InitValidRect(IN const RECT *prcValid)	// Œ™ NULL  ±±Ì æø’æÿ–Œ
 		m_rcValid.bottom = (LONG)ClipPixelY((int)prcValid->bottom);
 	}
 }
-void CSYBufferDC::AddValidRect(IN const RECT &rcValid)
+void CCommonBufferDC::AddValidRect(IN const RECT &rcValid)
 {
 	m_rcValid.left = (LONG)ClipPixelX((int)SY_Min(m_rcValid.left, rcValid.left));
 	m_rcValid.right = (LONG)ClipPixelX((int)SY_Max(m_rcValid.right, rcValid.right));
@@ -242,7 +242,7 @@ void CSYBufferDC::AddValidRect(IN const RECT &rcValid)
 }
 
 // …Ë÷√ª≠± µƒ Ù–‘£®∑µªÿæ… Ù–‘£©
-int CSYBufferDC::SetPenStyle(IN int nPenStyle)		// ºÊ»› GDI
+int CCommonBufferDC::SetPenStyle(IN int nPenStyle)		// ºÊ»› GDI
 {
 	nPenStyle &= PS_STYLE_MASK;
 	if (m_nPenStyle == nPenStyle)
@@ -257,7 +257,7 @@ int CSYBufferDC::SetPenStyle(IN int nPenStyle)		// ºÊ»› GDI
 	}
 	return nTmp;
 }
-void CSYBufferDC::SetPen(IN int nPenStyle, IN int nWidth, IN DWORD dwColor)
+void CCommonBufferDC::SetPen(IN int nPenStyle, IN int nWidth, IN DWORD dwColor)
 {
 	nPenStyle &= LINE_PATTERN_MASK;
 	if (nPenStyle <= LINE_PATTERN_MAX && m_nPenStyle != nPenStyle)		// «–ªªœﬂ–Õ
@@ -270,7 +270,7 @@ void CSYBufferDC::SetPen(IN int nPenStyle, IN int nWidth, IN DWORD dwColor)
 }
 
 // Œƒ±æ Ù–‘
-HFONT CSYBufferDC::SetFont(IN HFONT hNewFont)		// –¬◊÷ÃÂ
+HFONT CCommonBufferDC::SetFont(IN HFONT hNewFont)		// –¬◊÷ÃÂ
 {
 	HFONT hOldFont = m_hFont;
 	LOGFONT stuLogFont;
@@ -322,7 +322,7 @@ HFONT CSYBufferDC::SetFont(IN HFONT hNewFont)		// –¬◊÷ÃÂ
 	}
 	return hOldFont;
 }
-SIZE CSYBufferDC::GetTextExtent(IN LPCTSTR lpszString,		// Œƒ±æ
+SIZE CCommonBufferDC::GetTextExtent(IN LPCTSTR lpszString,		// Œƒ±æ
 								IN int nCount)
 {
 	SIZE szTmp;
@@ -339,7 +339,7 @@ SIZE CSYBufferDC::GetTextExtent(IN LPCTSTR lpszString,		// Œƒ±æ
 }
 
 //  πƒ‹GDIªÊ÷∆∞Ô÷˙
-BOOL CSYBufferDC::EnableGDIHelp(IN BOOL bEnable,		//  πƒ‹±Í÷æ
+BOOL CCommonBufferDC::EnableGDIHelp(IN BOOL bEnable,		//  πƒ‹±Í÷æ
 								IN int nDCWidth,		// ª∫¥ÊDC¥Û–°
 								IN int nDCHeight)
 {
@@ -398,7 +398,7 @@ BOOL CSYBufferDC::EnableGDIHelp(IN BOOL bEnable,		//  πƒ‹±Í÷æ
 // øÕªß◊¯±Íœµœ¬µƒªÊ÷∆Ω”ø⁄
 
 // ª≠»˝¥Œ±¥»˚∂˚«˙œﬂ£®»Áπ˚ ˝◊È¥Û–°Œ™ 3 * n£¨‘Ú◊‘∂Ø±’∫œ«˙œﬂ)
-void CSYBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
+void CCommonBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
 							  IN int nPtCount)					//  ˝◊È¥Û–°£®3 * n + 1£©
 {
 	if (!m_bAttached || (pPtBezier == NULL) || (nPtCount < POINT_BEZIER_COUNT))
@@ -434,7 +434,7 @@ void CSYBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝
 		RecursionBezier3(pPtOrigin, m_pPattern, m_nPatCount, nPatIndex, nPatItem, m_dwPenColor, m_nBkMode, m_dwBkColor);
 	}
 }
-void CSYBufferDC::DrawBezier3(IN const POINT *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
+void CCommonBufferDC::DrawBezier3(IN const POINT *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
 							  IN int nPtCount)					//  ˝◊È¥Û–°£®3 * n + 1£©
 {
 	if (!m_bAttached || (pPtBezier == NULL) || (nPtCount < POINT_BEZIER_COUNT))
@@ -485,7 +485,7 @@ void CSYBufferDC::DrawBezier3(IN const POINT *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊
 	}
 }
 // ‘⁄ªÊ÷∆»˝¥Œ±¥»˚∂˚«˙œﬂ ± π”√Õ∂”∞æÿ’Û£¨»Áπ˚"pMat == NULL"£¨‘ÚΩ¯»Î’˝≥£ªÊ÷∆¡˜≥Ã°£
-void CSYBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
+void CCommonBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
 							  IN int nPtCount,					//  ˝◊È¥Û–°£®3 * n + 1£©
 							  IN const matrix4f* pMat)		// Õ∂”∞æÿ’Û
 {
@@ -529,7 +529,7 @@ void CSYBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝
 		}
 	}
 }
-void CSYBufferDC::DrawBezier3(IN const POINT *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
+void CCommonBufferDC::DrawBezier3(IN const POINT *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
 							  IN int nPtCount,					//  ˝◊È¥Û–°£®3 * n + 1£©
 							  IN const matrix4f* pMat)		// Õ∂”∞æÿ’Û
 {
@@ -592,7 +592,7 @@ void CSYBufferDC::DrawBezier3(IN const POINT *pPtBezier,		// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊
 // ∆¡ƒª◊¯±Íœµœ¬µƒªÊ÷∆Ω”ø⁄£®“‘œ¬ªÆœﬂø™Õ∑£©
 
 // ª≠œﬂ
-BOOL CSYBufferDC::_LineTo(IN int x, IN int y)
+BOOL CCommonBufferDC::_LineTo(IN int x, IN int y)
 {
 	if (!m_bAttached)
 		return FALSE;
@@ -616,7 +616,7 @@ BOOL CSYBufferDC::_LineTo(IN int x, IN int y)
 }
 
 // …Ë÷√ƒ≥“ªµ„£®µ„‘⁄”––ß«¯”Úƒ⁄ ±∑µªÿ TRUE£©
-BOOL CSYBufferDC::_SetPixel(IN int x,				// µ„Œª÷√
+BOOL CCommonBufferDC::_SetPixel(IN int x,				// µ„Œª÷√
 							IN int y,
 							IN DWORD dwColor)		// —’…´
 {
@@ -649,7 +649,7 @@ BOOL CSYBufferDC::_SetPixel(IN int x,				// µ„Œª÷√
 }
 
 // ª≠æÿ–Œ
-void CSYBufferDC::_DrawRect(IN int l, IN int t, IN int r, IN int b)
+void CCommonBufferDC::_DrawRect(IN int l, IN int t, IN int r, IN int b)
 {
 	if (!m_bAttached)
 		return;
@@ -738,7 +738,7 @@ void CSYBufferDC::_DrawRect(IN int l, IN int t, IN int r, IN int b)
 }
 
 // ª≠»˝¥Œ±¥»˚∂˚«˙œﬂ£®»Áπ˚ ˝◊È¥Û–°Œ™ 3 * n£¨‘Ú◊‘∂Ø±’∫œ«˙œﬂ)
-void CSYBufferDC::_DrawBezier3(IN const POINT *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
+void CCommonBufferDC::_DrawBezier3(IN const POINT *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
 							   IN int nPtCount)				//  ˝◊È¥Û–°£®3 * n + 1£©
 {
 	if (!m_bAttached || (pPtBezier == NULL) || (nPtCount < POINT_BEZIER_COUNT))
@@ -780,7 +780,7 @@ void CSYBufferDC::_DrawBezier3(IN const POINT *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊
 		RecursionBezier3(pPtOrigin, m_pPattern, m_nPatCount, nPatIndex, nPatItem, m_dwPenColor, m_nBkMode, m_dwBkColor);
 	}
 }
-void CSYBufferDC::_DrawBezier3(IN const pointf *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
+void CCommonBufferDC::_DrawBezier3(IN const pointf *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
 							   IN int nPtCount)				//  ˝◊È¥Û–°£®3 * n + 1£©
 {
 	if (!m_bAttached || (pPtBezier == NULL) || (nPtCount < POINT_BEZIER_COUNT))
@@ -811,7 +811,7 @@ void CSYBufferDC::_DrawBezier3(IN const pointf *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝
 }
 
 // ‘⁄ªÊ÷∆»˝¥Œ±¥»˚∂˚«˙œﬂ ± π”√Õ∂”∞æÿ’Û£¨»Áπ˚"pMat == NULL"£¨‘ÚΩ¯»Î’˝≥£ªÊ÷∆¡˜≥Ã°£
-void CSYBufferDC::_DrawBezier3(IN const POINT *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
+void CCommonBufferDC::_DrawBezier3(IN const POINT *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
 							   IN int nPtCount,					//  ˝◊È¥Û–°£®3 * n + 1£©
 							   IN const matrix4f* pMat)		// Õ∂”∞æÿ’Û
 {
@@ -861,7 +861,7 @@ void CSYBufferDC::_DrawBezier3(IN const POINT *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊
 		}
 	}
 }
-void CSYBufferDC::_DrawBezier3(IN const pointf *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
+void CCommonBufferDC::_DrawBezier3(IN const pointf *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝◊È£®P0 C1 C2 P1 C3 C4 P2 °≠°≠£©
 							   IN int nPtCount,					//  ˝◊È¥Û–°£®3 * n + 1£©
 							   IN const matrix4f* pMat)		// Õ∂”∞æÿ’Û
 {
@@ -900,7 +900,7 @@ void CSYBufferDC::_DrawBezier3(IN const pointf *pPtBezier,	// «˙œﬂµ„”Îøÿ÷∆µ„µƒ ˝
 }
 
 // ª≠±ﬂøÚ
-void CSYBufferDC::_DrawBorder(IN int l,					// ƒø±Í«¯”Ú
+void CCommonBufferDC::_DrawBorder(IN int l,					// ƒø±Í«¯”Ú
 							  IN int t,
 							  IN int r,
 							  IN int b,
@@ -999,7 +999,7 @@ void CSYBufferDC::_DrawBorder(IN int l,					// ƒø±Í«¯”Ú
 }
 
 // »Áπ˚≥…π¶‘Ú∑µªÿŒƒ±æ∏ﬂ∂»£¨∑Ò‘Ú∑µªÿ0°£
-int CSYBufferDC::_DrawText(IN LPCTSTR lpszString,	// Œƒ±æ
+int CCommonBufferDC::_DrawText(IN LPCTSTR lpszString,	// Œƒ±æ
 						   IN int nCount,
 						   IN LPRECT lpRect,			// ƒø±Í«¯”Ú
 						   IN UINT uFormat,			// ∏Ò Ω£®ºÊ»›GDI£©
@@ -1110,7 +1110,7 @@ int CSYBufferDC::_DrawText(IN LPCTSTR lpszString,	// Œƒ±æ
 //////////////////////////////////////////////////////////////////////////
 // Protected
 
-void CSYBufferDC::CopyLinePattern(IN const int *pPattern,	// œﬂ–Õ ˝◊È
+void CCommonBufferDC::CopyLinePattern(IN const int *pPattern,	// œﬂ–Õ ˝◊È
 								  IN int nPatCount)			//  ˝◊È¥Û–°
 {
 	//  Õ∑≈“—”–œﬂ–Õ
@@ -1123,7 +1123,7 @@ void CSYBufferDC::CopyLinePattern(IN const int *pPattern,	// œﬂ–Õ ˝◊È
 }
 
 // ∏˘æ›øÌ∂»º∞÷±œﬂ–±¬ Àı∑≈œﬂ–Õ
-void CSYBufferDC::ScalePattern(OUT int *pPattern,	// œﬂ–Õ ˝◊È
+void CCommonBufferDC::ScalePattern(OUT int *pPattern,	// œﬂ–Õ ˝◊È
 							   IN int nPatCount,	//  ˝◊È¥Û–°
 							   IN float fScale)		// Àı∑≈±»¿˝
 {
@@ -1135,7 +1135,7 @@ void CSYBufferDC::ScalePattern(OUT int *pPattern,	// œﬂ–Õ ˝◊È
 }
 
 // ª≠“ª∏ˆœÒÀÿµƒ÷±œﬂ£®≤ª∞¸∫¨÷’µ„£©
-void CSYBufferDC::Bresenham(IN int x1,				// ∆µ„
+void CCommonBufferDC::Bresenham(IN int x1,				// ∆µ„
 							IN int y1,
 							IN int x2,				// ÷’µ„
 							IN int y2,
@@ -1350,7 +1350,7 @@ void CSYBufferDC::Bresenham(IN int x1,				// ∆µ„
 }
 
 // ≤√ºıœﬂ∂Œ≤¢∑µªÿœﬂ∂Œµƒ–±¬ 
-DWORD CSYBufferDC::ClipLine(IN OUT int &x1,			// ∆µ„
+DWORD CCommonBufferDC::ClipLine(IN OUT int &x1,			// ∆µ„
 							IN OUT int &y1,
 							IN OUT int &x2,			// ÷’µ„
 							IN OUT int &y2,
@@ -1565,7 +1565,7 @@ DWORD CSYBufferDC::ClipLine(IN OUT int &x1,			// ∆µ„
 }
 
 // ºÏ≤Èœﬂ–Õ «∑ÒŒ™ø’œ∂£®»Áπ˚ «ø’œ∂‘Ú∑µªÿ TRUE£©
-BOOL CSYBufferDC::IsSpace(IN const int *pPattern,	// œﬂ–Õ
+BOOL CCommonBufferDC::IsSpace(IN const int *pPattern,	// œﬂ–Õ
 						  IN int nPatCount,			// œﬂ–Õ¥Û–°
 						  IN int &nPatIndex,		// À˜“˝
 						  IN int &nPatItem)			// œÓµƒµ„ ˝
@@ -1581,7 +1581,7 @@ BOOL CSYBufferDC::IsSpace(IN const int *pPattern,	// œﬂ–Õ
 }
 
 // ª≠øÌœﬂ
-void CSYBufferDC::FillWideLine(IN int x1,				// ∆µ„
+void CCommonBufferDC::FillWideLine(IN int x1,				// ∆µ„
 							   IN int y1,
 							   IN int x2,				// ÷’µ„
 							   IN int y2,
@@ -1812,7 +1812,7 @@ void CSYBufferDC::FillWideLine(IN int x1,				// ∆µ„
 }
 
 // ∏˘æ›∂—’ªÃÓ≥‰¡¨–¯µƒøÌœﬂ∂Œ£®≤…”√œﬂÀ¢◊”µƒ∑Ω ΩÃÓ≥‰£©
-void CSYBufferDC::FillLineFromStack(IN float fDelta,		// ¡Ω∏ˆ∂Àµ„µƒÃÿ ‚¥¶¿Ì«¯”Ú
+void CCommonBufferDC::FillLineFromStack(IN float fDelta,		// ¡Ω∏ˆ∂Àµ„µƒÃÿ ‚¥¶¿Ì«¯”Ú
 									IN int nSub,			// øÌ∂»µƒ¡Ω∏ˆ±ﬂΩÁ
 									IN int nSuper,
 									IN int dFast2,			// ÷˜÷·£®±‰ªØøÏµƒ÷·£©…œµƒ∂Àµ„≤ÓµƒÀ´±∂÷µ
@@ -1999,7 +1999,7 @@ void CSYBufferDC::FillLineFromStack(IN float fDelta,		// ¡Ω∏ˆ∂Àµ„µƒÃÿ ‚¥¶¿Ì«¯”Ú
 }
 
 // ≤°Ã¨µƒ¥¶¿ÌœﬂÀ¢◊”∂Àµ„£® µº “‚“Â≤ª¥Û£©
-void CSYBufferDC::ProcessLineCaput(IN int min,			// ∆µ„µƒÃÿ ‚¥¶¿Ì„–÷µ
+void CCommonBufferDC::ProcessLineCaput(IN int min,			// ∆µ„µƒÃÿ ‚¥¶¿Ì„–÷µ
 								   IN int max,			// ÷’µ„µƒÃÿ ‚¥¶¿Ì„–÷µ
 								   IN int nSub,			// œﬂÀ¢◊”µ◊œﬁ
 								   IN int nSuper,		// œﬂÀ¢◊”…œœﬁ
@@ -2282,7 +2282,7 @@ void CSYBufferDC::ProcessLineCaput(IN int min,			// ∆µ„µƒÃÿ ‚¥¶¿Ì„–÷µ
 		break;
 	}
 }
-void CSYBufferDC::RecursionMin(IN int x,				// µ±«∞µ„
+void CCommonBufferDC::RecursionMin(IN int x,				// µ±«∞µ„
 							   IN int y,
 							   IN int x1,				// ∆µ„◊¯±Í
 							   IN int y1,
@@ -2344,7 +2344,7 @@ void CSYBufferDC::RecursionMin(IN int x,				// µ±«∞µ„
 		break;
 	}
 }
-void CSYBufferDC::RecursionMax(IN int x,				// µ±«∞µ„
+void CCommonBufferDC::RecursionMax(IN int x,				// µ±«∞µ„
 							   IN int y,
 							   IN int x1,				// ∆µ„◊¯±Í
 							   IN int y1,
@@ -2408,7 +2408,7 @@ void CSYBufferDC::RecursionMax(IN int x,				// µ±«∞µ„
 }
 
 // ª≠“ª∏ˆœÒÀÿµƒ‘≤£®≤…”√∫·œÚ…®√ËÃÓ≥‰£©
-void CSYBufferDC::BreCircle(IN int xc,				// ‘≤–ƒ
+void CCommonBufferDC::BreCircle(IN int xc,				// ‘≤–ƒ
 							IN int yc,
 							IN int r,				// ∞Îæ∂
 							IN BOOL bOddDia,		// ÷±æ∂Œ™∆Ê ˝£®º¥ d = 2r + 1£©
@@ -2558,7 +2558,7 @@ void CSYBufferDC::BreCircle(IN int xc,				// ‘≤–ƒ
 }
 
 // ª≠“ª∏ˆœÒÀÿµƒÕ÷‘≤£®≤…”√∫·œÚ…®√ËÃÓ≥‰£©
-void	CSYBufferDC::BreEllipse(IN int xc,		// ‘≤–ƒ
+void	CCommonBufferDC::BreEllipse(IN int xc,		// ‘≤–ƒ
 				   IN int yc,
 				   IN int a,								// ≥§÷·
 				   IN int b,								// ∂Ã÷·
@@ -2664,7 +2664,7 @@ void	CSYBufferDC::BreEllipse(IN int xc,		// ‘≤–ƒ
 }
 
 //  π”√BreCircleµƒ∑Ω∑®£¨Õ®π˝œﬁ÷∆∞¸¿®ª°–Œµƒæÿ–Œ«¯”Ú¿¥œﬁ∂®ªÊ÷∆µƒª°–Œµƒ∑∂Œß
-void CSYBufferDC::BreSector(IN int xc,				// ‘≤–ƒ
+void CCommonBufferDC::BreSector(IN int xc,				// ‘≤–ƒ
 							IN int yc,
 							IN int r,				// ∞Îæ∂
 							IN BOOL bOddDia,		// ÷±æ∂Œ™∆Ê ˝£®º¥ d = 2r + 1£©
@@ -2819,7 +2819,7 @@ void CSYBufferDC::BreSector(IN int xc,				// ‘≤–ƒ
 
 // ª≠“ª∏ˆœÒÀÿµƒ‘≤£®≤…”√∫·œÚ…®√ËÃÓ≥‰£©
 // ∞¥Ω«∂»¿¥Ω¯––ªÊ÷∆
-void CSYBufferDC::_DrawSector(IN int xc,				// ‘≤–ƒ
+void CCommonBufferDC::_DrawSector(IN int xc,				// ‘≤–ƒ
 							IN int yc,
 							IN int r,				// ∞Îæ∂
 							IN BOOL bOddDia,		// ÷±æ∂Œ™∆Ê ˝£®º¥ d = 2r + 1£©
@@ -3006,7 +3006,7 @@ void CSYBufferDC::_DrawSector(IN int xc,				// ‘≤–ƒ
 
 // ª≠“ª∏ˆœÒÀÿµƒ‘≤£®≤…”√∫·œÚ…®√ËÃÓ≥‰£©
 // ∞¥∆ º÷’÷πµ„¿¥ªÊ÷∆
-void CSYBufferDC::_DrawSector(IN int xc,				// ‘≤–ƒ
+void CCommonBufferDC::_DrawSector(IN int xc,				// ‘≤–ƒ
 							IN int yc,
 							IN int r,					// ∞Îæ∂
 							IN BOOL bOddDia,			// ÷±æ∂Œ™∆Ê ˝£®º¥ d = 2r + 1£©
@@ -3067,7 +3067,7 @@ void CSYBufferDC::_DrawSector(IN int xc,				// ‘≤–ƒ
 
 // ª≠“ª∏ˆœÒÀÿµƒ‘≤£®≤…”√∫·œÚ…®√ËÃÓ≥‰£©
 // ∞¥∆ º÷’÷πµ„¿¥ªÊ÷∆
-void CSYBufferDC::_DrawArc(IN int xc,				// ‘≤–ƒ
+void CCommonBufferDC::_DrawArc(IN int xc,				// ‘≤–ƒ
 						   IN int yc,
 						   IN int r,					// ∞Îæ∂
 						   IN BOOL bOddDia,			// ÷±æ∂Œ™∆Ê ˝£®º¥ d = 2r + 1£©
@@ -3124,7 +3124,7 @@ void CSYBufferDC::_DrawArc(IN int xc,				// ‘≤–ƒ
 // ”…”⁄ BreCirle ÷–µƒπ‚’§ªØÀ„∑® π”√¡À‘≤ª°µƒ”“œ¬∞Î∂Œ£¨∂¯’‚∂Œ‘≤ª°÷ª”–‘⁄∆Ê ˝÷±æ∂
 // µƒ«Èøˆœ¬≤≈ Ù”⁄‘≤ª°£¨∂¯∆‰÷––ƒ∂‘≥∆µƒ‘≤ª°∂Œ∫„∂®‘⁄‘≤ª°…œ£¨À˘“‘¥ÀΩ”ø⁄µƒ ‰»Î x°¢y
 // ±ÿ∂®Œ™’˝÷µ£¨‘⁄ƒ⁄≤ø∂‘÷±æ∂µƒ∆Ê≈º–‘Ω¯––Ãÿ ‚¥¶¿Ì°£
-void CSYBufferDC::PlotCirclePoints(IN int x,				//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£©“ª∂®‘⁄‘≤ª°…œ
+void CCommonBufferDC::PlotCirclePoints(IN int x,				//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£©“ª∂®‘⁄‘≤ª°…œ
 								   IN int y,
 								   IN int xc,				// ‘≤–ƒ
 								   IN int yc,
@@ -3212,7 +3212,7 @@ void CSYBufferDC::PlotCirclePoints(IN int x,				//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£
 	}
 }
 
-void	CSYBufferDC::PlotEllipsePoints(IN int x,		//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£©“ª∂®‘⁄‘≤ª°…œ
+void	CCommonBufferDC::PlotEllipsePoints(IN int x,		//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£©“ª∂®‘⁄‘≤ª°…œ
 						  IN int y,
 						  IN int xc,								// ‘≤–ƒ
 						  IN int yc,
@@ -3302,7 +3302,7 @@ void	CSYBufferDC::PlotEllipsePoints(IN int x,		//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£©
 	}
 }
 
-void CSYBufferDC::PlotSectorPoints(IN int x,				//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£©“ª∂®‘⁄‘≤ª°…œ
+void CCommonBufferDC::PlotSectorPoints(IN int x,				//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£©“ª∂®‘⁄‘≤ª°…œ
 								   IN int y,
 								   IN int xc,				// ‘≤–ƒ
 								   IN int yc,
@@ -3424,7 +3424,7 @@ void CSYBufferDC::PlotSectorPoints(IN int x,				//  ‰»Î’˝µƒπ‚’§ªØµ„£¨‘Ú£®-x, -y£
 	}
 }
 
-void CSYBufferDC::RecursionBezier3(IN pointf *pPtBezier,	// Àƒ∏ˆµ„
+void CCommonBufferDC::RecursionBezier3(IN pointf *pPtBezier,	// Àƒ∏ˆµ„
 								   IN int *pPattern,		// œﬂ–Õ
 								   IN int nPatCount,
 								   IN int &nPatIndex,		// À˜“˝
@@ -3451,7 +3451,7 @@ void CSYBufferDC::RecursionBezier3(IN pointf *pPtBezier,	// Àƒ∏ˆµ„
 }
 
 // µ›πÈª≠≥ˆ“ªÃı±¥»˚∂˚«˙œﬂ£¨‘⁄ª≠√ø“ª∂Œ«∞£¨∂‘∏√∂Œµƒ∂Àµ„Ω¯––Õ∂”∞±‰ªª
-void CSYBufferDC::RecursionBezier3(IN pointf *pPtBezier,		// Àƒ∏ˆµ„
+void CCommonBufferDC::RecursionBezier3(IN pointf *pPtBezier,		// Àƒ∏ˆµ„
 								   IN matrix4f* pMat,		// Õ∂”∞æÿ’Û
 								   IN int *pPattern,			// œﬂ–Õ
 								   IN int nPatCount,
@@ -3546,7 +3546,7 @@ BOOL	SY_Beizer3IsNearLine(pointf* pt0,pointf* pt1,pointf* pt2,pointf* pt3,float 
 
 	}
 }
-BOOL CSYBufferDC::IsBezier3NearLine(IN pointf *pPtBezier)		// Àƒ∏ˆµ„
+BOOL CCommonBufferDC::IsBezier3NearLine(IN pointf *pPtBezier)		// Àƒ∏ˆµ„
 {
 	pointf* ptemp = (pointf*)pPtBezier;
 	return SY_Beizer3IsNearLine(&ptemp[0],&ptemp[1],&ptemp[2],&ptemp[3],1.0f);
@@ -3569,7 +3569,7 @@ BOOL CSYBufferDC::IsBezier3NearLine(IN pointf *pPtBezier)		// Àƒ∏ˆµ„
 	//return FALSE;
 }
 
-void CSYBufferDC::SplitBezier3(IN pointf *pPtOrigin,		// ‘≠ º±¥»˚∂˚
+void CCommonBufferDC::SplitBezier3(IN pointf *pPtOrigin,		// ‘≠ º±¥»˚∂˚
 							   OUT pointf *pPtFirst,		// µ⁄“ª∂Œ£®«∞∂Œ£©
 							   OUT pointf *pPtSecond)		// µ⁄∂˛∂Œ£®∫Û∂Œ£©
 {
@@ -3597,7 +3597,7 @@ void CSYBufferDC::SplitBezier3(IN pointf *pPtOrigin,		// ‘≠ º±¥»˚∂˚
 }
 
 //  Õ∑≈DIBª∫¥Ê≤Ÿ◊˜
-void CSYBufferDC::ReleaseDIB()
+void CCommonBufferDC::ReleaseDIB()
 {
 	if (m_hMemDC == NULL)
 		return;
@@ -3617,7 +3617,7 @@ void CSYBufferDC::ReleaseDIB()
 }
 
 // º∆À„Œƒ±æ‘⁄DIBª∫¥Ê÷–µƒªÊ÷∆«¯”Ú£¨ º÷’◊ˆµΩŒƒ±æ∂ºΩ´∂•∆ÎDIBª∫¥Êµƒ◊Û…œΩ«µ„±ªª≠≥ˆ£¨∂¯≤ªπ‹Œƒ±æµƒ∑ΩœÚ»Á∫Œ°£
-void CSYBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// Œƒ±æµƒªÊ÷∆«¯”Ú
+void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// Œƒ±æµƒªÊ÷∆«¯”Ú
 									OUT int& nDesX,				//  µº øΩ±¥µΩm_pdwBuffer…œµƒŒª÷√
 									OUT int& nDesY,
 									OUT int& nFillWidth,		// –Ë“™ÃÓ≥‰AlphaÕ®µ¿µƒ¥Û–°£¨“≤ « µº –Ë“™øΩ±¥µƒ¥Û–°

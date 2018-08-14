@@ -191,14 +191,14 @@ BOOL IsRaySegmentIntersection(IN point2f ptRay0,IN point2f ptRay1,IN point2f pt0
 }
 
 // 判断线段是否与区域（线段组）相交
-int IsSegmentRegionIntersection(IN point2f pt0,IN point2f pt1,IN SYArray* pArSeg,OUT SYArray* pArOut)
+int IsSegmentRegionIntersection(IN point2f pt0,IN point2f pt1,IN BaseARray* pArSeg,OUT BaseARray* pArOut)
 {
 	int nCount = 0;
-	int nSize = (int)SYAR_GetSize(pArSeg);
+	int nSize = (int)BaseAR_GetSize(pArSeg);
 	for(int i = 0; i < nSize - 1; i++)
 	{
-		point2lf* pPt0 = (point2lf*)SYAR_GetAt(pArSeg,i);
-		point2lf* pPt1 = (point2lf*)SYAR_GetAt(pArSeg,i + 1);
+		point2lf* pPt0 = (point2lf*)BaseAR_GetAt(pArSeg,i);
+		point2lf* pPt1 = (point2lf*)BaseAR_GetAt(pArSeg,i + 1);
 		point2f ptRgn0;
 		point2f ptRgn1;
 		ptRgn0.x = (float)pPt0->x;
@@ -214,7 +214,7 @@ int IsSegmentRegionIntersection(IN point2f pt0,IN point2f pt1,IN SYArray* pArSeg
 			ptInter->y = ptTmp.y;
 			if( nCount <= 0)
 			{
-				SYAR_Add(pArOut,ptInter);
+				BaseAR_Add(pArOut,ptInter);
 			}
 			else
 			{
@@ -222,17 +222,17 @@ int IsSegmentRegionIntersection(IN point2f pt0,IN point2f pt1,IN SYArray* pArSeg
 				float fDis = PointToPointDis(*ptInter,pt0);
 				for( int j = 0; j < nCount; j++)
 				{
-					point2f* ptTmp = (point2f*)SYAR_GetAt(pArOut,j);
+					point2f* ptTmp = (point2f*)BaseAR_GetAt(pArOut,j);
 					float fTmp = PointToPointDis(*ptTmp,pt0);
 					if( fDis < fTmp)
 					{
-						SYAR_InsertAt(pArOut,j,ptInter,1);
+						BaseAR_InsertAt(pArOut,j,ptInter,1);
 						bAdd = TRUE;
 						break;
 					}
 				}
 				if( !bAdd)
-					SYAR_Add(pArOut,ptInter);
+					BaseAR_Add(pArOut,ptInter);
 			}
 
 			nCount++;
@@ -243,9 +243,9 @@ int IsSegmentRegionIntersection(IN point2f pt0,IN point2f pt1,IN SYArray* pArSeg
 }
 
 // 判断射线是否与区域（线段组）相交
-BOOL IsRayRegionIntersection(IN point2f ptRay0,IN point2f ptRay1,IN SYArray* pArSeg,OUT point2f* pPtOut)
+BOOL IsRayRegionIntersection(IN point2f ptRay0,IN point2f ptRay1,IN BaseARray* pArSeg,OUT point2f* pPtOut)
 {
-	int nSize = (int)SYAR_GetSize(pArSeg);
+	int nSize = (int)BaseAR_GetSize(pArSeg);
 	if (nSize < 3) 
 	{
 		return FALSE;
@@ -260,8 +260,8 @@ BOOL IsRayRegionIntersection(IN point2f ptRay0,IN point2f ptRay1,IN SYArray* pAr
 	point2f ptTmp;
 	for (int i = 0; i < nSize - 1; i++)
 	{
-		pptf1 = (point2lf*)SYAR_GetAt(pArSeg,i);
-		pptf2 = (point2lf*)SYAR_GetAt(pArSeg,i+1);	
+		pptf1 = (point2lf*)BaseAR_GetAt(pArSeg,i);
+		pptf2 = (point2lf*)BaseAR_GetAt(pArSeg,i+1);	
 		pt1.x = (float)pptf1->x;
 		pt1.y = (float)pptf1->y;
 		pt2.x = (float)pptf2->x;
@@ -290,8 +290,8 @@ BOOL IsRayRegionIntersection(IN point2f ptRay0,IN point2f ptRay1,IN SYArray* pAr
 		}
 	}
 
-	pptf1 = (point2lf*)SYAR_GetAt(pArSeg,nSize - 1);
-	pptf2 = (point2lf*)SYAR_GetAt(pArSeg,0);
+	pptf1 = (point2lf*)BaseAR_GetAt(pArSeg,nSize - 1);
+	pptf2 = (point2lf*)BaseAR_GetAt(pArSeg,0);
 	pt1.x = pptf1->x;
 	pt1.y = pptf1->y;
 	pt2.x = pptf2->x;
@@ -380,17 +380,17 @@ BOOL BeamHit(IN float x, IN float y, IN point2f ptf1, IN point2f ptf2)
 }
 
 // 判断点pt是否位于区域（线段组）上
-BOOL IsPointOnRegion(IN point2f pt,IN SYArray* pArSeg)
+BOOL IsPointOnRegion(IN point2f pt,IN BaseARray* pArSeg)
 {
-	int nSize = (int)SYAR_GetSize(pArSeg);
+	int nSize = (int)BaseAR_GetSize(pArSeg);
 	point2lf* pptf1 = NULL;
 	point2lf* pptf2 = NULL;
 	point2f pt1;
 	point2f pt2;
 	for (int i = 0; i < nSize - 1; i++)
 	{
-		pptf1 = (point2lf*)SYAR_GetAt(pArSeg,i);
-		pptf2 = (point2lf*)SYAR_GetAt(pArSeg,i+1);	
+		pptf1 = (point2lf*)BaseAR_GetAt(pArSeg,i);
+		pptf2 = (point2lf*)BaseAR_GetAt(pArSeg,i+1);	
 		pt1.x = pptf1->x;
 		pt1.y = pptf1->y;
 		pt2.x = pptf2->x;
@@ -401,8 +401,8 @@ BOOL IsPointOnRegion(IN point2f pt,IN SYArray* pArSeg)
 		}
 	}
 
-	pptf1 = (point2lf*)SYAR_GetAt(pArSeg,nSize - 1);
-	pptf2 = (point2lf*)SYAR_GetAt(pArSeg,0);
+	pptf1 = (point2lf*)BaseAR_GetAt(pArSeg,nSize - 1);
+	pptf2 = (point2lf*)BaseAR_GetAt(pArSeg,0);
 	pt1.x = pptf1->x;
 	pt1.y = pptf1->y;
 	pt2.x = pptf2->x;
@@ -416,9 +416,9 @@ BOOL IsPointOnRegion(IN point2f pt,IN SYArray* pArSeg)
 }
 
 // 判断点pt是否位于区域（线段组）内
-BOOL IsPointInRegionLF(IN point2f pt,IN SYArray* pArSeg)
+BOOL IsPointInRegionLF(IN point2f pt,IN BaseARray* pArSeg)
 {
-	int nSize = (int)SYAR_GetSize(pArSeg);
+	int nSize = (int)BaseAR_GetSize(pArSeg);
 	if (nSize < 3) 
 	{
 		return FALSE;
@@ -431,8 +431,8 @@ BOOL IsPointInRegionLF(IN point2f pt,IN SYArray* pArSeg)
 	point2f pt2;
 	for (int i = 0; i < nSize - 1; i++)
 	{
-		pptf1 = (point2lf*)SYAR_GetAt(pArSeg,i);
-		pptf2 = (point2lf*)SYAR_GetAt(pArSeg,i+1);	
+		pptf1 = (point2lf*)BaseAR_GetAt(pArSeg,i);
+		pptf2 = (point2lf*)BaseAR_GetAt(pArSeg,i+1);	
 		pt1.x = pptf1->x;
 		pt1.y = pptf1->y;
 		pt2.x = pptf2->x;
@@ -443,8 +443,8 @@ BOOL IsPointInRegionLF(IN point2f pt,IN SYArray* pArSeg)
 		}
 	}
 
-	pptf1 = (point2lf*)SYAR_GetAt(pArSeg,nSize - 1);
-	pptf2 = (point2lf*)SYAR_GetAt(pArSeg,0);
+	pptf1 = (point2lf*)BaseAR_GetAt(pArSeg,nSize - 1);
+	pptf2 = (point2lf*)BaseAR_GetAt(pArSeg,0);
 	pt1.x = pptf1->x;
 	pt1.y = pptf1->y;
 	pt2.x = pptf2->x;
@@ -466,9 +466,9 @@ BOOL IsPointInRegionLF(IN point2f pt,IN SYArray* pArSeg)
 
 
 // 判断点pt是否位于区域（线段组）内
-BOOL IsPointInRegionF(IN point2f pt,IN SYArray* pArSeg)
+BOOL IsPointInRegionF(IN point2f pt,IN BaseARray* pArSeg)
 {
-	int nSize = (int)SYAR_GetSize(pArSeg);
+	int nSize = (int)BaseAR_GetSize(pArSeg);
 	if (nSize < 3) 
 	{
 		return FALSE;
@@ -479,16 +479,16 @@ BOOL IsPointInRegionF(IN point2f pt,IN SYArray* pArSeg)
 	point2f* pptf2 = NULL;
 	for (int i = 0; i < nSize - 1; i++)
 	{
-		pptf1 = (point2f*)SYAR_GetAt(pArSeg,i);
-		pptf2 = (point2f*)SYAR_GetAt(pArSeg,i+1);	
+		pptf1 = (point2f*)BaseAR_GetAt(pArSeg,i);
+		pptf2 = (point2f*)BaseAR_GetAt(pArSeg,i+1);	
 		if ( BeamHit(pt.x, pt.y, *pptf1,*pptf2) ) 
 		{
 			nInterPts++;
 		}
 	}
 
-	pptf1 = (point2f*)SYAR_GetAt(pArSeg,nSize - 1);
-	pptf2 = (point2f*)SYAR_GetAt(pArSeg,0);
+	pptf1 = (point2f*)BaseAR_GetAt(pArSeg,nSize - 1);
+	pptf2 = (point2f*)BaseAR_GetAt(pArSeg,0);
 	if ( BeamHit(pt.x,pt.y, *pptf1,*pptf2) ) 
 	{
 		nInterPts++;
@@ -505,25 +505,25 @@ BOOL IsPointInRegionF(IN point2f pt,IN SYArray* pArSeg)
 }
 
 // 给一条连续的线段和一个连续的封闭边界，输出线段在边界内的部分
-void GetSegmentInRegion(IN SYArray* pArLine,IN SYArray* pArSeg,OUT SYArray* pArOut)
+void GetSegmentInRegion(IN BaseARray* pArLine,IN BaseARray* pArSeg,OUT BaseARray* pArOut)
 {
-	int nPointCount = SYAR_GetSize(pArLine);
+	int nPointCount = BaseAR_GetSize(pArLine);
 	if( nPointCount <= 1)
 		return;
 
 	BOOL bClose = FALSE;
-	point2f* pStart = (point2f*)SYAR_GetAt(pArLine,0);
-	point2f* pEnd = (point2f*)SYAR_GetAt(pArLine,nPointCount - 1);
+	point2f* pStart = (point2f*)BaseAR_GetAt(pArLine,0);
+	point2f* pEnd = (point2f*)BaseAR_GetAt(pArLine,nPointCount - 1);
 	if( POINTF_EQUAL(*pStart,*pEnd) )
 		bClose = TRUE;
 
 	BOOL bCloseStartInRgn = FALSE;
 	BOOL bHasSpelid = FALSE;
 	BOOL bInRgn = FALSE;
-	SYArray* arCell = NULL;
+	BaseARray* arCell = NULL;
 	for (int i = 0; i < nPointCount; i++)
 	{
-		point2f* pt = (point2f*)SYAR_GetAt(pArLine,i);
+		point2f* pt = (point2f*)BaseAR_GetAt(pArLine,i);
 
 		// 第一个点
 		if( i == 0 )
@@ -531,9 +531,9 @@ void GetSegmentInRegion(IN SYArray* pArLine,IN SYArray* pArSeg,OUT SYArray* pArO
 			if( IsPointInRegionLF(*pt,pArSeg))		// 在区域内
 			{
 				bInRgn = TRUE;
-				arCell = SYAR_Create();
-				SYAR_Init(arCell);
-				SYAR_Add(pArOut,arCell);
+				arCell = BaseAR_Create();
+				BaseAR_Init(arCell);
+				BaseAR_Add(pArOut,arCell);
 
 				if( bClose)
 				{
@@ -541,11 +541,11 @@ void GetSegmentInRegion(IN SYArray* pArLine,IN SYArray* pArSeg,OUT SYArray* pArO
 				}
 				else
 				{
-					point2f* ptNext = (point2f*)SYAR_GetAt(pArLine,i + 1);
+					point2f* ptNext = (point2f*)BaseAR_GetAt(pArLine,i + 1);
 					point2f* ptInter = new point2f;
 					if( IsRayRegionIntersection(*ptNext,*pt,pArSeg,ptInter))
 					{
-						SYAR_Add(arCell,ptInter);
+						BaseAR_Add(arCell,ptInter);
 					}
 					else
 					{
@@ -555,7 +555,7 @@ void GetSegmentInRegion(IN SYArray* pArLine,IN SYArray* pArSeg,OUT SYArray* pArO
 				point2f* ptNew = new point2f;
 				ptNew->x = pt->x;
 				ptNew->y = pt->y;
-				SYAR_Add(arCell,ptNew);
+				BaseAR_Add(arCell,ptNew);
 			}
 			else
 			{
@@ -564,25 +564,25 @@ void GetSegmentInRegion(IN SYArray* pArLine,IN SYArray* pArSeg,OUT SYArray* pArO
 		}
 		else
 		{
-			point2f* ptLast = (point2f*)SYAR_GetAt(pArLine,i - 1);
-			SYArray arInter;
-			SYAR_Init(&arInter);
+			point2f* ptLast = (point2f*)BaseAR_GetAt(pArLine,i - 1);
+			BaseARray arInter;
+			BaseAR_Init(&arInter);
 			int nIntCount = IsSegmentRegionIntersection(*ptLast,*pt,pArSeg,&arInter);
 			if( nIntCount > 0)
 				bHasSpelid = TRUE;
 			for( int j = 0; j < nIntCount; j++)
 			{
-				point2f* ptInter = (point2f*)SYAR_GetAt(&arInter,j);
+				point2f* ptInter = (point2f*)BaseAR_GetAt(&arInter,j);
 				BOOL bNew = bInRgn ? (j % 2 == 1) : (j % 2 == 0);
 				if( bNew )
 				{
-					arCell = SYAR_Create();
-					SYAR_Init(arCell);
-					SYAR_Add(pArOut,arCell);
+					arCell = BaseAR_Create();
+					BaseAR_Init(arCell);
+					BaseAR_Add(pArOut,arCell);
 				}
-				SYAR_Add(arCell,ptInter);
+				BaseAR_Add(arCell,ptInter);
 			}
-			SYAR_RemoveAll(&arInter);
+			BaseAR_RemoveAll(&arInter);
 
 			if( IsPointInRegionLF(*pt,pArSeg))		// 在区域内
 			{
@@ -590,15 +590,15 @@ void GetSegmentInRegion(IN SYArray* pArLine,IN SYArray* pArSeg,OUT SYArray* pArO
 				point2f* ptNew = new point2f;
 				ptNew->x = pt->x;
 				ptNew->y = pt->y;
-				SYAR_Add(arCell,ptNew);
+				BaseAR_Add(arCell,ptNew);
 
 				if( i == nPointCount - 1 && !bClose)
 				{
-					point2f* ptLast = (point2f*)SYAR_GetAt(pArLine,i - 1);
+					point2f* ptLast = (point2f*)BaseAR_GetAt(pArLine,i - 1);
 					point2f* ptInter = new point2f;
 					if( IsRayRegionIntersection(*ptLast,*pt,pArSeg,ptInter))
 					{
-						SYAR_Add(arCell,ptInter);
+						BaseAR_Add(arCell,ptInter);
 					}
 					else
 					{
@@ -615,16 +615,16 @@ void GetSegmentInRegion(IN SYArray* pArLine,IN SYArray* pArSeg,OUT SYArray* pArO
 
 	if( bClose && bCloseStartInRgn && bHasSpelid)
 	{
-		SYArray* arTmp = (SYArray*)SYAR_GetAt(pArOut,0);
-		int nOutCount = SYAR_GetSize(pArOut);
-		SYArray* arLast = (SYArray*)SYAR_GetAt(pArOut,nOutCount - 1);
-		for( int i = 0; i < SYAR_GetSize(arTmp); i++)
+		BaseARray* arTmp = (BaseARray*)BaseAR_GetAt(pArOut,0);
+		int nOutCount = BaseAR_GetSize(pArOut);
+		BaseARray* arLast = (BaseARray*)BaseAR_GetAt(pArOut,nOutCount - 1);
+		for( int i = 0; i < BaseAR_GetSize(arTmp); i++)
 		{
-			point2f* ptTmp = (point2f*)SYAR_GetAt(arTmp,i);
-			SYAR_Add(arLast,ptTmp);	
+			point2f* ptTmp = (point2f*)BaseAR_GetAt(arTmp,i);
+			BaseAR_Add(arLast,ptTmp);	
 		}
-		SYAR_RemoveAll(arTmp);
-		SYAR_Release(arTmp);
-		SYAR_RemoveAt(pArOut,0,1);
+		BaseAR_RemoveAll(arTmp);
+		BaseAR_Release(arTmp);
+		BaseAR_RemoveAt(pArOut,0,1);
 	}
 }

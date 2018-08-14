@@ -305,11 +305,11 @@ void SYMaterial_CreateTexSrc(SYMatTex* pTex,int nSrcType,void* pData)
 		break;
 	case SYMaterial_Buffer:
 		{
-			SYBufferDef32* pBuffer = (SYBufferDef32*)pData;
+			CommonBufferDef32* pBuffer = (CommonBufferDef32*)pData;
 			if(pBuffer && pBuffer->m_dwBuffer)
 			{
-				pTex->pBufferDef = new SYBufferDef32;
-				memcpy(pTex->pBufferDef,pBuffer,sizeof(SYBufferDef32));
+				pTex->pBufferDef = new CommonBufferDef32;
+				memcpy(pTex->pBufferDef,pBuffer,sizeof(CommonBufferDef32));
 				pTex->pBufferDef->m_dwBuffer = new DWORD[pBuffer->m_nHeight * pBuffer->m_nWidth];
 				memcpy(pTex->pBufferDef->m_dwBuffer,pBuffer->m_dwBuffer,pBuffer->m_nWidth * pBuffer->m_nHeight * sizeof(DWORD));
 			}
@@ -547,7 +547,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYMatTex_Compare( const SYMatTex* pMatTex1, const 
 		break;
 	case SYMaterial_Buffer:
 		{
-			if (!SYBufferDef32_Compare(pMatTex1->pBufferDef, pMatTex2->pBufferDef))
+			if (!CommonBufferDef32_Compare(pMatTex1->pBufferDef, pMatTex2->pBufferDef))
 			{
 				return FALSE;
 			}
@@ -638,9 +638,9 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //	}
 //}
 
-//void SYMaterial_AddTexKeyValue(double dFrame,SYArray* pArTexParam,SYMatTex* pTex,void* pValue,int nType)
+//void SYMaterial_AddTexKeyValue(double dFrame,BaseARray* pArTexParam,SYMatTex* pTex,void* pValue,int nType)
 //{
-//	param_def* param = (param_def*)SYAR_GetAt(pArTexParam,nType);
+//	param_def* param = (param_def*)BaseAR_GetAt(pArTexParam,nType);
 //	switch(nType)
 //	{
 //	case SYTex_Offset_ParamDef:
@@ -679,7 +679,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //	}
 //}
 
-//void SYMaterial_AddPrivateParamdef(SYArray* pArTexParam ,int nTexType)
+//void SYMaterial_AddPrivateParamdef(BaseARray* pArTexParam ,int nTexType)
 //{
 //	if(nTexType == SYMaterial_SpecTex)
 //	{
@@ -689,7 +689,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //		pparamdefFactor->interpolate.pRanges            = new PAIR[1];
 //		pparamdefFactor->interpolate.pRanges[0].fFirst  = 0.f;
 //		pparamdefFactor->interpolate.pRanges[0].fSecond = 1.f;
-//		SYAR_Add( pArTexParam, pparamdefFactor );
+//		BaseAR_Add( pArTexParam, pparamdefFactor );
 //	}
 //	else if(nTexType == SYMaterial_EnvMapTex)
 //	{
@@ -699,7 +699,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //		pparamdefFactor->interpolate.pRanges            = new PAIR[1];
 //		pparamdefFactor->interpolate.pRanges[0].fFirst  = 0.f;
 //		pparamdefFactor->interpolate.pRanges[0].fSecond = 1.f;
-//		SYAR_Add( pArTexParam, pparamdefFactor );
+//		BaseAR_Add( pArTexParam, pparamdefFactor );
 //	}
 //	else if(nTexType == SYMaterial_EmissiveTex)
 //	{
@@ -709,7 +709,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //		pparamdefFactor->interpolate.pRanges            = new PAIR[1];
 //		pparamdefFactor->interpolate.pRanges[0].fFirst  = 0.f;
 //		pparamdefFactor->interpolate.pRanges[0].fSecond = 1.f;
-//		SYAR_Add( pArTexParam, pparamdefFactor );
+//		BaseAR_Add( pArTexParam, pparamdefFactor );
 //	}
 //	else if(nTexType == SYMaterial_BumpTex)
 //	{
@@ -719,10 +719,10 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //		pparamdefFactor->interpolate.pRanges            = new PAIR[1];
 //		pparamdefFactor->interpolate.pRanges[0].fFirst  = 0.f;
 //		pparamdefFactor->interpolate.pRanges[0].fSecond = 1.f;
-//		SYAR_Add( pArTexParam, pparamdefFactor );
+//		BaseAR_Add( pArTexParam, pparamdefFactor );
 //	}
 //}
-//void SYMaterial_AddParamdef(SYArray* pArTexParam ,int nTexType)
+//void SYMaterial_AddParamdef(BaseARray* pArTexParam ,int nTexType)
 //{
 //	static const float2 vec = {0,0},vec1 = {1,1};
 //	param_def* pparamdef_offset = new param_def;
@@ -733,7 +733,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //	pparamdef_offset->interpolate.pRanges[0].fSecond = 1.f;
 //	pparamdef_offset->interpolate.pRanges[1].fFirst  = 0.f;
 //	pparamdef_offset->interpolate.pRanges[1].fSecond = 1.f;
-//	SYAR_Add( pArTexParam, pparamdef_offset );
+//	BaseAR_Add( pArTexParam, pparamdef_offset );
 //
 //	param_def* pparamdef_scale = new param_def;
 //	sy_init_paramdef(pparamdef_scale,sizeof(float2),(void*)&vec1);
@@ -743,7 +743,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //	pparamdef_scale->interpolate.pRanges[0].fSecond = 1.f;
 //	pparamdef_scale->interpolate.pRanges[1].fFirst  = 0.f;
 //	pparamdef_scale->interpolate.pRanges[1].fSecond = 1.f;
-//	SYAR_Add( pArTexParam, pparamdef_scale );
+//	BaseAR_Add( pArTexParam, pparamdef_scale );
 //
 //	param_def* pparamdef_center = new param_def;
 //	sy_init_paramdef(pparamdef_center,sizeof(float2),(void*)&vec);
@@ -753,7 +753,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //	pparamdef_center->interpolate.pRanges[0].fSecond = 1.f;
 //	pparamdef_center->interpolate.pRanges[1].fFirst  = 0.f;
 //	pparamdef_center->interpolate.pRanges[1].fSecond = 1.f;
-//	SYAR_Add( pArTexParam, pparamdef_center );
+//	BaseAR_Add( pArTexParam, pparamdef_center );
 //
 //	param_def* pparamdefrotate = new param_def;
 //	sy_init_paramdef(pparamdefrotate,sizeof(float),NULL);
@@ -761,7 +761,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //	pparamdefrotate->interpolate.pRanges            = new PAIR[1];
 //	pparamdefrotate->interpolate.pRanges[0].fFirst  = 0.f;
 //	pparamdefrotate->interpolate.pRanges[0].fSecond = 1.f;
-//	SYAR_Add( pArTexParam, pparamdefrotate );
+//	BaseAR_Add( pArTexParam, pparamdefrotate );
 //
 //	SYMaterial_AddPrivateParamdef(pArTexParam ,nTexType);
 //}
@@ -1207,7 +1207,7 @@ int UpdatePhyParam(double dTime,SYMaterialParam* pMatParam,SYVideoMaterial* pVid
 	return SYMaterial_NoChange;
 }
 
-BOOL CalTexMatrix(matrix4f* pTexMat,double dTotalTime,double dFrame,SYArray* pTexParam,SYMatVideoTex* pVideoTex,SYMatTex* pTex)
+BOOL CalTexMatrix(matrix4f* pTexMat,double dTotalTime,double dFrame,BaseARray* pTexParam,SYMatVideoTex* pVideoTex,SYMatTex* pTex)
 {
 	float2	Offset = {0,0}, Scale = {1,1}, Center = {0,0}; 
 	float	Rotate = 0;
@@ -1224,13 +1224,13 @@ BOOL CalTexMatrix(matrix4f* pTexMat,double dTotalTime,double dFrame,SYArray* pTe
 	{
 		if(pTexParam)
 		{
-			//param_def* pParam = (param_def*)SYAR_GetAt(pTexParam,SYTex_Offset_ParamDef);
+			//param_def* pParam = (param_def*)BaseAR_GetAt(pTexParam,SYTex_Offset_ParamDef);
 			//calc_get_value(pParam,dFrame,&Offset,NULL);
-			//pParam = (param_def*)SYAR_GetAt(pTexParam,SYTex_Scale_ParamDef);
+			//pParam = (param_def*)BaseAR_GetAt(pTexParam,SYTex_Scale_ParamDef);
 			//calc_get_value(pParam,dFrame,&Scale,NULL);
-			//pParam = (param_def*)SYAR_GetAt(pTexParam,SYTex_Center_ParamDef);
+			//pParam = (param_def*)BaseAR_GetAt(pTexParam,SYTex_Center_ParamDef);
 			//calc_get_value(pParam,dFrame,&Center,NULL);
-			//pParam = (param_def*)SYAR_GetAt(pTexParam,SYTex_Rotate_ParamDef);
+			//pParam = (param_def*)BaseAR_GetAt(pTexParam,SYTex_Rotate_ParamDef);
 			//calc_get_value(pParam,dFrame,&Rotate,NULL);
 		}
 
@@ -1282,14 +1282,14 @@ BOOL UpdateTexParam(double dTotalFrame,double dFrame,int hDevice,SYMaterialParam
 
 	matrix4f TexMat;
 	float4 TexData1[5];
-	SYArray* pTexParam = pMatParam ? pMatParam->texParam + pTex->nType : NULL;
+	BaseARray* pTexParam = pMatParam ? pMatParam->texParam + pTex->nType : NULL;
 	bChange |= CalTexMatrix(&TexMat,dTotalFrame,dFrame,pTexParam,pVideoTex,pTex);
 	void* pMemBuffer = &TexMat;
 	int nSize = sizeof(matrix4f);
 
 	//param_def* pParam = NULL;
 	//if(pMatParam)
-	//	pParam = (param_def*)SYAR_GetAt(&pMatParam->texParam[pTex->nType],SYTex_Private_ParamDef);
+	//	pParam = (param_def*)BaseAR_GetAt(&pMatParam->texParam[pTex->nType],SYTex_Private_ParamDef);
 	//if(pTex->nType == SYMaterial_SpecTex 
 	//	|| pTex->nType == SYMaterial_EnvMapTex 
 	//	|| pTex->nType == SYMaterial_EmissiveTex 
@@ -1554,7 +1554,7 @@ int CalcMoviePlayTime( int nField, int nTotalFrame )
 	int nRealFrame = (nField/2)%nTotalFrame;
 	return nRealFrame;
 }
-BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( SYBufferDef32* pSrcBufferDef, DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate, SYVideoMaterial* pVideoMat,void* param,BOOL isForceUpdate /*= FALSE*/, LPRECT pBound/* = NULL*/ )
+BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBufferDef, DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate, SYVideoMaterial* pVideoMat,void* param,BOOL isForceUpdate /*= FALSE*/, LPRECT pBound/* = NULL*/ )
 {
 	SYMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
 	if(!pTex)
@@ -1888,7 +1888,7 @@ BASEGRAPH_DATARENDER_API void SYMaterial_CreateParam(SYMaterialParam* pMatParam 
 {
 	//for (int i = 0; i < SYMATERIAL_TEX_COUNT; i++)
 	//{
-	//	SYAR_Init(&pMatParam->texParam[i]);
+	//	BaseAR_Init(&pMatParam->texParam[i]);
 	//	SYMaterial_AddParamdef(&pMatParam->texParam[i],i);
 	//}
 	////pMatParam->diffuse
@@ -1908,10 +1908,10 @@ BASEGRAPH_DATARENDER_API void SYMaterial_ReleaseParam( SYMaterialParam* pMatPara
 {
 	//for (int i = 0; i < SYMATERIAL_TEX_COUNT; i++)
 	//{
-	//	int nParamCount = SYAR_GetCount(&pMatParam->texParam[i]);
+	//	int nParamCount = BaseAR_GetCount(&pMatParam->texParam[i]);
 	//	for(int j = 0; j < nParamCount; j++)
 	//	{
-	//		param_def* param = (param_def*)SYAR_GetAt(&pMatParam->texParam[i],j);
+	//		param_def* param = (param_def*)BaseAR_GetAt(&pMatParam->texParam[i],j);
 	//		sy_release_paramdef(param);
 	//		SAFE_DELETE(param);
 	//	}
@@ -2112,14 +2112,14 @@ BASEGRAPH_DATARENDER_API void		SYMaterial_CopyParam(SYMaterialParam* pDestMatPar
 
 	//for (int i = 0; i < SYMATERIAL_TEX_COUNT; i++)
 	//{
-	//	int nCount = SYAR_GetCount(&pSrcMatParam->texParam[i]);
+	//	int nCount = BaseAR_GetCount(&pSrcMatParam->texParam[i]);
 	//	for(int j = 0; j < nCount; j++)
 	//	{
-	//		param_def* pSrc = (param_def*)SYAR_GetAt(&pSrcMatParam->texParam[i],j);
+	//		param_def* pSrc = (param_def*)BaseAR_GetAt(&pSrcMatParam->texParam[i],j);
 	//		param_def* pDst = new param_def;
 	//		memset(pDst,0,sizeof(param_def));
 	//		sy_copy_paramdef(pDst,pSrc);
-	//		SYAR_Add(&pDestMatParam->texParam[i],pDst);
+	//		BaseAR_Add(&pDestMatParam->texParam[i],pDst);
 	//	}
 	//}
 	////pMatParam->diffuse
@@ -2283,7 +2283,7 @@ BASEGRAPH_DATARENDER_API int SYMaterial_VideoMatUpdateCopyVideo(SYVideoMaterial*
 	return nChange;
 }
 
-BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(SYBufferDef32* pSrcBufferDef, DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate,SYVideoMaterial* pVideoMat,SYVideoMaterial* pVideoMatSrc,void* param,BOOL isForceUpdate /*= FALSE*/)
+BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* pSrcBufferDef, DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate,SYVideoMaterial* pVideoMat,SYVideoMaterial* pVideoMatSrc,void* param,BOOL isForceUpdate /*= FALSE*/)
 {
 	SYMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
 	if(!pTex)

@@ -47,7 +47,7 @@ void UIColorButton::DrawElement(CDC * pDC)
 			CRect rcDrawer(0, 0, nBkWidth, nBkHeight);
 			BufferFunction::DrawImageWithAplha(&MemDC, pBkImg, rcDrawer, rcDrawer, CRect(0, 0, nBkWidth, nBkHeight), CRect(), TRUE, 255, FALSE);
 			//»æÖÆÑÕÉ«¿é
-			CSYBuffer	DrawBuffer(nBkWidth, nBkHeight);
+			CCommonBuffer	DrawBuffer(nBkWidth, nBkHeight);
 			memset(DrawBuffer.m_dwBuffer, 0, nBkWidth * nBkHeight * sizeof(DWORD));
 			CRect rt(0, 0, nBkWidth, nBkHeight);
 			SYColor_FillColor(&m_color, DrawBuffer.m_dwBuffer, nBkWidth, nBkHeight, 0, 0, nBkWidth, nBkHeight, 1.0f);

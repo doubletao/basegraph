@@ -458,9 +458,9 @@ inline bool ObjectCalculator::ValidAction()
 	return bRet;
 }
 
-SYItemRenderUnit * ObjectCalculator::GetRenderUnit(int nIndex, const SYArray & pUnitArray)
+SYItemRenderUnit * ObjectCalculator::GetRenderUnit(int nIndex, const BaseARray & pUnitArray)
 {
-	return (SYItemRenderUnit*)SYAR_GetAt(&pUnitArray, nIndex);
+	return (SYItemRenderUnit*)BaseAR_GetAt(&pUnitArray, nIndex);
 }
 
 void ObjectCalculator::GetSceneCenter(float3& pt)
@@ -533,7 +533,7 @@ SYRenderUnitView::~SYRenderUnitView()
 	bChanged = FALSE;
 	if (pUnitBuffer)
 	{
-		SYBufferDef32_Release(pUnitBuffer);
+		CommonBufferDef32_Release(pUnitBuffer);
 	}
 	pUnitBuffer = nullptr;
 	int nDevice = DX3DEngine_GetMainDevice();

@@ -42,7 +42,7 @@ class BASEGRAPH_SCENE_RENDER_API SYHitPoint
 public:
 	SYHitPoint()
 	{ 
-		SYAR_Init(&m_arHitPoint);
+		BaseAR_Init(&m_arHitPoint);
 	}
 	~SYHitPoint();
 	int AddPoint(const float3* pHitPoint);
@@ -51,11 +51,11 @@ public:
 	{
 		if (nIndex >= GetPointCount())
 			return NULL;
-		return (float3*)SYAR_GetAt((LPSYARRAY)&m_arHitPoint,nIndex);
+		return (float3*)BaseAR_GetAt((LPBaseARRAY)&m_arHitPoint,nIndex);
 	}
 	int GetPointCount()const
 	{ 
-		return (int)SYAR_GetCount(&m_arHitPoint);
+		return (int)BaseAR_GetCount(&m_arHitPoint);
 	}
 	bool DelLast()
 	{
@@ -86,7 +86,7 @@ public:
 		return nearestPoint;
 	};
 protected:
-	SYArray m_arHitPoint;//float3 SYArray
+	BaseARray m_arHitPoint;//float3 BaseARray
 };
 struct SYRay
 {

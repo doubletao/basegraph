@@ -31,7 +31,7 @@ enum Matrix_type
 struct SYRenderUnitView
 {
 	BOOL			bChanged;
-	SYBufferDef32*	pUnitBuffer;
+	CommonBufferDef32*	pUnitBuffer;
 	DXHalDef32*		pUnitHalBuf;
 	DXHalDef32*		pUnitDymHalBuffer;
 	BOOL			bUseColorAlpha;
@@ -74,7 +74,7 @@ public:
 	virtual bool IsItemNeedRender();
 	bool ValidAction();
 
-	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const SYArray& pUnitArray);
+	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const BaseARray& pUnitArray);
 	static void GetSceneCenter(float3& pt);
 
 	void SetChgLevel(EmObjectChgLevel emChgLevel);//set «∏≥÷µ

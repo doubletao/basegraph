@@ -47,34 +47,34 @@ float SYPt2fDistance(point2f &pt0,point2f &pt1)
 	return sqrt(dtx*dtx+dty*dty);
 }
 
-void SYAR_ReleasePt2fAry(SYArray& ary)
+void BaseAR_ReleasePt2fAry(BaseARray& ary)
 {
-	int nCnt = SYAR_GetCount(&ary);
+	int nCnt = BaseAR_GetCount(&ary);
 	for(int i=0; i<nCnt; ++i)
 	{
-		point2f* pPt = (point2f*)SYAR_GetAt(&ary, i);
+		point2f* pPt = (point2f*)BaseAR_GetAt(&ary, i);
 		delete pPt;
 	}
-	SYAR_RemoveAll(&ary);
+	BaseAR_RemoveAll(&ary);
 }
 
-void SYAR_ReleasePt3fAry(SYArray& ary)
+void BaseAR_ReleasePt3fAry(BaseARray& ary)
 {
-	int nCnt = SYAR_GetCount(&ary);
+	int nCnt = BaseAR_GetCount(&ary);
 	for(int i=0; i<nCnt; ++i)
 	{
-		point3f* pPt = (point3f*)SYAR_GetAt(&ary, i);
+		point3f* pPt = (point3f*)BaseAR_GetAt(&ary, i);
 		delete pPt;
 	}
-	SYAR_RemoveAll(&ary);
+	BaseAR_RemoveAll(&ary);
 }
 
-int SYAR_GetIndexByPtr(const SYArray* pArray, void* pPtr)
+int BaseAR_GetIndexByPtr(const BaseARray* pArray, void* pPtr)
 {
-	int nCnt = SYAR_GetCount(pArray);
+	int nCnt = BaseAR_GetCount(pArray);
 	for(int i=0; i<nCnt; ++i)
 	{
-		if (SYAR_GetAt(pArray, i) == pPtr)
+		if (BaseAR_GetAt(pArray, i) == pPtr)
 			return i;
 	}
 	return -1;

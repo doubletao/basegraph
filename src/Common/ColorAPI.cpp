@@ -314,7 +314,7 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// 填充颜色
 		int nPitch = (nminw << 2);
 
 		// 填充一行
-		SYColor_FillLineSYAR_1_Recursive(pdwTmpLine, nminw, pcrFill->gradual.color,
+		SYColor_FillLineBaseAR_1_Recursive(pdwTmpLine, nminw, pcrFill->gradual.color,
 			pcrFill->gradual.pos, pcrFill->gradual.mid, pcrFill->gradual.ncount,
 			pcrFill->gradual.linear.repeat, pcrFill->gradual.linear.style);
 		// 节点颜色动画的测试版
@@ -340,7 +340,7 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// 填充颜色
 		int nStep = (nAngle == 90) ? -1 : 1;
 
 		// 填充一列
-		SYColor_FillLineSYAR_1_Recursive(pdwTmpVert, nminh, pcrFill->gradual.color,
+		SYColor_FillLineBaseAR_1_Recursive(pdwTmpVert, nminh, pcrFill->gradual.color,
 			pcrFill->gradual.pos, pcrFill->gradual.mid, pcrFill->gradual.ncount,
 			pcrFill->gradual.linear.repeat, pcrFill->gradual.linear.style);
 		// 节点颜色动画的测试版
@@ -377,7 +377,7 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// 填充颜色
 			pdwRealLine = SYSSE_NEW(nRealLen, DWORD);
 			// 填充一行
 
-			SYColor_FillLineSYAR_1_Recursive(pdwRealLine, nRealLen, pcrFill->gradual.color,
+			SYColor_FillLineBaseAR_1_Recursive(pdwRealLine, nRealLen, pcrFill->gradual.color,
 				pcrFill->gradual.pos, pcrFill->gradual.mid, pcrFill->gradual.ncount,
 				pcrFill->gradual.linear.repeat, pcrFill->gradual.linear.style);
 			// 节点颜色动画的测试版
@@ -420,7 +420,7 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// 填充颜色
 			nRealLen = nminw + (int)ceilf(fStart);
 			pdwRealLine = SYSSE_NEW(nRealLen, DWORD);
 			// 填充一行
-			SYColor_FillLineSYAR_1_Recursive(pdwRealLine, nRealLen, pcrFill->gradual.color,
+			SYColor_FillLineBaseAR_1_Recursive(pdwRealLine, nRealLen, pcrFill->gradual.color,
 				pcrFill->gradual.pos, pcrFill->gradual.mid, pcrFill->gradual.ncount,
 				pcrFill->gradual.linear.repeat, pcrFill->gradual.linear.style);
 			// 节点颜色动画的测试版
@@ -453,7 +453,7 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// 填充颜色
 // 采用浮点颜色递归运算进行填充
 // （1）在中间点左边时（x < m）：0.5*(c1-c0)/(m-p0) * (x-p0) + c0 = A1 * (x - B1) + C1
 // （2）在中间点右边时（y > m）：0.5*(c1-c0)/(p1-m) * (y-p1) + c1 = A2 * (y - B2) + C2
-void SYColor_FillLineSYAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
+void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
 									IN int nBufWidth,
 									IN DWORD *pdwColor,		// 单色组
 									IN float *pfPos,		// 位置组
@@ -508,7 +508,7 @@ void SYColor_FillLineSYAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
 				if (pfMid[i-1] == 0.5f)		// 中间点绝对没有移动时，则可直接进行插值
 				{
 					fCoefA = 1.f / (fP1 - fP0);
-					SYBGRA32_LineSYAR_Recursive(pdwTmpBuf, fCrP0, fCrP1, (float)nP0, fCoefA, fP0, fCrP0, nP1 - nP0);
+					SYBGRA32_LineBaseAR_Recursive(pdwTmpBuf, fCrP0, fCrP1, (float)nP0, fCoefA, fP0, fCrP0, nP1 - nP0);
 				}
 				else	// 否则要分成两段
 				{
@@ -518,12 +518,12 @@ void SYColor_FillLineSYAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
 					if (nPm > nP0)	// 中间点不与起点重合
 					{
 						fCoefA = 0.5f / (fPm - fP0);
-						SYBGRA32_LineSYAR_Recursive(pdwTmpBuf, fCrP0, fCrP1, (float)nP0, fCoefA, fP0, fCrP0, nPm - nP0);
+						SYBGRA32_LineBaseAR_Recursive(pdwTmpBuf, fCrP0, fCrP1, (float)nP0, fCoefA, fP0, fCrP0, nPm - nP0);
 					}
 					if (nP1 > nPm)	// 中间点不与终点重合
 					{
 						fCoefA = 0.5f / (fP1 - fPm);
-						SYBGRA32_LineSYAR_Recursive((pdwTmpBuf + nPm - nP0), fCrP0, fCrP1, (float)nPm, fCoefA, fP1, fCrP1, nP1 - nPm);
+						SYBGRA32_LineBaseAR_Recursive((pdwTmpBuf + nPm - nP0), fCrP0, fCrP1, (float)nPm, fCoefA, fP1, fCrP1, nP1 - nPm);
 					}
 				}
 			}
@@ -601,7 +601,7 @@ void SYColor_FillLineSYAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
 				else	// 颜色不同则插值
 				{
 					fCoefA = 1.f / (fP1 - fP0);
-					SYBGRA32_LineSYAR_Recursive(pdwTmpBuf, pfCrLastEnd, pfCrCurrStart, (float)nLastEndPos, fCoefA, fP0, pfCrLastEnd, nStartPos - nLastEndPos);
+					SYBGRA32_LineBaseAR_Recursive(pdwTmpBuf, pfCrLastEnd, pfCrCurrStart, (float)nLastEndPos, fCoefA, fP0, pfCrLastEnd, nStartPos - nLastEndPos);
 				}
 			}
 			// 重复第一段
@@ -666,7 +666,7 @@ void SYColor_FillGradCenterRound(IN SYColor* pColor,			// 填充颜色
 	float* pfTmpRadiusY = pfRadiusY;
 
 	// 沿半径方向进行线性渐变生成一行表
-	SYColor_FillLineSYAR_1_Recursive(pdwMaxLineTable, nRadius_Z, pColor->gradual.color,
+	SYColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nRadius_Z, pColor->gradual.color,
 		pColor->gradual.pos, pColor->gradual.mid, pColor->gradual.ncount,
 		pColor->gradual.center.repeat, pColor->gradual.center.style);
 	// 节点颜色动画的测试版
@@ -729,7 +729,7 @@ void SYColor_FillGradCenterPolygon(IN SYColor* pColor,			// 填充颜色
 	BOOL bInTriangle = FALSE;
 
 	// 沿半径方向进行线性渐变生成一行表
-	SYColor_FillLineSYAR_1_Recursive(pdwMaxLineTable, nRadius_Z, pColor->gradual.color,
+	SYColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nRadius_Z, pColor->gradual.color,
 		pColor->gradual.pos, pColor->gradual.mid, pColor->gradual.ncount,
 		pColor->gradual.center.repeat, pColor->gradual.center.style);
 	// 节点颜色动画的测试版
@@ -874,7 +874,7 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// 填充颜色
 	int nLeft(0), nRight(0), nTmpLoop(0);
 
 	// 沿圆周方向进行线性渐变生成一行表，设起点为左边中点
-	SYColor_FillLineSYAR_1_Recursive(pdwMaxLineTable, nGirth_Z, pColor->gradual.color,
+	SYColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nGirth_Z, pColor->gradual.color,
 		pColor->gradual.pos, pColor->gradual.mid, pColor->gradual.ncount,
 		pColor->gradual.outline.repeat, pColor->gradual.outline.style);
 	// 节点颜色动画的测试版
@@ -1037,7 +1037,7 @@ void SYColor_FillGradOutlinePolygon(IN SYColor* pColor,			// 填充颜色
 		dwCr[0] = pColor->gradual.color[i];
 		dwCr[1] = pColor->gradual.color[nNext];
 		fMid[0] = (nNext == 0) ? 0.5f : pColor->gradual.mid[i];
-		SYColor_FillLineSYAR_1_Recursive(pdwSideLineTable[i], nSideLen[i], dwCr, fPos, fMid, 2, 1, 0);
+		SYColor_FillLineBaseAR_1_Recursive(pdwSideLineTable[i], nSideLen[i], dwCr, fPos, fMid, 2, 1, 0);
 		// 三角形重心
 		fTmpX = (fx[0] + fx[1] + fx[2]) / 3.f;
 		fTmpY = (fy[0] + fy[1] + fy[2]) / 3.f;
@@ -1325,7 +1325,7 @@ void SYColor_FillGradTemplet(IN SYColor* pColor,			// 填充颜色
 	DWORD *pdwLine = SYSSE_NEW(dwLineSize, DWORD);
 
 	// 填充渐变色
-	SYColor_FillLineSYAR_1_Recursive(pdwLine, dwLineSize, pColor->gradual.color,
+	SYColor_FillLineBaseAR_1_Recursive(pdwLine, dwLineSize, pColor->gradual.color,
 		pColor->gradual.pos, pColor->gradual.mid, pColor->gradual.ncount, 1, 0);
 	// 节点颜色动画的测试版
 	if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)

@@ -288,9 +288,9 @@ void vg_release(vectorgraph* graph)
 	}
 	memset(graph, 0, sizeof(vectorgraph));
 }
-void __cdecl  vg_fromarray(vectorgraph* pvg,SYArray* ptarray)
+void __cdecl  vg_fromarray(vectorgraph* pvg,BaseARray* ptarray)
 {
-	int nCount = (int)SYAR_GetSize(ptarray);
+	int nCount = (int)BaseAR_GetSize(ptarray);
 	pvg->ncell = 1;
 	pvg->version = 1;
 	pvg->cell = new vectorcell;
@@ -304,7 +304,7 @@ void __cdecl  vg_fromarray(vectorgraph* pvg,SYArray* ptarray)
 	pvg->cell->bound.right = -65535.0f;
 	for(int i = 0;i < nCount;i ++)
 	{
-		point2lf* p2lf = (point2lf*)SYAR_GetAt(ptarray,i);
+		point2lf* p2lf = (point2lf*)BaseAR_GetAt(ptarray,i);
 		pvg->cell->point[i].x = (float)p2lf->x;
 		pvg->cell->point[i].y = (float)p2lf->y;
 		pvg->cell->pttype[i] = point_line;
@@ -319,7 +319,7 @@ void __cdecl  vg_fromarray(vectorgraph* pvg,SYArray* ptarray)
 	pvg->cell->type = close_anticlockwise_region;
 	pvg->cell->width = 1;
 }
-int __cdecl vg_tobezier(SYArray* ptarray,vectorgraph* pvg,size_t nIndex)
+int __cdecl vg_tobezier(BaseARray* ptarray,vectorgraph* pvg,size_t nIndex)
 {
 	int cellcount = pvg->ncell;
 	if(!cellcount || nIndex >= cellcount)
@@ -336,7 +336,7 @@ int __cdecl vg_tobezier(SYArray* ptarray,vectorgraph* pvg,size_t nIndex)
 
 			if(i == pcell->npoint - 1)
 			{
-				SYAR_Add(ptarray,pbase1);
+				BaseAR_Add(ptarray,pbase1);
 				break;
 			}
 			point3f* ctrl1 = new point3f;
@@ -347,8 +347,8 @@ int __cdecl vg_tobezier(SYArray* ptarray,vectorgraph* pvg,size_t nIndex)
 			ctrl2->x = pcell->point[i + 1].x;
 			ctrl2->y = pcell->point[i + 1].y;
 			ctrl2->z = 0;
-			SYAR_Add(ptarray,ctrl1);
-			SYAR_Add(ptarray,ctrl2);
+			BaseAR_Add(ptarray,ctrl1);
+			BaseAR_Add(ptarray,ctrl2);
 		}
 		else if(pcell->pttype[i] == point_curve_start)
 		{
@@ -356,7 +356,7 @@ int __cdecl vg_tobezier(SYArray* ptarray,vectorgraph* pvg,size_t nIndex)
 			pbase1->x = pcell->point[i].x;
 			pbase1->y = pcell->point[i].y;
 			pbase1->z = 0;
-			SYAR_Add(ptarray,pbase1);
+			BaseAR_Add(ptarray,pbase1);
 
 			int ncurvecount = 1;
 			int k = i + 1;
@@ -367,18 +367,18 @@ int __cdecl vg_tobezier(SYArray* ptarray,vectorgraph* pvg,size_t nIndex)
 				ppt->x = pcell->point[k].x;
 				ppt->y = pcell->point[k].y;
 				ppt->z = 0.0f;
-				SYAR_Add(ptarray,ppt);
+				BaseAR_Add(ptarray,ppt);
 				k++;
 			}
 			i = k - 1;
 		}
 	}
-	return (int)SYAR_GetSize(ptarray);
+	return (int)BaseAR_GetSize(ptarray);
 
 }
-void __cdecl vg_from_point2f_bezier(vectorgraph* pvg,SYArray* ptarray)
+void __cdecl vg_from_point2f_bezier(vectorgraph* pvg,BaseARray* ptarray)
 {
-	int ncount = (int)SYAR_GetSize(ptarray);
+	int ncount = (int)BaseAR_GetSize(ptarray);
 	memset(pvg,0,sizeof(vectorgraph));
 	pvg->ncell  = 1;
 	pvg->cell = new vectorcell;
@@ -391,13 +391,13 @@ void __cdecl vg_from_point2f_bezier(vectorgraph* pvg,SYArray* ptarray)
 	pvg->cell->bound.top = 65535.0f;
 	pvg->cell->bound.right = -65535.0f;
 	pvg->cell->bound.bottom = -65535.0f;
-	point2f* pfirst = (point2f*)SYAR_GetAt(ptarray,0);
+	point2f* pfirst = (point2f*)BaseAR_GetAt(ptarray,0);
 	pvg->cell->point[0] = *pfirst;
 	pvg->cell->pttype[0] = point_curve_start;
 	int nindex = 0;
 	for(int i = 1;i < ncount;i ++)
 	{
-		point2f* pt = (point2f*)SYAR_GetAt(ptarray,i);
+		point2f* pt = (point2f*)BaseAR_GetAt(ptarray,i);
 		pvg->cell->point[i].x = pt->x;
 		pvg->cell->point[i].y = pt->y;
 		pvg->cell->pttype[i] = point_curve;
@@ -409,9 +409,9 @@ void __cdecl vg_from_point2f_bezier(vectorgraph* pvg,SYArray* ptarray)
 	}
 	pvg->bound = pvg->cell->bound;
 }
-void __cdecl vg_from_point3fpoly(vectorgraph* pvg,SYArray* ptarray)
+void __cdecl vg_from_point3fpoly(vectorgraph* pvg,BaseARray* ptarray)
 {
-	int ncount = (int)SYAR_GetSize(ptarray);
+	int ncount = (int)BaseAR_GetSize(ptarray);
 	memset(pvg,0,sizeof(vectorgraph));
 	pvg->ncell  = 1;
 	pvg->cell = new vectorcell;
@@ -427,7 +427,7 @@ void __cdecl vg_from_point3fpoly(vectorgraph* pvg,SYArray* ptarray)
 	int nindex = 0;
 	for(int i = 0;i < ncount;i ++,nindex ++)
 	{
-		point3f* pt = (point3f*)SYAR_GetAt(ptarray,i);
+		point3f* pt = (point3f*)BaseAR_GetAt(ptarray,i);
 		pvg->cell->point[nindex].x = pt->x;
 		pvg->cell->point[nindex].y = pt->y;
 		pvg->cell->pttype[nindex] = point_line;

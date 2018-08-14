@@ -548,7 +548,7 @@ void C3DSceneViewWnd::RenderCtrlBuffer()
 	int nHeight = DataBase_GetSceneHeight();
 	int nCtrlBuffer = m_BufferInfo.GetControlMemBuffer();
 	//准备好DC
-	CSYBufferDC bufferDC;
+	CCommonBufferDC bufferDC;
 	//清空画布
 	DataRender_Clear2DBuf(nCtrlBuffer, 0);
 	// 先画出编辑控制线，后画选中。

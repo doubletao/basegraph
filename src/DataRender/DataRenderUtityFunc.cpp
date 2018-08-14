@@ -31,8 +31,8 @@ static char THIS_FILE[] = __FILE__;
 #define STATCEFFECT_TYPE_CONVEX		2		//凸
 #define STATCEFFECT_TYPE_LIGHT		3		//亮边
 
-typedef CSYArray<CSYPoint2fPtrArray*> CPtfArrArr; // pointf二维数组
-LPSYARRAY calc_midderbuf_array = NULL;
+typedef CBaseARray<CSYPoint2fPtrArray*> CPtfArrArr; // pointf二维数组
+LPBaseARRAY calc_midderbuf_array = NULL;
 int maxsize = 0;
 
 BASEGRAPH_DATARENDER_API int sy_release_unit(SYUnit * punit)
@@ -730,7 +730,7 @@ BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel * pmod)
 	pmod->nviewsub = 0;
 	pmod->nInstanceCount = 0;
 
-	int bcount = (int)SYAR_GetSize(&pmod->bonearray);
+	int bcount = (int)BaseAR_GetSize(&pmod->bonearray);
 	if (bcount > 0)
 	{
 		if (pmod->pdwBoneIndex)
@@ -746,11 +746,11 @@ BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel * pmod)
 		SYBoneDef* pBone = NULL;
 		for (int i = 0; i < bcount; i++)
 		{
-			pBone = (SYBoneDef*)SYAR_RemoveAt(&pmod->bonearray, 0, 1);
+			pBone = (SYBoneDef*)BaseAR_RemoveAt(&pmod->bonearray, 0, 1);
 			sy_release_bonedef(pBone);
 			SAFE_DELETE(pBone);
 		}
-		SYAR_RemoveAll(&pmod->bonearray);
+		BaseAR_RemoveAll(&pmod->bonearray);
 	}
 
 	return 1;
@@ -863,23 +863,23 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel * pDst, const SYModel * pSr
 	//Copy View Sub
 	sy_copy_mod_viewsub(pDst, pSrc);
 
-	int nDstBoneSize = (int)SYAR_GetSize(&pDst->bonearray);
+	int nDstBoneSize = (int)BaseAR_GetSize(&pDst->bonearray);
 	for (int i = 0; i < nDstBoneSize; i++)
 	{
-		SYBoneDef* pDstBone = (SYBoneDef*)SYAR_GetAt(&pDst->bonearray, i);
+		SYBoneDef* pDstBone = (SYBoneDef*)BaseAR_GetAt(&pDst->bonearray, i);
 		sy_release_bonedef(pDstBone);
 		SAFE_DELETE(pDstBone);
 	}
-	SYAR_Clear(&pDst->bonearray);
+	BaseAR_Clear(&pDst->bonearray);
 
-	int nBoneSize = (int)SYAR_GetSize(&pSrc->bonearray);
+	int nBoneSize = (int)BaseAR_GetSize(&pSrc->bonearray);
 	for (int i = 0; i < nBoneSize; i++)
 	{
 		//bone array
-		SYBoneDef* pScrBone = (SYBoneDef*)SYAR_GetAt(&pSrc->bonearray, i);
+		SYBoneDef* pScrBone = (SYBoneDef*)BaseAR_GetAt(&pSrc->bonearray, i);
 		SYBoneDef* pBone = new SYBoneDef;
 		sy_copy_bone(pBone, pScrBone);
-		SYAR_Add(&pDst->bonearray, pBone);
+		BaseAR_Add(&pDst->bonearray, pBone);
 	}
 
 	pDst->nBoneGroupCount = pSrc->nBoneGroupCount;	// bone group definition
@@ -1692,14 +1692,14 @@ void effect_convex(unsigned char* pmask,
 	popermask = NULL;
 }
 
-BOOL SYRender_DrawShadow(CSYBuffer* pSrcPool,
-	CSYBuffer* pSrcMaskPool,
+BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
+	CCommonBuffer* pSrcMaskPool,
 	RECT* rtSrc,
 	RECT* rtDes,
 	int	nOffsetX,
 	int	nOffsetY,
 	BaseGraph_DataBase::shadowinfo* pinfo,
-	CSYBuffer*& pResultPool,
+	CCommonBuffer*& pResultPool,
 	IN  float fscale,
 	IN  int nFrame, BOOL bBaseline, BOOL bSubSrc)
 {
@@ -1709,7 +1709,7 @@ BOOL SYRender_DrawShadow(CSYBuffer* pSrcPool,
 	int nWidth = rtDes->right - rtDes->left;
 	int nHeight = rtDes->bottom - rtDes->top;
 
-	pResultPool = SYData_QueryCalcBuffer(nWidth * nHeight, TRUE);
+	pResultPool = Data_QueryCalcBuffer(nWidth * nHeight, TRUE);
 
 	DWORD* pBuffer = pResultPool->m_dwBuffer;
 	memset(pBuffer, 0, sizeof(DWORD) * nWidth * nHeight);
@@ -1943,7 +1943,7 @@ BOOL SYRender_DrawShadow(CSYBuffer* pSrcPool,
 	if (pinfo->effect_style == SHADOW_INSERT)
 	{
 
-		CSYBuffer* pResultCurPool = SYData_QueryCalcBuffer(nWidth * nHeight, TRUE);
+		CCommonBuffer* pResultCurPool = Data_QueryCalcBuffer(nWidth * nHeight, TRUE);
 		SY_DMemSet(pResultCurPool->m_dwBuffer, 0, nWidth * nHeight);
 
 		SYBGRA32_ProcKey(pBuffer,			// 目标
@@ -1996,7 +1996,7 @@ BOOL SYRender_DrawShadow(CSYBuffer* pSrcPool,
 			nHeight,
 			BUFFER_MIX,
 			BUFFER_PARITY_BOTH);
-		SYData_ReleaseCalcBuffer(pResultPool);
+		Data_ReleaseCalcBuffer(pResultPool);
 		pResultPool = pResultCurPool;
 	}
 	if (FALSE)
@@ -2131,7 +2131,7 @@ BOOL LightColor(DWORD &dwColor,
 }
 
 //在buffer上加入光效
-BOOL SYRenderLightToOpBuff(IN OUT	CSYBuffer*& pResultPool,
+BOOL SYRenderLightToOpBuff(IN OUT	CCommonBuffer*& pResultPool,
 	IN 		RECT rtOutBound,
 	IN		RECT rtInValid,
 	IN		sy_render_channel** pChannelPool,
@@ -2218,7 +2218,7 @@ int _SYRender_GetFaceChannel(sy_render_channel** pDesChannel, sy_render_channel*
 	return nCount;
 }
 
-BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN static_effect * effect, OUT CSYBuffer *& pResultPool, OUT RECT & rtOutBound, OUT int & nWidth, OUT int & nHeight, OUT int & nPitch, IN float fscale, OUT pointf & ptOrg, IN double dFrame, IN BOOL bShadowBaseline, IN sy_render_channel ** pChannelPool)
+BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN static_effect * effect, OUT CCommonBuffer *& pResultPool, OUT RECT & rtOutBound, OUT int & nWidth, OUT int & nHeight, OUT int & nPitch, IN float fscale, OUT pointf & ptOrg, IN double dFrame, IN BOOL bShadowBaseline, IN sy_render_channel ** pChannelPool)
 {
 	int facew = 0, faceh = 0;
 	RECT rtFaceBound = { 0 };
@@ -2362,10 +2362,10 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 	BOOL bDrawFace = FALSE;
 	int nAllFaceWidth = rtAllFaceBound.right - rtAllFaceBound.left;
 	int nAllFaceHeight = rtAllFaceBound.bottom - rtAllFaceBound.top;
-	CSYBuffer* pFaceSystemBuffer = NULL;
+	CCommonBuffer* pFaceSystemBuffer = NULL;
 	BOOL	bFaceValid = TRUE;
 
-	CSYBuffer* pFaceMask = NULL;
+	CCommonBuffer* pFaceMask = NULL;
 	int nFaceMaskWidth = 0;
 	int nFaceMaskHeight = 0;
 	//面系操作
@@ -2377,7 +2377,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		//effect->face.effect_width = 20;
 		//effect->face.soft = 5;
 		//effect->face.avcolor = 0xff000000;
-		CSYBuffer* pFacePool = SYData_QueryCalcBuffer(nFWidth * nFHeight, TRUE);
+		CCommonBuffer* pFacePool = Data_QueryCalcBuffer(nFWidth * nFHeight, TRUE);
 		pFaceBuffer = pFacePool->m_dwBuffer;
 		//绘制面
 		SY_DMemSet(pFaceBuffer, 0, nFWidth * nFHeight);
@@ -2477,7 +2477,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 				rtIn = rtAllFaceBound;
 			}
 
-			CSYBuffer* pCubePool = SYData_QueryCalcBuffer(nCubeWidth * nCubebHeight, TRUE);
+			CCommonBuffer* pCubePool = Data_QueryCalcBuffer(nCubeWidth * nCubebHeight, TRUE);
 			SYRender_DrawGraph(
 				&CubeOut,
 				pCubePool->m_dwBuffer,
@@ -2551,7 +2551,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 					nCubebHeight,
 					BUFFER_MIX,
 					BUFFER_PARITY_BOTH);
-				SYData_ReleaseCalcBuffer(pCubePool);
+				Data_ReleaseCalcBuffer(pCubePool);
 			}
 			else
 				pFaceSystemBuffer = pCubePool;
@@ -2577,21 +2577,21 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 					BUFFER_MIX,
 					BUFFER_PARITY_BOTH);
 			}
-			SYData_ReleaseCalcBuffer(pFacePool);
+			Data_ReleaseCalcBuffer(pFacePool);
 			pFacePool = NULL;
 		}
 		else if (!effect->face.disable)
 			pFaceSystemBuffer = pFacePool;
 		else
 		{
-			SYData_ReleaseCalcBuffer(pFacePool);
+			Data_ReleaseCalcBuffer(pFacePool);
 			pFacePool = NULL;
 		}
 	}
 	//边系操作
 	if (!effect->border.disable && effect->border.color.type != SYCOLOR_NONE)
 	{
-		CSYBuffer* pBorderMaskPool = NULL;
+		CCommonBuffer* pBorderMaskPool = NULL;
 		int nBorderMaskWidth = 0;
 		int nBorderMaskHeight = 0;
 		//矩形
@@ -2601,7 +2601,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		int nOffsetY = effect->shadow.offsety + vborderOffset.y;
 
 		//请求边界池
-		CSYBuffer* pBorderPool = SYData_QueryCalcBuffer(nBorderWidth * nBorderHeight, TRUE);
+		CCommonBuffer* pBorderPool = Data_QueryCalcBuffer(nBorderWidth * nBorderHeight, TRUE);
 		pBorderPool->m_nWidth = nBorderWidth;
 		pBorderPool->m_nHeight = nBorderHeight;
 		pBorderPool->m_rtBound = rtOutBound;
@@ -2682,7 +2682,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			int nBCubeHeight = rtOutBound.bottom - rtOutBound.top;
 			RECT rtIn = rtOutBound;
 
-			CSYBuffer* pCubePool = SYData_QueryCalcBuffer(nBCubeWidth * nBCubeHeight, TRUE);
+			CCommonBuffer* pCubePool = Data_QueryCalcBuffer(nBCubeWidth * nBCubeHeight, TRUE);
 			pCubePool->m_nWidth = nBCubeWidth;
 			pCubePool->m_nHeight = nBCubeHeight;
 			pCubePool->m_rtBound = rtOutBound;
@@ -2746,7 +2746,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 					BufferFunction::WriteBitmap(_T("E:\\2.bmp"), nBCubeWidth, nBCubeHeight, 32, (BYTE*)pCubePool->m_dwBuffer);
 					BufferFunction::WriteBitmap(_T("E:\\3.bmp"), nBCubeWidth, nBCubeHeight, 32, (BYTE*)pResultPool->m_dwBuffer);
 				}
-				SYData_ReleaseCalcBuffer(pCubePool);
+				Data_ReleaseCalcBuffer(pCubePool);
 			}
 			else
 				pResultPool = pCubePool;
@@ -2769,14 +2769,14 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 				nBorderHeight,
 				BUFFER_MIX,
 				BUFFER_PARITY_BOTH);
-			SYData_ReleaseCalcBuffer(pBorderPool);
+			Data_ReleaseCalcBuffer(pBorderPool);
 		}
 		else
 			pResultPool = pBorderPool;
 
 		if (pBorderMaskPool)
 		{
-			SYData_ReleaseCalcBuffer(pBorderMaskPool);
+			Data_ReleaseCalcBuffer(pBorderMaskPool);
 			pBorderMaskPool = NULL;
 		}
 
@@ -2801,7 +2801,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 				nAllFaceHeight,
 				BUFFER_MIX,
 				BUFFER_PARITY_BOTH);
-			SYData_ReleaseCalcBuffer(pFaceSystemBuffer);
+			Data_ReleaseCalcBuffer(pFaceSystemBuffer);
 		}
 	}
 	else
@@ -2814,7 +2814,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 
 	if (pFaceMask)
 	{
-		SYData_ReleaseCalcBuffer(pFaceMask);
+		Data_ReleaseCalcBuffer(pFaceMask);
 		pFaceMask = NULL;
 	}
 
@@ -2876,7 +2876,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 }
 
 static int m_Buffer_Ref = 0;
-BASEGRAPH_DATARENDER_API void SYData_ReleaseCalcBuffer(CSYBuffer * pBuffer)
+BASEGRAPH_DATARENDER_API void Data_ReleaseCalcBuffer(CCommonBuffer * pBuffer)
 {
 	pBuffer->UnQuery();
 	m_Buffer_Ref--;
@@ -3823,15 +3823,15 @@ BASEGRAPH_DATARENDER_API void SYRender_GenBorderGraph(vectorgraph * des, vectorg
 	}
 }
 
-BASEGRAPH_DATARENDER_API CSYBuffer * SYData_QueryCalcBuffer(int nSize, BOOL bMustSuccess)
+BASEGRAPH_DATARENDER_API CCommonBuffer * Data_QueryCalcBuffer(int nSize, BOOL bMustSuccess)
 {
-	int nCalcCount = (int)SYAR_GetSize(calc_midderbuf_array);
+	int nCalcCount = (int)BaseAR_GetSize(calc_midderbuf_array);
 start:
 	if (nSize == 0)
 	{
 		for (int k = 0; k < nCalcCount; k++)
 		{
-			CSYBuffer* pBuffer = (CSYBuffer*)SYAR_GetAt(calc_midderbuf_array, k);
+			CCommonBuffer* pBuffer = (CCommonBuffer*)BaseAR_GetAt(calc_midderbuf_array, k);
 			pBuffer->Lock();
 			if (!pBuffer->IsUsed())
 			{
@@ -3855,7 +3855,7 @@ start:
 
 		if (bMustSuccess)
 		{
-			CSYBuffer* pBuffer = new CSYBuffer;
+			CCommonBuffer* pBuffer = new CCommonBuffer;
 			pBuffer->Create(maxsize);
 			pBuffer->Query();
 			m_Buffer_Ref++;
@@ -3866,7 +3866,7 @@ start:
 	}
 	for (int k = nCalcCount - 1; k >= 0; k--)
 	{
-		CSYBuffer* pBuffer = (CSYBuffer*)SYAR_GetAt(calc_midderbuf_array, k);
+		CCommonBuffer* pBuffer = (CCommonBuffer*)BaseAR_GetAt(calc_midderbuf_array, k);
 		pBuffer->Lock();
 		if (!pBuffer->IsUsed())
 		{
@@ -3882,7 +3882,7 @@ start:
 	}
 	if (bMustSuccess)
 	{
-		CSYBuffer* pBuffer = new CSYBuffer;
+		CCommonBuffer* pBuffer = new CCommonBuffer;
 		pBuffer->Create(nSize);
 		pBuffer->Query();
 		pBuffer->SetAutoDelete(TRUE);
@@ -3893,7 +3893,7 @@ start:
 	return NULL;
 }
 
-BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph * pGraph, DWORD * pBuffer, int w, int h, float fscale, RECT rtBorderBound, sycolor * pcolor, DWORD effect_type, DWORD effect_width, DWORD effect_soft, float effect_angle, DWORD effect_color, int nframe, CSYBuffer ** pRetMaskPool, int * nRetMaskWidth, int * nRetMaskHeight)
+BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph * pGraph, DWORD * pBuffer, int w, int h, float fscale, RECT rtBorderBound, sycolor * pcolor, DWORD effect_type, DWORD effect_width, DWORD effect_soft, float effect_angle, DWORD effect_color, int nframe, CCommonBuffer ** pRetMaskPool, int * nRetMaskWidth, int * nRetMaskHeight)
 {
 	//LARGE_INTEGER t_freqency;
 	//LARGE_INTEGER t_start;
@@ -3905,12 +3905,12 @@ BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph * pGraph, DWORD * p
 	ptOrg.y = (float)-rtBorderBound.top;
 
 	//掩模信息
-	CSYBuffer* pMaskPool = SYData_QueryCalcBuffer((w * h >> 2) + 1);
+	CCommonBuffer* pMaskPool = Data_QueryCalcBuffer((w * h >> 2) + 1);
 	BYTE* pMask = (BYTE*)pMaskPool->m_dwBuffer;
 	memset(pMask, 0, w * h);
 
 	//光栅化掩模
-	CSYBuffer* pfigurePool = SYData_QueryCalcBuffer(w*h, TRUE);
+	CCommonBuffer* pfigurePool = Data_QueryCalcBuffer(w*h, TRUE);
 	//vectorgraphfix Graph_Fix;
 	//rip_transfigure_to_fix(pGraph,&Graph_Fix);
 	//raster_render_figure(
@@ -3929,7 +3929,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph * pGraph, DWORD * p
 		BufferFunction::WriteBitmap(_T("E:\\2.bmp"), w, h, 32, (BYTE*)pfigurePool->m_dwBuffer);
 	}
 
-	SYData_ReleaseCalcBuffer(pfigurePool);
+	Data_ReleaseCalcBuffer(pfigurePool);
 
 	//如果颜色存在，就渲染颜色
 	if (pcolor)
@@ -3960,7 +3960,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph * pGraph, DWORD * p
 			effect_color);
 	}
 	if (!pRetMaskPool)
-		SYData_ReleaseCalcBuffer(pMaskPool);
+		Data_ReleaseCalcBuffer(pMaskPool);
 	else
 	{
 		*pRetMaskPool = pMaskPool;
@@ -4644,10 +4644,10 @@ void Light(DWORD * dwBuffer, int nWidth, int nHeight, BaseGraph_DataBase::metali
 /**
 *@brief 短划线
 */
-void GetImagPointsDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr)
+void GetImagPointsDASH(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr)
 {
 	int nSize;
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 	if (nSize <= 0)
 	{
 		nCell = 0;
@@ -4661,11 +4661,11 @@ void GetImagPointsDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OU
 
 	pointf* pptImg;
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->y;
-	SYAR_Add((SYArray*)&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->y;
+	BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 
 	float fDivSum = 0.0;
 	float fDivPre = 0.0;
@@ -4679,8 +4679,8 @@ void GetImagPointsDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OU
 	{
 		for (int i = 0; i < nSize - 1; i++)
 		{
-			pptTemp1 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i);
-			pptTemp2 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i + 1);
+			pptTemp1 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i);
+			pptTemp2 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i + 1);
 			fDivPre = fDivSum;
 			fDivSum += GetDistace(pptTemp2, pptTemp1);
 			if (fDivSum >= fInterval)
@@ -4696,7 +4696,7 @@ void GetImagPointsDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OU
 		pptImg = new pointf;
 		pptImg->x = pptTemp1->x + fDivStep * ptfDir.x;
 		pptImg->y = pptTemp1->y + fDivStep * ptfDir.y;
-		SYAR_Add(&pptfArr, pptImg);
+		BaseAR_Add(&pptfArr, pptImg);
 		fDivPre = 0.0;
 
 		// 跨过2个像素间隔
@@ -4714,12 +4714,12 @@ void GetImagPointsDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OU
 	}
 
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->y;
-	SYAR_Add(&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->y;
+	BaseAR_Add(&pptfArr, pptImg);
 }
 
-BASEGRAPH_DATARENDER_API void GetImagPointsByStyle(IN const SYArray & pptfArr1, IN const int nStyle, IN const float fLineWidth, OUT int & nCell, OUT SYArray & pptfArr)
+BASEGRAPH_DATARENDER_API void GetImagPointsByStyle(IN const BaseARray & pptfArr1, IN const int nStyle, IN const float fLineWidth, OUT int & nCell, OUT BaseARray & pptfArr)
 {
 	switch (nStyle)
 	{
@@ -4743,10 +4743,10 @@ BASEGRAPH_DATARENDER_API void GetImagPointsByStyle(IN const SYArray & pptfArr1, 
 	}
 }
 
-BASEGRAPH_DATARENDER_API void	GetImagPointsDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr, float *fIntervalAr, int intCount)
+BASEGRAPH_DATARENDER_API void	GetImagPointsDASH(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr, float *fIntervalAr, int intCount)
 {
 	int nSize;
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 	if (nSize <= 0)
 	{
 		nCell = 0;
@@ -4760,11 +4760,11 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsDASH(IN const SYArray& pptfArr1, IN c
 
 	pointf* pptImg;
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->y;
-	SYAR_Add((SYArray*)&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->y;
+	BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 
 	float fDivSum = 0.0;
 	float fDivPre = 0.0;
@@ -4778,8 +4778,8 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsDASH(IN const SYArray& pptfArr1, IN c
 	{
 		for (int i = 0; i < nSize - 1; i++)
 		{
-			pptTemp1 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i);
-			pptTemp2 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i + 1);
+			pptTemp1 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i);
+			pptTemp2 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i + 1);
 			fDivPre = fDivSum;
 			fDivSum += GetDistace(pptTemp2, pptTemp1);
 			if (fDivSum >= fInterval)
@@ -4795,7 +4795,7 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsDASH(IN const SYArray& pptfArr1, IN c
 		pptImg = new pointf;
 		pptImg->x = pptTemp1->x + fDivStep * ptfDir.x;
 		pptImg->y = pptTemp1->y + fDivStep * ptfDir.y;
-		SYAR_Add(&pptfArr, pptImg);
+		BaseAR_Add(&pptfArr, pptImg);
 		fDivPre = 0.0;
 
 		// 跨过2个像素间隔
@@ -4813,14 +4813,14 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsDASH(IN const SYArray& pptfArr1, IN c
 	}
 
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->y;
-	SYAR_Add(&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->y;
+	BaseAR_Add(&pptfArr, pptImg);
 }
-BASEGRAPH_DATARENDER_API void	GetImagPointsDASHDOT(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr)
+BASEGRAPH_DATARENDER_API void	GetImagPointsDASHDOT(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr)
 {
 	int nSize;
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 	if (nSize <= 0)
 	{
 		nCell = 0;
@@ -4834,11 +4834,11 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsDASHDOT(IN const SYArray& pptfArr1, I
 
 	pointf* pptImg;
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->y;
-	SYAR_Add((SYArray*)&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->y;
+	BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 
 	float fDivSum = 0.0;
 	float fDivPre = 0.0;
@@ -4856,8 +4856,8 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsDASHDOT(IN const SYArray& pptfArr1, I
 	{
 		for (int i = 0; i < nSize - 1; i++)
 		{
-			pptTemp1 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i);
-			pptTemp2 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i + 1);
+			pptTemp1 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i);
+			pptTemp2 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i + 1);
 			fDivPre = fDivSum;
 			fDivSum += GetDistace(pptTemp2, pptTemp1);
 			if (fDivSum >= fInterval)
@@ -4873,7 +4873,7 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsDASHDOT(IN const SYArray& pptfArr1, I
 		pptImg = new pointf;
 		pptImg->x = pptTemp1->x + fDivStep * ptfDir.x;
 		pptImg->y = pptTemp1->y + fDivStep * ptfDir.y;
-		SYAR_Add((SYArray*)&pptfArr, pptImg);
+		BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 		fDivPre = 0.0;
 
 		if (abs(fIntervalPre - fInterval1) < ABS_FLOAT_0)
@@ -4905,14 +4905,14 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsDASHDOT(IN const SYArray& pptfArr1, I
 	}
 
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->y;
-	SYAR_Add((SYArray*)&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->y;
+	BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 }
-BASEGRAPH_DATARENDER_API void	GetImagPointsLDASH(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr)
+BASEGRAPH_DATARENDER_API void	GetImagPointsLDASH(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr)
 {
 	int nSize;
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 	if (nSize <= 0)
 	{
 		nCell = 0;
@@ -4926,11 +4926,11 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsLDASH(IN const SYArray& pptfArr1, IN 
 
 	pointf* pptImg;
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->y;
-	SYAR_Add((SYArray*)&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->y;
+	BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 
 	float fDivSum = 0.0;
 	float fDivPre = 0.0;
@@ -4944,8 +4944,8 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsLDASH(IN const SYArray& pptfArr1, IN 
 	{
 		for (int i = 0; i < nSize - 1; i++)
 		{
-			pptTemp1 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i);
-			pptTemp2 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i + 1);
+			pptTemp1 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i);
+			pptTemp2 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i + 1);
 			fDivPre = fDivSum;
 			fDivSum += GetDistace(pptTemp2, pptTemp1);
 			if (fDivSum >= fInterval)
@@ -4961,7 +4961,7 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsLDASH(IN const SYArray& pptfArr1, IN 
 		pptImg = new pointf;
 		pptImg->x = pptTemp1->x + fDivStep * ptfDir.x;
 		pptImg->y = pptTemp1->y + fDivStep * ptfDir.y;
-		SYAR_Add((SYArray*)&pptfArr, pptImg);
+		BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 		fDivPre = 0.0;
 
 		// 跨过2个像素间隔
@@ -4979,14 +4979,14 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsLDASH(IN const SYArray& pptfArr1, IN 
 	}
 
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->y;
-	SYAR_Add((SYArray*)&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->y;
+	BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 }
-BASEGRAPH_DATARENDER_API void	GetImagPointsLDASHDOT(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr)
+BASEGRAPH_DATARENDER_API void	GetImagPointsLDASHDOT(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr)
 {
 	int nSize;
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 	if (nSize <= 0)
 	{
 		nCell = 0;
@@ -5000,11 +5000,11 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsLDASHDOT(IN const SYArray& pptfArr1, 
 
 	pointf* pptImg;
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->y;
-	SYAR_Add((SYArray*)&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->y;
+	BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 
 	float fDivSum = 0.0;
 	float fDivPre = 0.0;
@@ -5022,8 +5022,8 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsLDASHDOT(IN const SYArray& pptfArr1, 
 	{
 		for (int i = 0; i < nSize - 1; i++)
 		{
-			pptTemp1 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i);
-			pptTemp2 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i + 1);
+			pptTemp1 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i);
+			pptTemp2 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i + 1);
 			fDivPre = fDivSum;
 			fDivSum += GetDistace(pptTemp2, pptTemp1);
 			if (fDivSum >= fInterval)
@@ -5039,7 +5039,7 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsLDASHDOT(IN const SYArray& pptfArr1, 
 		pptImg = new pointf;
 		pptImg->x = pptTemp1->x + fDivStep * ptfDir.x;
 		pptImg->y = pptTemp1->y + fDivStep * ptfDir.y;
-		SYAR_Add((SYArray*)&pptfArr, pptImg);
+		BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 		fDivPre = 0.0;
 
 		if (abs(fIntervalPre - fInterval1) < ABS_FLOAT_0)
@@ -5071,19 +5071,19 @@ BASEGRAPH_DATARENDER_API void	GetImagPointsLDASHDOT(IN const SYArray& pptfArr1, 
 	}
 
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->y;
-	SYAR_Add((SYArray*)&pptfArr, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->y;
+	BaseAR_Add((BaseARray*)&pptfArr, pptImg);
 }
-BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT SYArray& pptfArr)
+BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const BaseARray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT BaseARray& pptfArr)
 {
-	int nSize = (int)SYAR_GetSize((SYArray*)&pptfArr1);
+	int nSize = (int)BaseAR_GetSize((BaseARray*)&pptfArr1);
 	if (nSize <= 0)
 	{
 		nCell = 0;
 		return;
 	}
-	SYArray pptfTemp;
+	BaseARray pptfTemp;
 	int i;
 	pointf *pptTemp1 = nullptr;
 	pointf *pptTemp2 = nullptr;
@@ -5093,9 +5093,9 @@ BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN con
 
 	pointf* pptImg;
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, 0))->y;
-	SYAR_Add((SYArray*)&pptfTemp, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, 0))->y;
+	BaseAR_Add((BaseARray*)&pptfTemp, pptImg);
 
 	float fDivSum = 0.0;
 	float fDivPre = 0.0;
@@ -5109,8 +5109,8 @@ BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN con
 	{
 		for (int i = 0; i < nSize - 1; i++)
 		{
-			pptTemp1 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i);
-			pptTemp2 = (pointf*)SYAR_GetAt((SYArray*)&pptfArr1, i + 1);
+			pptTemp1 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i);
+			pptTemp2 = (pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, i + 1);
 			fDivPre = fDivSum;
 			fDivSum += GetDistace(pptTemp2, pptTemp1);
 			if (fDivSum >= fInterval)
@@ -5126,18 +5126,18 @@ BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN con
 		pptImg = new pointf;
 		pptImg->x = pptTemp1->x + fDivStep * ptfDir.x;
 		pptImg->y = pptTemp1->y + fDivStep * ptfDir.y;
-		SYAR_Add((SYArray*)&pptfTemp, pptImg);
+		BaseAR_Add((BaseARray*)&pptfTemp, pptImg);
 		fDivPre = 0.0;
 
 		fInterval += 8.0f * fLineWidth;
 	}
 
 	pptImg = new pointf;
-	pptImg->x = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->x;
-	pptImg->y = ((pointf*)SYAR_GetAt((SYArray*)&pptfArr1, nSize - 1))->y;
-	SYAR_Add((SYArray*)&pptfTemp, pptImg);
+	pptImg->x = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->x;
+	pptImg->y = ((pointf*)BaseAR_GetAt((BaseARray*)&pptfArr1, nSize - 1))->y;
+	BaseAR_Add((BaseARray*)&pptfTemp, pptImg);
 
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfTemp);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfTemp);
 
 	pointf ptfStart, ptfEnd;
 	pointf ptf;
@@ -5145,15 +5145,15 @@ BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN con
 	float nHeight = 4.0f * fLineWidth; // 振幅
 
 	pptTemp1 = new pointf;
-	*pptTemp1 = *(pointf*)SYAR_GetAt((SYArray*)&pptfTemp, 0);
+	*pptTemp1 = *(pointf*)BaseAR_GetAt((BaseARray*)&pptfTemp, 0);
 
-	SYAR_Add((SYArray*)&pptfArr, pptTemp1);
+	BaseAR_Add((BaseARray*)&pptfArr, pptTemp1);
 
 	for (i = 0; i < nSize - 1; i++)
 	{
-		ptfStart = *(pointf*)SYAR_GetAt((SYArray*)&pptfTemp, i);
+		ptfStart = *(pointf*)BaseAR_GetAt((BaseARray*)&pptfTemp, i);
 
-		ptfEnd = *(pointf*)SYAR_GetAt((SYArray*)&pptfTemp, i + 1);
+		ptfEnd = *(pointf*)BaseAR_GetAt((BaseARray*)&pptfTemp, i + 1);
 
 		float r = (float)sqrt((double)((ptfEnd.x - ptfStart.x)*(ptfEnd.x - ptfStart.x)
 			+ (ptfStart.y - ptfEnd.y)*(ptfStart.y - ptfEnd.y)));
@@ -5170,7 +5170,7 @@ BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN con
 		pptTemp1 = new pointf;
 		pptTemp1->x = ptfBase.x + nHeight * ptf.x;
 		pptTemp1->y = ptfBase.y + nHeight * ptf.y;
-		SYAR_Add((SYArray*)&pptfArr, pptTemp1);
+		BaseAR_Add((BaseARray*)&pptfArr, pptTemp1);
 
 		ptfBase.x = ptfStart.x + 0.75f * (ptfEnd.x - ptfStart.x);
 		ptfBase.y = ptfStart.y + 0.75f * (ptfEnd.y - ptfStart.y);
@@ -5178,7 +5178,7 @@ BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN con
 		pptTemp1 = new pointf;
 		pptTemp1->x = ptfBase.x - nHeight * ptf.x;
 		pptTemp1->y = ptfBase.y - nHeight * ptf.y;
-		SYAR_Add((SYArray*)&pptfArr, pptTemp1);
+		BaseAR_Add((BaseARray*)&pptfArr, pptTemp1);
 
 		ptfBase.x = ptfStart.x + 1.0f * (ptfEnd.x - ptfStart.x);
 		ptfBase.y = ptfStart.y + 1.0f * (ptfEnd.y - ptfStart.y);
@@ -5186,18 +5186,18 @@ BASEGRAPH_DATARENDER_API void	GetPointsRIPPLE(IN const SYArray& pptfArr1, IN con
 		pptTemp1 = new pointf;
 		pptTemp1->x = ptfBase.x;
 		pptTemp1->y = ptfBase.y;
-		SYAR_Add((SYArray*)&pptfArr, pptTemp1);
+		BaseAR_Add((BaseARray*)&pptfArr, pptTemp1);
 	}
 
 	// 释放pptfTemp
-	nSize = (int)SYAR_GetSize((SYArray*)&pptfTemp);
+	nSize = (int)BaseAR_GetSize((BaseARray*)&pptfTemp);
 	for (i = 0; i < nSize; i++)
 	{
-		pointf* ptfTemp = (pointf*)SYAR_GetAt((SYArray*)&pptfTemp, i);
+		pointf* ptfTemp = (pointf*)BaseAR_GetAt((BaseARray*)&pptfTemp, i);
 		delete ptfTemp;
 		ptfTemp = NULL;
 	}
-	SYAR_RemoveAll((SYArray*)&pptfTemp);
+	BaseAR_RemoveAll((BaseARray*)&pptfTemp);
 }
 
 BASEGRAPH_DATARENDER_API float GetDistace(const pointf* ptf1, const pointf* ptf2)
@@ -5205,9 +5205,9 @@ BASEGRAPH_DATARENDER_API float GetDistace(const pointf* ptf1, const pointf* ptf2
 	return (sqrt((ptf1->x - ptf2->x) * (ptf1->x - ptf2->x) + (ptf1->y - ptf2->y) * (ptf1->y - ptf2->y)));
 }
 
-BASEGRAPH_DATARENDER_API float GetCurveDistance(const SYArray * pptrArr)
+BASEGRAPH_DATARENDER_API float GetCurveDistance(const BaseARray * pptrArr)
 {
-	int nSize = (int)SYAR_GetSize((SYArray*)pptrArr);
+	int nSize = (int)BaseAR_GetSize((BaseARray*)pptrArr);
 	if (nSize <= 0)
 	{
 		return 0.0;
@@ -5217,8 +5217,8 @@ BASEGRAPH_DATARENDER_API float GetCurveDistance(const SYArray * pptrArr)
 		float fDis = 0.0;
 		for (int i = 0; i < nSize - 1; i++)
 		{
-			pointf* ptf1 = (pointf*)SYAR_GetAt((SYArray*)pptrArr, i);
-			pointf* ptf2 = (pointf*)SYAR_GetAt((SYArray*)pptrArr, i + 1);
+			pointf* ptf1 = (pointf*)BaseAR_GetAt((BaseARray*)pptrArr, i);
+			pointf* ptf2 = (pointf*)BaseAR_GetAt((BaseARray*)pptrArr, i + 1);
 			fDis += GetDistace(ptf1, ptf2);
 		}
 		return fDis;
@@ -5394,7 +5394,7 @@ BASEGRAPH_DATARENDER_API void calc_trans_group(OUT matrix4f * pvmatrix, OUT vect
 int  cell_get_group_ptcount(vectorcell*	srccell, int nstart, int type);
 
 //单条二次曲线的扩展
-int  conic_extend(SYArray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf startoffset, pointf endoffset, float fwidth, int ndirect, SYArray* lenArray = NULL, float* fAllLen = NULL)
+int  conic_extend(BaseARray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf startoffset, pointf endoffset, float fwidth, int ndirect, BaseARray* lenArray = NULL, float* fAllLen = NULL)
 {
 	pointf pt12mid, pt23mid, pt13mid, ptmid;
 	pointf ptmidnormal, ptmidoffset;
@@ -5412,15 +5412,15 @@ int  conic_extend(SYArray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf s
 		{
 			assert(FALSE);
 		}
-		SYAR_Add(ptArray, ptnewend);
+		BaseAR_Add(ptArray, ptnewend);
 		if (lenArray)
 		{
 			point2f* pother = new point2f;
 			*pother = pt3 + pt3 - *ptnewend;
-			SYAR_Add(ptArray, pother);
+			BaseAR_Add(ptArray, pother);
 			float len = float2Distance(&pt1, &pt2);
 			*fAllLen += len;
-			SYAR_Add(lenArray, (SYAR_ELEMENT)*(void**)fAllLen);
+			BaseAR_Add(lenArray, (BaseAR_ELEMENT)*(void**)fAllLen);
 
 
 		}
@@ -5440,9 +5440,9 @@ int  conic_extend(SYArray* ptArray, pointf pt1, pointf pt2, pointf pt3, pointf s
 	return 1;
 }
 
-int  conic_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, SYArray* plenArray, float* pfalllen);
+int  conic_group_extend(OUT BaseARray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, BaseARray* plenArray, float* pfalllen);
 
-int  bezier_extend(OUT SYArray* ptArray,
+int  bezier_extend(OUT BaseARray* ptArray,
 	IN pointf pt1,
 	IN pointf pt2,
 	IN pointf pt3,
@@ -5450,7 +5450,7 @@ int  bezier_extend(OUT SYArray* ptArray,
 	IN pointf pt1offset,
 	IN pointf pt4offset,
 	float fwidth,
-	int ndirect, SYArray* lenArray, float* falllen)
+	int ndirect, BaseARray* lenArray, float* falllen)
 {
 	pointf pt12mid, pt23mid, pt34mid, pt14mid, ptmid;
 	pointf ptmidleft, ptmidright;
@@ -5472,15 +5472,15 @@ int  bezier_extend(OUT SYArray* ptArray,
 		pointf* ptnewend = new pointf;
 		*ptnewend = pt4offset;
 
-		SYAR_Add(ptArray, ptnewend);
+		BaseAR_Add(ptArray, ptnewend);
 		if (lenArray)
 		{
 			*falllen += float2Distance(&pt1, &pt4);
-			SYAR_Add(lenArray, *(void**)falllen);
+			BaseAR_Add(lenArray, *(void**)falllen);
 
 			point2f* ptother = new point2f;
 			*ptother = pt4 + (pt4 - *ptnewend);
-			SYAR_Add(ptArray, ptother);
+			BaseAR_Add(ptArray, ptother);
 
 		}
 
@@ -5504,7 +5504,7 @@ int  bezier_extend(OUT SYArray* ptArray,
 }
 
 //三次bezier曲线的扩展
-int  bezier_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, SYArray* lenArray, float* falllen, pointf* ptlast = NULL)
+int  bezier_group_extend(OUT BaseARray* ptArray, IN vectorcell* cell, IN  int nstart, float fwidth, int ndirect, BaseARray* lenArray, float* falllen, pointf* ptlast = NULL)
 {
 	int ncurvercount = cell_get_group_ptcount(cell, nstart, point_curve);
 
@@ -5551,23 +5551,23 @@ int  bezier_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nsta
 		}
 		else if (ptlast)
 		{
-			SYArray ptarcarray;
-			SYAR_Init(&ptarcarray);
+			BaseARray ptarcarray;
+			BaseAR_Init(&ptarcarray);
 			cell_makearc(&ptarcarray, pt1, *ptlast, startoffset, fwidth);
-			int naddcount = SYAR_GetSize(&ptarcarray);
+			int naddcount = BaseAR_GetSize(&ptarcarray);
 			for (int i = 0; i < naddcount; i++)
 			{
-				point2f* pt = (point2f*)SYAR_GetAt(&ptarcarray, i);
-				SYAR_Add(ptArray, pt);
+				point2f* pt = (point2f*)BaseAR_GetAt(&ptarcarray, i);
+				BaseAR_Add(ptArray, pt);
 				if (lenArray)
 				{
 					point2f* pother = new point2f;
 					*pother = pt1 + (pt1 - *pt);
-					SYAR_Add(ptArray, pother);
-					SYAR_Add(lenArray, *(void**)falllen);
+					BaseAR_Add(ptArray, pother);
+					BaseAR_Add(lenArray, *(void**)falllen);
 				}
 			}
-			SYAR_RemoveAll(&ptarcarray);
+			BaseAR_RemoveAll(&ptarcarray);
 		}
 
 		if (pt3 == pt4)
@@ -5583,9 +5583,9 @@ int  bezier_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nsta
 
 		bezier_extend(ptArray, pt1, pt2, pt3, pt4, startoffset, endoffset, fwidth, ndirect, lenArray, falllen);
 		if (lenArray)
-			ptlast = (pointf*)SYAR_GetAt(ptArray, SYAR_GetSize(ptArray) - 2);
+			ptlast = (pointf*)BaseAR_GetAt(ptArray, BaseAR_GetSize(ptArray) - 2);
 		else
-			ptlast = (pointf*)SYAR_GetAt(ptArray, SYAR_GetSize(ptArray) - 1);
+			ptlast = (pointf*)BaseAR_GetAt(ptArray, BaseAR_GetSize(ptArray) - 1);
 		nindex += 3;
 
 	} while (nindex <= nstart + ncurvercount - 4);
@@ -5595,7 +5595,7 @@ int  bezier_group_extend(OUT SYArray* ptArray, IN vectorcell* cell, IN  int nsta
 	return nstart + ncurvercount - 1;
 }
 
-BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT SYArray * ptarray, OUT SYArray * lenarray, IN vectorcell * srccell, IN int ndirect, IN float fwidth)
+BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT BaseARray * ptarray, OUT BaseARray * lenarray, IN vectorcell * srccell, IN int ndirect, IN float fwidth)
 {
 	if (fwidth <= 0)
 		fwidth = 1.0f;
@@ -5657,13 +5657,13 @@ BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT SYArray * ptarray, OUT SYArray 
 		line_extend(*(point2f*)ptstart, ptend, srccell->point[nindex], srccell->point[(nindex + 1) % nptcount], ndirect, fwidth);
 
 		//添加正反两个点
-		SYAR_Add(ptarray, ptstart);
+		BaseAR_Add(ptarray, ptstart);
 		if (lenarray)
 		{
 			point2f* ptother = new point2f;
 			*ptother = srccell->point[nindex] + (srccell->point[nindex] - *ptstart);
-			SYAR_Add(ptarray, ptother);
-			SYAR_Add(lenarray, *(void**)&falllen);
+			BaseAR_Add(ptarray, ptother);
+			BaseAR_Add(lenarray, *(void**)&falllen);
 		}
 	}
 	int nprecount = nptcount;
@@ -5691,25 +5691,25 @@ BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT SYArray * ptarray, OUT SYArray 
 					assert(FALSE);
 					//_asm int 3;
 				}
-				SYArray ptarcarray;
-				SYAR_Init(&ptarcarray);
+				BaseARray ptarcarray;
+				BaseAR_Init(&ptarcarray);
 				cell_makearc(&ptarcarray, srccell->point[i], *ptlast, ptoffset, fwidth);
-				int naddcount = SYAR_GetSize(&ptarcarray);
+				int naddcount = BaseAR_GetSize(&ptarcarray);
 				for (int n = 0; n < naddcount - 1; n++)
 				{
-					point2f* pt = (point2f*)SYAR_GetAt(&ptarcarray, n);
-					SYAR_Add(ptarray, pt);
+					point2f* pt = (point2f*)BaseAR_GetAt(&ptarcarray, n);
+					BaseAR_Add(ptarray, pt);
 					if (lenarray)
 					{
 						point2f* pother = new point2f;
 						*pother = srccell->point[i] + (srccell->point[i] - *pt);
-						SYAR_Add(ptarray, pother);
-						SYAR_Add(lenarray, *(void**)&falllen);
+						BaseAR_Add(ptarray, pother);
+						BaseAR_Add(lenarray, *(void**)&falllen);
 					}
 				}
-				point2f* ptArcEnd = (point2f*)SYAR_GetAt(&ptarcarray, naddcount - 1);
+				point2f* ptArcEnd = (point2f*)BaseAR_GetAt(&ptarcarray, naddcount - 1);
 				delete ptArcEnd;
-				SYAR_RemoveAll(&ptarcarray);
+				BaseAR_RemoveAll(&ptarcarray);
 
 			}
 		}
@@ -5729,16 +5729,16 @@ BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT SYArray * ptarray, OUT SYArray 
 			{
 				int a = 0;
 			}
-			SYAR_Add(ptarray, ptend);
+			BaseAR_Add(ptarray, ptend);
 			if (lenarray)
 			{
 				int nSecond = (i + 1) % nptcount;
 				falllen += float2Distance(&srccell->point[i], &srccell->point[nSecond]);
-				SYAR_Add(lenarray, *(void**)&falllen);
+				BaseAR_Add(lenarray, *(void**)&falllen);
 
 				point2f* ptother = new point2f;
 				*ptother = srccell->point[nSecond] + (srccell->point[nSecond] - *ptend);
-				SYAR_Add(ptarray, ptother);
+				BaseAR_Add(ptarray, ptother);
 				int a = 0;
 			}
 			i++;
@@ -5753,7 +5753,7 @@ BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT SYArray * ptarray, OUT SYArray 
 		}
 		if (i < 0)
 			break;
-		ptlast = (pointf*)SYAR_GetAt(ptarray, SYAR_GetSize(ptarray) - 2);
+		ptlast = (pointf*)BaseAR_GetAt(ptarray, BaseAR_GetSize(ptarray) - 2);
 	}
 	// 格式转换:　array --> cell
 	//cell_makecell(ptarray,descell);
