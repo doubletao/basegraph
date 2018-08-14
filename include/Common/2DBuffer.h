@@ -1,6 +1,4 @@
-#ifndef __SY_BUFFER_INC__
-#define __SY_BUFFER_INC__
-
+#pragma once
 #include "Common\BufferCommonDef.h"
 //////////////////////////////////////////////////////////////////////////
 struct CommonBufferDef32
@@ -122,4 +120,3 @@ public:
 	char * GetSerializeBuffer();
 	int RestoreFromSerializeBuffer(char * pBuffer);
 };
-#endif

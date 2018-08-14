@@ -141,15 +141,15 @@ typedef struct tag_staticeffect
 	}
 }static_effect;
 typedef static_effect SYStaticEffect, *LPSYStaticEffect;
-typedef const LPSYStaticEffect LPCSYStaticEffect;
+typedef const LPSYStaticEffect LPCBaseStaticEffect;
 
-enum SY_BEVEL_TYPE
+enum Common_BEVEL_TYPE
 {
-	SY_BEVEL_NONE,
-	SY_BEVEL_PLANE,
-	SY_BEVEL_RAKE_ANGLE,
-	SY_BEVEL_CONVEX,	//凸面
-	SY_BEVEL_CONCAVE,//凹面
+	Common_BEVEL_NONE,
+	Common_BEVEL_PLANE,
+	Common_BEVEL_RAKE_ANGLE,
+	Common_BEVEL_CONVEX,	//凸面
+	Common_BEVEL_CONCAVE,//凹面
 };
 
 enum SYGRAPH_TYPE
@@ -160,14 +160,14 @@ enum SYGRAPH_TYPE
 	FIRE_GRAPH,     //火焰
 };
 
-enum SY_POST_PROCESS_TYPE
+enum Common_POST_PROCESS_TYPE
 {
-	SY_POST_DEFAULT_PROCESS,
-	SY_POST_NORMAL_PROCESS,
-	SY_POST_POSITION_PROCESS,
-	SY_POST_DEPTH_PROCESS,
-	SY_POST_TRANSPARENT_PROCESS,
-	SY_POST_PROCESS_COUNT,
+	Common_POST_DEFAULT_PROCESS,
+	Common_POST_NORMAL_PROCESS,
+	Common_POST_POSITION_PROCESS,
+	Common_POST_DEPTH_PROCESS,
+	Common_POST_TRANSPARENT_PROCESS,
+	Common_POST_PROCESS_COUNT,
 };
 
 //特殊效果
@@ -196,13 +196,13 @@ typedef struct tag_syspecialeffect
 	};
 }syspecial_effect;
 typedef  syspecial_effect SYSpecialEffect, *LPSYSpecialEffect;
-typedef  const LPSYSpecialEffect *LPCSYSpecialEffect;
+typedef  const LPSYSpecialEffect *LPCBaseSpecialEffect;
 //拉伸数据结构
 typedef struct sy_stretch_param
 {
 	BOOL				bEnable;		//拉伸标识
 	float				fThick;			//拉伸厚度
-	SY_BEVEL_TYPE		eBevelType;		//导角类型
+	Common_BEVEL_TYPE		eBevelType;		//导角类型
 	float				fBevelThick;	//导角厚度
 	float				fBevelLen;		//导角长度
 	float				fBevelPrecision;//导角精度
@@ -210,7 +210,7 @@ typedef struct sy_stretch_param
 	{
 		bEnable = FALSE;
 		fThick = 0;
-		eBevelType = SY_BEVEL_NONE;
+		eBevelType = Common_BEVEL_NONE;
 		fBevelThick = 0;
 		fBevelLen = 0;
 		fBevelPrecision = 0;
@@ -257,7 +257,7 @@ struct sy_font_def
 };
 
 typedef sy_font_def SYFont, *LPSYFont;
-typedef const LPSYFont LPCSYFont;
+typedef const LPSYFont LPCBaseFont;
 
 //横向对齐方式
 typedef enum e_text_align_horizontal
@@ -304,7 +304,7 @@ typedef struct sy_text_prop_def
 	sy_text_prop_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }SYTextProp, *LPSYTextProp;
-typedef const SYTextProp* LPCSYTextProp;
+typedef const SYTextProp* LPCBaseTextProp;
 
 //下划线类型
 typedef enum e_text_under_line
@@ -394,7 +394,7 @@ typedef struct sy_text_def
 	sy_text_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }SYText, *LPSYText;
-typedef const SYText* LPCSYText;
+typedef const SYText* LPCBaseText;
 
 //项目符号的原始数据定义
 typedef struct sy_textsymbol_def
@@ -450,7 +450,7 @@ struct sy_under_line_def
 	BASEGRAPH_DATARENDER_API void Reset();
 };
 typedef sy_under_line_def SYUnderLine, *LPSYUnderLine;
-typedef const LPSYUnderLine LPCSYUnderLine;
+typedef const LPSYUnderLine LPCBaseUnderLine;
 //文字属性数据块类别定义
 typedef enum e_text_property_type
 {
@@ -514,4 +514,4 @@ typedef struct sy_text_prop_index_def
 	LPVOID					p3DColor[SYTEXT_SUBFACE_CNT];	//3D颜色属性索引
 	LPVOID					pUnderLine;	//下划线属性索引
 }SYTextPropIndex, *LPSYTextPropIndex;
-typedef const SYTextPropIndex* LPCSYTextPropIndex;
+typedef const SYTextPropIndex* LPCBaseTextPropIndex;

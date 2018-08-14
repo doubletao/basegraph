@@ -19,7 +19,7 @@ typedef struct tag_EnvelopeNode
 	tag_EnvelopeNode * nextNode;
 }EnvelopeNode; 
 
-typedef CBaseARray<EnvelopeNode*> CSYEnvelopeArray;
+typedef CBaseARray<EnvelopeNode*> CBaseEnvelopeArray;
 
 template<typename t1>
 void floatcross(t1& vresult,t1 pt1,t1 pt2)
@@ -125,7 +125,7 @@ BOOL NearLine(IN pointf* ptf )
 //输入：
 //输出：
 //------------------------------------------------------------------
-void AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, IN pointf * ctrlPoints)
+void AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, IN pointf * ctrlPoints)
 {
 	// 接近直线，则直接加入
 	// 否则分成两段，递归调用
@@ -257,12 +257,12 @@ BOOL SYTriangulateApp::PtsOnDiffSide(IN point3f p1, IN point3f p2, IN point3f l1
 //--------------------------------------------------------------------------------
 //功能：打断并加入内环上的顶点
 //--------------------------------------------------------------------------------
-void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri, 
+void SYTriangulateApp::BreakAndAddCurCell(CBasePoint3fPtrArray *pptrTri, 
 						CPtNodeArray &ptPolyArray, //ptfArray中的顶点加入到ptPolyArray
 						BaseARray &ptfArray, 
 						int nMinXIndex, // ptfArray中最小x值点的序号
 						float fMinX, // ptfArray中最小x值
-						CSYPoint2fPtrArray &ptfArrAddedMinPts)
+						CBasePoint2fPtrArray &ptfArrAddedMinPts)
 {
 	int i, j;
 	point3f* lpPtf3D = NULL;
@@ -681,7 +681,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 //输入：
 //输出：
 //--------------------------------------------------------------------------------
-//void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph,IN CSYEnvelopeArray* pLineEnvelopeAr,OUT CSYPoint3fPtrArray *pptrTri,OUT CSYPoint3fPtrArray *pptrUV,IN BOOL bAntiClockwise)
+//void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph,IN CBaseEnvelopeArray* pLineEnvelopeAr,OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV,IN BOOL bAntiClockwise)
 //{
 //	vectorcell* pCell = NULL;
 //	int nEnvelopeNum = (int)pLineEnvelopeAr->GetSize();
@@ -691,7 +691,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri,
 //		pCell = &pGraph->cell[pEnvelopeNode->nCellIndex];
 //	}
 //}
-void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CSYPoint3fPtrArray *pptrTri, OUT CSYPoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
+void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
 {
 	if (pGraph == NULL || pGraph->ncell < 1) 
 	{
@@ -707,7 +707,7 @@ void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CSYPoin
 	BaseAR_Init(&ptfArray);
 	BaseAR_Init(&lenArray);
 
-	CSYEnvelopeArray lineelopeArr;
+	CBaseEnvelopeArray lineelopeArr;
 	EnvelopeNode * pEnvelopeNode = NULL;
 	int nCellNum = pGraph->ncell;
 	//先把外环加入队列中,把线单独列出
@@ -971,7 +971,7 @@ void DivGraphics(vectorgraph* pGraph,PolyDivInfo* infov)
 
 }
 
-void SYTriangulateApp::SYTriangulateGL(IN vectorgraph* pGraph, OUT CSYPoint3fPtrArray *pptrTri,OUT CSYPoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
+void SYTriangulateApp::SYTriangulateGL(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
 {
 	PolyDivInfo	infov;
 	bAntiClockwise = FALSE;
@@ -1022,7 +1022,7 @@ void SYTriangulateApp::SYTriangulateGL(IN vectorgraph* pGraph, OUT CSYPoint3fPtr
 	}
 	BaseAR_RemoveAll(&infov.m_PolyVectorAr);
 }
-void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrArray *pptrTri,OUT CSYPoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
+void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
 {
 	if (pGraph == NULL || pGraph->ncell < 1) 
 	{
@@ -1042,7 +1042,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrAr
 	BOOL *bOutLoop = new BOOL[nCellNum];
 	InitOutLoopArr(bOutLoop, pGraph, bAntiClockwise); // 调用IsAntiClockwise(pCell);
 
-	CSYEnvelopeArray envelopeArr;
+	CBaseEnvelopeArray envelopeArr;
 	EnvelopeNode * pEnvelopeNode = NULL;
 	//先把外环加入队列中,把线单独列出
 	for(i = 0; i < nCellNum; i++)
@@ -1157,7 +1157,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrAr
 	{
 		pEnvelopeNode = (EnvelopeNode *)envelopeArr.GetAt(i);
 		BOOL bOut = TRUE;
-		CSYPoint2fPtrArray ptfArrAddedMinPts; 
+		CBasePoint2fPtrArray ptfArrAddedMinPts; 
 		while (pEnvelopeNode) 
 		{
 			pCell = &pGraph->cell[pEnvelopeNode->nCellIndex];
@@ -1353,7 +1353,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CSYPoint3fPtrAr
 //输入：
 //输出：
 //--------------------------------------------------------------------------------
-void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPtSize, int* nUnitStart, int nUnit, int nCurUnit, int* nCellStart, int nCell, OUT CSYPoint3fPtrArray *pptrTri, IN BOOL bAntiClockwise)
+void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPtSize, int* nUnitStart, int nUnit, int nCurUnit, int* nCellStart, int nCell, OUT CBasePoint3fPtrArray *pptrTri, IN BOOL bAntiClockwise)
 {
 	if (pGraph == NULL || pGraph->ncell < 1) 
 	{
@@ -1371,7 +1371,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 	BOOL *bOutLoop = new BOOL[nCellNum];
 	InitOutLoopArr(bOutLoop, pGraph, bAntiClockwise); // 调用IsAntiClockwise(pCell);
 
-	CSYEnvelopeArray envelopeArr;
+	CBaseEnvelopeArray envelopeArr;
 	EnvelopeNode * pEnvelopeNode = NULL;
 	for(i = 0; i < nCellNum; i++)
 	{
@@ -1483,7 +1483,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 	{
 		pEnvelopeNode = (EnvelopeNode *)envelopeArr.GetAt(i);
 		BOOL bOut = TRUE;
-		CSYPoint2fPtrArray ptfArrAddedMinPts; 
+		CBasePoint2fPtrArray ptfArrAddedMinPts; 
 		while (pEnvelopeNode) 
 		{
 			//////////////////////////////////////////////////////////////////////// begin

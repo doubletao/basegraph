@@ -84,7 +84,7 @@ protected:
 	size_t m_nCount;
 };
 
-struct SY_DeviceSoft;
+struct Common_DeviceSoft;
 class   SYDeviceContex
 {
 public:
@@ -109,7 +109,7 @@ public:
 			   IN int nSrcBufferHeight,
 			   IN BUFFER_MODE eMode,
 			   RECT* pCull);	// 目标裁减矩形（可选项，为 NULL 时表示目标全部有效）)
-	void SetRenderTarget(SY_DeviceSoft* pDevice,int hRT,int hDepth);
+	void SetRenderTarget(Common_DeviceSoft* pDevice,int hRT,int hDepth);
 	void SetViewPort(int nLeft,int nTop,int nRight,int nBottom);
 	void SetViewPort(const RECT& pRect){rtViewport = pRect;};
 	void SetScissor(const RECT& pRect){rtScissor = pRect;};
@@ -155,7 +155,7 @@ protected:
 };
 
 //data struct
-struct SY_DeviceSoft
+struct Common_DeviceSoft
 {
 	matrix4f		spriteProj;
 	htable			httexture;
@@ -194,13 +194,13 @@ struct SYSoftBuffer
 };
 
 //inline function
-inline bool ModifyBuffer(SY_DeviceSoft* pDevice,int hBuffer,void* pMemBuffer)
+inline bool ModifyBuffer(Common_DeviceSoft* pDevice,int hBuffer,void* pMemBuffer)
 {
 	SYSoftBuffer* pBuffer = (SYSoftBuffer*) BseeHTable_GetAt(&pDevice->htBuffer,hBuffer);
 	memcpy(pBuffer->pBuffer,pMemBuffer,pBuffer->nBufferSize);
 	return true;
 }
-inline void ReleaseBuffer(SY_DeviceSoft* pDevice,int hBuffer)
+inline void ReleaseBuffer(Common_DeviceSoft* pDevice,int hBuffer)
 {
 	if (!hBuffer)
 		return;
@@ -230,7 +230,7 @@ END:
 	SAFEDELETE_ARRAY(pBuffer->pBuffer);
 	SAFE_DELETE(pBuffer);
 }
-inline CCommonBuffer* getTexture(SY_DeviceSoft* pDevice,int hTexture)
+inline CCommonBuffer* getTexture(Common_DeviceSoft* pDevice,int hTexture)
 {
 	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
 	if (!pSrcWDTexture)

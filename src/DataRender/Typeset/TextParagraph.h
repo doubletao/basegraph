@@ -3,13 +3,13 @@
 #include "TextUsp.h"
 #include "TextTypeset.h"
 //////////////////////////////////////////////////////////////////////////
-class CSYTextParagraph;
-// CSYTextLine
-class  BASEGRAPH_DATARENDER_API CSYTextLine
+class CBaseTextParagraph;
+// CBaseTextLine
+class  BASEGRAPH_DATARENDER_API CBaseTextLine
 {
 public:
-	CSYTextLine(CSYTextParagraph* pTextParagraph, int nBeginIndex, float fLength);
-	~CSYTextLine();
+	CBaseTextLine(CBaseTextParagraph* pTextParagraph, int nBeginIndex, float fLength);
+	~CBaseTextLine();
 	//////////////////////////////////////////////////////////////////////////
 	// 属性存取
 	LPSYText		GetTextObj();
@@ -62,7 +62,7 @@ public:
 	BaseARray	m_arGlyphSpace;		//空间信息
 	BaseARray	m_arULInfo;			//下划线Info数组
 private:
-	CSYTextParagraph*	m_pTextParagraph;		//行所在的段排版对象
+	CBaseTextParagraph*	m_pTextParagraph;		//行所在的段排版对象
 	int				m_nBeginIndex;		//行的字形起始索引（相对于段）
 	int				m_nWordInfoCount;		//本行字形数
 	float			m_fLength;			//行的长度（此长度是由段指定的长度，而非实际长度）
@@ -75,12 +75,12 @@ private:
 	float			m_fMaxDescent;
 };
 //////////////////////////////////////////////////////////////////////////
-// CSYTextParagraph
-class  BASEGRAPH_DATARENDER_API CSYTextParagraph
+// CBaseTextParagraph
+class  BASEGRAPH_DATARENDER_API CBaseTextParagraph
 {
 public:
-	CSYTextParagraph(LPSYText pTextObj, int nParaIndex);
-	~CSYTextParagraph();
+	CBaseTextParagraph(LPSYText pTextObj, int nParaIndex);
+	~CBaseTextParagraph();
 	//////////////////////////////////////////////////////////////////////////
 	// 属性存取
 	inline void		SetParagraphIndex(int nParaIndex) { m_nParaIndex = nParaIndex; }
@@ -152,7 +152,7 @@ private:
 	void	ReleaseTempData();
 	void	TypesetHorizontal();
 	void	TypesetVertical();
-	void	AddBlankLine(CSYTextLine* pLine);
+	void	AddBlankLine(CBaseTextLine* pLine);
 public:
 	SYSCRIPTRESULT	m_uspResult;
 	BaseARray			m_arWordInfo;			//字符WordInfo数组

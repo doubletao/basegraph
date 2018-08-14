@@ -19,8 +19,8 @@ BASEGRAPH_DATARENDER_API void		SYSetSupportKorea(BOOL bSupport);
 BASEGRAPH_DATARENDER_API void		SYSetEnableFeedBackFont(BOOL bEnable);
 BASEGRAPH_DATARENDER_API BOOL		SYIsEnableFeedBackFont();
 
-extern BASEGRAPH_DATARENDER_API BOOL		SY_bDigitUseLocalFont;		//数字是否使用本地字体
-extern BASEGRAPH_DATARENDER_API BOOL		SY_bOnlyUseLocalFont;		//所有字只是用本地字体设置
+extern BASEGRAPH_DATARENDER_API BOOL		Common_bDigitUseLocalFont;		//数字是否使用本地字体
+extern BASEGRAPH_DATARENDER_API BOOL		Common_bOnlyUseLocalFont;		//所有字只是用本地字体设置
 extern BASEGRAPH_DATARENDER_API int			g_nSmallFontFactor;		//小字加粗系数
 extern BASEGRAPH_DATARENDER_API PI_Quality	g_nSmallFontQuality;		//小字抗闪烁质量
 extern BASEGRAPH_DATARENDER_API BOOL		g_bSmallFontCalcBorder;	//小字清晰

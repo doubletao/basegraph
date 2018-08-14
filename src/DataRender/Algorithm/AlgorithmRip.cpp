@@ -42,9 +42,9 @@ int  Filter[16][16]=
 	{0,0,0,0,2,2,2,2,  2,2,2,2,0,0,0,0},
 };
 //半径
-#define SY_PIXEL_START_OFFSET	((g_rip_table_size-g_rip_nsubpixel)>>1)
+#define Common_PIXEL_START_OFFSET	((g_rip_table_size-g_rip_nsubpixel)>>1)
 //扩展物理像素
-#define SY_PIXEL_EXT_COUNT	((((g_rip_table_size-g_rip_nsubpixel)>>1)>>g_rip_nsubsh) +1)
+#define Common_PIXEL_EXT_COUNT	((((g_rip_table_size-g_rip_nsubpixel)>>1)>>g_rip_nsubsh) +1)
 ////////////////////////////////////////////////////////////////////////
 //这个结构用来存储计算过程中的临时行缓冲
 struct rip_linebuf
@@ -261,7 +261,7 @@ int		rip_init_table()
 		pfloattable += g_rip_table_size;
 		pfloatsrc += g_rip_table_size;
 	}
-	g_nTotalErea = SY_FToI(fGrade);
+	g_nTotalErea = Common_FToI(fGrade);
 	pfloattable = fTempTable;
 	ptable = g_riptable;
 	float fscale = 4096.0f/fGrade;
@@ -328,7 +328,7 @@ rip_edge_node* rip_malloc_node(unsigned char*& pool,unsigned char* poolend);
 //把矩形根据光栅化的要求进行扩展
 void rip_extend_bound(int* pleft,int* ptop,int* pbottom,int* pright)
 {
-	int nextend = SY_PIXEL_START_OFFSET/4;
+	int nextend = Common_PIXEL_START_OFFSET/4;
 	*pleft -= nextend;
 	*ptop  -= nextend;
 	*pbottom += nextend;
@@ -337,7 +337,7 @@ void rip_extend_bound(int* pleft,int* ptop,int* pbottom,int* pright)
 
 void	rip_extend_fbound(rectf* prect,int* pleft,int* ptop,int* pright,int* pbottom)
 {
-	int nextend = (SY_PIXEL_START_OFFSET>>2) + ((SY_PIXEL_START_OFFSET&0x00000003)?1:0);
+	int nextend = (Common_PIXEL_START_OFFSET>>2) + ((Common_PIXEL_START_OFFSET&0x00000003)?1:0);
 	*pleft = (int)floor(prect->left);
 	*ptop = (int)floor(prect->top);
 	*pright = (int)ceil(prect->right);
@@ -350,7 +350,7 @@ void	rip_extend_fbound(rectf* prect,int* pleft,int* ptop,int* pright,int* pbotto
 }
 void	rip_extend_fbound_long(rectf* prect,long* pleft,long* ptop,long* pright,long* pbottom)
 {
-	int nextend = (SY_PIXEL_START_OFFSET>>2) + ((SY_PIXEL_START_OFFSET&0x00000003)?1:0);
+	int nextend = (Common_PIXEL_START_OFFSET>>2) + ((Common_PIXEL_START_OFFSET&0x00000003)?1:0);
 	*pleft = (int)floor(prect->left);
 	*ptop = (int)floor(prect->top);
 	*pright = (int)ceil(prect->right);
@@ -593,16 +593,16 @@ void rip_calcfillseg(int nsubstartx,int nsubendx,void* segbuf,int& min,int& max)
 {
 	////////////////////////////////////////////////////////////////////////
 	//新加部分，清晰计算过程
-	int nstart_subleft = nsubstartx - SY_PIXEL_START_OFFSET;
-	int nstart_subright = nsubstartx + SY_PIXEL_START_OFFSET;
+	int nstart_subleft = nsubstartx - Common_PIXEL_START_OFFSET;
+	int nstart_subright = nsubstartx + Common_PIXEL_START_OFFSET;
 	int nstart_left = (nstart_subleft) >> g_rip_nsubsh;
 	int nstart_right = nstart_subright >> g_rip_nsubsh;
 	int nstart_full = nstart_right + 1;
 	if(nstart_subright > nsubendx)
 		nstart_subright  =  nsubendx - 1;
 
-	int nend_subleft = nsubendx - SY_PIXEL_START_OFFSET;
-	int nend_subright = nsubendx + SY_PIXEL_START_OFFSET;
+	int nend_subleft = nsubendx - Common_PIXEL_START_OFFSET;
+	int nend_subright = nsubendx + Common_PIXEL_START_OFFSET;
 	int nend_left = (nend_subleft) >> g_rip_nsubsh;
 	int nend_right = nend_subright >> g_rip_nsubsh;
 	int nend_full = nend_left - 1;
@@ -623,8 +623,8 @@ void rip_calcfillseg(int nsubstartx,int nsubendx,void* segbuf,int& min,int& max)
 	for(int i = nstart_left ;i <= nstart_right;i ++)
 	{
 		
-		int start = (i << g_rip_nsubsh) - SY_PIXEL_START_OFFSET;
-		pseg->r = min((i << g_rip_nsubsh) + g_rip_nsubpixel + SY_PIXEL_START_OFFSET - 1,
+		int start = (i << g_rip_nsubsh) - Common_PIXEL_START_OFFSET;
+		pseg->r = min((i << g_rip_nsubsh) + g_rip_nsubpixel + Common_PIXEL_START_OFFSET - 1,
 			nsubendx);
 		pseg->i = i;
 		pseg->r = pseg->r - start;
@@ -640,9 +640,9 @@ void rip_calcfillseg(int nsubstartx,int nsubendx,void* segbuf,int& min,int& max)
 	//后
 	for(int i = nend_left ;i <= nend_right;i ++)
 	{
-		int start = (i << g_rip_nsubsh) - SY_PIXEL_START_OFFSET;
+		int start = (i << g_rip_nsubsh) - Common_PIXEL_START_OFFSET;
 		pseg->l = max(start,nsubstartx);
-		pseg->r = min(nsubendx,(i << g_rip_nsubsh) + g_rip_nsubpixel + SY_PIXEL_START_OFFSET - 1);
+		pseg->r = min(nsubendx,(i << g_rip_nsubsh) + g_rip_nsubpixel + Common_PIXEL_START_OFFSET - 1);
 		pseg->i = i;
 		pseg->r = pseg->r - start;
 		pseg->l = pseg->l - start;
@@ -697,8 +697,8 @@ void rip_x_filllinebuf(DWORD* dwlinebuf,int nlinewidth,int nsubstartx,int nsuben
 
 ////////////////////////////////////////////////////////////////////////
 //新加部分，清晰计算过程
-	int nstart_subleft = nsubstartx - SY_PIXEL_START_OFFSET;
-	int nstart_subright = nsubstartx + SY_PIXEL_START_OFFSET;
+	int nstart_subleft = nsubstartx - Common_PIXEL_START_OFFSET;
+	int nstart_subright = nsubstartx + Common_PIXEL_START_OFFSET;
 	int nstart_left = (nstart_subleft) >> g_rip_nsubsh;
 	int nstart_right = nstart_subright >> g_rip_nsubsh;
 	int nstart_full = nstart_right + 1;
@@ -706,8 +706,8 @@ void rip_x_filllinebuf(DWORD* dwlinebuf,int nlinewidth,int nsubstartx,int nsuben
 		nstart_subright  =  nsubendx - 1;
 
 
-	int nend_subleft = nsubendx - SY_PIXEL_START_OFFSET;
-	int nend_subright = nsubendx + SY_PIXEL_START_OFFSET;
+	int nend_subleft = nsubendx - Common_PIXEL_START_OFFSET;
+	int nend_subright = nsubendx + Common_PIXEL_START_OFFSET;
 	int nend_left = (nend_subleft) >> g_rip_nsubsh;
 	int nend_right = nend_subright >> g_rip_nsubsh;
 	int nend_full = nend_left - 1;
@@ -719,8 +719,8 @@ void rip_x_filllinebuf(DWORD* dwlinebuf,int nlinewidth,int nsubstartx,int nsuben
 	//前
 	for(int i = nstart_left ;i <= nstart_right;i ++)
 	{
-		int start = (i << g_rip_nsubsh) - SY_PIXEL_START_OFFSET;
-		nR = min((i << g_rip_nsubsh) + g_rip_nsubpixel + SY_PIXEL_START_OFFSET - 1,
+		int start = (i << g_rip_nsubsh) - Common_PIXEL_START_OFFSET;
+		nR = min((i << g_rip_nsubsh) + g_rip_nsubpixel + Common_PIXEL_START_OFFSET - 1,
 			nsubendx);
 		nR = nR - start;
 		nL = nsubstartx - start;
@@ -731,9 +731,9 @@ void rip_x_filllinebuf(DWORD* dwlinebuf,int nlinewidth,int nsubstartx,int nsuben
 	//后
 	for(int i = nend_left ;i <= nend_right;i ++)
 	{
-		int start = (i << g_rip_nsubsh) - SY_PIXEL_START_OFFSET;
+		int start = (i << g_rip_nsubsh) - Common_PIXEL_START_OFFSET;
 		nL = max(start,nsubstartx);
-		nR = min(nsubendx,(i << g_rip_nsubsh) + g_rip_nsubpixel + SY_PIXEL_START_OFFSET - 1);
+		nR = min(nsubendx,(i << g_rip_nsubsh) + g_rip_nsubpixel + Common_PIXEL_START_OFFSET - 1);
 		nR = nR - start;
 		nL = nL - start;
 		ptempsubtable = psubtable + g_rip_table_size * nL + nR;
@@ -995,7 +995,7 @@ void rip_update_buf(unsigned long*	buf,
 		int na16 = nlen>>4;
 		int nm16 = nlen&0xf;
 		DWORD* dwSrcbuf = pbuf->buf + nminstart;
-		SYBGRA32_LineMix(pmaskbuf,		// 目标
+		BGRA32_LineMix(pmaskbuf,		// 目标
 			dwSrcbuf,			// 源
 			na16,			// 宽度除以 16 的商
 			nm16);
@@ -1206,7 +1206,7 @@ void rip_calcnode(OUT rip_edge_node* pnode,
 }
 
 
-BOOL	SY_Beizer3IsNearLine(pointf* pt0,pointf* pt1,pointf* pt2,pointf* pt3,float fscale)
+BOOL	Common_Beizer3IsNearLine(pointf* pt0,pointf* pt1,pointf* pt2,pointf* pt3,float fscale)
 {
 	//判断是否接近一条直线,如果接近一条直线,那么就用直线代替否则分割该曲线
 	//直线的参数方程
@@ -1256,7 +1256,7 @@ BOOL	SY_Beizer3IsNearLine(pointf* pt0,pointf* pt1,pointf* pt2,pointf* pt3,float 
 	}
 }
 
-BOOL	SY_Beizer2IsNearLine(pointf* pp1,pointf* pp2,pointf* pp3,float fscale)
+BOOL	Common_Beizer2IsNearLine(pointf* pp1,pointf* pp2,pointf* pp3,float fscale)
 {
 
 	pointf pointfdes = ((*pp1 + *pp3) - (*pp2) * 2 )/4.0f;
@@ -1264,9 +1264,9 @@ BOOL	SY_Beizer2IsNearLine(pointf* pp1,pointf* pp2,pointf* pp3,float fscale)
 		return 1;
 	return 0;
 }
-BOOL	SY_Beizer3IsNearLine(pointf* pt,float fscale)
+BOOL	Common_Beizer3IsNearLine(pointf* pt,float fscale)
 {
-	return SY_Beizer3IsNearLine(&pt[0],&pt[1],&pt[2],&pt[3],fscale);
+	return Common_Beizer3IsNearLine(&pt[0],&pt[1],&pt[2],&pt[3],fscale);
 }
 
 BOOL SplitBezier2(pointf* psrc,pointf* pdes1,pointf* pdes2)
@@ -1346,7 +1346,7 @@ void rip_splitconic_node_ex(pointf* pconicf,SYList* pNodeList,pointf* ptOrigin,f
 void rip_splitconic_node(pointf* pconicf,SYList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
 {
 	//分别看两条曲线是否接近直线，如果接近，那么分割完成否则继续分割
-	BOOL bNearline = SY_Beizer2IsNearLine(&pconicf[0],&pconicf[1],&pconicf[2],fscale);
+	BOOL bNearline = Common_Beizer2IsNearLine(&pconicf[0],&pconicf[1],&pconicf[2],fscale);
 	if(bNearline)
 	{
 		rip_edge_node* pnode = rip_malloc_node(pool,poolend);
@@ -1410,7 +1410,7 @@ void rip_splitbezier_node(pointf* inpoint,SYList* pNodeList,pointf* ptOrigin,flo
 {
 	//分别看两条曲线是否接近直线，如果接近，那么分割完成否则继续分割
 	int a;
-	BOOL bNearline = SY_Beizer3IsNearLine(inpoint,fscale);
+	BOOL bNearline = Common_Beizer3IsNearLine(inpoint,fscale);
 	if(bNearline)
 	{
 		rip_edge_node* pnode = rip_malloc_node(pool,poolend);
@@ -2056,7 +2056,7 @@ rip_edge_node* rip_malloc_node(unsigned char*&	pool,unsigned char* poolend)
 
 //void rip_draw_splitbezier(IN OUT CCommonBufferDC* bufferDC,IN pointf* pt,float offsetx,float offsety)
 //{
-//	BOOL bNearline = SY_Beizer3IsNearLine(pt,1.0f);
+//	BOOL bNearline = Common_Beizer3IsNearLine(pt,1.0f);
 //	if(bNearline)
 //	{
 //		//根据信息产生新的节点
@@ -2214,12 +2214,12 @@ BASEGRAPH_DATARENDER_API void  rip_figure_X(IN vectorgraph* figure,IN OUT void*	
 	rip_getfigurebound(figure,&boundf);
 
 	//添加放缩影响
-	SYRectf_Scale(&boundf,fscale);
+	BaseRectf_Scale(&boundf,fscale);
 
 	rip_extend_fbound(&boundf,&left,&top,&right,&bottom);
 
 	//对矩形进行偏移
-	left += SY_FToI(ptOrigin->x),right += SY_FToI(ptOrigin->x),top  += SY_FToI(ptOrigin->y),bottom += SY_FToI(ptOrigin->y);
+	left += Common_FToI(ptOrigin->x),right += Common_FToI(ptOrigin->x),top  += Common_FToI(ptOrigin->y),bottom += Common_FToI(ptOrigin->y);
 
 	//得到扩大g_rip_nsubpixel倍后矩形
 	leftsub  = left * g_rip_nsubpixel,topsub = top * g_rip_nsubpixel,rightsub = right * g_rip_nsubpixel,bottomsub = bottom * g_rip_nsubpixel;
@@ -2872,7 +2872,7 @@ void	BASEGRAPH_DATARENDER_API rip_recalcbound(vectorgraph* figure)
 }
 long BASEGRAPH_DATARENDER_API rip_trans_float_to_fix(float f)
 {
-	return SY_FToI(f * 64);
+	return Common_FToI(f * 64);
 }
 
 //void BASEGRAPH_DATARENDER_API rip_draw_figure(IN vectorgraph*	figure,	IN float offsetx,IN float offsety,IN CCommonBufferDC* bufferDC)

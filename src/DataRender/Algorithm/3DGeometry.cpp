@@ -52,7 +52,7 @@ public:
 		SAFEDELETE_ARRAY(m_pTriangle);
 		DeleteCriticalSection(m_pLock); 
 	}
-	CSYIntArray*	m_pArVerOfTri;
+	CBaseIntArray*	m_pArVerOfTri;
 	int				m_nVNum;
 	SYTriangle*		m_pTriangle;
 	int				m_nFaceNum;
@@ -64,31 +64,31 @@ int CalFaceNum(SYTriType nType,int nINum)
 {
 	switch(nType)
 	{
-	case SY_TRIANGLE_LIST:
+	case Common_TRIANGLE_LIST:
 		return nINum / 3;
-	case SY_TRIANGLE_STRIP:
+	case Common_TRIANGLE_STRIP:
 		return nINum - 2;
-	case SY_TRIANGLE_FAN:
+	case Common_TRIANGLE_FAN:
 		return nINum - 2;
 	}
 	return 0;
 }
 void GetTriIndex(SYTriangle* pTriangle,DWORD* pIndex,int nFaceIndex,SYTriType nType,int nVStart)
 {
-	if(nType == SY_TRIANGLE_LIST)
+	if(nType == Common_TRIANGLE_LIST)
 	{
 		int nStartIndex = nFaceIndex * 3;
 		pTriangle->uiIndex[0] = pIndex[nStartIndex ] - nVStart;
 		pTriangle->uiIndex[1] = pIndex[nStartIndex + 1] - nVStart;
 		pTriangle->uiIndex[2] = pIndex[nStartIndex + 2] - nVStart;
 	}
-	else if(nType == SY_TRIANGLE_STRIP)
+	else if(nType == Common_TRIANGLE_STRIP)
 	{
 		pTriangle->uiIndex[0] = pIndex[nFaceIndex] - nVStart;
 		pTriangle->uiIndex[1] = pIndex[nFaceIndex + 1] - nVStart;
 		pTriangle->uiIndex[2] = pIndex[nFaceIndex + 2] - nVStart;
 	}
-	else if(nType == SY_TRIANGLE_FAN)
+	else if(nType == Common_TRIANGLE_FAN)
 	{
 		int nStartIndex = nFaceIndex + 1;
 		pTriangle->uiIndex[0] = pIndex[0] - nVStart;
@@ -216,14 +216,14 @@ BOOL  SYCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int 
 	{
 		SAFEDELETE_ARRAY(g_arVer.m_pArVerOfTri);
 		g_arVer.m_nVNum = nVNum;
-		g_arVer.m_pArVerOfTri = new CSYIntArray[nVNum];
+		g_arVer.m_pArVerOfTri = new CBaseIntArray[nVNum];
 		for (int i = 0; i < nVNum;i++)
 		{
 			(g_arVer.m_pArVerOfTri + i)->SetSize(10);
 			(g_arVer.m_pArVerOfTri + i)->SetCurSize(0);
 		}	
 	}
-	CSYIntArray* pArVerOfTri = g_arVer.m_pArVerOfTri;//每个顶点对应的第几个三角形面
+	CBaseIntArray* pArVerOfTri = g_arVer.m_pArVerOfTri;//每个顶点对应的第几个三角形面
 	for(int i = 0; i< nFaceNum;i++)
 	{
 		GetTriIndex(pTriangle + i,pIndex,i,nType,nVStart);
@@ -284,7 +284,7 @@ void NewVertexIndex( IN OUT SYModel* pMod, IN int nGraphType , int nLevel = 1)
 	int sphereIndexNum = ( g_nSphere_Circle_Num * nLevel - 1 ) * ( g_nSphere_Per_Circle_VertexNum * nLevel - 1 ) * 6;
 	SYSubModel stuSphereSubs[SPHERE_MATERIAL_COUNT] = 
 	{
-		{ 0, sphereVertexNum, 0, sphereIndexNum, SY_TRIANGLE_LIST, sphereIndexNum / 3, BseeHTable_null },
+		{ 0, sphereVertexNum, 0, sphereIndexNum, Common_TRIANGLE_LIST, sphereIndexNum / 3, BseeHTable_null },
 	};
 
 	switch (nGraphType)
@@ -409,7 +409,7 @@ BOOL SYInitialSegment(IN OUT SYModel* pMod)
 	if ( pMod->indecs == NULL )
 	{
 		NewVertexIndex( pMod, SYModelRENDER_SEGMENT );
-		SetPlaneIndexAndUV( pMod, g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].istart, g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].vstart, SY_SEGMENT_ROW_NUM, SY_SEGMENT_COLUMN_NUM, 
+		SetPlaneIndexAndUV( pMod, g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].istart, g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].vstart, Common_SEGMENT_ROW_NUM, Common_SEGMENT_COLUMN_NUM, 
 			SY3DPLANE_ROW_FIRST );
 	}
 	return TRUE;
@@ -423,7 +423,7 @@ BOOL SYInitialBevel(IN OUT SYModel* pMod)
 		memset( pMod->viewsub, 0, pMod->nviewsub * sizeof(SYSubModel) );
 		for ( int i = 0; i < pMod->nviewsub; i++ )
 		{
-			pMod->viewsub[i].nTri_Type = SY_TRIANGLE_LIST;
+			pMod->viewsub[i].nTri_Type = Common_TRIANGLE_LIST;
 		}
 	}
 	return TRUE;
@@ -462,7 +462,7 @@ BOOL SYInitialSphere(IN OUT SYModel* pMod, int nLevel /* = 1*/)
 	else
 		NewVertexIndex( pMod, SYModelRENDER_SPHERE ,nLevel);
 	SetPlaneIndexAndUV( pMod, g_stuSphereSubs[SPHERE_MATERIAL_PARAMCHG].istart, g_stuSphereSubs[SPHERE_MATERIAL_PARAMCHG].vstart, 
-		g_nSphere_Circle_Num * nLevel, (SY_SPHERE_CIRCLE_SEGMENT + 1) * nLevel, SY3DPLANE_ROW_FIRST );
+		g_nSphere_Circle_Num * nLevel, (Common_SPHERE_CIRCLE_SEGMENT + 1) * nLevel, SY3DPLANE_ROW_FIRST );
 
 	return TRUE;
 }
@@ -508,7 +508,7 @@ BOOL SYCreateSegmentGraph( IN OUT SYModel* pMod, IN float fLeftWidth, IN float f
 {
 	float fWidth = fRightWidth - fLeftWidth, fHeight = fTopHeight - fBottomHeight;
 	vector3f vNorm = { 0.f, 0.f, -1.f };
-	SetSegmentPoint( &pMod->v[g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].vstart], SY_SEGMENT_ROW_NUM, SY_SEGMENT_COLUMN_NUM, fLeftWidth, fWidth, fTopHeight, fHeight, &vNorm, 0.f, SY3DPLANE_XY );
+	SetSegmentPoint( &pMod->v[g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].vstart], Common_SEGMENT_ROW_NUM, Common_SEGMENT_COLUMN_NUM, fLeftWidth, fWidth, fTopHeight, fHeight, &vNorm, 0.f, SY3DPLANE_XY );
 	return TRUE;
 }
 void SY2DCoordTo3D(pointf* p2DCoordPt,point3f* p3DCoordPt,point3f* pOffset)
@@ -678,7 +678,7 @@ BOOL CalOuterClockwise(vectorgraph* pFigure)
 	BOOL bAntiClockwise = IsAntiClockwise(&pFigure->cell[nOutCell]);
 	return bAntiClockwise;
 }
-void CreateF(IN vectorgraph * pFigure, IN OUT CSYPoint3fPtrArray* pptrTri, IN OUT CSYPoint3fPtrArray* pptrTriNorm,IN int nBevelTriSize, IN float fBevelHeight, IN float fFlankHeight, IN const int nBevelType, IN const BOOL bAntiClockwise )
+void CreateF(IN vectorgraph * pFigure, IN OUT CBasePoint3fPtrArray* pptrTri, IN OUT CBasePoint3fPtrArray* pptrTriNorm,IN int nBevelTriSize, IN float fBevelHeight, IN float fFlankHeight, IN const int nBevelType, IN const BOOL bAntiClockwise )
 {
 	int i, j;
 	int nSize;
@@ -1217,7 +1217,7 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CSYPoint3fPtrArray* pptrTri, IN OU
 
 	} // end of else
 } // END OF CreateF
-void CreateNewBevel(IN OUT CSYPoint3fPtrArray* pptrTri, IN OUT CSYPoint3fPtrArray* pptrTriNorm, IN int nBevelTriSize, IN int nTriPtSize, IN float fBevelHeight, IN const int nBevelType )
+void CreateNewBevel(IN OUT CBasePoint3fPtrArray* pptrTri, IN OUT CBasePoint3fPtrArray* pptrTriNorm, IN int nBevelTriSize, IN int nTriPtSize, IN float fBevelHeight, IN const int nBevelType )
 {
 	if (nBevelType == 3) 
 	{
@@ -1307,7 +1307,7 @@ void CreateNewBevel(IN OUT CSYPoint3fPtrArray* pptrTri, IN OUT CSYPoint3fPtrArra
 		} // end of for
 	}
 } // END OF CreateNewBevel
-void AddSym( IN OUT CSYPoint3fPtrArray* pptrTri, IN OUT CSYPoint3fPtrArray* pptrTriNorm, CSYPoint3fPtrArray* pptrUV,IN float fBevelHeight, IN float fFlankHeight, IN BOOL bBevel )
+void AddSym( IN OUT CBasePoint3fPtrArray* pptrTri, IN OUT CBasePoint3fPtrArray* pptrTriNorm, CBasePoint3fPtrArray* pptrUV,IN float fBevelHeight, IN float fFlankHeight, IN BOOL bBevel )
 {
 	float fTotalHeight = 2 * fBevelHeight + fFlankHeight;
 	if (!bBevel)
@@ -1394,9 +1394,9 @@ void GenerateBevel( IN vectorgraph * pFigure,
 				   IN float fBevelHeight, 
 				   IN float fFlankHeight, 
 				   IN const int nBevelType, 
-				   OUT CSYPoint3fPtrArray *pptrTri, 
-				   OUT CSYPoint3fPtrArray *pptrTriNorm,
-				   OUT CSYPoint3fPtrArray* pptrUV,
+				   OUT CBasePoint3fPtrArray *pptrTri, 
+				   OUT CBasePoint3fPtrArray *pptrTriNorm,
+				   OUT CBasePoint3fPtrArray* pptrUV,
 				   OUT int* uface,
 				   OUT int* dface,
 				   OUT int* side)
@@ -1625,7 +1625,7 @@ void GenerateBevel( IN vectorgraph * pFigure,
 #endif // _DEBUG
 	CreateNewBevel(pptrTri, pptrTriNorm, nBevelTriSize, nTriPtSize, fBevelHeight, nBevelType );
 } // END OF GenerateBevel
-void GetBoundRt( CSYPoint3fPtrArray *pptrTri, rectf &rt )
+void GetBoundRt( CBasePoint3fPtrArray *pptrTri, rectf &rt )
 {
 	int nSize = (int)pptrTri->GetSize();
 	rt.left   = 99999.f;
@@ -1657,8 +1657,8 @@ void GetBoundRt( CSYPoint3fPtrArray *pptrTri, rectf &rt )
 BOOL SYCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN int nBevelType)
 {
 	if(fBevelWidth == 0 || fBevelHeight == 0)
-		nBevelType = SY_BEVEL_NONE;
-	float fTotalHeight = (nBevelType == SY_BEVEL_NONE) ? fHeight : fHeight + fBevelHeight * 2;
+		nBevelType = Common_BEVEL_NONE;
+	float fTotalHeight = (nBevelType == Common_BEVEL_NONE) ? fHeight : fHeight + fBevelHeight * 2;
 	if ( fTotalHeight < 0.001 )
 		return FALSE;
 
@@ -1710,7 +1710,7 @@ BOOL SYCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN floa
 		p2DGraph->bound.right = v3DPoint.x;
 		p2DGraph->bound.bottom = v3DPoint.y;
 	}
-	CSYPoint3fPtrArray ptrTri, ptrTriNorm,ptrTriUV;
+	CBasePoint3fPtrArray ptrTri, ptrTriNorm,ptrTriUV;
 	int nStartF,nStartB,nSide;
 
 	GenerateBevel( p2DGraph, fBevelWidth, fBevelHeight, fHeight, nBevelType, &ptrTri, &ptrTriNorm ,&ptrTriUV,&nStartF,&nStartB,&nSide);
@@ -1782,7 +1782,7 @@ BOOL SYCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN floa
 	pMod->viewsub[0].istart = nStartF;
 	pMod->viewsub[0].icount    = pMod->viewsub[0].vcount;
 	pMod->viewsub[0].nTri_Num  = pMod->viewsub[0].vcount / 3;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 
 	pMod->viewsub[1].vstart = nStartB;
@@ -1790,14 +1790,14 @@ BOOL SYCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN floa
 	pMod->viewsub[1].vcount = nSide - nStartB;
 	pMod->viewsub[1].icount    = pMod->viewsub[1].vcount;
 	pMod->viewsub[1].nTri_Num  = pMod->viewsub[1].vcount / 3;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[2].vstart = nSide;
 	pMod->viewsub[2].istart = nSide;
 	pMod->viewsub[2].vcount = nTriPtSize - nSide;
 	pMod->viewsub[2].icount    = pMod->viewsub[2].vcount;
 	pMod->viewsub[2].nTri_Num  = pMod->viewsub[2].vcount / 3;
-	pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST;
 
 
 	for( int k = 0; k < nTriPtSize; k++ )
@@ -2035,7 +2035,7 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 	pMod->viewsub[0].vcount =  pMod->vcount;
 	pMod->viewsub[0].istart = uiFaceStart*3;
 	pMod->viewsub[0].icount = uiFFaceCount*3;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[0].nTri_Num = uiFFaceCount;
 	pMod->viewsub[0].pMaterial = NULL;
 	uiFaceStart += uiFFaceCount;
@@ -2072,7 +2072,7 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 	pMod->viewsub[1].vcount =  pMod->vcount;
 	pMod->viewsub[1].istart = uiFaceStart*3;
 	pMod->viewsub[1].icount = uiFFaceCount*3;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[1].nTri_Num = uiFFaceCount;
 	pMod->viewsub[1].pMaterial = NULL;
 	uiFaceStart += uiFFaceCount; //pAttrTable[1].FaceCount;
@@ -2111,7 +2111,7 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 	pMod->viewsub[2].vcount =  pMod->vcount;
 	pMod->viewsub[2].istart = uiFaceStart*3;
 	pMod->viewsub[2].icount = (uiBFaceCount + uiFVNum*8)*3;
-	pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[2].nTri_Num = uiBFaceCount + uiFVNum*8;
 	pMod->viewsub[2].pMaterial = NULL;
 	uiFaceStart += uiBFaceCount + uiFVNum*8 ;
@@ -2136,7 +2136,7 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 	pMod->viewsub[3].vcount =  pMod->vcount;
 	pMod->viewsub[3].istart = uiFaceStart*3;
 	pMod->viewsub[3].icount = uiFFaceCount*3;
-	pMod->viewsub[3].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[3].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[3].nTri_Num = uiFFaceCount;
 	pMod->viewsub[3].pMaterial = NULL;
 	uiFaceStart += uiFFaceCount;
@@ -2188,7 +2188,7 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 	pMod->viewsub[4].vcount =  pMod->vcount;
 	pMod->viewsub[4].istart = uiFaceStart*3;
 	pMod->viewsub[4].icount = uiBFaceCount*3;
-	pMod->viewsub[4].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[4].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[4].nTri_Num = uiBFaceCount;
 	pMod->viewsub[4].pMaterial = NULL;
 	uiFaceStart += uiBFaceCount;
@@ -2226,7 +2226,7 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 	pMod->viewsub[5].vcount =  pMod->vcount;
 	pMod->viewsub[5].istart = uiFaceStart*3;
 	pMod->viewsub[5].icount = uiFFaceCount*3;
-	pMod->viewsub[5].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[5].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[5].nTri_Num = uiFFaceCount;
 	pMod->viewsub[5].pMaterial = NULL;
 
@@ -3508,7 +3508,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 	pMod->viewsub[0].vcount =  pMod->vcount;
 	pMod->viewsub[0].istart = uiFaceStart*3;
 	pMod->viewsub[0].icount = (uiFrontFaceCnt + uiFaceOff)*3;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[0].nTri_Num  = uiFrontFaceCnt + uiFaceOff;
 	pMod->viewsub[0].pMaterial = NULL;
 	uiFaceStart += uiFrontFaceCnt + uiFaceOff/*uiPlaneFCnt*/;
@@ -3545,7 +3545,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 	pMod->viewsub[1].vcount =  pMod->vcount;
 	pMod->viewsub[1].istart = uiFaceStart*3;
 	pMod->viewsub[1].icount = uiFrontFaceCnt*3;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[1].nTri_Num = uiFrontFaceCnt;
 	pMod->viewsub[1].pMaterial = NULL;
 	uiFaceStart += uiFrontFaceCnt/*uiPlaneFCnt*/;
@@ -3838,7 +3838,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 	pMod->viewsub[2].vcount =  pMod->vcount;
 	pMod->viewsub[2].istart = uiFaceStart*3;
 	pMod->viewsub[2].icount = uiBFCnt*3;
-	pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[2].nTri_Num = uiBFCnt;
 	pMod->viewsub[2].pMaterial = NULL;
 	uiFaceStart += uiBFCnt;
@@ -3958,7 +3958,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 	pMod->viewsub[3].vcount =  pMod->vcount;
 	pMod->viewsub[3].istart = uiFaceStart*3;
 	pMod->viewsub[3].icount = uiFrontFaceCnt*3;
-	pMod->viewsub[3].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[3].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[3].nTri_Num = uiFrontFaceCnt;
 	pMod->viewsub[3].pMaterial = NULL;
 	uiFaceStart += uiFrontFaceCnt;
@@ -4005,7 +4005,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 	pMod->viewsub[4].vcount =  pMod->vcount;
 	pMod->viewsub[4].istart = uiFaceStart*3;
 	pMod->viewsub[4].icount = uiBFCnt*3;
-	pMod->viewsub[4].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[4].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[4].nTri_Num = uiBFCnt;
 	pMod->viewsub[4].pMaterial = NULL;
 	uiFaceStart += uiBFCnt;
@@ -4048,7 +4048,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 	pMod->viewsub[5].vcount =  pMod->vcount;
 	pMod->viewsub[5].istart = uiFaceStart*3;
 	pMod->viewsub[5].icount = uiFrontFaceCnt*3;
-	pMod->viewsub[5].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[5].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[5].nTri_Num = uiFrontFaceCnt;
 	pMod->viewsub[5].pMaterial = NULL;
 
@@ -4630,7 +4630,7 @@ BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float f
 	pMod->viewsub[0].vcount =  pMod->vcount;
 	pMod->viewsub[0].istart = uiFaceStart*3;
 	pMod->viewsub[0].icount = (uiFaceCnt + uiFaceOff)*3;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[0].nTri_Num  = uiFaceCnt + uiFaceOff;
 	pMod->viewsub[0].pMaterial = NULL;
 	uiFaceStart += uiFaceCnt + uiFaceOff;
@@ -4675,7 +4675,7 @@ BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float f
 	pMod->viewsub[1].vcount =  pMod->vcount;
 	pMod->viewsub[1].istart = uiFaceStart*3;
 	pMod->viewsub[1].icount = uiFaceCnt*3;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[1].nTri_Num  = uiFaceCnt;
 	pMod->viewsub[1].pMaterial = NULL;
 	uiFaceStart += uiFaceCnt;
@@ -4706,7 +4706,7 @@ BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float f
 	pMod->viewsub[2].vcount =  pMod->vcount;
 	pMod->viewsub[2].istart = uiFaceStart*3;
 	pMod->viewsub[2].icount = uiFaceCnt*3;
-	pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[2].nTri_Num  = uiFaceCnt;
 	pMod->viewsub[2].pMaterial = NULL;
 	uiFaceStart += uiFaceCnt;
@@ -4737,7 +4737,7 @@ BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float f
 	pMod->viewsub[3].vcount =  pMod->vcount;
 	pMod->viewsub[3].istart = uiFaceStart*3;
 	pMod->viewsub[3].icount = uiFaceCnt*3;
-	pMod->viewsub[3].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[3].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[3].nTri_Num  = uiFaceCnt;
 	pMod->viewsub[3].pMaterial = NULL;
 	uiFaceStart += uiFaceCnt;
@@ -4783,7 +4783,7 @@ BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float f
 	pMod->viewsub[4].vcount =  pMod->vcount;
 	pMod->viewsub[4].istart = uiFaceStart*3;
 	pMod->viewsub[4].icount = uiFaceCnt*3;
-	pMod->viewsub[4].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[4].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[4].nTri_Num  = uiFaceCnt;
 	pMod->viewsub[4].pMaterial = NULL;
 	uiFaceStart += uiFaceCnt;
@@ -4829,7 +4829,7 @@ BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float f
 	pMod->viewsub[5].vcount =  pMod->vcount;
 	pMod->viewsub[5].istart = uiFaceStart*3;
 	pMod->viewsub[5].icount = uiFaceCnt*3;
-	pMod->viewsub[5].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[5].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[5].nTri_Num  = uiFaceCnt;
 	pMod->viewsub[5].pMaterial = NULL;
 	uiFaceStart += uiFaceCnt;
@@ -5676,7 +5676,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		pMod->viewsub[0].vcount =  pMod->vcount;
 		pMod->viewsub[0].istart = uiFaceStart*3;
 		pMod->viewsub[0].icount = (TopCurve.size()-1)* uSlices*2 *3;
-		pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[0].nTri_Num = (TopCurve.size() - 1)* uSlices*2 ;
 		pMod->viewsub[0].pMaterial = NULL;
 		uiFaceStart += (TopCurve.size()-1)* uSlices*2 ;
@@ -5695,7 +5695,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		pMod->viewsub[1].vcount =  pMod->vcount;
 		pMod->viewsub[1].istart = uiFaceStart*3;
 		pMod->viewsub[1].icount = (OuterCurve.size()-1)* uSlices*2 *3;
-		pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[1].nTri_Num = (OuterCurve.size()-1)* uSlices*2 ;
 		pMod->viewsub[1].pMaterial = NULL;
 		uiFaceStart += (OuterCurve.size()-1)* uSlices*2 ;
@@ -5714,7 +5714,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		pMod->viewsub[2].vcount =  pMod->vcount;
 		pMod->viewsub[2].istart = uiFaceStart*3;
 		pMod->viewsub[2].icount = (BottomCurve.size()-1)* uSlices*2 *3;
-		pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[2].nTri_Num = (BottomCurve.size()-1)* uSlices*2 ;
 		pMod->viewsub[2].pMaterial = NULL;
 		uiFaceStart += (BottomCurve.size()-1)* uSlices*2 ;
@@ -5733,7 +5733,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		pMod->viewsub[3].vcount =  pMod->vcount;
 		pMod->viewsub[3].istart = uiFaceStart*3;
 		pMod->viewsub[3].icount = (InnerCurve.size()-1)* uSlices*2 *3;
-		pMod->viewsub[3].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[3].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[3].nTri_Num = (InnerCurve.size()-1)* uSlices*2 ;
 		pMod->viewsub[3].pMaterial = NULL;
 		uiFaceStart += (InnerCurve.size()-1)* uSlices*2 ;
@@ -5791,7 +5791,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 			pMod->viewsub[4].vcount =  pMod->vcount;
 			pMod->viewsub[4].istart = uiFaceStart*3;
 			pMod->viewsub[4].icount = uiFaceCnt *3;
-			pMod->viewsub[4].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[4].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[4].nTri_Num = uiFaceCnt ;
 			pMod->viewsub[4].pMaterial = NULL;
 			uiFaceStart += uiFaceCnt ;
@@ -5822,7 +5822,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 			pMod->viewsub[5].vcount =  pMod->vcount;
 			pMod->viewsub[5].istart = uiFaceStart*3;
 			pMod->viewsub[5].icount = uiFaceCnt *3;
-			pMod->viewsub[5].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[5].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[5].nTri_Num = uiFaceCnt ;
 			pMod->viewsub[5].pMaterial = NULL;
 			//uiFaceStart += uiFaceCnt ;
@@ -5833,7 +5833,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 			pMod->viewsub[4].vcount =  pMod->vcount;
 			pMod->viewsub[4].istart = 0;
 			pMod->viewsub[4].icount = 0;
-			pMod->viewsub[4].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[4].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[4].nTri_Num = 0 ;
 			pMod->viewsub[4].pMaterial = NULL;
 			
@@ -5841,7 +5841,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 			pMod->viewsub[5].vcount =  pMod->vcount;
 			pMod->viewsub[5].istart = 0;
 			pMod->viewsub[5].icount = 0;
-			pMod->viewsub[5].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[5].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[5].nTri_Num = 0 ;
 			pMod->viewsub[5].pMaterial = NULL;
 
@@ -5994,7 +5994,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		pMod->viewsub[0].vcount =  pMod->vcount;
 		pMod->viewsub[0].istart = uiFaceStart*3;
 		pMod->viewsub[0].icount = uSlices*uiSegCnt*2 *3;
-		pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[0].nTri_Num = uSlices*uiSegCnt*2 ;
 		pMod->viewsub[0].pMaterial = NULL;
 		uiFaceStart += uSlices*uiSegCnt*2 ;
@@ -6015,7 +6015,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		pMod->viewsub[1].vcount =  pMod->vcount;
 		pMod->viewsub[1].istart = uiFaceStart*3;
 		pMod->viewsub[1].icount = (uSlices*2 + uiFVNum *8) *3;
-		pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[1].nTri_Num = uSlices*2 + uiFVNum *8 ;
 		pMod->viewsub[1].pMaterial = NULL;
 		uiFaceStart += uSlices*2 + uiFVNum *8 ;
@@ -6068,7 +6068,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		pMod->viewsub[2].vcount =  pMod->vcount;
 		pMod->viewsub[2].istart = uiFaceStart*3;
 		pMod->viewsub[2].icount = (uSlices*uiSegCnt*2) *3;
-		pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[2].nTri_Num = uSlices*uiSegCnt*2 ;
 		pMod->viewsub[2].pMaterial = NULL;
 		uiFaceStart +=uSlices*uiSegCnt*2;
@@ -6092,7 +6092,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		pMod->viewsub[3].vcount =  pMod->vcount;
 		pMod->viewsub[3].istart = uiFaceStart*3;
 		pMod->viewsub[3].icount = uSlices*2 *3;
-		pMod->viewsub[3].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[3].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[3].nTri_Num = uSlices*2 ;
 		pMod->viewsub[3].pMaterial = NULL;
 		uiFaceStart +=uSlices*2;
@@ -6154,7 +6154,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 				pMod->viewsub[4].vcount =  pMod->vcount;
 				pMod->viewsub[4].istart = uiFaceStart*3;
 				pMod->viewsub[4].icount = uiFaceCnt *3;
-				pMod->viewsub[4].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[4].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[4].nTri_Num = uiFaceCnt ;
 				pMod->viewsub[4].pMaterial = NULL;
 				uiFaceStart += uiFaceCnt;
@@ -6177,7 +6177,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 				pMod->viewsub[5].vcount =  pMod->vcount;
 				pMod->viewsub[5].istart = uiFaceStart*3;
 				pMod->viewsub[5].icount = uiFaceCnt *3;
-				pMod->viewsub[5].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[5].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[5].nTri_Num = uiFaceCnt ;
 				pMod->viewsub[5].pMaterial = NULL;
 				//uiFaceStart += uiFaceCnt;
@@ -6189,7 +6189,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 			pMod->viewsub[4].vcount =  pMod->vcount;
 			pMod->viewsub[4].istart = 0;
 			pMod->viewsub[4].icount = 0;
-			pMod->viewsub[4].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[4].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[4].nTri_Num = 0 ;
 			pMod->viewsub[4].pMaterial = NULL;
 
@@ -6197,7 +6197,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 			pMod->viewsub[5].vcount =  pMod->vcount;
 			pMod->viewsub[5].istart = 0;
 			pMod->viewsub[5].icount = 0;
-			pMod->viewsub[5].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[5].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[5].nTri_Num = 0 ;
 			pMod->viewsub[5].pMaterial = NULL;
 
@@ -6768,7 +6768,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 		pMod->viewsub[nAttriId].vcount =  pMod->vcount;
 		pMod->viewsub[nAttriId].istart = i*uiTopFaceCnt*3;
 		pMod->viewsub[nAttriId].icount = uiTopFaceCnt *3;
-		pMod->viewsub[nAttriId].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[nAttriId].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[nAttriId].nTri_Num = uiTopFaceCnt ;
 		pMod->viewsub[nAttriId].pMaterial = NULL;
 
@@ -6777,7 +6777,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 		pMod->viewsub[nAttriId].vcount =  pMod->vcount;
 		pMod->viewsub[nAttriId].istart = (uiTotalTopFaceCnt + i*uiOutFaceCnt)*3;
 		pMod->viewsub[nAttriId].icount =  uiOutFaceCnt*3;
-		pMod->viewsub[nAttriId].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[nAttriId].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[nAttriId].nTri_Num = uiOutFaceCnt ;
 		pMod->viewsub[nAttriId].pMaterial = NULL;
 		
@@ -6786,7 +6786,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 		pMod->viewsub[nAttriId].vcount =  pMod->vcount;
 		pMod->viewsub[nAttriId].istart = (uiBottomFaceOffSet+ i*uiBottomFaceCnt)*3;
 		pMod->viewsub[nAttriId].icount =  uiBottomFaceCnt*3;
-		pMod->viewsub[nAttriId].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[nAttriId].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[nAttriId].nTri_Num = uiBottomFaceCnt ;
 		pMod->viewsub[nAttriId].pMaterial = NULL;
 		
@@ -6795,7 +6795,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 		pMod->viewsub[nAttriId].vcount =  pMod->vcount;
 		pMod->viewsub[nAttriId].istart = (uiInnerFaceOffset + i * uiInnerFaceCnt)*3;
 		pMod->viewsub[nAttriId].icount =  uiInnerFaceCnt*3;
-		pMod->viewsub[nAttriId].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[nAttriId].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[nAttriId].nTri_Num = uiInnerFaceCnt ;
 		pMod->viewsub[nAttriId].pMaterial = NULL;
 
@@ -6809,7 +6809,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 			pMod->viewsub[i].vcount =  pMod->vcount;
 			pMod->viewsub[i].istart = (uiPlaneFaceOffset+i*uiFaceCnt)*3;
 			pMod->viewsub[i].icount =  uiFaceCnt*3;
-			pMod->viewsub[i].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[i].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[i].nTri_Num = uiFaceCnt ;
 			pMod->viewsub[i].pMaterial = NULL;
 		}
@@ -6822,7 +6822,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 			pMod->viewsub[i].vcount =  pMod->vcount;
 			pMod->viewsub[i].istart = 0;
 			pMod->viewsub[i].icount =  0;
-			pMod->viewsub[i].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[i].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[i].nTri_Num = 0 ;
 			pMod->viewsub[i].pMaterial = NULL;
 		}
@@ -7019,7 +7019,7 @@ BOOL SYModel_CreateRing(SYModel* pMod,
 	pMod->viewsub[0].vcount =  pMod->vcount;
 	pMod->viewsub[0].istart = 0;
 	pMod->viewsub[0].icount = (uSlices * uStacks * 2) * 3/* pMod->icount*/;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[0].nTri_Num = pMod->viewsub[0].icount/* pMod->icount*/ / 3;
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -7029,7 +7029,7 @@ BOOL SYModel_CreateRing(SYModel* pMod,
 		pMod->viewsub[1].vcount =  pMod->vcount;
 		pMod->viewsub[1].istart = pMod->viewsub[0].icount;
 		pMod->viewsub[1].icount =  uStacks *3;
-		pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[1].nTri_Num = uStacks;
 		pMod->viewsub[1].pMaterial = NULL;
 
@@ -7037,7 +7037,7 @@ BOOL SYModel_CreateRing(SYModel* pMod,
 		pMod->viewsub[2].vcount =  pMod->vcount;
 		pMod->viewsub[2].istart = pMod->viewsub[1].icount + pMod->viewsub[0].icount;
 		pMod->viewsub[2].icount =  uStacks *3;
-		pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[2].nTri_Num = uStacks;
 		pMod->viewsub[2].pMaterial = NULL;
 	}
@@ -7140,7 +7140,7 @@ BOOL  SYModel_CreateBar(SYModel* pMod,UINT uSharpType,float fRadius,UINT uFragMe
 		pMod->viewsub[0].vcount =  pMod->vcount;
 		pMod->viewsub[0].istart = 0;//nFMesh*3;
 		pMod->viewsub[0].icount = 12;
-		pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+		pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 		pMod->viewsub[0].nTri_Num = 4;//4;
 		pMod->viewsub[0].pMaterial = NULL;	
 
@@ -7290,7 +7290,7 @@ BOOL  SYModel_CreateBar(SYModel* pMod,UINT uSharpType,float fRadius,UINT uFragMe
 				pMod->viewsub[0].vcount =  pMod->vcount;
 				pMod->viewsub[0].istart =0;
 				pMod->viewsub[0].icount = pMod->icount;
-				pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[0].nTri_Num = nFMesh;
 				pMod->viewsub[0].pMaterial = NULL;
 			
@@ -7553,14 +7553,14 @@ BOOL  SYModel_CreateBar(SYModel* pMod,UINT uSharpType,float fRadius,UINT uFragMe
 			pMod->viewsub[0].vcount =  pMod->vcount;
 			pMod->viewsub[0].istart = 0;//nFMesh*3;
 			pMod->viewsub[0].icount = 36;
-			pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[0].nTri_Num = 12;//4;
 			pMod->viewsub[0].pMaterial = NULL;
 			/*pMod->viewsub[0].vstart= 0;
 			pMod->viewsub[0].vcount =  pMod->vcount;
 			pMod->viewsub[0].istart = 0*3;
 			pMod->viewsub[0].icount = nFMesh*3;
-			pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[0].nTri_Num = nFMesh;
 			pMod->viewsub[0].pMaterial = NULL;*/
 		}
@@ -7666,7 +7666,7 @@ BOOL  SYModel_CreateTablet_TwoFace(SYModel* pMod,
 	pMod->viewsub[0].vcount = 4;
 	pMod->viewsub[0].istart = 24;
 	pMod->viewsub[0].icount = 6;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 	pMod->viewsub[0].nTri_Num = 2;
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -7682,7 +7682,7 @@ BOOL  SYModel_CreateTablet_TwoFace(SYModel* pMod,
 	pMod->viewsub[1].vcount = 4;
 	pMod->viewsub[1].istart = 30;
 	pMod->viewsub[1].icount = 6;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[1].nTri_Num = 2;
 	pMod->viewsub[1].pMaterial = NULL;
 
@@ -7720,7 +7720,7 @@ BOOL  SYModel_CreateTablet_TwoFace(SYModel* pMod,
 	pMod->viewsub[2].vcount = 16;
 	pMod->viewsub[2].istart = 0;
 	pMod->viewsub[2].icount = 24;
-	pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[2].nTri_Num = 8;
 	pMod->viewsub[2].pMaterial = NULL;
 
@@ -7803,7 +7803,7 @@ BOOL  SYModel_CreateTablet_TriFace(SYModel* pMod,
 	pMod->viewsub[3].vcount = 6;
 	pMod->viewsub[3].istart = 0;
 	pMod->viewsub[3].icount = 6;
-	pMod->viewsub[3].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[3].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[3].nTri_Num = 2;
 	pMod->viewsub[3].pMaterial = NULL;
 
@@ -7818,7 +7818,7 @@ BOOL  SYModel_CreateTablet_TriFace(SYModel* pMod,
 	pMod->viewsub[0].vcount = 6;
 	pMod->viewsub[0].istart = 6;
 	pMod->viewsub[0].icount = 6;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[0].nTri_Num = 2;
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -7833,7 +7833,7 @@ BOOL  SYModel_CreateTablet_TriFace(SYModel* pMod,
 	pMod->viewsub[1].vcount = 6;
 	pMod->viewsub[1].istart = 12;
 	pMod->viewsub[1].icount = 6;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[1].nTri_Num = 2;
 	pMod->viewsub[1].pMaterial = NULL;
 
@@ -7848,7 +7848,7 @@ BOOL  SYModel_CreateTablet_TriFace(SYModel* pMod,
 	pMod->viewsub[2].vcount = 6;
 	pMod->viewsub[2].istart = 18;
 	pMod->viewsub[2].icount = 6;
-	pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[2].nTri_Num = 2;
 	pMod->viewsub[2].pMaterial = NULL;
 	
@@ -7912,7 +7912,7 @@ BOOL  SYModel_CreateTablet_Text_TwoFace(SYModel* pMod,
 	pMod->viewsub[0].vcount =  pMod->vcount;
 	pMod->viewsub[0].istart = 0;
 	pMod->viewsub[0].icount =6;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[0].nTri_Num = 2;
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -7927,7 +7927,7 @@ BOOL  SYModel_CreateTablet_Text_TwoFace(SYModel* pMod,
 	pMod->viewsub[1].vcount = pMod->vcount;
 	pMod->viewsub[1].istart = 6;
 	pMod->viewsub[1].icount = 2*3;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[1].nTri_Num = 2;
 	pMod->viewsub[1].pMaterial = NULL;
 
@@ -8032,7 +8032,7 @@ BOOL  SYModel_CreateTablet_Text_TriFace(SYModel* pMod,
 	pMod->viewsub[0].vcount = pMod->vcount;
 	pMod->viewsub[0].istart = 0;
 	pMod->viewsub[0].icount = 6;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[0].nTri_Num = 2;
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -8040,7 +8040,7 @@ BOOL  SYModel_CreateTablet_Text_TriFace(SYModel* pMod,
 	pMod->viewsub[1].vcount = pMod->vcount;
 	pMod->viewsub[1].istart = 6;
 	pMod->viewsub[1].icount = 6;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[1].nTri_Num = 2;
 	pMod->viewsub[1].pMaterial = NULL;
 
@@ -8048,7 +8048,7 @@ BOOL  SYModel_CreateTablet_Text_TriFace(SYModel* pMod,
 	pMod->viewsub[2].vcount = pMod->vcount;
 	pMod->viewsub[2].istart = 12;
 	pMod->viewsub[2].icount = 6;
-	pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[2].nTri_Num = 2;
 	pMod->viewsub[2].pMaterial = NULL;
 
@@ -8156,7 +8156,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 				pMod->viewsub[i*3+0].vcount =  pMod->vcount;
 				pMod->viewsub[i*3+0].istart = i*nBase+30;
 				pMod->viewsub[i*3+0].icount =6;
-				pMod->viewsub[i*3+0].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[i*3+0].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[i*3+0].nTri_Num = 2;
 				pMod->viewsub[i*3+0].pMaterial = NULL;
 
@@ -8168,7 +8168,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 				pMod->viewsub[i*3+1].vcount =  pMod->vcount;
 				pMod->viewsub[i*3+1].istart = i*nBase+24;
 				pMod->viewsub[i*3+1].icount =6;
-				pMod->viewsub[i*3+1].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[i*3+1].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[i*3+1].nTri_Num = 2;
 				pMod->viewsub[i*3+1].pMaterial = NULL;
 
@@ -8185,7 +8185,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 				pMod->viewsub[i*3+2].vcount =  pMod->vcount;
 				pMod->viewsub[i*3+2].istart = i*nBase+0;
 				pMod->viewsub[i*3+2].icount =24;
-				pMod->viewsub[i*3+2].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[i*3+2].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[i*3+2].nTri_Num = 8;
 				pMod->viewsub[i*3+2].pMaterial = NULL;
 				nBase +=36;
@@ -8218,7 +8218,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 			pMod->viewsub[0].vcount =  pMod->vcount;
 			pMod->viewsub[0].istart = 0;
 			pMod->viewsub[0].icount =6;
-			pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[0].nTri_Num = 2;
 			pMod->viewsub[0].pMaterial = NULL;
 
@@ -8229,7 +8229,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 			pMod->viewsub[1].vcount = pMod->vcount;
 			pMod->viewsub[1].istart = 6;
 			pMod->viewsub[1].icount = 2*3;
-			pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+			pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 			pMod->viewsub[1].nTri_Num = 2;
 			pMod->viewsub[1].pMaterial = NULL;
 			//////////////////////////////////////////////////////////////////////////
@@ -8365,7 +8365,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 				pMod->viewsub[nID].vcount =  30*nPartCount;
 				pMod->viewsub[nID].istart = (nIdx+0)/3*3;
 				pMod->viewsub[nID].icount = 2*3;
-				pMod->viewsub[nID].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[nID].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[nID].nTri_Num = 2;
 				pMod->viewsub[nID].pMaterial = NULL;
 
@@ -8375,7 +8375,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 				pMod->viewsub[nID].vcount =  30*nPartCount;
 				pMod->viewsub[nID].istart = (nIdx+6)/3*3;
 				pMod->viewsub[nID].icount = 2*3;
-				pMod->viewsub[nID].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[nID].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[nID].nTri_Num = 2;
 				pMod->viewsub[nID].pMaterial = NULL;
 
@@ -8385,7 +8385,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 				pMod->viewsub[nID].vcount =  30*nPartCount;
 				pMod->viewsub[nID].istart = (nIdx+12)/3*3;
 				pMod->viewsub[nID].icount = 2*3;
-				pMod->viewsub[nID].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[nID].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[nID].nTri_Num = 2;
 				pMod->viewsub[nID].pMaterial = NULL;
 
@@ -8395,7 +8395,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 				pMod->viewsub[nID].vcount =  30*nPartCount;
 				pMod->viewsub[nID].istart = (nIdx+18)/3*3;
 				pMod->viewsub[nID].icount = 2*3;
-				pMod->viewsub[nID].nTri_Type = SY_TRIANGLE_LIST ;
+				pMod->viewsub[nID].nTri_Type = Common_TRIANGLE_LIST ;
 				pMod->viewsub[nID].nTri_Num = 2;
 				pMod->viewsub[nID].pMaterial = NULL;
 			}
@@ -8408,7 +8408,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 					pMod->viewsub[nID].vcount =  30*nPartCount;
 					pMod->viewsub[nID].istart = (nIdx+24)/3*3;
 					pMod->viewsub[nID].icount = 2*3;
-					pMod->viewsub[nID].nTri_Type = SY_TRIANGLE_LIST ;
+					pMod->viewsub[nID].nTri_Type = Common_TRIANGLE_LIST ;
 					pMod->viewsub[nID].nTri_Num = 2;
 					pMod->viewsub[nID].pMaterial = NULL;
 					nID++;
@@ -8421,7 +8421,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 					pMod->viewsub[nID].vcount =  30*nPartCount;
 					pMod->viewsub[nID].istart = (nIdx+36)/3*3;
 					pMod->viewsub[nID].icount = 2*3;
-					pMod->viewsub[nID].nTri_Type = SY_TRIANGLE_LIST ;
+					pMod->viewsub[nID].nTri_Type = Common_TRIANGLE_LIST ;
 					pMod->viewsub[nID].nTri_Num = 2;
 					pMod->viewsub[nID].pMaterial = NULL;
 					nID++;
@@ -8434,7 +8434,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 					pMod->viewsub[nID].vcount =  30*nPartCount;
 					pMod->viewsub[nID].istart = (nIdx+30)/3*3;
 					pMod->viewsub[nID].icount = 2*3;
-					pMod->viewsub[nID].nTri_Type = SY_TRIANGLE_LIST ;
+					pMod->viewsub[nID].nTri_Type = Common_TRIANGLE_LIST ;
 					pMod->viewsub[nID].nTri_Num = 2;
 					pMod->viewsub[nID].pMaterial = NULL;
 					nID++;
@@ -8817,7 +8817,7 @@ BOOL  SYModel_CreateStar(SYModel* pMod,UINT uStacks,UINT uSlices,int  nPartCount
 	pMod->viewsub[0].vcount =  nV;
 	pMod->viewsub[0].istart = 0;
 	pMod->viewsub[0].icount =  nTopFace*3;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[0].nTri_Num = nTopFace;
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -8826,7 +8826,7 @@ BOOL  SYModel_CreateStar(SYModel* pMod,UINT uStacks,UINT uSlices,int  nPartCount
 	pMod->viewsub[1].vcount =  nV;
 	pMod->viewsub[1].istart = nTopFace*3;
 	pMod->viewsub[1].icount =  nTopFace*3;
-	pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[1].nTri_Num = nTopFace;
 	pMod->viewsub[1].pMaterial = NULL;
 	// 侧面 
@@ -8834,7 +8834,7 @@ BOOL  SYModel_CreateStar(SYModel* pMod,UINT uStacks,UINT uSlices,int  nPartCount
 	pMod->viewsub[2].vcount =  nV;
 	pMod->viewsub[2].istart = nTopFace*6;
 	pMod->viewsub[2].icount =  nBorderFace*3;
-	pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST ;
+	pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST ;
 	pMod->viewsub[2].nTri_Num = nBorderFace;
 	pMod->viewsub[2].pMaterial = NULL;
 	return TRUE;
@@ -8984,7 +8984,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 		pMod->viewsub[0].icount = (arc_point_count-1)*3;
 
 		pMod->viewsub[0].nTri_Num = arc_point_count-1;
-		pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+		pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 		pMod->viewsub[0].pMaterial = NULL;
 	}
 
@@ -9067,7 +9067,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 		pMod->viewsub[1].icount = (arc_point_count-1)*3;
 
 		pMod->viewsub[1].nTri_Num = arc_point_count-1;
-		pMod->viewsub[1].nTri_Type = SY_TRIANGLE_LIST;
+		pMod->viewsub[1].nTri_Type = Common_TRIANGLE_LIST;
         pMod->viewsub[1].pMaterial= NULL;
 	}
 
@@ -9142,7 +9142,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 		pMod->viewsub[2].icount = (arc_point_count-1)*6;
 
 		pMod->viewsub[2].nTri_Num = (arc_point_count-1)*2;
-		pMod->viewsub[2].nTri_Type = SY_TRIANGLE_LIST;
+		pMod->viewsub[2].nTri_Type = Common_TRIANGLE_LIST;
 
         pMod->viewsub[2].pMaterial = NULL;
 	}
@@ -9269,7 +9269,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 		pMod->viewsub[3].icount = 6;
 
 		pMod->viewsub[3].nTri_Num = 2;
-		pMod->viewsub[3].nTri_Type = SY_TRIANGLE_LIST;
+		pMod->viewsub[3].nTri_Type = Common_TRIANGLE_LIST;
 
         pMod->viewsub[3].pMaterial = NULL;
 	}
@@ -9382,7 +9382,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 		pMod->viewsub[4].icount = 6;
 
 		pMod->viewsub[4].nTri_Num = 2;
-		pMod->viewsub[4].nTri_Type = SY_TRIANGLE_LIST;
+		pMod->viewsub[4].nTri_Type = Common_TRIANGLE_LIST;
 
         pMod->viewsub[4].pMaterial = NULL;
 	}
@@ -9471,7 +9471,7 @@ BOOL  SYModel_CreateTitlePlane(SYModel* pMod)
     pMod->viewsub[0].icount = 6;
 
     pMod->viewsub[0].nTri_Num = 2;
-    pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+    pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
     pMod->viewsub[0].pMaterial = NULL;
 
@@ -9499,7 +9499,7 @@ BOOL SYModel_CreateChamferPie(	SYModel* pMod,
 	uChamferPrecission = max(1, min(uChamferPrecission,10));
 	uFragMent =  max(1, min(uFragMent,10));
 
-	CSYPieModeling modeling(uSharp,uFragMent,fAngle0,fAngle1,
+	CBasePieModeling modeling(uSharp,uFragMent,fAngle0,fAngle1,
 		fRadius,fInnerRadius,fThick,uChamferType,fChamferLen,fChamferHeight,
 		uChamferPrecission,uChamferLayout);
 
@@ -9606,7 +9606,7 @@ BOOL  SYModel_CreateXYPlane(SYModel* pMod,float width,float height,float3 OrginP
 	pMod->viewsub[0].icount = 12;
 
 	pMod->viewsub[0].nTri_Num = 4;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -9712,7 +9712,7 @@ BOOL  SYModel_CreateYZPlane(SYModel* pMod,float width,float height, float3 Orgin
 	pMod->viewsub[0].icount = 12;
 
 	pMod->viewsub[0].nTri_Num = 4;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -9810,7 +9810,7 @@ BOOL  SYModel_CreateZXPlane(SYModel* pMod,float width,float height, float3 Orgin
 	pMod->viewsub[0].icount = 12;
 
 	pMod->viewsub[0].nTri_Num = 4;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -9920,7 +9920,7 @@ BOOL SYModel_CreateXYLabels(SYModel* pMod,float width,float height, float3 Orgin
 	pMod->viewsub[0].icount = pMod->icount;
 
 	pMod->viewsub[0].nTri_Num = label_count*2;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -10031,7 +10031,7 @@ BOOL SYModel_CreateYZLabels(SYModel* pMod,float width,float height, float3 Orgin
 	pMod->viewsub[0].icount = pMod->icount;
 
 	pMod->viewsub[0].nTri_Num = label_count*2;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -10143,7 +10143,7 @@ BOOL SYModel_CreateZXLabels(SYModel* pMod,float width,float height, float3 Orgin
 	pMod->viewsub[0].icount = pMod->icount;
 
 	pMod->viewsub[0].nTri_Num = label_count*2;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -10296,7 +10296,7 @@ BOOL  SYModel_CreatePlaneLineModel(SYModel* pMod,float width,float z,float2* ptA
 	pMod->viewsub[0].icount = pMod->icount;
 
 	pMod->viewsub[0].nTri_Num = seg*4;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -10603,7 +10603,7 @@ BOOL  SYModel_CreatePlaneLineModel2(SYModel* pMod,float height,float z,float2* p
 	pMod->viewsub[0].istart = 0;
 	pMod->viewsub[0].icount = pMod->icount;
 	pMod->viewsub[0].nTri_Num = tri_count;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -11030,7 +11030,7 @@ BOOL  SYModel_CreateCubeLineModel(SYModel* pMod,float width,float height,float z
 	pMod->viewsub[0].icount = pMod->icount;
 
 	pMod->viewsub[0].nTri_Num = tri_count;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 
 	pMod->viewsub[0].pMaterial = NULL;
 
@@ -11473,7 +11473,7 @@ SYModel* MakeModel( SYModel* pNewModel,
 	int vCount = 0;
 	for(int i = 0; i < pNewModel->nviewsub;i++)
 	{
-		pNewModel->viewsub[i].nTri_Type = SY_TRIANGLE_LIST;
+		pNewModel->viewsub[i].nTri_Type = Common_TRIANGLE_LIST;
 		pNewModel->viewsub[i].istart = vCount;
 		pNewModel->viewsub[i].nTri_Num = 0;
 		vCount += subCount[i] * 3;
@@ -11487,6 +11487,6 @@ SYModel* MakeModel( SYModel* pNewModel,
 		pNewModel->indecs[nOffset + 2] = pIB[i * 3 + 1];
 		pNewModel->viewsub[pAB[i]].nTri_Num++;
 	}
-	//SYCreateTangent(pNewModel->v,nV,pNewModel->indecs,pNewModel->icount,0,SY_TRIANGLE_LIST);
+	//SYCreateTangent(pNewModel->v,nV,pNewModel->indecs,pNewModel->icount,0,Common_TRIANGLE_LIST);
 	return pNewModel;
 }

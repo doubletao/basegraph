@@ -24,7 +24,7 @@ using std::vector;
 using std::allocator;
 using std::wstring;
 typedef unsigned long long	mtusp_code;
-#define SY_USE_UNISCRIBE	//使用多语言处理器
+#define Common_USE_UNISCRIBE	//使用多语言处理器
 //消除C4251警告
 template class  allocator<BYTE>;
 template class  vector<BYTE, allocator<BYTE>>;
@@ -45,15 +45,15 @@ template class  vector<SCRIPT_LOGATTR, allocator<SCRIPT_LOGATTR>>;
 template class  allocator<GOFFSET>;
 template class  vector<GOFFSET, allocator<GOFFSET>>;
 
-typedef vector<BYTE>			CSYUspByteArray;
-typedef vector<int>				CSYUspIntArray;
-typedef vector<WORD>			CSYUspWordArray;
-typedef vector<mtusp_code>		CSYUspCheckCodeArray;
-typedef vector<wstring>			CSYUspStrArray;
-typedef vector<SCRIPT_ITEM>		CSYUspItemArray;
-typedef vector<SCRIPT_VISATTR>	CSYUspVisAttrArray;
-typedef vector<SCRIPT_LOGATTR>	CSYUspLogAttrArray;
-typedef vector<GOFFSET>			CSYUspGOffsetArray;
+typedef vector<BYTE>			CBaseUspByteArray;
+typedef vector<int>				CBaseUspIntArray;
+typedef vector<WORD>			CBaseUspWordArray;
+typedef vector<mtusp_code>		CBaseUspCheckCodeArray;
+typedef vector<wstring>			CBaseUspStrArray;
+typedef vector<SCRIPT_ITEM>		CBaseUspItemArray;
+typedef vector<SCRIPT_VISATTR>	CBaseUspVisAttrArray;
+typedef vector<SCRIPT_LOGATTR>	CBaseUspLogAttrArray;
+typedef vector<GOFFSET>			CBaseUspGOffsetArray;
 //////////////////////////////////////////////////////////////////////////
 // tagSYSCRIPTRUN - Run单元
 struct  tagSYSCRIPTRUN
@@ -63,15 +63,15 @@ struct  tagSYSCRIPTRUN
 	SCRIPT_ANALYSIS	m_RunAnalysis;
 	TCHAR			m_szFontName[LF_FACESIZE];//font name used actually
 	SCRIPT_CACHE	m_ScriptCache;
-	CSYUspIntArray	m_aryCharIndex;		// char index in paragraph
-	CSYUspWordArray	m_aryCharGlyphs;		// glyph shaped information
-	CSYUspWordArray	m_aryLogicalCluster;	// logical cluster information
-	CSYUspWordArray	m_aryNoGlyphIndex;
-	CSYUspVisAttrArray	m_aryVisAttribute;// glyph shaped visual attribute
+	CBaseUspIntArray	m_aryCharIndex;		// char index in paragraph
+	CBaseUspWordArray	m_aryCharGlyphs;		// glyph shaped information
+	CBaseUspWordArray	m_aryLogicalCluster;	// logical cluster information
+	CBaseUspWordArray	m_aryNoGlyphIndex;
+	CBaseUspVisAttrArray	m_aryVisAttribute;// glyph shaped visual attribute
 
-	CSYUspIntArray		m_aryAdvanceWidth;		// advance width
-	CSYUspGOffsetArray	m_aryGOffset;			// glyph offset
-	CSYUspCheckCodeArray	m_aryCheckCode;		// ckeck code
+	CBaseUspIntArray		m_aryAdvanceWidth;		// advance width
+	CBaseUspGOffsetArray	m_aryGOffset;			// glyph offset
+	CBaseUspCheckCodeArray	m_aryCheckCode;		// ckeck code
 
 	tagSYSCRIPTRUN() : m_nRunCharPos(0), m_nRunCharLen(0), m_ScriptCache(NULL)
 	{
@@ -111,18 +111,18 @@ struct  tagSYSCRIPTRUN
 typedef tagSYSCRIPTRUN SYSCRIPTRUN;
 template class  allocator<SYSCRIPTRUN*>;
 template class  vector<SYSCRIPTRUN*, allocator<SYSCRIPTRUN*>>;
-typedef vector<SYSCRIPTRUN*>	CSYUspRunPtrArray;
+typedef vector<SYSCRIPTRUN*>	CBaseUspRunPtrArray;
 //////////////////////////////////////////////////////////////////////////
 // tagSYSCRIPTRESULT - 数据处理结果
 struct  tagSYSCRIPTRESULT
 {
 	// Item 临时数据
-	CSYUspItemArray		m_aryScriptItem;
+	CBaseUspItemArray		m_aryScriptItem;
 	// 结果数据
-	CSYUspRunPtrArray	m_aryRunPtr;			// logical run ptr
-	CSYUspIntArray		m_aryVis2Log;			// visual order run indexes
-	CSYUspIntArray		m_aryLog2Vis;			// visual run positions
-	CSYUspLogAttrArray	m_aryLogAttr;
+	CBaseUspRunPtrArray	m_aryRunPtr;			// logical run ptr
+	CBaseUspIntArray		m_aryVis2Log;			// visual order run indexes
+	CBaseUspIntArray		m_aryLog2Vis;			// visual run positions
+	CBaseUspLogAttrArray	m_aryLogAttr;
 	tagSYSCRIPTRESULT()
 	{
 	}
@@ -160,17 +160,17 @@ struct  tagSYSCRIPTRESULT
 };
 typedef tagSYSCRIPTRESULT SYSCRIPTRESULT, *LPSYSCRIPTRESULT;
 //////////////////////////////////////////////////////////////////////////
-// CSYUsp - 多语言处理器
-class  CSYUsp
+// CBaseUsp - 多语言处理器
+class  CBaseUsp
 {
 public:
-	CSYUsp(SYSCRIPTRESULT* pScriptResult);
-	virtual ~CSYUsp();
+	CBaseUsp(SYSCRIPTRESULT* pScriptResult);
+	virtual ~CBaseUsp();
 	//Initialize
 	static BOOL				Initialize(LCID dwLcid = LOCALE_USER_DEFAULT, BOOL bEnFeedBackFont = TRUE);
 	// Call it while init or response the WM_SETTINGCHANGE msg.
 	static BOOL				RefreshDigitSubstitution(LCID dwLcid = LOCALE_USER_DEFAULT);
-	CSYUspStrArray*			GetFeedBackFontFonts();
+	CBaseUspStrArray*			GetFeedBackFontFonts();
 
 	const SCRIPT_PROPERTIES* GetScriptProperty(IN WORD wScript);
 	int						GetScriptMaxCount(){ return m_nMaxScript; }

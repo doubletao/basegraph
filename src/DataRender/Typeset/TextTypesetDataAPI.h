@@ -24,10 +24,10 @@ typedef CBaseARray<curCtrl*,curCtrl*> CurveAr;
 					BOOL bLineWrap, 
 					BOOL bFixedFrame);
  void	BASEGRAPH_DATARENDER_API SYText_Release(LPSYText pText);
- void	SYText_Copy(LPSYText pDes, LPCSYText pSrc, BOOL bCopyNullText);
- BOOL	SYText_Compare(LPCSYText pText1, LPCSYText pText2, BOOL bNullTextEq);
+ void	SYText_Copy(LPSYText pDes, LPCBaseText pSrc, BOOL bCopyNullText);
+ BOOL	SYText_Compare(LPCBaseText pText1, LPCBaseText pText2, BOOL bNullTextEq);
  void	SYText_CopyProp(LPSYTextProp& pDesProp,			//目标SYTextProp，NULL则内部new。
-					LPCSYText pSrcText,				//源SYText
+					LPCBaseText pSrcText,				//源SYText
 					int nDesLen = -1);				//目标长度
 //更新字的3D拉伸属性
  void	SYText_UpdateStretchParam(LPSYText pText, LPSYStretchParam pStretch);
@@ -59,32 +59,32 @@ typedef CBaseARray<curCtrl*,curCtrl*> CurveAr;
 /************************SYFont*******************************/
  void	BASEGRAPH_DATARENDER_API SYFont_Init(LPSYFont pFont);
  void	SYFont_Release(LPSYFont pFont);
- int	SYFont_Save(LPCSYFont pFont, LPBYTE pBuffer, int nLen);
+ int	SYFont_Save(LPCBaseFont pFont, LPBYTE pBuffer, int nLen);
  int	SYFont_Load(LPSYFont pFont, LPBYTE pBuffer, int nLen);
- void	BASEGRAPH_DATARENDER_API SYFont_Copy(LPSYFont pDes, LPCSYFont pSrc);
- BOOL	SYFont_Compare(LPCSYFont pFont1, LPCSYFont pFont2);
+ void	BASEGRAPH_DATARENDER_API SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc);
+ BOOL	SYFont_Compare(LPCBaseFont pFont1, LPCBaseFont pFont2);
 //根据掩码设置字体子属性
  void	SYFont_SetValue(LPSYFont pDesFont, const LPVOID lpSrcData, const LPVOID lp2ndSrcData, DWORD dwMask);
 //根据掩码拷贝字体子属性
- void	SYFont_CopyValue(LPSYFont pDesFont, LPCSYFont pSrcFont, DWORD dwMask);
+ void	SYFont_CopyValue(LPSYFont pDesFont, LPCBaseFont pSrcFont, DWORD dwMask);
 
 /***********************SYUnderLine***************************/
  void	BASEGRAPH_DATARENDER_API SYUnderLine_Init(LPSYUnderLine pUnderLine);
  void	SYUnderLine_Create(LPSYUnderLine pUnderLine, E_TextUnderLine eType, float fYPos,float fLineWidth,LPSYStaticEffect p2DColor);
  void	SYUnderLine_Release(LPSYUnderLine pUnderLine);
- void	SYUnderLine_Copy(LPSYUnderLine pDes, LPCSYUnderLine pSrc);
- BOOL	SYUnderLine_Compare(LPCSYUnderLine pUnderLine1, LPCSYUnderLine pUnderLine2);
+ void	SYUnderLine_Copy(LPSYUnderLine pDes, LPCBaseUnderLine pSrc);
+ BOOL	SYUnderLine_Compare(LPCBaseUnderLine pUnderLine1, LPCBaseUnderLine pUnderLine2);
 //根据掩码设置下划线子属性
  void	SYUnderLine_SetValue(LPSYUnderLine pDesUnderLine, const LPVOID lpSrcData, DWORD dwMask);
 //根据掩码拷贝下划线子属性
- void	SYUnderLine_CopyValue(LPSYUnderLine pDesUnderLine, LPCSYUnderLine pSrcUnderLine, DWORD dwMask);
+ void	SYUnderLine_CopyValue(LPSYUnderLine pDesUnderLine, LPCBaseUnderLine pSrcUnderLine, DWORD dwMask);
 
 /************************SYTextProp***************************/
  void	SYTextProp_Init(LPSYTextProp pProp);
  void	SYTextProp_Create(int nTextLen,LPSYTextProp pProp,LPSYFont pFont, LPSYStaticEffect p2DColor,SYMaterial* p3DColor,LPSYUnderLine pUnderLine);
  void	SYTextProp_Release(LPSYTextProp pProp);
- void	SYTextProp_Copy(LPSYTextProp pDes, LPCSYTextProp pSrc, int nDesLen = -1);
- BOOL	SYTextProp_Compare(LPCSYTextProp pProp1, LPCSYTextProp pProp2);
+ void	SYTextProp_Copy(LPSYTextProp pDes, LPCBaseTextProp pSrc, int nDesLen = -1);
+ BOOL	SYTextProp_Compare(LPCBaseTextProp pProp1, LPCBaseTextProp pProp2);
 //删除/插入字符串时维护SYTextProp
  void	SYTextProp_DeleteString(LPSYTextProp pProp, int nCharIdx, int nDelCnt, int nTextLen, BOOL bWholeRender);
  void	SYTextProp_InsertString(LPSYTextProp pProp, int nCharIdx, int nInsCnt, int nTextLen);
@@ -108,27 +108,27 @@ typedef CBaseARray<curCtrl*,curCtrl*> CurveAr;
 //取下划线
  LPSYUnderLine	BASEGRAPH_DATARENDER_API SYTextProp_GetUnderLine(LPSYTextProp pProp, int nCharIdx);
 //设置字体属性，nCount为-1时，设置全部。
- void	SYTextProp_SetFont(LPSYTextProp pProp, int nCharIdx, int nCount, LPCSYFont lpFont, DWORD dwMask = SYTEXTFONTMASK_ALL);
+ void	SYTextProp_SetFont(LPSYTextProp pProp, int nCharIdx, int nCount, LPCBaseFont lpFont, DWORD dwMask = SYTEXTFONTMASK_ALL);
  void	SYTextProp_FontProperty(LPSYTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, const LPVOID lp2ndPropData, DWORD dwMask);
 //设置2D颜色，nCount为-1时，设置全部。
- void	SYTextProp_SetStaticEffect(LPSYTextProp pProp, int nIndex, int nCharIdx, LPCSYStaticEffect lpFillColor, DWORD dwMask = SYTEXTCOLORMASK_ALL);
+ void	SYTextProp_SetStaticEffect(LPSYTextProp pProp, int nIndex, int nCharIdx, LPCBaseStaticEffect lpFillColor, DWORD dwMask = SYTEXTCOLORMASK_ALL);
 //设置3D颜色，nCount为-1时，设置全部。
  void	SYTextProp_Set3DColor(LPSYTextProp pProp, int nCharIdx, int nCount, SYMaterial* p3DColor);
 //设置子面3D颜色，nCount为-1时，设置全部。
  void	SYTextProp_SetSubFace3DColor(LPSYTextProp pProp, int nCharIdx, int nCount, int nSubFace, SYMaterial* p3DColor);
 //设置下划线，nCount为-1时，设置全部。
- void	SYTextProp_SetUnderLine(LPSYTextProp pProp, int nCharIdx, int nCount, LPCSYUnderLine lpUnderLine, DWORD dwMask = SYTEXTFONTMASK_UNDERLINE_ALL);
+ void	SYTextProp_SetUnderLine(LPSYTextProp pProp, int nCharIdx, int nCount, LPCBaseUnderLine lpUnderLine, DWORD dwMask = SYTEXTFONTMASK_UNDERLINE_ALL);
  void	SYTextProp_SetUnderLineProperty(LPSYTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, DWORD dwMask);
 //从前向后查找第1个相同字体（不得与自己比较）
- int	SYTextProp_FindSameFont(BaseARray* paryFont, LPCSYFont pCompFont, LPVOID* pSame);
+ int	SYTextProp_FindSameFont(BaseARray* paryFont, LPCBaseFont pCompFont, LPVOID* pSame);
 //从前向后查找第1个相同2D颜色（不得与自己比较）
- int	SYTextProp_FindSame2DColor(BaseARray* paryColor, LPCSYStaticEffect pCompColor, LPVOID* pSame);
+ int	SYTextProp_FindSame2DColor(BaseARray* paryColor, LPCBaseStaticEffect pCompColor, LPVOID* pSame);
 //从前向后查找第1个相同3D颜色（不得与自己比较）
  int	SYTextProp_FindSame3DColor(BaseARray* paryColor, const SYMaterial* pCompColor, LPVOID* pSame);
 //从前向后查找第1个相同下划线（不得与自己比较）
- int	SYTextProp_FindSameUnderLine(BaseARray* paryUnderLine, LPCSYUnderLine pUnderLine, LPVOID* pSame);
+ int	SYTextProp_FindSameUnderLine(BaseARray* paryUnderLine, LPCBaseUnderLine pUnderLine, LPVOID* pSame);
 //根据掩码拷贝2D颜色子属性
- void	SYText2DColor_CopyValue(LPSYStaticEffect pDesColor, LPCSYStaticEffect pSrcColor, DWORD dwMask);
+ void	SYText2DColor_CopyValue(LPSYStaticEffect pDesColor, LPCBaseStaticEffect pSrcColor, DWORD dwMask);
 //从字体表中删除1个
  BOOL	SYTextProp_RemoveFont(BaseARray* paryFont, int nIndex);
  BOOL	SYTextProp_RemoveFont(BaseARray* paryFont, LPSYFont pFont);
@@ -145,8 +145,8 @@ typedef CBaseARray<curCtrl*,curCtrl*> CurveAr;
 /*********************SYTextPropIndex*************************/
  void	SYTextPropIndex_Init(LPSYTextPropIndex pPropIdx);
  void	SYTextPropIndex_Release(LPSYTextPropIndex pPropIdx);
- void	SYTextPropIndex_Copy(LPSYTextPropIndex pDes, LPCSYTextPropIndex pSrc);
- BOOL	SYTextPropIndex_Compare(LPCSYTextPropIndex pPropIdx1, LPCSYTextPropIndex pPropIdx2);
+ void	SYTextPropIndex_Copy(LPSYTextPropIndex pDes, LPCBaseTextPropIndex pSrc);
+ BOOL	SYTextPropIndex_Compare(LPCBaseTextPropIndex pPropIdx1, LPCBaseTextPropIndex pPropIdx2);
 
 /***********************BaseARtTypeset**************************/
  void	BaseARtTypeset_Init(LPBaseARtTypeset pArt);
@@ -161,9 +161,9 @@ typedef CBaseARray<curCtrl*,curCtrl*> CurveAr;
 
 /***********************其它导出******************************/
 //字符串按回车换行符拆分
- void	SYStr_SplitByCRLF(LPCTSTR szString, CSYStrArray& arString);
+ void	SYStr_SplitByCRLF(LPCTSTR szString, CBaseStrArray& arString);
 //字符串按指定字符拆分
- void	SYStr_SplitByChar(LPCTSTR szString, TCHAR cSplit, CSYStrArray& arString);
+ void	SYStr_SplitByChar(LPCTSTR szString, TCHAR cSplit, CBaseStrArray& arString);
 //创建颜色字体Buffer
  BOOL	SYCreateTextBuffer(LPDWORD pdwBuffer, int* pnWidth, int* pnHeight, 
 						LPCTSTR szText, LPSYFont pFont, LPSYStaticEffect pColor,double dScale);

@@ -82,7 +82,7 @@ BASEGRAPH_COMMON_API SYCOLOR_RESULT SYColor_InitEnv(LPCTSTR szBinPath)
 	//szColorPath[0] = _T('\0');
 	//if (szBinPath == NULL)
 	//{
-	//	LPCTSTR szBinPath = SYPath_GetPath(SY_PATH_BIN);
+	//	LPCTSTR szBinPath = SYPath_GetPath(Common_PATH_BIN);
 	//	wcscpy_s(szColorPath,MAX_PATH,szBinPath);
 	//}
 	//else
@@ -307,7 +307,7 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// 填充颜色
 		pcrFill = &crStatic;
 	}
 	// 计算角度并规则化到值域 [0, 360)
-	nAngle = SY_ClampAngle_PI_2(SY_RadianToAngle(pcrFill->gradual.linear.frad));
+	nAngle = Common_ClampAngle_PI_2(Common_RadianToAngle(pcrFill->gradual.linear.frad));
 	if (nAngle == 0 || nAngle == 180)	// 水平
 	{
 		DWORD* pdwTmpLine = pdwFillBuf;
@@ -508,7 +508,7 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
 				if (pfMid[i-1] == 0.5f)		// 中间点绝对没有移动时，则可直接进行插值
 				{
 					fCoefA = 1.f / (fP1 - fP0);
-					SYBGRA32_LineBaseAR_Recursive(pdwTmpBuf, fCrP0, fCrP1, (float)nP0, fCoefA, fP0, fCrP0, nP1 - nP0);
+					BGRA32_LineBaseAR_Recursive(pdwTmpBuf, fCrP0, fCrP1, (float)nP0, fCoefA, fP0, fCrP0, nP1 - nP0);
 				}
 				else	// 否则要分成两段
 				{
@@ -518,12 +518,12 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
 					if (nPm > nP0)	// 中间点不与起点重合
 					{
 						fCoefA = 0.5f / (fPm - fP0);
-						SYBGRA32_LineBaseAR_Recursive(pdwTmpBuf, fCrP0, fCrP1, (float)nP0, fCoefA, fP0, fCrP0, nPm - nP0);
+						BGRA32_LineBaseAR_Recursive(pdwTmpBuf, fCrP0, fCrP1, (float)nP0, fCoefA, fP0, fCrP0, nPm - nP0);
 					}
 					if (nP1 > nPm)	// 中间点不与终点重合
 					{
 						fCoefA = 0.5f / (fP1 - fPm);
-						SYBGRA32_LineBaseAR_Recursive((pdwTmpBuf + nPm - nP0), fCrP0, fCrP1, (float)nPm, fCoefA, fP1, fCrP1, nP1 - nPm);
+						BGRA32_LineBaseAR_Recursive((pdwTmpBuf + nPm - nP0), fCrP0, fCrP1, (float)nPm, fCoefA, fP1, fCrP1, nP1 - nPm);
 					}
 				}
 			}
@@ -601,7 +601,7 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// 填充对象
 				else	// 颜色不同则插值
 				{
 					fCoefA = 1.f / (fP1 - fP0);
-					SYBGRA32_LineBaseAR_Recursive(pdwTmpBuf, pfCrLastEnd, pfCrCurrStart, (float)nLastEndPos, fCoefA, fP0, pfCrLastEnd, nStartPos - nLastEndPos);
+					BGRA32_LineBaseAR_Recursive(pdwTmpBuf, pfCrLastEnd, pfCrCurrStart, (float)nLastEndPos, fCoefA, fP0, pfCrLastEnd, nStartPos - nLastEndPos);
 				}
 			}
 			// 重复第一段
@@ -677,12 +677,12 @@ void SYColor_FillGradCenterRound(IN SYColor* pColor,			// 填充颜色
 	// 使用最后一个渐变色填充渐变区域之外的缓存
 	SYMemset_LineDWORD((pdwMaxLineTable + nRadius_Z), *(pdwMaxLineTable + nRadius_Z - 1), (nMaxLen_Z - nRadius_Z));
 	// 生成求点到圆心的距离的分量表
-	SY_SerialPerfectSquare(pfRadiusX, nminw, 0.f, 1.f, -fCenterX);
-	SY_SerialPerfectSquare(pfRadiusY, nminh, 0.f, 1.f, -fCenterY);
+	Common_SerialPerfectSquare(pfRadiusX, nminw, 0.f, 1.f, -fCenterX);
+	Common_SerialPerfectSquare(pfRadiusY, nminh, 0.f, 1.f, -fCenterY);
 	// 根据分量表计算出像素点距中心的位置，查表进行填充
 	for (int i=0; i<nminh; i++)
 	{
-		SY_OffsetSqrtIndexLookup(pdwFillBuf, nminw, pfRadiusX, *pfTmpRadiusY, pdwMaxLineTable, CENTER_ROUND_LINEAR_SCALING);
+		Common_OffsetSqrtIndexLookup(pdwFillBuf, nminw, pfRadiusX, *pfTmpRadiusY, pdwMaxLineTable, CENTER_ROUND_LINEAR_SCALING);
 		pdwFillBuf += nBufWidth;
 		pfTmpRadiusY++;
 	}
@@ -885,9 +885,9 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// 填充颜色
 	// 使用最后一个渐变色填充安全区缓存
 	SYMemset_LineDWORD((pdwMaxLineTable + nGirth_Z), *(pdwMaxLineTable + nGirth_Z - 1), (nMaxLen_Z - nGirth_Z));
 	// 生成缓存表
-	SY_SerialPerfectSquareEx(pfRadiusX, pfQuarticX, pfSubX, nminw, 0.f, 1.f, -fCenterX, fMaxRadius_Z);
-	SY_SerialPerfectSquareEx(pfRadiusY, pfQuarticY, pfSubY, nminh, 0.f, 1.f, -fCenterY, fMaxRadius_Z);
-	SY_SerialOffset2(pnLine45_X, pnLine135_X, nminh, 0, nminw, (fCenterX - fCenterY), (fCenterX + fCenterY), 0, 1);
+	Common_SerialPerfectSquareEx(pfRadiusX, pfQuarticX, pfSubX, nminw, 0.f, 1.f, -fCenterX, fMaxRadius_Z);
+	Common_SerialPerfectSquareEx(pfRadiusY, pfQuarticY, pfSubY, nminh, 0.f, 1.f, -fCenterY, fMaxRadius_Z);
+	Common_SerialOffset2(pnLine45_X, pnLine135_X, nminh, 0, nminw, (fCenterX - fCenterY), (fCenterX + fCenterY), 0, 1);
 	// 按照圆心 Y 坐标将圆弧分为上下两部分，分别进行求解
 	nTmpLoop = (nCenterY > nminh) ? nminh : nCenterY;
 	for (int i=0; i<nTmpLoop; i++)
@@ -897,14 +897,14 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// 填充颜色
 		// 45 度直线左边
 		if (nLeft)
 		{
-			SY_TylerArcIndexLookupY(pdwFillBuf, nLeft, pfQuarticX, pfRadiusX, *pfTmpQuarticY, *pfTmpRadiusY, -*pfTmpSubY, pdwMaxLineTable, 0.f);
+			Common_TylerArcIndexLookupY(pdwFillBuf, nLeft, pfQuarticX, pfRadiusX, *pfTmpQuarticY, *pfTmpRadiusY, -*pfTmpSubY, pdwMaxLineTable, 0.f);
 		}
 		// 45 度直线上
 		//nLeft++;
 		// 45 度至 135 度之间
 		if (nLeft < nRight)
 		{
-			SY_TylerArcIndexLookupX((pdwFillBuf + nLeft), (nRight - nLeft), (pfQuarticX + nLeft), (pfRadiusX + nLeft),
+			Common_TylerArcIndexLookupX((pdwFillBuf + nLeft), (nRight - nLeft), (pfQuarticX + nLeft), (pfRadiusX + nLeft),
 				(pfSubX + nLeft), *pfTmpQuarticY, *pfTmpRadiusY, pdwMaxLineTable, fGirth_1_4_Z);
 		}
 		// 135 度直线上
@@ -912,7 +912,7 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// 填充颜色
 		// 135 度直线右边
 		if (nRight < nminw)
 		{
-			SY_TylerArcIndexLookupY((pdwFillBuf + nRight), (nminw - nRight), (pfQuarticX + nRight),
+			Common_TylerArcIndexLookupY((pdwFillBuf + nRight), (nminw - nRight), (pfQuarticX + nRight),
 				(pfRadiusX + nRight), *pfTmpQuarticY, *pfTmpRadiusY, *pfTmpSubY, pdwMaxLineTable, fHalfGirth_Z);
 		}
 		// 缓存移动
@@ -938,7 +938,7 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// 填充颜色
 	if (nTmpLoop < nminh)		// 有下半圆弧
 	{
 		// 翻转数值的符号
-		SY_NegtiveFloat(pfSubX, pfSubX, nminw);
+		Common_NegtiveFloat(pfSubX, pfSubX, nminw);
 		nTmpLoop = (nTmpLoop < 0) ? 0 : nTmpLoop;
 		for (int i=nTmpLoop; i<nminh; i++)
 		{
@@ -947,14 +947,14 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// 填充颜色
 			// 315 度直线左边
 			if (nLeft)
 			{
-				SY_TylerArcIndexLookupY(pdwFillBuf, nLeft, pfQuarticX, pfRadiusX, *pfTmpQuarticY, *pfTmpRadiusY, -*pfTmpSubY, pdwMaxLineTable, fGirth_Z);
+				Common_TylerArcIndexLookupY(pdwFillBuf, nLeft, pfQuarticX, pfRadiusX, *pfTmpQuarticY, *pfTmpRadiusY, -*pfTmpSubY, pdwMaxLineTable, fGirth_Z);
 			}
 			// 315 度直线上
 			//nLeft++;
 			// 315 度至 225 度之间
 			if (nLeft < nRight)
 			{
-				SY_TylerArcIndexLookupX((pdwFillBuf + nLeft), (nRight - nLeft), (pfQuarticX + nLeft), (pfRadiusX + nLeft),
+				Common_TylerArcIndexLookupX((pdwFillBuf + nLeft), (nRight - nLeft), (pfQuarticX + nLeft), (pfRadiusX + nLeft),
 					(pfSubX + nLeft), *pfTmpQuarticY, *pfTmpRadiusY, pdwMaxLineTable, fGirth_3_4_Z);
 			}
 			// 225 度直线上
@@ -962,7 +962,7 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// 填充颜色
 			// 225 度直线右边
 			if (nRight < nminw)
 			{
-				SY_TylerArcIndexLookupY((pdwFillBuf + nRight), (nminw - nRight), (pfQuarticX + nRight),
+				Common_TylerArcIndexLookupY((pdwFillBuf + nRight), (nminw - nRight), (pfQuarticX + nRight),
 					(pfRadiusX + nRight), *pfTmpQuarticY, *pfTmpRadiusY, *pfTmpSubY, pdwMaxLineTable, fHalfGirth_Z);
 			}
 			// 缓存移动
@@ -1135,8 +1135,8 @@ void SYColor_FillGradPtContour(IN SYColor* pColor,			// 填充颜色
 	{
 		ppfDistX[i] = SYSSE_NEW(nminw, float);
 		ppfDistY[i] = SYSSE_NEW(nminh, float);
-		SY_SerialPerfectSquare(ppfDistX[i], nminw, 0.f, 1.f, -(pColor->gradual.multipt.xpt[i] * nminw));
-		SY_SerialPerfectSquare(ppfDistY[i], nminh, 0.f, 1.f, -(pColor->gradual.multipt.ypt[i] * nminh));
+		Common_SerialPerfectSquare(ppfDistX[i], nminw, 0.f, 1.f, -(pColor->gradual.multipt.xpt[i] * nminw));
+		Common_SerialPerfectSquare(ppfDistY[i], nminh, 0.f, 1.f, -(pColor->gradual.multipt.ypt[i] * nminh));
 		ppfCrCell[i][0] = (float)GetBGRA_B(pColor->gradual.color[i]);
 		ppfCrCell[i][1] = (float)GetBGRA_G(pColor->gradual.color[i]);
 		ppfCrCell[i][2] = (float)GetBGRA_R(pColor->gradual.color[i]);
@@ -1216,8 +1216,8 @@ void SYColor_FillGradPtBlend(IN SYColor* pColor,			// 填充颜色
 	{
 		ppfDistX[i] = SYSSE_NEW(nminw, float);
 		ppfDistY[i] = SYSSE_NEW(nminh, float);
-		SY_SerialPerfectSquare(ppfDistX[i], nminw, 0.f, 1.f, -(pColor->gradual.multipt.xpt[i] * nminw));
-		SY_SerialPerfectSquare(ppfDistY[i], nminh, 0.f, 1.f, -(pColor->gradual.multipt.ypt[i] * nminh));
+		Common_SerialPerfectSquare(ppfDistX[i], nminw, 0.f, 1.f, -(pColor->gradual.multipt.xpt[i] * nminw));
+		Common_SerialPerfectSquare(ppfDistY[i], nminh, 0.f, 1.f, -(pColor->gradual.multipt.ypt[i] * nminh));
 		ppfCrCell[i][0] = (float)GetBGRA_B(pColor->gradual.color[i]);
 		ppfCrCell[i][1] = (float)GetBGRA_G(pColor->gradual.color[i]);
 		ppfCrCell[i][2] = (float)GetBGRA_R(pColor->gradual.color[i]);
@@ -1404,8 +1404,8 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// 填充颜色
 		default:
 			break;
 		}
-		SY_BitBlt(pdwBuf, nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
-			pdwSrc, nSrcX, nSrcY, nSrcWidth, nSrcHeight, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+		Common_BitBlt(pdwBuf, nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
+			pdwSrc, nSrcX, nSrcY, nSrcWidth, nSrcHeight, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 	}
 	else if (pColor->imgtex.fill == SYCOLOR_IMG_COPY)		// 原始大小拷贝
 	{
@@ -1430,8 +1430,8 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// 填充颜色
 			break;
 		}
 		// 确保不会越出指定的目标范围，因此采用目标大小为基准
-		SY_BitBlt(pdwBuf, nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
-			pdwSrc, nSrcX, nSrcY, nWidth, nHeight, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+		Common_BitBlt(pdwBuf, nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
+			pdwSrc, nSrcX, nSrcY, nWidth, nHeight, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 	}
 	else if (pColor->imgtex.fill == SYCOLOR_IMG_TILES)		// 原始大小排列
 	{
@@ -1509,8 +1509,8 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// 填充颜色
 			nTmpX = nX + nLeftEdge;
 			for (int i=0; i<nHorCount; i++)
 			{
-				SY_BitBlt(pdwBuf, nTmpX, nTmpY, nWidth, nHeight, nBufWidth, nBufHeight,
-					pdwSrc, nSrcX, nSrcY, nWidth, nHeight, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+				Common_BitBlt(pdwBuf, nTmpX, nTmpY, nWidth, nHeight, nBufWidth, nBufHeight,
+					pdwSrc, nSrcX, nSrcY, nWidth, nHeight, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 				nTmpX += nStepWidth;
 			}
 			nTmpY += nStepHeight;
@@ -1522,8 +1522,8 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// 填充颜色
 			nTmpY = nSrcY + nSrcHeight - nTopEdge;
 			for (int i=0; i<nHorCount; i++)
 			{
-				SY_BitBlt(pdwBuf, nTmpX, nY, nWidth, nTopEdge, nBufWidth, nBufHeight,
-					pdwSrc, nSrcX, nTmpY, nWidth, nTopEdge, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+				Common_BitBlt(pdwBuf, nTmpX, nY, nWidth, nTopEdge, nBufWidth, nBufHeight,
+					pdwSrc, nSrcX, nTmpY, nWidth, nTopEdge, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 				nTmpX += nStepWidth;
 			}
 		}
@@ -1533,8 +1533,8 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// 填充颜色
 			nTmpY = nY + nTopEdge;
 			for (int i=0; i<nVerCount; i++)
 			{
-				SY_BitBlt(pdwBuf, nX, nTmpY, nLeftEdge, nHeight, nBufWidth, nBufHeight,
-					pdwSrc, nTmpX, nSrcY, nLeftEdge, nHeight, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+				Common_BitBlt(pdwBuf, nX, nTmpY, nLeftEdge, nHeight, nBufWidth, nBufHeight,
+					pdwSrc, nTmpX, nSrcY, nLeftEdge, nHeight, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 				nTmpY += nStepHeight;
 			}
 		}
@@ -1544,8 +1544,8 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// 填充颜色
 			nTmpY = nY + nTopEdge;
 			for (int i=0; i<nVerCount; i++)
 			{
-				SY_BitBlt(pdwBuf, nTmpX, nTmpY, nRightEdge, nHeight, nBufWidth, nBufHeight,
-					pdwSrc, nSrcX, nSrcY, nRightEdge, nHeight, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+				Common_BitBlt(pdwBuf, nTmpX, nTmpY, nRightEdge, nHeight, nBufWidth, nBufHeight,
+					pdwSrc, nSrcX, nSrcY, nRightEdge, nHeight, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 				nTmpY += nStepHeight;
 			}
 		}
@@ -1555,8 +1555,8 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// 填充颜色
 			nTmpY = nY + nHeight - nBottomEdge;
 			for (int i=0; i<nHorCount; i++)
 			{
-				SY_BitBlt(pdwBuf, nTmpX, nTmpY, nWidth, nBottomEdge, nBufWidth, nBufHeight,
-					pdwSrc, nSrcX, nSrcY, nWidth, nBottomEdge, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+				Common_BitBlt(pdwBuf, nTmpX, nTmpY, nWidth, nBottomEdge, nBufWidth, nBufHeight,
+					pdwSrc, nSrcX, nSrcY, nWidth, nBottomEdge, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 				nTmpX += nStepWidth;
 			}
 		}
@@ -1564,29 +1564,29 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// 填充颜色
 		{
 			nTmpX = nSrcX + nSrcWidth - nLeftEdge;
 			nTmpY = nSrcY + nSrcHeight - nTopEdge;
-			SY_BitBlt(pdwBuf, nX, nY, nLeftEdge, nTopEdge, nBufWidth, nBufHeight,
-				pdwSrc, nTmpX, nTmpY, nLeftEdge, nTopEdge, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+			Common_BitBlt(pdwBuf, nX, nY, nLeftEdge, nTopEdge, nBufWidth, nBufHeight,
+				pdwSrc, nTmpX, nTmpY, nLeftEdge, nTopEdge, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 		}
 		if (nLeftEdge > 0 && nBottomEdge > 0)	// 处理左下角不完整区域
 		{
 			nTmpX = nSrcX + nSrcWidth - nLeftEdge;
 			nTmpY = nY + nHeight - nBottomEdge;
-			SY_BitBlt(pdwBuf, nX, nTmpY, nLeftEdge, nBottomEdge, nBufWidth, nBufHeight,
-				pdwSrc, nTmpX, nSrcY, nLeftEdge, nBottomEdge, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+			Common_BitBlt(pdwBuf, nX, nTmpY, nLeftEdge, nBottomEdge, nBufWidth, nBufHeight,
+				pdwSrc, nTmpX, nSrcY, nLeftEdge, nBottomEdge, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 		}
 		if (nRightEdge > 0 && nTopEdge > 0)	// 处理右上角不完整区域
 		{
 			nTmpX = nX + nWidth - nRightEdge;
 			nTmpY = nSrcY + nSrcHeight - nTopEdge;
-			SY_BitBlt(pdwBuf, nTmpX, nY, nRightEdge, nTopEdge, nBufWidth, nBufHeight,
-				pdwSrc, nSrcX, nTmpY, nRightEdge, nTopEdge, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+			Common_BitBlt(pdwBuf, nTmpX, nY, nRightEdge, nTopEdge, nBufWidth, nBufHeight,
+				pdwSrc, nSrcX, nTmpY, nRightEdge, nTopEdge, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 		}
 		if (nRightEdge > 0 && nBottomEdge > 0)	// 处理右下角不完整区域
 		{
 			nTmpX = nX + nWidth - nRightEdge;
 			nTmpY = nY + nHeight - nBottomEdge;
-			SY_BitBlt(pdwBuf, nTmpX, nTmpY, nRightEdge, nBottomEdge, nBufWidth, nBufHeight,
-				pdwSrc, nSrcX, nSrcY, nRightEdge, nBottomEdge, (int)nImgWidth, (int)nImgHeight, SY_BUFFER_COPY, SY_PARITY_BOTH);
+			Common_BitBlt(pdwBuf, nTmpX, nTmpY, nRightEdge, nBottomEdge, nBufWidth, nBufHeight,
+				pdwSrc, nSrcX, nSrcY, nRightEdge, nBottomEdge, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 		}
 	}
 	SYSSE_FREE(pdwSrc);

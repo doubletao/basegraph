@@ -73,7 +73,7 @@ bool PointInCone(IN const vector3f& snapPoint,IN float heightMax, IN float heigh
 
 }
 
-//int Intersection_Cone(IN const SY_Cone_Intersection* pIn,OUT Point_Intersection* pOut)
+//int Intersection_Cone(IN const Common_Cone_Intersection* pIn,OUT Point_Intersection* pOut)
 BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const DX_Cone_Parameter* pCone,SYHitPoint* pHitPoint )
 {
 	int return_result=0;
@@ -610,17 +610,17 @@ const float3& SYHitPoint::operator[]( int nIndex )const
 
 BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt( const SYRay* pRay,const float3* pCenter,const float3* pNormal,SYHitPoint* pHitPoint )
 {
-	int return_result = SY_NO_HIT;
+	int return_result = Common_NO_HIT;
 	float IsIntersec = float3DotProduct(pNormal, &pRay->vDir);
 	float3 vDirect = *pCenter - pRay->vStart;
 	float t = float3DotProduct(pNormal,&vDirect) / IsIntersec;
 	if (fabs(IsIntersec) < 1e-7)
 	{
-		return_result = SY_NO_HIT;
+		return_result = Common_NO_HIT;
 	}
 	else if (t > 0) 
 	{
-		return_result = SY_NORMAL_HIT;
+		return_result = Common_NORMAL_HIT;
 		float3 hitPoint = pRay->vStart +  pRay->vDir * t;
 		if(pHitPoint)
 			pHitPoint->AddPoint(&hitPoint);
@@ -630,7 +630,7 @@ BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt( const SYRay* pRay,const float3* p
 
 BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const float3* pSegEnd,float fRadius,const float3* pCenter,const float3* pNormal,SYHitPoint* pHitPoint)
 {
-	int return_result = SY_NO_HIT;
+	int return_result = Common_NO_HIT;
 	float3 vDirect = *pCenter - *pSegStart;
 	float3 SegDir = *pSegEnd  - *pSegStart;
 	float planeAngle = float3DotProduct(pNormal,&SegDir);
@@ -653,7 +653,7 @@ BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const
 				{
 					float3 hitPoint = *pSegStart + d * SegDir;
 					pHitPoint->AddPoint(&hitPoint);
-					return_result = SY_NORMAL_HIT;
+					return_result = Common_NORMAL_HIT;
 				}
 				//远点
 				d =  (fHitLength + sqrt(fRadius * fRadius - fDistance * fDistance)) / fSegLength;
@@ -661,7 +661,7 @@ BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const
 				{
 					float3 hitPoint = *pSegStart + d * SegDir;
 					pHitPoint->AddPoint(&hitPoint);
-					return_result = SY_NORMAL_HIT;
+					return_result = Common_NORMAL_HIT;
 				}
 			}
 		}
@@ -675,7 +675,7 @@ BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const
 			if(float3Mode(&(hitPoint - *pCenter)) == fRadius)
 			{
 				pHitPoint->AddPoint(&hitPoint);
-				return_result = SY_NORMAL_HIT;
+				return_result = Common_NORMAL_HIT;
 			}
 		}
 	}
@@ -695,11 +695,11 @@ BASEGRAPH_SCENE_RENDER_API int GetRaySphereInt( const SYRay* pRay,float fRadius,
 	{
 		float3 hitpoint = pRay->vStart + pRay->vDir * projection / fA;
 		pHitPoint->AddPoint(&hitpoint);
-		return SY_HIT_EDGE;
+		return Common_HIT_EDGE;
 	}
 
 	float delt = projection * projection - fA * fC;
-	int ret = SY_NO_HIT;
+	int ret = Common_NO_HIT;
 	if (delt >  0)
 	{
 		float t = (-projection - sqrtf(projection*projection - fA * fC)) / fA;
@@ -707,14 +707,14 @@ BASEGRAPH_SCENE_RENDER_API int GetRaySphereInt( const SYRay* pRay,float fRadius,
 		{
 			float3 hitpoint = pRay->vStart + pRay->vDir * t;
 			pHitPoint->AddPoint(&hitpoint);
-			ret = SY_NORMAL_HIT;
+			ret = Common_NORMAL_HIT;
 		}
 		t = (-projection + sqrtf(projection*projection - fA * fC)) / fA;
 		if (t >= 0)
 		{
 			float3 hitpoint = pRay->vStart + pRay->vDir * t;
 			pHitPoint->AddPoint(&hitpoint);
-			ret = SY_NORMAL_HIT;
+			ret = Common_NORMAL_HIT;
 		}
 	}
 	return ret;
@@ -839,13 +839,13 @@ BASEGRAPH_SCENE_RENDER_API void GetRayDirection(SYRay* pRay,const float3* pScree
 	matrix4f_inverse(&viewInv,pParam->pViewMat);
 	matrix4f_inverse(&worldInv,pParam->pWorldMat);
 
-	if(pParam->nProjType == SY_PERSPECTIVE_PROJ)
+	if(pParam->nProjType == Common_PERSPECTIVE_PROJ)
 	{
 		SpaceConvert(&pRay->vStart,pScreenPoint,pParam,SY2DVEC_TO_3D_WORLD);
 		//vec3DPoint -= *pParam->m_pEyePos;
 		pRay->vDir = pRay->vStart - *pParam->pEyePos * worldInv;
 	}
-	else if (pParam->nProjType == SY_ORTHO_PROJ)
+	else if (pParam->nProjType == Common_ORTHO_PROJ)
 	{
 		vec3DPoint.x = 0;
 		vec3DPoint.y = 0;
@@ -900,8 +900,8 @@ BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle( const SYSpaceConvertParam* pSpac
 	GetRayDirection(&rayEnd,p2DEnd,pSpaceParam);
 
 	SYHitPoint HitPoint1,HitPoint2;
-	if(GetRayPlaneInt(&rayStart,pCenter,pNormal,&HitPoint1) == SY_NO_HIT ||
-		GetRayPlaneInt(&rayEnd,pCenter,pNormal,&HitPoint2) == SY_NO_HIT)
+	if(GetRayPlaneInt(&rayStart,pCenter,pNormal,&HitPoint1) == Common_NO_HIT ||
+		GetRayPlaneInt(&rayEnd,pCenter,pNormal,&HitPoint2) == Common_NO_HIT)
 	{
 		float3 newAxis;
 		float3CrossProduct(&newAxis,&rayStart.vDir,pNormal);
@@ -922,8 +922,8 @@ BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle( const SYSpaceConvertParam* pSpac
 
 BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const SYRay* pRay,const float3* pCenter,const float3* pNormal,float Radius,SYHitPoint* pHitPoint )
 {
-	int return_result = SY_NO_HIT;
-	if (GetRayPlaneInt(pRay,pCenter,pNormal,pHitPoint) == SY_NO_HIT) //射线与平面平行
+	int return_result = Common_NO_HIT;
+	if (GetRayPlaneInt(pRay,pCenter,pNormal,pHitPoint) == Common_NO_HIT) //射线与平面平行
 	{
 		vector3f vDirect = pRay->vStart - *pCenter;
 		float3Normalize(&vDirect,&vDirect);
@@ -936,7 +936,7 @@ BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const SYRay* pRay,const float3* pC
 			float distance = fabs(float3DotProduct(&v,&vDirect));
 			if (distance < Radius)
 			{
-				return_result = SY_NORMAL_HIT;
+				return_result = Common_NORMAL_HIT;
 				pHitPoint->AddPoint(pCenter);
 			}
 		}
@@ -947,10 +947,10 @@ BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const SYRay* pRay,const float3* pC
 		Sub = *(pHitPoint->GetPoint(0))- *pCenter ;
 		if (fabs(float3Mode(&Sub) / Radius - 1) < ABS_FLOAT_0)
 		{
-			return_result = SY_HIT_EDGE;
+			return_result = Common_HIT_EDGE;
 		}
 		else if(float3Mode(&Sub) < Radius)
-			return_result = SY_NORMAL_HIT;
+			return_result = Common_NORMAL_HIT;
 	}
 	return return_result;
 }
@@ -962,9 +962,9 @@ BASEGRAPH_SCENE_RENDER_API BOOL GetPointInt( const SYRay* pRay,const float3* pPo
 	float length = float3DotProduct(&pointToStart, &pointToStart);
 	if (length < fDeviation * fDeviation || (projection > 0 && (length - projection * projection) <= fDeviation * fDeviation ))
 	{
-		return SY_NORMAL_HIT;
+		return Common_NORMAL_HIT;
 	}
-	return SY_NO_HIT;
+	return Common_NO_HIT;
 
 }
 

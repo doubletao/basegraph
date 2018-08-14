@@ -235,10 +235,10 @@ void CCommonBufferDC::InitValidRect(IN const RECT *prcValid)	// 为 NULL 时表示空
 }
 void CCommonBufferDC::AddValidRect(IN const RECT &rcValid)
 {
-	m_rcValid.left = (LONG)ClipPixelX((int)SY_Min(m_rcValid.left, rcValid.left));
-	m_rcValid.right = (LONG)ClipPixelX((int)SY_Max(m_rcValid.right, rcValid.right));
-	m_rcValid.top = (LONG)ClipPixelY((int)SY_Min(m_rcValid.top, rcValid.top));
-	m_rcValid.bottom = (LONG)ClipPixelY((int)SY_Max(m_rcValid.bottom, rcValid.bottom));
+	m_rcValid.left = (LONG)ClipPixelX((int)Common_Min(m_rcValid.left, rcValid.left));
+	m_rcValid.right = (LONG)ClipPixelX((int)Common_Max(m_rcValid.right, rcValid.right));
+	m_rcValid.top = (LONG)ClipPixelY((int)Common_Min(m_rcValid.top, rcValid.top));
+	m_rcValid.bottom = (LONG)ClipPixelY((int)Common_Max(m_rcValid.bottom, rcValid.bottom));
 }
 
 // 设置画笔的属性（返回旧属性）
@@ -1046,19 +1046,19 @@ int CCommonBufferDC::_DrawText(IN LPCTSTR lpszString,	// 文本
 	if (m_nBkMode == OPAQUE)
 	{
 		// 清空缓存，注意颜色的转换，对内存直接操作时，颜色得使用0x0RGB。
-		SYBGRA32_FillRect(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight, NULL, GetRGBA_Cr(m_dwBkColor));
+		BGRA32_FillRect(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight, NULL, GetRGBA_Cr(m_dwBkColor));
 	}
 	else
 	{
 		if( bBKTrans)
 		{
 			// 清空缓存，注意颜色的转换，对内存直接操作时，颜色得使用0x0RGB。
-			SYBGRA32_FillRect(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight, NULL, GetRGBA_Cr(m_dwBkColor));
+			BGRA32_FillRect(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight, NULL, GetRGBA_Cr(m_dwBkColor));
 		}
 		else
 		{
 			// 取出背景buffer，在其上绘制文字
-			SY_BitBlt(m_pdwMemBM,0,0,nFillWidth, nFillHeight,m_nMemWidth,m_nMemHeight,
+			Common_BitBlt(m_pdwMemBM,0,0,nFillWidth, nFillHeight,m_nMemWidth,m_nMemHeight,
 				GetBuffer(),nDesX, nDesY, nFillWidth, nFillHeight, m_nWidth,m_nHeight,BUFFER_COPY, BUFFER_PARITY_BOTH);
 		}
 	}
@@ -1076,19 +1076,19 @@ int CCommonBufferDC::_DrawText(IN LPCTSTR lpszString,	// 文本
 		if (m_nBkMode == OPAQUE)	// 不透明情况下还需要填充背景色的Alpha通道
 		{
 			// 不管什么情况下都需要填充前景色的Alpha通道（等同于只不填充背景，防止反走样时填充不完整）
-			SYBGRA32_FillAlpha(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight,	
-				NULL, GetAValue(m_dwTextColor), SY_FILL_NOT_MASK, GetRGBA_Cr(m_dwBkColor));
+			BGRA32_FillAlpha(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight,	
+				NULL, GetAValue(m_dwTextColor), Common_FILL_NOT_MASK, GetRGBA_Cr(m_dwBkColor));
 
-			SYBGRA32_FillAlpha(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight,	
-				NULL, GetAValue(m_dwBkColor), SY_FILL_MASK, GetRGBA_Cr(m_dwBkColor));
+			BGRA32_FillAlpha(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight,	
+				NULL, GetAValue(m_dwBkColor), Common_FILL_MASK, GetRGBA_Cr(m_dwBkColor));
 		}
 		else	// 如果要画透明背景的文本，则需要做特殊处理。
 		{
  			//if( bBKTrans)		//在CDSSymbolListCtrl中绘制文字是造成文字alpha通道错误，先注掉此判断
 			{
 				// 不管什么情况下都需要填充前景色的Alpha通道（等同于只不填充背景，防止反走样时填充不完整）
-				SYBGRA32_FillAlpha(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight,	
-					NULL, GetAValue(m_dwTextColor), SY_FILL_NOT_MASK, GetRGBA_Cr(m_dwBkColor));
+				BGRA32_FillAlpha(m_pdwMemBM, 0, 0, nFillWidth, nFillHeight, m_nMemWidth, m_nMemHeight,	
+					NULL, GetAValue(m_dwTextColor), Common_FILL_NOT_MASK, GetRGBA_Cr(m_dwBkColor));
 				eMode = BUFFER_MIX;
 			}			
 		}
@@ -2442,12 +2442,12 @@ void CCommonBufferDC::BreCircle(IN int xc,				// 圆心
 
 	if (nFillMode == TRANSPARENT)	// 如果圆内部是透明的，则要判断圆弧与裁减区域是否有交集。
 	{
-		int nDX_L = SY_Abs(xc, (int)m_rcClip.left);
-		int nDX_R = SY_Abs(xc, (int)m_rcClip.right);
-		int nDY_T = SY_Abs(yc, (int)m_rcClip.top);
-		int nDY_B = SY_Abs(yc, (int)m_rcClip.bottom);
-		int nMinDX = SY_Min(nDX_L, nDX_R), nMinDY = SY_Min(nDY_T, nDY_B);
-		int nMaxDX = SY_Max(nDX_L, nDX_R), nMaxDY = SY_Max(nDY_T, nDY_B);
+		int nDX_L = Common_Abs(xc, (int)m_rcClip.left);
+		int nDX_R = Common_Abs(xc, (int)m_rcClip.right);
+		int nDY_T = Common_Abs(yc, (int)m_rcClip.top);
+		int nDY_B = Common_Abs(yc, (int)m_rcClip.bottom);
+		int nMinDX = Common_Min(nDX_L, nDX_R), nMinDY = Common_Min(nDY_T, nDY_B);
+		int nMaxDX = Common_Max(nDX_L, nDX_R), nMaxDY = Common_Max(nDY_T, nDY_B);
 		int nRR = r * r;
 
 		// 圆心在裁减区域内，但离顶点的最远距离仍小于半径，则无交集。
@@ -2595,13 +2595,13 @@ void	CCommonBufferDC::BreEllipse(IN int xc,		// 圆心
 
 	if (nFillMode == TRANSPARENT)	// 如果圆内部是透明的，则要判断圆弧与裁减区域是否有交集。
 	{
-		int nDX_L = SY_Abs(xc, (int)m_rcClip.left);
-		int nDX_R = SY_Abs(xc, (int)m_rcClip.right);
-		int nDY_T = SY_Abs(yc, (int)m_rcClip.top);
-		int nDY_B = SY_Abs(yc, (int)m_rcClip.bottom);
-		int nMinDX = SY_Min(nDX_L, nDX_R), nMinDY = SY_Min(nDY_T, nDY_B);
-		int nMaxDX = SY_Max(nDX_L, nDX_R), nMaxDY = SY_Max(nDY_T, nDY_B);
-		int nRR = SY_Max(a, b);
+		int nDX_L = Common_Abs(xc, (int)m_rcClip.left);
+		int nDX_R = Common_Abs(xc, (int)m_rcClip.right);
+		int nDY_T = Common_Abs(yc, (int)m_rcClip.top);
+		int nDY_B = Common_Abs(yc, (int)m_rcClip.bottom);
+		int nMinDX = Common_Min(nDX_L, nDX_R), nMinDY = Common_Min(nDY_T, nDY_B);
+		int nMaxDX = Common_Max(nDX_L, nDX_R), nMaxDY = Common_Max(nDY_T, nDY_B);
+		int nRR = Common_Max(a, b);
 
 		// 圆心在裁减区域内，但离顶点的最远距离仍小于半径，则无交集。
 		// 圆心不在裁减区域内，而离顶点的最近距离小于半径，也无交集。
@@ -2702,12 +2702,12 @@ void CCommonBufferDC::BreSector(IN int xc,				// 圆心
 
 	if (nFillMode == TRANSPARENT)	// 如果圆内部是透明的，则要判断圆弧与裁减区域是否有交集。
 	{
-		int nDX_L = SY_Abs(xc, (int)m_rcClip.left);
-		int nDX_R = SY_Abs(xc, (int)m_rcClip.right);
-		int nDY_T = SY_Abs(yc, (int)m_rcClip.top);
-		int nDY_B = SY_Abs(yc, (int)m_rcClip.bottom);
-		int nMinDX = SY_Min(nDX_L, nDX_R), nMinDY = SY_Min(nDY_T, nDY_B);
-		int nMaxDX = SY_Max(nDX_L, nDX_R), nMaxDY = SY_Max(nDY_T, nDY_B);
+		int nDX_L = Common_Abs(xc, (int)m_rcClip.left);
+		int nDX_R = Common_Abs(xc, (int)m_rcClip.right);
+		int nDY_T = Common_Abs(yc, (int)m_rcClip.top);
+		int nDY_B = Common_Abs(yc, (int)m_rcClip.bottom);
+		int nMinDX = Common_Min(nDX_L, nDX_R), nMinDY = Common_Min(nDY_T, nDY_B);
+		int nMaxDX = Common_Max(nDX_L, nDX_R), nMaxDY = Common_Max(nDY_T, nDY_B);
 		int nRR = r * r;
 
 		// 圆心在裁减区域内，但离顶点的最远距离仍小于半径，则无交集。
@@ -2845,10 +2845,10 @@ void CCommonBufferDC::_DrawSector(IN int xc,				// 圆心
 	//计算出圆弧上每一个点的坐标，用直线绘制
 
 	// 设置新起点
-	int StartX = SY_FToI(r*cos(fStartAngle));;
-	int StartY = SY_FToI(r*(-sin(fStartAngle)));
-	int EndX = SY_FToI(r*cos(fEndAngle));
-	int EndY = SY_FToI(r*(-sin(fEndAngle)));
+	int StartX = Common_FToI(r*cos(fStartAngle));;
+	int StartY = Common_FToI(r*(-sin(fStartAngle)));
+	int EndX = Common_FToI(r*cos(fEndAngle));
+	int EndY = Common_FToI(r*(-sin(fEndAngle)));
 
 	int left = (fStartAngle<=PAI && fEndAngle>=PAI)?-r:(StartX<EndX?StartX:EndX);
 	int right = (fStartAngle<=0 && fEndAngle>=0)?r:StartX>EndX?StartX:EndX;
@@ -2886,12 +2886,12 @@ void CCommonBufferDC::_DrawSector(IN int xc,				// 圆心
 	
 		if (nFillMode == TRANSPARENT)	// 如果圆内部是透明的，则要判断圆弧与裁减区域是否有交集。
 		{
-			int nDX_L = SY_Abs(xc, (int)m_rcClip.left);
-			int nDX_R = SY_Abs(xc, (int)m_rcClip.right);
-			int nDY_T = SY_Abs(yc, (int)m_rcClip.top);
-			int nDY_B = SY_Abs(yc, (int)m_rcClip.bottom);
-			int nMinDX = SY_Min(nDX_L, nDX_R), nMinDY = SY_Min(nDY_T, nDY_B);
-			int nMaxDX = SY_Max(nDX_L, nDX_R), nMaxDY = SY_Max(nDY_T, nDY_B);
+			int nDX_L = Common_Abs(xc, (int)m_rcClip.left);
+			int nDX_R = Common_Abs(xc, (int)m_rcClip.right);
+			int nDY_T = Common_Abs(yc, (int)m_rcClip.top);
+			int nDY_B = Common_Abs(yc, (int)m_rcClip.bottom);
+			int nMinDX = Common_Min(nDX_L, nDX_R), nMinDY = Common_Min(nDY_T, nDY_B);
+			int nMaxDX = Common_Max(nDX_L, nDX_R), nMaxDY = Common_Max(nDY_T, nDY_B);
 			int nRR = r * r;
 	
 			// 圆心在裁减区域内，但离顶点的最远距离仍小于半径，则无交集。
@@ -3436,8 +3436,8 @@ void CCommonBufferDC::RecursionBezier3(IN pointf *pPtBezier,	// 四个点
 	if (IsBezier3NearLine(pPtBezier))	// 接近直线则画出
 	{
 		// 利用 nPatIndex 与 nPatItem 在直线或曲线的绘制过程中的作用完全相同的特性，实现直线与曲线共用同一种算法实现虚线模式
-		Bresenham(SY_FToI(pPtBezier[0].x), SY_FToI(pPtBezier[0].y),	\
-			SY_FToI(pPtBezier[3].x), SY_FToI(pPtBezier[3].y),	\
+		Bresenham(Common_FToI(pPtBezier[0].x), Common_FToI(pPtBezier[0].y),	\
+			Common_FToI(pPtBezier[3].x), Common_FToI(pPtBezier[3].y),	\
 			pPattern, nPatCount, nPatIndex, nPatItem, dwPenColor, nBkMode, dwBkColor);
 	}
 	else		// 二分法拆分曲线
@@ -3488,7 +3488,7 @@ void CCommonBufferDC::RecursionBezier3(IN pointf *pPtBezier,		// 四个点
 		float4Scale(&v1, fTmp1);
 		float4Scale(&v2, fTmp2);
 		// 利用 nPatIndex 与 nPatItem 在直线或曲线的绘制过程中的作用完全相同的特性，实现直线与曲线共用同一种算法实现虚线模式
-		Bresenham(SY_FToI(v1.x), SY_FToI(v1.y), SY_FToI(v2.x), SY_FToI(v2.y),	\
+		Bresenham(Common_FToI(v1.x), Common_FToI(v1.y), Common_FToI(v2.x), Common_FToI(v2.y),	\
 			pPattern, nPatCount, nPatIndex, nPatItem, dwPenColor, nBkMode, dwBkColor);
 	}
 	else		// 二分法拆分曲线
@@ -3500,7 +3500,7 @@ void CCommonBufferDC::RecursionBezier3(IN pointf *pPtBezier,		// 四个点
 		RecursionBezier3(pPtSecond, pMat, pPattern, nPatCount, nPatIndex, nPatItem, dwPenColor, nBkMode, dwBkColor);
 	}
 }
-BOOL	SY_Beizer3IsNearLine(pointf* pt0,pointf* pt1,pointf* pt2,pointf* pt3,float fscale)
+BOOL	Common_Beizer3IsNearLine(pointf* pt0,pointf* pt1,pointf* pt2,pointf* pt3,float fscale)
 {
 	//判断是否接近一条直线,如果接近一条直线,那么就用直线代替否则分割该曲线
 	//直线的参数方程
@@ -3549,7 +3549,7 @@ BOOL	SY_Beizer3IsNearLine(pointf* pt0,pointf* pt1,pointf* pt2,pointf* pt3,float 
 BOOL CCommonBufferDC::IsBezier3NearLine(IN pointf *pPtBezier)		// 四个点
 {
 	pointf* ptemp = (pointf*)pPtBezier;
-	return SY_Beizer3IsNearLine(&ptemp[0],&ptemp[1],&ptemp[2],&ptemp[3],1.0f);
+	return Common_Beizer3IsNearLine(&ptemp[0],&ptemp[1],&ptemp[2],&ptemp[3],1.0f);
 
 	//float dx = pPtBezier[3].x - pPtBezier[0].x;
 	//float dy = pPtBezier[3].y - pPtBezier[0].y;

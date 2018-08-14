@@ -176,7 +176,7 @@ public:
 		IN int nKeyBufWidth,			// 键幅面大小
 		IN int nKeyBufHeight,
 		IN int nKeyPitch,				// 键缓存一行的字节宽度
-		IN SY_KEY_MODE eMode,			// 键操作模式
+		IN Common_KEY_MODE eMode,			// 键操作模式
 		IN BUFFER_PARITY_STYLE eParity,		// 奇偶场类型
 		IN RECT* prcDesClip = NULL,
 		IN int n = 1,
@@ -200,7 +200,7 @@ public:
 		IN int nKeyBufWidth,				// 键幅面大小
 		IN int nKeyBufHeight,
 		IN int nKeyPitch,					// 键缓存一行的字节宽度
-		IN SY_KEY_MODE eMode,				// 键操作模式
+		IN Common_KEY_MODE eMode,				// 键操作模式
 		IN BUFFER_PARITY_STYLE eParity,		// 奇偶场类型
 		IN RECT* prcDesClip = NULL);		// 裁剪区域（可选项）
 
@@ -223,7 +223,7 @@ public:
 		IN int nSrcBufWidth,				// 键幅面大小
 		IN int nSrcBufHeight,
 		IN int nSrcKeyPitch,				// 源键缓存一行的字节宽度
-		IN SY_KEY_MODE eMode,			// 键操作模式
+		IN Common_KEY_MODE eMode,			// 键操作模式
 		IN BUFFER_PARITY_STYLE eParity,		// 奇偶场类型
 		IN RECT* prcDesClip = NULL,
 		IN int n = 1,
@@ -248,7 +248,7 @@ public:
 		IN int nSrcBufWidth,			// 键幅面大小
 		IN int nSrcBufHeight,
 		IN int nSrcKeyPitch,			// 源键缓存一行的字节宽度
-		IN SY_KEY_MODE eMode,			// 键操作模式
+		IN Common_KEY_MODE eMode,			// 键操作模式
 		IN BUFFER_PARITY_STYLE eParity,	// 奇偶场类型
 		IN RECT* prcDesClip = NULL);	// 裁剪区域（可选项）
 

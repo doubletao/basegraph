@@ -859,7 +859,7 @@ BASEGRAPH_DATARENDER_API float GetMaxDis(IN point2f ptfCenter,  // 圆心
 
 
 //创建椭圆矢量图
-BASEGRAPH_DATARENDER_API BOOL CreateEllipse(float fStartRad,float fEndRad,float a,float b,CSYFloatArray* pArray)
+BASEGRAPH_DATARENDER_API BOOL CreateEllipse(float fStartRad,float fEndRad,float a,float b,CBaseFloatArray* pArray)
 {
 	while(fStartRad > fEndRad)
 	{
@@ -889,7 +889,7 @@ BASEGRAPH_DATARENDER_API BOOL CreateEllipse(float fStartRad,float fEndRad,float 
 //得到椭圆边界点坐标(相对于椭圆中心点)
 BASEGRAPH_DATARENDER_API void GetEllipsePtPos(float fRad, float a, float b, point2f* ptPos)
 {
-	if (SY_IsZero_F(a) && SY_IsZero_F(b))
+	if (Common_IsZero_F(a) && Common_IsZero_F(b))
 	{
 		ptPos->x = 0.f;
 		ptPos->y = 0.f;
@@ -901,22 +901,22 @@ BASEGRAPH_DATARENDER_API void GetEllipsePtPos(float fRad, float a, float b, poin
 		fRad += 2*PAIF;
 	}
 	
-	if (SY_IsEqual_F(fRad, 0.f) || SY_IsEqual_F(fRad, PAIF*2))
+	if (Common_IsEqual_F(fRad, 0.f) || Common_IsEqual_F(fRad, PAIF*2))
 	{
 		ptPos->x =  a;
 		ptPos->y = 0;
 	}
-	else if (SY_IsEqual_F(fRad, PAIF*0.5))
+	else if (Common_IsEqual_F(fRad, PAIF*0.5))
 	{
 		ptPos->x =  0;
 		ptPos->y = b;
 	}
-	else if (SY_IsEqual_F(fRad, PAIF))
+	else if (Common_IsEqual_F(fRad, PAIF))
 	{
 		ptPos->x =  -a;
 		ptPos->y = 0;
 	}
-	else if (SY_IsEqual_F(fRad, PAIF*1.5))
+	else if (Common_IsEqual_F(fRad, PAIF*1.5))
 	{
 		ptPos->x =  0;
 		ptPos->y = -b;
@@ -948,15 +948,15 @@ BASEGRAPH_DATARENDER_API void GetEllipsePtPos(float fRad, float a, float b, poin
 //根据边界点坐标(相对于椭圆中心点)得到等比缩放的椭圆长短轴以及边界点角度
 BASEGRAPH_DATARENDER_API void		CalcRadAndAngle(float3 ptEdg,float& fRad_A, float& fRad_B, float &fAngle, float fMinA, float fMaxA, float fMinB, float fMaxB)
 {
-	if (SY_IsEqual_F(ptEdg.x, 0.f) && SY_IsEqual_F(ptEdg.y, 0.f))
+	if (Common_IsEqual_F(ptEdg.x, 0.f) && Common_IsEqual_F(ptEdg.y, 0.f))
 	{
 		fAngle = 0.f;
 	}
-	else if (SY_IsEqual_F(ptEdg.x, 0.f) && ptEdg.y > 0)
+	else if (Common_IsEqual_F(ptEdg.x, 0.f) && ptEdg.y > 0)
 	{
 		fAngle = 90.0f;
 	}
-	else if (SY_IsEqual_F(ptEdg.x, 0.f) && ptEdg.y < 0)
+	else if (Common_IsEqual_F(ptEdg.x, 0.f) && ptEdg.y < 0)
 	{
 		fAngle = 270.0f;
 	}
@@ -974,16 +974,16 @@ BASEGRAPH_DATARENDER_API void		CalcRadAndAngle(float3 ptEdg,float& fRad_A, float
 		fAngle += 180.0f;
 	}
 
-	if (SY_IsZero_F(fRad_A))
+	if (Common_IsZero_F(fRad_A))
 		fRad_A = 1.0f;
-	if (SY_IsZero_F(fRad_B))
+	if (Common_IsZero_F(fRad_B))
 		fRad_B = 1.0f;
 
 	// 等比缩放
 	if (fRad_A > 0 && fRad_B > 0)
 	{
 		float k = 0.f, fRad = 0.f, fRate = 0.f;
-		if (SY_IsEqual_F(ptEdg.x, 0.f))
+		if (Common_IsEqual_F(ptEdg.x, 0.f))
 		{
 			fRate = fabs(ptEdg.y) / fRad_B; 
 		}
@@ -1004,7 +1004,7 @@ BASEGRAPH_DATARENDER_API void		CalcRadAndAngle(float3 ptEdg,float& fRad_A, float
 }
 
 //创建圆的矢量图
-BASEGRAPH_DATARENDER_API BOOL  CreateCircle(float fStartRad,double fEndRad,double fRad,CSYFloatArray*	pArray)
+BASEGRAPH_DATARENDER_API BOOL  CreateCircle(float fStartRad,double fEndRad,double fRad,CBaseFloatArray*	pArray)
 {
 	while(fStartRad > fEndRad)
 	{
@@ -1029,7 +1029,7 @@ BASEGRAPH_DATARENDER_API BOOL  CreateCircle(float fStartRad,double fEndRad,doubl
 	}
 	return TRUE;
 }
-BASEGRAPH_DATARENDER_API BOOL  ReleaseCircleArray(CSYFloatArray*	pArray)
+BASEGRAPH_DATARENDER_API BOOL  ReleaseCircleArray(CBaseFloatArray*	pArray)
 {
 	if(!pArray)
 		return FALSE;
@@ -1166,11 +1166,11 @@ int BASEGRAPH_DATARENDER_API cell_makearc(BaseARray* parray,const point2f& ptcen
 }
 
 #define POINT_BEZIER_COUNT		4			// 一条贝塞尔曲线的表示点个数
-BOOL	SY_Beizer3IsNearLine(pointf* pt,float fscale);
+BOOL	Common_Beizer3IsNearLine(pointf* pt,float fscale);
 BOOL	SplitBezier3(pointf* pOPoint,pointf* pSplit1,pointf* pSplit2);
 void _SYGetBezierLength(pointf* pPtOrigin, float& fBezierLen)
 {
-	BOOL bIsNearLine = SY_Beizer3IsNearLine(pPtOrigin,1.0f);
+	BOOL bIsNearLine = Common_Beizer3IsNearLine(pPtOrigin,1.0f);
 
 	if (bIsNearLine)
 	{

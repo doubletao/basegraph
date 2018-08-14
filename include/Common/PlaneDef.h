@@ -1,8 +1,8 @@
 // Header FileName:	Common\PlaneDef.h
 // CPP FileName:	SYPlane.cpp
 
-#ifndef __SY_PLANE_INC__
-#define __SY_PLANE_INC__
+#ifndef __Common_PLANE_INC__
+#define __Common_PLANE_INC__
 
 #include "Common\VectorDef.h"
 
@@ -114,43 +114,43 @@ void __cdecl SYSizelf_SetSize(LPSYSIZELF pS,			// size÷∏’Î
 ///////////////////////////// End of SYSize ///////////////////////////////////
 
 
-///////////////////////////////// SYRect //////////////////////////////////////
+///////////////////////////////// BaseRect //////////////////////////////////////
 
-#define SYRECT_DRAG_COUNT	8		// Õœ∂Øµ„µƒ ˝¡ø
+#define BaseRect_DRAG_COUNT	8		// Õœ∂Øµ„µƒ ˝¡ø
 
-#define SYRECT_DRAG_LTP		0		// ◊Û…œµ„
-#define SYRECT_DRAG_TMP		1		// …œ÷–µ„
-#define SYRECT_DRAG_RTP		2		// ”“…œµ„
-#define SYRECT_DRAG_RMP		3		// ”“÷–µ„
-#define SYRECT_DRAG_RBP		4		// ”“œ¬µ„
-#define SYRECT_DRAG_BMP		5		// œ¬÷–µ„
-#define SYRECT_DRAG_LBP		6		// ◊Ûœ¬µ„
-#define SYRECT_DRAG_LMP		7		// ◊Û÷–µ„
+#define BaseRect_DRAG_LTP		0		// ◊Û…œµ„
+#define BaseRect_DRAG_TMP		1		// …œ÷–µ„
+#define BaseRect_DRAG_RTP		2		// ”“…œµ„
+#define BaseRect_DRAG_RMP		3		// ”“÷–µ„
+#define BaseRect_DRAG_RBP		4		// ”“œ¬µ„
+#define BaseRect_DRAG_BMP		5		// œ¬÷–µ„
+#define BaseRect_DRAG_LBP		6		// ◊Ûœ¬µ„
+#define BaseRect_DRAG_LMP		7		// ◊Û÷–µ„
 
-#define SYRECT_DRAG_ONLINE	1		// Õœ∂Øµ„µƒ∑Á∏Ò£∫∑Ω∏Ò‘⁄œﬂ…œ
-#define SYRECT_DRAG_INLINE	2		// Õœ∂Øµ„µƒ∑Á∏Ò£∫∑Ω∏Ò‘⁄œﬂƒ⁄
+#define BaseRect_DRAG_ONLINE	1		// Õœ∂Øµ„µƒ∑Á∏Ò£∫∑Ω∏Ò‘⁄œﬂ…œ
+#define BaseRect_DRAG_INLINE	2		// Õœ∂Øµ„µƒ∑Á∏Ò£∫∑Ω∏Ò‘⁄œﬂƒ⁄
 
 
-typedef struct tag_SYRectL{		// ’˚–Õ
+typedef struct tag_BaseRectL{		// ’˚–Õ
 	LONG	left;
 	LONG	top;
 	LONG	right;
 	LONG	bottom;
-}SYRect, *LPSYRECT;
+}BaseRect, *LPBaseRect;
 
-typedef struct tag_SYRectF{		// ∏°µ„–Õ
+typedef struct tag_BaseRectF{		// ∏°µ„–Õ
 	float	left;
 	float	top;
 	float	right;
 	float	bottom;
-}rectf, SYRectF,*LPSYRECTF;
+}rectf, BaseRectF,*LPBaseRectF;
 
-typedef struct tag_SYRectlf{		// À´æ´∂»–Õ
+typedef struct tag_BaseRectlf{		// À´æ´∂»–Õ
 	double	left;
 	double	top;
 	double	right;
 	double	bottom;
-}SYRectlf,rectlf, *LPSYRECTLF;
+}BaseRectlf,rectlf, *LPBaseRectLF;
 
 // ’˚–Õ µœ÷
 
@@ -159,7 +159,7 @@ typedef struct tag_SYRectlf{		// À´æ´∂»–Õ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_SetRectBPR(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_SetRectBPR(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								POINT point,			// ÷––ƒµ„
 								int nRadius);			// ∞Îæ∂
 
@@ -168,7 +168,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRect_SetRectBPR(LPSYRECT pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_SetRect(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_SetRect(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 							 LONG l,				// ◊Û±ﬂŒª÷√
 							 LONG t,				// …œ±ﬂŒª÷√
 							 LONG r,				// ”“±ﬂŒª÷√
@@ -179,21 +179,21 @@ BASEGRAPH_COMMON_API void __cdecl SYRect_SetRect(LPSYRECT pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_SetRectEmpty(LPSYRECT pR);		// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_SetRectEmpty(LPBaseRect pR);		// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–ŒµƒøÌ
 //
 // ∑µªÿ÷µ:	LONG
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LONG __cdecl SYRect_Width(LPSYRECT pR);				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API LONG __cdecl BaseRect_Width(LPBaseRect pR);				// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œµƒ∏ﬂ
 //
 // ∑µªÿ÷µ:	LONG
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LONG __cdecl SYRect_Height(LPSYRECT pR);				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API LONG __cdecl BaseRect_Height(LPBaseRect pR);				// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œæÿ–Œ «∑ÒŒ™ø’£®left = top = right = bottom = 0£©
@@ -201,7 +201,7 @@ BASEGRAPH_COMMON_API LONG __cdecl SYRect_Height(LPSYRECT pR);				// æÿ–Œ÷∏’Î
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRect_IsRectNull(LPSYRECT pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRect_IsRectNull(LPBaseRect pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œæÿ–Œ∑∂Œß «∑ÒŒ™ø’£®width <= 0 || heigth <= 0£©£®«¯±”⁄IsRectNull£©
@@ -209,7 +209,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRect_IsRectNull(LPSYRECT pR);			// æÿ–Œ÷∏’Î
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRect_IsRectEmpty(LPSYRECT pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRect_IsRectEmpty(LPBaseRect pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œµ„ «∑Ò‘⁄æÿ–Œƒ⁄
@@ -217,7 +217,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRect_IsRectEmpty(LPSYRECT pR);			// æÿ–Œ÷∏’Î
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRect_PtInRect(LPSYRECT pR,				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRect_PtInRect(LPBaseRect pR,				// æÿ–Œ÷∏’Î
 							  SYPoint point);			// µ„
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -226,30 +226,30 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRect_PtInRect(LPSYRECT pR,				// æÿ–Œ÷∏’Î
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRect_EqualRect(LPSYRECT pR1,				// æÿ–Œ
-							   LPSYRECT pR2);			// æÿ–Œ
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRect_EqualRect(LPBaseRect pR1,				// æÿ–Œ
+							   LPBaseRect pR2);			// æÿ–Œ
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	øΩ±¥æÿ–Œ∑∂Œß
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_CopyRect(LPSYRECT pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
-							  LPSYRECT srcR);			// ‘¥æÿ–Œ
+BASEGRAPH_COMMON_API void __cdecl BaseRect_CopyRect(LPBaseRect pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
+							  LPBaseRect srcR);			// ‘¥æÿ–Œ
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	¿©’≈æÿ–Œ∑∂Œß
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_InflateRect1(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_InflateRect1(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								  int x,				// ◊Û°¢”“Õ‚¿©∆´“∆¡ø
 								  int y);				// …œ°¢œ¬Õ‚¿©∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRect_InflateRect2(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_InflateRect2(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								  SYSizeL size);		// Õ‚¿©∆´“∆¡ø
 								 
-BASEGRAPH_COMMON_API void __cdecl SYRect_InflateRect3(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_InflateRect3(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								  int l,				// ◊ÛÕ‚¿©∆´“∆¡ø
 								  int t,				// …œÕ‚¿©∆´“∆¡ø
 								  int r,				// ”“Õ‚¿©∆´“∆¡ø
@@ -260,14 +260,14 @@ BASEGRAPH_COMMON_API void __cdecl SYRect_InflateRect3(LPSYRECT pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_DeflateRect1(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_DeflateRect1(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								  int x,				// ◊Û°¢”“ƒ⁄Àı∆´“∆¡ø
 								  int y);				// …œ°¢œ¬ƒ⁄Àı∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRect_DeflateRect2(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_DeflateRect2(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								  SYSizeL size);		// ƒ⁄Àı∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRect_DeflateRect3(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_DeflateRect3(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								  int l,				// ◊Ûƒ⁄Àı∆´“∆¡ø
 								  int t,				// …œƒ⁄Àı∆´“∆¡ø
 								  int r,				// ”“ƒ⁄Àı∆´“∆¡ø
@@ -278,15 +278,15 @@ BASEGRAPH_COMMON_API void __cdecl SYRect_DeflateRect3(LPSYRECT pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_NormalizeRect(LPSYRECT pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_NormalizeRect(LPBaseRect pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	πÈ“ªªØæÿ–Œ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_NormalizeDRect(rectf* pDesR,		// ƒø±Íæÿ–Œ
-									LPSYRECT pSrcR,		// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_NormalizeDRect(rectf* pDesR,		// ƒø±Íæÿ–Œ
+									LPBaseRect pSrcR,		// æÿ–Œ÷∏’Î
 								    SYPoint point,			// πÈ“ªªØ÷––ƒµ„
 								    int nWidth,				// πÈ“ªªØøÌ
 								    int nHeight);			// πÈ“ªªØ∏ﬂ
@@ -296,7 +296,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRect_NormalizeDRect(rectf* pDesR,		// ƒø±Íæÿ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_RevertDRect(LPSYRECT pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_RevertDRect(LPBaseRect pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
 								 rectf* pSrcR,			// ‘¥æÿ–Œ
 								 SYPoint point,			// ªπ‘≠÷––ƒµ„
 								 int nWidth,				// ªπ‘≠øÌ
@@ -307,14 +307,14 @@ BASEGRAPH_COMMON_API void __cdecl SYRect_RevertDRect(LPSYRECT pDesR,			// ƒø±Íæÿ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_OffsetRect1(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_OffsetRect1(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								 int x,					// ÀÆ∆Ω∆´“∆¡ø
 								 int y);				// ¥π÷±∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRect_OffsetRect2(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_OffsetRect2(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								 SYPoint point);		// ∆´“∆µ„
 
-BASEGRAPH_COMMON_API void __cdecl SYRect_OffsetRect3(LPSYRECT pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_OffsetRect3(LPBaseRect pR,			// æÿ–Œ÷∏’Î
 								 SYSizeL size);			// ∆´“∆¥Û–°
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -322,40 +322,40 @@ BASEGRAPH_COMMON_API void __cdecl SYRect_OffsetRect3(LPSYRECT pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_Size(LPSYSIZE pDesSz,			// ƒø±ÍSize
-						  LPSYRECT pSrcR);			// ‘¥æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_Size(LPSYSIZE pDesSz,			// ƒø±ÍSize
+						  LPBaseRect pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œ◊Û…œµ„
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_TopLeft(LPSYPOINTL pDesP,			// ƒø±Íµ„
-							 LPSYRECT pSrcR);			// ‘¥æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_TopLeft(LPSYPOINTL pDesP,			// ƒø±Íµ„
+							 LPBaseRect pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œ”“œ¬µ„
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_BottomRight(LPSYPOINTL pDesP,			// ƒø±Íµ„
-								 LPSYRECT pSrcR);			// ‘¥æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_BottomRight(LPSYPOINTL pDesP,			// ƒø±Íµ„
+								 LPBaseRect pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œ÷––ƒµ„
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_CenterPoint(LPSYPOINTL pDesP,			// ƒø±Íµ„
-								 LPSYRECT pSrcR);			// ‘¥æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRect_CenterPoint(LPSYPOINTL pDesP,			// ƒø±Íµ„
+								 LPBaseRect pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–ŒÕœ∂Øµ„µƒ◊¶◊”£¨¥”◊Û…œΩ«ø™ ºÀ≥ ±’Î∏¯≥ˆ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRect_DragPoint(LPSYRECT* ppDesR,			// ƒø±Íæÿ–Œ ˝◊È
-							   LPSYRECT pSrcR,				// ‘¥æÿ–Œ
+BASEGRAPH_COMMON_API void __cdecl BaseRect_DragPoint(LPBaseRect* ppDesR,			// ƒø±Íæÿ–Œ ˝◊È
+							   LPBaseRect pSrcR,				// ‘¥æÿ–Œ
 							   int nStyle,					// ◊¶◊”µƒ∑Á∏Ò
 							   int nRadius);				// ∑Ω∏Ò∞Îæ∂
 
@@ -365,9 +365,9 @@ BASEGRAPH_COMMON_API void __cdecl SYRect_DragPoint(LPSYRECT* ppDesR,			// ƒø±Íæÿ
 // ∑µªÿ÷µ:	TRUE			ΩªºØ≤ªŒ™ø’
 //			FALSE			ΩªºØŒ™ø’
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRect_IntersectRect(LPSYRECT pDesR,			// ΩªºØΩ·π˚
-								   LPSYRECT pSrcR1,		// ‘¥æÿ–Œ
-								   LPSYRECT pSrcR2);		// ‘¥æÿ–Œ
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRect_IntersectRect(LPBaseRect pDesR,			// ΩªºØΩ·π˚
+								   LPBaseRect pSrcR1,		// ‘¥æÿ–Œ
+								   LPBaseRect pSrcR2);		// ‘¥æÿ–Œ
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	«Û¡Ω∏ˆæÿ–Œµƒ≤¢ºØ
@@ -375,19 +375,19 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRect_IntersectRect(LPSYRECT pDesR,			// ΩªºØ
 // ∑µªÿ÷µ:	TRUE			≤¢ºØ≤ªŒ™ø’
 //			FALSE			≤¢ºØŒ™ø’
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRect_UnionRect(LPSYRECT pDesR,			// ≤¢ºØΩ·π˚
-							   LPSYRECT pSrcR1,		// ‘¥æÿ–Œ
-							   LPSYRECT pSrcR2);		// ‘¥æÿ–Œ
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRect_UnionRect(LPBaseRect pDesR,			// ≤¢ºØΩ·π˚
+							   LPBaseRect pSrcR1,		// ‘¥æÿ–Œ
+							   LPBaseRect pSrcR2);		// ‘¥æÿ–Œ
 
 
 // ∏°µ„–Õ µœ÷
-BASEGRAPH_COMMON_API void __cdecl SYRectf_Scale(rectf* rt,float fscale);
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_Scale(rectf* rt,float fscale);
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	…Ë÷√æÿ–Œ∑∂Œß
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_SetRect(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_SetRect(rectf* pR,			// æÿ–Œ÷∏’Î
 							 float l,				// ◊Û±ﬂŒª÷√
 							 float t,				// …œ±ﬂŒª÷√
 							 float r,				// ”“±ﬂŒª÷√
@@ -398,21 +398,21 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_SetRect(rectf* pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_SetRectEmpty(rectf* pR);		// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_SetRectEmpty(rectf* pR);		// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–ŒµƒøÌ
 //
 // ∑µªÿ÷µ:	float
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API float __cdecl SYRectf_Width(rectf* pR);				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API float __cdecl BaseRectf_Width(rectf* pR);				// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œµƒ∏ﬂ
 //
 // ∑µªÿ÷µ:	float
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API float __cdecl SYRectf_Height(rectf* pR);				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API float __cdecl BaseRectf_Height(rectf* pR);				// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œæÿ–Œ «∑ÒŒ™ø’£®left = top = right = bottom = 0£©
@@ -420,7 +420,7 @@ BASEGRAPH_COMMON_API float __cdecl SYRectf_Height(rectf* pR);				// æÿ–Œ÷∏’Î
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_IsRectNull(rectf* pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectf_IsRectNull(rectf* pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œæÿ–Œ∑∂Œß «∑ÒŒ™ø’£®width <= 0 || heigth <= 0£©£®«¯±”⁄IsRectNull£©
@@ -428,7 +428,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_IsRectNull(rectf* pR);			// æÿ–Œ÷∏’Î
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_IsRectEmpty(rectf* pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectf_IsRectEmpty(rectf* pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œµ„ «∑Ò‘⁄æÿ–Œƒ⁄
@@ -436,7 +436,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_IsRectEmpty(rectf* pR);			// æÿ–Œ÷∏’Î
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_PtInRect(rectf* pR,				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectf_PtInRect(rectf* pR,				// æÿ–Œ÷∏’Î
 							  SYPoint2f point);			// µ„
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -445,7 +445,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_PtInRect(rectf* pR,				// æÿ–Œ÷∏’Î
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_EqualRect(rectf* pR1,				// æÿ–Œ
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectf_EqualRect(rectf* pR1,				// æÿ–Œ
 							   rectf* pR2);				// æÿ–Œ
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -453,7 +453,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_EqualRect(rectf* pR1,				// æÿ–Œ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API  void __cdecl SYRectf_CopyRect(rectf* pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API  void __cdecl BaseRectf_CopyRect(rectf* pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
 							  rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -461,14 +461,14 @@ BASEGRAPH_COMMON_API  void __cdecl SYRectf_CopyRect(rectf* pDesR,			// ƒø±Íæÿ–Œ÷
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_InflateRect1(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_InflateRect1(rectf* pR,			// æÿ–Œ÷∏’Î
 								  float x,				// ◊Û°¢”“Õ‚¿©∆´“∆¡ø
 								  float y);				// …œ°¢œ¬Õ‚¿©∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRectf_InflateRect2(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_InflateRect2(rectf* pR,			// æÿ–Œ÷∏’Î
 								  SYSizef size);		// Õ‚¿©∆´“∆¡ø
 								 
-BASEGRAPH_COMMON_API void __cdecl SYRectf_InflateRect3(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_InflateRect3(rectf* pR,			// æÿ–Œ÷∏’Î
 								  float l,				// ◊ÛÕ‚¿©∆´“∆¡ø
 								  float t,				// …œÕ‚¿©∆´“∆¡ø
 								  float r,				// ”“Õ‚¿©∆´“∆¡ø
@@ -479,14 +479,14 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_InflateRect3(rectf* pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_DeflateRect1(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_DeflateRect1(rectf* pR,			// æÿ–Œ÷∏’Î
 								  float x,				// ◊Û°¢”“ƒ⁄Àı∆´“∆¡ø
 								  float y);				// …œ°¢œ¬ƒ⁄Àı∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRectf_DeflateRect2(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_DeflateRect2(rectf* pR,			// æÿ–Œ÷∏’Î
 								  SYSizef size);		// ƒ⁄Àı∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRectf_DeflateRect3(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_DeflateRect3(rectf* pR,			// æÿ–Œ÷∏’Î
 								  float l,				// ◊Ûƒ⁄Àı∆´“∆¡ø
 								  float t,				// …œƒ⁄Àı∆´“∆¡ø
 								  float r,				// ”“ƒ⁄Àı∆´“∆¡ø
@@ -497,14 +497,14 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_DeflateRect3(rectf* pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_NormalizeRect(rectf* pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_NormalizeRect(rectf* pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	πÈ“ªªØæÿ–Œ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_NormalizeDRect(rectf* pDesR,		// ƒø±Íæÿ–Œ
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_NormalizeDRect(rectf* pDesR,		// ƒø±Íæÿ–Œ
 									rectf* pSrcR,		// æÿ–Œ÷∏’Î
 								    SYPoint2f point,			// πÈ“ªªØ÷––ƒµ„
 								    float fWidth,			// πÈ“ªªØøÌ
@@ -515,7 +515,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_NormalizeDRect(rectf* pDesR,		// ƒø±Íæ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_RevertDRect(rectf* pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_RevertDRect(rectf* pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
 								 rectf* pSrcR,			// ‘¥æÿ–Œ
 								 SYPoint2f point,			// ªπ‘≠÷––ƒµ„
 								 float fWidth,				// ªπ‘≠øÌ
@@ -526,14 +526,14 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_RevertDRect(rectf* pDesR,			// ƒø±Íæÿ–
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_OffsetRect1(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_OffsetRect1(rectf* pR,			// æÿ–Œ÷∏’Î
 								 float x,				// ÀÆ∆Ω∆´“∆¡ø
 								 float y);				// ¥π÷±∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRectf_OffsetRect2(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_OffsetRect2(rectf* pR,			// æÿ–Œ÷∏’Î
 								 SYPoint2f point);		// ∆´“∆µ„
 
-BASEGRAPH_COMMON_API void __cdecl SYRectf_OffsetRect3(rectf* pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_OffsetRect3(rectf* pR,			// æÿ–Œ÷∏’Î
 								 SYSizef size);			// ∆´“∆¥Û–°
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -541,7 +541,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_OffsetRect3(rectf* pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_Size(LPSYSIZEF pDesSz,			// ƒø±ÍSize
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_Size(LPSYSIZEF pDesSz,			// ƒø±ÍSize
 						  rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -549,7 +549,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_Size(LPSYSIZEF pDesSz,			// ƒø±ÍSize
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_TopLeft(LPSYPOINTF pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_TopLeft(LPSYPOINTF pDesP,			// ƒø±Íµ„
 							 rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -557,7 +557,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_TopLeft(LPSYPOINTF pDesP,			// ƒø±Íµ„
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_BottomRight(LPSYPOINTF pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_BottomRight(LPSYPOINTF pDesP,			// ƒø±Íµ„
 								 rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -565,7 +565,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_BottomRight(LPSYPOINTF pDesP,			// ƒø±
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_CenterPoint(LPSYPOINTF pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_CenterPoint(LPSYPOINTF pDesP,			// ƒø±Íµ„
 								 rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -573,7 +573,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_CenterPoint(LPSYPOINTF pDesP,			// ƒø±
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectf_DragPoint(LPSYRECT* ppDesP,			// ƒø±Íæÿ–Œ ˝◊È
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_DragPoint(LPBaseRect* ppDesP,			// ƒø±Íæÿ–Œ ˝◊È
 							   rectf* pSrcR,				// ‘¥æÿ–Œ
 							   int nStyle,					// ◊¶◊”µƒ∑Á∏Ò
 							   int nRadius);				// ∑Ω∏Ò∞Îæ∂
@@ -584,7 +584,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_DragPoint(LPSYRECT* ppDesP,			// ƒø±Íæ
 // ∑µªÿ÷µ:	TRUE			ΩªºØ≤ªŒ™ø’
 //			FALSE			ΩªºØŒ™ø’
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_IntersectRect(rectf* pDesR,			// ΩªºØΩ·π˚
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectf_IntersectRect(rectf* pDesR,			// ΩªºØΩ·π˚
 								   rectf* pSrcR1,		// ‘¥æÿ–Œ
 								   rectf* pSrcR2);		// ‘¥æÿ–Œ
 
@@ -594,15 +594,15 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_IntersectRect(rectf* pDesR,			// ΩªºØΩ
 // ∑µªÿ÷µ:	TRUE			≤¢ºØ≤ªŒ™ø’
 //			FALSE			≤¢ºØŒ™ø’
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectf_UnionRect(rectf* pDesR,			// ≤¢ºØΩ·π˚
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectf_UnionRect(rectf* pDesR,			// ≤¢ºØΩ·π˚
 							   rectf* pSrcR1,		// ‘¥æÿ–Œ
 							   rectf* pSrcR2);		// ‘¥æÿ–Œ
 
-BASEGRAPH_COMMON_API void __cdecl SYRectf_UnionPoint(rectf* pDesR,			// ≤¢ºØΩ·π˚
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_UnionPoint(rectf* pDesR,			// ≤¢ºØΩ·π˚
 							   rectf* pSrcR1,		// ‘¥æÿ–Œ
 							   float fX,float fY);		// ‘¥æÿ–Œ
 
-BASEGRAPH_COMMON_API void __cdecl SYRectf_To_Rect(RECT* pDst,const rectf* pSrc);
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_To_Rect(RECT* pDst,const rectf* pSrc);
 
 // À´æ´∂»–Õ µœ÷
 
@@ -611,7 +611,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectf_To_Rect(RECT* pDst,const rectf* pSrc);
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_SetRect(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_SetRect(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 							 double l,				// ◊Û±ﬂŒª÷√
 							 double t,				// …œ±ﬂŒª÷√
 							 double r,				// ”“±ﬂŒª÷√
@@ -622,21 +622,21 @@ BASEGRAPH_COMMON_API void __cdecl SYRectlf_SetRect(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_SetRectEmpty(LPSYRECTLF pR);		// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_SetRectEmpty(LPBaseRectLF pR);		// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–ŒµƒøÌ
 //
 // ∑µªÿ÷µ:	double
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API double __cdecl SYRectlf_Width(LPSYRECTLF pR);				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API double __cdecl BaseRectlf_Width(LPBaseRectLF pR);				// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œµƒ∏ﬂ
 //
 // ∑µªÿ÷µ:	double
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API double __cdecl SYRectlf_Height(LPSYRECTLF pR);				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API double __cdecl BaseRectlf_Height(LPBaseRectLF pR);				// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œæÿ–Œ «∑ÒŒ™ø’£®left = top = right = bottom = 0£©
@@ -644,7 +644,7 @@ BASEGRAPH_COMMON_API double __cdecl SYRectlf_Height(LPSYRECTLF pR);				// æÿ–Œ÷∏
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_IsRectNull(LPSYRECTLF pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectlf_IsRectNull(LPBaseRectLF pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œæÿ–Œ∑∂Œß «∑ÒŒ™ø’£®width <= 0 || heigth <= 0£©£®«¯±”⁄IsRectNull£©
@@ -652,7 +652,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_IsRectNull(LPSYRECTLF pR);			// æÿ–Œ÷
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_IsRectEmpty(LPSYRECTLF pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectlf_IsRectEmpty(LPBaseRectLF pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≈–∂œµ„ «∑Ò‘⁄æÿ–Œƒ⁄
@@ -660,7 +660,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_IsRectEmpty(LPSYRECTLF pR);			// æÿ–Œ
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_PtInRect(LPSYRECTLF pR,				// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectlf_PtInRect(LPBaseRectLF pR,				// æÿ–Œ÷∏’Î
 							  SYPoint2lf point);			// µ„
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -669,30 +669,30 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_PtInRect(LPSYRECTLF pR,				// æÿ–Œ÷∏’
 // ∑µªÿ÷µ:	TRUE		 «
 //			FALSE		∑Ò
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_EqualRect(LPSYRECTLF pR1,				// æÿ–Œ
-							   LPSYRECTLF pR2);				// æÿ–Œ
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectlf_EqualRect(LPBaseRectLF pR1,				// æÿ–Œ
+							   LPBaseRectLF pR2);				// æÿ–Œ
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	øΩ±¥æÿ–Œ∑∂Œß
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_CopyRect(LPSYRECTLF pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
-							  SYRectlf srcR);				// ‘¥æÿ–Œ
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_CopyRect(LPBaseRectLF pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
+							  BaseRectlf srcR);				// ‘¥æÿ–Œ
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	¿©’≈æÿ–Œ∑∂Œß
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_InflateRect1(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_InflateRect1(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								  double x,				// ◊Û°¢”“Õ‚¿©∆´“∆¡ø
 								  double y);			// …œ°¢œ¬Õ‚¿©∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_InflateRect2(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_InflateRect2(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								  SYSizelf size);		// Õ‚¿©∆´“∆¡ø
 								 
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_InflateRect3(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_InflateRect3(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								  double l,				// ◊ÛÕ‚¿©∆´“∆¡ø
 								  double t,				// …œÕ‚¿©∆´“∆¡ø
 								  double r,				// ”“Õ‚¿©∆´“∆¡ø
@@ -703,14 +703,14 @@ BASEGRAPH_COMMON_API void __cdecl SYRectlf_InflateRect3(LPSYRECTLF pR,			// æÿ–Œ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_DeflateRect1(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_DeflateRect1(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								  double x,				// ◊Û°¢”“ƒ⁄Àı∆´“∆¡ø
 								  double y);			// …œ°¢œ¬ƒ⁄Àı∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_DeflateRect2(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_DeflateRect2(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								  SYSizelf size);		// ƒ⁄Àı∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_DeflateRect3(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_DeflateRect3(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								  double l,				// ◊Ûƒ⁄Àı∆´“∆¡ø
 								  double t,				// …œƒ⁄Àı∆´“∆¡ø
 								  double r,				// ”“ƒ⁄Àı∆´“∆¡ø
@@ -721,15 +721,15 @@ BASEGRAPH_COMMON_API void __cdecl SYRectlf_DeflateRect3(LPSYRECTLF pR,			// æÿ–Œ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_NormalizeRect(LPSYRECTLF pR);			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_NormalizeRect(LPBaseRectLF pR);			// æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	πÈ“ªªØæÿ–Œ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_NormalizeDRect(rectf* pDesR,		// ƒø±Íæÿ–Œ
-									LPSYRECTLF pSrcR,		// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_NormalizeDRect(rectf* pDesR,		// ƒø±Íæÿ–Œ
+									LPBaseRectLF pSrcR,		// æÿ–Œ÷∏’Î
 								    SYPoint2lf point,			// πÈ“ªªØ÷––ƒµ„
 								    double dWidth,			// πÈ“ªªØøÌ
 								    double dHeight);		// πÈ“ªªØ∏ﬂ
@@ -739,7 +739,7 @@ BASEGRAPH_COMMON_API void __cdecl SYRectlf_NormalizeDRect(rectf* pDesR,		// ƒø±Í
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_RevertDRect(LPSYRECTLF pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_RevertDRect(LPBaseRectLF pDesR,			// ƒø±Íæÿ–Œ÷∏’Î
 								 rectf* pSrcR,			// ‘¥æÿ–Œ
 								 SYPoint2lf point,			// ªπ‘≠÷––ƒµ„
 								 double dWidth,				// ªπ‘≠øÌ
@@ -750,14 +750,14 @@ BASEGRAPH_COMMON_API void __cdecl SYRectlf_RevertDRect(LPSYRECTLF pDesR,			// ƒø
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_OffsetRect1(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_OffsetRect1(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								 double x,				// ÀÆ∆Ω∆´“∆¡ø
 								 double y);				// ¥π÷±∆´“∆¡ø
 
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_OffsetRect2(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_OffsetRect2(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								 SYPoint2lf point);		// ∆´“∆µ„
 
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_OffsetRect3(LPSYRECTLF pR,			// æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_OffsetRect3(LPBaseRectLF pR,			// æÿ–Œ÷∏’Î
 								 SYSizelf size);			// ∆´“∆¥Û–°
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -765,40 +765,40 @@ BASEGRAPH_COMMON_API void __cdecl SYRectlf_OffsetRect3(LPSYRECTLF pR,			// æÿ–Œ÷
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_Size(LPSYSIZELF pDesSz,			// ƒø±ÍSize
-						  LPSYRECTLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_Size(LPSYSIZELF pDesSz,			// ƒø±ÍSize
+						  LPBaseRectLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œ◊Û…œµ„
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_TopLeft(LPSYPOINTD pDesP,			// ƒø±Íµ„
-							 LPSYRECTLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_TopLeft(LPSYPOINTD pDesP,			// ƒø±Íµ„
+							 LPBaseRectLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œ”“œ¬µ„
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_BottomRight(LPSYPOINTD pDesP,			// ƒø±Íµ„
-								 LPSYRECTLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_BottomRight(LPSYPOINTD pDesP,			// ƒø±Íµ„
+								 LPBaseRectLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–Œ÷––ƒµ„
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_CenterPoint(LPSYPOINTD pDesP,			// ƒø±Íµ„
-								 LPSYRECTLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_CenterPoint(LPSYPOINTD pDesP,			// ƒø±Íµ„
+								 LPBaseRectLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	ªÒ»°æÿ–ŒÕœ∂Øµ„µƒ◊¶◊”£¨¥”◊Û…œΩ«ø™ ºÀ≥ ±’Î∏¯≥ˆ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYRectlf_DragPoint(LPSYRECT* ppDesP,			// ƒø±Íæÿ–Œ ˝◊È
-							   LPSYRECTLF pSrcR,				// ‘¥æÿ–Œ
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_DragPoint(LPBaseRect* ppDesP,			// ƒø±Íæÿ–Œ ˝◊È
+							   LPBaseRectLF pSrcR,				// ‘¥æÿ–Œ
 							   int nStyle,					// ◊¶◊”µƒ∑Á∏Ò
 							   int nRadius);				// ∑Ω∏Ò∞Îæ∂
 
@@ -808,9 +808,9 @@ BASEGRAPH_COMMON_API void __cdecl SYRectlf_DragPoint(LPSYRECT* ppDesP,			// ƒø±Í
 // ∑µªÿ÷µ:	TRUE			ΩªºØ≤ªŒ™ø’
 //			FALSE			ΩªºØŒ™ø’
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_IntersectRect(LPSYRECTLF pDesR,			// ΩªºØΩ·π˚
-								   LPSYRECTLF pSrcR1,		// ‘¥æÿ–Œ
-								   LPSYRECTLF pSrcR2);		// ‘¥æÿ–Œ
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectlf_IntersectRect(LPBaseRectLF pDesR,			// ΩªºØΩ·π˚
+								   LPBaseRectLF pSrcR1,		// ‘¥æÿ–Œ
+								   LPBaseRectLF pSrcR2);		// ‘¥æÿ–Œ
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	«Û¡Ω∏ˆæÿ–Œµƒ≤¢ºØ
@@ -818,11 +818,11 @@ BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_IntersectRect(LPSYRECTLF pDesR,			// 
 // ∑µªÿ÷µ:	TRUE			≤¢ºØ≤ªŒ™ø’
 //			FALSE			≤¢ºØŒ™ø’
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYRectlf_UnionRect(LPSYRECTLF pDesR,			// ≤¢ºØΩ·π˚
-							   LPSYRECTLF pSrcR1,		// ‘¥æÿ–Œ
-							   LPSYRECTLF pSrcR2);		// ‘¥æÿ–Œ
+BASEGRAPH_COMMON_API BOOL __cdecl BaseRectlf_UnionRect(LPBaseRectLF pDesR,			// ≤¢ºØΩ·π˚
+							   LPBaseRectLF pSrcR1,		// ‘¥æÿ–Œ
+							   LPBaseRectLF pSrcR2);		// ‘¥æÿ–Œ
 
-///////////////////////////// End of SYRect ///////////////////////////////////
+///////////////////////////// End of BaseRect ///////////////////////////////////
 
 void __cdecl rectf_scale(rectf* prect,float fscale);
 //////////////////////////////////////////////////////////////////////////
@@ -1303,40 +1303,40 @@ inline SYPoint2lf& operator /= (SYPoint2lf& p1, double k)
 
 // ’˚–Õ µœ÷
 
-inline SYRect operator & (SYRect& r1, SYRect& r2)
+inline BaseRect operator & (BaseRect& r1, BaseRect& r2)
 {
-	SYRect r3;
+	BaseRect r3;
 
-	SYRect_IntersectRect(&r3, &r1, &r2);
+	BaseRect_IntersectRect(&r3, &r1, &r2);
 
 	return r3;
 }
 
-inline SYRect& operator &= (SYRect& r1, SYRect& r2)
+inline BaseRect& operator &= (BaseRect& r1, BaseRect& r2)
 {
-	SYRect r3;
+	BaseRect r3;
 
-	SYRect_IntersectRect(&r3, &r1, &r2);
-	SYRect_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
+	BaseRect_IntersectRect(&r3, &r1, &r2);
+	BaseRect_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
 
 	return r1;
 }
 
-inline SYRect operator | (SYRect& r1, SYRect& r2)
+inline BaseRect operator | (BaseRect& r1, BaseRect& r2)
 {
-	SYRect r3;
+	BaseRect r3;
 
-	SYRect_UnionRect(&r3, &r1, &r2);
+	BaseRect_UnionRect(&r3, &r1, &r2);
 
 	return r3;
 }
 
-inline SYRect& operator |= (SYRect& r1, SYRect& r2)
+inline BaseRect& operator |= (BaseRect& r1, BaseRect& r2)
 {
-	SYRect r3;
+	BaseRect r3;
 
-	SYRect_UnionRect(&r3, &r1, &r2);
-	SYRect_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
+	BaseRect_UnionRect(&r3, &r1, &r2);
+	BaseRect_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
 
 	return r1;
 }
@@ -1347,7 +1347,7 @@ inline rectf operator & (rectf& r1, rectf& r2)
 {
 	rectf r3;
 
-	SYRectf_IntersectRect(&r3, &r1, &r2);
+	BaseRectf_IntersectRect(&r3, &r1, &r2);
 
 	return r3;
 }
@@ -1356,8 +1356,8 @@ inline rectf& operator &= (rectf& r1, rectf& r2)
 {
 	rectf r3;
 
-	SYRectf_IntersectRect(&r3, &r1, &r2);
-	SYRectf_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
+	BaseRectf_IntersectRect(&r3, &r1, &r2);
+	BaseRectf_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
 
 	return r1;
 }
@@ -1366,7 +1366,7 @@ inline rectf operator | (rectf& r1, rectf& r2)
 {
 	rectf r3;
 
-	SYRectf_UnionRect(&r3, &r1, &r2);
+	BaseRectf_UnionRect(&r3, &r1, &r2);
 
 	return r3;
 }
@@ -1375,48 +1375,48 @@ inline rectf& operator |= (rectf& r1, rectf& r2)
 {
 	rectf r3;
 
-	SYRectf_UnionRect(&r3, &r1, &r2);
-	SYRectf_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
+	BaseRectf_UnionRect(&r3, &r1, &r2);
+	BaseRectf_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
 
 	return r1;
 }
 
 // À´æ´∂»–Õ µœ÷
 
-inline SYRectlf operator & (SYRectlf& r1, SYRectlf& r2)
+inline BaseRectlf operator & (BaseRectlf& r1, BaseRectlf& r2)
 {
-	SYRectlf r3;
+	BaseRectlf r3;
 
-	SYRectlf_IntersectRect(&r3, &r1, &r2);
+	BaseRectlf_IntersectRect(&r3, &r1, &r2);
 
 	return r3;
 }
 
-inline SYRectlf& operator &= (SYRectlf& r1, SYRectlf& r2)
+inline BaseRectlf& operator &= (BaseRectlf& r1, BaseRectlf& r2)
 {
-	SYRectlf r3;
+	BaseRectlf r3;
 
-	SYRectlf_IntersectRect(&r3, &r1, &r2);
-	SYRectlf_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
+	BaseRectlf_IntersectRect(&r3, &r1, &r2);
+	BaseRectlf_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
 
 	return r1;
 }
 
-inline SYRectlf operator | (SYRectlf& r1, SYRectlf& r2)
+inline BaseRectlf operator | (BaseRectlf& r1, BaseRectlf& r2)
 {
-	SYRectlf r3;
+	BaseRectlf r3;
 
-	SYRectlf_UnionRect(&r3, &r1, &r2);
+	BaseRectlf_UnionRect(&r3, &r1, &r2);
 
 	return r3;
 }
 
-inline SYRectlf& operator |= (SYRectlf& r1, SYRectlf& r2)
+inline BaseRectlf& operator |= (BaseRectlf& r1, BaseRectlf& r2)
 {
-	SYRectlf r3;
+	BaseRectlf r3;
 
-	SYRectlf_UnionRect(&r3, &r1, &r2);
-	SYRectlf_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
+	BaseRectlf_UnionRect(&r3, &r1, &r2);
+	BaseRectlf_SetRect(&r1, r3.left, r3.top, r3.right, r3.bottom);
 
 	return r1;
 }
@@ -1425,16 +1425,16 @@ inline SYRectlf& operator |= (SYRectlf& r1, SYRectlf& r2)
 ///////////////////////////////// ¿‡∑‚◊∞ //////////////////////////////////////
 
 // …˘√˜”√µΩµƒ¿‡
-template <class TYPE, class ARG_TYPE> class CSYPoint;
-template <class TYPE, class ARG_TYPE> class CSYSize;
-template <class TYPE, class ARG_TYPE> class CSYRect;
+template <class TYPE, class ARG_TYPE> class CBasePoint;
+template <class TYPE, class ARG_TYPE> class CBaseSize;
+template <class TYPE, class ARG_TYPE> class CBaseRect;
 
 //////////////////////////////// ¿‡µƒ∂®“Â /////////////////////////////////////
 
-/////////////////////////////// CSYPoint //////////////////////////////////////
+/////////////////////////////// CBasePoint //////////////////////////////////////
 
 template <class TYPE, class ARG_TYPE = const TYPE&>
-class CSYPoint
+class CBasePoint
 {
 public:
 	TYPE	x;
@@ -1442,98 +1442,98 @@ public:
 
 public:
 	// ø’÷µ¥¥Ω®
-	CSYPoint();
+	CBasePoint();
 	// ≥ı ºªØ¥¥Ω®
-	CSYPoint(ARG_TYPE X, ARG_TYPE Y);
+	CBasePoint(ARG_TYPE X, ARG_TYPE Y);
 	// øΩ±¥¥¥Ω®
-	CSYPoint(const CSYPoint& point);
-	// »° CSYSize ÷µ¥¥Ω®
-	CSYPoint(const CSYSize<TYPE, ARG_TYPE>& size);
-	CSYPoint(CSYSize<TYPE, ARG_TYPE> size);
+	CBasePoint(const CBasePoint& point);
+	// »° CBaseSize ÷µ¥¥Ω®
+	CBasePoint(const CBaseSize<TYPE, ARG_TYPE>& size);
+	CBasePoint(CBaseSize<TYPE, ARG_TYPE> size);
 	// »°Ω·ππ÷µ¥¥Ω®
-	CSYPoint(const SYPoint& pointL);
-	CSYPoint(const SYPoint2f& pointF);
-	CSYPoint(const SYPoint2lf& pointD);
+	CBasePoint(const SYPoint& pointL);
+	CBasePoint(const SYPoint2f& pointF);
+	CBasePoint(const SYPoint2lf& pointD);
 
 	// ∞¥÷∏∂®∆´“∆¡ø“∆∂Ø
 	void Offset(ARG_TYPE xOffset, ARG_TYPE yOffset);
-	void Offset(const CSYPoint& point);
-	void Offset(CSYPoint point);
-	void Offset(const CSYSize<TYPE, ARG_TYPE>& size);
-	void Offset(CSYSize<TYPE, ARG_TYPE> size);
+	void Offset(const CBasePoint& point);
+	void Offset(CBasePoint point);
+	void Offset(const CBaseSize<TYPE, ARG_TYPE>& size);
+	void Offset(CBaseSize<TYPE, ARG_TYPE> size);
 	// …Ë÷µ
 	void SetPoint(ARG_TYPE X, ARG_TYPE Y);
 	// øΩ±¥µ„÷µ
-	void CopyPoint(const CSYPoint& point);
-	void CopyPoint(CSYPoint point);
+	void CopyPoint(const CBasePoint& point);
+	void CopyPoint(CBasePoint point);
 
-	CSYPoint& operator=(const CSYPoint<TYPE, ARG_TYPE>& point);
-	CSYPoint& operator=(const SYPoint& pointL);
-	CSYPoint& operator=(SYPoint pointL);
-	CSYPoint& operator=(const SYPoint2f& pointL);
-	CSYPoint& operator=(SYPoint2f pointL);
-	CSYPoint& operator=(const SYPoint2lf& pointL);
-	CSYPoint& operator=(SYPoint2lf pointL);
+	CBasePoint& operator=(const CBasePoint<TYPE, ARG_TYPE>& point);
+	CBasePoint& operator=(const SYPoint& pointL);
+	CBasePoint& operator=(SYPoint pointL);
+	CBasePoint& operator=(const SYPoint2f& pointL);
+	CBasePoint& operator=(SYPoint2f pointL);
+	CBasePoint& operator=(const SYPoint2lf& pointL);
+	CBasePoint& operator=(SYPoint2lf pointL);
 
-	BOOL operator==(const CSYPoint& point);
-	BOOL operator!=(const CSYPoint& point);
-	BOOL operator==(CSYPoint point);
-	BOOL operator!=(CSYPoint point);
+	BOOL operator==(const CBasePoint& point);
+	BOOL operator!=(const CBasePoint& point);
+	BOOL operator==(CBasePoint point);
+	BOOL operator!=(CBasePoint point);
 
-	CSYPoint& operator+=(const CSYSize<TYPE, ARG_TYPE>& size);
-	CSYPoint& operator-=(const CSYSize<TYPE, ARG_TYPE>& size);
-	CSYPoint& operator+=(const CSYPoint& point);
-	CSYPoint& operator-=(const CSYPoint& point);
-	CSYPoint& operator+=(CSYSize<TYPE, ARG_TYPE> size);
-	CSYPoint& operator-=(CSYSize<TYPE, ARG_TYPE> size);
-	CSYPoint& operator+=(CSYPoint point);
-	CSYPoint& operator-=(CSYPoint point);
-	CSYPoint& operator+=(const SYPoint& pointL);
-	CSYPoint& operator-=(const SYPoint& pointL);
-	CSYPoint& operator+=(const SYPoint2f& pointF);
-	CSYPoint& operator-=(const SYPoint2f& pointF);
-	CSYPoint& operator+=(const SYPoint2lf& pointD);
-	CSYPoint& operator-=(const SYPoint2lf& pointD);
-	CSYPoint& operator+=(SYPoint pointL);
-	CSYPoint& operator-=(SYPoint pointL);
-	CSYPoint& operator+=(SYPoint2f pointF);
-	CSYPoint& operator-=(SYPoint2f pointF);
-	CSYPoint& operator+=(SYPoint2lf pointD);
-	CSYPoint& operator-=(SYPoint2lf pointD);
+	CBasePoint& operator+=(const CBaseSize<TYPE, ARG_TYPE>& size);
+	CBasePoint& operator-=(const CBaseSize<TYPE, ARG_TYPE>& size);
+	CBasePoint& operator+=(const CBasePoint& point);
+	CBasePoint& operator-=(const CBasePoint& point);
+	CBasePoint& operator+=(CBaseSize<TYPE, ARG_TYPE> size);
+	CBasePoint& operator-=(CBaseSize<TYPE, ARG_TYPE> size);
+	CBasePoint& operator+=(CBasePoint point);
+	CBasePoint& operator-=(CBasePoint point);
+	CBasePoint& operator+=(const SYPoint& pointL);
+	CBasePoint& operator-=(const SYPoint& pointL);
+	CBasePoint& operator+=(const SYPoint2f& pointF);
+	CBasePoint& operator-=(const SYPoint2f& pointF);
+	CBasePoint& operator+=(const SYPoint2lf& pointD);
+	CBasePoint& operator-=(const SYPoint2lf& pointD);
+	CBasePoint& operator+=(SYPoint pointL);
+	CBasePoint& operator-=(SYPoint pointL);
+	CBasePoint& operator+=(SYPoint2f pointF);
+	CBasePoint& operator-=(SYPoint2f pointF);
+	CBasePoint& operator+=(SYPoint2lf pointD);
+	CBasePoint& operator-=(SYPoint2lf pointD);
 
-// Operators returning CSYPoint values
-	CSYPoint operator+(const CSYSize<TYPE, ARG_TYPE>& size);
-	CSYPoint operator-(const CSYSize<TYPE, ARG_TYPE>& size);
-	CSYPoint operator+(CSYSize<TYPE, ARG_TYPE> size);
-	CSYPoint operator-(CSYSize<TYPE, ARG_TYPE> size);
-	CSYPoint operator-();
-	CSYPoint operator+(const CSYPoint& point);
-	CSYPoint operator+(CSYPoint point);
-	CSYPoint operator+(const SYPoint& pointL);
-	CSYPoint operator+(const SYPoint2f& pointF);
-	CSYPoint operator+(const SYPoint2lf& pointD);
-	CSYPoint operator+(SYPoint pointL);
-	CSYPoint operator+(SYPoint2f pointF);
-	CSYPoint operator+(SYPoint2lf pointD);
+// Operators returning CBasePoint values
+	CBasePoint operator+(const CBaseSize<TYPE, ARG_TYPE>& size);
+	CBasePoint operator-(const CBaseSize<TYPE, ARG_TYPE>& size);
+	CBasePoint operator+(CBaseSize<TYPE, ARG_TYPE> size);
+	CBasePoint operator-(CBaseSize<TYPE, ARG_TYPE> size);
+	CBasePoint operator-();
+	CBasePoint operator+(const CBasePoint& point);
+	CBasePoint operator+(CBasePoint point);
+	CBasePoint operator+(const SYPoint& pointL);
+	CBasePoint operator+(const SYPoint2f& pointF);
+	CBasePoint operator+(const SYPoint2lf& pointD);
+	CBasePoint operator+(SYPoint pointL);
+	CBasePoint operator+(SYPoint2f pointF);
+	CBasePoint operator+(SYPoint2lf pointD);
 
-// Operators returning CSYSize values
-	CSYSize<TYPE, ARG_TYPE> operator-(const CSYPoint& point);
-	CSYSize<TYPE, ARG_TYPE> operator-(CSYPoint point);
-	CSYSize<TYPE, ARG_TYPE> operator-(const SYPoint& pointL);
-	CSYSize<TYPE, ARG_TYPE> operator-(const SYPoint2f& pointF);
-	CSYSize<TYPE, ARG_TYPE> operator-(const SYPoint2lf& pointD);
-	CSYSize<TYPE, ARG_TYPE> operator-(SYPoint pointL);
-	CSYSize<TYPE, ARG_TYPE> operator-(SYPoint2f pointF);
-	CSYSize<TYPE, ARG_TYPE> operator-(SYPoint2lf pointD);
+// Operators returning CBaseSize values
+	CBaseSize<TYPE, ARG_TYPE> operator-(const CBasePoint& point);
+	CBaseSize<TYPE, ARG_TYPE> operator-(CBasePoint point);
+	CBaseSize<TYPE, ARG_TYPE> operator-(const SYPoint& pointL);
+	CBaseSize<TYPE, ARG_TYPE> operator-(const SYPoint2f& pointF);
+	CBaseSize<TYPE, ARG_TYPE> operator-(const SYPoint2lf& pointD);
+	CBaseSize<TYPE, ARG_TYPE> operator-(SYPoint pointL);
+	CBaseSize<TYPE, ARG_TYPE> operator-(SYPoint2f pointF);
+	CBaseSize<TYPE, ARG_TYPE> operator-(SYPoint2lf pointD);
 };
 
-//////////////////////////// End of CSYPoint //////////////////////////////////
+//////////////////////////// End of CBasePoint //////////////////////////////////
 
 
-//////////////////////////////// CSYSize //////////////////////////////////////
+//////////////////////////////// CBaseSize //////////////////////////////////////
 
 template <class TYPE, class ARG_TYPE = const TYPE&>
-class CSYSize
+class CBaseSize
 {
 public:
 	TYPE	cx;
@@ -1541,84 +1541,84 @@ public:
 
 public:
 	// ø’÷µ¥¥Ω®
-	CSYSize();
+	CBaseSize();
 	// ≥ı ºªØ¥¥Ω®
-	CSYSize(ARG_TYPE CX, ARG_TYPE CY);
+	CBaseSize(ARG_TYPE CX, ARG_TYPE CY);
 	// øΩ±¥¥¥Ω®
-	CSYSize(const CSYSize& size);
+	CBaseSize(const CBaseSize& size);
 	// ¥”µ„¥¥Ω®
-	CSYSize(const CSYPoint<TYPE, ARG_TYPE>& point);
-	CSYSize(CSYPoint<TYPE, ARG_TYPE> point);
+	CBaseSize(const CBasePoint<TYPE, ARG_TYPE>& point);
+	CBaseSize(CBasePoint<TYPE, ARG_TYPE> point);
 	// ¥”Ω·ππ¥¥Ω®
-	CSYSize(const SYSizeL& sizeL);
-	CSYSize(const SYSizef& sizeF);
-	CSYSize(const SYSizelf& sizeD);
+	CBaseSize(const SYSizeL& sizeL);
+	CBaseSize(const SYSizef& sizeF);
+	CBaseSize(const SYSizelf& sizeD);
 
 	// …Ë÷µ
 	void SetSize(ARG_TYPE CX, ARG_TYPE CY);
 	// øΩ±¥÷µ
-	void CopySize(const CSYSize& size);
-	void CopySize(CSYSize size);
+	void CopySize(const CBaseSize& size);
+	void CopySize(CBaseSize size);
 
-	CSYSize& operator=(const CSYSize<TYPE, ARG_TYPE>& size);
-	CSYSize& operator=(const SYSizeL& sizeL);
-	CSYSize& operator=(SYSizeL sizeL);
-	CSYSize& operator=(const SYSizef& sizeF);
-	CSYSize& operator=(SYSizef sizeF);
-	CSYSize& operator=(const SYSizelf& sizeD);
-	CSYSize& operator=(SYSizelf sizeD);
+	CBaseSize& operator=(const CBaseSize<TYPE, ARG_TYPE>& size);
+	CBaseSize& operator=(const SYSizeL& sizeL);
+	CBaseSize& operator=(SYSizeL sizeL);
+	CBaseSize& operator=(const SYSizef& sizeF);
+	CBaseSize& operator=(SYSizef sizeF);
+	CBaseSize& operator=(const SYSizelf& sizeD);
+	CBaseSize& operator=(SYSizelf sizeD);
 
-	BOOL operator==(const CSYSize& size);
-	BOOL operator!=(const CSYSize& size);
-	BOOL operator==(CSYSize size);
-	BOOL operator!=(CSYSize size);
+	BOOL operator==(const CBaseSize& size);
+	BOOL operator!=(const CBaseSize& size);
+	BOOL operator==(CBaseSize size);
+	BOOL operator!=(CBaseSize size);
 
-	CSYSize& operator+=(const CSYSize& size);
-	CSYSize& operator-=(const CSYSize& size);
-	CSYSize& operator+=(CSYSize size);
-	CSYSize& operator-=(CSYSize size);
-	CSYSize& operator+=(const SYSizeL& sizeL);
-	CSYSize& operator-=(const SYSizeL& sizeL);
-	CSYSize& operator+=(const SYSizef& sizeF);
-	CSYSize& operator-=(const SYSizef& sizeF);
-	CSYSize& operator+=(const SYSizelf& sizeD);
-	CSYSize& operator-=(const SYSizelf& sizeD);
-	CSYSize& operator+=(SYSizeL sizeL);
-	CSYSize& operator-=(SYSizeL sizeL);
-	CSYSize& operator+=(SYSizef sizeF);
-	CSYSize& operator-=(SYSizef sizeF);
-	CSYSize& operator+=(SYSizelf sizeD);
-	CSYSize& operator-=(SYSizelf sizeD);
+	CBaseSize& operator+=(const CBaseSize& size);
+	CBaseSize& operator-=(const CBaseSize& size);
+	CBaseSize& operator+=(CBaseSize size);
+	CBaseSize& operator-=(CBaseSize size);
+	CBaseSize& operator+=(const SYSizeL& sizeL);
+	CBaseSize& operator-=(const SYSizeL& sizeL);
+	CBaseSize& operator+=(const SYSizef& sizeF);
+	CBaseSize& operator-=(const SYSizef& sizeF);
+	CBaseSize& operator+=(const SYSizelf& sizeD);
+	CBaseSize& operator-=(const SYSizelf& sizeD);
+	CBaseSize& operator+=(SYSizeL sizeL);
+	CBaseSize& operator-=(SYSizeL sizeL);
+	CBaseSize& operator+=(SYSizef sizeF);
+	CBaseSize& operator-=(SYSizef sizeF);
+	CBaseSize& operator+=(SYSizelf sizeD);
+	CBaseSize& operator-=(SYSizelf sizeD);
 
-// Operators returning CSYSize values
-	CSYSize operator+(const CSYSize& size);
-	CSYSize operator-(const CSYSize& size);
-	CSYSize operator+(CSYSize size);
-	CSYSize operator-(CSYSize size);
-	CSYSize operator-();
-	CSYSize operator+(const SYSizeL& sizeL);
-	CSYSize operator-(const SYSizeL& sizeL);
-	CSYSize operator+(const SYSizef& sizeF);
-	CSYSize operator-(const SYSizef& sizeF);
-	CSYSize operator+(const SYSizelf& sizeD);
-	CSYSize operator-(const SYSizelf& sizeD);
-	CSYSize operator+(SYSizeL sizeL);
-	CSYSize operator-(SYSizeL sizeL);
-	CSYSize operator+(SYSizef sizeF);
-	CSYSize operator-(SYSizef sizeF);
-	CSYSize operator+(SYSizelf sizeD);
-	CSYSize operator-(SYSizelf sizeD);
+// Operators returning CBaseSize values
+	CBaseSize operator+(const CBaseSize& size);
+	CBaseSize operator-(const CBaseSize& size);
+	CBaseSize operator+(CBaseSize size);
+	CBaseSize operator-(CBaseSize size);
+	CBaseSize operator-();
+	CBaseSize operator+(const SYSizeL& sizeL);
+	CBaseSize operator-(const SYSizeL& sizeL);
+	CBaseSize operator+(const SYSizef& sizeF);
+	CBaseSize operator-(const SYSizef& sizeF);
+	CBaseSize operator+(const SYSizelf& sizeD);
+	CBaseSize operator-(const SYSizelf& sizeD);
+	CBaseSize operator+(SYSizeL sizeL);
+	CBaseSize operator-(SYSizeL sizeL);
+	CBaseSize operator+(SYSizef sizeF);
+	CBaseSize operator-(SYSizef sizeF);
+	CBaseSize operator+(SYSizelf sizeD);
+	CBaseSize operator-(SYSizelf sizeD);
 
-// Operators returning CSYPoint values
-	CSYPoint<TYPE, ARG_TYPE> operator+(const CSYPoint<TYPE, ARG_TYPE>& point);
-	CSYPoint<TYPE, ARG_TYPE> operator-(const CSYPoint<TYPE, ARG_TYPE>& point);
-	CSYPoint<TYPE, ARG_TYPE> operator+(CSYPoint<TYPE, ARG_TYPE> point);
-	CSYPoint<TYPE, ARG_TYPE> operator-(CSYPoint<TYPE, ARG_TYPE> point);
+// Operators returning CBasePoint values
+	CBasePoint<TYPE, ARG_TYPE> operator+(const CBasePoint<TYPE, ARG_TYPE>& point);
+	CBasePoint<TYPE, ARG_TYPE> operator-(const CBasePoint<TYPE, ARG_TYPE>& point);
+	CBasePoint<TYPE, ARG_TYPE> operator+(CBasePoint<TYPE, ARG_TYPE> point);
+	CBasePoint<TYPE, ARG_TYPE> operator-(CBasePoint<TYPE, ARG_TYPE> point);
 };
 
-///////////////////////////// End of CSYSize //////////////////////////////////
+///////////////////////////// End of CBaseSize //////////////////////////////////
 
 #endif
 
-#endif		// #ifndef __SY_PLANE_INC__
+#endif		// #ifndef __Common_PLANE_INC__
 //------------------------------- End of File ---------------------------------

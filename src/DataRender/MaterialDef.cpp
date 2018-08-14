@@ -1739,7 +1739,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 			DX3DEngine_CopyTexture(pVideoMat->m_hDevice,pVideoTex->hTex,0,0,pVideoTex->pResource->nMovieWidth,pVideoTex->pResource->nMovHeight, 
 				pVideoTex->pResource->hTex[pVideoTex->pResource->nCur],0,0,pVideoTex->pResource->nMovieWidth,pVideoTex->pResource->nMovHeight);
 			BUFFER_PARITY_STYLE parity = (BUFFER_PARITY_STYLE)((nField % 2 == 0) ?PARITY_EVEN : PARITY_ODD);
-			//if(pVideoTex->pResource->bIsProgress && parity == SY_PARITY_EVEN) //
+			//if(pVideoTex->pResource->bIsProgress && parity == Common_PARITY_EVEN) //
 			//	return TRUE;
 			//if(!pVideoTex->pSeekData)
 			//{   
@@ -1764,7 +1764,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 			////para.maskBuf = 0;
 			//para.hMovieTex = pVideoTex->pResource->hTex[pVideoTex->pResource->nCur];
 			////这块进行融合时，因为前边已经将场号限定在只渲偶场，所以顶场先及帧模式需要变动
-			//if(parity == SY_PARITY_EVEN)
+			//if(parity == Common_PARITY_EVEN)
 			//{
 			//	//para.field =  FIRST_FIELD;
 			//	//para.nFrame = nMovieTime;

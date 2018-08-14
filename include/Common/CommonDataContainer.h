@@ -1119,21 +1119,21 @@ void CBaseARray<TYPE, ARG_TYPE>::MoveElement(INT_PTR i, INT_PTR j)
 	}
 }
 
-typedef CBaseARray<int, int>				CSYIntArray;
-typedef CBaseARray<float, float>			CSYFloatArray;
-typedef CBaseARray<double, double>		CSYDoubleArray;
-typedef CBaseARray<BYTE, BYTE>			CSYBYTEArray;
-typedef CBaseARray<DWORD, DWORD>			CSYDWORDArray;
-typedef CBaseARray<void*, void*>			CSYPtrArray;
-typedef CBaseARray<int*, int*>			CSYIntPtrArray;
-typedef CBaseARray<float*, float*>		CSYFloatPtrArray;
-typedef CBaseARray<double*, double*>		CSYDoublePtrArray;
-typedef CBaseARray<BYTE*, BYTE*>			CSYBYTEPtrArray;
-typedef CBaseARray<DWORD*, DWORD*>		CSYDWORDPtrArray;
-typedef CBaseARray<LPTSTR, LPTSTR>		CSYStrArray;
-typedef CBaseARray<LPCTSTR, LPCTSTR>		CSYConstStrArray;
+typedef CBaseARray<int, int>				CBaseIntArray;
+typedef CBaseARray<float, float>			CBaseFloatArray;
+typedef CBaseARray<double, double>		CBaseDoubleArray;
+typedef CBaseARray<BYTE, BYTE>			CBaseBYTEArray;
+typedef CBaseARray<DWORD, DWORD>			CBaseDWORDArray;
+typedef CBaseARray<void*, void*>			CBasePtrArray;
+typedef CBaseARray<int*, int*>			CBaseIntPtrArray;
+typedef CBaseARray<float*, float*>		CBaseFloatPtrArray;
+typedef CBaseARray<double*, double*>		CBaseDoublePtrArray;
+typedef CBaseARray<BYTE*, BYTE*>			CBaseBYTEPtrArray;
+typedef CBaseARray<DWORD*, DWORD*>		CBaseDWORDPtrArray;
+typedef CBaseARray<LPTSTR, LPTSTR>		CBaseStrArray;
+typedef CBaseARray<LPCTSTR, LPCTSTR>		CBaseConstStrArray;
 
-BASEGRAPH_COMMON_API void __cdecl SYStrAR_Release(CSYStrArray& ary);
+BASEGRAPH_COMMON_API void __cdecl SYStrAR_Release(CBaseStrArray& ary);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define DSLT_NULL		-2						// 不存在的链表

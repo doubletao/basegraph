@@ -31,7 +31,7 @@ static char THIS_FILE[] = __FILE__;
 #define STATCEFFECT_TYPE_CONVEX		2		//凸
 #define STATCEFFECT_TYPE_LIGHT		3		//亮边
 
-typedef CBaseARray<CSYPoint2fPtrArray*> CPtfArrArr; // pointf二维数组
+typedef CBaseARray<CBasePoint2fPtrArray*> CPtfArrArr; // pointf二维数组
 LPBaseARRAY calc_midderbuf_array = NULL;
 int maxsize = 0;
 
@@ -1012,7 +1012,7 @@ BASEGRAPH_DATARENDER_API void SYRender_GetGraph_RenderInfo(vectorgraph * pGraph,
 {
 	rectf rtff;
 	rtff = pGraph->bound;
-	SYRectf_Scale(&rtff, fscale);
+	BaseRectf_Scale(&rtff, fscale);
 	rip_extend_fbound(&rtff, (int*)&rtBound.left,
 		(int*)&rtBound.top,
 		(int*)&rtBound.right,
@@ -1374,7 +1374,7 @@ void _ausdilationcircletable(int* lptable, int nwidth)
 {
 	memset(lptable, 0, sizeof(int) *nwidth * nwidth);
 	float fRad = nwidth / 2.0 - 0.5;
-	int ndRad = SY_FToI(fRad * fRad);
+	int ndRad = Common_FToI(fRad * fRad);
 	int nindex = 0;
 	for (int i = 0; i < nwidth; i++)
 	{
@@ -1442,7 +1442,7 @@ unsigned int _auxmaxmap(LPBYTE lpDes, LPSIZE pSize, int x, int y, int* lptable, 
 }
 void auxDilation(LPBYTE lpDes, LPSIZE pSize, float fdegrees)
 {
-	int degrees = SY_FToI(fdegrees);
+	int degrees = Common_FToI(fdegrees);
 	if (degrees < 1)
 		degrees = 1;
 	degrees = degrees * 2;
@@ -1783,7 +1783,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 		pSrcPool->m_nWidth,			// 键幅面大小
 		pSrcPool->m_nHeight,
 		pSrcPool->m_nWidth,			// 源键缓存一行的字节宽度
-		pinfo->effect_style == SHADOW_INSERT ? SY_KEY_MULTIPLY_NOTSRC : SY_KEY_REPLACE,			// 键操作模式
+		pinfo->effect_style == SHADOW_INSERT ? Common_KEY_MULTIPLY_NOTSRC : Common_KEY_REPLACE,			// 键操作模式
 		BUFFER_PARITY_BOTH);	// 裁剪区域（可选项）
 
 	if (FALSE)
@@ -1873,11 +1873,11 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 			pSrcPool->m_nWidth,			// 键幅面大小
 			pSrcPool->m_nHeight,
 			pSrcPool->m_nWidth,			// 源键缓存一行的字节宽度
-			SY_KEY_SAT_SUB,			// 键操作模式
+			Common_KEY_SAT_SUB,			// 键操作模式
 			BUFFER_PARITY_BOTH);	// 裁剪区域（可选项）
 	}
 
-	SYBGRA32_ProcKey(pBuffer,			// 目标
+	BGRA32_ProcKey(pBuffer,			// 目标
 		nsrcX,					// 目标操作区域
 		nsrcY,
 		srcWidth,		// 输入缓冲区宽、高
@@ -1892,7 +1892,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 		nWidth,		// 输入缓冲区宽、高
 		nHeight,
 		nWidth,				// 键缓存一行的字节宽度
-		SY_KEY_MULTIPLY,			// 键操作模式
+		Common_KEY_MULTIPLY,			// 键操作模式
 		BUFFER_PARITY_BOTH);	// 裁剪区域（可选项）
 	if (pDesMask)
 		delete[] pDesMask;
@@ -1923,7 +1923,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 			}
 		}
 
-		SYBGRA32_FillAlpha_With_H(pBuffer,		// 目标
+		BGRA32_FillAlpha_With_H(pBuffer,		// 目标
 			0,					// 填充区域
 			0,
 			nWidth,
@@ -1932,7 +1932,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 			nHeight,
 			NULL,			// 裁剪区域（可选项）
 			cAlpha,				// Alpha值
-			SY_FILL_SCALE_ALPHA_ALL,		// 填充模式
+			Common_FILL_SCALE_ALPHA_ALL,		// 填充模式
 			0x00000000);			// 掩码颜色值（依赖模式的可选项）
 		delete[] cAlpha;
 		cAlpha = NULL;
@@ -1944,9 +1944,9 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 	{
 
 		CCommonBuffer* pResultCurPool = Data_QueryCalcBuffer(nWidth * nHeight, TRUE);
-		SY_DMemSet(pResultCurPool->m_dwBuffer, 0, nWidth * nHeight);
+		Common_DMemSet(pResultCurPool->m_dwBuffer, 0, nWidth * nHeight);
 
-		SYBGRA32_ProcKey(pBuffer,			// 目标
+		BGRA32_ProcKey(pBuffer,			// 目标
 			rtSrc->left - rtDes->left,				// 操作区域
 			rtSrc->top - rtDes->top,
 			rtSrc->right - rtSrc->left,
@@ -1961,10 +1961,10 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 			rtSrc->right - rtSrc->left,
 			rtSrc->bottom - rtSrc->top,
 			rtSrc->right - rtSrc->left,
-			SY_KEY_MULTIPLY,			// 键操作模式
+			Common_KEY_MULTIPLY,			// 键操作模式
 			BUFFER_PARITY_BOTH);	// 裁剪区域（可选项）
 
-		SY_BitBlt(pResultCurPool->m_dwBuffer,
+		Common_BitBlt(pResultCurPool->m_dwBuffer,
 			rtSrc->left - rtDes->left,				// 操作区域
 			rtSrc->top - rtDes->top,
 			rtSrc->right - rtSrc->left,
@@ -1980,7 +1980,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 			rtSrc->bottom - rtSrc->top,
 			BUFFER_COPY, BUFFER_PARITY_BOTH);		// 填充值
 
-		SY_BitBlt(pResultCurPool->m_dwBuffer,
+		Common_BitBlt(pResultCurPool->m_dwBuffer,
 			rtSrc->left - rtDes->left,				// 操作区域
 			rtSrc->top - rtDes->top,
 			rtSrc->right - rtSrc->left,
@@ -2292,7 +2292,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			OffsetRect(&rtShadowBound, vborderOffset.x * fscale, vborderOffset.y * fscale);
 			if (effect->shadow.soft)
 			{
-				int nSoft = SY_FToI(effect->shadow.soft * fscale + 1);
+				int nSoft = Common_FToI(effect->shadow.soft * fscale + 1);
 				InflateRect(&rtShadowBound, nSoft, nSoft);
 			}
 			UnionRect(&rtOutBound, &rtOutBound, &rtShadowBound);
@@ -2346,7 +2346,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 
 			if (effect->bordershadow.soft)
 			{
-				int nSoft = SY_FToI(effect->bordershadow.soft * fscale + 1);
+				int nSoft = Common_FToI(effect->bordershadow.soft * fscale + 1);
 				InflateRect(&rtShadowBound, nSoft, nSoft);
 			}
 			UnionRect(&rtOutBound, &rtOutBound, &rtShadowBound);
@@ -2380,7 +2380,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		CCommonBuffer* pFacePool = Data_QueryCalcBuffer(nFWidth * nFHeight, TRUE);
 		pFaceBuffer = pFacePool->m_dwBuffer;
 		//绘制面
-		SY_DMemSet(pFaceBuffer, 0, nFWidth * nFHeight);
+		Common_DMemSet(pFaceBuffer, 0, nFWidth * nFHeight);
 		if (effect->face.disable || effect->face.color.type == SYCOLOR_NONE)
 		{
 			sycolor color;
@@ -2492,7 +2492,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 				effect->cube.art.cu_angle,
 				effect->cube.avcolor,
 				dFrame);
-			SYBGRA32_ProcKey(pCubePool->m_dwBuffer,			// 目标
+			BGRA32_ProcKey(pCubePool->m_dwBuffer,			// 目标
 				rtFaceBound.left - rtIn.left,					// 目标操作区域
 				rtFaceBound.top - rtIn.top,
 				rtFaceBound.right - rtFaceBound.left,
@@ -2507,7 +2507,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 				nFWidth,
 				nFHeight,
 				nFWidth,				// 键缓存一行的字节宽度
-				SY_KEY_MULTIPLY_NOTSRC,			// 键操作模式
+				Common_KEY_MULTIPLY_NOTSRC,			// 键操作模式
 				BUFFER_PARITY_BOTH,	// 奇偶场类型
 				NULL);	// 裁剪区域（可选项）
 
@@ -2535,7 +2535,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			graph_release(&CubeOut);
 			if (pFaceSystemBuffer)
 			{
-				SY_BitBlt(pFaceSystemBuffer->m_dwBuffer,
+				Common_BitBlt(pFaceSystemBuffer->m_dwBuffer,
 					rtCubeBound.left - rtAllFaceBound.left,
 					rtCubeBound.top - rtAllFaceBound.top,
 					nCubeWidth,
@@ -2560,7 +2560,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		{
 			if (!effect->face.disable&& effect->face.color.type != SYCOLOR_NONE && !(!effect->shadow.disable && effect->shadow.effect_style == SHADOW_INSERT))
 			{
-				SY_BitBlt(pFaceSystemBuffer->m_dwBuffer,
+				Common_BitBlt(pFaceSystemBuffer->m_dwBuffer,
 					rtFaceBound.left - rtAllFaceBound.left,
 					rtFaceBound.top - rtAllFaceBound.top,
 					nFWidth,
@@ -2724,7 +2724,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			if (pResultPool)
 			{
 				// 没有偏移，否则有周边阴影情况下周边立体边位置不对
-				SY_BitBlt(pResultPool->m_dwBuffer,
+				Common_BitBlt(pResultPool->m_dwBuffer,
 					0,//rtBorderCubeBound.left - rtOutBound.left,
 					0,//rtBorderCubeBound.top - rtOutBound.top,
 					nBCubeWidth,
@@ -2753,7 +2753,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		}
 		if (pResultPool)
 		{
-			SY_BitBlt(pResultPool->m_dwBuffer,
+			Common_BitBlt(pResultPool->m_dwBuffer,
 				rtOutBound.left - rtOutBound.left,
 				rtOutBound.top - rtOutBound.top,
 				nBorderWidth,
@@ -2785,7 +2785,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 	{
 		if (pFaceSystemBuffer)
 		{
-			SY_BitBlt(pResultPool->m_dwBuffer,
+			Common_BitBlt(pResultPool->m_dwBuffer,
 				rtAllFaceBound.left - rtOutBound.left,
 				rtAllFaceBound.top - rtOutBound.top,
 				nAllFaceWidth,
@@ -2897,7 +2897,7 @@ int  cell_get_mindirect(vectorcell*	cell, float* fminy, float* fminx, int* ndire
 
 int  figure_analyzedirect(vectorgraph* graph);
 
-float GetCurveDistance(const CSYPoint2fPtrArray* pptrArr)
+float GetCurveDistance(const CBasePoint2fPtrArray* pptrArr)
 {
 	int nSize = pptrArr->GetSize();
 	if (nSize <= 0)
@@ -2920,7 +2920,7 @@ float GetCurveDistance(const CSYPoint2fPtrArray* pptrArr)
 /**
 *@brief 短划线
 */
-void GetImagPointsDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr, float *fIntervalAr, int intCount)
+void GetImagPointsDASH(IN const CBasePoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr, float *fIntervalAr, int intCount)
 {
 	nCell = 0;
 	int nSize = pptfArr1.GetSize();
@@ -2933,7 +2933,7 @@ void GetImagPointsDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLi
 	float fDis = GetCurveDistance(&pptfArr1);
 
 
-	CSYPoint2fPtrArray* ptfArrTemp = new CSYPoint2fPtrArray;;
+	CBasePoint2fPtrArray* ptfArrTemp = new CBasePoint2fPtrArray;;
 
 	pointf* pptImg = new pointf;
 	pptImg->x = (pptfArr1.GetAt(0))->x;
@@ -2964,7 +2964,7 @@ void GetImagPointsDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLi
 			startpt = startpt + ptfDir * fDivStep;
 
 			if (!bDash) {
-				ptfArrTemp = new CSYPoint2fPtrArray;
+				ptfArrTemp = new CBasePoint2fPtrArray;
 			}
 			else
 				pptfArrArr.Add(ptfArrTemp);
@@ -3007,7 +3007,7 @@ void GetImagPointsDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLi
 /**
 *@brief 划线-点
 */
-void GetImagPointsDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
+void GetImagPointsDASHDOT(IN const CBasePoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
 {
 	int nSize;
 	nSize = pptfArr1.GetSize();
@@ -3022,7 +3022,7 @@ void GetImagPointsDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float 
 	float fDis = GetCurveDistance(&pptfArr1);
 	nCell = 0;
 
-	CSYPoint2fPtrArray* ptfArrTemp = nullptr;
+	CBasePoint2fPtrArray* ptfArrTemp = nullptr;
 	pointf* pptImg = new pointf;
 	pptImg->x = (pptfArr1.GetAt(0))->x;
 	pptImg->y = (pptfArr1.GetAt(0))->y;
@@ -3045,7 +3045,7 @@ void GetImagPointsDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float 
 	{
 		if (abs(fIntervalPre - fInterval1) < ABS_FLOAT_0 || abs(fIntervalPre - fInterval3) < ABS_FLOAT_0)
 		{
-			ptfArrTemp = new CSYPoint2fPtrArray;
+			ptfArrTemp = new CBasePoint2fPtrArray;
 			ptfArrTemp->Add(pptImg);
 		}
 
@@ -3117,7 +3117,7 @@ void GetImagPointsDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float 
 	// 添加最后一段小线段，长度可能小于等分长度
 	nCell++;
 
-	ptfArrTemp = new CSYPoint2fPtrArray;
+	ptfArrTemp = new CBasePoint2fPtrArray;
 	pointf* ptTemp = new pointf;
 	ptTemp->x = pptImg->x;
 	ptTemp->y = pptImg->y;
@@ -3134,7 +3134,7 @@ void GetImagPointsDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float 
 /**
 *@brief 长划线
 */
-void GetImagPointsLDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
+void GetImagPointsLDASH(IN const CBasePoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
 {
 	int nSize;
 	nSize = pptfArr1.GetSize();
@@ -3149,7 +3149,7 @@ void GetImagPointsLDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fL
 	float fDis = GetCurveDistance(&pptfArr1);
 	nCell = 0;
 
-	CSYPoint2fPtrArray* ptfArrTemp = nullptr;
+	CBasePoint2fPtrArray* ptfArrTemp = nullptr;
 	pointf* pptImg = new pointf;
 	pptImg->x = (pptfArr1.GetAt(0))->x;
 	pptImg->y = (pptfArr1.GetAt(0))->y;
@@ -3168,7 +3168,7 @@ void GetImagPointsLDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fL
 	{
 		if (nCount % 2 == 0)
 		{
-			ptfArrTemp = new CSYPoint2fPtrArray;
+			ptfArrTemp = new CBasePoint2fPtrArray;
 			ptfArrTemp->Add(pptImg);
 		}
 
@@ -3230,7 +3230,7 @@ void GetImagPointsLDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fL
 	// 添加最后一段小线段，长度可能小于等分长度
 	nCell++;
 
-	ptfArrTemp = new CSYPoint2fPtrArray;
+	ptfArrTemp = new CBasePoint2fPtrArray;
 	pointf* ptTemp = new pointf;
 	ptTemp->x = pptImg->x;
 	ptTemp->y = pptImg->y;
@@ -3247,7 +3247,7 @@ void GetImagPointsLDASH(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fL
 /**
 *@brief 长划线-点
 */
-void GetImagPointsLDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
+void GetImagPointsLDASHDOT(IN const CBasePoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
 {
 	int nSize;
 	nSize = pptfArr1.GetSize();
@@ -3262,7 +3262,7 @@ void GetImagPointsLDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float
 	float fDis = GetCurveDistance(&pptfArr1);
 	nCell = 0;
 
-	CSYPoint2fPtrArray* ptfArrTemp = nullptr;
+	CBasePoint2fPtrArray* ptfArrTemp = nullptr;
 	pointf* pptImg = new pointf;
 	pptImg->x = (pptfArr1.GetAt(0))->x;
 	pptImg->y = (pptfArr1.GetAt(0))->y;
@@ -3285,7 +3285,7 @@ void GetImagPointsLDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float
 	{
 		if (abs(fIntervalPre - fInterval1) < ABS_FLOAT_0 || abs(fIntervalPre - fInterval3) < ABS_FLOAT_0)
 		{
-			ptfArrTemp = new CSYPoint2fPtrArray;
+			ptfArrTemp = new CBasePoint2fPtrArray;
 			ptfArrTemp->Add(pptImg);
 		}
 
@@ -3357,7 +3357,7 @@ void GetImagPointsLDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float
 	// 添加最后一段小线段，长度可能小于等分长度
 	nCell++;
 
-	ptfArrTemp = new CSYPoint2fPtrArray;
+	ptfArrTemp = new CBasePoint2fPtrArray;
 	pointf* ptTemp = new pointf;
 	ptTemp->x = pptImg->x;
 	ptTemp->y = pptImg->y;
@@ -3371,7 +3371,7 @@ void GetImagPointsLDASHDOT(IN const CSYPoint2fPtrArray& pptfArr1, IN const float
 	pptfArrArr.Add(ptfArrTemp);
 }
 
-void GetPointsRIPPLE(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
+void GetPointsRIPPLE(IN const CBasePoint2fPtrArray& pptfArr1, IN const float fLineWidth, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
 {
 	int nSize;
 	nSize = pptfArr1.GetSize();
@@ -3399,7 +3399,7 @@ void GetPointsRIPPLE(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLine
 
 	CPtfArrArr ptArrArrTemp;
 
-	CSYPoint2fPtrArray* ptfArrTemp;
+	CBasePoint2fPtrArray* ptfArrTemp;
 	pointf* pptImg = NULL;
 	pointf pptImagTemp;
 	pptImagTemp.x = (pptfArr1.GetAt(0))->x;
@@ -3408,7 +3408,7 @@ void GetPointsRIPPLE(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLine
 	// 切分Bezier曲线
 	while (fDis > fInterval)
 	{
-		ptfArrTemp = new CSYPoint2fPtrArray;
+		ptfArrTemp = new CBasePoint2fPtrArray;
 		pointf* ptTemp3 = new pointf;
 		ptTemp3->x = pptImagTemp.x;
 		ptTemp3->y = pptImagTemp.y;
@@ -3455,7 +3455,7 @@ void GetPointsRIPPLE(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLine
 		fInterval += fInterval1;
 	}
 
-	ptfArrTemp = new CSYPoint2fPtrArray;
+	ptfArrTemp = new CBasePoint2fPtrArray;
 	pointf* ptTemp = new pointf;
 	ptTemp->x = pptImagTemp.x;
 	ptTemp->y = pptImagTemp.y;
@@ -3474,7 +3474,7 @@ void GetPointsRIPPLE(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLine
 	pointf ptf;
 	pointf ptfBase;
 	float nHeight = 4.0f * fLineWidth; // 振幅
-	CSYPoint2fPtrArray* ptfArrRipple = new CSYPoint2fPtrArray;
+	CBasePoint2fPtrArray* ptfArrRipple = new CBasePoint2fPtrArray;
 
 	if (nSize > 0)
 	{
@@ -3585,7 +3585,7 @@ void GetPointsRIPPLE(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLine
 	nSize = ptArrArrTemp.GetSize();
 	for (int i = 0; i < nSize; i++)
 	{
-		CSYPoint2fPtrArray* ptArr = (CSYPoint2fPtrArray*)ptArrArrTemp.GetAt(i);
+		CBasePoint2fPtrArray* ptArr = (CBasePoint2fPtrArray*)ptArrArrTemp.GetAt(i);
 		int nTemp = ptArr->GetSize();
 		for (int k = 0; k < nTemp; k++)
 		{
@@ -3601,7 +3601,7 @@ void GetPointsRIPPLE(IN const CSYPoint2fPtrArray& pptfArr1, IN const float fLine
 	ptArrArrTemp.RemoveAll();
 }
 
-void GetImagPointsByStyle(IN const CSYPoint2fPtrArray& pptfArr1, IN const int nStyle, IN const float fLineWidth, IN const float fLineInterval, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
+void GetImagPointsByStyle(IN const CBasePoint2fPtrArray& pptfArr1, IN const int nStyle, IN const float fLineWidth, IN const float fLineInterval, OUT int& nCell, OUT CPtfArrArr& pptfArrArr)
 {
 	switch (nStyle)
 	{
@@ -3644,7 +3644,7 @@ void GetImagPointsByStyle(IN const CSYPoint2fPtrArray& pptfArr1, IN const int nS
 // 获取虚线描边
 void GetImageBorderGraph(vectorgraph* des, vectorgraph* src, vector2f* vOffset, float fwidth, float finterval, int nLineStyle)
 {
-	CSYPoint2fPtrArray pptfCurvePts;
+	CBasePoint2fPtrArray pptfCurvePts;
 	vectorcell **pCell = new vectorcell*[src->ncell];
 	int* numCell = new int[src->ncell];
 
@@ -3690,7 +3690,7 @@ void GetImageBorderGraph(vectorgraph* des, vectorgraph* src, vector2f* vOffset, 
 			pCurveCell->bound.right = -65535.0f;
 			pCurveCell->bound.bottom = -65535.0f;
 
-			CSYPoint2fPtrArray* ptfArrTemp = (CSYPoint2fPtrArray*)pptfArrArrTemp.GetAt(m);
+			CBasePoint2fPtrArray* ptfArrTemp = (CBasePoint2fPtrArray*)pptfArrArrTemp.GetAt(m);
 
 			pCurveCell->npoint = ptfArrTemp->GetSize();
 			if (nLineStyle == SYLINE_RIPPLE)
@@ -3734,7 +3734,7 @@ void GetImageBorderGraph(vectorgraph* des, vectorgraph* src, vector2f* vOffset, 
 		nSize = pptfArrArrTemp.GetSize();
 		for (int i = 0; i < nSize; i++)
 		{
-			CSYPoint2fPtrArray* ptArr = (CSYPoint2fPtrArray*)pptfArrArrTemp.GetAt(i);
+			CBasePoint2fPtrArray* ptArr = (CBasePoint2fPtrArray*)pptfArrArrTemp.GetAt(i);
 			int nTemp = ptArr->GetSize();
 			for (int k = 0; k < nTemp; k++)
 			{
@@ -4411,7 +4411,7 @@ void LightProc(LPBYTE		       lpMask,
 	for (int i = 0; i<4; i++)
 	{
 		//高斯滤波，除去高频分量
-		SY_GuassianBlur(lpData, &SzExt, 2);//up
+		Common_GuassianBlur(lpData, &SzExt, 2);//up
 		float maxT;
 		if (i == 0)
 		{
@@ -5258,8 +5258,8 @@ void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3
 	}
 	else
 	{
-		SY_BEVEL_TYPE eBevelType = pStretch->eBevelType;
-		float fRealHeaght = eBevelType == SY_BEVEL_NONE ? pStretch->fThick : pStretch->fThick - pStretch->fBevelThick * 2;
+		Common_BEVEL_TYPE eBevelType = pStretch->eBevelType;
+		float fRealHeaght = eBevelType == Common_BEVEL_NONE ? pStretch->fThick : pStretch->fThick - pStretch->fBevelThick * 2;
 		SYModel_CreateBevel(pMod, &NewFigure, max(0, fRealHeaght), pStretch->fBevelThick, pStretch->fBevelLen, eBevelType);
 	}
 	//未指定3D色时，使用2D颜色创建材质。

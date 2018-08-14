@@ -61,7 +61,7 @@ CSimpleSpaceConvert::CSimpleSpaceConvert( ObjectCalculator *pCalculator, BOOL bF
 	}
 	m_pConvertMatrix->InitMatrix();
 #if 0
-	CSYLayerEnv* pLayerEnv = pCalculator->GetLayerEnv();
+	CBaseLayerEnv* pLayerEnv = pCalculator->GetLayerEnv();
 	ObjectCalculator* pCameraCalculator=NULL;
 	if(pLayerEnv)
 	{
@@ -87,7 +87,7 @@ CSimpleSpaceConvert::CSimpleSpaceConvert( ObjectCalculator *pCalculator, BOOL bF
 		pParent = pParent->GetParent();
 	}
 	if(pCameraCalculator)
-		m_fViewWorkPlaneDis = ((CSYCGCameraItem*)pCameraCalculator->GetItem())->GetViewWorkPlaneDis();
+		m_fViewWorkPlaneDis = ((CBaseCGCameraItem*)pCameraCalculator->GetItem())->GetViewWorkPlaneDis();
 #endif
 	m_b3DRenderType = TRUE;
 }
@@ -247,13 +247,13 @@ void CSimpleSpaceConvert::GetRayDirection( OUT SYRay *pRay, IN float3 *ptHit )
 	matrix4f viewInv,worldInv;
 	matrix4f_inverse(&viewInv,m_ConvertParam.pViewMat);
 	matrix4f_inverse(&worldInv,m_ConvertParam.pWorldMat);
-	if(m_ConvertParam.nProjType == SY_PERSPECTIVE_PROJ)
+	if(m_ConvertParam.nProjType == Common_PERSPECTIVE_PROJ)
 	{
 		Convert2DPtTo3D_NearWorldPlane( ptHit, &pRay->vStart );
 		//vec3DPoint -= *pParam->m_pEyePos;
 		pRay->vDir = pRay->vStart - *m_ConvertParam.pEyePos * worldInv;
 	}
-	else if (m_ConvertParam.nProjType == SY_ORTHO_PROJ)
+	else if (m_ConvertParam.nProjType == Common_ORTHO_PROJ)
 	{
 		vec3DPoint.x = 0;
 		vec3DPoint.y = 0;
@@ -437,13 +437,13 @@ void CSimpleSpaceConvert2D::GetRayDirection( OUT SYRay *pRay, IN float3 *ptHit )
 	float3 pos = { matWorld._41, matWorld._42, 0 };
 	matWorld._41 = matWorld._42 = matWorld._43 = 0;
 	matrix4f_inverse(&worldInv,&matWorld);
-	if(m_ConvertParam.nProjType == SY_PERSPECTIVE_PROJ)
+	if(m_ConvertParam.nProjType == Common_PERSPECTIVE_PROJ)
 	{
 		Convert2DPtTo3D_NearWorldPlane( ptHit, &pRay->vStart );
 		//vec3DPoint -= *pParam->m_pEyePos;
 		pRay->vDir = pRay->vStart - *m_ConvertParam.pEyePos * worldInv;
 	}
-	else if (m_ConvertParam.nProjType == SY_ORTHO_PROJ)
+	else if (m_ConvertParam.nProjType == Common_ORTHO_PROJ)
 	{
 		vec3DPoint.x = 0;
 		vec3DPoint.y = 0;
@@ -497,7 +497,7 @@ BOOL CSimpleSpaceConvert2D::Convert2DPtTo3D_Plane( const float3 *ptSrc, float3 *
 	ray.vStart.z = -m_fViewWorkPlaneDis;
 	float3Set( &ray.vDir, 0,0,1 );
 	SYHitPoint hitPoint;
-	if(GetRayPlaneInt(&ray,&center,&vplane_normal,&hitPoint) != SY_NO_HIT)
+	if(GetRayPlaneInt(&ray,&center,&vplane_normal,&hitPoint) != Common_NO_HIT)
 	{
 		*ptDest = hitPoint[0];
 		*ptDest -= pos;
@@ -505,7 +505,7 @@ BOOL CSimpleSpaceConvert2D::Convert2DPtTo3D_Plane( const float3 *ptSrc, float3 *
 		return TRUE;
 	}
 	ray.vDir.z = -1;
-	if(GetRayPlaneInt(&ray,&center,&vplane_normal,&hitPoint) != SY_NO_HIT)
+	if(GetRayPlaneInt(&ray,&center,&vplane_normal,&hitPoint) != Common_NO_HIT)
 	{
 		*ptDest = hitPoint[0];
 		*ptDest -= pos;
@@ -785,7 +785,7 @@ BOOL CSimpleSpaceConvert3DIn2D::Convert2DPtTo3D_Plane( const float3 *ptSrc, floa
 	float3NormalMulMat(&ray.vDir,&temp, &matWorldInv);
 	float3Normalize(&ray.vDir,&ray.vDir);
 	SYHitPoint hitPoint;
-	if(GetRayPlaneInt(&ray,vPlaneCenter,vPlaneNormal,&hitPoint) == SY_NO_HIT)
+	if(GetRayPlaneInt(&ray,vPlaneCenter,vPlaneNormal,&hitPoint) == Common_NO_HIT)
 	{
 		return FALSE;
 	}
@@ -912,13 +912,13 @@ void CSimpleSpaceConvert2DRenderBy3D::GetRayDirection( OUT SYRay *pRay, IN float
 	float3 pos = { matWorld._41, matWorld._42, 0 };
 	matWorld._41 = matWorld._42 = matWorld._43 = 0;
 	matrix4f_inverse(&worldInv,&matWorld);
-	if(m_ConvertParam.nProjType == SY_PERSPECTIVE_PROJ)
+	if(m_ConvertParam.nProjType == Common_PERSPECTIVE_PROJ)
 	{
 		Convert2DPtTo3D_NearWorldPlane( ptHit, &pRay->vStart );
 		//vec3DPoint -= *pParam->m_pEyePos;
 		pRay->vDir = pRay->vStart - *m_ConvertParam.pEyePos * worldInv;
 	}
-	else if (m_ConvertParam.nProjType == SY_ORTHO_PROJ)
+	else if (m_ConvertParam.nProjType == Common_ORTHO_PROJ)
 	{
 		vec3DPoint.x = 0;
 		vec3DPoint.y = 0;

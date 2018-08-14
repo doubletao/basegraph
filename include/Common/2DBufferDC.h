@@ -685,11 +685,11 @@ inline void CCommonBufferDC::GetBufferSize(OUT int &nWidth, OUT int &nHeight)
 // 将屏幕设为某一种颜色
 inline void CCommonBufferDC::ClearBuffer(IN DWORD dwColor)
 {
-	//SYBGRA32_FillRect(m_pdwBuffer, 0, 0, m_nWidth, m_nHeight, m_nWidth, m_nHeight, NULL, dwColor);
+	//BGRA32_FillRect(m_pdwBuffer, 0, 0, m_nWidth, m_nHeight, m_nWidth, m_nHeight, NULL, dwColor);
 }
 inline void CCommonBufferDC::ClearRect(IN int x, IN int y, IN int nWidth, IN int nHeight, IN DWORD dwColor)
 {
-	//SYBGRA32_FillRect(m_pdwBuffer, x, y, nWidth, nHeight, m_nWidth, m_nHeight, NULL, dwColor);
+	//BGRA32_FillRect(m_pdwBuffer, x, y, nWidth, nHeight, m_nWidth, m_nHeight, NULL, dwColor);
 }
 
 // 获取绘制的裁剪区域，裁剪区域为左上闭右下开。
@@ -909,8 +909,8 @@ inline BOOL CCommonBufferDC::BitBlt(IN int x,					// 目标位置
 	float xc = (float)x + nHalfW, yc = (float)y + nHalfH;
 
 	ClientToScreen(xc, yc);
-	x = SY_FToI(xc - nHalfW);
-	y = SY_FToI(yc - nHalfH);
+	x = Common_FToI(xc - nHalfW);
+	y = Common_FToI(yc - nHalfH);
 
 	return _BitBlt(x, y, nWidth, nHeight, pSrc, xSrc, ySrc, nSrcWidth, nSrcHeight,	\
 				nSrcBufWidth, nSrcBufHeight, eMode, eParity);
@@ -923,7 +923,7 @@ inline BOOL CCommonBufferDC::SetPixel(IN float x,			// 点位置
 {
 	ClientToScreen(x, y);
 
-	return _SetPixel(SY_FToI(x), SY_FToI(y), dwColor);
+	return _SetPixel(Common_FToI(x), Common_FToI(y), dwColor);
 }
 inline BOOL CCommonBufferDC::SetPixel(IN const pointf &pt,	// 点位置
 								  IN DWORD dwColor)			// 颜色
@@ -948,7 +948,7 @@ inline BOOL CCommonBufferDC::SetPixel(IN const POINT &pt,	// 点位置
 inline void CCommonBufferDC::MoveTo(IN float x, IN float y)
 {
 	ClientToScreen(x, y);
-	_MoveTo(SY_FToI(x), SY_FToI(y));
+	_MoveTo(Common_FToI(x), Common_FToI(y));
 }
 inline void CCommonBufferDC::MoveTo(IN const pointf &pt)
 {
@@ -967,7 +967,7 @@ inline BOOL CCommonBufferDC::LineTo(IN float x, IN float y)
 {
 	ClientToScreen(x, y);
 
-	return _LineTo(SY_FToI(x), SY_FToI(y));
+	return _LineTo(Common_FToI(x), Common_FToI(y));
 }
 inline BOOL CCommonBufferDC::LineTo(IN const pointf &pt)
 {
@@ -989,7 +989,7 @@ inline void CCommonBufferDC::DrawRect(IN float l, IN float t, IN float r, IN flo
 {
 	ClientToScreen(l, t);
 	ClientToScreen(r, b);
-	_DrawRect(SY_FToI(l), SY_FToI(t), SY_FToI(r), SY_FToI(b));
+	_DrawRect(Common_FToI(l), Common_FToI(t), Common_FToI(r), Common_FToI(b));
 }
 inline void CCommonBufferDC::DrawRect(IN const pointf &ptLT, IN const pointf &ptRB)
 {
@@ -1019,7 +1019,7 @@ inline void CCommonBufferDC::FillRect(IN float l, IN float t, IN float r, IN flo
 {
 	ClientToScreen(l, t);
 	ClientToScreen(r, b);
-	_FillRect(SY_FToI(l), SY_FToI(t), SY_FToI(r), SY_FToI(b), dwColor);
+	_FillRect(Common_FToI(l), Common_FToI(t), Common_FToI(r), Common_FToI(b), dwColor);
 }
 inline void CCommonBufferDC::FillRect(IN const pointf &ptLT, IN const pointf &ptRB, IN DWORD dwColor)
 {
@@ -1050,10 +1050,10 @@ inline void CCommonBufferDC::DrawCircle(IN float xc,					// 圆心
 									IN int r,						// 半径
 									IN BOOL bOddDia/* = TRUE*/)		// 直径为奇数（即 d = 2r + 1）
 {
-	int d = SY_FToI(DoZoomRef((float)((r << 1) + (bOddDia ? 1 : 0))));
+	int d = Common_FToI(DoZoomRef((float)((r << 1) + (bOddDia ? 1 : 0))));
 
 	ClientToScreen(xc, yc);
-	_DrawCircle(SY_FToI(xc), SY_FToI(yc), (d >> 1), ((d & 1) != 0));
+	_DrawCircle(Common_FToI(xc), Common_FToI(yc), (d >> 1), ((d & 1) != 0));
 }
 inline void CCommonBufferDC::DrawCircle(IN const pointf &ptC,			// 圆心
 									IN int r,						// 半径
@@ -1066,7 +1066,7 @@ inline void CCommonBufferDC::DrawCircle(IN int xc,						// 圆心
 									IN int r,						// 半径
 									IN BOOL bOddDia/* = TRUE*/)		// 直径为奇数（即 d = 2r + 1）
 {
-	int d = SY_FToI(DoZoomRef((float)((r << 1) + (bOddDia ? 1 : 0))));
+	int d = Common_FToI(DoZoomRef((float)((r << 1) + (bOddDia ? 1 : 0))));
 
 	ClientToScreen(xc, yc);
 	_DrawCircle(xc, yc, (d >> 1), ((d & 1) != 0));
@@ -1085,11 +1085,11 @@ inline void CCommonBufferDC::DrawEllipse(IN float xc,					// 圆心
 									IN BOOL bOdda/* = TRUE*/,			// 长轴为奇数
 									IN BOOL bOddb/* = TRUE*/)			// 短轴为奇数
 {
-	int d_a = SY_FToI(DoZoomRef((float)((a << 1) + (bOdda ? 1 : 0))));
-	int d_b = SY_FToI(DoZoomRef((float)((b << 1) + (bOddb ? 1 : 0))));
+	int d_a = Common_FToI(DoZoomRef((float)((a << 1) + (bOdda ? 1 : 0))));
+	int d_b = Common_FToI(DoZoomRef((float)((b << 1) + (bOddb ? 1 : 0))));
 
 	ClientToScreen(xc, yc);
-	_DrawEllipse(SY_FToI(xc), SY_FToI(yc), (d_a >> 1), (d_b >> 1), ((d_a & 1) != 0), ((d_b & 1) != 0));
+	_DrawEllipse(Common_FToI(xc), Common_FToI(yc), (d_a >> 1), (d_b >> 1), ((d_a & 1) != 0), ((d_b & 1) != 0));
 }
 inline void CCommonBufferDC::DrawEllipse(IN const pointf &ptC,		// 圆心
 									IN int a,										// 长轴
@@ -1106,8 +1106,8 @@ inline void CCommonBufferDC::DrawEllipse(IN int xc,						// 圆心
 									IN BOOL bOdda/* = TRUE*/,			// 长轴为奇数
 									IN BOOL bOddb/* = TRUE*/)			// 短轴为奇数
 {
-	int d_a = SY_FToI(DoZoomRef((float)((a << 1) + (bOdda ? 1 : 0))));
-	int d_b = SY_FToI(DoZoomRef((float)((b << 1) + (bOddb ? 1 : 0))));
+	int d_a = Common_FToI(DoZoomRef((float)((a << 1) + (bOdda ? 1 : 0))));
+	int d_b = Common_FToI(DoZoomRef((float)((b << 1) + (bOddb ? 1 : 0))));
 
 	ClientToScreen(xc, yc);
 	_DrawEllipse(xc, yc, (d_a >> 1), (d_b >> 1), ((d_a & 1) != 0), ((d_b & 1) != 0));
@@ -1205,7 +1205,7 @@ inline void CCommonBufferDC::DrawBorder(IN float l,						// 目标区域
 {
 	ClientToScreen(l, t);
 	ClientToScreen(r, b);
-	_DrawBorder(SY_FToI(l), SY_FToI(t), SY_FToI(r), SY_FToI(b), dwShadowColor, dwLightColor, eStyle, nBorderWidth);
+	_DrawBorder(Common_FToI(l), Common_FToI(t), Common_FToI(r), Common_FToI(b), dwShadowColor, dwLightColor, eStyle, nBorderWidth);
 }
 inline void CCommonBufferDC::DrawBorder(IN const rectf &rcDest,		// 目标区域
 									IN DWORD dwShadowColor,			// 暗色
@@ -1304,7 +1304,7 @@ inline BOOL CCommonBufferDC::_BitBlt(IN int x,						// 目标位置
 	if (!m_bAttached)
 		return FALSE;
 
-	return		SY_BitBlt(m_pdwBuffer, x, y, nWidth, nHeight, m_nWidth, m_nHeight,	\
+	return		Common_BitBlt(m_pdwBuffer, x, y, nWidth, nHeight, m_nWidth, m_nHeight,	\
 				pSrc, xSrc, ySrc, nSrcWidth, nSrcHeight, nSrcBufWidth, nSrcBufHeight,	\
 				eMode, eParity, &m_rcClip);
 }
@@ -1320,7 +1320,7 @@ inline void CCommonBufferDC::_MoveTo(IN int x, IN int y)
 // 填充矩形，此处填充色与内部填充色变量m_dwFillColor无关
 inline void CCommonBufferDC::_FillRect(IN int l, IN int t, IN int r, IN int b, IN DWORD dwColor)
 {
-	SYBGRA32_FillRect(m_pdwBuffer, l, t, (r - l), (b - t), m_nWidth, m_nHeight, &m_rcClip, dwColor);
+	BGRA32_FillRect(m_pdwBuffer, l, t, (r - l), (b - t), m_nWidth, m_nHeight, &m_rcClip, dwColor);
 }
 
 // 画圆（由于采用对称算法，只会画出偶数直径的圆）
@@ -1401,8 +1401,8 @@ inline void CCommonBufferDC::ClientToScreen(IN OUT rectf &rc)
 }
 inline void CCommonBufferDC::ClientToScreen(IN OUT int &x, IN OUT int &y)
 {
-	x = SY_FToI(DoZoomRef((float)x) + (float)m_ptOffsetRef.x);
-	y = SY_FToI(DoZoomRef((float)y) + (float)m_ptOffsetRef.y);
+	x = Common_FToI(DoZoomRef((float)x) + (float)m_ptOffsetRef.x);
+	y = Common_FToI(DoZoomRef((float)y) + (float)m_ptOffsetRef.y);
 }
 inline void CCommonBufferDC::ClientToScreen(IN OUT POINT &pt)
 {
@@ -1428,7 +1428,7 @@ inline void CCommonBufferDC::ClientToScreen(IN OUT RECT &rc)
 }
 inline float CCommonBufferDC::DoZoomRef(IN float x)
 {
-	return (SY_IsEqual_F(m_fZoomRef, 1.f) ? x : (x * m_fZoomRef));
+	return (Common_IsEqual_F(m_fZoomRef, 1.f) ? x : (x * m_fZoomRef));
 }
 
 //////////////////////////////////////////////////////////////////////////

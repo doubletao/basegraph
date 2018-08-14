@@ -12,7 +12,7 @@
 #define GSPROFILE "gs_4_0"
 
 //data struct
-struct SY_DeviceDX10
+struct Common_DeviceDX10
 {
 	ID3D10Device*	pDevice;
 	ID3D10Device*	pSwapChainDevice;
@@ -96,7 +96,7 @@ struct SY_DeviceDX10
 //render info
 ////////////////////////////////////////////////////////////////////////////////
 	DXRenderInfo		info;
-	SY_DeviceDX10();
+	Common_DeviceDX10();
 	void Reset();
 };
 
@@ -164,10 +164,10 @@ struct DynamicPixCB
 	float   fUnuse2;
 };
 //inline function
-inline bool SetRenderState(SY_DeviceDX10* pDevice,int nStateType,int nState);
-inline bool SetSamplerState(SY_DeviceDX10* pDevice,int nState,int nType,int nSampler);
-inline BOOL SetVertexBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer);
-inline bool ModifyBuffer(SY_DeviceDX10* pDevice,int hBuffer,void* pMemBuffer)
+inline bool SetRenderState(Common_DeviceDX10* pDevice,int nStateType,int nState);
+inline bool SetSamplerState(Common_DeviceDX10* pDevice,int nState,int nType,int nSampler);
+inline BOOL SetVertexBuffer(Common_DeviceDX10* pDevice,int hVertexBuffer);
+inline bool ModifyBuffer(Common_DeviceDX10* pDevice,int hBuffer,void* pMemBuffer)
 {
 	CommonBuffer* pBuffer = (CommonBuffer*) BseeHTable_GetAt(&pDevice->htBuffer,hBuffer);
 	//从效率考虑,暂不支持indexbuffer的更新
@@ -205,7 +205,7 @@ inline void CreateConstDesc(D3D10_BUFFER_DESC* desc,int nSize)
     desc->CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
     desc->MiscFlags = 0;
 }
-inline void SetPrimitiveTopology(SY_DeviceDX10* pDevice,int nType)
+inline void SetPrimitiveTopology(Common_DeviceDX10* pDevice,int nType)
 {
 	D3D10_PRIMITIVE_TOPOLOGY d3dPriType = D3D10_PRIMITIVE_TOPOLOGY_UNDEFINED;
 	switch (nType)
@@ -223,7 +223,7 @@ inline void SetPrimitiveTopology(SY_DeviceDX10* pDevice,int nType)
 	pDevice->pDevice->IASetPrimitiveTopology(d3dPriType);
 	pDevice->nNowPriType = (DXPrimitiveTypes)nType;
 }
-inline void ReleaseBuffer(SY_DeviceDX10* pDevice,int hBuffer)
+inline void ReleaseBuffer(Common_DeviceDX10* pDevice,int hBuffer)
 {
 	if (!hBuffer)
 		return;
@@ -253,7 +253,7 @@ inline void ReleaseBuffer(SY_DeviceDX10* pDevice,int hBuffer)
 	SAFE_RELEASE(pBuffer->pBuffer);
 	SAFE_DELETE(pBuffer);
 }
-inline void ReleaseShader(SY_DeviceDX10* pDevice,int hShader)
+inline void ReleaseShader(Common_DeviceDX10* pDevice,int hShader)
 {
 	SYShader* pShader = (SYShader*)BseeHTable_GetAt(&pDevice->htShaderTable,hShader);
 	if (pShader)
@@ -292,7 +292,7 @@ inline void ReleaseShader(SY_DeviceDX10* pDevice,int hShader)
 	}
 }
 
-inline BOOL IsNeedScaleTexParam(SY_DeviceDX10* pDevice,int hTex,float& fScale)
+inline BOOL IsNeedScaleTexParam(Common_DeviceDX10* pDevice,int hTex,float& fScale)
 {
 	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTex);
 	if(!pTexture)
@@ -314,7 +314,7 @@ inline BOOL IsNeedScaleTexParam(SY_DeviceDX10* pDevice,int hTex,float& fScale)
 	}
 }
 
-inline void SetViewPort(SY_DeviceDX10* pDevice,int nLeft,int nTop,int nRight,int nBottom)
+inline void SetViewPort(Common_DeviceDX10* pDevice,int nLeft,int nTop,int nRight,int nBottom)
 {
 	//进行一个正向判定，由于某些显卡不支持负值，所以此处遇到负值直接归零
 	if (nLeft < 0)
@@ -342,7 +342,7 @@ inline void SetViewPort(SY_DeviceDX10* pDevice,int nLeft,int nTop,int nRight,int
 	D3D10_VIEWPORT viewPort = {nLeft * fScale,nTop * fScale,(nRight - nLeft) * fScale,(nBottom - nTop) * fScale,0,1};
 	pDevice->pDevice->RSSetViewports(1,&viewPort);
 }
-inline void SetScissor(SY_DeviceDX10* pDevice,const RECT* pRect)
+inline void SetScissor(Common_DeviceDX10* pDevice,const RECT* pRect)
 {
 	pDevice->rtScissor = *pRect;
 	float fScale = 1;
@@ -356,7 +356,7 @@ inline void SetScissor(SY_DeviceDX10* pDevice,const RECT* pRect)
 	pDevice->pDevice->RSSetScissorRects(1,&rt);
 }
 
-inline ID3D10Texture2D* getTexture(SY_DeviceDX10* pDevice,int hTexture)
+inline ID3D10Texture2D* getTexture(Common_DeviceDX10* pDevice,int hTexture)
 {
 	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
 	if (!pSrcWDTexture)
@@ -364,7 +364,7 @@ inline ID3D10Texture2D* getTexture(SY_DeviceDX10* pDevice,int hTexture)
 	return (ID3D10Texture2D*)pSrcWDTexture->pTexture;
 }
 
-inline void getTextureInfo(SY_DeviceDX10* pDevice,int hTexture,int* pWidth,int* pHeight,int* pMipMap)
+inline void getTextureInfo(Common_DeviceDX10* pDevice,int hTexture,int* pWidth,int* pHeight,int* pMipMap)
 {
 	if(hTexture <= 0)
 		return;
@@ -380,7 +380,7 @@ inline void getTextureInfo(SY_DeviceDX10* pDevice,int hTexture,int* pWidth,int* 
 		*pMipMap = desc.MipLevels;
 }
 
-inline void SetRenderTarget(SY_DeviceDX10* pDevice,int hRT,int hDepth)
+inline void SetRenderTarget(Common_DeviceDX10* pDevice,int hRT,int hDepth)
 {
 	ID3D10RenderTargetView* pRenderTarget = NULL;
 	ID3D10DepthStencilView* pDepth = NULL;
@@ -414,9 +414,9 @@ inline void SetRenderTarget(SY_DeviceDX10* pDevice,int hRT,int hDepth)
 	//SetScissor(pDevice,&pDevice->rtViewport);
 }
 
-inline BOOL SetShader(SY_DeviceDX10* pDevice,int nShaderType,int hShader);
-inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,DXShaderType nShaderType,int nRegIndex);
-inline void  BeginRenderTexture(SY_DeviceDX10* pDevice)
+inline BOOL SetShader(Common_DeviceDX10* pDevice,int nShaderType,int hShader);
+inline BOOL SetShaderTexture(Common_DeviceDX10* pDevice,int hTex,DXShaderType nShaderType,int nRegIndex);
+inline void  BeginRenderTexture(Common_DeviceDX10* pDevice)
 {
 	int nWidth,nHeight;
 	getTextureInfo(pDevice,pDevice->hNowRenderTarget,&nWidth,&nHeight,NULL);
@@ -428,7 +428,7 @@ inline void  BeginRenderTexture(SY_DeviceDX10* pDevice)
 		pDevice->rtViewport.left - halfWidth,
 		pDevice->rtViewport.right - halfWidth ,
 		halfHeight - pDevice->rtViewport.bottom ,
-		halfHeight - pDevice->rtViewport.top,0.1f,10,SY_ORTHO_PROJ);
+		halfHeight - pDevice->rtViewport.top,0.1f,10,Common_ORTHO_PROJ);
 	memcpy(pDevice->pSpritState,pDevice->pNowState,DXRenderState_Count * sizeof(int));
 	SetRenderState(pDevice,DXBlendState,DXBlend_Mix);
 	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
@@ -436,7 +436,7 @@ inline void  BeginRenderTexture(SY_DeviceDX10* pDevice)
 	SetSamplerState(pDevice,DXSample_Line_Clamp,DXShaderType_PixelShader,0);
 }
 
-inline void  EndRenderTexture(SY_DeviceDX10* pDevice)
+inline void  EndRenderTexture(Common_DeviceDX10* pDevice)
 {
 	for (int i = 0; i < DXRenderState_Count; i++)
 	{
@@ -444,7 +444,7 @@ inline void  EndRenderTexture(SY_DeviceDX10* pDevice)
 	}
 }
 
-inline bool SetDepthState(SY_DeviceDX10* pDevice,int nState)
+inline bool SetDepthState(Common_DeviceDX10* pDevice,int nState)
 {
 	if (nState == DXDepthState_Default)
 		pDevice->pDevice->OMSetDepthStencilState(NULL,0);
@@ -454,7 +454,7 @@ inline bool SetDepthState(SY_DeviceDX10* pDevice,int nState)
 		pDevice->pDevice->OMSetDepthStencilState(pDevice->pDepthState[nState],0);
 	return true;
 }
-inline bool SetBlendState(SY_DeviceDX10* pDevice,int nState)
+inline bool SetBlendState(Common_DeviceDX10* pDevice,int nState)
 {
 	static float blend[4];
 	if(nState == DXBlendState_Default)
@@ -463,7 +463,7 @@ inline bool SetBlendState(SY_DeviceDX10* pDevice,int nState)
 		pDevice->pDevice->OMSetBlendState(pDevice->pBlendState[nState],blend,0xffffffff);
 	return true;
 }
-inline bool SetRasterizerState(SY_DeviceDX10* pDevice,int nState)
+inline bool SetRasterizerState(Common_DeviceDX10* pDevice,int nState)
 {
 	if(nState == DXRasterizer_Default)
 		pDevice->pDevice->RSSetState(NULL);
@@ -471,7 +471,7 @@ inline bool SetRasterizerState(SY_DeviceDX10* pDevice,int nState)
 		pDevice->pDevice->RSSetState(pDevice->pRasterizerState[nState]);
 	return true;
 }
-inline bool SetRenderState(SY_DeviceDX10* pDevice,int nStateType,int nState)
+inline bool SetRenderState(Common_DeviceDX10* pDevice,int nStateType,int nState)
 {
 	if (pDevice->pNowState[nStateType] == nState)
 	{
@@ -495,7 +495,7 @@ inline bool SetRenderState(SY_DeviceDX10* pDevice,int nStateType,int nState)
 	return true;
 }
 
-inline bool SetSamplerState(SY_DeviceDX10* pDevice,int nState,int nType,int nSampler)
+inline bool SetSamplerState(Common_DeviceDX10* pDevice,int nState,int nType,int nSampler)
 {
 	if (pDevice->pNowSamplerState[nType][nSampler] == nState)
 	{
@@ -523,7 +523,7 @@ inline bool SetSamplerState(SY_DeviceDX10* pDevice,int nState,int nType,int nSam
 	pDevice->pNowSamplerState[nType][nSampler] = nState;
 	return true;
 }
-inline BOOL SetShader(SY_DeviceDX10* pDevice,int nShaderType,int hShader)
+inline BOOL SetShader(Common_DeviceDX10* pDevice,int nShaderType,int hShader)
 {
 	if (pDevice->pShader[nShaderType] == hShader)
 	{
@@ -550,7 +550,7 @@ inline BOOL SetShader(SY_DeviceDX10* pDevice,int nShaderType,int hShader)
 	return TRUE;
 }
 
-inline BOOL SetIndexBuffer(SY_DeviceDX10* pDevice,int hIndexBuffer)
+inline BOOL SetIndexBuffer(Common_DeviceDX10* pDevice,int hIndexBuffer)
 {
 	if (pDevice->hNowIndexBuffer == hIndexBuffer)
 	{
@@ -562,7 +562,7 @@ inline BOOL SetIndexBuffer(SY_DeviceDX10* pDevice,int hIndexBuffer)
 	return TRUE;
 }
 
-inline BOOL SetVertexBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer)
+inline BOOL SetVertexBuffer(Common_DeviceDX10* pDevice,int hVertexBuffer)
 {
 	if (pDevice->hNowVertexBuffer == hVertexBuffer)
 	{
@@ -576,7 +576,7 @@ inline BOOL SetVertexBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer)
 	return TRUE;
 }
 
-inline BOOL SetVertexInstanceBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer,int hInstanceBuffer)
+inline BOOL SetVertexInstanceBuffer(Common_DeviceDX10* pDevice,int hVertexBuffer,int hInstanceBuffer)
 {
 	CommonBuffer* pVB0 = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,hVertexBuffer);
 	CommonBuffer* pVB1 = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,hInstanceBuffer);
@@ -590,7 +590,7 @@ inline BOOL SetVertexInstanceBuffer(SY_DeviceDX10* pDevice,int hVertexBuffer,int
 	return TRUE;
 }
 
-inline BOOL SetShaderTexture(SY_DeviceDX10* pDevice,int hTex,DXShaderType nShaderType,int nRegIndex)
+inline BOOL SetShaderTexture(Common_DeviceDX10* pDevice,int hTex,DXShaderType nShaderType,int nRegIndex)
 {
 	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTex);
 	ID3D10ShaderResourceView* pView = NULL;

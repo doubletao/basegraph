@@ -19,9 +19,9 @@ typedef struct tag_ResultNode
 	float fParam; 
 }ResultNode;
 
-typedef CBaseARray<Index3*> CSYIndex3Array;
-typedef CBaseARray<IntersectNode*> CSYIntersectNodeArray;
-typedef CBaseARray<ResultNode*> CSYResultNodeArray;
+typedef CBaseARray<Index3*> CBaseIndex3Array;
+typedef CBaseARray<IntersectNode*> CBaseIntersectNodeArray;
+typedef CBaseARray<ResultNode*> CBaseResultNodeArray;
 class SYBevelPoly
 {
 public:
@@ -30,23 +30,23 @@ public:
 	void BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN float fHeight, OUT point3f* &ptf3DRet, OUT int &nTriPtSize, IN BOOL bAntiClockwise ) ;
 protected:
 	BOOL NearLine(IN pointf* ptf ) ;
-	void AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, OUT CSYPoint2fPtrArray * pptrPolyNorm, IN pointf * ctrlPoints);//AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, IN pointf * ctrlPoints);
+	void AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBasePoint2fPtrArray * pptrPolyNorm, IN pointf * ctrlPoints);//AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, IN pointf * ctrlPoints);
 	void GenerateRudeBevel4(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
-		OUT CSYPoint3fPtrArray * pptrArrRude4/*, OUT CPtrArray * pptrArrBox4*/ );
+		OUT CBasePoint3fPtrArray * pptrArrRude4/*, OUT CPtrArray * pptrArrBox4*/ );
 	void GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
-		OUT CSYPoint3fPtrArray * pptrArrRude3, /*OUT CPtrArray * pptrArrBox3, */OUT CSYIndex3Array *pptrArrIndex3 );
-	void CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
-		IN CSYPoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CSYIndex3Array *pptrArrIndex3,
-		IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray * pptrTri ) ;
-	void CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
-		IN CSYPoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CSYIndex3Array *pptrArrIndex3,
-		IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray * pptrTri ) ;
-	int MakeASlope(OUT CSYPoint3fPtrArray *ptArr,IN pointf* pCenter, IN pointf* pStartPt,IN pointf* pEndPt,IN float fDis, IN float fHeight,IN int nDirect);
-	void CutUnSeenByOne(IN point3f* ptfFish, IN point3f* ptfKnife, IN int nFishSize, IN int nKnifeSize,IN OUT CSYPoint2fPtrArray * pptrCutLineSegArr);
+		OUT CBasePoint3fPtrArray * pptrArrRude3, /*OUT CPtrArray * pptrArrBox3, */OUT CBaseIndex3Array *pptrArrIndex3 );
+	void CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CBasePoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+		IN CBasePoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CBaseIndex3Array *pptrArrIndex3,
+		IN float fWidth, IN float fHeight, OUT CBasePoint3fPtrArray * pptrTri ) ;
+	void CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CBasePoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+		IN CBasePoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CBaseIndex3Array *pptrArrIndex3,
+		IN float fWidth, IN float fHeight, OUT CBasePoint3fPtrArray * pptrTri ) ;
+	int MakeASlope(OUT CBasePoint3fPtrArray *ptArr,IN pointf* pCenter, IN pointf* pStartPt,IN pointf* pEndPt,IN float fDis, IN float fHeight,IN int nDirect);
+	void CutUnSeenByOne(IN point3f* ptfFish, IN point3f* ptfKnife, IN int nFishSize, IN int nKnifeSize,IN OUT CBasePoint2fPtrArray * pptrCutLineSegArr);
 	// pptrLineSegArr: ‰»Îœﬂ∂Œ∂•µ„Array
-	void IntersectEachOther(IN CSYPoint2fPtrArray * pptrLineSegArr,  OUT CSYIntersectNodeArray * pptrIntersectPtArr ) ;
-	void GetResultTri4(IN pointf ptfFormer0, IN pointf ptfFormer1, IN pointf ptfConeHeadNorm0, IN pointf ptfConeHeadNorm1, IN CSYPoint2fPtrArray *pptrCutLineSegArr, IN CSYIntersectNodeArray *ptrIntersectPtArr, IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray *pptrTri ); 
-	void GetResultTri3(IN pointf ptfConeHead, IN pointf ptfConeHeadNorm, IN pointf ptfFormer0, IN pointf ptfFormer1, IN CSYPoint2fPtrArray *pptrCutLineSegArr, IN CSYIntersectNodeArray *ptrIntersectPtArr, IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray *pptrTri ); 
+	void IntersectEachOther(IN CBasePoint2fPtrArray * pptrLineSegArr,  OUT CBaseIntersectNodeArray * pptrIntersectPtArr ) ;
+	void GetResultTri4(IN pointf ptfFormer0, IN pointf ptfFormer1, IN pointf ptfConeHeadNorm0, IN pointf ptfConeHeadNorm1, IN CBasePoint2fPtrArray *pptrCutLineSegArr, IN CBaseIntersectNodeArray *ptrIntersectPtArr, IN float fWidth, IN float fHeight, OUT CBasePoint3fPtrArray *pptrTri ); 
+	void GetResultTri3(IN pointf ptfConeHead, IN pointf ptfConeHeadNorm, IN pointf ptfFormer0, IN pointf ptfFormer1, IN CBasePoint2fPtrArray *pptrCutLineSegArr, IN CBaseIntersectNodeArray *ptrIntersectPtArr, IN float fWidth, IN float fHeight, OUT CBasePoint3fPtrArray *pptrTri ); 
 	void GetEnvelop(IN pointf *ptf, IN int nSize, OUT rectf &rt);
 	BOOL RectOverlap(IN rectf rt1, IN rectf rt2);
 	void ProjCrossLine(IN point3f ptf1, IN point3f ptf2, IN point3f ptf3, IN point3f ptf4, IN point3f ptf5, IN point3f ptf6,OUT float &fA, OUT float &fB, OUT float &fC);
@@ -56,7 +56,7 @@ protected:
 	BOOL SamePtf(pointf ptf1, pointf ptf2);
 	BOOL SingleLineIntersection(IN pointf startPt1, IN pointf endPt1, IN pointf startPt2, IN pointf endPt2,OUT pointf &ptCross);
 	void Perpendicular(IN pointf  a, IN pointf b, IN pointf c, OUT pointf &ptfP, OUT float & fParam );
-	void InsertNode(IN OUT CSYResultNodeArray *pptrResultNodeArr, IN ResultNode * pNode);
+	void InsertNode(IN OUT CBaseResultNodeArray *pptrResultNodeArr, IN ResultNode * pNode);
 	void GetAngle(IN pointf a, IN pointf b, OUT float & angle);
 };
 //////////////////////////////////////////////////////////////////////////

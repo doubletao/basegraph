@@ -83,7 +83,7 @@ struct PtBintreeNode
 };
 typedef PtBintreeNode* LPPtBintree;  
 
-void GetPtBintreeNode(LPPtBintree PtBintree, CSYBezierSplitArray &PtArray)
+void GetPtBintreeNode(LPPtBintree PtBintree, CBaseBezierSplitArray &PtArray)
 {
 	if(PtBintree)
 	{
@@ -130,7 +130,7 @@ inline LPPtBintree  SplitBezier(point2f  F0,point2f F1,point2f G0,point2f G1,flo
 }
 
 //////////////////////////////////////////////////////////////////////////
-void SYBezierGet3Sp(point2f CtrlPt[], CSYBezierSplitArray& arBezierSplit)
+void SYBezierGet3Sp(point2f CtrlPt[], CBaseBezierSplitArray& arBezierSplit)
 {
 	point2f G0,G1;
 	G0.x = (CtrlPt[0].x-2*CtrlPt[1].x+CtrlPt[2].x)*3.0f;
@@ -143,9 +143,9 @@ void SYBezierGet3Sp(point2f CtrlPt[], CSYBezierSplitArray& arBezierSplit)
 	FreePtBintreeNode(PtBintree);
 }
 
-void SYBezierGet3Pt(point2f CtrlPt[], CSYPoint2fArray &PtArray)
+void SYBezierGet3Pt(point2f CtrlPt[], CBasePoint2fArray &PtArray)
 {
-	CSYBezierSplitArray arBezierSplit;
+	CBaseBezierSplitArray arBezierSplit;
 	SYBezierGet3Sp(CtrlPt, arBezierSplit);
 
 	int nSplitCnt = arBezierSplit.GetCount();
@@ -155,14 +155,14 @@ void SYBezierGet3Pt(point2f CtrlPt[], CSYPoint2fArray &PtArray)
 	}
 }
 
-void GetBezier3_Split_Info(point2f CtrlPt[], CSYBezierSplitArray& arBezierSplit)
+void GetBezier3_Split_Info(point2f CtrlPt[], CBaseBezierSplitArray& arBezierSplit)
 {
 	arBezierSplit.Add(SPLITE_BEZIER3_NODE(CtrlPt[0], 0.0f));
 	SYBezierGet3Sp(CtrlPt, arBezierSplit);
 	arBezierSplit.Add(SPLITE_BEZIER3_NODE(CtrlPt[3], 1.0f));
 }
 
-void GetBezier3_Line_Info2(CSYBezierSplitArray& arBezierSplit, CSYBezier3LineArray& arBezier3Line)
+void GetBezier3_Line_Info2(CBaseBezierSplitArray& arBezierSplit, CBaseBezier3LineArray& arBezier3Line)
 {
 	int nSize = arBezierSplit.GetCount();
 	arBezier3Line.SetSize(nSize);
@@ -177,14 +177,14 @@ void GetBezier3_Line_Info2(CSYBezierSplitArray& arBezierSplit, CSYBezier3LineArr
 	}
 }
 
-void SYBezier3GetLineInfo(point2f CtrlPt[], CSYBezier3LineArray& arBezier3Line)
+void SYBezier3GetLineInfo(point2f CtrlPt[], CBaseBezier3LineArray& arBezier3Line)
 {
-	CSYBezierSplitArray arBezierSplit;
+	CBaseBezierSplitArray arBezierSplit;
 	GetBezier3_Split_Info(CtrlPt, arBezierSplit);
 	GetBezier3_Line_Info2(arBezierSplit, arBezier3Line);
 }
 
-float SYBezier3CalcParat(CSYBezier3LineArray& arBezier3Line, float fCurveLen)
+float SYBezier3CalcParat(CBaseBezier3LineArray& arBezier3Line, float fCurveLen)
 {
 	int nB3LineCnt = arBezier3Line.GetCount();
 
@@ -347,9 +347,9 @@ float SYBezierPtIn(const point2f &pt0,	//In
 	}
 	else
 	{
-		float fW = SYRectf_Width(&Rtf);
-		float fH = SYRectf_Height(&Rtf);
-		if (fW<r*2.0f && fH<r*2.0f && SYRectf_PtInRect(&Rtf, pt0))
+		float fW = BaseRectf_Width(&Rtf);
+		float fH = BaseRectf_Height(&Rtf);
+		if (fW<r*2.0f && fH<r*2.0f && BaseRectf_PtInRect(&Rtf, pt0))
 			return fMid;
 
 		if(fW<r*2.0f)
@@ -362,7 +362,7 @@ float SYBezierPtIn(const point2f &pt0,	//In
 			Rtf.top    -= r-fH;
 			Rtf.bottom += r-fH;
 		}
-		if(SYRectf_PtInRect(&Rtf, pt0))
+		if(BaseRectf_PtInRect(&Rtf, pt0))
 		{
 			point2f p1[4],p2[4];
 			SYBezierCut(Pt,p1,p2,0.5f);
@@ -433,10 +433,10 @@ point2f* SYBezierGetPtList(BaseARray &HandleArray)
 float SYBezierGetYValueFromX(point2f CtrlPt[], float fX)
 {
 	rectf Rtf = SYGetBoundfFromPt2fs(CtrlPt);
-	if (SYRectf_Width(&Rtf) < 0.0005f || SYRectf_Height(&Rtf) < 0.0005f)
+	if (BaseRectf_Width(&Rtf) < 0.0005f || BaseRectf_Height(&Rtf) < 0.0005f)
 	{
 		point2f ptCent;
-		SYRectf_CenterPoint(&ptCent, &Rtf);
+		BaseRectf_CenterPoint(&ptCent, &Rtf);
 		return ptCent.y;
 	}
 	else
@@ -452,7 +452,7 @@ float SYBezierGetYValueFromX(point2f CtrlPt[], float fX)
 		if(fX==fptMid.x && 0)
 		{
 			point2f ptCent;
-			SYRectf_CenterPoint(&ptCent, &Rtf);
+			BaseRectf_CenterPoint(&ptCent, &Rtf);
 			return ptCent.y;
 		}
 		else if(fX<fptMid.x)
@@ -526,8 +526,8 @@ rectf  SYCacArcRect(point2f& pt0,point2f& pt1, point2f& pt2,float* pfR,point2f* 
 
 		//if(fR>360)
 		//	return  CRect(0,0,0,0);
-		SYRectf_OffsetRect1(&Rt, Org.x, Org.y);
-		SYRectf_InflateRect1(&Rt, fR, fR);
+		BaseRectf_OffsetRect1(&Rt, Org.x, Org.y);
+		BaseRectf_InflateRect1(&Rt, fR, fR);
 	}
 	return Rt;
 }
@@ -661,7 +661,7 @@ BOOL SYKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,doubl
 		pData->m_dCurValue[2] = pData->m_dValue3[0]+(pData->m_dValue3[3]-pData->m_dValue3[0])*t;
 	case XY:
 		{
-			CSYBezier3LineArray arBezier3Line;
+			CBaseBezier3LineArray arBezier3Line;
 			SYBezier3GetLineInfo(KeyCtrlPt, arBezier3Line);
 
 			int nSize       = arBezier3Line.GetCount();

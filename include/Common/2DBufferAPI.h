@@ -2,8 +2,8 @@
 // ÃèÊö£º	Éæ¼°´óÆ¬ÄÚ´æÔËËã´¦ÀíµÄ½Ó¿Ú£¬²ÉÓÃ SSE2 ½øÐÐËã·¨ÓÅ»¯
 //
 //////////////////////////////////////////////////////////////////////////
-#ifndef __SY_MEMAPI_INC__
-#define __SY_MEMAPI_INC__
+#ifndef __Common_MEMAPI_INC__
+#define __Common_MEMAPI_INC__
 #include "Common\2DBuffer.h"
 #include "Common\VectorDef.h"
 //////////////////////////////////////////////////////////////////////////
@@ -66,14 +66,14 @@ BASEGRAPH_COMMON_API BOOL SYFill_ClipRange(IN OUT int &nX,	// Ìî³äÆðµã
 //////////////////////////////////////////////////////////////////////////
 // Ê¹ÓÃ¸ø¶¨µÄÑÕÉ«ÖµÌæ»»32Î»»Ò¶ÈÍ¼µÄÑÕÉ«bufferÖÐRGBÈý¸öÍ¨µÀµÄÖµ
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void SY_GrayscaleColrReplace(IN OUT DWORD* pBuffer,	//RGBA
+BASEGRAPH_COMMON_API void Common_GrayscaleColrReplace(IN OUT DWORD* pBuffer,	//RGBA
 												 IN int len,			//DWORD count
 												 IN DWORD color);		//RGBA
 
 //////////////////////////////////////////////////////////////////////////
 // Ê¹ÓÃ¸ø¶¨µÄÈ¨Öµ¶Ô32Î»Í¼µÄÑÕÉ«bufferÖÐRGBAÍ¨µÀ½øÐÐ¼ÓÈ¨
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void SY_ColrWeightMix(IN OUT DWORD* pBuffer,	//RGBA
+BASEGRAPH_COMMON_API void Common_ColrWeightMix(IN OUT DWORD* pBuffer,	//RGBA
 										  IN int len,				//DWORD count
 										  IN DWORD weight);			//Rw Gw Bw Aw
 
@@ -120,12 +120,12 @@ BASEGRAPH_COMMON_API void SYMemset_LineDWORD(OUT DWORD *pDes,		// Ä¿±ê
 											IN DWORD value,	// Ë«×ÖÖµ
 											IN int nsize);	// Ë«×ÖµÄ¸öÊý
 // ¼æÈÝ¾É½Ó¿Ú
-#define SY_DMemSet		SYMemset_LineDWORD
+#define Common_DMemSet		SYMemset_LineDWORD
 // Ò»ÐÐ Buffer µÄAlphaÖµÌæ»»²Ù×÷£¬°üº¬ÑÚÂëÑÕÉ«µÄÊ¹ÓÃ¡£
 BASEGRAPH_COMMON_API void SYMemset_LineAlpha(IN OUT DWORD *pDes,		// Ä¿±ê
 											IN char alpha,		// alpha Öµ
 											IN int nsize,			// Ë«×Ö³¤¶È
-											IN SY_FILL_MODE eMode,	// Ìî³äÄ£Ê½
+											IN Common_FILL_MODE eMode,	// Ìî³äÄ£Ê½
 											IN DWORD pdwMaskCr);	// ÑÚÂëÑÕÉ«Öµ£¨ÒÀÀµÄ£Ê½µÄ¿ÉÑ¡Ïî£©
 
 // Ò»ÐÐ Buffer µÄ·­×ª²Ù×÷
@@ -141,23 +141,23 @@ BASEGRAPH_COMMON_API void SYMemrev_LineDWORD(IN OUT DWORD *pBuf,	// »º´æ
 //////////////////////////////////////////////////////////////////////////
 
 // Ò»ÐÐ Buffer µÄ MIX ²Ù×÷
-BASEGRAPH_COMMON_API void SYBGRA32_LineMix(IN OUT void *des,			// Ä¿±ê
+BASEGRAPH_COMMON_API void BGRA32_LineMix(IN OUT void *des,			// Ä¿±ê
 										  IN void *src,			// Ô´
 										  IN int na16,			// ¿í¶È³ýÒÔ 16 µÄÉÌ
 										  IN int nm16);			// ¿í¶È³ýÒÔ 16 µÄÓàÊý
-BASEGRAPH_COMMON_API void SYBGRA32_LineMix_NotSrc(IN OUT void *des,	// Ä¿±ê
+BASEGRAPH_COMMON_API void BGRA32_LineMix_NotSrc(IN OUT void *des,	// Ä¿±ê
 												 IN void *src,	// Ô´
 												 IN int na16,		// ¿í¶È³ýÒÔ 16 µÄÉÌ
 												 IN int nm16);	// ¿í¶È³ýÒÔ 16 µÄÓàÊý
 
 // µÚÈý·½È¨ÖØµÄÌî³ä²Ù×÷£ºdes = c0 * f + c1 * (1 - f) = (c0 - c1) * f + c1
-BASEGRAPH_COMMON_API void SYBGRA32_PowerFill(OUT DWORD* pDes,	// Ä¿±ê
+BASEGRAPH_COMMON_API void BGRA32_PowerFill(OUT DWORD* pDes,	// Ä¿±ê
 											IN DWORD dwC0,		// ÆðµãÑÕÉ«
 											IN DWORD dwC1,		// ÖÕµãÑÕÉ«
 											IN short* pPower,		// È¨ÖØ±»·Å´ó 14 Î»
 											IN int nWidth);		// ÏñËØ¸öÊý
 // ¸ü¿ìËÙµÄÈ¨ÖØÌî³ä£¬²»ÐèÒª¼ÆËãÈ¨ÖØ±í£¬È¨ÖØÈÔÈ»±»·Å´ó 14 Î»
-BASEGRAPH_COMMON_API void SYBGRA32_PowerFill_Q(OUT DWORD* pDes,		// Ä¿±ê
+BASEGRAPH_COMMON_API void BGRA32_PowerFill_Q(OUT DWORD* pDes,		// Ä¿±ê
 											  IN DWORD dwC0,		// ÆðµãÑÕÉ«
                                               IN DWORD dwC1,		// ÖÕµãÑÕÉ«
 											  IN float fPrev,		// ÆðµãÇ°Ò»¸öÈ¨ÖØ
@@ -165,7 +165,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_PowerFill_Q(OUT DWORD* pDes,		// Ä¿±ê
 											  IN int nWidth);		// ÏñËØ¸öÊý
 // ²ÉÓÃµÝ¹é·¨¶Ô¸¡µãÑÕÉ«½øÐÐ²åÖµ
 // ¹«Ê½ f(x) = A * (c1 - c0) * (x - B) + C
-BASEGRAPH_COMMON_API void SYBGRA32_LineBaseAR_Recursive(OUT DWORD* pDes,		// Ä¿±ê
+BASEGRAPH_COMMON_API void BGRA32_LineBaseAR_Recursive(OUT DWORD* pDes,		// Ä¿±ê
 												   IN float* pfCr0,	// ÆðµãÑÕÉ«
 												   IN float* pfCr1,	// ÖÕµãÑÕÉ«
 												   IN float fX,		// X µÄÆðÊ¼µã£¨ÏñËØË÷Òý£©
@@ -177,7 +177,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_LineBaseAR_Recursive(OUT DWORD* pDes,		// Ä¿±
 // ÐÂ½Ó¿Ú£¨ Buffer ÐÅÏ¢´æÔÚ½á¹¹Àï£©
 
 // ²ÉÓÃË«ÏßÐÔÀ­Éì
-BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê Buffer
+BASEGRAPH_COMMON_API BOOL Common_BitBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê Buffer
 									 IN int nDesWidth,			// Ä¿±ê²Ù×÷´óÐ¡
 									 IN int nDesHeight,
 									 IN CommonBufferDef32* pSrcBuf,	// Ô´ Buffer
@@ -187,7 +187,7 @@ BASEGRAPH_COMMON_API BOOL SY_BitBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê
 									 IN BUFFER_PARITY_STYLE eParity);	// ÆæÅ¼³¡ÀàÐÍ
 
 // ²ÉÓÃË«ÏßÐÔÀ­Éì
-BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê Buffer
+BASEGRAPH_COMMON_API BOOL Common_StretchBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê Buffer
 										 IN int nDesWidth,			// Ä¿±ê²Ù×÷´óÐ¡
 										 IN int nDesHeight,
 										 IN CommonBufferDef32* pSrcBuf,	// Ô´ Buffer
@@ -197,7 +197,7 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt_N(IN OUT CommonBufferDef32* pDesBuf,	// 
 										 IN BUFFER_PARITY_STYLE eParity);	// ÆæÅ¼³¡ÀàÐÍ
 
 // ²ÉÓÃÈ¨ÖØ×ÜºÍµÄ¾ùÖµÀ­Éì
-BASEGRAPH_COMMON_API BOOL SY_StretchBlt_Mean(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê Buffer
+BASEGRAPH_COMMON_API BOOL Common_StretchBlt_Mean(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê Buffer
 											IN int nDesX,
 											IN int nDesY,
 											IN int nDesWidth,			// Ä¿±ê²Ù×÷´óÐ¡
@@ -211,7 +211,7 @@ BASEGRAPH_COMMON_API BOOL SY_StretchBlt_Mean(IN OUT CommonBufferDef32* pDesBuf,	
 											IN BUFFER_PARITY_STYLE eParity);// ÆæÅ¼³¡ÀàÐÍ
 
 // ²ÉÓÃË«ÏßÐÔÀ­Éì
-BASEGRAPH_COMMON_API BOOL SY_BitBlt(IN OUT DWORD* pdwDesBuffer,		// Ä¿±ê»º´æ
+BASEGRAPH_COMMON_API BOOL Common_BitBlt(IN OUT DWORD* pdwDesBuffer,		// Ä¿±ê»º´æ
 								   IN int nDesX,					// Ä¿±ê²Ù×÷Æðµã
 								   IN int nDesY,
 								   IN int nDesWidth,				// Ä¿±ê²Ù×÷´óÐ¡
@@ -232,7 +232,7 @@ BASEGRAPH_COMMON_API BOOL SY_BitBlt(IN OUT DWORD* pdwDesBuffer,		// Ä¿±ê»º´æ
 								   IN int k = 1);		// Ä¿±ê²Ã¼õ¾ØÐÎ£¨¿ÉÑ¡Ïî£¬Îª NULL Ê±±íÊ¾Ä¿±êÈ«²¿ÓÐÐ§£©
 
 // ²ÉÓÃË«ÏßÐÔÀ­Éì
-BASEGRAPH_COMMON_API BOOL SY_StretchBlt(IN OUT DWORD* pdwDesBuffer,		// Ä¿±ê»º´æ
+BASEGRAPH_COMMON_API BOOL Common_StretchBlt(IN OUT DWORD* pdwDesBuffer,		// Ä¿±ê»º´æ
 									   IN int nDesX,					// Ä¿±ê²Ù×÷Æðµã
 									   IN int nDesY,
 									   IN int nDesWidth,				// Ä¿±ê²Ù×÷´óÐ¡
@@ -270,7 +270,7 @@ BASEGRAPH_COMMON_API BOOL rgba_mean_copy(OUT DWORD* pDest,
 								   IN int nSrcBufferHeight,
 								   IN int eParity);
 
-BASEGRAPH_COMMON_API BOOL SY_BufferTransform(IN OUT CommonBufferDef32* pDesBuf,			// Ä¿±ê»º´æ
+BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesBuf,			// Ä¿±ê»º´æ
 											IN int nOffsetLeft,				// Ä¿±ê»º´æÔÚÍ¶Ó°Æ½Ãæ×ø±êÏµÏÂµÄÎ»ÖÃ
 											IN int nOffsetTop,
 											IN CommonBufferDef32* pSrcBuf,			// Ô´»º´æ
@@ -278,7 +278,7 @@ BASEGRAPH_COMMON_API BOOL SY_BufferTransform(IN OUT CommonBufferDef32* pDesBuf,	
 											IN int nSrcHeight,
 											IN void* pvfXYZW,					// Ô´²Ù×÷ÇøÓòµÄËÄ¸ö½Çµã¾­¹ýÒ»ÏµÁÐ±ä»»ºóµÄ¶¥µãÊý¾Ý£¨±ØÐëÓÐËÄ¸ö£¬Ë³ÐòÎª(0,0),(w,0),(w,h),(h,0)£©
 											IN CommonBufferDef32* pMaskBuf = NULL);	// ÑÚÂë»º´æ
-BASEGRAPH_COMMON_API BOOL SY_BufferTransformLinear(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê»º´æ
+BASEGRAPH_COMMON_API BOOL Common_BufferTransformLinear(IN OUT CommonBufferDef32* pDesBuf,	// Ä¿±ê»º´æ
 												  IN int nOffsetLeft,			// Ä¿±ê»º´æÔÚÍ¶Ó°Æ½Ãæ×ø±êÏµÏÂµÄÎ»ÖÃ
 												  IN int nOffsetTop,
 												  IN CommonBufferDef32* pSrcBuf,	// Ô´»º´æ
@@ -288,7 +288,7 @@ BASEGRAPH_COMMON_API BOOL SY_BufferTransformLinear(IN OUT CommonBufferDef32* pDe
 												  IN CommonBufferDef32* pMaskBuf);	// ÑÚÂë»º´æ
 
 // Ê¹ÓÃÄ³¸öÖµÌî³äÄÚ´æÖÐµÄÄ³¿éÇøÓò£¬¿ÉÖ¸¶¨²Ã¼ôÇøÓò¡£
-BASEGRAPH_COMMON_API void SYBGRA32_FillRect(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
+BASEGRAPH_COMMON_API void BGRA32_FillRect(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 										   IN int nX,		// ²Ù×÷ÇøÓò
 										   IN int nY,
 										   IN int nWidth,
@@ -298,7 +298,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_FillRect(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 										   IN RECT* prcClip,	// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 										   IN DWORD dwValue);	// Ìî³äÖµ
 
-BASEGRAPH_COMMON_API void SYBGRA32_ReplaceA_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
+BASEGRAPH_COMMON_API void BGRA32_ReplaceA_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 											 IN int nX,			// ²Ù×÷ÇøÓò
 											 IN int nY,
 											 IN int nWidth,
@@ -313,7 +313,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_ReplaceA_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º
 											 IN int nSrcBufHeight,
 											 IN BOOL bInvert);	// Ìî³äÖµ
 
-BASEGRAPH_COMMON_API void SYBGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
+BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 												  IN int nX,			// ²Ù×÷ÇøÓò
 												  IN int nY,
 												  IN int nWidth,
@@ -323,7 +323,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷
 												  IN RECT* prcClip,	// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 												  IN DWORD dwValue);	// Ìî³äÖµ
 
-BASEGRAPH_COMMON_API void SYBGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
+BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 												  IN int nX,			// ²Ù×÷ÇøÓò
 												  IN int nY,
 												  IN int nWidth,
@@ -333,7 +333,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// ²Ù×÷
 												  IN RECT* prcClip,	// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 												  DWORD* psrcBuf);	// Ìî³äÖµ
 
-BASEGRAPH_COMMON_API void SYBGRA32_ReplaceRGB_MulA_Width_HArray(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
+BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB_MulA_Width_HArray(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 															   IN int nX,		// ²Ù×÷ÇøÓò
 															   IN int nY,
 															   IN int nWidth,
@@ -343,7 +343,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_ReplaceRGB_MulA_Width_HArray(IN OUT DWORD* pd
 															   IN RECT* prcClip,	// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 															   IN DWORD* dwValue);// Ìî³äÖµ
 
-BASEGRAPH_COMMON_API void SYBGRA32_ReplaceRGB(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
+BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 										   IN int nX,			// ²Ù×÷ÇøÓò
 										   IN int nY,
 										   IN int nWidth,
@@ -355,7 +355,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_ReplaceRGB(IN OUT DWORD* pdwBuf,	// ²Ù×÷»º´æ
 
 // Ìî³äÄ³¿éÇøÓòÖÐµÄ Alpha Öµ£¬¿ÉÊ¹ÓÃÑÚÂëÑÕÉ«£¬¿ÉÖ¸¶¨²Ã¼ôÇøÓò¡£
 // Ìî³äÄ£Ê½ÖÐÓÐÖ§³ÖËõ·Å Alpha µÄÄ£Ê½£¬ÔÚÕâÐ©Ä£Ê½ÏÂ£¬cAlpha / 255 ±íÊ¾Ò»¸ö±ÈÀý¡£
-BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha(IN OUT DWORD* pdwBuf,		// Ä¿±ê
+BASEGRAPH_COMMON_API void BGRA32_FillAlpha(IN OUT DWORD* pdwBuf,		// Ä¿±ê
 											IN int nX,			// Ìî³äÇøÓò
 											IN int nY,
 											IN int nWidth,
@@ -364,10 +364,10 @@ BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha(IN OUT DWORD* pdwBuf,		// Ä¿±ê
 											IN int nBufHeight,
 											IN RECT* prcClip,		// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 											IN char cAlpha,		// AlphaÖµ
-											IN SY_FILL_MODE eMode,	// Ìî³äÄ£Ê½
+											IN Common_FILL_MODE eMode,	// Ìî³äÄ£Ê½
 											IN DWORD pdwMaskCr);	// ÑÚÂëÑÕÉ«Öµ£¨ÒÀÀµÄ£Ê½µÄ¿ÉÑ¡Ïî£©
 
-BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// Ä¿±ê
+BASEGRAPH_COMMON_API void BGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// Ä¿±ê
 												   IN int nX,			// Ìî³äÇøÓò
 												   IN int nY,
 												   IN int nWidth,
@@ -376,7 +376,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// Ä¿
 												   IN int nBufHeight,
 												   IN RECT* prcClip,		// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 												   IN DWORD* cAlpha,		// AlphaÖµ
-												   IN SY_FILL_MODE eMode,	// Ìî³äÄ£Ê½
+												   IN Common_FILL_MODE eMode,	// Ìî³äÄ£Ê½
 												   IN DWORD pdwMaskCr);	// ÑÚÂëÑÕÉ«Öµ£¨ÒÀÀµÄ£Ê½µÄ¿ÉÑ¡Ïî£©
 
 //////////////////////////////////////////////////////////////////////////
@@ -385,7 +385,7 @@ BASEGRAPH_COMMON_API void SYBGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// Ä¿
 //////////////////////////////////////////////////////////////////////////
 
 // ¶Ô 32 Î»ÄÚ´æ½øÐÐ¼üÖµ²Ù×÷
-BASEGRAPH_COMMON_API BOOL SYBGRA32_ProcKey(IN OUT DWORD* pdwBuf,			// Ä¿±ê
+BASEGRAPH_COMMON_API BOOL BGRA32_ProcKey(IN OUT DWORD* pdwBuf,			// Ä¿±ê
 										  IN int nDesX,				// Ä¿±ê²Ù×÷ÇøÓò
 										  IN int nDesY,
 										  IN int nDesWidth,
@@ -400,7 +400,7 @@ BASEGRAPH_COMMON_API BOOL SYBGRA32_ProcKey(IN OUT DWORD* pdwBuf,			// Ä¿±ê
 										  IN int nKeyBufWidth,		// ¼ü·ùÃæ´óÐ¡
 										  IN int nKeyBufHeight,
 										  IN int nKeyPitch,			// ¼ü»º´æÒ»ÐÐµÄ×Ö½Ú¿í¶È
-										  IN SY_KEY_MODE eMode,		// ¼ü²Ù×÷Ä£Ê½
+										  IN Common_KEY_MODE eMode,		// ¼ü²Ù×÷Ä£Ê½
 										  IN BUFFER_PARITY_STYLE eParity,	// ÆæÅ¼³¡ÀàÐÍ
 										  IN RECT* prcDesClip = NULL);	// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 
@@ -415,7 +415,7 @@ BASEGRAPH_COMMON_API BOOL SYKey_ProcScalar(IN OUT LPBYTE pbyKey,		// ¼üÄ¿±ê
 										  IN int nKeyPitch,		// ¼ü»º´æÒ»ÐÐµÄ×Ö½Ú¿í¶È
 										  IN RECT* prcClip,		// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 										  IN char cAlpha,			// AlphaÖµ
-										  IN SY_KEY_MODE eMode);	// ¼ü²Ù×÷Ä£Ê½
+										  IN Common_KEY_MODE eMode);	// ¼ü²Ù×÷Ä£Ê½
 // ÊµÏÖÁ½¿é 8 Î»¼üÖµÄÚ´æ¼äµÄ²Ù×÷
 BASEGRAPH_COMMON_API BOOL SYKey_ProcBuffer(IN OUT LPBYTE pbyDes,			// Ä¿±ê¼ü
 										  IN int nDesX,				// Ä¿±ê²Ù×÷ÇøÓò
@@ -433,7 +433,7 @@ BASEGRAPH_COMMON_API BOOL SYKey_ProcBuffer(IN OUT LPBYTE pbyDes,			// Ä¿±ê¼ü
 										  IN int nSrcBufWidth,		// ¼ü·ùÃæ´óÐ¡
 										  IN int nSrcBufHeight,
 										  IN int nSrcKeyPitch,		// Ô´¼ü»º´æÒ»ÐÐµÄ×Ö½Ú¿í¶È
-										  IN SY_KEY_MODE eMode,		// ¼ü²Ù×÷Ä£Ê½
+										  IN Common_KEY_MODE eMode,		// ¼ü²Ù×÷Ä£Ê½
 										  IN BUFFER_PARITY_STYLE eParity,	// ÆæÅ¼³¡ÀàÐÍ
 										  IN RECT* prcDesClip = NULL);	// ²Ã¼ôÇøÓò£¨¿ÉÑ¡Ïî£©
 
@@ -444,7 +444,7 @@ BASEGRAPH_COMMON_API BOOL SYKey_ProcBuffer(IN OUT LPBYTE pbyDes,			// Ä¿±ê¼ü
 //////////////////////////////////////////////////////////////////////////
 
 // Éú³É½»²æÑÕÉ«¿éµÄÍ¸Ã÷É«±³¾°
-BASEGRAPH_COMMON_API void SY_MakeTranslucentBack(OUT DWORD* pBuf,			// ±³¾° Buffer
+BASEGRAPH_COMMON_API void Common_MakeTranslucentBack(OUT DWORD* pBuf,			// ±³¾° Buffer
 												IN int nBufWidth,		// Buffer ´óÐ¡
 												IN int nBufHeight,
 												IN int nBlockSize,	// Ïà¼äÑÕÉ«¿é´óÐ¡
@@ -454,14 +454,14 @@ BASEGRAPH_COMMON_API void SY_MakeTranslucentBack(OUT DWORD* pBuf,			// ±³¾° Buff
 //		£¨5£©ÓÃÓÚÖ§³ÖËã·¨ÓÅ»¯µÄÒ»Ð©ÏµÍ³²Ù×÷½Ó¿Ú
 //////////////////////////////////////////////////////////////////////////
 // »ñÈ¡ CPU Ê±ÖÓÖÜÆÚ¼ÆÊýÆ÷
-BASEGRAPH_COMMON_API unsigned __int64 SY_GetCycleCount();
+BASEGRAPH_COMMON_API unsigned __int64 Common_GetCycleCount();
 
 //////////////////////////////////////////////////////////////////////////
 //		£¨6£©ÌØÊâµÄÔËËã½Ó¿Ú
 //////////////////////////////////////////////////////////////////////////
 
 // ¼ÆËãÒ»µÈ²îÐòÁÐÊýÓëÄ³Ò»ÌØ¶¨ÊýµÄÍêÈ«Æ½·½ºÍ£¨ÌØ¶¨ÊýÎª¸ºÔò¼ÆËãÍêÈ«Æ½·½²î£©
-BASEGRAPH_COMMON_API void SY_SerialPerfectSquare(OUT float* pResult,		// ¼ÆËã½á¹û
+BASEGRAPH_COMMON_API void Common_SerialPerfectSquare(OUT float* pResult,		// ¼ÆËã½á¹û
 												IN int nSerialCount,	// ÐòÁÐ³¤¶È
 												IN float fStart,		// ÐòÁÐÆðÊ¼Êý
 												IN float fStep,		// µÈ²î
@@ -469,7 +469,7 @@ BASEGRAPH_COMMON_API void SY_SerialPerfectSquare(OUT float* pResult,		// ¼ÆËã½á¹
 
 // ¼ÆËãÒ»µÈ²îÐòÁÐÊýÓëÄ³Ò»ÌØ¶¨ÊýµÄÍêÈ«Æ½·½ºÍ£¨ÌØ¶¨ÊýÎª¸ºÔò¼ÆËãÍêÈ«Æ½·½²î£©
 // Ôö¼Ó¶îÍâ¹¦ÄÜ£¬¶ÔºÍ½øÐÐÏßÐÔËõ·Å£¬²¢¼ÆËãËÄ´Î·½½á¹û
-BASEGRAPH_COMMON_API void SY_SerialPerfectSquareEx(OUT float* pResSqr,			// Æ½·½ºÍ½á¹û
+BASEGRAPH_COMMON_API void Common_SerialPerfectSquareEx(OUT float* pResSqr,			// Æ½·½ºÍ½á¹û
 												  OUT float* pResQuartic,	// ËÄ´Î·½½á¹û
 												  OUT float* pResSum,		// Ëõ·ÅºÍ½á¹û
 												  IN int nSerialCount,	// ÐòÁÐ³¤¶È
@@ -479,7 +479,7 @@ BASEGRAPH_COMMON_API void SY_SerialPerfectSquareEx(OUT float* pResSqr,			// Æ½·½
 												  IN float fScaling);		// ºÍµÄËõ·ÅÏµÊý
 
 // ¼ÆËãÒ»·Ç¸ºÐòÁÐ½øÐÐÌØ¶¨Æ«ÒÆºóµÄÆ½·½¸ù£¬¸ù¾Ý±í±»·Å´óµÄÏµÊý¼ÆËã³öË÷Òý£¬²¢²é±í
-BASEGRAPH_COMMON_API void SY_OffsetSqrtIndexLookup(OUT void* pBuf,				// ²é±í½á¹û£¨32 Î»±í£¬ÒªÇóÓë±íµÄÀàÐÍÏàÍ¬£©
+BASEGRAPH_COMMON_API void Common_OffsetSqrtIndexLookup(OUT void* pBuf,				// ²é±í½á¹û£¨32 Î»±í£¬ÒªÇóÓë±íµÄÀàÐÍÏàÍ¬£©
 												  IN int nSerialCount,	// ÐòÁÐ³¤¶È
 												  IN float* pSerial,		// ÐòÁÐ
 												  IN float fOffset,		// ÌØ¶¨Æ«ÒÆ
@@ -508,7 +508,7 @@ BASEGRAPH_COMMON_API void SY_OffsetSqrtIndexLookup(OUT void* pBuf,				// ²é±í½á¹
 // (135¡ã,225¡ã) ·¶Î§ÄÚÔòÁî Cy = PI * R ²¢Ê¹ÓÃ (y - yc)
 // (315¡ã,360¡ã) ·¶Î§ÄÚÔòÁî Cy = 2 * PI * R ²¢Ê¹ÓÃ (y - yc)
 // ÎªÁË×î´ó»¯¼ÓËÙ¶Ô (x - xc)^4¡¢(x - xc)^2¡¢(x - xc) * R¡¢(y - yc)^4¡¢(y - yc)^2¡¢(y - yc) * R ½øÐÐ»º´æ
-BASEGRAPH_COMMON_API void SY_TylerArcIndexLookupX(OUT void* pBuf,				// ²é±í½á¹û£¨32 Î»±í£¬ÒªÇóÓë±íµÄÀàÐÍÏàÍ¬£©
+BASEGRAPH_COMMON_API void Common_TylerArcIndexLookupX(OUT void* pBuf,				// ²é±í½á¹û£¨32 Î»±í£¬ÒªÇóÓë±íµÄÀàÐÍÏàÍ¬£©
 												 IN int nSerialCount,		// ÐòÁÐ³¤¶È
 												 IN float* pQuartic,		// ËÄ´Î·½ÐòÁÐ
 												 IN float* pSquare,		// ÍêÈ«Æ½·½ºÍÐòÁÐ
@@ -517,7 +517,7 @@ BASEGRAPH_COMMON_API void SY_TylerArcIndexLookupX(OUT void* pBuf,				// ²é±í½á¹û
 												 IN float fOffsetSq,		// (y - yc)^2
 												 IN void* pTable,			// ±í£¨32 Î»±í£©
 												 IN float fConst);		// ¼ÆËãÊ½×îºóÌí¼ÓµÄ³£Á¿£¨¶¨»ý·ÖµÄÆðµãÖµ£©
-BASEGRAPH_COMMON_API void SY_TylerArcIndexLookupY(OUT void* pBuf,				// ²é±í½á¹û£¨32 Î»±í£¬ÒªÇóÓë±íµÄÀàÐÍÏàÍ¬£©
+BASEGRAPH_COMMON_API void Common_TylerArcIndexLookupY(OUT void* pBuf,				// ²é±í½á¹û£¨32 Î»±í£¬ÒªÇóÓë±íµÄÀàÐÍÏàÍ¬£©
 												 IN int nSerialCount,		// ÐòÁÐ³¤¶È
 												 IN float* pQuartic,		// ËÄ´Î·½ÐòÁÐ
 												 IN float* pSquare,		// ÍêÈ«Æ½·½ºÍÐòÁÐ
@@ -528,13 +528,13 @@ BASEGRAPH_COMMON_API void SY_TylerArcIndexLookupY(OUT void* pBuf,				// ²é±í½á¹û
 												 IN float fConst);		// ¼ÆËãÊ½×îºóÌí¼ÓµÄ³£Á¿£¨¶¨»ý·ÖµÄÆðµãÖµ£©
 
 // ·­×ª·ûºÅ£¬½«¸ºÖµ±äÕýÖµ»ò·´¹ýÀ´£¨µ±ÊäÈëÓëÊä³öÖ¸ÕëÏàÍ¬Ê±£¬ÈÏÎªÖ±½Ó·­×ª£©
-BASEGRAPH_COMMON_API void SY_NegtiveFloat(OUT float* pDes,		// Ä¿±ê
+BASEGRAPH_COMMON_API void Common_NegtiveFloat(OUT float* pDes,		// Ä¿±ê
 										 IN float* pSrc,		// Ô´
 										 IN int nlen);		// Êý×é³¤¶È
 
 // Çó½âÒ»ÕûÐÍµÈ²îÐòÁÐ¾­¹ýÁ½ÖÖÆ«ÒÆºóµÄÐÂÐòÁÐ offset_1 + a Óë offset_2 - a
 // ÌØÊâÇé¿ö£ºÍ¨¹ýÖ¸¶¨Ô²ÐÄµÄÖ±Ïß y = x Óë y = -x ÔÚÖ¸¶¨´óÐ¡ÇøÓòÄÚµÄµãµÄ X ÐòÁÐÖµ£¬ÐòÁÐÒÔ y ÎªË÷Òý
-BASEGRAPH_COMMON_API void SY_SerialOffset2(OUT int* pDes1,		// offset_1 + a
+BASEGRAPH_COMMON_API void Common_SerialOffset2(OUT int* pDes1,		// offset_1 + a
 										  OUT int* pDes2,		// offset_2 - a
 										  IN int nSerialCount,// ÐòÁÐ³¤¶È
 										  IN int nMin,		// ×îÐ¡Öµ
@@ -546,7 +546,7 @@ BASEGRAPH_COMMON_API void SY_SerialOffset2(OUT int* pDes1,		// offset_1 + a
 //////////////////////////////////////////////////////////////////////////
 // ¾É½Ó¿Ú£ºËÙ¶È½ÏÂý£¬ÐèÒªÖØÐÂÓÅ»¯
 //////////////////////////////////////////////////////////////////////////
-void CALLBACK SY_CalMask(IN OUT BYTE *pbyMask,
+void CALLBACK Common_CalMask(IN OUT BYTE *pbyMask,
 				IN int nStartX, 
 				IN int nStartY, 
 				IN int nMaskWidth,
@@ -558,7 +558,7 @@ void CALLBACK SY_CalMask(IN OUT BYTE *pbyMask,
 				IN int nMainOperatorY);
 
 // Ô´BufferÆ½ÆÌ¿½±´µ½Ä¿±êBufferÖÐ
-LRESULT CALLBACK SY_TileCopy(IN OUT DWORD* pdwDesBuf,
+LRESULT CALLBACK Common_TileCopy(IN OUT DWORD* pdwDesBuf,
 			     IN int nDesX,
 			     IN int nDesY,
 			     IN int nDesWidth,
@@ -573,9 +573,9 @@ LRESULT CALLBACK SY_TileCopy(IN OUT DWORD* pdwDesBuf,
 			     IN int nSrcBufWidth,
 			     IN int nSrcBufHeight);
 
-void CALLBACK SY_CreateTableFor_H1920To1440();
-void CALLBACK SY_DeleteTableFor_H1920To1440();
-void CALLBACK SY_LinearScale_H1920To1440(OUT BYTE* pDes,
+void CALLBACK Common_CreateTableFor_H1920To1440();
+void CALLBACK Common_DeleteTableFor_H1920To1440();
+void CALLBACK Common_LinearScale_H1920To1440(OUT BYTE* pDes,
 									IN int nDesWidth,
                                     IN int nDesPitch,
                                     IN BYTE* pSrc,
@@ -583,7 +583,7 @@ void CALLBACK SY_LinearScale_H1920To1440(OUT BYTE* pDes,
                                     IN int nSrcPitch,
                                     IN int nHeight);
 // YUYVÀ­Éì¿½±´
-LRESULT CALLBACK SY_StretchBlt_YUYV(IN OUT BYTE* pbyDesBuffer, 
+LRESULT CALLBACK Common_StretchBlt_YUYV(IN OUT BYTE* pbyDesBuffer, 
                                 IN int nDesPitch,
                                 IN int nDesBufferWidth,
                                 IN int nDesBufferHeight,
@@ -612,6 +612,6 @@ BASEGRAPH_COMMON_API LRESULT Gauss_RLE(IN OUT void* pInOutBuf,	// Ä¿±ê»º³åÇø:°üº
 									  IN float fHorizon,
 									  IN float fVertical,
 									  IN int nRefPlane);
-BASEGRAPH_COMMON_API void SY_GuassianBlur(LPBYTE lpDes,LPSIZE pSize,int degrees );
+BASEGRAPH_COMMON_API void Common_GuassianBlur(LPBYTE lpDes,LPSIZE pSize,int degrees );
 //////////////////////////////////////////////////////////////////////////
 #endif

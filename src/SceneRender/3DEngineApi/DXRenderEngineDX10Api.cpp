@@ -43,31 +43,31 @@ inline void cutStrechArea(int& srcOffsetX, int& srcOffsetY, int& srcValidWidth, 
 	}
 	if (srcOffsetX < 0)
 	{
-		destOffsetX -= SY_FToI(srcOffsetX * xscale);
+		destOffsetX -= Common_FToI(srcOffsetX * xscale);
 		srcValidWidth += srcOffsetX;
-		destValidWidth += SY_FToI(srcOffsetX * xscale);
+		destValidWidth += Common_FToI(srcOffsetX * xscale);
 		srcOffsetX = 0;
 	}
 	if (destOffsetX < 0)
 	{
-		srcOffsetX -= SY_FToI(destOffsetX / xscale);
+		srcOffsetX -= Common_FToI(destOffsetX / xscale);
 		destValidWidth += destOffsetX;
-		srcValidWidth += SY_FToI(destOffsetX / xscale);
+		srcValidWidth += Common_FToI(destOffsetX / xscale);
 		destOffsetX = 0;
 	}
 
 	if (srcOffsetY < 0)
 	{
-		destOffsetY -= SY_FToI(srcOffsetY * yscale);
+		destOffsetY -= Common_FToI(srcOffsetY * yscale);
 		srcValidHeight += srcOffsetY;
-		destValidHeight += SY_FToI(srcOffsetY * yscale);
+		destValidHeight += Common_FToI(srcOffsetY * yscale);
 		srcOffsetY = 0;
 	}
 	if (destOffsetY < 0)
 	{
-		srcOffsetY -= SY_FToI(destOffsetY * yscale);
+		srcOffsetY -= Common_FToI(destOffsetY * yscale);
 		destValidHeight += destOffsetY;
-		srcValidHeight += SY_FToI(destOffsetY / yscale);
+		srcValidHeight += Common_FToI(destOffsetY / yscale);
 		destOffsetY = 0;
 	}
 
@@ -75,26 +75,26 @@ inline void cutStrechArea(int& srcOffsetX, int& srcOffsetY, int& srcValidWidth, 
 	{
 		int OffsetX = srcOffsetX + srcValidWidth - srcBufferWidth;
 		srcValidWidth -= OffsetX;
-		destValidWidth -= SY_FToI(OffsetX * xscale);
+		destValidWidth -= Common_FToI(OffsetX * xscale);
 	}
 	if (srcOffsetY + srcValidHeight > srcBufferHeight)
 	{
 		int OffsetY = srcOffsetY + srcValidHeight - srcBufferHeight;
 		srcValidHeight -= OffsetY;
-		destValidHeight -= SY_FToI(OffsetY * yscale);
+		destValidHeight -= Common_FToI(OffsetY * yscale);
 	}
 
 	if (destOffsetX + destValidWidth > destBufferWidth)
 	{
 		int OffsetX = destOffsetX + destValidWidth - destBufferWidth;
 		destValidWidth -= OffsetX;
-		srcValidWidth -= SY_FToI(OffsetX / xscale);
+		srcValidWidth -= Common_FToI(OffsetX / xscale);
 	}
 	if (destOffsetY + destValidHeight > destBufferHeight)
 	{
 		int OffsetY = destOffsetY + destValidHeight - destBufferHeight;
 		destValidHeight -= OffsetY;
-		srcValidHeight -= SY_FToI(OffsetY / yscale);
+		srcValidHeight -= Common_FToI(OffsetY / yscale);
 	}
 }
 
@@ -220,7 +220,7 @@ const int g_pLayoutNum[] =
 	4,
 };
 //////////////////////////////////////////////////////////////////////////
-BOOL SetConstBuffer(SY_DeviceDX10* pDevice,int nShaderType,int nRegIndex,int hConstBuffer)
+BOOL SetConstBuffer(Common_DeviceDX10* pDevice,int nShaderType,int nRegIndex,int hConstBuffer)
 {
 	CommonBuffer* pCB = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,hConstBuffer );
 	if(pCB==NULL)
@@ -245,7 +245,7 @@ BOOL SetConstBuffer(SY_DeviceDX10* pDevice,int nShaderType,int nRegIndex,int hCo
 	return true;
 
 }
-void  RenderTexture(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT& SrcRect,const RECT& DestRect,
+void  RenderTexture(Common_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT& SrcRect,const RECT& DestRect,
 	int nSrcBufferWidth,int nSrcBufferHeight,int nDstBufferWidth,int nDstBufferHeight,BOOL bAdjustColor,DXTextureType nType,FIELD fieldState=BOTH_FIELD)
 {
 	screenCB screen;
@@ -304,7 +304,7 @@ void  RenderTexture(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT& Sr
 }
 
 //////////////////////////////////////////////////////////////////////////
-inline int CreateBuffer(SY_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,DXBufferType nType,int nPriType = -1)
+inline int CreateBuffer(Common_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,DXBufferType nType,int nPriType = -1)
 {
 	CommonBuffer* pVideoBuffer = new CommonBuffer;
 	pVideoBuffer->nType = nType;
@@ -347,9 +347,9 @@ inline int CreateBuffer(SY_DeviceDX10* pDevice,int nSize,int nNum,void* pBuffer,
 }
 
 bool Render_CreateShader(int hDevice, void* paramin, void* paramout);
-bool Render_CreateShader(SY_DeviceDX10* pDevice, void* paramin, void* paramout);
+bool Render_CreateShader(Common_DeviceDX10* pDevice, void* paramin, void* paramout);
 
-int CreateShaderFromCompiledFile(SY_DeviceDX10* pDevice, LPCTSTR shaderName, LPCTSTR fileName, DXShaderType nType, DXVertexType* pType)
+int CreateShaderFromCompiledFile(Common_DeviceDX10* pDevice, LPCTSTR shaderName, LPCTSTR fileName, DXShaderType nType, DXVertexType* pType)
 {
 	std::ifstream s_stream;
 	size_t s_size;
@@ -393,7 +393,7 @@ int CreateShaderFromCompiledFile(SY_DeviceDX10* pDevice, LPCTSTR shaderName, LPC
 	return hShader;
 }
 
-int CreateShaderFromFile(SY_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileName,DXShaderType nType,DXVertexType* pType)
+int CreateShaderFromFile(Common_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR fileName,DXShaderType nType,DXVertexType* pType)
 {
 	shaderhash* pShaderHashValue = (shaderhash*)BaseHash_Search(pDevice->ShaderHash,(void *)shaderName);
 	if (pShaderHashValue)
@@ -477,7 +477,7 @@ struct screenVertex
 	float	tv;
 };
 
-int Create2DVertex(SY_DeviceDX10* pDevice)
+int Create2DVertex(Common_DeviceDX10* pDevice)
 {
 	screenVertex pSrceenVertex[6]; 
 	pSrceenVertex[0].pos.x = 0;
@@ -520,7 +520,7 @@ int Create2DVertex(SY_DeviceDX10* pDevice)
 	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,DXVertexBuffer,TRIANGLELIST);
 }
 
-int CreateScreenVertex(SY_DeviceDX10* pDevice)
+int CreateScreenVertex(Common_DeviceDX10* pDevice)
 {
 	screenVertex pSrceenVertex[6]; 
 	pSrceenVertex[0].pos.x = -1.f;
@@ -563,7 +563,7 @@ int CreateScreenVertex(SY_DeviceDX10* pDevice)
 	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,DXVertexBuffer,TRIANGLELIST);
 }
 
-void CreateBlendState(SY_DeviceDX10* pDevice)
+void CreateBlendState(Common_DeviceDX10* pDevice)
 {
 	pDevice->pNowState[DXBlendState] = DXBlendState_Default;
 	D3D10_BLEND_DESC blendDesc;
@@ -646,7 +646,7 @@ void CreateBlendState(SY_DeviceDX10* pDevice)
 	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Test]);
 }
 
-void CreateDepthState(SY_DeviceDX10* pDevice)
+void CreateDepthState(Common_DeviceDX10* pDevice)
 {
 	pDevice->pNowState[DXDepthState] = DXDepthState_Default;
 	D3D10_DEPTH_STENCIL_DESC desc;
@@ -785,7 +785,7 @@ void CreateDepthState(SY_DeviceDX10* pDevice)
 	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[DXDepthDisable]);
 }
 
-void CreateRasterizerState(SY_DeviceDX10* pDevice)
+void CreateRasterizerState(Common_DeviceDX10* pDevice)
 {
 	pDevice->pNowState[DXRasterizerState] = DXRasterizer_Default;
 	D3D10_RASTERIZER_DESC desc;
@@ -870,7 +870,7 @@ void CreateRasterizerState(SY_DeviceDX10* pDevice)
 
 }
 
-void CreateSampleState(SY_DeviceDX10* pDevice)
+void CreateSampleState(Common_DeviceDX10* pDevice)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -1011,7 +1011,7 @@ void CreateSampleState(SY_DeviceDX10* pDevice)
 }
 
 int hTestPs = 0;
-bool CreateDeviceResource(SY_DeviceDX10* pDevice)
+bool CreateDeviceResource(Common_DeviceDX10* pDevice)
 {
 	pDevice->hScreenVertex = CreateScreenVertex(pDevice);
 	pDevice->h2DVertex = Create2DVertex(pDevice);
@@ -1237,7 +1237,7 @@ bool CreateDeviceResource(SY_DeviceDX10* pDevice)
 	return true;
 }
 
-bool ReleaseDeviceResource(SY_DeviceDX10* pDevice)
+bool ReleaseDeviceResource(Common_DeviceDX10* pDevice)
 {
 	ReleaseBuffer(pDevice,pDevice->hScreenVertex);
 	ReleaseBuffer(pDevice,pDevice->h2DVertex);
@@ -1355,7 +1355,7 @@ void Render_ReleaseTexture(SYTexture* pWDTexture)
 	SAFE_DELETE(pWDTexture);
 }
 
-void ReleaseSwapChainBufferTex(SY_DeviceDX10* pDevice,SYSwapChain* pSwapChain)
+void ReleaseSwapChainBufferTex(Common_DeviceDX10* pDevice,SYSwapChain* pSwapChain)
 {
 	SAFE_RELEASE(pSwapChain->pShareTexture);
 	if(pSwapChain->hShareTexture > 0)
@@ -1369,7 +1369,7 @@ void ReleaseSwapChainBufferTex(SY_DeviceDX10* pDevice,SYSwapChain* pSwapChain)
 		Render_ReleaseTexture(pBufferTex);
 	}
 }
-void Render_ReleaseDevice(SY_DeviceDX10* pDevice)
+void Render_ReleaseDevice(Common_DeviceDX10* pDevice)
 {
 	if (!pDevice )
 	{
@@ -1439,11 +1439,11 @@ void Render_ReleaseDevice(SY_DeviceDX10* pDevice)
 bool Render_Release(int hDevice,void* paramin,void* paramout)
 {
 	UINT firstDevice = BseeHTable_GetFirstValid(&g_deviceHT);		
-	SY_DeviceDX10* pNowDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,firstDevice);
+	Common_DeviceDX10* pNowDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,firstDevice);
 	do 
 	{
 		Render_ReleaseDevice(pNowDevice);
-		pNowDevice = (SY_DeviceDX10*)BseeHTable_GetNextValid(&g_deviceHT,&firstDevice);
+		pNowDevice = (Common_DeviceDX10*)BseeHTable_GetNextValid(&g_deviceHT,&firstDevice);
 	} while (pNowDevice);
 
 	BseeHTable_Release(&g_deviceHT);
@@ -1455,8 +1455,8 @@ bool Render_CreateDevice(int hDevice,void* paramin,void* paramout)
 {
 	BOOL* pDoubleDevice = (BOOL*)paramin;
 
-	SY_DeviceDX10* pNewDevice = NULL;
-	pNewDevice = new SY_DeviceDX10;
+	Common_DeviceDX10* pNewDevice = NULL;
+	pNewDevice = new Common_DeviceDX10;
 	D3D10_DRIVER_TYPE driverType = D3D10_DRIVER_TYPE_HARDWARE;
 
 	IDXGIAdapter* selectedAdapter = g_pAdapter;
@@ -1569,7 +1569,7 @@ bool Render_GetSwapChainDesc(int hDevice,void* paramin,void* paramout)
 {
 	createSwapChainIn* pIn = (createSwapChainIn*)paramin;
 	createSwapChainIn* pOut = (createSwapChainIn*)paramout;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYSwapChain* pWDSwapChain = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,(int)pIn->hWnd);
 	if(pWDSwapChain)
 	{
@@ -1587,7 +1587,7 @@ bool Render_GetSwapChainDesc(int hDevice,void* paramin,void* paramout)
 bool Render_CreateTexture(int hDevice,void* paramin,void* paramout);
 void CreateSwapChainBufferTex(int hDevice,int nWidth,int nHeight,SYSwapChain* pSwapChain)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	if(pDevice->pSwapChainDevice != pDevice->pDevice)
 	{
 		createTextureIn texIn;
@@ -1630,7 +1630,7 @@ void CreateSwapChainBufferTex(int hDevice,int nWidth,int nHeight,SYSwapChain* pS
 bool Render_CreateSwapChain(int hDevice,void* paramin,void* paramout)
 {
 	createSwapChainIn* pIn = (createSwapChainIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXGI_SWAP_CHAIN_DESC Desc;
 	memset(&Desc,0,sizeof(DXGI_SWAP_CHAIN_DESC));
 	Desc.BufferCount = 3;
@@ -1669,7 +1669,7 @@ bool render_DumpTexture(int hDevice,void* paramin,void* paramout);
 bool Render_UpdateSwapChain(int hDevice,int hSwapChain)
 {
 	CDX10EngineLock lock;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	if(pDevice->pDevice == pDevice->pSwapChainDevice)
 		return false;
 	SYSwapChain* pTexture = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,hSwapChain);
@@ -1695,7 +1695,7 @@ int Render_Present(int hDevice,void* paramin,void* paramout)
 {
 	if(!hDevice)
 		return S_FALSE;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	int* pHSwapChain = (int*)paramin;
 	int* pTimeSyn = (int*)paramout;
 	if(*pHSwapChain == 0)
@@ -1721,7 +1721,7 @@ int Render_Present(int hDevice,void* paramin,void* paramout)
 bool Render_SetRenderTarget(int hDevice,void* paramin,void* paramout)
 {
 	setRenderTarget* param = (setRenderTarget*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SetRenderTarget(pDevice,param->hRenderTarget,param->hDepth);
 	return TRUE;
 }
@@ -1893,7 +1893,7 @@ inline D3D10_TEXTURE2D_DESC* createReadOnlyDesc(int nWidth,int nHeight,int nMipL
 
 bool Render_CreateTexture(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	createTextureIn* param = (createTextureIn*)paramin;
 	D3D10_TEXTURE2D_DESC* pDesc = NULL;
 	switch (param->nType)
@@ -1993,7 +1993,7 @@ bool Render_CreateTexture(int hDevice,void* paramin,void* paramout)
 
 bool render_ClearTexture(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	clearTextureIn* param = (clearTextureIn*)paramin;
 	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,param->hTexture);
 	if(!pTexture)
@@ -2044,7 +2044,7 @@ bool render_ClearTexture(int hDevice,void* paramin,void* paramout)
 bool Render_GetTextureView(int hDevice,void* paramin,void* paramout)
 {
 	void** pDXTexture = (void**)paramout;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	if(pTexture)
 	{
@@ -2059,7 +2059,7 @@ bool Render_GetTextureView(int hDevice,void* paramin,void* paramout)
 
 bool render_GetTexture(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	void** pDXTexture = (void**)paramout;
 	*pDXTexture = pTexture->pTexture;
@@ -2070,7 +2070,7 @@ bool render_GetTexture(int hDevice,void* paramin,void* paramout)
 
 bool render_GetTextureInfo(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	getTextureInfoOut* pOut = (getTextureInfoOut*)paramout;
 	getTextureInfo(pDevice,*(int*)paramin,pOut->nWidth,pOut->nHeight,pOut->nMipMap); 
 
@@ -2083,7 +2083,7 @@ bool render_GetTextureInfo(int hDevice,void* paramin,void* paramout)
 
 bool Render_CopyTexture(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	copyTexture* param = (copyTexture*)paramin;
 	float xScale = 1,yScale = 1;
 	
@@ -2124,7 +2124,7 @@ bool Render_CopyTexture(int hDevice,void* paramin,void* paramout)
 			ID3D10Texture2D* pSrcTexture = getTexture(pDevice,param->hSrcTex);
 			pDevice->pDevice->CopySubresourceRegion(pDestTexture,0,param->nDesOffsetX*fDstScale,param->nDesOffsetY * fDstScale,0,
 				pSrcTexture,0,&Box);
-			pDevice->info.nRenderPixCount += SY_FToI(param->nDesWidth * param->nDesHeight * fDstScale * fDstScale);
+			pDevice->info.nRenderPixCount += Common_FToI(param->nDesWidth * param->nDesHeight * fDstScale * fDstScale);
 		}
 		else
 		{
@@ -2161,7 +2161,7 @@ bool render_DumpTexture(int hDevice,void* paramin,void* paramout)
 {
 	LPCTSTR szFile = ((DXDumpIn*)paramin)->szFile;
 	int hTexture = ((DXDumpIn*)paramin)->hTexture;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ID3D10Texture2D* pTexture = getTexture(pDevice,hTexture);
 
 	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
@@ -2209,7 +2209,7 @@ bool render_DumpTexture(int hDevice,void* paramin,void* paramout)
 }
 bool Render_ReleaseSwapChain(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYSwapChain* pSrcWDTexture = (SYSwapChain*)BseeHTable_RemoveAt(&pDevice->htSwapChain,*(int*)paramin);
 	ReleaseSwapChainBufferTex(pDevice,pSrcWDTexture);
 
@@ -2219,7 +2219,7 @@ bool Render_ReleaseSwapChain(int hDevice,void* paramin,void* paramout)
 	return true;
 }
 
-void ClearTexState(SY_DeviceDX10* pDevice,int hTex) 
+void ClearTexState(Common_DeviceDX10* pDevice,int hTex) 
 {
 	if(pDevice->hNowDepth == hTex)
 		pDevice->hNowDepth = 0;
@@ -2236,7 +2236,7 @@ void ClearTexState(SY_DeviceDX10* pDevice,int hTex)
 }
 bool Render_ReleaseTexture(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	assert(pSrcWDTexture);
 	if (pSrcWDTexture&&pSrcWDTexture->pTexFile)//有pSrcWDTexture == NULL的时候
@@ -2269,7 +2269,7 @@ bool Render_ReleaseTexture(int hDevice,void* paramin,void* paramout)
 
 bool Render_ResizeSwapChain(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ResizeSwapChainIn* pIn = (ResizeSwapChainIn*)paramin;
 	SYSwapChain* pSrcWDTexture = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,pIn->hSwapChain);
 	ReleaseSwapChainBufferTex(pDevice,pSrcWDTexture);
@@ -2282,7 +2282,7 @@ bool Render_ResizeSwapChain(int hDevice,void* paramin,void* paramout)
 }
 bool Render_DownLoad(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	downloadBufferIn* pIn = (downloadBufferIn*)paramin;
 
 	copyTexture copyParam;
@@ -2309,7 +2309,7 @@ bool Render_DownLoad(int hDevice,void* paramin,void* paramout)
 	pMem2DTex->Map(0,D3D10_MAP_READ,0,&mapTex );
 	int nSrcWidth=(int)(pIn->dstWidth * fScale-1);
 	int nSrcHeight=(int)(pIn->dstHeight * fScale-1);
-	SY_BitBlt( pIn->dstBuffer,
+	Common_BitBlt( pIn->dstBuffer,
 		pIn->dstOffsetX, pIn->dstOffsetY,
 		pIn->dstWidth, pIn->dstHeight,
 		pIn->dstBufferWidth, pIn->dstBufferHeight, 
@@ -2324,12 +2324,12 @@ bool Render_DownLoad(int hDevice,void* paramin,void* paramout)
 
 bool Render_BeginTex(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	BeginRenderTexture(pDevice);
 	return true;
 }
 
-bool Render_CascadeTex(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT& SrcRect,const RECT& DestRect,
+bool Render_CascadeTex(Common_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT& SrcRect,const RECT& DestRect,
 					 int nSrcBufferWidth,int nSrcBufferHeight,int nDstBufferWidth,int nDstBufferHeight,BOOL bAdjustColor,DXTextureType nType)
 {
 	screenCB screen;
@@ -2393,7 +2393,7 @@ bool Render_CascadeTex(SY_DeviceDX10* pDevice,int hTex,float fAlpha, const RECT&
 
 bool Render_RenderTex(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	renderTextureIn* pIn = (renderTextureIn*)paramin;
 
 	int nSrcWidth,nSrcHeight;
@@ -2419,7 +2419,7 @@ bool Render_RenderTex(int hDevice,void* paramin,void* paramout)
 }
 bool Render_GetRenderTarget(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	getRenderTargetIn* pIn = (getRenderTargetIn*)paramin;
 
 	if(pIn->phRT)
@@ -2430,11 +2430,11 @@ bool Render_GetRenderTarget(int hDevice,void* paramin,void* paramout)
 }
 BOOL Render_EngineLock(int hDevice,void* paramin,void* paramout);
 BOOL Render_EngineUnLock(int hDevice,void* paramin,void* paramout);
-BOOL Render_EngineLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout);
-BOOL Render_EngineUnLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout);
+BOOL Render_EngineLock(Common_DeviceDX10* pDevice, void* paramin, void* paramout);
+BOOL Render_EngineUnLock(Common_DeviceDX10* pDevice, void* paramin, void* paramout);
 bool Render_UpLoad(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	uploadBufferIn* pIn = (uploadBufferIn*)paramin;
 
 	if(pIn->bLock)
@@ -2460,7 +2460,7 @@ bool Render_UpLoad(int hDevice,void* paramin,void* paramout)
 	
 	float fScale = 1;
 	IsNeedScaleTexParam(pDevice,pIn->hTransTex,fScale);
-	SY_BitBlt( (DWORD*)pMemTex->pMemBuffer ,
+	Common_BitBlt( (DWORD*)pMemTex->pMemBuffer ,
 		0,0,
 		pIn->srcWidth * fScale, pIn->srcHeight * fScale,
 		pMemTex->nPitch / sizeof(DWORD), pMemTex->nRealHeight, 
@@ -2500,7 +2500,7 @@ bool Render_UpLoad(int hDevice,void* paramin,void* paramout)
 }
 bool Render_EndTex(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	EndRenderTexture(pDevice);
 	return true;
 }
@@ -2565,7 +2565,7 @@ LPDIRECT3D9			m_pD3D9;
 LPDIRECT3DDEVICE9		m_pD3DDevice9;
 BOOL Render_CreateModelFromXFile(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	LPCTSTR lpszFileName = (LPCTSTR )paramin;
 
 
@@ -2626,7 +2626,7 @@ BOOL Render_CreateModelFromXFile(int hDevice,void* paramin,void* paramout)
 
 bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXCreateShadeIn* param = (DXCreateShadeIn*)paramin;
 
 	if(param->bLock)
@@ -2760,7 +2760,7 @@ bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 
 }
 
-bool Render_CreateShader(SY_DeviceDX10* pDevice, void* paramin, void* paramout)
+bool Render_CreateShader(Common_DeviceDX10* pDevice, void* paramin, void* paramout)
 {
 	if (!pDevice)
 	{
@@ -2901,7 +2901,7 @@ bool Render_CreateShader(SY_DeviceDX10* pDevice, void* paramin, void* paramout)
 
 bool Render_ReleaseShader(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ReleaseShader(pDevice,*(int*)paramin);
 	return true;
 }
@@ -2934,7 +2934,7 @@ matrix4f __mRGBYUV601= {	0.2567880f	,	-0.1482230f/2	,	0.4392160f/2	,0.0f	,
 						};
 
 BOOL Render_SetShaderTexture(int hDevice,void* paramin,void* paramout);
-void TexProcessSetPixShader(SY_DeviceDX10* pDevice,DXTexProcessIn* param,int nSrcBufferWidth,int nSrcBufferHeight)
+void TexProcessSetPixShader(Common_DeviceDX10* pDevice,DXTexProcessIn* param,int nSrcBufferWidth,int nSrcBufferHeight)
 {
 	if(param->nType == DXTextureBlur_5Pt || param->nType == DXTextureBlur_9Pt)
 	{
@@ -3056,7 +3056,7 @@ void TexProcessSetPixShader(SY_DeviceDX10* pDevice,DXTexProcessIn* param,int nSr
 }
 bool Render_TexProcess(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXTexProcessIn* param = (DXTexProcessIn*)paramin;
 	int oldRT = pDevice->hNowRenderTarget;
 	int oldDepth = pDevice->hNowDepth;
@@ -3093,7 +3093,7 @@ bool Render_TexProcess(int hDevice,void* paramin,void* paramout)
 	//D3DXMATRIX matProjection;
 	// Create the projection matrix using the values in the viewport
 	matrix4f matProj;
-	CalProjectMat(&matProj,-halfWidth,halfWidth,-halfHeight,halfHeight,0.1f,10,SY_ORTHO_PROJ);
+	CalProjectMat(&matProj,-halfWidth,halfWidth,-halfHeight,halfHeight,0.1f,10,Common_ORTHO_PROJ);
 	screen.world_View_proj = matWorld * posMat * matProj;
 	float4 test = {-1,1,0,1};
 	test *= screen.world_View_proj;
@@ -3125,7 +3125,7 @@ bool Render_TexProcess(int hDevice,void* paramin,void* paramout)
 	pDevice->pDevice->Draw(6,0);	
 	pDevice->info.nRenderCount++ ;
 	pDevice->info.nTriangleCount += 2;
-	pDevice->info.nRenderPixCount += SY_FToI(fXScale * fYScale);
+	pDevice->info.nRenderPixCount += Common_FToI(fXScale * fYScale);
 
 	SetRenderTarget(pDevice,oldRT,oldDepth);
 	SetViewPort(pDevice,oldRect.left,oldRect.top,oldRect.right,oldRect.bottom);
@@ -3138,7 +3138,7 @@ bool Render_TexProcess(int hDevice,void* paramin,void* paramout)
 
 bool Render_SetViewPort(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	RECT* pRect = (RECT*)paramin;
 	SetViewPort(pDevice,pRect->left ,pRect->top ,pRect->right ,pRect->bottom );
 	return true;
@@ -3146,14 +3146,14 @@ bool Render_SetViewPort(int hDevice,void* paramin,void* paramout)
 
 bool Render_GetViewPort(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	RECT* pRect = (RECT*)paramout;
 	*pRect = pDevice->rtViewport;
 	return true;
 }
 bool Render_CreateBuffer(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXCreateBufferIn* param = (DXCreateBufferIn*)paramin;
 	*(int*)paramout = CreateBuffer(pDevice,param->nVertexSize,param->nVertexNum,param->pBuffer,param->nType,param->nPriType );
 	return true;
@@ -3161,7 +3161,7 @@ bool Render_CreateBuffer(int hDevice,void* paramin,void* paramout)
 
 bool Render_ReleaseBuffer(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ReleaseBuffer(pDevice,*(int*)paramin);
 	return true;
 }
@@ -3169,7 +3169,7 @@ bool Render_ReleaseBuffer(int hDevice,void* paramin,void* paramout)
 bool Render_ModifyBuffer(int hDevice,void* paramin,void* paramout)
 {
 	DXModifyBufferIn* param = (DXModifyBufferIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ModifyBuffer(pDevice,param->hBuffer,param->pBuffer);
 	return true;
 }
@@ -3192,7 +3192,7 @@ int CalVertexCountByPrimitiveCount(int nPrimitiveCount,int nType)
 bool Render_Render(int hDevice,void* paramin,void* paramout)
 {
 	DXRenderIn* param = (DXRenderIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 
 	if (param->hVertexBuffer)
 	{
@@ -3232,7 +3232,7 @@ bool Render_Render(int hDevice,void* paramin,void* paramout)
 bool Render_InstanceRender(int hDevice,void* paramin,void* paramout)
 {
 	DXRenderInstanceIn* param = (DXRenderInstanceIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 
 	CommonBuffer* pVB = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,param->RenderData.hVertexBuffer);
 	CommonBuffer* pInstance = (CommonBuffer*)BseeHTable_GetAt(&pDevice->htBuffer,param->hInstanceBuffer);
@@ -3267,7 +3267,7 @@ bool Render_InstanceRender(int hDevice,void* paramin,void* paramout)
 bool Render_EasyRender(int hDevice,void* paramin,void* paramout)
 {
 	DXEasyRenderIn* param = (DXEasyRenderIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 
 	if (param->hVertexBuffer)
 	{
@@ -3303,7 +3303,7 @@ bool Render_EasyRender(int hDevice,void* paramin,void* paramout)
 BOOL Render_SetConstBuffer(int hDevice,void* paramin,void* paramout)
 {
 	DXSetConstBufferIn* param = (DXSetConstBufferIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	return SetConstBuffer(pDevice,param->nShaderType,param->hRegIndex,param->hConstBuffer);
 }
 
@@ -3311,7 +3311,7 @@ bool Render_CreateTexFromFile(int hDevice,void* paramin,void* paramout)
 {
 	createTextureFromFileIn* param = (createTextureFromFileIn*)paramin;
 	TCHAR* pPath = param->pPath;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 
 	BaseHash*	pHash = NULL;		
 	DXTextureType nType = param->bNormalMap ? DXTexture_2DDumpReadOnly : DXTexture_2DReadOnly;
@@ -3410,7 +3410,7 @@ bool Render_CreateTexFromFile(int hDevice,void* paramin,void* paramout)
 
 bool Render_SetRenderState(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXRenderStateIn* param = (DXRenderStateIn*)paramin;
 	SetRenderState(pDevice,param->nType,param->nValue);
 	return true;
@@ -3424,20 +3424,20 @@ bool Render_CreateMipMap(int hDevice,void* paramin,void* paramout)
 }
 bool Render_SetSamplerState(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXSampleStateIn* param = (DXSampleStateIn*)paramin;
 	return SetSamplerState(pDevice,param->nState,param->nShaderType,param->nSampler);
 }
 BOOL Render_SetShaderTexture(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXSetShaderTexIn* param = (DXSetShaderTexIn*)paramin;
 	return SetShaderTexture(pDevice,param->hConstBuffer,param->nShaderType,param->hRegIndex);
 }
 
 BOOL Render_SetShader(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXSetShaderIn* param = (DXSetShaderIn*)paramin;
 	SetShader(pDevice,param->nShaderType,param->hShader);
 	return TRUE;
@@ -3446,7 +3446,7 @@ BOOL Render_SetShader(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_SetDevCaps(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	int* nFlag = (int*)paramin;
 	if(*nFlag == DXDevice_AAFactor)
 	{
@@ -3458,7 +3458,7 @@ BOOL Render_SetDevCaps(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_GetDevCaps(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	int* nFlag = (int*)paramin;
 	if(*nFlag == DXDevice_AAFactor)
 	{
@@ -3470,7 +3470,7 @@ BOOL Render_GetDevCaps(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_ClearScreen(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	clearScreenIn* pParam = (clearScreenIn*)paramin;
 	if(pParam->nType == DX_CLEAR_RENDERTARGET_ONLY || pParam->nType == DX_CLEAR_ALL)
 	{
@@ -3521,7 +3521,7 @@ BOOL Render_HitTestMesh(int hDevice,void* paramin,void* paramout)
 {
 	DXHitTestMeshIn* paramIn = (DXHitTestMeshIn*)paramin;
 	DXHitTestMeshOut* paramOut = (DXHitTestMeshOut*)paramout;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)BseeHTable_GetAt(&pDevice->htModel,paramIn->hMesh);
 	UINT nSubSetCount = 0;
@@ -3547,7 +3547,7 @@ BOOL Render_HitTestMesh(int hDevice,void* paramin,void* paramout)
 BOOL Render_RenderMesh(int hDevice,void* paramin,void* paramout)
 {
 	DXRenderMeshIn* paramIn = (DXRenderMeshIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)BseeHTable_GetAt(&pDevice->htModel,paramIn->hMesh);
 	pDevice->hNowVertexBuffer = -1;
 	pDevice->hNowIndexBuffer = -1;
@@ -3573,7 +3573,7 @@ BOOL Render_GetMeshInfo( int hDevice, void* paramin,void* paramout )
 {
 	SYGetMeshInfoIn* paramIn = (SYGetMeshInfoIn*)paramin;
 	DXGetMeshInfoOut* paramOut = (DXGetMeshInfoOut*)paramout;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)BseeHTable_GetAt(&pDevice->htModel,paramIn->hMesh);
 	UINT nSubSetCount = 0;
 	pMesh10->GetAttributeTable(NULL,&nSubSetCount);
@@ -3582,14 +3582,14 @@ BOOL Render_GetMeshInfo( int hDevice, void* paramin,void* paramout )
 }
 BOOL Render_GetRenderState(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	*(int*)paramout = pDevice->pNowState[*(int*)paramin];
 	return TRUE;
 }
 
 BOOL Render_GetMeshBox(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXGetMeshBoxIn* pParam = (DXGetMeshBoxIn*)paramin;
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)BseeHTable_GetAt(&pDevice->htModel,*(int*)paramin);
 	ID3DX10MeshBuffer* pBuffer;
@@ -3617,7 +3617,7 @@ BOOL Render_GetMeshBox(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_ComputeNormalMap(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYTexture* pSrcTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	SYTexture* pDestTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramout);
 	D3DX10ComputeNormalMap((ID3D10Texture2D*)pSrcTexture->pTexture,0,D3DX_CHANNEL_RED,1.f,(ID3D10Texture2D*)pDestTexture->pTexture);
@@ -3630,14 +3630,14 @@ BOOL Render_ComputeNormalMap(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_SetScissor(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SetScissor(pDevice,(RECT*)paramin);
 	return TRUE;
 }
 
 BOOL Render_GetScissor(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	RECT* pRect = (RECT*)paramout;
 	*pRect = pDevice->rtScissor;
 	return TRUE;
@@ -3645,7 +3645,7 @@ BOOL Render_GetScissor(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_GenerateMipMap(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	if(pTexture->nType != DXTexture_MipMap)
 		return FALSE;
@@ -3655,23 +3655,23 @@ BOOL Render_GenerateMipMap(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_EngineLock(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	EnterCriticalSection(&pDevice->EngineLock);
 	return TRUE;
 }
 BOOL Render_EngineUnLock(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	LeaveCriticalSection(&pDevice->EngineLock);
 	return TRUE;
 }
 
-BOOL Render_EngineLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout)
+BOOL Render_EngineLock(Common_DeviceDX10* pDevice, void* paramin, void* paramout)
 {
 	EnterCriticalSection(&pDevice->EngineLock);
 	return TRUE;
 }
-BOOL Render_EngineUnLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout)
+BOOL Render_EngineUnLock(Common_DeviceDX10* pDevice, void* paramin, void* paramout)
 {
 	LeaveCriticalSection(&pDevice->EngineLock);
 	return TRUE;
@@ -3679,21 +3679,21 @@ BOOL Render_EngineUnLock(SY_DeviceDX10* pDevice, void* paramin, void* paramout)
 
 BOOL Render_RenderLock(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	EnterCriticalSection(&pDevice->RenderLock);
 	return TRUE;
 }
 
 BOOL Render_RenderUnLock(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	LeaveCriticalSection(&pDevice->RenderLock);
 	return TRUE;
 }
 
 BOOL Render_CreatEffectUnit(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXCreateEffectUnitIn* param = (DXCreateEffectUnitIn*)paramin;
 	if(param)
 	{	
@@ -3731,7 +3731,7 @@ BOOL Render_CreatEffectUnit(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_ReleaseEffectUnit(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	int hEffect = *((int*)paramin);
 
 	CEffectUnit* pEU =  (CEffectUnit*)BseeHTable_GetAt(&(pDevice->htEffectUnit),hEffect);
@@ -3745,7 +3745,7 @@ BOOL Render_ReleaseEffectUnit(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_GetQuadVB(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	int hVB =  pDevice->pEffectMan->GetQuadVB();
 	
 	if(0 != hVB)
@@ -3777,7 +3777,7 @@ BOOL Render_GetQuadVB(int hDevice,void* paramin,void* paramout)
 BOOL Render_EffectRender(int hDevice,void* paramin,void* paramout)
 {
 	DXEffectRenderIn* in_param = (DXEffectRenderIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 
 	if (in_param->hVertexBuffer)
 	{
@@ -3814,7 +3814,7 @@ BOOL Render_EffectRender(int hDevice,void* paramin,void* paramout)
 BOOL Render_EffectRenderInstance(int hDevice,void* paramin,void* paramout)
 {
 	DXEffectRenderInstanceIn* in_param = (DXEffectRenderInstanceIn*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	if (in_param->hVertexBuffer)
 	{
 		SetVertexInstanceBuffer(pDevice,in_param->hVertexBuffer,in_param->hInstanceBuf);
@@ -3848,7 +3848,7 @@ BOOL Render_EffectRenderInstance(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_EffectSetTexture(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXEffectSetTextureIn* in_param = (DXEffectSetTextureIn*)paramin;
 	CEffectUnit* pEU = (CEffectUnit*)BseeHTable_GetAt(&(pDevice->htEffectUnit),in_param->hEffect);
 	ID3D10EffectShaderResourceVariable*	pTexVar = pEU->GetResourcePtr()->GetVariableByName(in_param->szTexName)->AsShaderResource();
@@ -3861,7 +3861,7 @@ BOOL Render_EffectSetTexture(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_GetMemTexBuffer(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	DXGetMemTexBufferOut* pBuffer = (DXGetMemTexBufferOut*)paramout;
 	if (pTexture->nType != DXTexture_MemTexture)
@@ -3894,7 +3894,7 @@ BOOL Render_GetMemTexBuffer(int hDevice,void* paramin,void* paramout)
 }
 BOOL Render_EffectSetConstBuffer(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXEffectSetConstBufferIn* in_param = (DXEffectSetConstBufferIn*)paramin;
 	CEffectUnit* pEU = (CEffectUnit*)BseeHTable_GetAt(&(pDevice->htEffectUnit),in_param->hEffect);
 	ID3D10EffectConstantBuffer*	pCBVar = pEU->GetResourcePtr()->GetVariableByName(in_param->szCBName)->AsConstantBuffer();
@@ -3913,7 +3913,7 @@ BOOL Render_EffectSetConstBuffer(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_EffectSetVariable(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXEffectSetVariableIn* in_param = (DXEffectSetVariableIn*)paramin;
 	CEffectUnit* pEU = (CEffectUnit*)BseeHTable_GetAt(&(pDevice->htEffectUnit),in_param->hEffect);
 	HRESULT hr = S_OK;
@@ -4055,7 +4055,7 @@ BOOL Render_Render2D(int hDevice,void* paramin,void* paramout)
 	float fFar = (float)max(nWidth * vScale.x,nHeight * vScale.y);
 
 	matrix4f projMat;
-	CalProjectMat(&projMat,fLeft,fRight,-fBottom,-fTop,0.01f,fFar * 3,SY_ORTHO_PROJ);
+	CalProjectMat(&projMat,fLeft,fRight,-fBottom,-fTop,0.01f,fFar * 3,Common_ORTHO_PROJ);
 	//计算纹理放缩mat
 	matrix4f scaleMat;
 	matrix4f_from_scale(&scaleMat,(float)nWidth , (float)nHeight ,1);
@@ -4070,7 +4070,7 @@ BOOL Render_Render2D(int hDevice,void* paramin,void* paramout)
 	float fX, fY, fZ;
 	matrix4f_toeuler_lxyz(pIn->pWorldMatrix, &fX, &fY, &fZ);
 
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	int nSrcWidth,nSrcHeight;
 	getTextureInfo(pDevice,pIn->pTex->m_hTex,&nSrcWidth,&nSrcHeight,NULL);
 	screen.texCoord.x = (pIn->pTex->m_rtBound.left + pIn->pTex->m_nOriginX) / (float)nSrcWidth;
@@ -4109,7 +4109,7 @@ BOOL Render_Render2D(int hDevice,void* paramin,void* paramout)
 }
 BOOL Render_MaskRender(int hDevice,void* paramin,void* paramout)
 {
-    SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+    Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
     DXMaskRenderIn* pIn = (DXMaskRenderIn*)paramin;
 
 	int oldRT = pDevice->hNowRenderTarget;
@@ -4164,7 +4164,7 @@ BOOL Render_MaskRender(int hDevice,void* paramin,void* paramout)
 }
 BOOL Render_RenderDynamicTex(int hDevice,void* paramin,void* paramout)
 {
-    SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+    Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
     DXDynamicTextureIn* pIn = (DXDynamicTextureIn*)paramin;
 
 	float fLeft =	(float)pIn->pTarget->m_rtBound.left;
@@ -4181,7 +4181,7 @@ BOOL Render_RenderDynamicTex(int hDevice,void* paramin,void* paramout)
 	matrix4f_decompose(&worldMat,&vScale,&vAngle,NULL);
 	float fFar = (float)max(nWidth * vScale.x,nHeight * vScale.y);
 	matrix4f projMat;
-	CalProjectMat(&projMat,-nWidth/2,nWidth/2,-nHeight/2,nHeight/2,0.f,fFar * 3,SY_ORTHO_PROJ);
+	CalProjectMat(&projMat,-nWidth/2,nWidth/2,-nHeight/2,nHeight/2,0.f,fFar * 3,Common_ORTHO_PROJ);
 	//计算纹理放缩mat
 	matrix4f scaleMat;
 	matrix4f_from_scale(&scaleMat,(float)nWidth , (float)nHeight ,1);
@@ -4292,7 +4292,7 @@ BOOL Render_RenderDynamicTex(int hDevice,void* paramin,void* paramout)
 BOOL Render_GetSwapChainBufferTex(int hDevice,void* paramin,void* paramout)
 {
 	int* hSwapChain = (int*)paramin;
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	SYSwapChain* pSwapChain = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,*hSwapChain);
 	int* pOut = (int*)paramout;
 	*pOut = (pDevice->pDevice == pDevice->pSwapChainDevice) ? pSwapChain->hBufferTexture : pSwapChain->hShareTexture;
@@ -4301,7 +4301,7 @@ BOOL Render_GetSwapChainBufferTex(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_MultiToNormal(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	MultiToNormal* param = (MultiToNormal*)paramin;
 	ID3D10Texture2D* pSrcTexture = getTexture(pDevice,param->hSrcTex);
 	ID3D10Texture2D* pDstTexture = getTexture(pDevice,param->hDesTex);
@@ -4311,7 +4311,7 @@ BOOL Render_MultiToNormal(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_Render3DVision(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DX3DVisionTex* param = (DX3DVisionTex*)paramin;
 	int oldRT = pDevice->hNowRenderTarget;
 	int oldDepth = pDevice->hNowDepth;
@@ -4346,7 +4346,7 @@ BOOL Render_Render3DVision(int hDevice,void* paramin,void* paramout)
 	//D3DXMATRIX matProjection;
 	// Create the projection matrix using the values in the viewport
 	matrix4f matProj;
-	CalProjectMat(&matProj,-halfWidth,halfWidth,-halfHeight,halfHeight,0.1f,10,SY_ORTHO_PROJ);
+	CalProjectMat(&matProj,-halfWidth,halfWidth,-halfHeight,halfHeight,0.1f,10,Common_ORTHO_PROJ);
 	screen.world_View_proj = matWorld * posMat * matProj;
 	float4 test = {-1,1,0,1};
 	test *= screen.world_View_proj;
@@ -4391,7 +4391,7 @@ BOOL Render_Render3DVision(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_RenderTex3D(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 
 	DXRenderTex* param = (DXRenderTex*)paramin;
 
@@ -4435,7 +4435,7 @@ BOOL Render_RenderTex3D(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_GetRenderInfo(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	DXRenderInfo* pOut = (DXRenderInfo*)paramout;
 	*pOut = pDevice->info;
 	return TRUE;
@@ -4443,7 +4443,7 @@ BOOL Render_GetRenderInfo(int hDevice,void* paramin,void* paramout)
 
 BOOL Render_ClearRenderInfo(int hDevice,void* paramin,void* paramout)
 {
-	SY_DeviceDX10* pDevice = (SY_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
+	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	pDevice->info.nRenderCount = 0;
 	pDevice->info.nTriangleCount = 0;
 	pDevice->info.nRenderPixCount = 0;
@@ -4538,7 +4538,7 @@ BOOL RenderEngineDX10_Main( int ncmd, int hDevice, void* paramin, void* paramout
 		return Render_ModifyBuffer(hDevice,paramin,paramout);
 	case RENDERENGINE_RENDER:
 		return Render_Render(hDevice,paramin,paramout);
-	case RENDERENGINE_EASY_RENDER:
+	case RENDERENGINE_EACommon_RENDER:
 		return Render_EasyRender(hDevice,paramin,paramout);
 	case RENDERENGINE_RENDER_INSTANCE:
 		return Render_InstanceRender(hDevice,paramin,paramout);
@@ -4629,12 +4629,12 @@ void RenderEngineDX10SetOptimal(BOOL bOptimal/* =TRUE */)
 	g_bOptimal=bOptimal;
 }
 
-SY_DeviceDX10::SY_DeviceDX10()
+Common_DeviceDX10::Common_DeviceDX10()
 {
 	Reset();
 }
 
-void SY_DeviceDX10::Reset()
+void Common_DeviceDX10::Reset()
 {
 	pDevice = 0;
 	pSwapChainDevice = 0;

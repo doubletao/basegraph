@@ -51,11 +51,11 @@ protected:
 	CRITICAL_SECTION m_Lock;
 };
 //////////////////////////////////////////////////////////////////////////
-class CSY3DLineManager
+class CBase3DLineManager
 {
 public:
-	CSY3DLineManager(int nMaxVertexSize = DEFAULT_LINE_NUM, int nMaxIndexSize = DEFAULT_LINE_NUM);
-	~CSY3DLineManager();
+	CBase3DLineManager(int nMaxVertexSize = DEFAULT_LINE_NUM, int nMaxIndexSize = DEFAULT_LINE_NUM);
+	~CBase3DLineManager();
 	void InitialManager(int hDevice);
 	void ReleaseManager(int hDevice);
 	void MoveTo(int hDevice,const float3* vStartPos,DWORD* color = NULL);

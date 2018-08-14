@@ -328,8 +328,8 @@ union SYRGBA
 	unsigned long m_dwColor;
 };
 
-// SYBGRA 联合定义
-union SYBGRA
+// BGRA 联合定义
+union BGRA
 {
 	struct
 	{

@@ -93,15 +93,15 @@ BASEGRAPH_DATARENDER_API float GetMaxDis(IN point2f ptfCenter,  // 圆心
 				);
 
 //创建椭圆矢量图
-BASEGRAPH_DATARENDER_API BOOL	CreateEllipse(float fStartRad,float fEndRad,float a,float b,CSYFloatArray* pArray);
+BASEGRAPH_DATARENDER_API BOOL	CreateEllipse(float fStartRad,float fEndRad,float a,float b,CBaseFloatArray* pArray);
 //得到椭圆边界点坐标(相对于椭圆中心点)
 BASEGRAPH_DATARENDER_API void	GetEllipsePtPos(float fRad, float a, float b, point2f* ptPos);
 //根据边界点坐标(相对于椭圆中心点)得到等比缩放的椭圆长短轴以及边界点角度
 BASEGRAPH_DATARENDER_API void	CalcRadAndAngle(float3 ptEdg,float& fRad_A, float& fRad_B, float &fAngle, float fMinA, float fMaxA, float fMinB, float fMaxB);
 
 //创建圆的矢量图
-BASEGRAPH_DATARENDER_API BOOL  CreateCircle(float fStartRad,double fEndRad,double fRad,CSYFloatArray*	pArray);
-BASEGRAPH_DATARENDER_API BOOL  ReleaseCircleArray(CSYFloatArray*	pArray);
+BASEGRAPH_DATARENDER_API BOOL  CreateCircle(float fStartRad,double fEndRad,double fRad,CBaseFloatArray*	pArray);
+BASEGRAPH_DATARENDER_API BOOL  ReleaseCircleArray(CBaseFloatArray*	pArray);
 
 
 BASEGRAPH_DATARENDER_API void	line_vertical_normalizing(OUT point2f* ptout,IN point2f* ptinstart,point2f* ptinend,IN int ndirect);

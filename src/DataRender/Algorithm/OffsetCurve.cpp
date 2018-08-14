@@ -344,7 +344,7 @@ void AddCurve2PtlfPoly(OUT BaseARray * pptrPoly, OUT BaseARray * pptrPolyNorm, I
 //输入：
 //输出：
 //------------------------------------------------------------------
-void SYOC_AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, IN point2f * ctrlPoints)
+void SYOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, IN point2f * ctrlPoints)
 {
 	// 接近直线，则直接加入
 	// 否则分成两段，递归调用
@@ -466,7 +466,7 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT 
 				ctrlPoints[1] = (pCurveCell->point[k] * 2 + ctrlPoints[0]) * fTemp;
 				ctrlPoints[2] = (pCurveCell->point[k] * 2 + ctrlPoints[3]) * fTemp;
 
-				//TPGT_AddCurve2PtfPoly(OUT CSYPoint2fArray * pptrPoly, IN pointf * ctrlPoints);
+				//TPGT_AddCurve2PtfPoly(OUT CBasePoint2fArray * pptrPoly, IN pointf * ctrlPoints);
 				AddCurve2PtfPoly(pptrPoly, pptrPolyNorm, ctrlPoints,&falllength);
 				//printf("k = %d,pCurveCell->npoint = %d ctrlPoints = 0x%08x\n",k,pCurveCell->npoint,(DWORD)ctrlPoints);
 				k++;
@@ -581,7 +581,7 @@ void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT
 				ctrlPoints[1] = (pCurveCell->point[k] * 2 + ctrlPoints[0]) * fTemp;
 				ctrlPoints[2] = (pCurveCell->point[k] * 2 + ctrlPoints[3]) * fTemp;
 
-				//TPGT_AddCurve2PtfPoly(OUT CSYPoint2fArray * pptrPoly, IN pointf * ctrlPoints);
+				//TPGT_AddCurve2PtfPoly(OUT CBasePoint2fArray * pptrPoly, IN pointf * ctrlPoints);
 				AddCurve2PtlfPoly(pptrPoly, pptrPolyNorm, ctrlPoints,&falllength);
 				k++;
 				ctrlPoints[0] = ctrlPoints[3];
@@ -933,7 +933,7 @@ void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,  // point2f*型
 //输出：
 //返回值：
 //------------------------------------------------------------------
-void SYOC_DelColine(IN OUT CSYPoint2fPtrArray *pptfArr)
+void SYOC_DelColine(IN OUT CBasePoint2fPtrArray *pptfArr)
 {
 	int i;
 	point2f *prePt = NULL;
@@ -2510,7 +2510,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // 输入曲线
 	// 对于graph中的每一个cell,要先转化成多边形曲线.
 	vectorcell* pCell = pCellIn;
 	int nPolySize = 0;
-	CSYPoint2fPtrArray ptrPoly;
+	CBasePoint2fPtrArray ptrPoly;
 	// 1.1 试算大小
 	SYOC_Cell2PtfPoly(pCell, NULL, nPolySize);
 	// 1.2 new出数组, 然后生成实际数据
@@ -2591,7 +2591,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // 输入曲线
 
 } // END OF SYOffsetCell
 
-void SYOC_AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, OUT CSYPoint2fPtrArray * pptrPolyNorm, IN point2f * ctrlPoints)
+void SYOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBasePoint2fPtrArray * pptrPolyNorm, IN point2f * ctrlPoints)
 {
 	// 接近直线，则直接加入
 	// 否则分成两段，递归调用
@@ -2651,7 +2651,7 @@ void SYOC_AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, OUT CSYPoint2fPtrA
 	}
 } // END OF SYOC_AddCurve2PtfPoly
 
-int SYOC_makearc(CSYPoint2fPtrArray & aptShift, CSYPoint2fPtrArray & aptShiftNorm, CSYDWORDPtrArray &aOrigIndex, point2f ptcenter,point2f ptstart,point2f ptend,float rad, int index)
+int SYOC_makearc(CBasePoint2fPtrArray & aptShift, CBasePoint2fPtrArray & aptShiftNorm, CBaseDWORDPtrArray &aOrigIndex, point2f ptcenter,point2f ptstart,point2f ptend,float rad, int index)
 {
 	point2f ptv1 = ptstart - ptcenter;
 	if(SYOC_arc_near_line(ptcenter,ptstart,ptend,rad))
@@ -2715,9 +2715,9 @@ int SYOC_makearc(CSYPoint2fPtrArray & aptShift, CSYPoint2fPtrArray & aptShiftNor
 //------------------------------------------------------------------
 void SYOC_ShiftData(IN BaseARray &aptOrig, 
 				   IN BaseARray &aptOrigNorm, //原始边离散点
-				   OUT CSYPoint2fPtrArray &aptShift, //偏移边离散点
-				   OUT CSYPoint2fPtrArray &aptShiftNorm, //偏移边离散点
-				   OUT CSYDWORDPtrArray &aOrigIndex,
+				   OUT CBasePoint2fPtrArray &aptShift, //偏移边离散点
+				   OUT CBasePoint2fPtrArray &aptShiftNorm, //偏移边离散点
+				   OUT CBaseDWORDPtrArray &aOrigIndex,
 				   IN float fDis,
 				   IN int ndirect
 				  )
@@ -2964,9 +2964,9 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // 输入曲线
 									IN float fDis,  // 偏移距离
 									OUT BaseARray &aptOrig, //原始边离散点
 									OUT BaseARray &aptOrigNorm, //原始边离散点
-									OUT CSYPoint2fPtrArray &aptShift, //偏移边离散点
-									OUT CSYPoint2fPtrArray &aptShiftNorm, //偏移边离散点
-									OUT CSYDWORDPtrArray &aOrigIndex,
+									OUT CBasePoint2fPtrArray &aptShift, //偏移边离散点
+									OUT CBasePoint2fPtrArray &aptShiftNorm, //偏移边离散点
+									OUT CBaseDWORDPtrArray &aOrigIndex,
 									IN const int ndirect
 									)
 {

@@ -19,7 +19,7 @@ void		SYFont_Init(LPSYFont pFont);
 void		SYText_GetFontProperty(void* pTextProp, LPSYFont pFont, int nIndex);
 unsigned long	 SYCRC32Cal(unsigned long ulCRC32, unsigned char *pBuf, unsigned long ulLen);
 //////////////////////////////////////////////////////////////////////////
-// class CSYUsp
+// class CBaseUsp
 // 不同操作系统字体回退硬编码
 LPCTSTR		g_uspFeedBackFontNameDef[] = 
 {
@@ -60,25 +60,25 @@ LPCTSTR		g_uspFeedBackFontNameDef[] =
 	L"Latha",				//泰米尔语，南亚；
 };
 //字体回退列表
-CSYUspStrArray			g_uspFeedBackFontName;
+CBaseUspStrArray			g_uspFeedBackFontName;
 //是否允许字体回退功能
 BOOL						g_uspEnableFeedBackFont = TRUE;
-const SCRIPT_PROPERTIES**	CSYUsp::m_ppScriptProperties = NULL;
-int						CSYUsp::m_nMaxScript = 0;
-SCRIPT_DIGITSUBSTITUTE		CSYUsp::m_sdsDigitSubstitute;
-SCRIPT_CONTROL			CSYUsp::m_scScriptControlTemplate;
-SCRIPT_STATE				CSYUsp::m_ssScriptStateTemplate;
-CSYUsp::CSYUsp(SYSCRIPTRESULT* pScriptResult)
+const SCRIPT_PROPERTIES**	CBaseUsp::m_ppScriptProperties = NULL;
+int						CBaseUsp::m_nMaxScript = 0;
+SCRIPT_DIGITSUBSTITUTE		CBaseUsp::m_sdsDigitSubstitute;
+SCRIPT_CONTROL			CBaseUsp::m_scScriptControlTemplate;
+SCRIPT_STATE				CBaseUsp::m_ssScriptStateTemplate;
+CBaseUsp::CBaseUsp(SYSCRIPTRESULT* pScriptResult)
 {
 	m_bGenCheckCode = TRUE;
 	m_pResult = pScriptResult;
 }
 
-CSYUsp::~CSYUsp()
+CBaseUsp::~CBaseUsp()
 {
 
 }
-BOOL CSYUsp::Initialize(LCID dwLcid, BOOL bEnFeedBackFont)
+BOOL CBaseUsp::Initialize(LCID dwLcid, BOOL bEnFeedBackFont)
 {
 	//是否允许字体回退功能
 	g_uspEnableFeedBackFont = bEnFeedBackFont;
@@ -110,7 +110,7 @@ BOOL CSYUsp::Initialize(LCID dwLcid, BOOL bEnFeedBackFont)
 	return RefreshDigitSubstitution(dwLcid);
 }
 
-BOOL CSYUsp::RefreshDigitSubstitution(LCID dwLcid)
+BOOL CBaseUsp::RefreshDigitSubstitution(LCID dwLcid)
 {
 	HRESULT hr = ::ScriptRecordDigitSubstitution(
 		dwLcid, 
@@ -127,12 +127,12 @@ BOOL CSYUsp::RefreshDigitSubstitution(LCID dwLcid)
 	return hr == S_OK;
 }
 
-CSYUspStrArray* CSYUsp::GetFeedBackFontFonts()
+CBaseUspStrArray* CBaseUsp::GetFeedBackFontFonts()
 {
 	return &g_uspFeedBackFontName;
 }
 
-const SCRIPT_PROPERTIES* CSYUsp::GetScriptProperty(WORD wScript)
+const SCRIPT_PROPERTIES* CBaseUsp::GetScriptProperty(WORD wScript)
 {
 	if (m_ppScriptProperties == NULL && m_nMaxScript == 0)
 	{
@@ -150,13 +150,13 @@ const SCRIPT_PROPERTIES* CSYUsp::GetScriptProperty(WORD wScript)
 	return m_ppScriptProperties != NULL ? m_ppScriptProperties[wScript] : NULL;
 }
 
-SYSCRIPTRESULT* CSYUsp::Attach(SYSCRIPTRESULT* pScriptResult)
+SYSCRIPTRESULT* CBaseUsp::Attach(SYSCRIPTRESULT* pScriptResult)
 {
 	SYSCRIPTRESULT* pOld = m_pResult;
 	m_pResult = pScriptResult;
 	return pOld;
 }
-BOOL CSYUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTextProp,BOOL bLToR)
+BOOL CBaseUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTextProp,BOOL bLToR)
 {
 	if (m_pResult == NULL)
 		return FALSE;
@@ -170,7 +170,7 @@ BOOL CSYUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTextP
 
 	HRESULT hr;
 	//// 生成Item
-	CSYUspItemArray& aryItem = m_pResult->m_aryScriptItem;
+	CBaseUspItemArray& aryItem = m_pResult->m_aryScriptItem;
 	hr = ScriptItemize(pwcChars + nCharStart, nCharsCnt);
 	if (hr != S_OK || aryItem.size() <= 1)
 	{
@@ -183,13 +183,13 @@ BOOL CSYUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTextP
 	HWND hDesktopWnd = ::GetDesktopWindow();
 	HDC hDC = ::GetDC(hDesktopWnd);
 
-	CSYUspRunPtrArray& aryRun = m_pResult->m_aryRunPtr;
+	CBaseUspRunPtrArray& aryRun = m_pResult->m_aryRunPtr;
 	int nRunCnt = (int)aryRun.size();
 
-	CSYUspByteArray aryLevel;
+	CBaseUspByteArray aryLevel;
 	aryLevel.resize(nRunCnt);
 
-	CSYUspStrArray* parFeedBackFont = nullptr;
+	CBaseUspStrArray* parFeedBackFont = nullptr;
 	int nFeedBackFontCnt = 0;
 	if (g_uspEnableFeedBackFont)
 	{
@@ -299,7 +299,7 @@ BOOL CSYUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTextP
 	}
 
 	//// 格式化信息
-	CSYUspLogAttrArray& aryLogAttr = m_pResult->m_aryLogAttr;
+	CBaseUspLogAttrArray& aryLogAttr = m_pResult->m_aryLogAttr;
 	aryLogAttr.resize(nCharsCnt);
 	int nItemCount = (int)aryItem.size();
 	for (int nItemIdx=0; nItemIdx < nItemCount-1; ++nItemIdx)
@@ -318,10 +318,10 @@ BOOL CSYUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTextP
 	return TRUE;
 }
 
-HRESULT CSYUsp::ScriptItemize(WCHAR* pwcChars, 
+HRESULT CBaseUsp::ScriptItemize(WCHAR* pwcChars, 
 							  int nChars)
 {
-	CSYUspItemArray& aryItem = m_pResult->m_aryScriptItem;
+	CBaseUspItemArray& aryItem = m_pResult->m_aryScriptItem;
 	if (aryItem.size() <= 2)
 		aryItem.resize(2);
 
@@ -359,14 +359,14 @@ HRESULT CSYUsp::ScriptItemize(WCHAR* pwcChars,
 	return hr;
 }
 
-HRESULT CSYUsp::ScriptGetCMap(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int nChars)
+HRESULT CBaseUsp::ScriptGetCMap(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int nChars)
 {
 	SCRIPT_FONTPROPERTIES sfp;
 	ZeroMemory(&sfp, sizeof(SCRIPT_FONTPROPERTIES));
 	sfp.cBytes = sizeof(SCRIPT_FONTPROPERTIES);
 	::ScriptGetFontProperties(hDC, &psrRun->m_ScriptCache, &sfp);
 
-	CSYUspWordArray& aryGlyphs = psrRun->m_aryCharGlyphs;
+	CBaseUspWordArray& aryGlyphs = psrRun->m_aryCharGlyphs;
 	aryGlyphs.resize(nChars);
 	for (int i = 0; i < nChars; ++i)
 		aryGlyphs[i] = sfp.wgDefault;
@@ -401,11 +401,11 @@ HRESULT CSYUsp::ScriptGetCMap(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int
 	return hr;
 }
 
-HRESULT CSYUsp::ScriptShape(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int nChars, int* pnGlyphs)
+HRESULT CBaseUsp::ScriptShape(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int nChars, int* pnGlyphs)
 {
-	CSYUspWordArray& aryGlyphs = psrRun->m_aryCharGlyphs;
-	CSYUspWordArray& aryLogCluster = psrRun->m_aryLogicalCluster;
-	CSYUspVisAttrArray& aryVisAttr = psrRun->m_aryVisAttribute;
+	CBaseUspWordArray& aryGlyphs = psrRun->m_aryCharGlyphs;
+	CBaseUspWordArray& aryLogCluster = psrRun->m_aryLogicalCluster;
+	CBaseUspVisAttrArray& aryVisAttr = psrRun->m_aryVisAttribute;
 
 	int nTryCount = (int)(nChars * 1.5 + 16), nTryInc = nChars / 2;
 	if (aryGlyphs.size() < nTryCount)
@@ -486,7 +486,7 @@ HRESULT CSYUsp::ScriptShape(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int n
 	return hr;
 }
 
-int	CSYUsp::TranslateGlyphToChar(SYSCRIPTRUN* psrRun, int nGlyph)
+int	CBaseUsp::TranslateGlyphToChar(SYSCRIPTRUN* psrRun, int nGlyph)
 {
 	int nCharCount = (int)psrRun->m_aryLogicalCluster.size();
 	int nMin = 0;
@@ -526,7 +526,7 @@ int	CSYUsp::TranslateGlyphToChar(SYSCRIPTRUN* psrRun, int nGlyph)
 	return max(nMin, 0) + psrRun->m_nRunCharPos;
 }
 
-BOOL CSYUsp::ScriptIsComplex(const WCHAR *pwcChars, 
+BOOL CBaseUsp::ScriptIsComplex(const WCHAR *pwcChars, 
 							 int nCharStart,
 							 int nChars)
 {
@@ -536,7 +536,7 @@ BOOL CSYUsp::ScriptIsComplex(const WCHAR *pwcChars,
 	return hr == S_OK;
 }
 
-int	CSYUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult, 
+int	CBaseUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult, 
 						 int nCharXPos, 
 						 int nRunIndex/* = -1*/)
 {
@@ -601,7 +601,7 @@ int	CSYUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult,
 	return nGlyphPos;
 }
 
-int	CSYUsp::ScriptGXToCP(SYSCRIPTRESULT& usResult, 
+int	CBaseUsp::ScriptGXToCP(SYSCRIPTRESULT& usResult, 
 						 int nGlyphXPos, 
 						 int nRunIndex/* = -1*/)
 {
@@ -668,7 +668,7 @@ int	CSYUsp::ScriptGXToCP(SYSCRIPTRESULT& usResult,
 	}
 }
 
-int CSYUsp::ScriptGPToCI(SYSCRIPTRESULT& usResult, int nGlyphPos)
+int CBaseUsp::ScriptGPToCI(SYSCRIPTRESULT& usResult, int nGlyphPos)
 {
 	int nRunCount = (int)usResult.m_aryRunPtr.size();
 	int i = 0;
@@ -689,7 +689,7 @@ int CSYUsp::ScriptGPToCI(SYSCRIPTRESULT& usResult, int nGlyphPos)
 	return TranslateGlyphToChar(usResult.m_aryRunPtr[nRunIndex], nGlyphPos);
 }
 
-int CSYUsp::ScriptGetRunByGlyph(SYSCRIPTRESULT& usResult, int nGlyph)
+int CBaseUsp::ScriptGetRunByGlyph(SYSCRIPTRESULT& usResult, int nGlyph)
 {
 	int nRunCount = (int)usResult.m_aryRunPtr.size();
 	for (int i = 0, nGlyphCount = 0; i < nRunCount; ++i)
@@ -704,7 +704,7 @@ int CSYUsp::ScriptGetRunByGlyph(SYSCRIPTRESULT& usResult, int nGlyph)
 	return nRunCount;
 }
 
-int CSYUsp::ScriptGetRunByChar(SYSCRIPTRESULT& usResult, int nChar)
+int CBaseUsp::ScriptGetRunByChar(SYSCRIPTRESULT& usResult, int nChar)
 {
 	int nRunCount = (int)usResult.m_aryRunPtr.size();
 	for (int i = 0; i < nRunCount; ++i)
@@ -717,7 +717,7 @@ int CSYUsp::ScriptGetRunByChar(SYSCRIPTRESULT& usResult, int nChar)
 	return nRunCount;
 }
 
-void CSYUsp::ProduceRunsWithItems(WCHAR* pwcChars, 
+void CBaseUsp::ProduceRunsWithItems(WCHAR* pwcChars, 
 								  int nCharStart, 
 								  void* pTextProp, 
 								  BOOL bTreatColor)
@@ -727,8 +727,8 @@ void CSYUsp::ProduceRunsWithItems(WCHAR* pwcChars,
 	SYFont_Init(&objStartFont);
 	SYFont_Init(&objCurFont);
 
-	CSYUspItemArray& aryItem = m_pResult->m_aryScriptItem;
-	CSYUspRunPtrArray& aryRun = m_pResult->m_aryRunPtr;
+	CBaseUspItemArray& aryItem = m_pResult->m_aryScriptItem;
+	CBaseUspRunPtrArray& aryRun = m_pResult->m_aryRunPtr;
 	int nItemCount = (int)aryItem.size();
 	for (int nItemIndex = 0; nItemIndex < nItemCount - 1; ++nItemIndex)
 	{
@@ -786,14 +786,14 @@ void CSYUsp::ProduceRunsWithItems(WCHAR* pwcChars,
 	}
 }
 
-LPCTSTR CSYUsp::GetWordTextsFontName(TCHAR tch, LPCTSTR lpszFontName, LPCTSTR lpszFontNameEng)
+LPCTSTR CBaseUsp::GetWordTextsFontName(TCHAR tch, LPCTSTR lpszFontName, LPCTSTR lpszFontNameEng)
 {
 	LPCTSTR lpstrFontName = lpszFontName;
-	if (!SY_bOnlyUseLocalFont)
+	if (!Common_bOnlyUseLocalFont)
 	{
 		if (iswascii(tch) && !iswspace(tch))
 		{
-			if (!SY_bDigitUseLocalFont || !iswdigit(tch))
+			if (!Common_bDigitUseLocalFont || !iswdigit(tch))
 				lpstrFontName = lpszFontNameEng;
 		}
 	}
@@ -801,7 +801,7 @@ LPCTSTR CSYUsp::GetWordTextsFontName(TCHAR tch, LPCTSTR lpszFontName, LPCTSTR lp
 	return lpstrFontName;
 }
 
-HRESULT CSYUsp::GenerateClusterGlyph(WCHAR* pwcChars, int nCharStart, SYFont* pFont, HDC hDC, SYSCRIPTRUN* psrRun)
+HRESULT CBaseUsp::GenerateClusterGlyph(WCHAR* pwcChars, int nCharStart, SYFont* pFont, HDC hDC, SYSCRIPTRUN* psrRun)
 {
 	SCRIPT_FONTPROPERTIES sfp;
 	ZeroMemory(&sfp, sizeof(SCRIPT_FONTPROPERTIES));

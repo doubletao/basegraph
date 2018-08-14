@@ -43,9 +43,9 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  //  ‰»Î«˙œﬂ
 									IN float fDis,  // ∆´“∆æ‡¿Î
 									OUT BaseARray &aptOrig, //‘≠ º±ﬂ¿Î…¢µ„
 									OUT BaseARray &aptOrigNorm, //‘≠ º±ﬂ¿Î…¢µ„
-									OUT CSYPoint2fPtrArray &aptShift, //∆´“∆±ﬂ¿Î…¢µ„
-									OUT CSYPoint2fPtrArray &aptShiftNorm, //∆´“∆±ﬂ¿Î…¢µ„
-									OUT CSYDWORDPtrArray &aOrigIndex,
+									OUT CBasePoint2fPtrArray &aptShift, //∆´“∆±ﬂ¿Î…¢µ„
+									OUT CBasePoint2fPtrArray &aptShiftNorm, //∆´“∆±ﬂ¿Î…¢µ„
+									OUT CBaseDWORDPtrArray &aOrigIndex,
 									IN const int ndirect
 									);
 

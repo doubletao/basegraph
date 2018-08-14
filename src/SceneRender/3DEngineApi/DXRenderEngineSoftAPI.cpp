@@ -60,7 +60,7 @@ void SYDeviceContex::SetViewPort(int nLeft,int nTop,int nRight,int nBottom)
 	rtViewport.top = nTop;
 	rtViewport.bottom = nBottom;
 }
-void SYDeviceContex::SetRenderTarget(SY_DeviceSoft* pDevice,int hRT,int hDepth)
+void SYDeviceContex::SetRenderTarget(Common_DeviceSoft* pDevice,int hRT,int hDepth)
 {
 	if (hRT == hNowRenderTarget && hDepth == hNowDepth)
 		return;
@@ -223,7 +223,7 @@ const int g_pLayoutNum[] =
 };
 
 //////////////////////////////////////////////////////////////////////////
-inline int CreateBuffer(SY_DeviceSoft* pDevice,int nSize,int nNum,void* pBuffer,DXBufferType nType,int nPriType = -1)
+inline int CreateBuffer(Common_DeviceSoft* pDevice,int nSize,int nNum,void* pBuffer,DXBufferType nType,int nPriType = -1)
 {
 	SYSoftBuffer* pVideoBuffer = new SYSoftBuffer;
 	pVideoBuffer->nType = nType;
@@ -255,7 +255,7 @@ struct screenVertex
 	float	tv;
 };
 
-int Create2DVertex(SY_DeviceSoft* pDevice)
+int Create2DVertex(Common_DeviceSoft* pDevice)
 {
 	screenVertex pSrceenVertex[6]; 
 	pSrceenVertex[0].pos.x = 0;
@@ -297,7 +297,7 @@ int Create2DVertex(SY_DeviceSoft* pDevice)
 
 	return CreateBuffer(pDevice,sizeof(screenVertex),6,pSrceenVertex,DXVertexBuffer,TRIANGLELIST);
 }
-int CreateScreenVertex(SY_DeviceSoft* pDevice)
+int CreateScreenVertex(Common_DeviceSoft* pDevice)
 {
 	screenVertex pSrceenVertex[6]; 
 	pSrceenVertex[0].pos.x = -1.f;
@@ -361,7 +361,7 @@ void Soft_ReleaseTexture(SYSoftTexture* pWDTexture)
 	SAFE_DELETE(pWDTexture);
 }
 
-void Render_ReleaseDevice(SY_DeviceSoft* pDevice)
+void Render_ReleaseDevice(Common_DeviceSoft* pDevice)
 {
 	if (!pDevice )
 		return;
@@ -416,11 +416,11 @@ void Render_ReleaseDevice(SY_DeviceSoft* pDevice)
 bool Render_Release(void* paramin,void* paramout)
 {
 	UINT firstDevice = BseeHTable_GetFirstValid(&g_SoftDeviceHT);		
-	SY_DeviceSoft* pNowDevice = (SY_DeviceSoft*)BseeHTable_GetAt(&g_SoftDeviceHT,firstDevice);
+	Common_DeviceSoft* pNowDevice = (Common_DeviceSoft*)BseeHTable_GetAt(&g_SoftDeviceHT,firstDevice);
 	do 
 	{
 		Render_ReleaseDevice(pNowDevice);
-		pNowDevice = (SY_DeviceSoft*)BseeHTable_GetNextValid(&g_SoftDeviceHT,&firstDevice);
+		pNowDevice = (Common_DeviceSoft*)BseeHTable_GetNextValid(&g_SoftDeviceHT,&firstDevice);
 	} while (pNowDevice);
 
 	BseeHTable_Release(&g_SoftDeviceHT);
@@ -432,8 +432,8 @@ bool Render_CreateDevice(void* paramin,void* paramout)
 {
 	BOOL* pDoubleDevice = (BOOL*)paramin;
 
-	SY_DeviceSoft* pNewDevice = NULL;
-	pNewDevice = new SY_DeviceSoft;
+	Common_DeviceSoft* pNewDevice = NULL;
+	pNewDevice = new Common_DeviceSoft;
 
 	BseeHTable_Init(&pNewDevice->httexture);
 	BseeHTable_Init(&pNewDevice->htModel);
@@ -450,7 +450,7 @@ bool Render_CreateDevice(void* paramin,void* paramout)
 	return true;
 }
 
-bool Render_GetSwapChainDesc(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool Render_GetSwapChainDesc(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	createSwapChainIn* pIn = (createSwapChainIn*)paramin;
 	createSwapChainIn* pOut = (createSwapChainIn*)paramout;
@@ -466,7 +466,7 @@ bool Render_GetSwapChainDesc(SY_DeviceSoft* pDevice,void* paramin,void* paramout
 	return false;
 }
 
-bool Render_CreateSwapChain(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool Render_CreateSwapChain(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	createSwapChainIn* pIn = (createSwapChainIn*)paramin;
 
@@ -480,14 +480,14 @@ bool Render_CreateSwapChain(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 
 bool render_DumpTexture(int hDevice,void* paramin,void* paramout);
 
-bool Render_SetRenderTarget(SY_DeviceSoft* pDevice, SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
+bool Render_SetRenderTarget(Common_DeviceSoft* pDevice, SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
 {
 	setRenderTarget* param = (setRenderTarget*)paramin;
 	pDeviceContext->SetRenderTarget(pDevice,param->hRenderTarget,param->hDepth);
 	return TRUE;
 }
 
-bool Render_CreateTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool Render_CreateTexture(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	createTextureIn* param = (createTextureIn*)paramin;
 	CCommonBuffer* pNewTexture = new CCommonBuffer(param->nWidth,param->nHeight);
@@ -506,7 +506,7 @@ bool Render_CreateTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 	return true;
 }
 
-bool render_ClearTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool render_ClearTexture(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	clearTextureIn* param = (clearTextureIn*)paramin;
 	CCommonBuffer* pBuffer = getTexture(pDevice,param->hTexture);
@@ -514,7 +514,7 @@ bool render_ClearTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 	return true;
 }
 
-bool render_GetTextureInfo(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool render_GetTextureInfo(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	getTextureInfoOut* pOut = (getTextureInfoOut*)paramout;
@@ -529,7 +529,7 @@ bool render_GetTextureInfo(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 }
 
 
-bool Render_CopyTexture(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
+bool Render_CopyTexture(Common_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
 {
 	copyTexture* param = (copyTexture*)paramin;
 	DXSingleLock resLock(pDevice->ResLock,false);
@@ -542,7 +542,7 @@ bool Render_CopyTexture(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,vo
 			pSrcTexture->m_dwBuffer,param->nSrcOffsetX,param->nSrcOffsetY,param->nSrcWidth,param->nSrcHeight,pSrcTexture->m_nWidth,pSrcTexture->m_nHeight,BUFFER_COPY,NULL);
 	return true;
 }
-bool render_DumpTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool render_DumpTexture(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	LPCTSTR szFile = ((DXDumpIn*)paramin)->szFile;
 	int hTexture = ((DXDumpIn*)paramin)->hTexture;
@@ -552,7 +552,7 @@ bool render_DumpTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 	BufferFunction::WriteBitmap(szFile == NULL ? path : szFile, pTexture->m_nWidth, pTexture->m_nHeight, pTexture->m_nPitch, (BYTE *)pTexture->m_dwBuffer);
 	return true;
 }
-bool Render_ReleaseSwapChain(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool Render_ReleaseSwapChain(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	SYSoftSwapChain* pSrcWDTexture = (SYSoftSwapChain*)BseeHTable_RemoveAt(&pDevice->htSwapChain,*(int*)paramin);
 
@@ -562,7 +562,7 @@ bool Render_ReleaseSwapChain(SY_DeviceSoft* pDevice,void* paramin,void* paramout
 	return true;
 }
 
-bool RenderSoft_ReleaseTexture(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool RenderSoft_ReleaseTexture(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	assert(pSrcWDTexture);
@@ -601,7 +601,7 @@ bool Render_BeginTex(SYDeviceContex* pDeviceContext,void* paramin,void* paramout
 }
 
 
-bool Render_RenderTex(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
+bool Render_RenderTex(Common_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
 {
 	renderTextureIn* pIn = (renderTextureIn*)paramin;
 
@@ -697,7 +697,7 @@ bool Render_GetRenderTarget(SYDeviceContex* pDeviceContext,void* paramin,void* p
 }
 
 BOOL Render_EngineLock(int hDevice,void* paramin,void* paramout);
-bool Render_UpLoad(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
+bool Render_UpLoad(Common_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
 {
 	uploadBufferIn* pIn = (uploadBufferIn*)paramin;
 
@@ -736,7 +736,7 @@ bool Render_SetRenderState(SYDeviceContex* pDeviceContext,void* paramin,void* pa
 	return true;
 }
 
-BOOL Render_ClearScreen(SY_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
+BOOL Render_ClearScreen(Common_DeviceSoft* pDevice,SYDeviceContex* pDeviceContext,void* paramin,void* paramout)
 {
 	clearScreenIn* pParam = (clearScreenIn*)paramin;
 	if(pParam->nType == DX_CLEAR_RENDERTARGET_ONLY || pParam->nType == DX_CLEAR_ALL)
@@ -796,7 +796,7 @@ BOOL Render_RenderUnLock(SYDeviceContex* pDeviceContext)
 	return TRUE;
 }
 
-BOOL Render_GetMemTexBuffer(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+BOOL Render_GetMemTexBuffer(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	SYSoftTexture* pTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	DXGetMemTexBufferOut* pBuffer = (DXGetMemTexBufferOut*)paramout;
@@ -805,14 +805,14 @@ BOOL Render_GetMemTexBuffer(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
 	return true;
 }
 
-void GetTexInfo(SY_DeviceSoft* pDevice,int hTex,int* pWidth,int* pHeight)
+void GetTexInfo(Common_DeviceSoft* pDevice,int hTex,int* pWidth,int* pHeight)
 {
 	CCommonBuffer* pSrcTex = getTexture(pDevice,hTex);
 	getTextureInfo(pSrcTex,pWidth,pHeight);
 }
 
 
-BOOL Render_GetSwapChainBufferTex(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+BOOL Render_GetSwapChainBufferTex(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	int* hSwapChain = (int*)paramin;
 	SYSoftSwapChain* pSwapChain = (SYSoftSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,*hSwapChain);
@@ -821,14 +821,14 @@ BOOL Render_GetSwapChainBufferTex(SY_DeviceSoft* pDevice,void* paramin,void* par
 	return TRUE;
 }
 
-BOOL Render_ClearRenderInfo(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+BOOL Render_ClearRenderInfo(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	pDevice->info.nRenderCount = 0;
 	pDevice->info.nTriangleCount = 0;
 	return TRUE;
 }
 
-bool Render_CreateTexFromFile(SY_DeviceSoft* pDevice,void* paramin,void* paramout)
+bool Render_CreateTexFromFile(Common_DeviceSoft* pDevice,void* paramin,void* paramout)
 {
 	createTextureFromFileIn* param = (createTextureFromFileIn*)paramin;
 	TCHAR* pPath = param->pPath;
@@ -882,7 +882,7 @@ bool Render_CreateTexFromFile(SY_DeviceSoft* pDevice,void* paramin,void* paramou
 	return true;
 }
 
-BOOL Render_CreateContext(SY_DeviceSoft* pDevice,void* paramout)
+BOOL Render_CreateContext(Common_DeviceSoft* pDevice,void* paramout)
 {
 	SYDeviceContex* pDeviceContext = new SYDeviceContex;
 	UINT hContext = BseeHTable_Insert(&pDevice->htContexTable,pDeviceContext);
@@ -890,7 +890,7 @@ BOOL Render_CreateContext(SY_DeviceSoft* pDevice,void* paramout)
 	return TRUE;
 }
 
-BOOL Render_ReleaseContext(SY_DeviceSoft* pDevice,void* paramin)
+BOOL Render_ReleaseContext(Common_DeviceSoft* pDevice,void* paramin)
 {
 	UINT hContext = *(UINT*)paramin;
 	SYDeviceContex* pDeviceContext = (SYDeviceContex*)BseeHTable_RemoveAt(&pDevice->htContexTable,hContext);
@@ -906,7 +906,7 @@ BOOL Render_ReleaseContext(SY_DeviceSoft* pDevice,void* paramin)
 	return TRUE;
 }
 
-BOOL Render_SetContext(SY_DeviceSoft* pDevice,void* paramin)
+BOOL Render_SetContext(Common_DeviceSoft* pDevice,void* paramin)
 {
 	UINT hContext = *(UINT*)paramin;
 	SYDeviceContex* pDeviceContext = (SYDeviceContex*)BseeHTable_GetAt(&pDevice->htContexTable,hContext);
@@ -927,7 +927,7 @@ BOOL RenderSoftEngine_Main( int ncmd, int hDevice, void* paramin, void* paramout
 	else if(ncmd == RENDERENGINE_CREATEDEVICE)
 		return Render_CreateDevice(paramin,paramout);
 
-	SY_DeviceSoft* pDevice = (SY_DeviceSoft*)BseeHTable_GetAt(&g_SoftDeviceHT,hDevice);
+	Common_DeviceSoft* pDevice = (Common_DeviceSoft*)BseeHTable_GetAt(&g_SoftDeviceHT,hDevice);
 	lock.UnLock();
 	//////////////////////////////////////////////////////////////////////////
 	if(!pDevice)

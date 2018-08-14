@@ -9,15 +9,15 @@ static char THIS_FILE[] = __FILE__;
 #define _USE_MATH_DEFINES
 #include "math.h"
 
-CSYPieModeling::CSYPieModeling(void)
+CBasePieModeling::CBasePieModeling(void)
 {
 }
 
-CSYPieModeling::~CSYPieModeling(void)
+CBasePieModeling::~CBasePieModeling(void)
 {
 }
 
-CSYPieModeling::CSYPieModeling( UINT uShape,
+CBasePieModeling::CBasePieModeling( UINT uShape,
 								UINT uFrag,
 								float fAngle0,
 								float fAngle1,
@@ -151,7 +151,7 @@ CSYPieModeling::CSYPieModeling( UINT uShape,
 	calc_radius();
 }
 
-void CSYPieModeling::calc_plane_face(int* v_count, int* i_count, int* t_count)
+void CBasePieModeling::calc_plane_face(int* v_count, int* i_count, int* t_count)
 {
 	int v0 = 0;
 	int i0 = 0;
@@ -181,7 +181,7 @@ void CSYPieModeling::calc_plane_face(int* v_count, int* i_count, int* t_count)
 		*t_count = t0 + t1;
 }
 
-void CSYPieModeling::calc_arc_face(int* v_count, int* i_count, int* t_count)
+void CBasePieModeling::calc_arc_face(int* v_count, int* i_count, int* t_count)
 {
 	int num_v = 0;
 	int num_i = 0;
@@ -214,7 +214,7 @@ void CSYPieModeling::calc_arc_face(int* v_count, int* i_count, int* t_count)
 		*t_count = num_t;
 }
 
-void CSYPieModeling::calc_chamfer_face(int* v_count, int* i_count, int* t_count)
+void CBasePieModeling::calc_chamfer_face(int* v_count, int* i_count, int* t_count)
 {
 	int num_v = 0;
 	int num_i = 0;
@@ -273,7 +273,7 @@ void CSYPieModeling::calc_chamfer_face(int* v_count, int* i_count, int* t_count)
 		*t_count = num_t;
 }
 
-void CSYPieModeling::calc_start_end_face(int* v_count, int* i_count, int* t_count)
+void CBasePieModeling::calc_start_end_face(int* v_count, int* i_count, int* t_count)
 {
 	int num_v = 0;
 	int num_i = 0;
@@ -323,14 +323,14 @@ void CSYPieModeling::calc_start_end_face(int* v_count, int* i_count, int* t_coun
 		*t_count = num_t;
 }
 
-UINT  CSYPieModeling::calc_arc_point_count(float angle_start,float m_angle_end)
+UINT  CBasePieModeling::calc_arc_point_count(float angle_start,float m_angle_end)
 {
 	UINT c = UINT(abs(m_angle_end - angle_start)/PAI*180.0f*m_frag/10 + 1);
 
 	return max(2,c);
 }
 
-void CSYPieModeling::GetModelParam(int* v_count, int* i_count, int* t_count)
+void CBasePieModeling::GetModelParam(int* v_count, int* i_count, int* t_count)
 {
 	int num_v = 0;
 	int num_i = 0;
@@ -374,7 +374,7 @@ void CSYPieModeling::GetModelParam(int* v_count, int* i_count, int* t_count)
 		*t_count = m_triangle_count;
 }
 
-int CSYPieModeling::modeling_top_plane( SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_top_plane( SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	int v_count = 0;
 
@@ -499,7 +499,7 @@ int CSYPieModeling::modeling_top_plane( SYVertex3D*& v_buf, DWORD*& i_buf, int v
 	return v_count;
 }
 
-int CSYPieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	int v_count = 0;
 
@@ -628,7 +628,7 @@ int CSYPieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int
 	return v_count;
 }
 
-// int CSYPieModeling::modeling_plane_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_plane_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 int v_count = 0;
 // 
@@ -893,7 +893,7 @@ int CSYPieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int
 // }
 // 
 
-int CSYPieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	int v_count = 0;
 
@@ -1187,7 +1187,7 @@ int CSYPieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v
 	return v_count;
 }
 
-// int CSYPieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 int v_count = 0;
 // 
@@ -1598,7 +1598,7 @@ int CSYPieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v
 //	 return v_count;
 // }
 
-int CSYPieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	int v_count = 0;
 
@@ -1901,7 +1901,7 @@ int CSYPieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_s
 	return v_count;
 }
 
-// int CSYPieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 int v_count = 0;
 // 
@@ -2380,7 +2380,7 @@ int CSYPieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_s
 // 
 // }
 
-int CSYPieModeling::modeling_outer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_outer_arc)
 		return 0;
@@ -2471,7 +2471,7 @@ int CSYPieModeling::modeling_outer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_
 	return v_count;
 }
 
-int CSYPieModeling::modeling_inner_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_inner_arc)
 		return 0;
@@ -2560,7 +2560,7 @@ int CSYPieModeling::modeling_inner_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_
 	return v_count;
 }
 
-int CSYPieModeling::modeling_outer_top_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_top_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_top_out_chamfer)
 		return 0;
@@ -2644,7 +2644,7 @@ int CSYPieModeling::modeling_outer_top_chamfer_plane(SYVertex3D*& v_buf, DWORD*&
 	return v_count;
 }
 
-int CSYPieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_bottom_out_chamfer)
 		return 0;
@@ -2722,7 +2722,7 @@ int CSYPieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DWOR
 	return v_count;
 }
 
-// int CSYPieModeling::modeling_outer_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_outer_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 if(!m_has_chamfer)
 //		 return 0;
@@ -2857,7 +2857,7 @@ int CSYPieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DWOR
 //	 return v_count;
 // }
 
-int CSYPieModeling::modeling_inner_top_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_top_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_top_in_chamfer)
 		return 0;
@@ -2943,7 +2943,7 @@ int CSYPieModeling::modeling_inner_top_chamfer_plane(SYVertex3D*& v_buf, DWORD*&
 	return v_count;
 }
 
-int CSYPieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_bottom_in_chamfer)
 		return 0;
@@ -3022,7 +3022,7 @@ int CSYPieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DWOR
 	return v_count;
 }
 
-// int CSYPieModeling::modeling_inner_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_inner_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 if(!m_has_chamfer)
 //		 return 0;
@@ -3160,7 +3160,7 @@ int CSYPieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DWOR
 //	 return v_count;
 // }
 
-int CSYPieModeling::modeling_outer_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_top_out_chamfer)
 		return 0;
@@ -3263,7 +3263,7 @@ int CSYPieModeling::modeling_outer_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i
 	return v_count;
 }
 
-int CSYPieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_bottom_out_chamfer)
 		return 0;
@@ -3348,7 +3348,7 @@ int CSYPieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*
 	return v_count;
 }
 
-// int CSYPieModeling::modeling_outer_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_outer_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 if(!m_has_chamfer)
 //		 return 0;
@@ -3485,7 +3485,7 @@ int CSYPieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*
 //	 return v_count;
 // }
 
-int CSYPieModeling::modeling_inner_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_top_in_chamfer)
 		return 0;
@@ -3570,7 +3570,7 @@ int CSYPieModeling::modeling_inner_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i
 	return v_count;
 }
 
-int CSYPieModeling::modeling_inner_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_bottom_in_chamfer)
 		return 0;
@@ -3655,7 +3655,7 @@ int CSYPieModeling::modeling_inner_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*
 	return v_count;
 }
 
-// int CSYPieModeling::modeling_inner_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_inner_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 if(!m_has_chamfer)
 //		 return 0;
@@ -3815,13 +3815,13 @@ BOOL Test(SYModel* pMod)
 	pMod->viewsub[0].icount = icount;
 
 	pMod->viewsub[0].nTri_Num = tcount;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 	pMod->viewsub[0].pMaterial = NULL;
 
 	return TRUE;
 }
 
-BOOL CSYPieModeling::CreateModel(SYModel* pMod)
+BOOL CBasePieModeling::CreateModel(SYModel* pMod)
 {
 	int vcount = 0;
 	int icount = 0;
@@ -3889,13 +3889,13 @@ BOOL CSYPieModeling::CreateModel(SYModel* pMod)
 	pMod->viewsub[0].icount = icount;
 
 	pMod->viewsub[0].nTri_Num = tcount;
-	pMod->viewsub[0].nTri_Type = SY_TRIANGLE_LIST;
+	pMod->viewsub[0].nTri_Type = Common_TRIANGLE_LIST;
 	pMod->viewsub[0].pMaterial = NULL;
 
 	return TRUE;
 }
 
-void CSYPieModeling::calc_top_plane_inner_rad()
+void CBasePieModeling::calc_top_plane_inner_rad()
 {
 	if(m_has_top_in_chamfer)
 	{
@@ -3907,7 +3907,7 @@ void CSYPieModeling::calc_top_plane_inner_rad()
 	}
 }
 
-void CSYPieModeling::calc_bottom_plane_inner_rad()
+void CBasePieModeling::calc_bottom_plane_inner_rad()
 {
 	if(m_has_bottom_in_chamfer)
 	{
@@ -3919,7 +3919,7 @@ void CSYPieModeling::calc_bottom_plane_inner_rad()
 	}
 }
 
-void CSYPieModeling::calc_top_plane_outer_rad()
+void CBasePieModeling::calc_top_plane_outer_rad()
 {
 	if(m_has_top_out_chamfer)
 	{
@@ -3931,7 +3931,7 @@ void CSYPieModeling::calc_top_plane_outer_rad()
 	}
 }
 
-void CSYPieModeling::calc_bottom_plane_outer_rad()
+void CBasePieModeling::calc_bottom_plane_outer_rad()
 {
 	if(m_has_bottom_out_chamfer)
 	{
@@ -3943,7 +3943,7 @@ void CSYPieModeling::calc_bottom_plane_outer_rad()
 	}
 }
 
-void CSYPieModeling::calc_radius()
+void CBasePieModeling::calc_radius()
 {
 	calc_top_plane_inner_rad();
 	calc_bottom_plane_inner_rad();
@@ -3954,7 +3954,7 @@ void CSYPieModeling::calc_radius()
 	m_inner_arc_rad = m_inner_radius;
 }
 
-void CSYPieModeling::plane_veterics_count(	int* v_count, int* i_count, int* t_count,BOOL has_holl)
+void CBasePieModeling::plane_veterics_count(	int* v_count, int* i_count, int* t_count,BOOL has_holl)
 {
 	int num_v = 0;
 	int num_i = 0;
@@ -3997,7 +3997,7 @@ void CSYPieModeling::plane_veterics_count(	int* v_count, int* i_count, int* t_co
 		*t_count = num_t;
 }
 
-void CSYPieModeling::calc_chamfer_size()
+void CBasePieModeling::calc_chamfer_size()
 {
 	if((m_chamfer_type == 0) 
 		|| abs(m_chamfer_lenth)< 0.0f 

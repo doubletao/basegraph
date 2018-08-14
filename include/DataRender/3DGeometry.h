@@ -1,5 +1,5 @@
-#ifndef __SY_3DRENDERAPI_INC__
-#define __SY_3DRENDERAPI_INC__
+#ifndef __Common_3DRENDERAPI_INC__
+#define __Common_3DRENDERAPI_INC__
 #include "DataRender\DataRenderDataDef.h"
 
 //////////////////////////////////////////////////////////////////////////

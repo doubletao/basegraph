@@ -183,7 +183,7 @@ point2f CFourPtForm::FPt(const point2f &fPt)
 	RtPt.y = 0;
 
 	float fL[2];
-	float fTemp = SYRectf_Width(&m_Rt);
+	float fTemp = BaseRectf_Width(&m_Rt);
 	if (fTemp > ABS_FLOAT_0)
 	{
 		fL[0] = (fPt.x-m_Rt.left) / fTemp;
@@ -192,7 +192,7 @@ point2f CFourPtForm::FPt(const point2f &fPt)
 	{
 		fL[0] = fPt.x-m_Rt.left >= 0 ? 1 : -1;
 	}
-	fTemp = SYRectf_Height(&m_Rt);
+	fTemp = BaseRectf_Height(&m_Rt);
 	if (fTemp > ABS_FLOAT_0)
 	{
 		fL[1] = (fPt.y-m_Rt.top) / fTemp;
@@ -233,10 +233,10 @@ point2f CTwistForm::FPt(const point2f &fPt)
 	point2f fRet;
 
 	fRet.x = fPt.x+(m_RtBound.right+m_RtBound.left-2.0f*fPt.x)*m_fx
-				  *(2.0f*(fPt.y-m_RtBound.top)/SYRectf_Height(&m_RtBound)-1.0f);
+				  *(2.0f*(fPt.y-m_RtBound.top)/BaseRectf_Height(&m_RtBound)-1.0f);
 
 	fRet.y = fPt.y+(m_RtBound.top+m_RtBound.bottom-2.0f*fPt.y)*m_fy
-				  *(2.0f*(fRet.x-m_RtBound.left)/SYRectf_Width(&m_RtBound)-1.0f);
+				  *(2.0f*(fRet.x-m_RtBound.left)/BaseRectf_Width(&m_RtBound)-1.0f);
 	return fRet;
 }
 //implement of class CTwistForm
@@ -260,7 +260,7 @@ point2f CCurveForm::FPt(const point2f &fPt)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CSYPolgonRip::Form(CForm &objFm, vectorgraph* pGraph)
+void CBasePolgonRip::Form(CForm &objFm, vectorgraph* pGraph)
 {
 	rectf* prtGraph = nullptr;
 	if (pGraph->ncell > 0)
@@ -297,7 +297,7 @@ void CSYPolgonRip::Form(CForm &objFm, vectorgraph* pGraph)
 	}
 }
 
-void CSYPolgonRip::Form(CForm &objFm, rectf* pRect, point3f* pPt)
+void CBasePolgonRip::Form(CForm &objFm, rectf* pRect, point3f* pPt)
 {
 	point2f pt2;
 	if (pPt != NULL)
@@ -337,7 +337,7 @@ void CSYPolgonRip::Form(CForm &objFm, rectf* pRect, point3f* pPt)
 	}
 }
 
-void CSYPolgonRip::Form(CForm &objFm, point3f* paryPt, int nPtCnt)
+void CBasePolgonRip::Form(CForm &objFm, point3f* paryPt, int nPtCnt)
 {
 	if (paryPt != NULL)
 	{

@@ -7,8 +7,8 @@
 /****************************************************************************/
 #include "SceneRender\3DSpaceConvert.h"
 #include "SceneRender\DXEngineDataDef.h"
-#ifndef		SY_INTERSECTION_INC__
-#define		SY_INTERSECTION_INC__
+#ifndef		Common_INTERSECTION_INC__
+#define		Common_INTERSECTION_INC__
 #define		POINT_DEVIATION		8.f
 #define		INTERSECTION_FAR	2
 #define		NO_INTERSECTION		0
@@ -96,9 +96,9 @@ struct SYRay
 typedef struct SYRay SYLine;
 enum SYHitType
 {
-	SY_NO_HIT = 0,
-	SY_NORMAL_HIT,
-	SY_HIT_EDGE,
+	Common_NO_HIT = 0,
+	Common_NORMAL_HIT,
+	Common_HIT_EDGE,
 };
 BASEGRAPH_SCENE_RENDER_API void GetRayDirection(SYRay* pRay,const float3* pScreenPoint,const SYSpaceConvertParam* pParam);
 BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const float3* pSegEnd,float fRadius,const float3* pCenter,const float3* pNormal,SYHitPoint* pHitPoint);

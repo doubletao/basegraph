@@ -102,7 +102,7 @@ public:
 	virtual void Create(float fx,float fy);
 };
 //////////////////////////////////////////////////////////////////////////
-class BASEGRAPH_DATARENDER_API CSYPolgonRip
+class BASEGRAPH_DATARENDER_API CBasePolgonRip
 {
 public:
 	virtual void Form(CForm &objFm, vectorgraph* pGraph);

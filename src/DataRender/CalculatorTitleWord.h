@@ -9,7 +9,7 @@ public:
 	CalculatorTitleword(CString strObjID);
 	virtual ~CalculatorTitleword();
 protected:
-	CSYTypeset m_TypeSet;
+	CBaseTypeset m_TypeSet;
 	SYText m_text;
 	rectf m_rtUnitBound;//根据unit算出来的静态bound
 	BaseARray m_2DTextRenderUnitArray;
@@ -52,7 +52,7 @@ public:
 	//目前的计算都是针对于动态状态而言的,对于静态状态改变的可能是源.
 	virtual BOOL _trans_calcunit(int nFrame, int nUnitIndex, int nOrderIndex, BOOL bInherit = TRUE);
 	virtual BOOL _trans_calcunit_matrix(matrix4f * pVMatrix, int* pdwMatrixType, double dFrame, int nUnitIndex, int nOrderIndex);
-	virtual void GetRenderUnitOrder(CSYIntArray& arOrder);
+	virtual void GetRenderUnitOrder(CBaseIntArray& arOrder);
 	virtual void DeleteWholeRenderGraph();
 	virtual BOOL UpdateWholeRenderGraph(BaseARray* pRenderUnitArray);
 	virtual void UpdateItemGpuBuffer(BOOL bLock = FALSE);

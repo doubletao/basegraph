@@ -308,13 +308,13 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 	//初始化列表
 #if 0
 	//djt perunit暂时不考虑
-	CSYAction* pAction = pEnv->GetCurAction();
+	CBaseAction* pAction = pEnv->GetCurAction();
 	BOOL bPerUnit = IsPerUnit(pEnv, dwUnitType);
-	BOOL bPerUnitReverseOrder = bPerUnit && pAction->GetPerUnitInfo()->nOrder == SY_PER_UNIT_REVERSE_ORDER;
+	BOOL bPerUnitReverseOrder = bPerUnit && pAction->GetPerUnitInfo()->nOrder == Common_PER_UNIT_REVERSE_ORDER;
 	for (int i = 0; i < nUnitCount; i++)
 		pBuffer->m_dwBuffer[i] = bPerUnitReverseOrder ? nUnitCount - i - 1 : i;
 
-	if (bPerUnit && pAction->GetPerUnitInfo()->nOrder == SY_PER_UNIT_RAMDOM_ORDER)
+	if (bPerUnit && pAction->GetPerUnitInfo()->nOrder == Common_PER_UNIT_RAMDOM_ORDER)
 		SYShuffle((int*)pBuffer->m_dwBuffer, nUnitCount);
 #endif
 
@@ -386,7 +386,7 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 #if 0
 		//djt 3D
 		else if ((dwUnitType == SYITEM_UNITTYPE_3DTEXT || dwUnitType == SYITEM_UNITTYPE_3DSHAPE)
-			&& (pRenderUnit->m_bChanged || nChgLevel > CSYCGEnv::Envchg_UnitTrans /*|| pEnv->m_nRenderChangedLevel > CSYCGEnv::Envchg_RotateZoom*/))
+			&& (pRenderUnit->m_bChanged || nChgLevel > CBaseCGEnv::Envchg_UnitTrans /*|| pEnv->m_nRenderChangedLevel > CBaseCGEnv::Envchg_RotateZoom*/))
 		{
 			FillRenderUnit(pEnv, pRenderUnit, punitin);
 			bChanged = TRUE;
@@ -469,7 +469,7 @@ BOOL CalculatorTitleword::_trans_calcunit_matrix(matrix4f * pVMatrix, int * pdwM
 #if 0
 	//djt
 	//得到当前的动作
-	CSYAction* pAction = pEnv->GetCurAction();
+	CBaseAction* pAction = pEnv->GetCurAction();
 	if (!pAction)
 		return FALSE;
 #endif
@@ -563,7 +563,7 @@ BOOL CalculatorTitleword::_trans_calcunit_matrix(matrix4f * pVMatrix, int * pdwM
 	return bChanged;
 }
 
-void CalculatorTitleword::GetRenderUnitOrder(CSYIntArray & arOrder)
+void CalculatorTitleword::GetRenderUnitOrder(CBaseIntArray & arOrder)
 {
 	int nUnitCnt = BaseAR_GetCount(&m_text.ar2DUnit);
 	//特殊效果
@@ -622,7 +622,7 @@ BOOL CalculatorTitleword::UpdateWholeRenderGraph(BaseARray * pRenderUnitArray)
 
 	BaseARray* parSingleGraph = &m_arWholeRenderTextGraph;
 
-	CSYIntArray arOrder;
+	CBaseIntArray arOrder;
 	GetRenderUnitOrder(arOrder);
 
 	int nOrderCnt = arOrder.GetCount();
@@ -674,7 +674,7 @@ BOOL CalculatorTitleword::UpdateWholeRenderGraph(BaseARray * pRenderUnitArray)
 			pSingleGraph->ncell = nCellCnt;
 			pSingleGraph->cell = new vectorcell[nCellCnt];
 			int nCellIdx = 0;
-			SYRectf_SetRectEmpty(&pSingleGraph->bound);
+			BaseRectf_SetRectEmpty(&pSingleGraph->bound);
 			while (i != nOrderEnd)
 			{
 				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);
@@ -691,7 +691,7 @@ BOOL CalculatorTitleword::UpdateWholeRenderGraph(BaseARray * pRenderUnitArray)
 
 					if (i != nOrderStart)
 					{
-						SYRectf_UnionRect(&pSingleGraph->bound, &pSingleGraph->bound, &vgTemp.bound);
+						BaseRectf_UnionRect(&pSingleGraph->bound, &pSingleGraph->bound, &vgTemp.bound);
 					}
 					else
 					{
@@ -738,7 +738,7 @@ void CalculatorTitleword::UpdateItemGpuBuffer(BOOL bLock)
 	OffsetRect(&newView, pHalBuffer->m_nOriginX, pHalBuffer->m_nOriginY);
 	DX3DEngine_SetViewPort(nDevice, &newView);
 	DX3DEngine_SetScissor(nDevice, &newView);
-	CSYIntArray arOrder;
+	CBaseIntArray arOrder;
 	GetRenderUnitOrder(arOrder);
 	int nOrderCnt = arOrder.GetCount();
 
@@ -838,9 +838,9 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 		fcubedeltY = pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.width * sin(pRenderUnit->m_pUnit->u.u2d.staticeffect.cube.angle);
 
 		rectf rtcubef = rtBoundf;
-		//SYRectf_OffsetRect1(&rtcubef,fcubedeltX,fcubedeltY);
-		SYRectf_InflateRect1(&rtcubef, abs(fcubedeltX), abs(fcubedeltY));
-		SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtcubef);
+		//BaseRectf_OffsetRect1(&rtcubef,fcubedeltX,fcubedeltY);
+		BaseRectf_InflateRect1(&rtcubef, abs(fcubedeltX), abs(fcubedeltY));
+		BaseRectf_UnionRect(&rtBoundf, &rtBoundf, &rtcubef);
 	}
 	if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.disable &&
 		(pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.offsetx
@@ -857,10 +857,10 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 		bottom = 0;
 
 		vector3f vVector[4];
-		//SYRectf_OffsetRect1(&rtShadow,(float)pinfo->offsetx,(float)pinfo->offsety);
-		SYRectf_InflateRect1(&rtShadow, abs(pinfo->offsetx), abs(pinfo->offsety));
-		SYRectf_InflateRect1(&rtShadow, abs(fcubedeltX), abs(fcubedeltY));	// 在立体边基础上扩大
-																			//SYRectf_OffsetRect1(&rtShadow,fcubedeltX,fcubedeltY);
+		//BaseRectf_OffsetRect1(&rtShadow,(float)pinfo->offsetx,(float)pinfo->offsety);
+		BaseRectf_InflateRect1(&rtShadow, abs(pinfo->offsetx), abs(pinfo->offsety));
+		BaseRectf_InflateRect1(&rtShadow, abs(fcubedeltX), abs(fcubedeltY));	// 在立体边基础上扩大
+																			//BaseRectf_OffsetRect1(&rtShadow,fcubedeltX,fcubedeltY);
 
 																			// 此值暂时无用，之前版本错误，有些模板存有错误值，特此修正
 		pinfo->effect_fxtitle = 0;
@@ -886,19 +886,19 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 		}
 		if (pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft)
 		{
-			SYRectf_InflateRect1(&rtShadow,
+			BaseRectf_InflateRect1(&rtShadow,
 				(float)pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft,
 				(float)pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft);
 		}
-		SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtShadow);
+		BaseRectf_UnionRect(&rtBoundf, &rtBoundf, &rtShadow);
 	}
 	if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.border.disable)
 	{
-		int nRadWidth = SY_FToI(pRenderUnit->m_pUnit->u.u2d.staticeffect.border.width) + pRenderUnit->m_pUnit->u.u2d.staticeffect.border.soft;
+		int nRadWidth = Common_FToI(pRenderUnit->m_pUnit->u.u2d.staticeffect.border.width) + pRenderUnit->m_pUnit->u.u2d.staticeffect.border.soft;
 		rectf rtborder = rtface;
-		SYRectf_InflateRect1(&rtborder, (float)nRadWidth, (float)nRadWidth);
-		//SYRectf_OffsetRect1(&rtborder,fcubedeltX,fcubedeltY);
-		SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtborder);
+		BaseRectf_InflateRect1(&rtborder, (float)nRadWidth, (float)nRadWidth);
+		//BaseRectf_OffsetRect1(&rtborder,fcubedeltX,fcubedeltY);
+		BaseRectf_UnionRect(&rtBoundf, &rtBoundf, &rtborder);
 
 		float fdeltX = 0;
 		float fdeltY = 0;
@@ -908,8 +908,8 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 			fdeltY = pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.width * sin(pRenderUnit->m_pUnit->u.u2d.staticeffect.bordercube.angle);
 
 			rectf rtbordercubef = rtborder;
-			SYRectf_InflateRect1(&rtbordercubef, abs(fdeltX), abs(fdeltY));
-			SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtbordercubef);
+			BaseRectf_InflateRect1(&rtbordercubef, abs(fdeltX), abs(fdeltY));
+			BaseRectf_UnionRect(&rtBoundf, &rtBoundf, &rtbordercubef);
 		}
 
 		if (!pRenderUnit->m_pUnit->u.u2d.staticeffect.bordershadow.disable &&
@@ -927,8 +927,8 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 			bottom = 0;
 
 			vector3f vVector[4];
-			SYRectf_InflateRect1(&rtBorderShadow, abs(pinfo->offsetx), abs(pinfo->offsety));
-			// 			SYRectf_OffsetRect1(&rtBorderShadow,fdeltX,fdeltY);
+			BaseRectf_InflateRect1(&rtBorderShadow, abs(pinfo->offsetx), abs(pinfo->offsety));
+			// 			BaseRectf_OffsetRect1(&rtBorderShadow,fdeltX,fdeltY);
 
 			// 此值暂时无用，之前版本错误，有些模板存有错误值，特此修正
 			pinfo->effect_fxtitle = 0;
@@ -954,23 +954,23 @@ void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 			}
 			if (pRenderUnit->m_pUnit->u.u2d.staticeffect.shadow.soft)
 			{
-				SYRectf_InflateRect1(&rtBorderShadow,
+				BaseRectf_InflateRect1(&rtBorderShadow,
 					(float)pinfo->soft,
 					(float)pinfo->soft);
 			}
-			SYRectf_UnionRect(&rtBoundf, &rtBoundf, &rtBorderShadow);
+			BaseRectf_UnionRect(&rtBoundf, &rtBoundf, &rtBorderShadow);
 		}
 	}
 }
 
 int CalculatorTitleword::GetWidth()
 {
-	return SYRectf_Width(&m_rtUnitBound);
+	return BaseRectf_Width(&m_rtUnitBound);
 }
 
 int CalculatorTitleword::GetHeight()
 {
-	return SYRectf_Height(&m_rtUnitBound);
+	return BaseRectf_Height(&m_rtUnitBound);
 }
 
 SYText * CalculatorTitleword::GetText()
@@ -1117,7 +1117,7 @@ bool CalculatorTitleword::PrepareItemHalBufer(int nDevice)
 	int nTexHeight = 0;
 	rectf rtBoundf = m_rtUnitBound;
 	float fScale = CalculatorManager::Instance().GetScale();
-	SYRectf_Scale(&rtBoundf, fScale);
+	BaseRectf_Scale(&rtBoundf, fScale);
 	int nLeft = 0;
 	int nTop = 0;
 	int nRight = 0;

@@ -76,13 +76,13 @@ void SYBevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN f
 	}
 
 	
-	CSYPoint3fPtrArray ptrArrRude4; 
-	CSYPoint3fPtrArray ptrArrRude3; 
+	CBasePoint3fPtrArray ptrArrRude4; 
+	CBasePoint3fPtrArray ptrArrRude3; 
 	//CPtrArray ptrArrBox4; // 面片投影的矩形包围盒
 	//CPtrArray ptrArrBox3; // 面片投影的矩形包围盒
-	CSYIndex3Array ptrArrIndex3; //三角形面片的指示信息
+	CBaseIndex3Array ptrArrIndex3; //三角形面片的指示信息
 
-	CSYPoint3fPtrArray ptrTri;
+	CBasePoint3fPtrArray ptrTri;
 
 //#ifdef _DEBUG
 //		LARGE_INTEGER t_freqency;
@@ -235,7 +235,7 @@ BOOL SYBevelPoly::NearLine(IN pointf* ptf )
 //输入：
 //输出：
 //------------------------------------------------------------------
-void SYBevelPoly::AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, OUT CSYPoint2fPtrArray * pptrPolyNorm, IN pointf * ctrlPoints)
+void SYBevelPoly::AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBasePoint2fPtrArray * pptrPolyNorm, IN pointf * ctrlPoints)
 {
 	// 接近直线，则直接加入
 	// 否则分成两段，递归调用
@@ -302,7 +302,7 @@ void SYBevelPoly::AddCurve2PtfPoly(OUT CSYPoint2fPtrArray * pptrPoly, OUT CSYPoi
 } // END OF AddCurve2PtfPoly
 
 void SYBevelPoly::GenerateRudeBevel4(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
-								 OUT CSYPoint3fPtrArray * pptrArrRude4/*, OUT CPtrArray * pptrArrBox4*/ )
+								 OUT CBasePoint3fPtrArray * pptrArrRude4/*, OUT CPtrArray * pptrArrBox4*/ )
 {
 	int nSize = (int)BaseAR_GetSize(pptrPoly);
 
@@ -373,7 +373,7 @@ void SYBevelPoly::GenerateRudeBevel4(IN BaseARray * pptrPoly, IN float fWidth, I
 } // END OF GenerateRudeBevel4
 
 void SYBevelPoly::GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
-								 OUT CSYPoint3fPtrArray * pptrArrRude3, /*OUT CPtrArray * pptrArrBox3, */OUT CSYIndex3Array *pptrArrIndex3 )
+								 OUT CBasePoint3fPtrArray * pptrArrRude3, /*OUT CPtrArray * pptrArrBox3, */OUT CBaseIndex3Array *pptrArrIndex3 )
 {
 	int nSize = (int)BaseAR_GetSize(pptrPoly);
 	pointf *prePt = NULL;
@@ -502,7 +502,7 @@ void SYBevelPoly::GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, I
 //输出：pt2
 //注意！鉴于只是供本程序内部使用时的特点,程序中没有考虑没有交点和两个交点时的情况
 //------------------------------------------------------------------
-int SYBevelPoly::MakeASlope(OUT CSYPoint3fPtrArray *pptArr,
+int SYBevelPoly::MakeASlope(OUT CBasePoint3fPtrArray *pptArr,
 						IN pointf* pCenter,
 						IN pointf* pStartPt,
 						IN pointf* pEndPt,  
@@ -552,7 +552,7 @@ int SYBevelPoly::MakeASlope(OUT CSYPoint3fPtrArray *pptArr,
 
 //////////////////////////////////////////////////////////////////////////
 void SYBevelPoly::CutUnSeenByOne(IN point3f* ptfFish, IN point3f* ptfKnife, IN int nFishSize, IN int nKnifeSize,
-							 IN OUT CSYPoint2fPtrArray * pptrCutLineSegArr)
+							 IN OUT CBasePoint2fPtrArray * pptrCutLineSegArr)
 {
 	int i;
 	pointf* ptfFishProj = new pointf[nFishSize];
@@ -709,14 +709,14 @@ void SYBevelPoly::CutUnSeenByOne(IN point3f* ptfFish, IN point3f* ptfKnife, IN i
 } // END OF CutUnSeenByOne
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
-						IN CSYPoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CSYIndex3Array *pptrArrIndex3,
-						IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray * pptrTri ) 
+void SYBevelPoly::CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CBasePoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+						IN CBasePoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CBaseIndex3Array *pptrArrIndex3,
+						IN float fWidth, IN float fHeight, OUT CBasePoint3fPtrArray * pptrTri ) 
 {
 	int i, j;
 	//int k;
-	CSYPoint2fPtrArray ptrCutLineSegArr;
-	CSYIntersectNodeArray ptrIntersectPtArr;
+	CBasePoint2fPtrArray ptrCutLineSegArr;
+	CBaseIntersectNodeArray ptrIntersectPtArr;
 	point3f ptfFish[4];
 	//point3f ptfKnife[4]; 
 	int nFishSize;
@@ -837,15 +837,15 @@ void SYBevelPoly::CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm
 } // END OF CutToTri4
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CSYPoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
-						IN CSYPoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CSYIndex3Array *pptrArrIndex3,
-						IN float fWidth, IN float fHeight, OUT CSYPoint3fPtrArray * pptrTri ) 
+void SYBevelPoly::CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CBasePoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+						IN CBasePoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CBaseIndex3Array *pptrArrIndex3,
+						IN float fWidth, IN float fHeight, OUT CBasePoint3fPtrArray * pptrTri ) 
 {
 	int i;
 	//int j,k;
 	int ii;
-	CSYPoint2fPtrArray ptrCutLineSegArr;
-	CSYIntersectNodeArray ptrIntersectPtArr;
+	CBasePoint2fPtrArray ptrCutLineSegArr;
+	CBaseIntersectNodeArray ptrIntersectPtArr;
 	point3f ptfFish[3];
 	//point3f ptfKnife[4]; 
 	int nFishSize = 3;
@@ -1035,8 +1035,8 @@ void SYBevelPoly::CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm
 //线段组求交
 // 求交的结果放在一个Array中：
 // pointf 点坐标
-void SYBevelPoly::IntersectEachOther(IN CSYPoint2fPtrArray * pptrLineSegArr,  // 输入线段顶点Array
-								 OUT CSYIntersectNodeArray * pptrIntersectPtArr ) // 交点Array
+void SYBevelPoly::IntersectEachOther(IN CBasePoint2fPtrArray * pptrLineSegArr,  // 输入线段顶点Array
+								 OUT CBaseIntersectNodeArray * pptrIntersectPtArr ) // 交点Array
 {
 	int i, j;
 	pointf *ppt1S = NULL;
@@ -1078,13 +1078,13 @@ void SYBevelPoly::IntersectEachOther(IN CSYPoint2fPtrArray * pptrLineSegArr,  //
 void SYBevelPoly::GetResultTri4(IN pointf ptfFormer0, IN pointf ptfFormer1,  
 							IN pointf ptfConeHeadNorm0,  
 							IN pointf ptfConeHeadNorm1,  
-							IN CSYPoint2fPtrArray *pptrCutLineSegArr,  
-							IN CSYIntersectNodeArray *ptrIntersectPtArr, 
+							IN CBasePoint2fPtrArray *pptrCutLineSegArr,  
+							IN CBaseIntersectNodeArray *ptrIntersectPtArr, 
 							IN float fWidth, IN float fHeight, 
-							OUT CSYPoint3fPtrArray *pptrTri ) 
+							OUT CBasePoint3fPtrArray *pptrTri ) 
 {
 	ResultNode * pResultNode = NULL;
-	CSYResultNodeArray ptrResultNodeArr;
+	CBaseResultNodeArray ptrResultNodeArr;
 	int i, j;
 	pointf * pptf = NULL;
 	pointf * pptfS = NULL;
@@ -1386,13 +1386,13 @@ void SYBevelPoly::GetResultTri4(IN pointf ptfFormer0, IN pointf ptfFormer1,
 void SYBevelPoly::GetResultTri3(IN pointf ptfConeHead,  
 							IN pointf ptfConeHeadNorm,  
 							IN pointf ptfFormer0, IN pointf ptfFormer1,  
-							IN CSYPoint2fPtrArray *pptrCutLineSegArr,  
-							IN CSYIntersectNodeArray *ptrIntersectPtArr, 
+							IN CBasePoint2fPtrArray *pptrCutLineSegArr,  
+							IN CBaseIntersectNodeArray *ptrIntersectPtArr, 
 							IN float fWidth, IN float fHeight, 
-							OUT CSYPoint3fPtrArray *pptrTri ) 
+							OUT CBasePoint3fPtrArray *pptrTri ) 
 {
 	ResultNode * pResultNode = NULL;
-	CSYResultNodeArray ptrResultNodeArr;
+	CBaseResultNodeArray ptrResultNodeArr;
 	int i, j;
 	pointf * pptf = NULL;
 	pointf * pptfS = NULL;
@@ -1676,7 +1676,7 @@ void SYBevelPoly::Perpendicular(IN pointf  a, IN pointf b, IN pointf c, OUT poin
 } // END OF Perpendicular
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::InsertNode(IN OUT CSYResultNodeArray *pptrResultNodeArr, IN ResultNode * pNode)
+void SYBevelPoly::InsertNode(IN OUT CBaseResultNodeArray *pptrResultNodeArr, IN ResultNode * pNode)
 {
 	const float fZero = 0.0001f;
 	int i;

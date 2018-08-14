@@ -101,8 +101,8 @@ BOOL	SYIsEnableFeedBackFont()
 	return g_bEnableFeedBackFont;
 }
 
-BOOL			SY_bDigitUseLocalFont = TRUE;				//数字是否使用本地字体
-BOOL			SY_bOnlyUseLocalFont = FALSE;				//所有字只是用本地字体设置
+BOOL			Common_bDigitUseLocalFont = TRUE;				//数字是否使用本地字体
+BOOL			Common_bOnlyUseLocalFont = FALSE;				//所有字只是用本地字体设置
 //是否启用小字优化
 int			g_nSmallFontFactor = 3;					//小字加粗系数
 PI_Quality	g_nSmallFontQuality = PI_Quality_LOW;		//小字抗闪烁质量
@@ -217,7 +217,7 @@ BOOL VRollCharFinder::ReadDataFromFile()
 	aryWord.clear();
 	nWordSize = 0;
 
-	CString strFile = SYPath_GetPath(SY_PATH_SYS);
+	CString strFile = SYPath_GetPath(Common_PATH_SYS);
 	strFile.TrimRight(_T("\\"));
 	strFile += _T("\\VerticalRoll.Dat");
 	fstream file(strFile.c_str());
@@ -596,11 +596,11 @@ bool SYIsVisibleChar(TCHAR ch)
 
 BOOL SYIsUseLocalFont(TCHAR ch)
 {
-	if (!SY_bOnlyUseLocalFont)
+	if (!Common_bOnlyUseLocalFont)
 	{
 		if (iswascii(ch) && !iswspace(ch))
 		{
-			if (!SY_bDigitUseLocalFont || !iswdigit(ch))
+			if (!Common_bDigitUseLocalFont || !iswdigit(ch))
 				return FALSE;
 		}
 	}

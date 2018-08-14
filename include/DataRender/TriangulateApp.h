@@ -30,11 +30,11 @@ class SYTriangulateApp
 public:
 	SYTriangulateApp(void);
 	~SYTriangulateApp(void);
-	void SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CSYPoint3fPtrArray *pptrTri, OUT CSYPoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
-	void SYTriangulate(IN vectorgraph* pGraph, OUT OUT CSYPoint3fPtrArray *pptrTri, OUT CSYPoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
+	void SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
+	void SYTriangulate(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
 	void SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPtSize, int* nUnitStart, int nUnit, int nCurUnit, 
-		int* nCellStart, int nCell, OUT CSYPoint3fPtrArray *pptrTri, IN BOOL bAntiClockwise);
-	void SYTriangulateGL(IN vectorgraph* pGraph, OUT CSYPoint3fPtrArray *pptrTri,OUT CSYPoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
+		int* nCellStart, int nCell, OUT CBasePoint3fPtrArray *pptrTri, IN BOOL bAntiClockwise);
+	void SYTriangulateGL(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
 protected:
 	//--------------------------------------------------------------------------------
 	//功能：判断两点是否在直线两侧
@@ -55,12 +55,12 @@ protected:
 	//--------------------------------------------------------------------------------
 	//功能：打断并加入内环上的顶点maikefeng
 	//--------------------------------------------------------------------------------
-	void BreakAndAddCurCell(CSYPoint3fPtrArray *pptrTri, 
+	void BreakAndAddCurCell(CBasePoint3fPtrArray *pptrTri, 
 		CPtNodeArray &ptPolyArray, //ptfArray中的顶点加入到ptPolyArray
 		BaseARray &ptfArray, 
 		int nMinXIndex, // ptfArray中最小x值点的序号
 		float fMinX, // ptfArray中最小x值
-		CSYPoint2fPtrArray &ptfArrAddedMinPts);
+		CBasePoint2fPtrArray &ptfArrAddedMinPts);
 	void Triangulate(CPtNodeArray* pptPolyArray, CLineNodeArray* pLineArray, CTriangleArray* pTriangleArray, BOOL bAntiClockWise);
 	void Triangulate2(CPtNodeArray* pptPolyArray, CLineNodeArray* pLineArray, CTriangleArray* pTriangleArray, BOOL bAntiClockWise);
 	//--------------------------------------------------------------------------------

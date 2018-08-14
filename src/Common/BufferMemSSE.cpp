@@ -1158,7 +1158,7 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 	return TRUE;
 }
 
-BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN LPBYTE pbyKey, IN int nKeyX, IN int nKeyY, IN int nKeyWidth, IN int nKeyHeight, IN int nKeyBufWidth, IN int nKeyBufHeight, IN int nKeyPitch, IN SY_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip, IN int n, IN int k)
+BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN LPBYTE pbyKey, IN int nKeyX, IN int nKeyY, IN int nKeyWidth, IN int nKeyHeight, IN int nKeyBufWidth, IN int nKeyBufHeight, IN int nKeyPitch, IN Common_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip, IN int n, IN int k)
 {
 	if (pdwBuf == NULL || pbyKey == NULL)
 		return FALSE;
@@ -1185,7 +1185,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, 
 																	// 逐行处理
 	switch (eMode)
 	{
-	case SY_KEY_MULTIPLY:			// 相乘
+	case Common_KEY_MULTIPLY:			// 相乘
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			bgra32_key_mul_line(pdwDesLine, pbyKeyLine, na16, nm16);
@@ -1193,7 +1193,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, 
 			pbyKeyLine += nKeyAddPitch;
 		}
 		break;
-	case SY_KEY_MULTIPLY_NOTSRC:	// 反向源键相乘
+	case Common_KEY_MULTIPLY_NOTSRC:	// 反向源键相乘
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			bgra32_key_mul_notsrc_line(pdwDesLine, pbyKeyLine, na16, nm16);
@@ -1201,7 +1201,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, 
 			pbyKeyLine += nKeyAddPitch;
 		}
 		break;
-	case SY_KEY_MULTIPLY_NOTDES:	// 反向目标键相乘
+	case Common_KEY_MULTIPLY_NOTDES:	// 反向目标键相乘
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			bgra32_key_mul_notdes_line(pdwDesLine, pbyKeyLine, na16, nm16);
@@ -1209,7 +1209,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, 
 			pbyKeyLine += nKeyAddPitch;
 		}
 		break;
-	case SY_KEY_REPLACE:			// 替换
+	case Common_KEY_REPLACE:			// 替换
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			//			printf("i = %d/n",i);
@@ -1218,7 +1218,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, 
 			pbyKeyLine += nKeyAddPitch;
 		}
 		break;
-	case SY_KEY_MIX:				// 混叠
+	case Common_KEY_MIX:				// 混叠
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			bgra32_key_mix_line(pdwDesLine, pbyKeyLine, na16, nm16);
@@ -1226,7 +1226,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, 
 			pbyKeyLine += nKeyAddPitch;
 		}
 		break;
-	case SY_KEY_MIX_NOTSRC:			// 反向源键混叠
+	case Common_KEY_MIX_NOTSRC:			// 反向源键混叠
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			bgra32_key_mix_notsrc_line(pdwDesLine, pbyKeyLine, na16, nm16);
@@ -1234,7 +1234,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, 
 			pbyKeyLine += nKeyAddPitch;
 		}
 		break;
-	case SY_KEY_SAT_SUB:		// 饱和差值
+	case Common_KEY_SAT_SUB:		// 饱和差值
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			bgra32_key_sat_sub_line(pdwDesLine, pbyKeyLine, na16, nm16);
@@ -1249,7 +1249,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_Fix_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, 
 	return TRUE;
 }
 
-BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN LPBYTE pbyKey, IN int nKeyX, IN int nKeyY, IN int nKeyWidth, IN int nKeyHeight, IN int nKeyBufWidth, IN int nKeyBufHeight, IN int nKeyPitch, IN SY_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
+BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN LPBYTE pbyKey, IN int nKeyX, IN int nKeyY, IN int nKeyWidth, IN int nKeyHeight, IN int nKeyBufWidth, IN int nKeyBufHeight, IN int nKeyPitch, IN Common_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
 {
 	if (pdwBuf == NULL || pbyKey == NULL)
 		return FALSE;
@@ -1283,7 +1283,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 	// 逐行处理
 	switch (eMode)
 	{
-	case SY_KEY_MULTIPLY:		// 相乘
+	case Common_KEY_MULTIPLY:		// 相乘
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
@@ -1292,7 +1292,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 			pdwDesLine += nDesAddWidth;
 		}
 		break;
-	case SY_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
+	case Common_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
@@ -1301,7 +1301,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 			pdwDesLine += nDesAddWidth;
 		}
 		break;
-	case SY_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
+	case Common_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
@@ -1310,7 +1310,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 			pdwDesLine += nDesAddWidth;
 		}
 		break;
-	case SY_KEY_REPLACE:		// 替换
+	case Common_KEY_REPLACE:		// 替换
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
@@ -1319,7 +1319,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 			pdwDesLine += nDesAddWidth;
 		}
 		break;
-	case SY_KEY_MIX:		// 混叠
+	case Common_KEY_MIX:		// 混叠
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
@@ -1328,7 +1328,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 			pdwDesLine += nDesAddWidth;
 		}
 		break;
-	case SY_KEY_MIX_NOTSRC:		// 反向源键混叠
+	case Common_KEY_MIX_NOTSRC:		// 反向源键混叠
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
@@ -1337,7 +1337,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 			pdwDesLine += nDesAddWidth;
 		}
 		break;
-	case SY_KEY_SAT_SUB:		// 饱和差值
+	case Common_KEY_SAT_SUB:		// 饱和差值
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbyKeyLine = pbyKey + pMapY[nLineIndex] * nKeyPitch;
@@ -1360,7 +1360,7 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 	return TRUE;
 }
 
-BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN int nDesKeyPitch, IN LPBYTE pbySrc, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, IN int nSrcBufHeight, IN int nSrcKeyPitch, IN SY_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip, IN int n, IN int k)
+BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN int nDesKeyPitch, IN LPBYTE pbySrc, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, IN int nSrcBufHeight, IN int nSrcKeyPitch, IN Common_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip, IN int n, IN int k)
 {
 	if (pbyDes == NULL || pbySrc == NULL)
 		return FALSE;
@@ -1386,7 +1386,7 @@ BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int
 																	// 逐行处理
 	switch (eMode)
 	{
-	case SY_KEY_MULTIPLY:		// 相乘
+	case Common_KEY_MULTIPLY:		// 相乘
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			keybuf_mul_buf_line(pbyDesLine, pbySrcLine, na16, nm16);
@@ -1394,7 +1394,7 @@ BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int
 			pbySrcLine += nSrcAddPitch;
 		}
 		break;
-	case SY_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
+	case Common_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			keybuf_mul_buf_line_notsrc(pbyDesLine, pbySrcLine, na16, nm16);
@@ -1402,7 +1402,7 @@ BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int
 			pbySrcLine += nSrcAddPitch;
 		}
 		break;
-	case SY_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
+	case Common_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			keybuf_mul_buf_line_notdes(pbyDesLine, pbySrcLine, na16, nm16);
@@ -1410,7 +1410,7 @@ BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int
 			pbySrcLine += nSrcAddPitch;
 		}
 		break;
-	case SY_KEY_REPLACE:		// 替换
+	case Common_KEY_REPLACE:		// 替换
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			memcpy_line(pbyDesLine, pbySrcLine, na16, nm16);
@@ -1418,7 +1418,7 @@ BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int
 			pbySrcLine += nSrcAddPitch;
 		}
 		break;
-	case SY_KEY_MIX:		// 混叠
+	case Common_KEY_MIX:		// 混叠
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			keybuf_mix_buf_line(pbyDesLine, pbySrcLine, na16, nm16);
@@ -1426,7 +1426,7 @@ BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int
 			pbySrcLine += nSrcAddPitch;
 		}
 		break;
-	case SY_KEY_MIX_NOTSRC:		// 反向源键混叠
+	case Common_KEY_MIX_NOTSRC:		// 反向源键混叠
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			keybuf_mix_buf_line_notsrc(pbyDesLine, pbySrcLine, na16, nm16);
@@ -1434,7 +1434,7 @@ BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int
 			pbySrcLine += nSrcAddPitch;
 		}
 		break;
-	case SY_KEY_SAT_SUB:		// 饱和差值
+	case Common_KEY_SAT_SUB:		// 饱和差值
 		for (int i = 0; i<nDesHeight; i += nLineInc)
 		{
 			keybuf_sat_sub_buf_line(pbyDesLine, pbySrcLine, na16, nm16);
@@ -1449,7 +1449,7 @@ BOOL BufferMemSSE::Buffer_Key_Fix_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int
 	return TRUE;
 }
 
-BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN int nDesKeyPitch, IN LPBYTE pbySrc, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, IN int nSrcBufHeight, IN int nSrcKeyPitch, IN SY_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
+BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, IN int nDesY, IN int nDesWidth, IN int nDesHeight, IN int nDesBufWidth, IN int nDesBufHeight, IN int nDesKeyPitch, IN LPBYTE pbySrc, IN int nSrcX, IN int nSrcY, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, IN int nSrcBufHeight, IN int nSrcKeyPitch, IN Common_KEY_MODE eMode, IN BUFFER_PARITY_STYLE eParity, IN RECT * prcDesClip)
 {
 	if (pbyDes == NULL || pbySrc == NULL)
 		return FALSE;
@@ -1485,7 +1485,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 	// 逐行处理
 	switch (eMode)
 	{
-	case SY_KEY_MULTIPLY:		// 相乘
+	case Common_KEY_MULTIPLY:		// 相乘
 		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
@@ -1495,7 +1495,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 			pbyDesLine += nDesAddPitch;
 		}
 		break;
-	case SY_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
+	case Common_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
 		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
@@ -1505,7 +1505,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 			pbyDesLine += nDesAddPitch;
 		}
 		break;
-	case SY_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
+	case Common_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
 		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
@@ -1515,7 +1515,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 			pbyDesLine += nDesAddPitch;
 		}
 		break;
-	case SY_KEY_REPLACE:		// 替换
+	case Common_KEY_REPLACE:		// 替换
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
@@ -1523,7 +1523,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 			pbyDesLine += nDesAddPitch;
 		}
 		break;
-	case SY_KEY_MIX:		// 混叠
+	case Common_KEY_MIX:		// 混叠
 		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
@@ -1533,7 +1533,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 			pbyDesLine += nDesAddPitch;
 		}
 		break;
-	case SY_KEY_MIX_NOTSRC:		// 反向源键混叠
+	case Common_KEY_MIX_NOTSRC:		// 反向源键混叠
 		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
@@ -1543,7 +1543,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 			pbyDesLine += nDesAddPitch;
 		}
 		break;
-	case SY_KEY_SAT_SUB:		// 饱和差值
+	case Common_KEY_SAT_SUB:		// 饱和差值
 		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{

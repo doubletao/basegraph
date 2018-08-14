@@ -40,13 +40,13 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 			*pOutVec *= *pParam->pWorldMat;
 			*pOutVec *= *pParam->pViewMat;
 
-			if ( pParam->nProjType == SY_PERSPECTIVE_PROJ && pZValue ) 
+			if ( pParam->nProjType == Common_PERSPECTIVE_PROJ && pZValue ) 
 			{
 				pOutVec->x = pOutVec->x * *pZValue / pOutVec->z;
 				pOutVec->y = pOutVec->y * *pZValue / pOutVec->z;
 				pOutVec->z = *pZValue;
 			}
-			else if ( pParam->nProjType == SY_ORTHO_PROJ && pZValue)
+			else if ( pParam->nProjType == Common_ORTHO_PROJ && pZValue)
 			{
 				pOutVec->z = *pZValue;
 			}
@@ -62,11 +62,11 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 		ray.vStart = *pOutVec;
 		matrix4f worldInv,viewInv;
 		matrix4f_inverse(&worldInv,pParam->pWorldMat);
-		if ( pParam->nProjType == SY_PERSPECTIVE_PROJ )
+		if ( pParam->nProjType == Common_PERSPECTIVE_PROJ )
 		{
 			ray.vDir  = *pOutVec - *(pParam->pEyePos) * worldInv;
 		}
-		else if ( pParam->nProjType == SY_ORTHO_PROJ )
+		else if ( pParam->nProjType == Common_ORTHO_PROJ )
 		{
 			matrix4f_inverse(&viewInv,pParam->pViewMat);
 			static const float3 viewDir = {0,0,1};
@@ -76,7 +76,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 		}
 		float3Normalize(&ray.vDir,&ray.vDir);
 		SYHitPoint hitPoint;
-		if(GetRayPlaneInt(&ray,pPlaneCenter,pPlaneNormal,&hitPoint) == SY_NO_HIT)
+		if(GetRayPlaneInt(&ray,pPlaneCenter,pPlaneNormal,&hitPoint) == Common_NO_HIT)
 			return FALSE;
 		*pOutVec = hitPoint[0];
 	}
@@ -108,7 +108,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 			*pOutVec = vViewPt * *pZValue / fPtZValue ;
 			*pOutVec * viewInv * WorldInv;
 		}
-		if(pParam->nProjType == SY_ORTHO_PROJ)
+		if(pParam->nProjType == Common_ORTHO_PROJ)
 		{
 			matrix4f WorldInv;
 			matrix4f_inverse(&WorldInv,pParam->pWorldMat);
@@ -118,7 +118,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 			vPt.z = *pZValue;
 			*pOutVec = vPt * ViewInv * WorldInv;
 		}
-		else if(pParam->nProjType == SY_PERSPECTIVE_PROJ)
+		else if(pParam->nProjType == Common_PERSPECTIVE_PROJ)
 		{
 			matrix4f WorldInv;
 			matrix4f_inverse(&WorldInv,pParam->pWorldMat);
@@ -139,10 +139,10 @@ void BASEGRAPH_SCENE_RENDER_API CalProjectMat( matrix4f* pOutProjMat,
 {
 	switch (nType)
 	{
-	case SY_PERSPECTIVE_PROJ:
+	case Common_PERSPECTIVE_PROJ:
 		D3DXMatrixPerspectiveOffCenterLH( (D3DXMATRIX*)pOutProjMat, left, right, bottom, top, zNear, zFar );
 		break;
-	case SY_ORTHO_PROJ:
+	case Common_ORTHO_PROJ:
 		D3DXMatrixOrthoOffCenterLH((D3DXMATRIX*)pOutProjMat,left,right,bottom,top,zNear,zFar);
 		break;
 	}

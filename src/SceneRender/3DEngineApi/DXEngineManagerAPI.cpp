@@ -14,7 +14,7 @@
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
-CSY3DLineManager* pLineManager = NULL;
+CBase3DLineManager* pLineManager = NULL;
 TCHAR g_szPathShader[MAX_PATH] = {0};	
 
 DXDeviceType g_dRenderType;
@@ -102,7 +102,7 @@ void CTextureSet::RemoveResource(int nIndex)
 }
 //////////////////////////////////////////////////////////////////////////
 //SY3DLineManager·â×°Àà
-CSY3DLineManager::CSY3DLineManager(int nMaxVertexSize/* = DEFAULT_LINE_NUM*/, int nMaxLineNum /*= DEFAULT_LINE_NUM*/)
+CBase3DLineManager::CBase3DLineManager(int nMaxVertexSize/* = DEFAULT_LINE_NUM*/, int nMaxLineNum /*= DEFAULT_LINE_NUM*/)
 {
 	m_MaxVertexSize = max(10,nMaxVertexSize);
 	m_pLineVertex = NULL;
@@ -118,7 +118,7 @@ CSY3DLineManager::CSY3DLineManager(int nMaxVertexSize/* = DEFAULT_LINE_NUM*/, in
 	m_hPixShaderfog = 0;
 
 }
-CSY3DLineManager::~CSY3DLineManager()
+CBase3DLineManager::~CBase3DLineManager()
 {
 	if (m_pLineVertex)
 	{
@@ -131,7 +131,7 @@ CSY3DLineManager::~CSY3DLineManager()
 		m_pNowVertex = NULL;
 	}
 }
-void CSY3DLineManager::ReleaseManager(int hDevice)
+void CBase3DLineManager::ReleaseManager(int hDevice)
 {
 	if(m_hLineVertex)
 	{
@@ -173,7 +173,7 @@ void CSY3DLineManager::ReleaseManager(int hDevice)
 	}
 
 }
-void CSY3DLineManager::InitialManager(int hDevice)
+void CBase3DLineManager::InitialManager(int hDevice)
 {
 	m_hDevice = hDevice;
 	m_pLineVertex = new SYEasyVertex[m_MaxVertexSize];
@@ -278,14 +278,14 @@ void CSY3DLineManager::InitialManager(int hDevice)
 	}
 }
 
-DWORD CSY3DLineManager::SetColor(DWORD color)
+DWORD CBase3DLineManager::SetColor(DWORD color)
 {
 	DWORD oldColor = m_dColor;
 	m_dColor = color;
 	return oldColor;
 }
 
-void CSY3DLineManager::GetCurentPosition(float3* vNowPos)
+void CBase3DLineManager::GetCurentPosition(float3* vNowPos)
 {
 	if (m_NumVertex == 0)
 	{
@@ -294,7 +294,7 @@ void CSY3DLineManager::GetCurentPosition(float3* vNowPos)
 	*vNowPos = m_pLineVertex[m_NumVertex - 1].pos;
 }
 
-void CSY3DLineManager::MoveTo(int hDevice,const float3* vStartPos,DWORD* color /* = NULL */)
+void CBase3DLineManager::MoveTo(int hDevice,const float3* vStartPos,DWORD* color /* = NULL */)
 {
 	if (color)
 	{
@@ -307,7 +307,7 @@ void CSY3DLineManager::MoveTo(int hDevice,const float3* vStartPos,DWORD* color /
 	m_pNowVertex->pos = *vStartPos;
 }
 
-void CSY3DLineManager::LineTo(int hDevice,const float3* vEndPos,DWORD* color /* = NULL */)
+void CBase3DLineManager::LineTo(int hDevice,const float3* vEndPos,DWORD* color /* = NULL */)
 {
 	if (m_NumVertex + 2 >= m_MaxVertexSize)
 	{
@@ -329,7 +329,7 @@ void CSY3DLineManager::LineTo(int hDevice,const float3* vEndPos,DWORD* color /* 
 	*m_pNowVertex = m_pLineVertex[m_NumVertex - 1];
 }
 
-void CSY3DLineManager::Render(int hDevice,matrix4f* pViewPorjMat)
+void CBase3DLineManager::Render(int hDevice,matrix4f* pViewPorjMat)
 {
 	if (m_NumVertex > 0)
 	{
@@ -348,7 +348,7 @@ void CSY3DLineManager::Render(int hDevice,matrix4f* pViewPorjMat)
 		DX3DEngine_Render(hDevice,m_hLineVertex,0,m_hVertexShader,0,m_hPixShader,0,m_NumVertex);
 	}
 }
-void CSY3DLineManager::RenderFog(int hDevice,matrix4f* pViewMat,matrix4f* pProjMat)
+void CBase3DLineManager::RenderFog(int hDevice,matrix4f* pViewMat,matrix4f* pProjMat)
 {
 	if (m_NumVertex > 0)
 	{
@@ -374,12 +374,12 @@ void CSY3DLineManager::RenderFog(int hDevice,matrix4f* pViewMat,matrix4f* pProjM
 		DX3DEngine_Render(hDevice,m_hLineVertex,0,m_hVertexShaderfog,0,m_hPixShaderfog,0,m_NumVertex);
 	}
 }
-void CSY3DLineManager::Release(int hDevice)
+void CBase3DLineManager::Release(int hDevice)
 {
 	DX3DEngine_ReleaseBuffer(hDevice,m_hLineVertex);
 	DX3DEngine_ReleaseBuffer(hDevice,m_hMatrixBuffer);
 }
-void CSY3DLineManager::DrawSquare(int hDevice,const float3* center, float length,const matrix4f* pMatrix)
+void CBase3DLineManager::DrawSquare(int hDevice,const float3* center, float length,const matrix4f* pMatrix)
 {
 	const int nVerNum = 8;
 	if (m_NumVertex + nVerNum > m_MaxVertexSize)
@@ -415,15 +415,15 @@ void CSY3DLineManager::DrawSquare(int hDevice,const float3* center, float length
 	}
 }
 
-void CSY3DLineManager::BeginRender()
+void CBase3DLineManager::BeginRender()
 {
 	clearLine();
 }
-void CSY3DLineManager::clearLine()
+void CBase3DLineManager::clearLine()
 {
 	m_NumVertex = 0;
 }
-void CSY3DLineManager::DrawCircle( int hDevice,float fRad,const float3* pCenter,const matrix4f* pMatrix ,DWORD* pcolor /*= NULL*/)
+void CBase3DLineManager::DrawCircle( int hDevice,float fRad,const float3* pCenter,const matrix4f* pMatrix ,DWORD* pcolor /*= NULL*/)
 {
 	if(fRad < ABS_FLOAT_0)
 		return;
@@ -468,7 +468,7 @@ void CSY3DLineManager::DrawCircle( int hDevice,float fRad,const float3* pCenter,
 	}
 }
 
-void CSY3DLineManager::DrawEllipse(int hDevice,float fRad_A,float fRad_B,const float3* pCenter,const matrix4f* pMatrix,DWORD* pcolor/* = NULL*/)
+void CBase3DLineManager::DrawEllipse(int hDevice,float fRad_A,float fRad_B,const float3* pCenter,const matrix4f* pMatrix,DWORD* pcolor/* = NULL*/)
 {
 	if(fRad_A < ABS_FLOAT_0 || fRad_B < ABS_FLOAT_0)
 		return;
@@ -512,7 +512,7 @@ void CSY3DLineManager::DrawEllipse(int hDevice,float fRad_A,float fRad_B,const f
 		m_pLineVertex[m_NumVertex++].pos = point * mat;
 	}
 }
-void CSY3DLineManager::DrawBox( int hDevice, const float3& vMin,const float3 vMax, const matrix4f& pMat ,DWORD* pColor)
+void CBase3DLineManager::DrawBox( int hDevice, const float3& vMin,const float3 vMax, const matrix4f& pMat ,DWORD* pColor)
 {
 	const int nAppendNums = 24;
 
@@ -576,7 +576,7 @@ void CSY3DLineManager::DrawBox( int hDevice, const float3& vMin,const float3 vMa
 
 }
 
-void CSY3DLineManager::DrawCone( int hDevice,float fUpRad,float fDownRad,float fHeight,const float3* pCenter,const matrix4f* pMatrix ,DWORD* pcolor /*= NULL*/ )
+void CBase3DLineManager::DrawCone( int hDevice,float fUpRad,float fDownRad,float fHeight,const float3* pCenter,const matrix4f* pMatrix ,DWORD* pcolor /*= NULL*/ )
 {
 	matrix4f matLast;
 	matrix4f_identity(&matLast);
@@ -1669,11 +1669,11 @@ BOOL DX3DEngine_Render(int hDevice,int hVertexBuffer,int hIndexBuffer,int hVerte
 
 	if (g_dRenderType==DX_DX10_Device)
 	{
-		return RenderEngineDX10_Main(RENDERENGINE_EASY_RENDER,hDevice,&param,NULL);
+		return RenderEngineDX10_Main(RENDERENGINE_EACommon_RENDER,hDevice,&param,NULL);
 	}
 	else if(g_dRenderType==DX_Soft_Device)
 	{
-		return RenderSoftEngine_Main(RENDERENGINE_EASY_RENDER,hDevice,&param,NULL);
+		return RenderSoftEngine_Main(RENDERENGINE_EACommon_RENDER,hDevice,&param,NULL);
 	}
 	return FALSE;
 }
@@ -1783,7 +1783,7 @@ void DX3DEngine_GetViewPort( int hDevice, RECT* pRect )
 
 void DX3DEngine_CreateLineManage(int hDevice)
 {
-	pLineManager = new CSY3DLineManager;
+	pLineManager = new CBase3DLineManager;
 	pLineManager->InitialManager(hDevice);
 }
 void DX3DEngine_ReleaseLineManage(int hDevice)
@@ -2552,7 +2552,7 @@ size_t DX3DEngine_GetTextureMemSize( int hDevice,int hTexture )
 	int nMipMap = DX3DEngine_GetTextureMipMap(hDevice,hTexture);
 
 	size_t BufferSize = nWidth * nHeight * sizeof(DWORD);
-	BufferSize = SY_DToI( BufferSize * 4 /3. - (nMipMap > 0 ?(BufferSize >> ((nMipMap - 1) * 2)) : 0) / 3.);
+	BufferSize = Common_DToI( BufferSize * 4 /3. - (nMipMap > 0 ?(BufferSize >> ((nMipMap - 1) * 2)) : 0) / 3.);
 	return BufferSize * nScale;
 }
 

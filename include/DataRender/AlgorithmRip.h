@@ -1,5 +1,5 @@
-#ifndef __SY_RIP_INC__
-#define __SY_RIP_INC__
+#ifndef __Common_RIP_INC__
+#define __Common_RIP_INC__
 
 //#include "CommonBufferDC.h"
 

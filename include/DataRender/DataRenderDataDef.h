@@ -31,7 +31,7 @@ typedef struct tag_sy_render_submodel
 	int		nTri_Num;
 	void*	pVideoMaterial;
 	BOOL		bShaderChange;
-	int	    hPixShader[SY_POST_PROCESS_COUNT];
+	int	    hPixShader[Common_POST_PROCESS_COUNT];
 	bool		bSharedMaterial; //标志是否是共享的材质
 }SYRenderSubModel;
 
@@ -56,10 +56,10 @@ typedef struct tag_syvertex3d		// 3d vertex declaration
 //triangle type
 enum SYTriType
 {
-	SY_TRIANGLE_LIST = 1,
-	SY_TRIANGLE_STRIP,
-	SY_TRIANGLE_FAN,
-	SY_TRI_TYPE_NO_USE = 0xffffffff,
+	Common_TRIANGLE_LIST = 1,
+	Common_TRIANGLE_STRIP,
+	Common_TRIANGLE_FAN,
+	Common_TRI_TYPE_NO_USE = 0xffffffff,
 };
 typedef struct tag_sysubmodel		// sub model definition
 {
@@ -302,9 +302,9 @@ struct  SLight_Source
 };
 typedef SLight_Source FAR* LPLight_Source;
 
-#define		SY_SPHERE_CIRCLE_SEGMENT		8
-const int g_nSphere_Circle_Num = 3 + (int)floor((SY_SPHERE_CIRCLE_SEGMENT - 4) / 2.f);
-const int g_nSphere_Per_Circle_VertexNum = SY_SPHERE_CIRCLE_SEGMENT + 1;
+#define		Common_SPHERE_CIRCLE_SEGMENT		8
+const int g_nSphere_Circle_Num = 3 + (int)floor((Common_SPHERE_CIRCLE_SEGMENT - 4) / 2.f);
+const int g_nSphere_Per_Circle_VertexNum = Common_SPHERE_CIRCLE_SEGMENT + 1;
 const int g_nSphere_Vertex_Num = g_nSphere_Circle_Num * g_nSphere_Per_Circle_VertexNum;
 const int g_nSphere_Index_Num = (g_nSphere_Circle_Num * 3 - 1) * (g_nSphere_Per_Circle_VertexNum * 3 - 1) * 6;
 
@@ -344,15 +344,15 @@ enum CONE_ITEM_PART
 	CONE_ITEM_PARAM_COUNT,
 };
 
-#define		SY_CONE_FAN_NUM					64
-#define		SY_CONE_LAYER_NUM				3
+#define		Common_CONE_FAN_NUM					64
+#define		Common_CONE_LAYER_NUM				3
 #define		SYBOXWITHBEVEL_CIRCLEPTNUM		5//圆角矩形的圆角的剖分程度
-#define		SY_ROUNDRECT_NUM				2 * SYBOXWITHBEVEL_CIRCLEPTNUM//圆角矩形的数量，两个倒角
-#define		SY_FIRSBaseART_ARC				0//第一根横弧
-#define		SY_SECONDPART_ARC				1//第一根竖弧
-#define		SY_THIRDPART_ARC				2//第二根横弧
-#define		SY_FOUTHPART_ARC				3//第二根竖弧
-#define		SY_PER_ARC_VERNUM				2//每根弧的顶点数
+#define		Common_ROUNDRECT_NUM				2 * SYBOXWITHBEVEL_CIRCLEPTNUM//圆角矩形的数量，两个倒角
+#define		Common_FIRSBaseART_ARC				0//第一根横弧
+#define		Common_SECONDPART_ARC				1//第一根竖弧
+#define		Common_THIRDPART_ARC				2//第二根横弧
+#define		Common_FOUTHPART_ARC				3//第二根竖弧
+#define		Common_PER_ARC_VERNUM				2//每根弧的顶点数
 
 // 线型
 #define		SYLINE_SOLID					0
@@ -374,40 +374,40 @@ enum CONE_ITEM_PART
 #define		TRANSITION_ARC					2
 #define		TRANSITION_ANTIARC				3
 
-#define		SY_CONE_FAN_NUM					64
-#define		SY_CONE_LAYER_NUM				3
+#define		Common_CONE_FAN_NUM					64
+#define		Common_CONE_LAYER_NUM				3
 #define		SYBOXWITHBEVEL_CIRCLEPTNUM		5//圆角矩形的圆角的剖分程度
-#define		SY_ROUNDRECT_NUM				2 * SYBOXWITHBEVEL_CIRCLEPTNUM//圆角矩形的数量，两个倒角
-#define		SY_FIRSBaseART_ARC				0//第一根横弧
-#define		SY_SECONDPART_ARC				1//第一根竖弧
-#define		SY_THIRDPART_ARC				2//第二根横弧
-#define		SY_FOUTHPART_ARC				3//第二根竖弧
-#define		SY_PER_ARC_VERNUM				2//每根弧的顶点数
+#define		Common_ROUNDRECT_NUM				2 * SYBOXWITHBEVEL_CIRCLEPTNUM//圆角矩形的数量，两个倒角
+#define		Common_FIRSBaseART_ARC				0//第一根横弧
+#define		Common_SECONDPART_ARC				1//第一根竖弧
+#define		Common_THIRDPART_ARC				2//第二根横弧
+#define		Common_FOUTHPART_ARC				3//第二根竖弧
+#define		Common_PER_ARC_VERNUM				2//每根弧的顶点数
 
-#define		SY_PER_ROUNDRECT_VERTEX_MAX_NUM	(4 * SYBOXWITHBEVEL_CIRCLEPTNUM + 4 * SY_PER_ARC_VERNUM + 1 )//每个圆角矩形的最大顶点数
+#define		Common_PER_ROUNDRECT_VERTEX_MAX_NUM	(4 * SYBOXWITHBEVEL_CIRCLEPTNUM + 4 * Common_PER_ARC_VERNUM + 1 )//每个圆角矩形的最大顶点数
 
-#define		SY_TUBE_CIRLE_POINT_NUM			64		
-#define		SY_TUBE_LAYER_NUM				3
-#define		SY_TUBE_TRIP_NUM				(SY_TUBE_CIRLE_POINT_NUM  * 2)											
-#define		SY_TUBE_PROFILE_PT_NUM			(SY_TUBE_LAYER_NUM  * SY_TUBE_CIRLE_POINT_NUM)
-#define		SY_TUBE_PROFILE_INDEX_NUM		((SY_TUBE_LAYER_NUM - 1) * SY_TUBE_TRIP_NUM)
-#define		SY_TUBE_PROFILE_TRI_NUM			(SY_TUBE_PROFILE_INDEX_NUM - 2)
+#define		Common_TUBE_CIRLE_POINT_NUM			64		
+#define		Common_TUBE_LAYER_NUM				3
+#define		Common_TUBE_TRIP_NUM				(Common_TUBE_CIRLE_POINT_NUM  * 2)											
+#define		Common_TUBE_PROFILE_PT_NUM			(Common_TUBE_LAYER_NUM  * Common_TUBE_CIRLE_POINT_NUM)
+#define		Common_TUBE_PROFILE_INDEX_NUM		((Common_TUBE_LAYER_NUM - 1) * Common_TUBE_TRIP_NUM)
+#define		Common_TUBE_PROFILE_TRI_NUM			(Common_TUBE_PROFILE_INDEX_NUM - 2)
 
-#define		SY_SEGMENT_ROW_NUM				2
-#define		SY_SEGMENT_COLUMN_NUM			2
+#define		Common_SEGMENT_ROW_NUM				2
+#define		Common_SEGMENT_COLUMN_NUM			2
 
 #define		CONEWITHBEVEL_MATERIAL_COUNT	3
-#define		SY_SPHERE_CIRCLE_SEGMENT		8
-#define		SY_QUADRANG_ROW_NUM				2
-#define		SY_QUADRANG_COLUMN_NUM			2
-#define		SY_QUADRANG_LAYER_NUM			2
-#define		SY_TB_NUM						( SY_CONE_FAN_NUM + 2 )  //顶面和底面的顶点索引数
-#define		SY_FAN_COLUMN					( SY_CONE_FAN_NUM + 5 )  //侧面列数
-#define		SY_FAN_ROW						SY_ROUNDRECT_NUM     //侧面行数
+#define		Common_SPHERE_CIRCLE_SEGMENT		8
+#define		Common_QUADRANG_ROW_NUM				2
+#define		Common_QUADRANG_COLUMN_NUM			2
+#define		Common_QUADRANG_LAYER_NUM			2
+#define		Common_TB_NUM						( Common_CONE_FAN_NUM + 2 )  //顶面和底面的顶点索引数
+#define		Common_FAN_COLUMN					( Common_CONE_FAN_NUM + 5 )  //侧面列数
+#define		Common_FAN_ROW						Common_ROUNDRECT_NUM     //侧面行数
 #define		BOXWITHBEVEL_MATERIAL_COUNT		3
 // default length of name of curve
 #define		SYCURVE_NAME_LEN				16	
-#define		SY_NAMELENGTH					128
+#define		Common_NAMELENGTH					128
 #define		SIMPSHAPE_NAME_MAXLEN			32
 #define		SYACTION_RESERVED_DWORD			6
 #define		EVEN_TASK_MAXSIZE				2
@@ -464,23 +464,23 @@ enum CONE_ITEM_PART
 #define ALIGN_TR	7	// 上右
 #define ALIGN_TM	8	// 上中
 
-#define SY_STATICEFFECT_FACE	0
-#define SY_STATICEFFECT_BORDER	1
-#define SY_STATICEFFECT_SHADOW	2
-#define SY_STATICEFFECT_CUBE	4
+#define Common_STATICEFFECT_FACE	0
+#define Common_STATICEFFECT_BORDER	1
+#define Common_STATICEFFECT_SHADOW	2
+#define Common_STATICEFFECT_CUBE	4
 #define OBJECT_NAME_SIZE		32
 
-#define SY_STATICEFFECT_MASK_FACECOLOR		0x0000001
-#define SY_STATICEFFECT_MASK_BORDERCOLOR	0x0000002
-#define SY_STATICEFFECT_MASK_BORDERDISABLE	0x0000004
-#define SY_STATICEFFECT_MASK_BORDERWIDTH	0x0000008
-#define SY_STATICEFFECT_MASK_BORDERSTYLE	0x0000010
-#define SY_STATICEFFECT_MASK_CUBECOLOR		0x0000020
-#define SY_STATICEFFECT_MASK_CUBEWIDTH		0x0000040
-#define SY_STATICEFFECT_MASK_SHADOWCOLOR	0x0000080
-#define SY_STATICEFFECT_MASK_SHADOWOFFSETX	0x0000100
-#define SY_STATICEFFECT_MASK_SHADOWOFFSETY	0x0000200
-#define SY_STATICEFFECT_MASK_SHADOWSOFT		0x0000400
+#define Common_STATICEFFECT_MASK_FACECOLOR		0x0000001
+#define Common_STATICEFFECT_MASK_BORDERCOLOR	0x0000002
+#define Common_STATICEFFECT_MASK_BORDERDISABLE	0x0000004
+#define Common_STATICEFFECT_MASK_BORDERWIDTH	0x0000008
+#define Common_STATICEFFECT_MASK_BORDERSTYLE	0x0000010
+#define Common_STATICEFFECT_MASK_CUBECOLOR		0x0000020
+#define Common_STATICEFFECT_MASK_CUBEWIDTH		0x0000040
+#define Common_STATICEFFECT_MASK_SHADOWCOLOR	0x0000080
+#define Common_STATICEFFECT_MASK_SHADOWOFFSETX	0x0000100
+#define Common_STATICEFFECT_MASK_SHADOWOFFSETY	0x0000200
+#define Common_STATICEFFECT_MASK_SHADOWSOFT		0x0000400
 
 enum eCYLTEXCTYPE
 {
@@ -515,13 +515,13 @@ enum SYModel_PLANE_INDEX_TYPE
 	SY3DPLANE_ROW_FIRST = 0,
 	SY3DPLANE_COLUMN_FIRST,
 };
-#define		SY_SEGMENT_ROW_NUM				2
-#define		SY_SEGMENT_COLUMN_NUM			2
-const int g_nSegment_Vertex_Num = SY_SEGMENT_ROW_NUM * SY_SEGMENT_COLUMN_NUM;//总的顶点个数
-const int g_nSegment_Index_Num = (SY_SEGMENT_ROW_NUM - 1) * (SY_SEGMENT_COLUMN_NUM - 1) * 6;//总的顶点个数
+#define		Common_SEGMENT_ROW_NUM				2
+#define		Common_SEGMENT_COLUMN_NUM			2
+const int g_nSegment_Vertex_Num = Common_SEGMENT_ROW_NUM * Common_SEGMENT_COLUMN_NUM;//总的顶点个数
+const int g_nSegment_Index_Num = (Common_SEGMENT_ROW_NUM - 1) * (Common_SEGMENT_COLUMN_NUM - 1) * 6;//总的顶点个数
 const SYSubModel g_stuSegmentSubs[SEGMENT_MATERIAL_COUNT] =
 {
-	{ 0, g_nSegment_Vertex_Num, 0, g_nSegment_Index_Num, SY_TRIANGLE_LIST, g_nSegment_Index_Num / 3, BseeHTable_null },
+	{ 0, g_nSegment_Vertex_Num, 0, g_nSegment_Index_Num, Common_TRIANGLE_LIST, g_nSegment_Index_Num / 3, BseeHTable_null },
 };
 // 3D面
 enum FACETS_PART
@@ -530,12 +530,12 @@ enum FACETS_PART
 	FACETS_MATERIAL_BACK_PARAMCHG,
 	FACETS_MATERIAL_COUNT,
 };
-const int g_n3DFacets_Vertex_Num = SY_SEGMENT_ROW_NUM * SY_SEGMENT_COLUMN_NUM;//总的顶点个数
-const int g_n3DFacets_Index_Num = (SY_SEGMENT_ROW_NUM - 1) * (SY_SEGMENT_COLUMN_NUM - 1) * 6;//总的顶点个数
+const int g_n3DFacets_Vertex_Num = Common_SEGMENT_ROW_NUM * Common_SEGMENT_COLUMN_NUM;//总的顶点个数
+const int g_n3DFacets_Index_Num = (Common_SEGMENT_ROW_NUM - 1) * (Common_SEGMENT_COLUMN_NUM - 1) * 6;//总的顶点个数
 const SYSubModel g_stu3DFacetsSubs[FACETS_MATERIAL_COUNT] =
 {
-	{ 0, g_n3DFacets_Vertex_Num, 0, g_n3DFacets_Index_Num, SY_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, BseeHTable_null },
-	{ g_n3DFacets_Vertex_Num, g_n3DFacets_Vertex_Num, g_n3DFacets_Index_Num, g_n3DFacets_Index_Num, SY_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, BseeHTable_null },
+	{ 0, g_n3DFacets_Vertex_Num, 0, g_n3DFacets_Index_Num, Common_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, BseeHTable_null },
+	{ g_n3DFacets_Vertex_Num, g_n3DFacets_Vertex_Num, g_n3DFacets_Index_Num, g_n3DFacets_Index_Num, Common_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, BseeHTable_null },
 };
 enum QUADRANG_PARAM_PART
 {
@@ -571,47 +571,47 @@ const LPTSTR conewidthbevelMatString[CONEWITHBEVEL_MATERIAL_COUNT] =
 
 const SYSubModel g_stuSphereSubs[SPHERE_MATERIAL_COUNT] =
 {
-	{ 0, g_nSphere_Vertex_Num, 0, g_nSphere_Index_Num, SY_TRIANGLE_LIST, g_nSphere_Index_Num / 3, BseeHTable_null },
+	{ 0, g_nSphere_Vertex_Num, 0, g_nSphere_Index_Num, Common_TRIANGLE_LIST, g_nSphere_Index_Num / 3, BseeHTable_null },
 };
-#define		SY_QUADRANG_ROW_NUM				2
-#define		SY_QUADRANG_COLUMN_NUM			2
-#define		SY_QUADRANG_LAYER_NUM			2
-const int g_nQuad_FrontBackVertex_Num = SY_QUADRANG_LAYER_NUM * SY_QUADRANG_COLUMN_NUM;
-const int g_nQuad_RightLeftVertex_Num = SY_QUADRANG_LAYER_NUM * SY_QUADRANG_ROW_NUM;
-const int g_nQuad_BaseTopVertex_Num = SY_QUADRANG_ROW_NUM   * SY_QUADRANG_COLUMN_NUM;
+#define		Common_QUADRANG_ROW_NUM				2
+#define		Common_QUADRANG_COLUMN_NUM			2
+#define		Common_QUADRANG_LAYER_NUM			2
+const int g_nQuad_FrontBackVertex_Num = Common_QUADRANG_LAYER_NUM * Common_QUADRANG_COLUMN_NUM;
+const int g_nQuad_RightLeftVertex_Num = Common_QUADRANG_LAYER_NUM * Common_QUADRANG_ROW_NUM;
+const int g_nQuad_BaseTopVertex_Num = Common_QUADRANG_ROW_NUM   * Common_QUADRANG_COLUMN_NUM;
 
 const SYSubModel g_stuQuadSubs[QUAD_MATERIAL_COUNT] =
 {
-	{ 0,                                                                                             g_nQuad_FrontBackVertex_Num, 0,                                                                                                  g_nQuad_FrontBackVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, BseeHTable_null },
-	{ g_nQuad_FrontBackVertex_Num,                                                                   g_nQuad_RightLeftVertex_Num, g_nQuad_FrontBackVertex_Num + 2,                                                                    g_nQuad_RightLeftVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, BseeHTable_null },
-	{ g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num,                                     g_nQuad_FrontBackVertex_Num, g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num + 4,                                      g_nQuad_FrontBackVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, BseeHTable_null },
-	{ 2 * g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num,                                 g_nQuad_RightLeftVertex_Num, 2 * g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num + 6,                                  g_nQuad_RightLeftVertex_Num + 2, SY_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, BseeHTable_null },
-	{ 2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num,                             g_nQuad_BaseTopVertex_Num,   2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + 8,                              g_nQuad_BaseTopVertex_Num + 2,   SY_TRIANGLE_LIST, (g_nQuad_BaseTopVertex_Num + 2) / 3,   BseeHTable_null },
-	{ 2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + g_nQuad_BaseTopVertex_Num, g_nQuad_BaseTopVertex_Num,   2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + g_nQuad_BaseTopVertex_Num + 10, g_nQuad_BaseTopVertex_Num + 2,   SY_TRIANGLE_LIST, (g_nQuad_BaseTopVertex_Num + 2) / 3,   BseeHTable_null },
+	{ 0,                                                                                             g_nQuad_FrontBackVertex_Num, 0,                                                                                                  g_nQuad_FrontBackVertex_Num + 2, Common_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, BseeHTable_null },
+	{ g_nQuad_FrontBackVertex_Num,                                                                   g_nQuad_RightLeftVertex_Num, g_nQuad_FrontBackVertex_Num + 2,                                                                    g_nQuad_RightLeftVertex_Num + 2, Common_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, BseeHTable_null },
+	{ g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num,                                     g_nQuad_FrontBackVertex_Num, g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num + 4,                                      g_nQuad_FrontBackVertex_Num + 2, Common_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, BseeHTable_null },
+	{ 2 * g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num,                                 g_nQuad_RightLeftVertex_Num, 2 * g_nQuad_FrontBackVertex_Num + g_nQuad_RightLeftVertex_Num + 6,                                  g_nQuad_RightLeftVertex_Num + 2, Common_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, BseeHTable_null },
+	{ 2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num,                             g_nQuad_BaseTopVertex_Num,   2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + 8,                              g_nQuad_BaseTopVertex_Num + 2,   Common_TRIANGLE_LIST, (g_nQuad_BaseTopVertex_Num + 2) / 3,   BseeHTable_null },
+	{ 2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + g_nQuad_BaseTopVertex_Num, g_nQuad_BaseTopVertex_Num,   2 * g_nQuad_FrontBackVertex_Num + 2 * g_nQuad_RightLeftVertex_Num + g_nQuad_BaseTopVertex_Num + 10, g_nQuad_BaseTopVertex_Num + 2,   Common_TRIANGLE_LIST, (g_nQuad_BaseTopVertex_Num + 2) / 3,   BseeHTable_null },
 };
-const int g_nCone_CirclePt_Num = SY_CONE_FAN_NUM + 2;//圆的顶点个数
-const int g_nCone_CircleIndex_Num = SY_CONE_FAN_NUM + 2;//圆的顶点索引个数
+const int g_nCone_CirclePt_Num = Common_CONE_FAN_NUM + 2;//圆的顶点个数
+const int g_nCone_CircleIndex_Num = Common_CONE_FAN_NUM + 2;//圆的顶点索引个数
 
-const int g_nCone_FanPt_Num = (SY_CONE_FAN_NUM + 1) * SY_CONE_LAYER_NUM;
-const int g_nCone_PerSubFan_IndexNum = ((SY_CONE_LAYER_NUM - 2) * 2 + 2) * 3;//每个侧面子部分含有的索引个数
-const int g_nCone_FanIndex_Num = SY_CONE_FAN_NUM * g_nCone_PerSubFan_IndexNum;//侧面的顶点索引个数
+const int g_nCone_FanPt_Num = (Common_CONE_FAN_NUM + 1) * Common_CONE_LAYER_NUM;
+const int g_nCone_PerSubFan_IndexNum = ((Common_CONE_LAYER_NUM - 2) * 2 + 2) * 3;//每个侧面子部分含有的索引个数
+const int g_nCone_FanIndex_Num = Common_CONE_FAN_NUM * g_nCone_PerSubFan_IndexNum;//侧面的顶点索引个数
 
-const int g_nCone_SecPt_Num = 4 * SY_CONE_LAYER_NUM;//剖面顶点个数
-const int g_nCone_SecIndex_Num = 3 * 4 * (SY_CONE_LAYER_NUM - 1);//剖面的顶点索引个数
+const int g_nCone_SecPt_Num = 4 * Common_CONE_LAYER_NUM;//剖面顶点个数
+const int g_nCone_SecIndex_Num = 3 * 4 * (Common_CONE_LAYER_NUM - 1);//剖面的顶点索引个数
 
 const SYSubModel g_stuConeSubs[CONE_MATERIAL_COUNT] =
 {
-	{ 0,                                            g_nCone_CirclePt_Num, 0,                                                  g_nCone_CircleIndex_Num, SY_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, BseeHTable_null },
-	{ g_nCone_CirclePt_Num,                         g_nCone_FanPt_Num,    g_nCone_CircleIndex_Num,                            g_nCone_FanIndex_Num,    SY_TRIANGLE_LIST,  g_nCone_FanIndex_Num / 3,    BseeHTable_null },
-	{ g_nCone_CirclePt_Num + g_nCone_FanPt_Num,     g_nCone_CirclePt_Num, g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num,     g_nCone_CircleIndex_Num, SY_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, BseeHTable_null },
-	{ 2 * g_nCone_CirclePt_Num + g_nCone_FanPt_Num, g_nCone_SecPt_Num,    2 * g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num, g_nCone_SecIndex_Num,    SY_TRIANGLE_LIST,  g_nCone_SecIndex_Num / 3,    BseeHTable_null },
+	{ 0,                                            g_nCone_CirclePt_Num, 0,                                                  g_nCone_CircleIndex_Num, Common_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, BseeHTable_null },
+	{ g_nCone_CirclePt_Num,                         g_nCone_FanPt_Num,    g_nCone_CircleIndex_Num,                            g_nCone_FanIndex_Num,    Common_TRIANGLE_LIST,  g_nCone_FanIndex_Num / 3,    BseeHTable_null },
+	{ g_nCone_CirclePt_Num + g_nCone_FanPt_Num,     g_nCone_CirclePt_Num, g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num,     g_nCone_CircleIndex_Num, Common_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, BseeHTable_null },
+	{ 2 * g_nCone_CirclePt_Num + g_nCone_FanPt_Num, g_nCone_SecPt_Num,    2 * g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num, g_nCone_SecIndex_Num,    Common_TRIANGLE_LIST,  g_nCone_SecIndex_Num / 3,    BseeHTable_null },
 };
 
 const SYSubModel g_stuBoxWidthBevelSubs[BOXWITHBEVEL_MATERIAL_COUNT] =
 {
-	{ 0, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, 0, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_TRIANGLE_FAN, SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, BseeHTable_null },//顶面圆
-	{ SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM * SY_ROUNDRECT_NUM, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, SY_TRIANGLE_LIST, (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2, BseeHTable_null },
-	{ SY_PER_ROUNDRECT_VERTEX_MAX_NUM * (SY_ROUNDRECT_NUM + 1) + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1 + (SY_ROUNDRECT_NUM - 1) * (SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, SY_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, SY_TRIANGLE_FAN, SY_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, BseeHTable_null },
+	{ 0, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, 0, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, Common_TRIANGLE_FAN, Common_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, BseeHTable_null },//顶面圆
+	{ Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, Common_PER_ROUNDRECT_VERTEX_MAX_NUM * Common_ROUNDRECT_NUM, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, (Common_ROUNDRECT_NUM - 1) * (Common_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, Common_TRIANGLE_LIST, (Common_ROUNDRECT_NUM - 1) * (Common_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2, BseeHTable_null },
+	{ Common_PER_ROUNDRECT_VERTEX_MAX_NUM * (Common_ROUNDRECT_NUM + 1) + 1, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1 + (Common_ROUNDRECT_NUM - 1) * (Common_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, Common_TRIANGLE_FAN, Common_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, BseeHTable_null },
 };
 enum TUBE_ITEM_PART
 {
@@ -630,14 +630,14 @@ enum TUBE_ITEM_PART
 };
 const SYSubModel g_stuTubeSubs[TUBE_MATERIAL_COUNT] =
 {
-	{ 0,											SY_TUBE_TRIP_NUM,		0,											SY_TUBE_TRIP_NUM,			SY_TRIANGLE_STRIP,SY_TUBE_TRIP_NUM - 2,		BseeHTable_null },
-	{ SY_TUBE_TRIP_NUM,							SY_TUBE_TRIP_NUM,		SY_TUBE_TRIP_NUM,								SY_TUBE_TRIP_NUM,			SY_TRIANGLE_STRIP,SY_TUBE_TRIP_NUM - 2,		BseeHTable_null },
-	{ SY_TUBE_TRIP_NUM * 2,							SY_TUBE_PROFILE_PT_NUM,SY_TUBE_TRIP_NUM * 2,							SY_TUBE_PROFILE_INDEX_NUM,	SY_TRIANGLE_STRIP,SY_TUBE_PROFILE_TRI_NUM,	BseeHTable_null },
-	{ SY_TUBE_TRIP_NUM * 2 + SY_TUBE_PROFILE_PT_NUM,	SY_TUBE_PROFILE_PT_NUM,SY_TUBE_TRIP_NUM * 2 + SY_TUBE_PROFILE_INDEX_NUM,SY_TUBE_PROFILE_INDEX_NUM,	SY_TRIANGLE_STRIP,SY_TUBE_PROFILE_TRI_NUM,	BseeHTable_null },
+	{ 0,											Common_TUBE_TRIP_NUM,		0,											Common_TUBE_TRIP_NUM,			Common_TRIANGLE_STRIP,Common_TUBE_TRIP_NUM - 2,		BseeHTable_null },
+	{ Common_TUBE_TRIP_NUM,							Common_TUBE_TRIP_NUM,		Common_TUBE_TRIP_NUM,								Common_TUBE_TRIP_NUM,			Common_TRIANGLE_STRIP,Common_TUBE_TRIP_NUM - 2,		BseeHTable_null },
+	{ Common_TUBE_TRIP_NUM * 2,							Common_TUBE_PROFILE_PT_NUM,Common_TUBE_TRIP_NUM * 2,							Common_TUBE_PROFILE_INDEX_NUM,	Common_TRIANGLE_STRIP,Common_TUBE_PROFILE_TRI_NUM,	BseeHTable_null },
+	{ Common_TUBE_TRIP_NUM * 2 + Common_TUBE_PROFILE_PT_NUM,	Common_TUBE_PROFILE_PT_NUM,Common_TUBE_TRIP_NUM * 2 + Common_TUBE_PROFILE_INDEX_NUM,Common_TUBE_PROFILE_INDEX_NUM,	Common_TRIANGLE_STRIP,Common_TUBE_PROFILE_TRI_NUM,	BseeHTable_null },
 };
 const SYSubModel g_stuConeWidthBevelSubs[CONEWITHBEVEL_MATERIAL_COUNT] =
 {
-	{ 0, SY_TB_NUM, 0, SY_TB_NUM, SY_TRIANGLE_FAN, SY_TB_NUM - 2, BseeHTable_null },//顶面圆
-	{ SY_TB_NUM, SY_FAN_COLUMN * SY_FAN_ROW, SY_TB_NUM, (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 6, SY_TRIANGLE_LIST, (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 2, BseeHTable_null },
-	{ SY_TB_NUM + SY_FAN_COLUMN * SY_FAN_ROW, SY_TB_NUM, SY_TB_NUM + (SY_FAN_COLUMN - 1) * (SY_FAN_ROW - 1) * 6, SY_TB_NUM, SY_TRIANGLE_FAN, SY_TB_NUM - 2, BseeHTable_null },
+	{ 0, Common_TB_NUM, 0, Common_TB_NUM, Common_TRIANGLE_FAN, Common_TB_NUM - 2, BseeHTable_null },//顶面圆
+	{ Common_TB_NUM, Common_FAN_COLUMN * Common_FAN_ROW, Common_TB_NUM, (Common_FAN_COLUMN - 1) * (Common_FAN_ROW - 1) * 6, Common_TRIANGLE_LIST, (Common_FAN_COLUMN - 1) * (Common_FAN_ROW - 1) * 2, BseeHTable_null },
+	{ Common_TB_NUM + Common_FAN_COLUMN * Common_FAN_ROW, Common_TB_NUM, Common_TB_NUM + (Common_FAN_COLUMN - 1) * (Common_FAN_ROW - 1) * 6, Common_TB_NUM, Common_TRIANGLE_FAN, Common_TB_NUM - 2, BseeHTable_null },
 };

@@ -277,7 +277,7 @@ void CCommonBuffer::Clear( DWORD color ,RECT* pRect)
 	Lock();
 	if(!pRect)
 	{
-		SY_DMemSet(m_dwBuffer,color,m_nWidth * m_nHeight);
+		Common_DMemSet(m_dwBuffer,color,m_nWidth * m_nHeight);
 
 //		m_rtOldDirty = m_rtDirty;
 		m_rtDirty.left = 0;
@@ -287,7 +287,7 @@ void CCommonBuffer::Clear( DWORD color ,RECT* pRect)
 	}
 	else
 	{
-		SYBGRA32_FillRect(m_dwBuffer,
+		BGRA32_FillRect(m_dwBuffer,
 			pRect->left,
 			pRect->top,
 			pRect->right - pRect->left,
@@ -374,7 +374,7 @@ BOOL	CCommonBuffer::BitBlt(
 						  RECT* lpDesCrop)
 {
 	
-	SY_BitBlt(m_dwBuffer,
+	Common_BitBlt(m_dwBuffer,
 		desx,
 		desy,
 		deswidth,
@@ -601,18 +601,18 @@ void    CCommonBuffer::ClearAll(DWORD color,RECT* rtRect,BUFFER_PARITY_STYLE fie
 		return;
 	}
 
-	SYRect rtTemp;
+	BaseRect rtTemp;
 	if(rtRect == NULL)
-		SYRect_SetRect(&rtTemp,0,0,m_nWidth,m_nHeight);		
+		BaseRect_SetRect(&rtTemp,0,0,m_nWidth,m_nHeight);		
 	else
-		SYRect_SetRect(&rtTemp,rtRect->left,rtRect->top,rtRect->right,rtRect->bottom);				
+		BaseRect_SetRect(&rtTemp,rtRect->left,rtRect->top,rtRect->right,rtRect->bottom);				
 
 	int yStart = 0, yEnd = 0;
 	int nLineStep = 1;
-	SYRect  rtSrc;
-	SYRect_SetRect(&rtSrc,0,0,m_nWidth,m_nHeight);
-	SYRect_IntersectRect(&rtSrc,&rtSrc,&rtTemp);		
-	if(SYRect_IsRectEmpty(&rtSrc)) 
+	BaseRect  rtSrc;
+	BaseRect_SetRect(&rtSrc,0,0,m_nWidth,m_nHeight);
+	BaseRect_IntersectRect(&rtSrc,&rtSrc,&rtTemp);		
+	if(BaseRect_IsRectEmpty(&rtSrc)) 
 		return;
 
 	yStart = rtSrc.top;
@@ -636,8 +636,8 @@ void    CCommonBuffer::ClearAll(DWORD color,RECT* rtRect,BUFFER_PARITY_STYLE fie
 	}
 
 	lpDes = m_dwBuffer +  yStart* m_nWidth + rtSrc.left; //rtSrc.top
-	int nClearWidth  = SYRect_Width (&rtSrc);
-	int nClearHeight = SYRect_Height(&rtSrc);
+	int nClearWidth  = BaseRect_Width (&rtSrc);
+	int nClearHeight = BaseRect_Height(&rtSrc);
 
 	int nWidthStep = m_nWidth * nLineStep;
 

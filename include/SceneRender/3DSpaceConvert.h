@@ -29,11 +29,11 @@ struct SYSpaceConvertParam
 
 enum SYPROJTYPE
 {
-	SY_PERSPECTIVE_PROJ,
-	SY_ORTHO_PROJ,
+	Common_PERSPECTIVE_PROJ,
+	Common_ORTHO_PROJ,
 };
 
-enum SY_SPACE_CONVERT
+enum Common_SPACE_CONVERT
 {
 	SY2DVEC_TO_3D_VIEWPLANE,//将屏幕座标转换为与近平面平行的平面上在VIEW空间下座标
 	SY2DVEC_TO_3D_WORLD,	//将屏幕座标转换为近平面的物理座标（若给定的矩阵为自身矩阵，则转换到自身座标系下，若为单位阵，则转换到世界座标系下）

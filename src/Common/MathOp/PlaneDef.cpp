@@ -125,7 +125,7 @@ void __cdecl SYSizelf_SetSize(LPSYSIZELF pS,			// size指针
 ///////////////////////////// End of SYSize ///////////////////////////////////
 
 
-///////////////////////////////// SYRect //////////////////////////////////////
+///////////////////////////////// BaseRect //////////////////////////////////////
 
 // 整型实现
 
@@ -134,7 +134,7 @@ void __cdecl SYSizelf_SetSize(LPSYSIZELF pS,			// size指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_SetRectBPR(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_SetRectBPR(LPBaseRect pR,			// 矩形指针
 								SYPoint point,			// 中心点
 								int nRadius)			// 半径
 {
@@ -151,7 +151,7 @@ void __cdecl SYRect_SetRectBPR(LPSYRECT pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_SetRect(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_SetRect(LPBaseRect pR,			// 矩形指针
 							 LONG l,				// 左边位置
 							 LONG t,				// 上边位置
 							 LONG r,				// 右边位置
@@ -170,7 +170,7 @@ void __cdecl SYRect_SetRect(LPSYRECT pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_SetRectEmpty(LPSYRECT pR)		// 矩形指针
+void __cdecl BaseRect_SetRectEmpty(LPBaseRect pR)		// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -183,7 +183,7 @@ void __cdecl SYRect_SetRectEmpty(LPSYRECT pR)		// 矩形指针
 //
 // 返回值:	LONG
 ///////////////////////////////////////////////////////////////////////////////
-LONG __cdecl SYRect_Width(LPSYRECT pR)				// 矩形指针
+LONG __cdecl BaseRect_Width(LPBaseRect pR)				// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -195,7 +195,7 @@ LONG __cdecl SYRect_Width(LPSYRECT pR)				// 矩形指针
 //
 // 返回值:	LONG
 ///////////////////////////////////////////////////////////////////////////////
-LONG __cdecl SYRect_Height(LPSYRECT pR)				// 矩形指针
+LONG __cdecl BaseRect_Height(LPBaseRect pR)				// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -208,7 +208,7 @@ LONG __cdecl SYRect_Height(LPSYRECT pR)				// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRect_IsRectNull(LPSYRECT pR)			// 矩形指针
+BOOL __cdecl BaseRect_IsRectNull(LPBaseRect pR)			// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -222,7 +222,7 @@ BOOL __cdecl SYRect_IsRectNull(LPSYRECT pR)			// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRect_IsRectEmpty(LPSYRECT pR)			// 矩形指针
+BOOL __cdecl BaseRect_IsRectEmpty(LPBaseRect pR)			// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -235,7 +235,7 @@ BOOL __cdecl SYRect_IsRectEmpty(LPSYRECT pR)			// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRect_PtInRect(LPSYRECT pR,				// 矩形指针
+BOOL __cdecl BaseRect_PtInRect(LPBaseRect pR,				// 矩形指针
 							  SYPoint point)			// 点
 {
 	assert(pR != NULL);
@@ -250,8 +250,8 @@ BOOL __cdecl SYRect_PtInRect(LPSYRECT pR,				// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRect_EqualRect(LPSYRECT pR1,			// 矩形
-							   LPSYRECT pR2)			// 矩形
+BOOL __cdecl BaseRect_EqualRect(LPBaseRect pR1,			// 矩形
+							   LPBaseRect pR2)			// 矩形
 {
 	assert(pR1 != NULL && pR2 != NULL);
 
@@ -264,8 +264,8 @@ BOOL __cdecl SYRect_EqualRect(LPSYRECT pR1,			// 矩形
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_CopyRect(LPSYRECT pDesR,			// 目标矩形指针
-							  LPSYRECT pSrcR)			// 源矩形指针
+void __cdecl BaseRect_CopyRect(LPBaseRect pDesR,			// 目标矩形指针
+							  LPBaseRect pSrcR)			// 源矩形指针
 {
 	assert(pDesR != NULL && pSrcR != NULL);
 
@@ -280,7 +280,7 @@ void __cdecl SYRect_CopyRect(LPSYRECT pDesR,			// 目标矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_InflateRect1(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_InflateRect1(LPBaseRect pR,			// 矩形指针
 								  int x,				// 左、右外扩偏移量
 								  int y)				// 上、下外扩偏移量
 {
@@ -292,7 +292,7 @@ void __cdecl SYRect_InflateRect1(LPSYRECT pR,			// 矩形指针
 	pR->bottom += y;
 }
 
-void __cdecl SYRect_InflateRect2(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_InflateRect2(LPBaseRect pR,			// 矩形指针
 								  SYSizeL size)			// 外扩偏移量
 {
 	assert(pR != NULL);
@@ -303,7 +303,7 @@ void __cdecl SYRect_InflateRect2(LPSYRECT pR,			// 矩形指针
 	pR->bottom += size.cy;
 }
 								 
-void __cdecl SYRect_InflateRect3(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_InflateRect3(LPBaseRect pR,			// 矩形指针
 								  int l,				// 左外扩偏移量
 								  int t,				// 上外扩偏移量
 								  int r,				// 右外扩偏移量
@@ -322,7 +322,7 @@ void __cdecl SYRect_InflateRect3(LPSYRECT pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_DeflateRect1(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_DeflateRect1(LPBaseRect pR,			// 矩形指针
 								  int x,				// 左、右内缩偏移量
 								  int y)				// 上、下内缩偏移量
 {
@@ -334,7 +334,7 @@ void __cdecl SYRect_DeflateRect1(LPSYRECT pR,			// 矩形指针
 	pR->bottom -= y;
 }
 
-void __cdecl SYRect_DeflateRect2(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_DeflateRect2(LPBaseRect pR,			// 矩形指针
 								  SYSizeL size)			// 内缩偏移量
 {
 	assert(pR != NULL);
@@ -345,7 +345,7 @@ void __cdecl SYRect_DeflateRect2(LPSYRECT pR,			// 矩形指针
 	pR->bottom -= size.cy;
 }
 
-void __cdecl SYRect_DeflateRect3(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_DeflateRect3(LPBaseRect pR,			// 矩形指针
 								  int l,				// 左内缩偏移量
 								  int t,				// 上内缩偏移量
 								  int r,				// 右内缩偏移量
@@ -364,7 +364,7 @@ void __cdecl SYRect_DeflateRect3(LPSYRECT pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_NormalizeRect(LPSYRECT pR)			// 矩形指针
+void __cdecl BaseRect_NormalizeRect(LPBaseRect pR)			// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -387,8 +387,8 @@ void __cdecl SYRect_NormalizeRect(LPSYRECT pR)			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_NormalizeDRect(LPSYRECTF pDesR,		// 目标矩形
-									LPSYRECT pSrcR,		// 矩形指针
+void __cdecl BaseRect_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
+									LPBaseRect pSrcR,		// 矩形指针
 								    SYPoint point,			// 归一化中心点
 								    int nWidth,				// 归一化宽
 								    int nHeight)			// 归一化高
@@ -407,8 +407,8 @@ void __cdecl SYRect_NormalizeDRect(LPSYRECTF pDesR,		// 目标矩形
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_RevertDRect(LPSYRECT pDesR,			// 目标矩形指针
-								 LPSYRECTF pSrcR,			// 源矩形
+void __cdecl BaseRect_RevertDRect(LPBaseRect pDesR,			// 目标矩形指针
+								 LPBaseRectF pSrcR,			// 源矩形
 								 SYPoint point,			// 还原中心点
 								 int nWidth,				// 还原宽
 								 int nHeight)				// 还原高
@@ -426,7 +426,7 @@ void __cdecl SYRect_RevertDRect(LPSYRECT pDesR,			// 目标矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_OffsetRect1(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_OffsetRect1(LPBaseRect pR,			// 矩形指针
 								 int x,					// 水平偏移量
 								 int y)					// 垂直偏移量
 {
@@ -438,7 +438,7 @@ void __cdecl SYRect_OffsetRect1(LPSYRECT pR,			// 矩形指针
 	pR->bottom += y;
 }
 
-void __cdecl SYRect_OffsetRect2(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_OffsetRect2(LPBaseRect pR,			// 矩形指针
 								 SYPoint point)		// 偏移点
 {
 	assert(pR != NULL);
@@ -449,7 +449,7 @@ void __cdecl SYRect_OffsetRect2(LPSYRECT pR,			// 矩形指针
 	pR->bottom += point.y;
 }
 
-void __cdecl SYRect_OffsetRect3(LPSYRECT pR,			// 矩形指针
+void __cdecl BaseRect_OffsetRect3(LPBaseRect pR,			// 矩形指针
 								 SYSizeL size)			// 偏移大小
 {
 	assert(pR != NULL);
@@ -465,8 +465,8 @@ void __cdecl SYRect_OffsetRect3(LPSYRECT pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_Size(LPSYSIZE pDesSz,			// 目标Size
-						  LPSYRECT pSrcR)			// 源矩形指针
+void __cdecl BaseRect_Size(LPSYSIZE pDesSz,			// 目标Size
+						  LPBaseRect pSrcR)			// 源矩形指针
 
 {
 	assert((pDesSz != NULL) && (pSrcR != NULL));
@@ -480,8 +480,8 @@ void __cdecl SYRect_Size(LPSYSIZE pDesSz,			// 目标Size
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_TopLeft(LPSYPOINTL pDesP,			// 目标点
-							 LPSYRECT pSrcR)			// 源矩形指针
+void __cdecl BaseRect_TopLeft(LPSYPOINTL pDesP,			// 目标点
+							 LPBaseRect pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -494,8 +494,8 @@ void __cdecl SYRect_TopLeft(LPSYPOINTL pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_BottomRight(LPSYPOINTL pDesP,			// 目标点
-								 LPSYRECT pSrcR)			// 源矩形指针
+void __cdecl BaseRect_BottomRight(LPSYPOINTL pDesP,			// 目标点
+								 LPBaseRect pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -508,8 +508,8 @@ void __cdecl SYRect_BottomRight(LPSYPOINTL pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_CenterPoint(LPSYPOINTL pDesP,			// 目标点
-								 LPSYRECT pSrcR)			// 源矩形指针
+void __cdecl BaseRect_CenterPoint(LPSYPOINTL pDesP,			// 目标点
+								 LPBaseRect pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -522,8 +522,8 @@ void __cdecl SYRect_CenterPoint(LPSYPOINTL pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRect_DragPoint(LPSYRECT* ppDesR,			// 目标矩形数组
-							   LPSYRECT pSrcR,				// 源矩形
+void __cdecl BaseRect_DragPoint(LPBaseRect* ppDesR,			// 目标矩形数组
+							   LPBaseRect pSrcR,				// 源矩形
 							   int nStyle,					// 爪子的风格
 							   int nRadius)					// 方格半径
 {
@@ -534,45 +534,45 @@ void __cdecl SYRect_DragPoint(LPSYRECT* ppDesR,			// 目标矩形数组
 	// 先按矩形在线上的风格获取爪子，然后再根据风格来偏移矩阵
 	// 左上点
 	SYPoint_SetPoint(&point, pSrcR->left, pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LTP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LTP], point, nRadius);
 	// 上中点
 	SYPoint_SetPoint(&point, (pSrcR->left + pSrcR->right) >> 1, pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_TMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_TMP], point, nRadius);
 	// 右上点
 	SYPoint_SetPoint(&point, pSrcR->right, pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RTP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RTP], point, nRadius);
 	// 右中点
 	SYPoint_SetPoint(&point, pSrcR->right, (pSrcR->top + pSrcR->bottom) >> 1);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RMP], point, nRadius);
 	// 右下点
 	SYPoint_SetPoint(&point, pSrcR->right, pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RBP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RBP], point, nRadius);
 	// 下中点
 	SYPoint_SetPoint(&point, (pSrcR->left + pSrcR->right) >> 1, pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_BMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_BMP], point, nRadius);
 	// 左下点
 	SYPoint_SetPoint(&point, pSrcR->left, pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LBP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LBP], point, nRadius);
 	// 左中点
 	SYPoint_SetPoint(&point, pSrcR->left, (pSrcR->top + pSrcR->bottom) >> 1);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LMP], point, nRadius);
 	switch (nStyle)
 	{
-	case SYRECT_DRAG_INLINE:
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LTP], nRadius, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_TMP], 0, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RTP], -nRadius, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RMP], -nRadius, 0);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RBP], -nRadius, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_BMP], 0, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LBP], nRadius, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LMP], -nRadius, 0);
+	case BaseRect_DRAG_INLINE:
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LTP], nRadius, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_TMP], 0, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RTP], -nRadius, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RMP], -nRadius, 0);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RBP], -nRadius, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_BMP], 0, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LBP], nRadius, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LMP], -nRadius, 0);
 		break;
 	default:
 		break;
 	}
 }
-void __cdecl SYRectf_Scale(rectf* rt,float fscale)
+void __cdecl BaseRectf_Scale(rectf* rt,float fscale)
 {
 	rectf_scale_x64(rt,fscale);
 }
@@ -582,9 +582,9 @@ void __cdecl SYRectf_Scale(rectf* rt,float fscale)
 // 返回值:	TRUE			交集不为空
 //			FALSE			交集为空
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRect_IntersectRect(LPSYRECT pDesR,			// 交集结果
-								   LPSYRECT pSrcR1,		// 源矩形
-								   LPSYRECT pSrcR2)		// 源矩形
+BOOL __cdecl BaseRect_IntersectRect(LPBaseRect pDesR,			// 交集结果
+								   LPBaseRect pSrcR1,		// 源矩形
+								   LPBaseRect pSrcR2)		// 源矩形
 {
 	assert((pDesR != NULL) && (pSrcR1 != NULL) && (pSrcR2 != NULL));
 		
@@ -593,7 +593,7 @@ BOOL __cdecl SYRect_IntersectRect(LPSYRECT pDesR,			// 交集结果
 	pDesR->right = (pSrcR1->right > pSrcR2->right) ? pSrcR2->right : pSrcR1->right;
 	pDesR->bottom = (pSrcR1->bottom < pSrcR2->bottom) ? pSrcR1->bottom : pSrcR2->bottom;
 
-	return !SYRect_IsRectEmpty(pDesR);
+	return !BaseRect_IsRectEmpty(pDesR);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -602,9 +602,9 @@ BOOL __cdecl SYRect_IntersectRect(LPSYRECT pDesR,			// 交集结果
 // 返回值:	TRUE			并集不为空
 //			FALSE			并集为空
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRect_UnionRect(LPSYRECT pDesR,			// 并集结果
-							   LPSYRECT pSrcR1,		// 源矩形
-							   LPSYRECT pSrcR2)		// 源矩形
+BOOL __cdecl BaseRect_UnionRect(LPBaseRect pDesR,			// 并集结果
+							   LPBaseRect pSrcR1,		// 源矩形
+							   LPBaseRect pSrcR2)		// 源矩形
 {
 	assert((pDesR != NULL) && (pSrcR1 != NULL) && (pSrcR2 != NULL));
 			
@@ -613,7 +613,7 @@ BOOL __cdecl SYRect_UnionRect(LPSYRECT pDesR,			// 并集结果
 	pDesR->right = (pSrcR1->right < pSrcR2->right) ? pSrcR2->right : pSrcR1->right;
 	pDesR->bottom = (pSrcR1->bottom > pSrcR2->bottom) ? pSrcR1->bottom : pSrcR2->bottom;
 
-	return !SYRect_IsRectEmpty(pDesR);
+	return !BaseRect_IsRectEmpty(pDesR);
 }
 
 
@@ -624,7 +624,7 @@ BOOL __cdecl SYRect_UnionRect(LPSYRECT pDesR,			// 并集结果
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_SetRect(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_SetRect(LPBaseRectF pR,			// 矩形指针
 							 float l,				// 左边位置
 							 float t,				// 上边位置
 							 float r,				// 右边位置
@@ -643,7 +643,7 @@ void __cdecl SYRectf_SetRect(LPSYRECTF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_SetRectEmpty(LPSYRECTF pR)		// 矩形指针
+void __cdecl BaseRectf_SetRectEmpty(LPBaseRectF pR)		// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -656,7 +656,7 @@ void __cdecl SYRectf_SetRectEmpty(LPSYRECTF pR)		// 矩形指针
 //
 // 返回值:	float
 ///////////////////////////////////////////////////////////////////////////////
-float __cdecl SYRectf_Width(LPSYRECTF pR)				// 矩形指针
+float __cdecl BaseRectf_Width(LPBaseRectF pR)				// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -668,7 +668,7 @@ float __cdecl SYRectf_Width(LPSYRECTF pR)				// 矩形指针
 //
 // 返回值:	float
 ///////////////////////////////////////////////////////////////////////////////
-float __cdecl SYRectf_Height(LPSYRECTF pR)				// 矩形指针
+float __cdecl BaseRectf_Height(LPBaseRectF pR)				// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -681,7 +681,7 @@ float __cdecl SYRectf_Height(LPSYRECTF pR)				// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectf_IsRectNull(LPSYRECTF pR)			// 矩形指针
+BOOL __cdecl BaseRectf_IsRectNull(LPBaseRectF pR)			// 矩形指针
 {
 	assert(pR != NULL);
 	return ((fabs(pR->left)<=ABS_FLOAT_0) && (fabs(pR->top)<=ABS_FLOAT_0)
@@ -694,7 +694,7 @@ BOOL __cdecl SYRectf_IsRectNull(LPSYRECTF pR)			// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectf_IsRectEmpty(LPSYRECTF pR)			// 矩形指针
+BOOL __cdecl BaseRectf_IsRectEmpty(LPBaseRectF pR)			// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -707,7 +707,7 @@ BOOL __cdecl SYRectf_IsRectEmpty(LPSYRECTF pR)			// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectf_PtInRect(LPSYRECTF pR,				// 矩形指针
+BOOL __cdecl BaseRectf_PtInRect(LPBaseRectF pR,				// 矩形指针
 							  SYPoint2f point)			// 点
 {
 	assert(pR != NULL);
@@ -722,8 +722,8 @@ BOOL __cdecl SYRectf_PtInRect(LPSYRECTF pR,				// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectf_EqualRect(LPSYRECTF pR1,			// 矩形
-							   LPSYRECTF pR2)			// 矩形
+BOOL __cdecl BaseRectf_EqualRect(LPBaseRectF pR1,			// 矩形
+							   LPBaseRectF pR2)			// 矩形
 {
 	assert((pR1 != NULL) && (pR2 != NULL));
 
@@ -736,8 +736,8 @@ BOOL __cdecl SYRectf_EqualRect(LPSYRECTF pR1,			// 矩形
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_CopyRect(LPSYRECTF pDesR,			// 目标矩形指针
-							  LPSYRECTF pSrcR)			// 源矩形指针
+void __cdecl BaseRectf_CopyRect(LPBaseRectF pDesR,			// 目标矩形指针
+							  LPBaseRectF pSrcR)			// 源矩形指针
 {
 	assert((pDesR != NULL) && (pSrcR != NULL));
 
@@ -752,7 +752,7 @@ void __cdecl SYRectf_CopyRect(LPSYRECTF pDesR,			// 目标矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_InflateRect1(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_InflateRect1(LPBaseRectF pR,			// 矩形指针
 								  float x,				// 左、右外扩偏移量
 								  float y)				// 上、下外扩偏移量
 {
@@ -764,7 +764,7 @@ void __cdecl SYRectf_InflateRect1(LPSYRECTF pR,			// 矩形指针
 	pR->bottom += y;
 }
 
-void __cdecl SYRectf_InflateRect2(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_InflateRect2(LPBaseRectF pR,			// 矩形指针
 								  SYSizef size)			// 外扩偏移量
 {
 	assert(pR != NULL);
@@ -775,7 +775,7 @@ void __cdecl SYRectf_InflateRect2(LPSYRECTF pR,			// 矩形指针
 	pR->bottom += size.cy;
 }
 								 
-void __cdecl SYRectf_InflateRect3(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_InflateRect3(LPBaseRectF pR,			// 矩形指针
 								  float l,				// 左外扩偏移量
 								  float t,				// 上外扩偏移量
 								  float r,				// 右外扩偏移量
@@ -794,7 +794,7 @@ void __cdecl SYRectf_InflateRect3(LPSYRECTF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_DeflateRect1(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_DeflateRect1(LPBaseRectF pR,			// 矩形指针
 								  float x,				// 左、右内缩偏移量
 								  float y)				// 上、下内缩偏移量
 {
@@ -806,7 +806,7 @@ void __cdecl SYRectf_DeflateRect1(LPSYRECTF pR,			// 矩形指针
 	pR->bottom -= y;
 }
 
-void __cdecl SYRectf_DeflateRect2(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_DeflateRect2(LPBaseRectF pR,			// 矩形指针
 								  SYSizef size)			// 内缩偏移量
 {
 	assert(pR != NULL);
@@ -817,7 +817,7 @@ void __cdecl SYRectf_DeflateRect2(LPSYRECTF pR,			// 矩形指针
 	pR->bottom -= size.cy;
 }
 
-void __cdecl SYRectf_DeflateRect3(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_DeflateRect3(LPBaseRectF pR,			// 矩形指针
 								  float l,				// 左内缩偏移量
 								  float t,				// 上内缩偏移量
 								  float r,				// 右内缩偏移量
@@ -836,7 +836,7 @@ void __cdecl SYRectf_DeflateRect3(LPSYRECTF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_NormalizeRect(LPSYRECTF pR)			// 矩形指针
+void __cdecl BaseRectf_NormalizeRect(LPBaseRectF pR)			// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -860,8 +860,8 @@ void __cdecl SYRectf_NormalizeRect(LPSYRECTF pR)			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_NormalizeDRect(LPSYRECTF pDesR,		// 目标矩形
-									LPSYRECTF pSrcR,		// 矩形指针
+void __cdecl BaseRectf_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
+									LPBaseRectF pSrcR,		// 矩形指针
 								    SYPoint2f point,			// 归一化中心点
 								    float fWidth,			// 归一化宽
 									float fHeight)			// 归一化高
@@ -880,8 +880,8 @@ void __cdecl SYRectf_NormalizeDRect(LPSYRECTF pDesR,		// 目标矩形
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_RevertDRect(LPSYRECTF pDesR,			// 目标矩形指针
-								 LPSYRECTF pSrcR,			// 源矩形
+void __cdecl BaseRectf_RevertDRect(LPBaseRectF pDesR,			// 目标矩形指针
+								 LPBaseRectF pSrcR,			// 源矩形
 								 SYPoint2f point,			// 还原中心点
 								 float fWidth,				// 还原宽
 								 float fHeight)				// 还原高
@@ -899,7 +899,7 @@ void __cdecl SYRectf_RevertDRect(LPSYRECTF pDesR,			// 目标矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_OffsetRect1(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_OffsetRect1(LPBaseRectF pR,			// 矩形指针
 								 float x,				// 水平偏移量
 								 float y)				// 垂直偏移量
 {
@@ -911,7 +911,7 @@ void __cdecl SYRectf_OffsetRect1(LPSYRECTF pR,			// 矩形指针
 	pR->bottom += y;
 }
 
-void __cdecl SYRectf_OffsetRect2(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_OffsetRect2(LPBaseRectF pR,			// 矩形指针
 								 SYPoint2f point)		// 偏移点
 {
 	assert(pR != NULL);
@@ -922,7 +922,7 @@ void __cdecl SYRectf_OffsetRect2(LPSYRECTF pR,			// 矩形指针
 	pR->bottom += point.y;
 }
 
-void __cdecl SYRectf_OffsetRect3(LPSYRECTF pR,			// 矩形指针
+void __cdecl BaseRectf_OffsetRect3(LPBaseRectF pR,			// 矩形指针
 								 SYSizef size)			// 偏移大小
 {
 	assert(pR != NULL);
@@ -938,8 +938,8 @@ void __cdecl SYRectf_OffsetRect3(LPSYRECTF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_Size(LPSYSIZEF pDesSz,			// 目标Size
-						  LPSYRECTF pSrcR)			// 源矩形指针
+void __cdecl BaseRectf_Size(LPSYSIZEF pDesSz,			// 目标Size
+						  LPBaseRectF pSrcR)			// 源矩形指针
 
 {
 	assert((pDesSz != NULL) && (pSrcR != NULL));
@@ -953,8 +953,8 @@ void __cdecl SYRectf_Size(LPSYSIZEF pDesSz,			// 目标Size
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_TopLeft(LPSYPOINTF pDesP,			// 目标点
-							 LPSYRECTF pSrcR)			// 源矩形指针
+void __cdecl BaseRectf_TopLeft(LPSYPOINTF pDesP,			// 目标点
+							 LPBaseRectF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -967,8 +967,8 @@ void __cdecl SYRectf_TopLeft(LPSYPOINTF pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_BottomRight(LPSYPOINTF pDesP,			// 目标点
-								 LPSYRECTF pSrcR)			// 源矩形指针
+void __cdecl BaseRectf_BottomRight(LPSYPOINTF pDesP,			// 目标点
+								 LPBaseRectF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -981,8 +981,8 @@ void __cdecl SYRectf_BottomRight(LPSYPOINTF pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_CenterPoint(LPSYPOINTF pDesP,			// 目标点
-								 LPSYRECTF pSrcR)			// 源矩形指针
+void __cdecl BaseRectf_CenterPoint(LPSYPOINTF pDesP,			// 目标点
+								 LPBaseRectF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -995,8 +995,8 @@ void __cdecl SYRectf_CenterPoint(LPSYPOINTF pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectf_DragPoint(LPSYRECT* ppDesR,			// 目标矩形数组
-							   LPSYRECTF pSrcR,				// 源矩形
+void __cdecl BaseRectf_DragPoint(LPBaseRect* ppDesR,			// 目标矩形数组
+							   LPBaseRectF pSrcR,				// 源矩形
 							   int nStyle,					// 爪子的风格
 							   int nRadius)					// 方格半径
 {
@@ -1007,39 +1007,39 @@ void __cdecl SYRectf_DragPoint(LPSYRECT* ppDesR,			// 目标矩形数组
 	// 先按矩形在线上的风格获取爪子，然后再根据风格来偏移矩阵
 	// 左上点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LTP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LTP], point, nRadius);
 	// 上中点
 	SYPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_TMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_TMP], point, nRadius);
 	// 右上点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RTP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RTP], point, nRadius);
 	// 右中点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RMP], point, nRadius);
 	// 右下点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RBP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RBP], point, nRadius);
 	// 下中点
 	SYPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_BMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_BMP], point, nRadius);
 	// 左下点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LBP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LBP], point, nRadius);
 	// 左中点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LMP], point, nRadius);
 	switch (nStyle)
 	{
-	case SYRECT_DRAG_INLINE:
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LTP], nRadius, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_TMP], 0, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RTP], -nRadius, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RMP], -nRadius, 0);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RBP], -nRadius, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_BMP], 0, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LBP], nRadius, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LMP], -nRadius, 0);
+	case BaseRect_DRAG_INLINE:
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LTP], nRadius, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_TMP], 0, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RTP], -nRadius, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RMP], -nRadius, 0);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RBP], -nRadius, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_BMP], 0, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LBP], nRadius, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LMP], -nRadius, 0);
 		break;
 	default:
 		break;
@@ -1052,9 +1052,9 @@ void __cdecl SYRectf_DragPoint(LPSYRECT* ppDesR,			// 目标矩形数组
 // 返回值:	TRUE			交集不为空
 //			FALSE			交集为空
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectf_IntersectRect(LPSYRECTF pDesR,			// 交集结果
-								   LPSYRECTF pSrcR1,		// 源矩形
-								   LPSYRECTF pSrcR2)		// 源矩形
+BOOL __cdecl BaseRectf_IntersectRect(LPBaseRectF pDesR,			// 交集结果
+								   LPBaseRectF pSrcR1,		// 源矩形
+								   LPBaseRectF pSrcR2)		// 源矩形
 {
 	assert((pDesR != NULL) && (pSrcR1 != NULL) && (pSrcR2 != NULL));
 		
@@ -1063,7 +1063,7 @@ BOOL __cdecl SYRectf_IntersectRect(LPSYRECTF pDesR,			// 交集结果
 	pDesR->right = (pSrcR1->right > pSrcR2->right) ? pSrcR2->right : pSrcR1->right;
 	pDesR->bottom = (pSrcR1->bottom < pSrcR2->bottom) ? pSrcR1->bottom : pSrcR2->bottom;
 
-	return SYRectf_IsRectEmpty(pDesR);
+	return BaseRectf_IsRectEmpty(pDesR);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1072,9 +1072,9 @@ BOOL __cdecl SYRectf_IntersectRect(LPSYRECTF pDesR,			// 交集结果
 // 返回值:	TRUE			并集不为空
 //			FALSE			并集为空
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectf_UnionRect(LPSYRECTF pDesR,			// 并集结果
-							   LPSYRECTF pSrcR1,		// 源矩形
-							   LPSYRECTF pSrcR2)		// 源矩形
+BOOL __cdecl BaseRectf_UnionRect(LPBaseRectF pDesR,			// 并集结果
+							   LPBaseRectF pSrcR1,		// 源矩形
+							   LPBaseRectF pSrcR2)		// 源矩形
 {
 	assert((pDesR != NULL) && (pSrcR1 != NULL) && (pSrcR2 != NULL));
 			
@@ -1083,7 +1083,7 @@ BOOL __cdecl SYRectf_UnionRect(LPSYRECTF pDesR,			// 并集结果
 	pDesR->right = (pSrcR1->right < pSrcR2->right) ? pSrcR2->right : pSrcR1->right;
 	pDesR->bottom = (pSrcR1->bottom > pSrcR2->bottom) ? pSrcR1->bottom : pSrcR2->bottom;
 
-	return SYRectf_IsRectEmpty(pDesR);
+	return BaseRectf_IsRectEmpty(pDesR);
 }
 
 
@@ -1094,7 +1094,7 @@ BOOL __cdecl SYRectf_UnionRect(LPSYRECTF pDesR,			// 并集结果
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_SetRect(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_SetRect(LPBaseRectLF pR,			// 矩形指针
 							 double l,				// 左边位置
 							 double t,				// 上边位置
 							 double r,				// 右边位置
@@ -1113,7 +1113,7 @@ void __cdecl SYRectlf_SetRect(LPSYRECTLF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_SetRectEmpty(LPSYRECTLF pR)		// 矩形指针
+void __cdecl BaseRectlf_SetRectEmpty(LPBaseRectLF pR)		// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -1126,7 +1126,7 @@ void __cdecl SYRectlf_SetRectEmpty(LPSYRECTLF pR)		// 矩形指针
 //
 // 返回值:	double
 ///////////////////////////////////////////////////////////////////////////////
-double __cdecl SYRectlf_Width(LPSYRECTLF pR)				// 矩形指针
+double __cdecl BaseRectlf_Width(LPBaseRectLF pR)				// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -1138,7 +1138,7 @@ double __cdecl SYRectlf_Width(LPSYRECTLF pR)				// 矩形指针
 //
 // 返回值:	double
 ///////////////////////////////////////////////////////////////////////////////
-double __cdecl SYRectlf_Height(LPSYRECTLF pR)				// 矩形指针
+double __cdecl BaseRectlf_Height(LPBaseRectLF pR)				// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -1151,7 +1151,7 @@ double __cdecl SYRectlf_Height(LPSYRECTLF pR)				// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectlf_IsRectNull(LPSYRECTLF pR)			// 矩形指针
+BOOL __cdecl BaseRectlf_IsRectNull(LPBaseRectLF pR)			// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -1165,7 +1165,7 @@ BOOL __cdecl SYRectlf_IsRectNull(LPSYRECTLF pR)			// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectlf_IsRectEmpty(LPSYRECTLF pR)			// 矩形指针
+BOOL __cdecl BaseRectlf_IsRectEmpty(LPBaseRectLF pR)			// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -1178,7 +1178,7 @@ BOOL __cdecl SYRectlf_IsRectEmpty(LPSYRECTLF pR)			// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectlf_PtInRect(LPSYRECTLF pR,				// 矩形指针
+BOOL __cdecl BaseRectlf_PtInRect(LPBaseRectLF pR,				// 矩形指针
 							  SYPoint2lf point)			// 点
 {
 	assert(pR != NULL);
@@ -1193,8 +1193,8 @@ BOOL __cdecl SYRectlf_PtInRect(LPSYRECTLF pR,				// 矩形指针
 // 返回值:	TRUE		是
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectlf_EqualRect(LPSYRECTLF pR1,			// 矩形
-							   LPSYRECTLF pR2)			// 矩形
+BOOL __cdecl BaseRectlf_EqualRect(LPBaseRectLF pR1,			// 矩形
+							   LPBaseRectLF pR2)			// 矩形
 {
 	assert((pR1 != NULL) && (pR2 != NULL));
 
@@ -1207,8 +1207,8 @@ BOOL __cdecl SYRectlf_EqualRect(LPSYRECTLF pR1,			// 矩形
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_CopyRect(LPSYRECTLF pDesR,			// 目标矩形指针
-							  LPSYRECTLF pSrcR)			// 源矩形指针
+void __cdecl BaseRectlf_CopyRect(LPBaseRectLF pDesR,			// 目标矩形指针
+							  LPBaseRectLF pSrcR)			// 源矩形指针
 {
 	assert((pDesR != NULL) && (pSrcR != NULL));
 
@@ -1223,7 +1223,7 @@ void __cdecl SYRectlf_CopyRect(LPSYRECTLF pDesR,			// 目标矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_InflateRect1(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_InflateRect1(LPBaseRectLF pR,			// 矩形指针
 								  double x,				// 左、右外扩偏移量
 								  double y)				// 上、下外扩偏移量
 {
@@ -1235,7 +1235,7 @@ void __cdecl SYRectlf_InflateRect1(LPSYRECTLF pR,			// 矩形指针
 	pR->bottom += y;
 }
 
-void __cdecl SYRectlf_InflateRect2(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_InflateRect2(LPBaseRectLF pR,			// 矩形指针
 								  SYSizelf size)			// 外扩偏移量
 {
 	assert(pR != NULL);
@@ -1246,7 +1246,7 @@ void __cdecl SYRectlf_InflateRect2(LPSYRECTLF pR,			// 矩形指针
 	pR->bottom += size.cy;
 }
 								 
-void __cdecl SYRectlf_InflateRect3(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_InflateRect3(LPBaseRectLF pR,			// 矩形指针
 								  double l,				// 左外扩偏移量
 								  double t,				// 上外扩偏移量
 								  double r,				// 右外扩偏移量
@@ -1265,7 +1265,7 @@ void __cdecl SYRectlf_InflateRect3(LPSYRECTLF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_DeflateRect1(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_DeflateRect1(LPBaseRectLF pR,			// 矩形指针
 								  double x,				// 左、右内缩偏移量
 								  double y)				// 上、下内缩偏移量
 {
@@ -1277,7 +1277,7 @@ void __cdecl SYRectlf_DeflateRect1(LPSYRECTLF pR,			// 矩形指针
 	pR->bottom -= y;
 }
 
-void __cdecl SYRectlf_DeflateRect2(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_DeflateRect2(LPBaseRectLF pR,			// 矩形指针
 								  SYSizelf size)			// 内缩偏移量
 {
 	assert(pR != NULL);
@@ -1288,7 +1288,7 @@ void __cdecl SYRectlf_DeflateRect2(LPSYRECTLF pR,			// 矩形指针
 	pR->bottom -= size.cy;
 }
 
-void __cdecl SYRectlf_DeflateRect3(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_DeflateRect3(LPBaseRectLF pR,			// 矩形指针
 								  double l,				// 左内缩偏移量
 								  double t,				// 上内缩偏移量
 								  double r,				// 右内缩偏移量
@@ -1307,7 +1307,7 @@ void __cdecl SYRectlf_DeflateRect3(LPSYRECTLF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_NormalizeRect(LPSYRECTLF pR)			// 矩形指针
+void __cdecl BaseRectlf_NormalizeRect(LPBaseRectLF pR)			// 矩形指针
 {
 	assert(pR != NULL);
 
@@ -1330,8 +1330,8 @@ void __cdecl SYRectlf_NormalizeRect(LPSYRECTLF pR)			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_NormalizeDRect(LPSYRECTF pDesR,		// 目标矩形
-									LPSYRECTLF pSrcR,		// 矩形指针
+void __cdecl BaseRectlf_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
+									LPBaseRectLF pSrcR,		// 矩形指针
 								    SYPoint2lf point,			// 归一化中心点
 								    double dWidth,			// 归一化宽
 								    double dHeight)			// 归一化高
@@ -1350,8 +1350,8 @@ void __cdecl SYRectlf_NormalizeDRect(LPSYRECTF pDesR,		// 目标矩形
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_RevertDRect(LPSYRECTLF pDesR,			// 目标矩形指针
-								 LPSYRECTF pSrcR,			// 源矩形
+void __cdecl BaseRectlf_RevertDRect(LPBaseRectLF pDesR,			// 目标矩形指针
+								 LPBaseRectF pSrcR,			// 源矩形
 								 SYPoint2lf point,			// 还原中心点
 								 double dWidth,				// 还原宽
 								 double dHeight)				// 还原高
@@ -1369,7 +1369,7 @@ void __cdecl SYRectlf_RevertDRect(LPSYRECTLF pDesR,			// 目标矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_OffsetRect1(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_OffsetRect1(LPBaseRectLF pR,			// 矩形指针
 								 double x,				// 水平偏移量
 								 double y)				// 垂直偏移量
 {
@@ -1381,7 +1381,7 @@ void __cdecl SYRectlf_OffsetRect1(LPSYRECTLF pR,			// 矩形指针
 	pR->bottom += y;
 }
 
-void __cdecl SYRectlf_OffsetRect2(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_OffsetRect2(LPBaseRectLF pR,			// 矩形指针
 								 SYPoint2lf point)		// 偏移点
 {
 	assert(pR != NULL);
@@ -1392,7 +1392,7 @@ void __cdecl SYRectlf_OffsetRect2(LPSYRECTLF pR,			// 矩形指针
 	pR->bottom += point.y;
 }
 
-void __cdecl SYRectlf_OffsetRect3(LPSYRECTLF pR,			// 矩形指针
+void __cdecl BaseRectlf_OffsetRect3(LPBaseRectLF pR,			// 矩形指针
 								 SYSizelf size)			// 偏移大小
 {
 	assert(pR != NULL);
@@ -1408,8 +1408,8 @@ void __cdecl SYRectlf_OffsetRect3(LPSYRECTLF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_Size(LPSYSIZELF pDesSz,			// 目标Size
-						  LPSYRECTLF pSrcR)			// 源矩形指针
+void __cdecl BaseRectlf_Size(LPSYSIZELF pDesSz,			// 目标Size
+						  LPBaseRectLF pSrcR)			// 源矩形指针
 
 {
 	assert((pDesSz != NULL) && (pSrcR != NULL));
@@ -1423,8 +1423,8 @@ void __cdecl SYRectlf_Size(LPSYSIZELF pDesSz,			// 目标Size
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_TopLeft(LPSYPOINTD pDesP,			// 目标点
-							 LPSYRECTLF pSrcR)			// 源矩形指针
+void __cdecl BaseRectlf_TopLeft(LPSYPOINTD pDesP,			// 目标点
+							 LPBaseRectLF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -1437,8 +1437,8 @@ void __cdecl SYRectlf_TopLeft(LPSYPOINTD pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_BottomRight(LPSYPOINTD pDesP,			// 目标点
-								 LPSYRECTLF pSrcR)			// 源矩形指针
+void __cdecl BaseRectlf_BottomRight(LPSYPOINTD pDesP,			// 目标点
+								 LPBaseRectLF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -1451,8 +1451,8 @@ void __cdecl SYRectlf_BottomRight(LPSYPOINTD pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_CenterPoint(LPSYPOINTD pDesP,			// 目标点
-								 LPSYRECTLF pSrcR)			// 源矩形指针
+void __cdecl BaseRectlf_CenterPoint(LPSYPOINTD pDesP,			// 目标点
+								 LPBaseRectLF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
 
@@ -1465,8 +1465,8 @@ void __cdecl SYRectlf_CenterPoint(LPSYPOINTD pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYRectlf_DragPoint(LPSYRECT* ppDesR,			// 目标矩形数组
-							   LPSYRECTLF pSrcR,				// 源矩形
+void __cdecl BaseRectlf_DragPoint(LPBaseRect* ppDesR,			// 目标矩形数组
+							   LPBaseRectLF pSrcR,				// 源矩形
 							   int nStyle,					// 爪子的风格
 							   int nRadius)					// 方格半径
 {
@@ -1477,39 +1477,39 @@ void __cdecl SYRectlf_DragPoint(LPSYRECT* ppDesR,			// 目标矩形数组
 	// 先按矩形在线上的风格获取爪子，然后再根据风格来偏移矩阵
 	// 左上点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LTP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LTP], point, nRadius);
 	// 上中点
 	SYPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_TMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_TMP], point, nRadius);
 	// 右上点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->top);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RTP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RTP], point, nRadius);
 	// 右中点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RMP], point, nRadius);
 	// 右下点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_RBP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RBP], point, nRadius);
 	// 下中点
 	SYPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_BMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_BMP], point, nRadius);
 	// 左下点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->bottom);
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LBP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LBP], point, nRadius);
 	// 左中点
 	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
-	SYRect_SetRectBPR(ppDesR[SYRECT_DRAG_LMP], point, nRadius);
+	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LMP], point, nRadius);
 	switch (nStyle)
 	{
-	case SYRECT_DRAG_INLINE:
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LTP], nRadius, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_TMP], 0, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RTP], -nRadius, nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RMP], -nRadius, 0);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_RBP], -nRadius, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_BMP], 0, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LBP], nRadius, -nRadius);
-		SYRect_OffsetRect1(ppDesR[SYRECT_DRAG_LMP], -nRadius, 0);
+	case BaseRect_DRAG_INLINE:
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LTP], nRadius, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_TMP], 0, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RTP], -nRadius, nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RMP], -nRadius, 0);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_RBP], -nRadius, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_BMP], 0, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LBP], nRadius, -nRadius);
+		BaseRect_OffsetRect1(ppDesR[BaseRect_DRAG_LMP], -nRadius, 0);
 		break;
 	default:
 		break;
@@ -1522,9 +1522,9 @@ void __cdecl SYRectlf_DragPoint(LPSYRECT* ppDesR,			// 目标矩形数组
 // 返回值:	TRUE			交集不为空
 //			FALSE			交集为空
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectlf_IntersectRect(LPSYRECTLF pDesR,			// 交集结果
-								   LPSYRECTLF pSrcR1,		// 源矩形
-								   LPSYRECTLF pSrcR2)		// 源矩形
+BOOL __cdecl BaseRectlf_IntersectRect(LPBaseRectLF pDesR,			// 交集结果
+								   LPBaseRectLF pSrcR1,		// 源矩形
+								   LPBaseRectLF pSrcR2)		// 源矩形
 {
 	assert((pDesR != NULL) && (pSrcR1 != NULL) && (pSrcR2 != NULL));
 	
@@ -1533,7 +1533,7 @@ BOOL __cdecl SYRectlf_IntersectRect(LPSYRECTLF pDesR,			// 交集结果
 	pDesR->right = (pSrcR1->right > pSrcR2->right) ? pSrcR2->right : pSrcR1->right;
 	pDesR->bottom = (pSrcR1->bottom < pSrcR2->bottom) ? pSrcR1->bottom : pSrcR2->bottom;
 
-	return !SYRectlf_IsRectEmpty(pDesR);
+	return !BaseRectlf_IsRectEmpty(pDesR);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1542,9 +1542,9 @@ BOOL __cdecl SYRectlf_IntersectRect(LPSYRECTLF pDesR,			// 交集结果
 // 返回值:	TRUE			并集不为空
 //			FALSE			并集为空
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYRectlf_UnionRect(LPSYRECTLF pDesR,			// 并集结果
-							   LPSYRECTLF pSrcR1,		// 源矩形
-							   LPSYRECTLF pSrcR2)		// 源矩形
+BOOL __cdecl BaseRectlf_UnionRect(LPBaseRectLF pDesR,			// 并集结果
+							   LPBaseRectLF pSrcR1,		// 源矩形
+							   LPBaseRectLF pSrcR2)		// 源矩形
 {
 	assert((pDesR != NULL) && (pSrcR1 != NULL) && (pSrcR2 != NULL));
 			
@@ -1553,11 +1553,11 @@ BOOL __cdecl SYRectlf_UnionRect(LPSYRECTLF pDesR,			// 并集结果
 	pDesR->right = (pSrcR1->right < pSrcR2->right) ? pSrcR2->right : pSrcR1->right;
 	pDesR->bottom = (pSrcR1->bottom > pSrcR2->bottom) ? pSrcR1->bottom : pSrcR2->bottom;
 
-	return SYRectlf_IsRectEmpty(pDesR);
+	return BaseRectlf_IsRectEmpty(pDesR);
 }
 
 #include <emmintrin.h>
-void __cdecl SYRectf_UnionPoint( rectf* pDesR, /* 并集结果 */ rectf* pSrcR1, /* 源矩形 */ float fX,float fY )
+void __cdecl BaseRectf_UnionPoint( rectf* pDesR, /* 并集结果 */ rectf* pSrcR1, /* 源矩形 */ float fX,float fY )
 {
 	__m128 m1 = _mm_loadu_ps((float*)pDesR);
 	__m128 m2 = m1;
@@ -1568,7 +1568,7 @@ void __cdecl SYRectf_UnionPoint( rectf* pDesR, /* 并集结果 */ rectf* pSrcR1, /* 
 	_mm_storeu_ps((float*)pDesR,m1);
 }
 
-void __cdecl SYRectf_To_Rect( RECT* pDst,const rectf* pSrc )
+void __cdecl BaseRectf_To_Rect( RECT* pDst,const rectf* pSrc )
 {
 	__m128 m1 = _mm_loadu_ps((float*)pSrc);
 	__m128 round = _mm_set_ps1(0.5f);
@@ -1577,5 +1577,5 @@ void __cdecl SYRectf_To_Rect( RECT* pDst,const rectf* pSrc )
 	_mm_storeu_si128((__m128i*)pDst,dst);
 }
 
-///////////////////////////// End of SYRect ///////////////////////////////////
+///////////////////////////// End of BaseRect ///////////////////////////////////
 //------------------------------- End of File ---------------------------------

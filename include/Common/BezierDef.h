@@ -1,5 +1,5 @@
-#ifndef __SY_BEZIER_INC__
-#define __SY_BEZIER_INC__
+#ifndef __Common_BEZIER_INC__
+#define __Common_BEZIER_INC__
 
 #include "VectorDef.h"
 #include "Common\CommonDataContainer.h"
@@ -21,7 +21,7 @@ enum  eSYCurveType
 	CURVE_LINE = 3,				//line curve
 };
 
-struct CSYMaskHandle
+struct CBaseMaskHandle
 {
 	int			m_nVersion;		//version
 	point2f		m_Pt;			//Main control point,unity coordinates
@@ -31,7 +31,7 @@ struct CSYMaskHandle
 	float		m_fZ;
 	float		m_fHelpZ[2];
 
-	CSYMaskHandle(point2f point)
+	CBaseMaskHandle(point2f point)
 	{
 		m_nVersion = 1;
 		m_Pt		= point;
@@ -43,7 +43,7 @@ struct CSYMaskHandle
 		m_fHelpZ[1] = 0;
 	}
 
-	CSYMaskHandle(const point2f &point,
+	CBaseMaskHandle(const point2f &point,
 		const point2f &HPt1,
 		const point2f &HPt2)
 	{
@@ -57,36 +57,36 @@ struct CSYMaskHandle
 		m_fHelpZ[1] = 0;
 	}
 
-	CSYMaskHandle(const CSYMaskHandle& other)
+	CBaseMaskHandle(const CBaseMaskHandle& other)
 	{
 		m_nVersion = 1;
-		memcpy(this, &other, sizeof(CSYMaskHandle));
+		memcpy(this, &other, sizeof(CBaseMaskHandle));
 	}
 
 	void Empty(BOOL bInit = TRUE)
 	{
-		memset(this, 0, sizeof(CSYMaskHandle));
+		memset(this, 0, sizeof(CBaseMaskHandle));
 		m_nVersion = 1;
 	}
 
-	CSYMaskHandle()
+	CBaseMaskHandle()
 	{
 		Empty();
 	}
 
-	~CSYMaskHandle()
+	~CBaseMaskHandle()
 	{
 		Empty(FALSE);
 	}
 
-	CSYMaskHandle & operator = (const CSYMaskHandle& other)
+	CBaseMaskHandle & operator = (const CBaseMaskHandle& other)
 	{
 		Empty(FALSE);
-		memcpy(this, &other, sizeof(CSYMaskHandle));
+		memcpy(this, &other, sizeof(CBaseMaskHandle));
 		return *this ;
 	}
 
-	BOOL operator == (const CSYMaskHandle& other)
+	BOOL operator == (const CBaseMaskHandle& other)
 	{
 		if(m_nVersion == other.m_nVersion &&
 			m_Pt		== other.m_Pt &&
@@ -103,7 +103,7 @@ struct CSYMaskHandle
 			return FALSE;
 	}
 
-	BOOL operator != (const CSYMaskHandle& other)
+	BOOL operator != (const CBaseMaskHandle& other)
 	{
 		return !(*this == other);
 	}
@@ -122,8 +122,8 @@ struct CSYMaskHandle
 		m_fHelpZ[1] = 0;
 	}
 };
-typedef CSYMaskHandle*   LPSYMaskHandle;
-typedef CBaseARray<CSYMaskHandle, CSYMaskHandle>  CSYMaskHandleArray;
+typedef CBaseMaskHandle*   LPSYMaskHandle;
+typedef CBaseARray<CBaseMaskHandle, CBaseMaskHandle>  CBaseMaskHandleArray;
 
 
 point2f*	__cdecl	SYMaskHandleGetControlPt(BaseARray &HandleArray, BOOL bClose, int &nCount);
@@ -150,7 +150,7 @@ struct SPLITE_BEZIER3_NODE
 	}
 };
 
-typedef CBaseARray<SPLITE_BEZIER3_NODE, SPLITE_BEZIER3_NODE> CSYBezierSplitArray;
+typedef CBaseARray<SPLITE_BEZIER3_NODE, SPLITE_BEZIER3_NODE> CBaseBezierSplitArray;
 
 //Bezier split line info define
 struct SBEIZER3_LINE_INFO
@@ -159,15 +159,15 @@ struct SBEIZER3_LINE_INFO
 	float ft;
 };
 
-typedef CBaseARray<SBEIZER3_LINE_INFO, SBEIZER3_LINE_INFO> CSYBezier3LineArray;
+typedef CBaseARray<SBEIZER3_LINE_INFO, SBEIZER3_LINE_INFO> CBaseBezier3LineArray;
 
 //////////////////////////////////////////////////////////////////////////
-void				SYBezierGet3Sp(point2f CtrlPt[], CSYBezierSplitArray& Bezier_SplitArray);
-BASEGRAPH_COMMON_API	void	__cdecl		SYBezierGet3Pt(point2f CtrlPt[], CSYPoint2fArray &PtArray);
+void				SYBezierGet3Sp(point2f CtrlPt[], CBaseBezierSplitArray& Bezier_SplitArray);
+BASEGRAPH_COMMON_API	void	__cdecl		SYBezierGet3Pt(point2f CtrlPt[], CBasePoint2fArray &PtArray);
 
-void				SYBezier3GetLineInfo(point2f CtrlPt[], CSYBezier3LineArray& arBezier3Line);
+void				SYBezier3GetLineInfo(point2f CtrlPt[], CBaseBezier3LineArray& arBezier3Line);
 
-BASEGRAPH_COMMON_API	float	__cdecl		SYBezier3CalcParat(CSYBezier3LineArray& arBezier3Line, float fCurveLen);
+BASEGRAPH_COMMON_API	float	__cdecl		SYBezier3CalcParat(CBaseBezier3LineArray& arBezier3Line, float fCurveLen);
 
 float			SYBezierGetValue2( float p0,float p1,float p2,float p3,float t);
 BASEGRAPH_COMMON_API	point2f	__cdecl		SYBezierGetValue(point2f Pt[4], float t);

@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 // SYColorAPI.cpp - APIs for complex color processing.
 //////////////////////////////////////////////////////////////////////////
-#ifndef __SY_COLOR_API_INC__
-#define __SY_COLOR_API_INC__
+#ifndef __Common_COLOR_API_INC__
+#define __Common_COLOR_API_INC__
 
 #include "Common\ColorDef.h"
 #include "Common\VectorDef.h"

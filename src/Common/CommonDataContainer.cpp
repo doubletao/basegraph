@@ -1727,7 +1727,7 @@ void __cdecl BaseAR_Sort(LPBaseARRAY pA, SYCompareFun fun)
 	qsort(pA->m_pData, pA->m_nSize, sizeof(BaseAR_ELEMENT), fun);
 }
 
-void __cdecl SYStrAR_Release(CSYStrArray& ary)
+void __cdecl SYStrAR_Release(CBaseStrArray& ary)
 {
 	int nCnt = ary.GetCount();
 	for (int i = 0; i<nCnt; ++i)

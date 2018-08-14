@@ -1,10 +1,10 @@
 #pragma once
 #include "DataRender\DataRenderDataDef.h"
 
-class BASEGRAPH_DATARENDER_API CSYPieModeling
+class BASEGRAPH_DATARENDER_API CBasePieModeling
 {
 private:
-	CSYPieModeling(void);
+	CBasePieModeling(void);
 
 	void calc_plane_face(int* v_count, int* i_count, int* t_count);
 	void calc_arc_face(int* v_count, int* i_count, int* t_count);
@@ -115,7 +115,7 @@ private:
 	};
 
 public:
-	CSYPieModeling( UINT uShape,
+	CBasePieModeling( UINT uShape,
 					UINT uFrag,
 					float fAngle0,
 					float fAngle1,
@@ -128,7 +128,7 @@ public:
 					UINT uChamferPrecission,
 					UINT uChamferLayout);
 
-	~CSYPieModeling(void);
+	~CBasePieModeling(void);
 
 	void GetModelParam(int* vertex_count, int* index_count, int* triangle_count);
 	BOOL CreateModel(SYModel* pMod);
