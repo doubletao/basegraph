@@ -130,7 +130,7 @@ inline LPPtBintree  SplitBezier(point2f  F0,point2f F1,point2f G0,point2f G1,flo
 }
 
 //////////////////////////////////////////////////////////////////////////
-void SYBezierGet3Sp(point2f CtrlPt[], CBaseBezierSplitArray& arBezierSplit)
+void CommonBezierGet3Sp(point2f CtrlPt[], CBaseBezierSplitArray& arBezierSplit)
 {
 	point2f G0,G1;
 	G0.x = (CtrlPt[0].x-2*CtrlPt[1].x+CtrlPt[2].x)*3.0f;
@@ -143,10 +143,10 @@ void SYBezierGet3Sp(point2f CtrlPt[], CBaseBezierSplitArray& arBezierSplit)
 	FreePtBintreeNode(PtBintree);
 }
 
-void SYBezierGet3Pt(point2f CtrlPt[], CBasePoint2fArray &PtArray)
+void CommonBezierGet3Pt(point2f CtrlPt[], CBasePoint2fArray &PtArray)
 {
 	CBaseBezierSplitArray arBezierSplit;
-	SYBezierGet3Sp(CtrlPt, arBezierSplit);
+	CommonBezierGet3Sp(CtrlPt, arBezierSplit);
 
 	int nSplitCnt = arBezierSplit.GetCount();
 	for(int nIndex =0;nIndex<nSplitCnt;nIndex++)
@@ -158,7 +158,7 @@ void SYBezierGet3Pt(point2f CtrlPt[], CBasePoint2fArray &PtArray)
 void GetBezier3_Split_Info(point2f CtrlPt[], CBaseBezierSplitArray& arBezierSplit)
 {
 	arBezierSplit.Add(SPLITE_BEZIER3_NODE(CtrlPt[0], 0.0f));
-	SYBezierGet3Sp(CtrlPt, arBezierSplit);
+	CommonBezierGet3Sp(CtrlPt, arBezierSplit);
 	arBezierSplit.Add(SPLITE_BEZIER3_NODE(CtrlPt[3], 1.0f));
 }
 
@@ -177,14 +177,14 @@ void GetBezier3_Line_Info2(CBaseBezierSplitArray& arBezierSplit, CBaseBezier3Lin
 	}
 }
 
-void SYBezier3GetLineInfo(point2f CtrlPt[], CBaseBezier3LineArray& arBezier3Line)
+void CommonBezier3GetLineInfo(point2f CtrlPt[], CBaseBezier3LineArray& arBezier3Line)
 {
 	CBaseBezierSplitArray arBezierSplit;
 	GetBezier3_Split_Info(CtrlPt, arBezierSplit);
 	GetBezier3_Line_Info2(arBezierSplit, arBezier3Line);
 }
 
-float SYBezier3CalcParat(CBaseBezier3LineArray& arBezier3Line, float fCurveLen)
+float CommonBezier3CalcParat(CBaseBezier3LineArray& arBezier3Line, float fCurveLen)
 {
 	int nB3LineCnt = arBezier3Line.GetCount();
 
@@ -209,12 +209,12 @@ float SYBezier3CalcParat(CBaseBezier3LineArray& arBezier3Line, float fCurveLen)
 }
 
 /*********************************************************************/
-/*Name:		SYBezierGetValue
+/*Name:		CommonBezierGetValue
 /*function: calculate three degree Bezier value
 /*Paremeter:p0--p3 is control point 
 /*          t---bezier parameter
 /*********************************************************************/
-float SYBezierGetValue2( float p0,float p1,float p2,
+float CommonBezierGetValue2( float p0,float p1,float p2,
 						float  p3,float t)
 {
 	float  t1  = 1.0f-t;
@@ -222,16 +222,16 @@ float SYBezierGetValue2( float p0,float p1,float p2,
 	float  tt  = t*t;
 	return (t1*p0+3.0f*t*p1)*t11+(3.0f*t1*p2+t*p3)*tt;
 }
-point2f SYBezierGetValue(point2f Pt[4], float t)
+point2f CommonBezierGetValue(point2f Pt[4], float t)
 {
 	// 根据时间来计算，曲线不是均匀增长的
 	point2f tPt;
-	tPt.x = SYBezierGetValue2(Pt[0].x,Pt[1].x,Pt[2].x,Pt[3].x,t);
-	tPt.y = SYBezierGetValue2(Pt[0].y,Pt[1].y,Pt[2].y,Pt[3].y,t);
+	tPt.x = CommonBezierGetValue2(Pt[0].x,Pt[1].x,Pt[2].x,Pt[3].x,t);
+	tPt.y = CommonBezierGetValue2(Pt[0].y,Pt[1].y,Pt[2].y,Pt[3].y,t);
 	return  tPt;
 }
 
-float SYBezierGetCutValue2( float p0,float p1,float p2,
+float CommonBezierGetCutValue2( float p0,float p1,float p2,
 						float  p3,float t)
 { 
 	float  t1  = 1.0f-t;
@@ -240,11 +240,11 @@ float SYBezierGetCutValue2( float p0,float p1,float p2,
 	return  3.0f*(-p0*t11+p1*(t11-t1*2.0f*t)+p2*(2.0f*t*t1-tt)+p3*tt);
 }
 
-point2f SYBezierGetCutValue(point2f Pt[4], float t)
+point2f CommonBezierGetCutValue(point2f Pt[4], float t)
 {
 	point2f tPt;
-	tPt.x = SYBezierGetCutValue2(Pt[0].x,Pt[1].x,Pt[2].x,Pt[3].x,t);
-	tPt.y = SYBezierGetCutValue2(Pt[0].y,Pt[1].y,Pt[2].y,Pt[3].y,t);
+	tPt.x = CommonBezierGetCutValue2(Pt[0].x,Pt[1].x,Pt[2].x,Pt[3].x,t);
+	tPt.y = CommonBezierGetCutValue2(Pt[0].y,Pt[1].y,Pt[2].y,Pt[3].y,t);
 	return  tPt;
 }
 
@@ -255,7 +255,7 @@ point2f SYBezierGetCutValue(point2f Pt[4], float t)
 //pt2[4]-------Second cutted part of thress degree Bezier Curver control points
 //t-----------cut point parameter 
 /////////////////////////////////////////////////////////////////////
-void SYBezierCut(point2f pt[4],	//In
+void CommonBezierCut(point2f pt[4],	//In
 			   point2f pt1[4],	//Out
 			   point2f pt2[4],	//Out
 			   float  t			//In	
@@ -304,7 +304,7 @@ void SYBezierCut(point2f pt[4],	//In
 //			TRUE:	pt0  is on Bezier Curver,Ptv is VERIFYED POINT
 //			FALSE:  pt0  is not on Bezier Curver
 /////////////////////////////////////////////////////////////////////
-float SYBezierPtIn(const point2f &pt0,	//In
+float CommonBezierPtIn(const point2f &pt0,	//In
 				 point2f Pt[4],			//In
 				 float  r,				//In
 				 float  t1,				//Out
@@ -320,8 +320,8 @@ float SYBezierPtIn(const point2f &pt0,	//In
 	rectf Rtf = SYGetBoundfFromPt2fs(Pt);
 	for(int i=0;i<3;i++)
 	{
-		tPt.x = SYBezierGetValue2(Pt[0].x,Pt[1].x,Pt[2].x,Pt[3].x,t[i]);
-		tPt.y = SYBezierGetValue2(Pt[0].y,Pt[1].y,Pt[2].y,Pt[3].y,t[i]);
+		tPt.x = CommonBezierGetValue2(Pt[0].x,Pt[1].x,Pt[2].x,Pt[3].x,t[i]);
+		tPt.y = CommonBezierGetValue2(Pt[0].y,Pt[1].y,Pt[2].y,Pt[3].y,t[i]);
 		fDis  = SYPt2fDistance(tPt,*(point2f*)&pt0);
 
 		//Find Nearest point In curver
@@ -365,10 +365,10 @@ float SYBezierPtIn(const point2f &pt0,	//In
 		if(BaseRectf_PtInRect(&Rtf, pt0))
 		{
 			point2f p1[4],p2[4];
-			SYBezierCut(Pt,p1,p2,0.5f);
-			fRet = SYBezierPtIn(pt0,p1,r,t1,fMid);
+			CommonBezierCut(Pt,p1,p2,0.5f);
+			fRet = CommonBezierPtIn(pt0,p1,r,t1,fMid);
 			if(fRet<0.0f)           
-				return SYBezierPtIn(pt0,p2,r,fMid,t2);
+				return CommonBezierPtIn(pt0,p2,r,fMid,t2);
 			else
 				return fRet;
 		}
@@ -376,7 +376,7 @@ float SYBezierPtIn(const point2f &pt0,	//In
 	return -1.0f;
 }
 
-void  SYBezierGetPtArray(BaseARray &HandleArray,int nIndex,point2f CtrlPt[4])
+void  CommonBezierGetPtArray(BaseARray &HandleArray,int nIndex,point2f CtrlPt[4])
 {
 	LPCommonMaskHandle pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, nIndex);
 	int nVer=0;
@@ -395,7 +395,7 @@ void  SYBezierGetPtArray(BaseARray &HandleArray,int nIndex,point2f CtrlPt[4])
 	CtrlPt[nVer].y = pHandle->m_Pt.y;
 }
 
-point2f* SYBezierGetPtList(BaseARray &HandleArray)
+point2f* CommonBezierGetPtList(BaseARray &HandleArray)
 {
 	int nHandleCount = BaseAR_GetCount(&HandleArray);
 	if(nHandleCount==0)
@@ -430,7 +430,7 @@ point2f* SYBezierGetPtList(BaseARray &HandleArray)
 	}
 }
 
-float SYBezierGetYValueFromX(point2f CtrlPt[], float fX)
+float CommonBezierGetYValueFromX(point2f CtrlPt[], float fX)
 {
 	rectf Rtf = SYGetBoundfFromPt2fs(CtrlPt);
 	if (BaseRectf_Width(&Rtf) < 0.0005f || BaseRectf_Height(&Rtf) < 0.0005f)
@@ -469,7 +469,7 @@ float SYBezierGetYValueFromX(point2f CtrlPt[], float fX)
 			SubCtrlPt[2]=fpt2;
 			SubCtrlPt[3]=CtrlPt[3];
 		}
-		return SYBezierGetYValueFromX(SubCtrlPt,fX);
+		return CommonBezierGetYValueFromX(SubCtrlPt,fX);
 	}
 }
 
@@ -662,7 +662,7 @@ BOOL SYKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,doubl
 	case XY:
 		{
 			CBaseBezier3LineArray arBezier3Line;
-			SYBezier3GetLineInfo(KeyCtrlPt, arBezier3Line);
+			CommonBezier3GetLineInfo(KeyCtrlPt, arBezier3Line);
 
 			int nSize       = arBezier3Line.GetCount();
 			float fST       = arBezier3Line.GetAt(nSize-1).fLen;
@@ -685,7 +685,7 @@ BOOL SYKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,doubl
 				CtrlPt[1].x = fInPara;   CtrlPt[2].x = fOutPara;
 				CtrlPt[1].y = fInSpeed;  CtrlPt[2].y = fOutSpeed;
 				CtrlPt[3].x = 1.0f;		 CtrlPt[3].y = 1.0f;
-				t = SYBezierGetYValueFromX(CtrlPt,t);
+				t = CommonBezierGetYValueFromX(CtrlPt,t);
 				pData->m_dCurValue[0]=(double)(KeyCtrlPt[0].x+(KeyCtrlPt[3].x-KeyCtrlPt[0].x)*t);
 				pData->m_dCurValue[1]=(double)(KeyCtrlPt[0].y+(KeyCtrlPt[3].y-KeyCtrlPt[0].y)*t);
 			}
@@ -704,11 +704,11 @@ BOOL SYKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,doubl
 				CtrlPt[3].x = 1.0f;
 				CtrlPt[3].y = fST;
 
-				float fS = SYBezierGetYValueFromX(CtrlPt,t);
+				float fS = CommonBezierGetYValueFromX(CtrlPt,t);
 				assert(fS<=fST);
-				float fparat = SYBezier3CalcParat(arBezier3Line, fS);
+				float fparat = CommonBezier3CalcParat(arBezier3Line, fS);
 
-				point2f fPt = SYBezierGetValue(KeyCtrlPt,fparat);
+				point2f fPt = CommonBezierGetValue(KeyCtrlPt,fparat);
 				pData->m_dCurValue[0]=(double)fPt.x;
 				pData->m_dCurValue[1]=(double)fPt.y;
 			}
@@ -729,7 +729,7 @@ BOOL SYKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,doubl
 		else
 		{
 			assert(KeyCtrlPt[0].x<=((float)dCurTime) && ((float)dCurTime)<=KeyCtrlPt[3].x);
-			pData->m_dCurValue[1] = SYBezierGetYValueFromX(KeyCtrlPt,(float)dCurTime);
+			pData->m_dCurValue[1] = CommonBezierGetYValueFromX(KeyCtrlPt,(float)dCurTime);
 		}
 		break;
 	case ONLYZ:

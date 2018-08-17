@@ -162,24 +162,24 @@ struct SBEIZER3_LINE_INFO
 typedef CBaseARray<SBEIZER3_LINE_INFO, SBEIZER3_LINE_INFO> CBaseBezier3LineArray;
 
 //////////////////////////////////////////////////////////////////////////
-void				SYBezierGet3Sp(point2f CtrlPt[], CBaseBezierSplitArray& Bezier_SplitArray);
-BASEGRAPH_COMMON_API	void	__cdecl		SYBezierGet3Pt(point2f CtrlPt[], CBasePoint2fArray &PtArray);
+void				CommonBezierGet3Sp(point2f CtrlPt[], CBaseBezierSplitArray& Bezier_SplitArray);
+BASEGRAPH_COMMON_API	void	__cdecl		CommonBezierGet3Pt(point2f CtrlPt[], CBasePoint2fArray &PtArray);
 
-void				SYBezier3GetLineInfo(point2f CtrlPt[], CBaseBezier3LineArray& arBezier3Line);
+void				CommonBezier3GetLineInfo(point2f CtrlPt[], CBaseBezier3LineArray& arBezier3Line);
 
-BASEGRAPH_COMMON_API	float	__cdecl		SYBezier3CalcParat(CBaseBezier3LineArray& arBezier3Line, float fCurveLen);
+BASEGRAPH_COMMON_API	float	__cdecl		CommonBezier3CalcParat(CBaseBezier3LineArray& arBezier3Line, float fCurveLen);
 
-float			SYBezierGetValue2( float p0,float p1,float p2,float p3,float t);
-BASEGRAPH_COMMON_API	point2f	__cdecl		SYBezierGetValue(point2f Pt[4], float t);
+float			CommonBezierGetValue2( float p0,float p1,float p2,float p3,float t);
+BASEGRAPH_COMMON_API	point2f	__cdecl		CommonBezierGetValue(point2f Pt[4], float t);
 
 ///////////////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API point2f	__cdecl		SYBezierGetCutValue( point2f Pt[4], float t);
-BASEGRAPH_COMMON_API void	__cdecl		SYBezierCut(point2f pt[4], point2f pt1[4], point2f pt2[4], float t);
-BASEGRAPH_COMMON_API float	__cdecl		SYBezierPtIn(const point2f  &pt0, point2f pt[4], float r, float t1, float t2);
-BASEGRAPH_COMMON_API void	__cdecl		SYBezierGetPtArray(BaseARray &HandleArray, int nIndex, point2f CtrlPt[4]);
-point2f*			SYBezierGetPtList(BaseARray &HandleArray);
+BASEGRAPH_COMMON_API point2f	__cdecl		CommonBezierGetCutValue( point2f Pt[4], float t);
+BASEGRAPH_COMMON_API void	__cdecl		CommonBezierCut(point2f pt[4], point2f pt1[4], point2f pt2[4], float t);
+BASEGRAPH_COMMON_API float	__cdecl		CommonBezierPtIn(const point2f  &pt0, point2f pt[4], float r, float t1, float t2);
+BASEGRAPH_COMMON_API void	__cdecl		CommonBezierGetPtArray(BaseARray &HandleArray, int nIndex, point2f CtrlPt[4]);
+point2f*			CommonBezierGetPtList(BaseARray &HandleArray);
 
-BASEGRAPH_COMMON_API float	__cdecl		SYBezierGetYValueFromX(point2f CtrlPt[], float fX);
+BASEGRAPH_COMMON_API float	__cdecl		CommonBezierGetYValueFromX(point2f CtrlPt[], float fX);
 
 BOOL				bInLine(point2f &pt0, point2f &pt1, point2f &pt2);
 BASEGRAPH_COMMON_API rectf	__cdecl		SYCacArcRect(point2f& pt0, point2f& pt1, point2f& pt2, float* pfR=NULL, point2f* pOrg=NULL);
