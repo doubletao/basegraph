@@ -1,5 +1,5 @@
 // Header FileName:	Common\PlaneDef.h
-// CPP FileName:	SYPlane.cpp
+// CPP FileName:	BaseGraphPlane.cpp
 #include "stdafx.h" 
 #include "Common\PlaneDef.h"
 #include "MathOpASM64.h"
@@ -16,7 +16,7 @@ static char THIS_FILE[] = __FILE__;
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYPoint_SetPoint(LPCommonPOINTL pP,			// 点指针
+void __cdecl BaseGraphPoint_SetPoint(LPCommonPOINTL pP,			// 点指针
 							   LONG x,					// x值
 							   LONG y)					// y值
 {
@@ -26,7 +26,7 @@ void __cdecl SYPoint_SetPoint(LPCommonPOINTL pP,			// 点指针
 	pP->y = y;
 }
 
-void __cdecl SYPoint2f_SetPoint(LPCommonPOINTF pP,			// 点指针
+void __cdecl BaseGraphPoint2f_SetPoint(LPCommonPOINTF pP,			// 点指针
 							   float x,					// x值
 							   float y)					// y值
 {
@@ -36,7 +36,7 @@ void __cdecl SYPoint2f_SetPoint(LPCommonPOINTF pP,			// 点指针
 	pP->y = y;
 }
 
-void __cdecl SYPoint2lf_SetPoint(LPCommonPOINTD pP,			// 点指针
+void __cdecl BaseGraphPoint2lf_SetPoint(LPCommonPOINTD pP,			// 点指针
 							   double x,				// x值
 							   double y)				// y值
 {
@@ -51,7 +51,7 @@ void __cdecl SYPoint2lf_SetPoint(LPCommonPOINTD pP,			// 点指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYPoint_Offset(LPCommonPOINTL pP,			// 点指针
+void __cdecl BaseGraphPoint_Offset(LPCommonPOINTL pP,			// 点指针
 							 LONG xOffset,			// x偏移量
 							 LONG yOffset)			// y偏移量
 {
@@ -61,7 +61,7 @@ void __cdecl SYPoint_Offset(LPCommonPOINTL pP,			// 点指针
 	pP->y += yOffset;
 }
 
-void __cdecl SYPoint2f_Offset(LPCommonPOINTF pP,			// 点指针
+void __cdecl BaseGraphPoint2f_Offset(LPCommonPOINTF pP,			// 点指针
 							 float xOffset,			// x偏移量
 							 float yOffset)			// y偏移量
 {
@@ -71,7 +71,7 @@ void __cdecl SYPoint2f_Offset(LPCommonPOINTF pP,			// 点指针
 	pP->y += yOffset;
 }
 
-void __cdecl SYPoint2lf_Offset(LPCommonPOINTD pP,			// 点指针
+void __cdecl BaseGraphPoint2lf_Offset(LPCommonPOINTD pP,			// 点指针
 							 double xOffset,		// x偏移量
 							 double yOffset)		// y偏移量
 {
@@ -82,17 +82,17 @@ void __cdecl SYPoint2lf_Offset(LPCommonPOINTD pP,			// 点指针
 }
 
 
-///////////////////////////// End of SYPoint //////////////////////////////////
+///////////////////////////// End of BaseGraphPoint //////////////////////////////////
 
 
-///////////////////////////////// SYSize //////////////////////////////////////
+///////////////////////////////// BaseGraphSize //////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 // 描述：	设置size值
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYSize_SetSize(LPCommonSIZE pS,			// size指针
+void __cdecl BaseGraphSize_SetSize(LPCommonSIZE pS,			// size指针
 							 LONG cx,				// cx值
 							 LONG cy)				// cy值
 {
@@ -102,7 +102,7 @@ void __cdecl SYSize_SetSize(LPCommonSIZE pS,			// size指针
 	pS->cy = cy;
 }
 
-void __cdecl SYSizef_SetSize(LPCommonSIZEF pS,			// size指针
+void __cdecl BaseGraphSizef_SetSize(LPCommonSIZEF pS,			// size指针
 							 float cx,				// cx值
 							 float cy)				// cy值
 {
@@ -112,7 +112,7 @@ void __cdecl SYSizef_SetSize(LPCommonSIZEF pS,			// size指针
 	pS->cy = cy;
 }
 
-void __cdecl SYSizelf_SetSize(LPCommonSIZELF pS,			// size指针
+void __cdecl BaseGraphSizelf_SetSize(LPCommonSIZELF pS,			// size指针
 							 double cx,				// cx值
 							 double cy)				// cy值
 {
@@ -122,7 +122,7 @@ void __cdecl SYSizelf_SetSize(LPCommonSIZELF pS,			// size指针
 	pS->cy = cy;
 }
 
-///////////////////////////// End of SYSize ///////////////////////////////////
+///////////////////////////// End of BaseGraphSize ///////////////////////////////////
 
 
 ///////////////////////////////// BaseRect //////////////////////////////////////
@@ -135,7 +135,7 @@ void __cdecl SYSizelf_SetSize(LPCommonSIZELF pS,			// size指针
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl BaseRect_SetRectBPR(LPBaseRect pR,			// 矩形指针
-								SYPoint point,			// 中心点
+								BaseGraphPoint point,			// 中心点
 								int nRadius)			// 半径
 {
 	assert(pR != NULL);
@@ -236,7 +236,7 @@ BOOL __cdecl BaseRect_IsRectEmpty(LPBaseRect pR)			// 矩形指针
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
 BOOL __cdecl BaseRect_PtInRect(LPBaseRect pR,				// 矩形指针
-							  SYPoint point)			// 点
+							  BaseGraphPoint point)			// 点
 {
 	assert(pR != NULL);
 
@@ -293,7 +293,7 @@ void __cdecl BaseRect_InflateRect1(LPBaseRect pR,			// 矩形指针
 }
 
 void __cdecl BaseRect_InflateRect2(LPBaseRect pR,			// 矩形指针
-								  SYSizeL size)			// 外扩偏移量
+								  BaseGraphSizeL size)			// 外扩偏移量
 {
 	assert(pR != NULL);
 
@@ -335,7 +335,7 @@ void __cdecl BaseRect_DeflateRect1(LPBaseRect pR,			// 矩形指针
 }
 
 void __cdecl BaseRect_DeflateRect2(LPBaseRect pR,			// 矩形指针
-								  SYSizeL size)			// 内缩偏移量
+								  BaseGraphSizeL size)			// 内缩偏移量
 {
 	assert(pR != NULL);
 
@@ -389,7 +389,7 @@ void __cdecl BaseRect_NormalizeRect(LPBaseRect pR)			// 矩形指针
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl BaseRect_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
 									LPBaseRect pSrcR,		// 矩形指针
-								    SYPoint point,			// 归一化中心点
+								    BaseGraphPoint point,			// 归一化中心点
 								    int nWidth,				// 归一化宽
 								    int nHeight)			// 归一化高
 {
@@ -409,7 +409,7 @@ void __cdecl BaseRect_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl BaseRect_RevertDRect(LPBaseRect pDesR,			// 目标矩形指针
 								 LPBaseRectF pSrcR,			// 源矩形
-								 SYPoint point,			// 还原中心点
+								 BaseGraphPoint point,			// 还原中心点
 								 int nWidth,				// 还原宽
 								 int nHeight)				// 还原高
 {
@@ -439,7 +439,7 @@ void __cdecl BaseRect_OffsetRect1(LPBaseRect pR,			// 矩形指针
 }
 
 void __cdecl BaseRect_OffsetRect2(LPBaseRect pR,			// 矩形指针
-								 SYPoint point)		// 偏移点
+								 BaseGraphPoint point)		// 偏移点
 {
 	assert(pR != NULL);
 
@@ -450,7 +450,7 @@ void __cdecl BaseRect_OffsetRect2(LPBaseRect pR,			// 矩形指针
 }
 
 void __cdecl BaseRect_OffsetRect3(LPBaseRect pR,			// 矩形指针
-								 SYSizeL size)			// 偏移大小
+								 BaseGraphSizeL size)			// 偏移大小
 {
 	assert(pR != NULL);
 
@@ -529,32 +529,32 @@ void __cdecl BaseRect_DragPoint(LPBaseRect* ppDesR,			// 目标矩形数组
 {
 	assert((ppDesR != NULL) && (pSrcR != NULL));
 
-	SYPoint point;
+	BaseGraphPoint point;
 
 	// 先按矩形在线上的风格获取爪子，然后再根据风格来偏移矩阵
 	// 左上点
-	SYPoint_SetPoint(&point, pSrcR->left, pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, pSrcR->left, pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LTP], point, nRadius);
 	// 上中点
-	SYPoint_SetPoint(&point, (pSrcR->left + pSrcR->right) >> 1, pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, (pSrcR->left + pSrcR->right) >> 1, pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_TMP], point, nRadius);
 	// 右上点
-	SYPoint_SetPoint(&point, pSrcR->right, pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, pSrcR->right, pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RTP], point, nRadius);
 	// 右中点
-	SYPoint_SetPoint(&point, pSrcR->right, (pSrcR->top + pSrcR->bottom) >> 1);
+	BaseGraphPoint_SetPoint(&point, pSrcR->right, (pSrcR->top + pSrcR->bottom) >> 1);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RMP], point, nRadius);
 	// 右下点
-	SYPoint_SetPoint(&point, pSrcR->right, pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, pSrcR->right, pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RBP], point, nRadius);
 	// 下中点
-	SYPoint_SetPoint(&point, (pSrcR->left + pSrcR->right) >> 1, pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, (pSrcR->left + pSrcR->right) >> 1, pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_BMP], point, nRadius);
 	// 左下点
-	SYPoint_SetPoint(&point, pSrcR->left, pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, pSrcR->left, pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LBP], point, nRadius);
 	// 左中点
-	SYPoint_SetPoint(&point, pSrcR->left, (pSrcR->top + pSrcR->bottom) >> 1);
+	BaseGraphPoint_SetPoint(&point, pSrcR->left, (pSrcR->top + pSrcR->bottom) >> 1);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LMP], point, nRadius);
 	switch (nStyle)
 	{
@@ -708,7 +708,7 @@ BOOL __cdecl BaseRectf_IsRectEmpty(LPBaseRectF pR)			// 矩形指针
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
 BOOL __cdecl BaseRectf_PtInRect(LPBaseRectF pR,				// 矩形指针
-							  SYPoint2f point)			// 点
+							  BaseGraphPoint2f point)			// 点
 {
 	assert(pR != NULL);
 
@@ -765,7 +765,7 @@ void __cdecl BaseRectf_InflateRect1(LPBaseRectF pR,			// 矩形指针
 }
 
 void __cdecl BaseRectf_InflateRect2(LPBaseRectF pR,			// 矩形指针
-								  SYSizef size)			// 外扩偏移量
+								  BaseGraphSizef size)			// 外扩偏移量
 {
 	assert(pR != NULL);
 
@@ -807,7 +807,7 @@ void __cdecl BaseRectf_DeflateRect1(LPBaseRectF pR,			// 矩形指针
 }
 
 void __cdecl BaseRectf_DeflateRect2(LPBaseRectF pR,			// 矩形指针
-								  SYSizef size)			// 内缩偏移量
+								  BaseGraphSizef size)			// 内缩偏移量
 {
 	assert(pR != NULL);
 
@@ -862,7 +862,7 @@ void __cdecl BaseRectf_NormalizeRect(LPBaseRectF pR)			// 矩形指针
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl BaseRectf_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
 									LPBaseRectF pSrcR,		// 矩形指针
-								    SYPoint2f point,			// 归一化中心点
+								    BaseGraphPoint2f point,			// 归一化中心点
 								    float fWidth,			// 归一化宽
 									float fHeight)			// 归一化高
 {
@@ -882,7 +882,7 @@ void __cdecl BaseRectf_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl BaseRectf_RevertDRect(LPBaseRectF pDesR,			// 目标矩形指针
 								 LPBaseRectF pSrcR,			// 源矩形
-								 SYPoint2f point,			// 还原中心点
+								 BaseGraphPoint2f point,			// 还原中心点
 								 float fWidth,				// 还原宽
 								 float fHeight)				// 还原高
 {
@@ -912,7 +912,7 @@ void __cdecl BaseRectf_OffsetRect1(LPBaseRectF pR,			// 矩形指针
 }
 
 void __cdecl BaseRectf_OffsetRect2(LPBaseRectF pR,			// 矩形指针
-								 SYPoint2f point)		// 偏移点
+								 BaseGraphPoint2f point)		// 偏移点
 {
 	assert(pR != NULL);
 
@@ -923,7 +923,7 @@ void __cdecl BaseRectf_OffsetRect2(LPBaseRectF pR,			// 矩形指针
 }
 
 void __cdecl BaseRectf_OffsetRect3(LPBaseRectF pR,			// 矩形指针
-								 SYSizef size)			// 偏移大小
+								 BaseGraphSizef size)			// 偏移大小
 {
 	assert(pR != NULL);
 
@@ -1002,32 +1002,32 @@ void __cdecl BaseRectf_DragPoint(LPBaseRect* ppDesR,			// 目标矩形数组
 {
 	assert((ppDesR != NULL) && (pSrcR != NULL));
 
-	SYPoint point;
+	BaseGraphPoint point;
 
 	// 先按矩形在线上的风格获取爪子，然后再根据风格来偏移矩阵
 	// 左上点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LTP], point, nRadius);
 	// 上中点
-	SYPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_TMP], point, nRadius);
 	// 右上点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RTP], point, nRadius);
 	// 右中点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RMP], point, nRadius);
 	// 右下点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RBP], point, nRadius);
 	// 下中点
-	SYPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_BMP], point, nRadius);
 	// 左下点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LBP], point, nRadius);
 	// 左中点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LMP], point, nRadius);
 	switch (nStyle)
 	{
@@ -1179,7 +1179,7 @@ BOOL __cdecl BaseRectlf_IsRectEmpty(LPBaseRectLF pR)			// 矩形指针
 //			FALSE		否
 ///////////////////////////////////////////////////////////////////////////////
 BOOL __cdecl BaseRectlf_PtInRect(LPBaseRectLF pR,				// 矩形指针
-							  SYPoint2lf point)			// 点
+							  BaseGraphPoint2lf point)			// 点
 {
 	assert(pR != NULL);
 
@@ -1236,7 +1236,7 @@ void __cdecl BaseRectlf_InflateRect1(LPBaseRectLF pR,			// 矩形指针
 }
 
 void __cdecl BaseRectlf_InflateRect2(LPBaseRectLF pR,			// 矩形指针
-								  SYSizelf size)			// 外扩偏移量
+								  BaseGraphSizelf size)			// 外扩偏移量
 {
 	assert(pR != NULL);
 
@@ -1278,7 +1278,7 @@ void __cdecl BaseRectlf_DeflateRect1(LPBaseRectLF pR,			// 矩形指针
 }
 
 void __cdecl BaseRectlf_DeflateRect2(LPBaseRectLF pR,			// 矩形指针
-								  SYSizelf size)			// 内缩偏移量
+								  BaseGraphSizelf size)			// 内缩偏移量
 {
 	assert(pR != NULL);
 
@@ -1332,7 +1332,7 @@ void __cdecl BaseRectlf_NormalizeRect(LPBaseRectLF pR)			// 矩形指针
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl BaseRectlf_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
 									LPBaseRectLF pSrcR,		// 矩形指针
-								    SYPoint2lf point,			// 归一化中心点
+								    BaseGraphPoint2lf point,			// 归一化中心点
 								    double dWidth,			// 归一化宽
 								    double dHeight)			// 归一化高
 {
@@ -1352,7 +1352,7 @@ void __cdecl BaseRectlf_NormalizeDRect(LPBaseRectF pDesR,		// 目标矩形
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl BaseRectlf_RevertDRect(LPBaseRectLF pDesR,			// 目标矩形指针
 								 LPBaseRectF pSrcR,			// 源矩形
-								 SYPoint2lf point,			// 还原中心点
+								 BaseGraphPoint2lf point,			// 还原中心点
 								 double dWidth,				// 还原宽
 								 double dHeight)				// 还原高
 {
@@ -1382,7 +1382,7 @@ void __cdecl BaseRectlf_OffsetRect1(LPBaseRectLF pR,			// 矩形指针
 }
 
 void __cdecl BaseRectlf_OffsetRect2(LPBaseRectLF pR,			// 矩形指针
-								 SYPoint2lf point)		// 偏移点
+								 BaseGraphPoint2lf point)		// 偏移点
 {
 	assert(pR != NULL);
 
@@ -1393,7 +1393,7 @@ void __cdecl BaseRectlf_OffsetRect2(LPBaseRectLF pR,			// 矩形指针
 }
 
 void __cdecl BaseRectlf_OffsetRect3(LPBaseRectLF pR,			// 矩形指针
-								 SYSizelf size)			// 偏移大小
+								 BaseGraphSizelf size)			// 偏移大小
 {
 	assert(pR != NULL);
 
@@ -1472,32 +1472,32 @@ void __cdecl BaseRectlf_DragPoint(LPBaseRect* ppDesR,			// 目标矩形数组
 {
 	assert((ppDesR != NULL) && (pSrcR != NULL));
 
-	SYPoint point;
+	BaseGraphPoint point;
 
 	// 先按矩形在线上的风格获取爪子，然后再根据风格来偏移矩阵
 	// 左上点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LTP], point, nRadius);
 	// 上中点
-	SYPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_TMP], point, nRadius);
 	// 右上点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->top);
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->top);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RTP], point, nRadius);
 	// 右中点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RMP], point, nRadius);
 	// 右下点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->right, (LONG)pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_RBP], point, nRadius);
 	// 下中点
-	SYPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, (LONG)((pSrcR->left + pSrcR->right) / 2), (LONG)pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_BMP], point, nRadius);
 	// 左下点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->bottom);
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)pSrcR->bottom);
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LBP], point, nRadius);
 	// 左中点
-	SYPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
+	BaseGraphPoint_SetPoint(&point, (LONG)pSrcR->left, (LONG)((pSrcR->top + pSrcR->bottom) / 2));
 	BaseRect_SetRectBPR(ppDesR[BaseRect_DRAG_LMP], point, nRadius);
 	switch (nStyle)
 	{

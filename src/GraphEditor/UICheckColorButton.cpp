@@ -49,7 +49,7 @@ void UICheckColorButton::UpdateValueToUI()
 		{
 			m_pCheckButton->SetCheck(bCheck);
 		}
-		sycolor color = info.color;
+		common_color color = info.color;
 		if (m_pColorButton)
 		{
 			m_pColorButton->SetColor(color);
@@ -69,7 +69,7 @@ void UICheckColorButton::UpdateUIToValue()
 		}
 		if (m_pColorButton)
 		{
-			sycolor color = m_pColorButton->GetColor();
+			common_color color = m_pColorButton->GetColor();
 			info.color = color;
 		}
 		m_value = info;

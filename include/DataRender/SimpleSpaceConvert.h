@@ -74,8 +74,8 @@ public:
 	void Convert2DPtTo3D_ZPlane( const float3 *ptSrc, float3 *ptDest);
 	void ConvertVectorGraphSpace( vectorgraph* pGraph, float fSignY );
 	void ComputeNew3DptToViewPlan( const float3 *ptSrc, float3 *ptDest, float fZValue );
-	virtual void GetRayDirection( OUT SYRay *pRay, IN float3 *ptHit );
-	SYSpaceConvertParam *getSpaceConvertParam(){ return &m_ConvertParam;}
+	virtual void GetRayDirection( OUT BaseGraphRay *pRay, IN float3 *ptHit );
+	BaseGraphSpaceConvertParam *getSpaceConvertParam(){ return &m_ConvertParam;}
 	matrix4f getWorldMatrix();
 	matrix4f getViewProjectMatrix();
 	matrix4f getViewMatrix();
@@ -85,7 +85,7 @@ public:
 	ObjectCalculator *m_pCalculator;
 	float m_fViewWorkPlaneDis;
 protected:
-	SYSpaceConvertParam	m_ConvertParam;
+	BaseGraphSpaceConvertParam	m_ConvertParam;
 	CSpaceConvertMatrix *	m_pConvertMatrix;
 	CParentSpaceConvert *	m_pParentConvert;	/*如果不时在场景空间中需要二次转换*/
 	BOOL					m_b3DRenderType;
@@ -128,7 +128,7 @@ public:
 	virtual void Convert2DPtTo3D_ZViewPlane( const float3 *ptSrc, float3 *ptDest, float fZValue);
 	virtual void Convert2DPtTo3D_NearWorldPlane( const float3 *ptSrc, float3 *ptDest );
 	virtual BOOL Convert2DPtTo3D_Plane( const float3 *ptSrc, float3 *ptDest, float3 *vPlaneCenter, float3 *vPlaneNormal );
-	virtual void GetRayDirection( OUT SYRay *pRay, IN float3 *ptHit );
+	virtual void GetRayDirection( OUT BaseGraphRay *pRay, IN float3 *ptHit );
 private:
 	float3 m_vSceneCenter;
 };
@@ -171,7 +171,7 @@ public:
 	virtual void Convert2DPtTo3D_NearWorldPlane( const float3 *ptSrc, float3 *ptDest );
 	virtual BOOL Convert2DPtTo3D_Plane( const float3 *ptSrc, float3 *ptDest, float3 *vPlaneCenter, float3 *vPlaneNormal );
 	virtual void ConvertViewPtTo3D( const float3 *ptSrc, float3 *pDest );
-	virtual void GetRayDirection( OUT SYRay *pRay, IN float3 *ptHit );
+	virtual void GetRayDirection( OUT BaseGraphRay *pRay, IN float3 *ptHit );
 private:
 	float3 m_vSceneCenter;
 };

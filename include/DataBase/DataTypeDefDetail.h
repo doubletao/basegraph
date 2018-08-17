@@ -73,7 +73,7 @@ namespace BaseGraph_DataBase
 		int		effect_width;
 		DWORD	avcolor;
 		artinfo art;
-		sycolor	color;
+		common_color	color;
 		BASEGRAPH_DATABASE_API faceinfo();
 		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
@@ -92,7 +92,7 @@ namespace BaseGraph_DataBase
 		int		effect_width;
 		DWORD	avcolor;
 		artinfo	art;
-		sycolor	color;
+		common_color	color;
 		BASEGRAPH_DATABASE_API borderinfo();
 		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
@@ -115,7 +115,7 @@ namespace BaseGraph_DataBase
 		DWORD	effect_style;
 		DWORD	avcolor;
 		artinfo  art;
-		sycolor	color;
+		common_color	color;
 		BASEGRAPH_DATABASE_API shadowinfo();
 		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
@@ -132,7 +132,7 @@ namespace BaseGraph_DataBase
 		int		  effect_width;
 		unsigned long	avcolor;
 		artinfo	art;
-		sycolor	color;
+		common_color	color;
 		BASEGRAPH_DATABASE_API cubeinfo();
 		BASEGRAPH_DATABASE_API void Reset();
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;

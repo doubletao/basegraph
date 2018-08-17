@@ -13,7 +13,7 @@ struct curCtrl
 	point2f   RightPt;
 };	
 
-enum  eSYCurveType
+enum  eBaseGraphCurveType
 {
 	CURVE_ARC = 0,				//arc curve
 	CURVE_BEZIER = 1,			//random BEZIER
@@ -126,7 +126,7 @@ typedef CBaseMaskHandle*   LPCommonMaskHandle;
 typedef CBaseARray<CBaseMaskHandle, CBaseMaskHandle>  CBaseMaskHandleArray;
 
 
-point2f*	__cdecl	SYMaskHandleGetControlPt(BaseARray &HandleArray, BOOL bClose, int &nCount);
+point2f*	__cdecl	BaseGraphMaskHandleGetControlPt(BaseARray &HandleArray, BOOL bClose, int &nCount);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -184,14 +184,14 @@ BASEGRAPH_COMMON_API float	__cdecl		CommonBezierGetYValueFromX(point2f CtrlPt[],
 BOOL				bInLine(point2f &pt0, point2f &pt1, point2f &pt2);
 BASEGRAPH_COMMON_API rectf	__cdecl		CacArcRect(point2f& pt0, point2f& pt1, point2f& pt2, float* pfR=NULL, point2f* pOrg=NULL);
 
-BASEGRAPH_COMMON_API BOOL	__cdecl		SYGetTwoLineInterPt(const point2f &Pt1,const point2f &Pt2,const point2f &Pt3,const point2f &Pt4,point2f &InterPt);
+BASEGRAPH_COMMON_API BOOL	__cdecl		BaseGraphGetTwoLineInterPt(const point2f &Pt1,const point2f &Pt2,const point2f &Pt3,const point2f &Pt4,point2f &InterPt);
 
 ////////////////判断一个2D点是否在任意2D多变形内部////////////////////////
 // 算  法：从待判断点出发的任意射线（这里取Y轴正向）如果与多变形边界交点数
 //         为奇数，则点在多边形内部，反之在外部。边界点视作在内部。
 // 返回值：内部则返回true。
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API bool	__cdecl		SYIsPoint2fIn2DPolygon(point2f ptSpace[], int nPtCnt, point2f& pt);
+BASEGRAPH_COMMON_API bool	__cdecl		BaseGraphIsPoint2fIn2DPolygon(point2f ptSpace[], int nPtCnt, point2f& pt);
 
 //////////////////////////////////////////////////////////////////////////
 enum  IP_KEY_RESULT_TYPE
@@ -296,6 +296,6 @@ struct VelocityValueStruct : public BaseKeyStru
 } ;
 typedef	VelocityValueStruct* LpVelocityValueStruct;
 
-BASEGRAPH_COMMON_API BOOL   __cdecl		SYKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,double dCurTime,InterPolateData* pData);
+BASEGRAPH_COMMON_API BOOL   __cdecl		BaseGraphKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,double dCurTime,InterPolateData* pData);
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef SYRenderSoftEngine_h__
-#define SYRenderSoftEngine_h__
+#ifndef BaseGraphRenderSoftEngine_h__
+#define BaseGraphRenderSoftEngine_h__
 
 #include "assert.h"
 #include "SceneRender\DXEngineDataDef.h"
@@ -85,11 +85,11 @@ protected:
 };
 
 struct Common_DeviceSoft;
-class   SYDeviceContex
+class   BaseGraphDeviceContex
 {
 public:
-	SYDeviceContex();
-	~SYDeviceContex();
+	BaseGraphDeviceContex();
+	~BaseGraphDeviceContex();
 	//state
 	void	BeginRenderTexture();
 	void	EndRenderTexture();
@@ -168,15 +168,15 @@ struct Common_DeviceSoft
 	BaseHash*			BumpTextureFromFileHash;
 	htable			htBuffer;
 	CDeviceLock		ResLock;
-	std::map<DWORD,SYDeviceContex*> mapContext;
-	SYDeviceContex  defaultContext;
+	std::map<DWORD,BaseGraphDeviceContex*> mapContext;
+	BaseGraphDeviceContex  defaultContext;
 ////////////////////////////////////////////////////////////////////////////////
 //render info
 	DXRenderInfo			info;
 ////////////////////////////////////////////////////////////////////////////////
 };
 
-struct SYSoftTexture 
+struct BaseGraphSoftTexture 
 {
 	TCHAR*						pTexFile;
 	DXTextureType				nType;
@@ -184,8 +184,8 @@ struct SYSoftTexture
 	CCommonBuffer*					pTexture;
 };
 
-typedef SYSoftTexture SYSoftSwapChain ;
-struct SYSoftBuffer
+typedef BaseGraphSoftTexture BaseGraphSoftSwapChain ;
+struct BaseGraphSoftBuffer
 {
 	DXBufferType nType;
 	int			nVertexSize;
@@ -196,7 +196,7 @@ struct SYSoftBuffer
 //inline function
 inline bool ModifyBuffer(Common_DeviceSoft* pDevice,int hBuffer,void* pMemBuffer)
 {
-	SYSoftBuffer* pBuffer = (SYSoftBuffer*) BseeHTable_GetAt(&pDevice->htBuffer,hBuffer);
+	BaseGraphSoftBuffer* pBuffer = (BaseGraphSoftBuffer*) BseeHTable_GetAt(&pDevice->htBuffer,hBuffer);
 	memcpy(pBuffer->pBuffer,pMemBuffer,pBuffer->nBufferSize);
 	return true;
 }
@@ -204,7 +204,7 @@ inline void ReleaseBuffer(Common_DeviceSoft* pDevice,int hBuffer)
 {
 	if (!hBuffer)
 		return;
-	SYSoftBuffer* pBuffer = (SYSoftBuffer*)BseeHTable_RemoveAt(&pDevice->htBuffer,hBuffer);
+	BaseGraphSoftBuffer* pBuffer = (BaseGraphSoftBuffer*)BseeHTable_RemoveAt(&pDevice->htBuffer,hBuffer);
 	switch(pBuffer->nType)
 	{
 	case DXVertexBuffer:
@@ -232,7 +232,7 @@ END:
 }
 inline CCommonBuffer* getTexture(Common_DeviceSoft* pDevice,int hTexture)
 {
-	SYSoftTexture* pSrcWDTexture = (SYSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
+	BaseGraphSoftTexture* pSrcWDTexture = (BaseGraphSoftTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
 	if (!pSrcWDTexture)
 		return NULL;
 	return pSrcWDTexture->pTexture;

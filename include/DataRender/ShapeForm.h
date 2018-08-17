@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
-#ifndef __SYSHAPEFORM_H_
-#define __SYSHAPEFORM_H_
+#ifndef __BaseGraphSHAPEFORM_H_
+#define __BaseGraphSHAPEFORM_H_
 ///////////////////////////////////////////////////////////////////////////////
 //form 
 class BASEGRAPH_DATARENDER_API CForm
@@ -48,7 +48,7 @@ class BASEGRAPH_DATARENDER_API CMatrixForm:public CForm
 {
 //Attributes
 public:
-	SYFMAT3		m_Mat;
+	BaseGraphFMAT3		m_Mat;
 public:
 	CMatrixForm();
 //operator
@@ -113,4 +113,4 @@ public:
 //void		DrawForm(CDC &dc,const rectf* lpRect,CForm &FmObj,point2f*  lpOrg);
 BASEGRAPH_DATARENDER_API int	CalLineDegree(point2f &Pt1,point2f &Pt2);
 //////////////////////////////////////////////////////////////////////////
-#endif//define __SYSHAPEFORM_H_
+#endif//define __BaseGraphSHAPEFORM_H_

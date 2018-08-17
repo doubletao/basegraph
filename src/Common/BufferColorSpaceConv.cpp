@@ -896,7 +896,7 @@ void BUFFERCS_24_to_32_Split(OUT BYTE* pDes32First,		// 第一场输出（存储方式 X0 
     }
 }
 // 一行 24 位缓存到 32 位缓存的转换，填充统一的 Alpha 通道
-void SYColor24_To_Color32(OUT void* color32,	// *G@A 缓存，存放方式 *0 G0 @0 A0 *1 G1 @1 A1 ……
+void BaseGraphColor24_To_Color32(OUT void* color32,	// *G@A 缓存，存放方式 *0 G0 @0 A0 *1 G1 @1 A1 ……
 											  IN void* color24,		// *G@ 输入，存放方式 *0 G0 @0 *1 G1 @1 ……（* 与 @ 表示 R 或 B，由像素的存储方式确定）
 											  IN DWORD dwAlpha,		// Alpha 通道值，要求以这种方式提供：0xAA000000
 											  IN int nap5,			// 源像素宽度除以 5 的商与余数（正好满足十六字节对齐）

@@ -10,7 +10,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */ 
 									const float3* pInVec, /*源向量 */ 
-									const SYSpaceConvertParam* pParam, /*空间状态 */ 
+									const BaseGraphSpaceConvertParam* pParam, /*空间状态 */ 
 									int nType, /*转 类型 */ 
 									const float* pZValue ,
 									const float3* pPlaneNormal ,	//投影到平面上时，表示平面的法向量
@@ -58,7 +58,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 			return false;
 
 		D3DXVec3Unproject( (D3DXVECTOR3*)pOutVec, (D3DXVECTOR3*)pInVec, (D3D10_VIEWPORT *)pParam->pViewPort, (D3DXMATRIXA16*)pParam->pProjMat, (D3DXMATRIXA16*)pParam->pViewMat, (D3DXMATRIXA16*)pParam->pWorldMat );
-		SYRay ray;
+		BaseGraphRay ray;
 		ray.vStart = *pOutVec;
 		matrix4f worldInv,viewInv;
 		matrix4f_inverse(&worldInv,pParam->pWorldMat);
@@ -75,7 +75,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 			float3NormalMulMat(&ray.vDir,&temp,&worldInv);
 		}
 		float3Normalize(&ray.vDir,&ray.vDir);
-		SYHitPoint hitPoint;
+		BaseGraphHitPoint hitPoint;
 		if(GetRayPlaneInt(&ray,pPlaneCenter,pPlaneNormal,&hitPoint) == Common_NO_HIT)
 			return FALSE;
 		*pOutVec = hitPoint[0];
@@ -135,7 +135,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 void BASEGRAPH_SCENE_RENDER_API CalProjectMat( matrix4f* pOutProjMat,
 								   float left,float right,float bottom,float top,	//平面的有效宽高
 								   float zNear,float zFar ,
-								   SYPROJTYPE nType)
+								   BaseGraphPROJTYPE nType)
 {
 	switch (nType)
 	{
@@ -198,7 +198,7 @@ void BASEGRAPH_SCENE_RENDER_API CalViewMat( matrix4f* pOutViewMat,const float3* 
 	D3DXMatrixLookAtLH((D3DXMATRIX*)pOutViewMat,(D3DXVECTOR3*)pEyePos,(D3DXVECTOR3*)pLookAt,(D3DXVECTOR3*)pUp);
 }
 
-void BASEGRAPH_SCENE_RENDER_API SYConvertBoxTo2DRect(rectf* pRect,const SYSpaceConvertParam* param,const float3* vMin,const float3* vMax)
+void BASEGRAPH_SCENE_RENDER_API SYConvertBoxTo2DRect(rectf* pRect,const BaseGraphSpaceConvertParam* param,const float3* vMin,const float3* vMax)
 {
 	float3 vPoint[8];
 

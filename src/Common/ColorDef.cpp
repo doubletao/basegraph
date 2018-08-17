@@ -8,15 +8,15 @@
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
-inline tag_sycolor::tag_sycolor()
+inline tag_common_color::tag_common_color()
 {
 	Reset();
 }
 
-void tag_sycolor::Reset()
+void tag_common_color::Reset()
 {
 	color = 0;
-	type = SYCOLOR_HOMO;
+	type = BaseGraphCOLOR_HOMO;
 	memset(&gradual, 0, sizeof(gradual));
 	memset(&imgtex, 0, sizeof(imgtex));
 	memset(&subtheme, 0, sizeof(subtheme));
@@ -24,12 +24,12 @@ void tag_sycolor::Reset()
 	memset(&type, 0, sizeof(type));
 }
 
-int tag_sycolor::GetSerializeSize() const
+int tag_common_color::GetSerializeSize() const
 {
-	return sizeof(tag_sycolor);
+	return sizeof(tag_common_color);
 }
 
-bool tag_sycolor::GetSerializeBuf(byte * pBuf, int nBufSize) const
+bool tag_common_color::GetSerializeBuf(byte * pBuf, int nBufSize) const
 {
 	int nSize = GetSerializeSize();
 	if (nSize > nBufSize)
@@ -42,7 +42,7 @@ bool tag_sycolor::GetSerializeBuf(byte * pBuf, int nBufSize) const
 	return true;
 }
 
-bool tag_sycolor::RecoverFromBuf(byte * pBuf, int nBufSize)
+bool tag_common_color::RecoverFromBuf(byte * pBuf, int nBufSize)
 {
 	int nSize = GetSerializeSize();
 	if (nSize > nBufSize)

@@ -9,7 +9,7 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 //////////////////////////////////////////////////////////////////////////
-point2f* SYMaskHandleGetControlPt(
+point2f* BaseGraphMaskHandleGetControlPt(
 								BaseARray			&HandleArray,	//in
 								BOOL				bClose,		//in 
 								int				&nCount		//ount control points for rip
@@ -172,7 +172,7 @@ void GetBezier3_Line_Info2(CBaseBezierSplitArray& arBezierSplit, CBaseBezier3Lin
 
 	for(int i = 1; i<nSize; ++i)
 	{
-		arBezier3Line[i].fLen = SYPt2fDistance(arBezierSplit[i].fPt, arBezierSplit[i-1].fPt) + arBezier3Line[i-1].fLen;
+		arBezier3Line[i].fLen = BaseGraphPt2fDistance(arBezierSplit[i].fPt, arBezierSplit[i-1].fPt) + arBezier3Line[i-1].fLen;
 		arBezier3Line[i].ft   = arBezierSplit[i].ft;
 	}
 }
@@ -317,12 +317,12 @@ float CommonBezierPtIn(const point2f &pt0,	//In
 	float fMid    = (t1+t2)/2.0f;
 	float t[]     = {0.0f,0.5f,1.0f},fDis;
 	point2f tPt;
-	rectf Rtf = SYGetBoundfFromPt2fs(Pt);
+	rectf Rtf = BaseGraphGetBoundfFromPt2fs(Pt);
 	for(int i=0;i<3;i++)
 	{
 		tPt.x = CommonBezierGetValue2(Pt[0].x,Pt[1].x,Pt[2].x,Pt[3].x,t[i]);
 		tPt.y = CommonBezierGetValue2(Pt[0].y,Pt[1].y,Pt[2].y,Pt[3].y,t[i]);
-		fDis  = SYPt2fDistance(tPt,*(point2f*)&pt0);
+		fDis  = BaseGraphPt2fDistance(tPt,*(point2f*)&pt0);
 
 		//Find Nearest point In curver
 		if(fDis<fMinDis)   
@@ -432,7 +432,7 @@ point2f* CommonBezierGetPtList(BaseARray &HandleArray)
 
 float CommonBezierGetYValueFromX(point2f CtrlPt[], float fX)
 {
-	rectf Rtf = SYGetBoundfFromPt2fs(CtrlPt);
+	rectf Rtf = BaseGraphGetBoundfFromPt2fs(CtrlPt);
 	if (BaseRectf_Width(&Rtf) < 0.0005f || BaseRectf_Height(&Rtf) < 0.0005f)
 	{
 		point2f ptCent;
@@ -476,9 +476,9 @@ float CommonBezierGetYValueFromX(point2f CtrlPt[], float fX)
 BOOL bInLine(point2f &pt0,point2f &pt1,point2f &pt2)
 {
 	return FALSE;
-	float fDis0 = SYPt2fDistance(pt0,pt1);
-	float fDis1 = SYPt2fDistance(pt1,pt2);
-	float fDis2 = SYPt2fDistance(pt2,pt1);
+	float fDis0 = BaseGraphPt2fDistance(pt0,pt1);
+	float fDis1 = BaseGraphPt2fDistance(pt1,pt2);
+	float fDis2 = BaseGraphPt2fDistance(pt2,pt1);
 	if(fDis0+fDis1<fDis2+0.5f)
 		return TRUE;
 	if(fDis1+fDis2<fDis0+0.5f)
@@ -515,12 +515,12 @@ rectf  CacArcRect(point2f& pt0,point2f& pt1, point2f& pt2,float* pfR,point2f* pO
 		PtOther1.y =PtMid1.y+PtDiff1.x;
 
 		point2f Org;
-		if(!SYGetTwoLineInterPt(PtMid0,PtOther0,PtMid1,PtOther1,Org))
+		if(!BaseGraphGetTwoLineInterPt(PtMid0,PtOther0,PtMid1,PtOther1,Org))
 			return Rt;
 		if(pOrg)
 			*pOrg = Org;
 
-		float fR =SYPt2fDistance(Org,pt0);
+		float fR =BaseGraphPt2fDistance(Org,pt0);
 		if(pfR)
 			*pfR = fR; 
 
@@ -532,7 +532,7 @@ rectf  CacArcRect(point2f& pt0,point2f& pt1, point2f& pt2,float* pfR,point2f* pO
 	return Rt;
 }
 
-BOOL  SYGetTwoLineInterPt(
+BOOL  BaseGraphGetTwoLineInterPt(
 						const point2f &Pt1,
 						const point2f &Pt2,
 						const point2f &Pt3,
@@ -562,7 +562,7 @@ BOOL  SYGetTwoLineInterPt(
 	}
 }
 
-bool SYIsPoint2fIn2DPolygon(point2f ptSpace[], int nPtCnt, point2f& pt)
+bool BaseGraphIsPoint2fIn2DPolygon(point2f ptSpace[], int nPtCnt, point2f& pt)
 {
 	float x = pt.x;
 	float y = pt.y;
@@ -631,7 +631,7 @@ bool SYIsPoint2fIn2DPolygon(point2f ptSpace[], int nPtCnt, point2f& pt)
 
 
 //////////////////////////////////////////////////////////////////////////
-BOOL SYKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,double dCurTime,InterPolateData* pData)
+BOOL BaseGraphKeyInterPolateValue(LpBaseKeyStru lpPreKey, LpBaseKeyStru lpNextKey,double dCurTime,InterPolateData* pData)
 {
 	point2f	KeyCtrlPt[4];
 	for(int nVer=0;nVer<4;nVer++)

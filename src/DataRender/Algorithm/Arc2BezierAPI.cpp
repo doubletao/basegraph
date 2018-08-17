@@ -360,7 +360,7 @@ void GetEndQuadrant( IN const float fEndX,     // 终点坐标
 //-------------------------------------------------------------------
 //判断点是否落在四个点的外包矩形内
 //-------------------------------------------------------------------
-BOOL SYPointInCurveRect( IN point2f point,IN point2f pt1,IN point2f pt2, IN point2f pt3,IN point2f pt4)
+BOOL BaseGraphPointInCurveRect( IN point2f point,IN point2f pt1,IN point2f pt2, IN point2f pt3,IN point2f pt4)
 {
 	BOOL bx1 = point.x <= pt1.x || point.x <= pt2.x || point.x <= pt3.x || point.x <= pt4.x;
 	BOOL bx2 = point.x >= pt1.x || point.x >= pt2.x || point.x >= pt3.x || point.x >= pt4.x;
@@ -376,7 +376,7 @@ BOOL SYPointInCurveRect( IN point2f point,IN point2f pt1,IN point2f pt2, IN poin
 //-------------------------------------------------------------------
 // 由点得到对应在贝塞尔曲线的参数t（[0，1]）
 //-------------------------------------------------------------------
-float SYGetBezierTByPoint(IN point2f point,IN point2f P1,IN point2f P2,IN point2f P3,IN point2f P4)
+float BaseGraphGetBezierTByPoint(IN point2f point,IN point2f P1,IN point2f P2,IN point2f P3,IN point2f P4)
 {
 	point2f P12,P23,P34,P1223,P2334,P0;
 	P12.x = (P1.x + P2.x) * 0.5f;		// P12 = (P1 + P2) / 2
@@ -398,13 +398,13 @@ float SYGetBezierTByPoint(IN point2f point,IN point2f P1,IN point2f P2,IN point2
 	}
 	else 
 	{
-		if( SYPointInCurveRect(point,P1,P12,P1223,P0) )    //是否落在矩形包内
+		if( BaseGraphPointInCurveRect(point,P1,P12,P1223,P0) )    //是否落在矩形包内
 		{
-			return 0.5f * SYGetBezierTByPoint(point,P1,P12,P1223,P0);
+			return 0.5f * BaseGraphGetBezierTByPoint(point,P1,P12,P1223,P0);
 		}
-		else if( SYPointInCurveRect(point,P0,P2334,P34,P4) )
+		else if( BaseGraphPointInCurveRect(point,P0,P2334,P34,P4) )
 		{
-			return 1.0f - 0.5f * (1.0f - SYGetBezierTByPoint(point,P0,P2334,P34,P4));
+			return 1.0f - 0.5f * (1.0f - BaseGraphGetBezierTByPoint(point,P0,P2334,P34,P4));
 		}
 	}
 	return 1.0f;
@@ -418,7 +418,7 @@ float SYGetBezierTByPoint(IN point2f point,IN point2f P1,IN point2f P2,IN point2
 //输出：POINTF3D pt1[4], 划分后第一段三次贝塞尔曲线的四个控制顶点
 //      POINTF3D pt2[4], 划分后第二段三次贝塞尔曲线的四个控制顶点
 //-------------------------------------------------------------------
-void SYDivBezier(IN point2f pt[4], OUT point2f pt1[4],OUT point2f pt2[4],IN float t)
+void BaseGraphDivBezier(IN point2f pt[4], OUT point2f pt1[4],OUT point2f pt2[4],IN float t)
 {
 	assert( t >= 0.0f && t <= 1.0f ); 
 	float P01x = (1.0f - t) * pt[0].x + t * pt[1].x;
@@ -609,11 +609,11 @@ BASEGRAPH_DATARENDER_API void DividArc2Bezier(
 		ptfBezier[i] = *pptf;
 	}
 
-	float fDivU = SYGetBezierTByPoint( ptStart,ptfBezier[0], ptfBezier[1], ptfBezier[2], ptfBezier[3]);
+	float fDivU = BaseGraphGetBezierTByPoint( ptStart,ptfBezier[0], ptfBezier[1], ptfBezier[2], ptfBezier[3]);
 	
 	point2f ptNew1[4];
 	point2f ptNew2[4];
-	SYDivBezier( ptfBezier, ptNew1, ptNew2, fDivU);
+	BaseGraphDivBezier( ptfBezier, ptNew1, ptNew2, fDivU);
 	
 	for (int i = 0; i < 3; i++)
 	{
@@ -630,9 +630,9 @@ BASEGRAPH_DATARENDER_API void DividArc2Bezier(
 		ptfBezier[i] = *pptf;
 	}
 	
-	fDivU = SYGetBezierTByPoint( ptEnd,ptfBezier[0], ptfBezier[1], ptfBezier[2], ptfBezier[3]);
+	fDivU = BaseGraphGetBezierTByPoint( ptEnd,ptfBezier[0], ptfBezier[1], ptfBezier[2], ptfBezier[3]);
 	
-	SYDivBezier( ptfBezier, ptNew1, ptNew2, fDivU);
+	BaseGraphDivBezier( ptfBezier, ptNew1, ptNew2, fDivU);
 	
 	for (int i = 1; i < 4; i++)
 	{
@@ -1168,7 +1168,7 @@ int BASEGRAPH_DATARENDER_API cell_makearc(BaseARray* parray,const point2f& ptcen
 #define POINT_BEZIER_COUNT		4			// 一条贝塞尔曲线的表示点个数
 BOOL	Common_Beizer3IsNearLine(pointf* pt,float fscale);
 BOOL	SplitBezier3(pointf* pOPoint,pointf* pSplit1,pointf* pSplit2);
-void _SYGetBezierLength(pointf* pPtOrigin, float& fBezierLen)
+void _BaseGraphGetBezierLength(pointf* pPtOrigin, float& fBezierLen)
 {
 	BOOL bIsNearLine = Common_Beizer3IsNearLine(pPtOrigin,1.0f);
 
@@ -1183,17 +1183,17 @@ void _SYGetBezierLength(pointf* pPtOrigin, float& fBezierLen)
 		pointf pPtFirst[POINT_BEZIER_COUNT], pPtSecond[POINT_BEZIER_COUNT];
 
 		SplitBezier3(pPtOrigin, pPtFirst, pPtSecond);
-		_SYGetBezierLength(pPtFirst, fBezierLen);
-		_SYGetBezierLength(pPtSecond, fBezierLen);
+		_BaseGraphGetBezierLength(pPtFirst, fBezierLen);
+		_BaseGraphGetBezierLength(pPtSecond, fBezierLen);
 	}
 }
 
 // 获取一段曲线长度
-float SYGetBezierLength(const pointf &Pt1,const pointf &Pt2,const pointf &Pt3,const pointf &Pt4)
+float BaseGraphGetBezierLength(const pointf &Pt1,const pointf &Pt2,const pointf &Pt3,const pointf &Pt4)
 {
 	float fBezierLen = 0;
 	pointf pPtOrigin[POINT_BEZIER_COUNT] = {Pt1, Pt2, Pt3, Pt4};
-	_SYGetBezierLength(pPtOrigin, fBezierLen);
+	_BaseGraphGetBezierLength(pPtOrigin, fBezierLen);
 
 	return fBezierLen;
 }

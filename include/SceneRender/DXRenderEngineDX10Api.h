@@ -1,5 +1,5 @@
-#ifndef SYRenderEngineDX10Api_h__
-#define SYRenderEngineDX10Api_h__
+#ifndef BaseGraphRenderEngineDX10Api_h__
+#define BaseGraphRenderEngineDX10Api_h__
 #include "assert.h"
 #include "DXEffectManager.h"
 #include "Common\2DBufferAPI.h"
@@ -100,12 +100,12 @@ struct Common_DeviceDX10
 	void Reset();
 };
 
-struct SYGetMeshInfoIn
+struct BaseGraphGetMeshInfoIn
 {
 	int hMesh;
 };
 
-struct SYShader
+struct BaseGraphShader
 {
 	DXShaderType	nType;
 	void*		pShader;
@@ -113,7 +113,7 @@ struct SYShader
 	TCHAR*		pShaderName;
 };
 
-struct SYTexture
+struct BaseGraphTexture
 {
 	TCHAR*		pTexFile;
 	void*		pTexture;
@@ -131,7 +131,7 @@ struct SYTexture
 	int			nRealHeight;
 };
 
-struct SYSwapChain
+struct BaseGraphSwapChain
 {
 	IDXGISwapChain*	pSwapChain;
 	ID3D10Texture2D*	pShareTexture;
@@ -255,7 +255,7 @@ inline void ReleaseBuffer(Common_DeviceDX10* pDevice,int hBuffer)
 }
 inline void ReleaseShader(Common_DeviceDX10* pDevice,int hShader)
 {
-	SYShader* pShader = (SYShader*)BseeHTable_GetAt(&pDevice->htShaderTable,hShader);
+	BaseGraphShader* pShader = (BaseGraphShader*)BseeHTable_GetAt(&pDevice->htShaderTable,hShader);
 	if (pShader)
 	{
 		assert(pShader);
@@ -294,7 +294,7 @@ inline void ReleaseShader(Common_DeviceDX10* pDevice,int hShader)
 
 inline BOOL IsNeedScaleTexParam(Common_DeviceDX10* pDevice,int hTex,float& fScale)
 {
-	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTex);
+	BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,hTex);
 	if(!pTexture)
 	{
 		fScale = 1;
@@ -358,7 +358,7 @@ inline void SetScissor(Common_DeviceDX10* pDevice,const RECT* pRect)
 
 inline ID3D10Texture2D* getTexture(Common_DeviceDX10* pDevice,int hTexture)
 {
-	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
+	BaseGraphTexture* pSrcWDTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
 	if (!pSrcWDTexture)
 		return NULL;
 	return (ID3D10Texture2D*)pSrcWDTexture->pTexture;
@@ -368,7 +368,7 @@ inline void getTextureInfo(Common_DeviceDX10* pDevice,int hTexture,int* pWidth,i
 {
 	if(hTexture <= 0)
 		return;
-	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
+	BaseGraphTexture* pSrcWDTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,hTexture);
 	ID3D10Texture2D* pTexture = (ID3D10Texture2D*)(pSrcWDTexture->pTexture);
 	D3D10_TEXTURE2D_DESC desc;
 	pTexture->GetDesc(&desc);
@@ -390,14 +390,14 @@ inline void SetRenderTarget(Common_DeviceDX10* pDevice,int hRT,int hDepth)
 	}
 	if (hRT > 0)
 	{
-		SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hRT);
+		BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,hRT);
 		pTexture->bRecentRT = TRUE;
 		pRenderTarget = (ID3D10RenderTargetView*)pTexture->pRenderTarget;
 	}
 
 	if (hDepth > 0)
 	{
-		SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hDepth);
+		BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,hDepth);
 		pDepth = (ID3D10DepthStencilView*)pTexture->pRenderTarget;
 	}
 	pDevice->pDevice->OMSetRenderTargets(1,&pRenderTarget,pDepth);
@@ -530,7 +530,7 @@ inline BOOL SetShader(Common_DeviceDX10* pDevice,int nShaderType,int hShader)
 		return TRUE;
 	}
 
-	SYShader* pShader = (SYShader*)BseeHTable_GetAt(&pDevice->htShaderTable,hShader);
+	BaseGraphShader* pShader = (BaseGraphShader*)BseeHTable_GetAt(&pDevice->htShaderTable,hShader);
 	switch(nShaderType)
 	{
 	case DXShaderType_VertexShader:
@@ -592,7 +592,7 @@ inline BOOL SetVertexInstanceBuffer(Common_DeviceDX10* pDevice,int hVertexBuffer
 
 inline BOOL SetShaderTexture(Common_DeviceDX10* pDevice,int hTex,DXShaderType nShaderType,int nRegIndex)
 {
-	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,hTex);
+	BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,hTex);
 	ID3D10ShaderResourceView* pView = NULL;
 	if(pTexture)
 	{
@@ -615,4 +615,4 @@ inline BOOL SetShaderTexture(Common_DeviceDX10* pDevice,int hTex,DXShaderType nS
 	pDevice->nShaderTexstate[nShaderType][nRegIndex] = hTex;
 	return true;
 }
-#endif // SYRenderEngineDX10Api_h__
+#endif // BaseGraphRenderEngineDX10Api_h__

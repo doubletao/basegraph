@@ -283,7 +283,7 @@ inline BaseGraph_DataBase::ValueDescriptor BaseGraph_DataBase::GetValueDescripto
 		valueDesc.emDispType = PropertyDisp_ColorCheckButton;
 		faceinfo faceInfo;
 		faceInfo.disable = 0;
-		faceInfo.color.type = SYCOLOR_HOMO;
+		faceInfo.color.type = BaseGraphCOLOR_HOMO;
 		faceInfo.color.color = ABGR(255, 255, 0, 0);
 		valueDesc.stuDefault.SetValue(faceInfo);
 	}

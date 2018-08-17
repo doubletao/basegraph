@@ -33,9 +33,9 @@ typedef struct tag_sy_render_submodel
 	BOOL		bShaderChange;
 	int	    hPixShader[Common_POST_PROCESS_COUNT];
 	bool		bSharedMaterial; //标志是否是共享的材质
-}SYRenderSubModel;
+}BaseGraphRenderSubModel;
 
-typedef struct tag_syvertex3d		// 3d vertex declaration
+typedef struct tag_common_vertex3d		// 3d vertex declaration
 {
 	union
 	{
@@ -52,54 +52,54 @@ typedef struct tag_syvertex3d		// 3d vertex declaration
 
 	vector3f tangent;
 	vector3f binormal;
-} syvertex3d, SYVertex3D, *LPCommonVERTEX3D;
+} common_vertex3d, BaseGraphVertex3D, *LPCommonVERTEX3D;
 //triangle type
-enum SYTriType
+enum BaseGraphTriType
 {
 	Common_TRIANGLE_LIST = 1,
 	Common_TRIANGLE_STRIP,
 	Common_TRIANGLE_FAN,
 	Common_TRI_TYPE_NO_USE = 0xffffffff,
 };
-typedef struct tag_sysubmodel		// sub model definition
+typedef struct tag_common_submodel		// sub model definition
 {
 	DWORD		vstart;
 	DWORD		vcount;
 	DWORD		istart;
 	DWORD		icount;
-	SYTriType 	nTri_Type;
+	BaseGraphTriType 	nTri_Type;
 	int     	nTri_Num;
 	void*   	pMaterial;
-} SYSubModel, *LPCommonSUBMODEL;
-struct SYModelInstance
+} BaseGraphSubModel, *LPCommonSUBMODEL;
+struct BaseGraphModelInstance
 {
 	matrix4f	matInstance;
 	float4		TexOffset;
 };
 //逻辑顶点，比如立方体有8个顶点
-typedef struct tag_sylogic_vertex
+typedef struct tag_common_logic_vertex
 {
 	unsigned long	type;
 	vector3f		vbase;
 	vector3f		vctrl1;
 	vector3f		vctrl2;
-}sylogic_vertex;
+}common_logic_vertex;
 //逻辑线
-typedef struct tag_sylogic_line
+typedef struct tag_common_logic_line
 {
 	int*	ivertex;
 	int		ncount;
-}sylogic_line;
-typedef struct tag_sylogic_face
+}common_logic_line;
+typedef struct tag_common_logic_face
 {
 	int*	iline;
 	int		ncount;
-}sylogic_face;
-typedef struct tag_sylogic_cube
+}common_logic_face;
+typedef struct tag_common_logic_cube
 {
 	int*	iface;
 	int		ncount;
-}sylogic_cube;
+}common_logic_cube;
 typedef struct tag_symodel
 {
 	int				vcount;		// vertex
@@ -127,26 +127,26 @@ typedef struct tag_symodel
 
 	//多实例渲染
 	int				nInstanceCount;
-	SYModelInstance* pInstance;
+	BaseGraphModelInstance* pInstance;
 
 	//逻辑顶点
 	int				logicvcount;
-	sylogic_vertex*	logicvertex;
+	common_logic_vertex*	logicvertex;
 
 	//逻辑线
 	int				logiclcount;
-	sylogic_line*	logicline;
+	common_logic_line*	logicline;
 
 	//逻辑面
 	int				logicfcount;
-	sylogic_face*	logicface;
+	common_logic_face*	logicface;
 
 	//逻辑体
 	int				logicccount;
-	sylogic_cube*	logiccube;
+	common_logic_cube*	logiccube;
 	tag_symodel() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-} SYModel, *LPCommonMODEL;
+} BaseGraphModel, *LPCommonMODEL;
 
 //二维形体
 typedef struct tag_sy2dunit
@@ -164,12 +164,12 @@ enum	eunittype
 typedef struct tag_sy3dunit
 {
 	//单元定义,mod,和整体关系
-	SYModel*	pmod;//模型顶点
+	BaseGraphModel*	pmod;//模型顶点
 	tag_sy3dunit() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }SY3DUnit;
 //物件中的一个单元
-typedef struct tag_syunit
+typedef struct tag_common_unit
 {
 	eunittype type;
 	DWORD	dwUserID;//用户自定义标识
@@ -178,18 +178,18 @@ typedef struct tag_syunit
 		SY2DUnit 	u2d;
 		SY3DUnit 	u3d;
 	}u;
-	struct tag_syunit* parent;//父节点
+	struct tag_common_unit* parent;//父节点
 	int				parentbone;//绑定在父的那个节点上
 	vector3f		pos;	//位置
 	matrix4f		MatVToItem;//unit space to item space
 							   //针对自身的原点的动作
 	TCHAR			szname[32];//名称
 	GUID			UnitID;
-	tag_syunit() { Reset(); }
+	tag_common_unit() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYUnit;
+}BaseGraphUnit;
 //骨骼信息// bone of 3d model
-typedef struct tag_sybonedef
+typedef struct tag_common_bonedef
 {
 	int				nAnimID;	// animation ID
 	int             rotationOrder;//Rotation order XYZ = 1,YXZ = 0;
@@ -201,16 +201,16 @@ typedef struct tag_sybonedef
 	vector3f		pivot;	// center point
 	TCHAR			name[128];//name
 	matrix4f		pboneoffVMatrix;//boneMatrix
-	tag_sybonedef() { Reset(); }
+	tag_common_bonedef() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-} SYBoneDef, *LPCommonBONEDEF;
-struct SYRenderStaticEffect
+} BoneDef, *LPCommonBONEDEF;
+struct BaseGraphRenderStaticEffect
 {
 	matrix4f DynamicMat;
 	BOOL	 bRepeat;
 	float	 fAlpha;
 };
-struct SYRender2DUnit
+struct BaseGraphRender2DUnit
 {
 	//面
 	vectorgraph* graph;
@@ -219,9 +219,9 @@ struct SYRender2DUnit
 	int			 height;
 	RECT		 bound;
 	BaseHash		 channel;
-	SYRenderStaticEffect effect;
+	BaseGraphRenderStaticEffect effect;
 };
-typedef struct tag_syrender3dunit
+typedef struct tag_common_render3dunit
 {
 	LPCommonVERTEX3D	pVertex;
 	int				nVertexCount;
@@ -232,21 +232,21 @@ typedef struct tag_syrender3dunit
 	int				hVertexShader;
 	int				hVSParam;
 	int				nSubModelCount;
-	SYRenderSubModel* pSubModel;
+	BaseGraphRenderSubModel* pSubModel;
 	matrix4f*		pboneVMatrix;//for ani
 								 //多实例渲染
 	int				nInstanceCount;
-	SYModelInstance* pInstance;
+	BaseGraphModelInstance* pInstance;
 	int				hInstance;
 
 	vector3f		vUnitMinVertex;//for render
 	vector3f		vUnitMaxVertex;
 	RECT			unitBound;
 	matrix4f		Mat_RenderV;//从unit到最顶层的矩阵
-} SYRender3DUnit, *LPCommonRENDER3DUNIT;
-struct SYItemRenderUnit
+} BaseGraphRender3DUnit, *LPCommonRENDER3DUNIT;
+struct BaseGraphItemRenderUnit
 {
-	SYUnit*	m_pUnit;
+	BaseGraphUnit*	m_pUnit;
 	BOOL	m_bChanged;
 	BOOL	m_bNotRender;
 	int		m_dwMatrixType;
@@ -255,14 +255,14 @@ struct SYItemRenderUnit
 	rectf	m_frtBound;
 	struct
 	{
-		SYRender2DUnit	unit2D;
+		BaseGraphRender2DUnit	unit2D;
 		vectorgraph*	graph;
-		SYRender3DUnit	unit3D;
+		BaseGraphRender3DUnit	unit3D;
 	};
 	TCHAR szID[RENDERUNITIDLENGTH + 1];
 };
 //渲染通道
-typedef struct tga_syrenderchannel
+typedef struct tga_common_renderchannel
 {
 	unsigned long type;
 	//buffer
@@ -316,16 +316,16 @@ enum SPHERE_PARAM_PART
 	SPHERE_PARAM_COUNT,
 };
 
-enum SYModel_GRAPHTYPE
+enum BaseGraphModel_GRAPHTYPE
 {
-	SYModelRENDER_CONE = 0,
-	SYModelRENDER_SEGMENT,
-	SYModelRENDER_3DFACETS,
-	SYModelRENDER_SPHERE,
-	SYModelRENDER_QUAD,
-	SYModelRENDER_BOXWIDTHBEVEL,
-	SYModelRENDER_CONEWIDTHBEVEL,
-	SYModelRENDER_TUBE,
+	BaseGraphModelRENDER_CONE = 0,
+	BaseGraphModelRENDER_SEGMENT,
+	BaseGraphModelRENDER_3DFACETS,
+	BaseGraphModelRENDER_SPHERE,
+	BaseGraphModelRENDER_QUAD,
+	BaseGraphModelRENDER_BOXWIDTHBEVEL,
+	BaseGraphModelRENDER_CONEWIDTHBEVEL,
+	BaseGraphModelRENDER_TUBE,
 };
 
 enum CONE_ITEM_PART
@@ -346,8 +346,8 @@ enum CONE_ITEM_PART
 
 #define		Common_CONE_FAN_NUM					64
 #define		Common_CONE_LAYER_NUM				3
-#define		SYBOXWITHBEVEL_CIRCLEPTNUM		5//圆角矩形的圆角的剖分程度
-#define		Common_ROUNDRECT_NUM				2 * SYBOXWITHBEVEL_CIRCLEPTNUM//圆角矩形的数量，两个倒角
+#define		BOXWITHBEVEL_CIRCLEPTNUM		5//圆角矩形的圆角的剖分程度
+#define		Common_ROUNDRECT_NUM				2 * BOXWITHBEVEL_CIRCLEPTNUM//圆角矩形的数量，两个倒角
 #define		Common_FIRSBaseART_ARC				0//第一根横弧
 #define		Common_SECONDPART_ARC				1//第一根竖弧
 #define		Common_THIRDPART_ARC				2//第二根横弧
@@ -355,12 +355,12 @@ enum CONE_ITEM_PART
 #define		Common_PER_ARC_VERNUM				2//每根弧的顶点数
 
 // 线型
-#define		SYLINE_SOLID					0
-#define		SYLINE_DASH						1
-#define		SYLINE_DASHDOT					2
-#define		SYLINE_LDASH					3
-#define		SYLINE_LDASHDOT					4
-#define		SYLINE_RIPPLE					5
+#define		BaseGraphLINE_SOLID					0
+#define		BaseGraphLINE_DASH						1
+#define		BaseGraphLINE_DASHDOT					2
+#define		BaseGraphLINE_LDASH					3
+#define		BaseGraphLINE_LDASHDOT					4
+#define		BaseGraphLINE_RIPPLE					5
 
 #define		CHANNEL_ALPHA					0
 #define		CHANNEL_MATERIAL				1
@@ -376,15 +376,15 @@ enum CONE_ITEM_PART
 
 #define		Common_CONE_FAN_NUM					64
 #define		Common_CONE_LAYER_NUM				3
-#define		SYBOXWITHBEVEL_CIRCLEPTNUM		5//圆角矩形的圆角的剖分程度
-#define		Common_ROUNDRECT_NUM				2 * SYBOXWITHBEVEL_CIRCLEPTNUM//圆角矩形的数量，两个倒角
+#define		BOXWITHBEVEL_CIRCLEPTNUM		5//圆角矩形的圆角的剖分程度
+#define		Common_ROUNDRECT_NUM				2 * BOXWITHBEVEL_CIRCLEPTNUM//圆角矩形的数量，两个倒角
 #define		Common_FIRSBaseART_ARC				0//第一根横弧
 #define		Common_SECONDPART_ARC				1//第一根竖弧
 #define		Common_THIRDPART_ARC				2//第二根横弧
 #define		Common_FOUTHPART_ARC				3//第二根竖弧
 #define		Common_PER_ARC_VERNUM				2//每根弧的顶点数
 
-#define		Common_PER_ROUNDRECT_VERTEX_MAX_NUM	(4 * SYBOXWITHBEVEL_CIRCLEPTNUM + 4 * Common_PER_ARC_VERNUM + 1 )//每个圆角矩形的最大顶点数
+#define		Common_PER_ROUNDRECT_VERTEX_MAX_NUM	(4 * BOXWITHBEVEL_CIRCLEPTNUM + 4 * Common_PER_ARC_VERNUM + 1 )//每个圆角矩形的最大顶点数
 
 #define		Common_TUBE_CIRLE_POINT_NUM			64		
 #define		Common_TUBE_LAYER_NUM				3
@@ -406,14 +406,14 @@ enum CONE_ITEM_PART
 #define		Common_FAN_ROW						Common_ROUNDRECT_NUM     //侧面行数
 #define		BOXWITHBEVEL_MATERIAL_COUNT		3
 // default length of name of curve
-#define		SYCURVE_NAME_LEN				16	
+#define		BaseGraphCURVE_NAME_LEN				16	
 #define		Common_NAMELENGTH					128
 #define		SIMPSHAPE_NAME_MAXLEN			32
 #define		BaseGraphACTION_RESERVED_DWORD			6
 #define		EVEN_TASK_MAXSIZE				2
 //物件尺寸最小值
 //一般用于标题字、滚屏等，曲线等物件不受此限制。
-#define SYITEM_DIMENSION_MIN				4
+#define BaseGraphITEM_DIMENSION_MIN				4
 #define OBJECT_FLAG_SIZE					32
 #define OBJECT_SIGN_VALID					0x00000001		 //有效
 #define OBJECT_SIGN_MANUAL					0x00000002		 //手动
@@ -436,7 +436,7 @@ enum CONE_ITEM_PART
 #define OBJECT_SIGN_ENABLE_LIGHT			0x00020000		 //是否有光源，若无则为自发光
 #define OBJECT_SIGN_LIGHT_FOLLOW_ITEM		0x00040000		 //灯光是否随着物件一起动
 
-//这些标志对应于syobject中sign_2
+//这些标志对应于common_object中sign_2
 #define OBJECT_SIGN_GRAVITY					0x00000001		 //是否重力物件
 #define OBJECT_SIGN_SELFPARAM				0x00000002		 //是否自身动画
 #define OBJECT_SIGN_BILLBOARD				0x00000004		 //是否BillBoard
@@ -447,12 +447,12 @@ enum CONE_ITEM_PART
 #define OBJECT_SIGN_TIMELIMEHIDE			0x00000080		 //是否在时码区显示物件
 #define MAX_PREDEFIND_MSG_ID				0x00000800		//最大预定义消息ID
 
-#define SYUNIT_USERID_UNDEF				0		//未定义
-#define SYUNIT_USERID_UNDERLINE			1		//下划线
-#define SYUNIT_USERID_TEXT				2		//文字
-#define SYUNIT_USERID_HEADARROW			5		//头箭头
-#define SYUNIT_USERID_TAILARROW			6		//尾箭头
-#define SYUNIT_USERID_SPECIAL			10		//特殊效果（浮雕、自绘背景、火焰等）
+#define BaseGraphUNIT_USERID_UNDEF				0		//未定义
+#define BaseGraphUNIT_USERID_UNDERLINE			1		//下划线
+#define BaseGraphUNIT_USERID_TEXT				2		//文字
+#define BaseGraphUNIT_USERID_HEADARROW			5		//头箭头
+#define BaseGraphUNIT_USERID_TAILARROW			6		//尾箭头
+#define BaseGraphUNIT_USERID_SPECIAL			10		//特殊效果（浮雕、自绘背景、火焰等）
 
 #define ALIGN_MM	0	// 中心点
 #define ALIGN_TL	1	// 左上
@@ -510,7 +510,7 @@ enum SEGMENT_PART
 	SEGMENT_FIT_TO_TEX,
 	SEGMENT_PARAM_COUNT,
 };
-enum SYModel_PLANE_INDEX_TYPE
+enum BaseGraphModel_PLANE_INDEX_TYPE
 {
 	SY3DPLANE_ROW_FIRST = 0,
 	SY3DPLANE_COLUMN_FIRST,
@@ -519,7 +519,7 @@ enum SYModel_PLANE_INDEX_TYPE
 #define		Common_SEGMENT_COLUMN_NUM			2
 const int g_nSegment_Vertex_Num = Common_SEGMENT_ROW_NUM * Common_SEGMENT_COLUMN_NUM;//总的顶点个数
 const int g_nSegment_Index_Num = (Common_SEGMENT_ROW_NUM - 1) * (Common_SEGMENT_COLUMN_NUM - 1) * 6;//总的顶点个数
-const SYSubModel g_stuSegmentSubs[SEGMENT_MATERIAL_COUNT] =
+const BaseGraphSubModel g_stuSegmentSubs[SEGMENT_MATERIAL_COUNT] =
 {
 	{ 0, g_nSegment_Vertex_Num, 0, g_nSegment_Index_Num, Common_TRIANGLE_LIST, g_nSegment_Index_Num / 3, BseeHTable_null },
 };
@@ -532,7 +532,7 @@ enum FACETS_PART
 };
 const int g_n3DFacets_Vertex_Num = Common_SEGMENT_ROW_NUM * Common_SEGMENT_COLUMN_NUM;//总的顶点个数
 const int g_n3DFacets_Index_Num = (Common_SEGMENT_ROW_NUM - 1) * (Common_SEGMENT_COLUMN_NUM - 1) * 6;//总的顶点个数
-const SYSubModel g_stu3DFacetsSubs[FACETS_MATERIAL_COUNT] =
+const BaseGraphSubModel g_stu3DFacetsSubs[FACETS_MATERIAL_COUNT] =
 {
 	{ 0, g_n3DFacets_Vertex_Num, 0, g_n3DFacets_Index_Num, Common_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, BseeHTable_null },
 	{ g_n3DFacets_Vertex_Num, g_n3DFacets_Vertex_Num, g_n3DFacets_Index_Num, g_n3DFacets_Index_Num, Common_TRIANGLE_LIST, g_n3DFacets_Index_Num / 3, BseeHTable_null },
@@ -569,7 +569,7 @@ const LPTSTR conewidthbevelMatString[CONEWITHBEVEL_MATERIAL_COUNT] =
 	_T("底面"),
 };
 
-const SYSubModel g_stuSphereSubs[SPHERE_MATERIAL_COUNT] =
+const BaseGraphSubModel g_stuSphereSubs[SPHERE_MATERIAL_COUNT] =
 {
 	{ 0, g_nSphere_Vertex_Num, 0, g_nSphere_Index_Num, Common_TRIANGLE_LIST, g_nSphere_Index_Num / 3, BseeHTable_null },
 };
@@ -580,7 +580,7 @@ const int g_nQuad_FrontBackVertex_Num = Common_QUADRANG_LAYER_NUM * Common_QUADR
 const int g_nQuad_RightLeftVertex_Num = Common_QUADRANG_LAYER_NUM * Common_QUADRANG_ROW_NUM;
 const int g_nQuad_BaseTopVertex_Num = Common_QUADRANG_ROW_NUM   * Common_QUADRANG_COLUMN_NUM;
 
-const SYSubModel g_stuQuadSubs[QUAD_MATERIAL_COUNT] =
+const BaseGraphSubModel g_stuQuadSubs[QUAD_MATERIAL_COUNT] =
 {
 	{ 0,                                                                                             g_nQuad_FrontBackVertex_Num, 0,                                                                                                  g_nQuad_FrontBackVertex_Num + 2, Common_TRIANGLE_LIST, (g_nQuad_FrontBackVertex_Num + 2) / 3, BseeHTable_null },
 	{ g_nQuad_FrontBackVertex_Num,                                                                   g_nQuad_RightLeftVertex_Num, g_nQuad_FrontBackVertex_Num + 2,                                                                    g_nQuad_RightLeftVertex_Num + 2, Common_TRIANGLE_LIST, (g_nQuad_RightLeftVertex_Num + 2) / 3, BseeHTable_null },
@@ -599,7 +599,7 @@ const int g_nCone_FanIndex_Num = Common_CONE_FAN_NUM * g_nCone_PerSubFan_IndexNu
 const int g_nCone_SecPt_Num = 4 * Common_CONE_LAYER_NUM;//剖面顶点个数
 const int g_nCone_SecIndex_Num = 3 * 4 * (Common_CONE_LAYER_NUM - 1);//剖面的顶点索引个数
 
-const SYSubModel g_stuConeSubs[CONE_MATERIAL_COUNT] =
+const BaseGraphSubModel g_stuConeSubs[CONE_MATERIAL_COUNT] =
 {
 	{ 0,                                            g_nCone_CirclePt_Num, 0,                                                  g_nCone_CircleIndex_Num, Common_TRIANGLE_FAN,   g_nCone_CircleIndex_Num - 2, BseeHTable_null },
 	{ g_nCone_CirclePt_Num,                         g_nCone_FanPt_Num,    g_nCone_CircleIndex_Num,                            g_nCone_FanIndex_Num,    Common_TRIANGLE_LIST,  g_nCone_FanIndex_Num / 3,    BseeHTable_null },
@@ -607,7 +607,7 @@ const SYSubModel g_stuConeSubs[CONE_MATERIAL_COUNT] =
 	{ 2 * g_nCone_CirclePt_Num + g_nCone_FanPt_Num, g_nCone_SecPt_Num,    2 * g_nCone_CircleIndex_Num + g_nCone_FanIndex_Num, g_nCone_SecIndex_Num,    Common_TRIANGLE_LIST,  g_nCone_SecIndex_Num / 3,    BseeHTable_null },
 };
 
-const SYSubModel g_stuBoxWidthBevelSubs[BOXWITHBEVEL_MATERIAL_COUNT] =
+const BaseGraphSubModel g_stuBoxWidthBevelSubs[BOXWITHBEVEL_MATERIAL_COUNT] =
 {
 	{ 0, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, 0, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, Common_TRIANGLE_FAN, Common_PER_ROUNDRECT_VERTEX_MAX_NUM - 1, BseeHTable_null },//顶面圆
 	{ Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, Common_PER_ROUNDRECT_VERTEX_MAX_NUM * Common_ROUNDRECT_NUM, Common_PER_ROUNDRECT_VERTEX_MAX_NUM + 1, (Common_ROUNDRECT_NUM - 1) * (Common_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2 * 3, Common_TRIANGLE_LIST, (Common_ROUNDRECT_NUM - 1) * (Common_PER_ROUNDRECT_VERTEX_MAX_NUM - 1) * 2, BseeHTable_null },
@@ -628,14 +628,14 @@ enum TUBE_ITEM_PART
 	TUBE_AUTOKEY,
 	TUBE_ITEM_PARAM_COUNT,
 };
-const SYSubModel g_stuTubeSubs[TUBE_MATERIAL_COUNT] =
+const BaseGraphSubModel g_stuTubeSubs[TUBE_MATERIAL_COUNT] =
 {
 	{ 0,											Common_TUBE_TRIP_NUM,		0,											Common_TUBE_TRIP_NUM,			Common_TRIANGLE_STRIP,Common_TUBE_TRIP_NUM - 2,		BseeHTable_null },
 	{ Common_TUBE_TRIP_NUM,							Common_TUBE_TRIP_NUM,		Common_TUBE_TRIP_NUM,								Common_TUBE_TRIP_NUM,			Common_TRIANGLE_STRIP,Common_TUBE_TRIP_NUM - 2,		BseeHTable_null },
 	{ Common_TUBE_TRIP_NUM * 2,							Common_TUBE_PROFILE_PT_NUM,Common_TUBE_TRIP_NUM * 2,							Common_TUBE_PROFILE_INDEX_NUM,	Common_TRIANGLE_STRIP,Common_TUBE_PROFILE_TRI_NUM,	BseeHTable_null },
 	{ Common_TUBE_TRIP_NUM * 2 + Common_TUBE_PROFILE_PT_NUM,	Common_TUBE_PROFILE_PT_NUM,Common_TUBE_TRIP_NUM * 2 + Common_TUBE_PROFILE_INDEX_NUM,Common_TUBE_PROFILE_INDEX_NUM,	Common_TRIANGLE_STRIP,Common_TUBE_PROFILE_TRI_NUM,	BseeHTable_null },
 };
-const SYSubModel g_stuConeWidthBevelSubs[CONEWITHBEVEL_MATERIAL_COUNT] =
+const BaseGraphSubModel g_stuConeWidthBevelSubs[CONEWITHBEVEL_MATERIAL_COUNT] =
 {
 	{ 0, Common_TB_NUM, 0, Common_TB_NUM, Common_TRIANGLE_FAN, Common_TB_NUM - 2, BseeHTable_null },//顶面圆
 	{ Common_TB_NUM, Common_FAN_COLUMN * Common_FAN_ROW, Common_TB_NUM, (Common_FAN_COLUMN - 1) * (Common_FAN_ROW - 1) * 6, Common_TRIANGLE_LIST, (Common_FAN_COLUMN - 1) * (Common_FAN_ROW - 1) * 2, BseeHTable_null },

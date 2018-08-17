@@ -11,7 +11,7 @@
 // 如果裁减矩形为空指针，则表示裁减区覆盖整个目标。
 // 范围无效时返回 FALSE 有效时返回 TRUE
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL SYFix_CutRange(IN OUT int &nDesX,			// 目标起点
+BASEGRAPH_COMMON_API BOOL BaseGraphFix_CutRange(IN OUT int &nDesX,			// 目标起点
 									IN OUT int &nDesY,
 									IN OUT int &nDesWidth,			// 目标范围
 									IN OUT int &nDesHeight,
@@ -28,7 +28,7 @@ BASEGRAPH_COMMON_API BOOL SYFix_CutRange(IN OUT int &nDesX,			// 目标起点
 // 缩放时的范围剪切
 // 范围无效时返回 FALSE 有效时返回 TRUE
 //////////////////////////////////////////////////////////////////////////
-BOOL SYStretch_CutRange(IN OUT int &nDesX,			// 目标起点
+BOOL BaseGraphStretch_CutRange(IN OUT int &nDesX,			// 目标起点
 					IN OUT int &nDesY,
 					IN OUT int &nDesWidth,			// 目标范围
 					IN OUT int &nDesHeight,
@@ -55,7 +55,7 @@ BOOL SYStretch_CutRange(IN OUT int &nDesX,			// 目标起点
 // 填充时对目标范围的裁剪
 // 范围无效时返回 FALSE 有效时返回 TRUE
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL SYFill_ClipRange(IN OUT int &nX,	// 填充起点
+BASEGRAPH_COMMON_API BOOL BaseGraphFill_ClipRange(IN OUT int &nX,	// 填充起点
 									IN OUT int &nY,
 									IN OUT int &nWidth,	// 填充大小
 									IN OUT int &nHeight,
@@ -93,45 +93,45 @@ BASEGRAPH_COMMON_API void Common_ColrWeightMix(IN OUT DWORD* pBuffer,	//RGBA
 //////////////////////////////////////////////////////////////////////////
 
 // 一行 Buffer 的拷贝操作
-BASEGRAPH_COMMON_API void SYMemcpy_Line(OUT void *des,		// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemcpy_Line(OUT void *des,		// 目标
 									   IN void *src,		// 源
 									   IN int nlen);		// 字节长度
 // 一行 Buffer 的反向拷贝操作
-BASEGRAPH_COMMON_API void SYMemcpy_RevChar(OUT void *des,			// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemcpy_RevChar(OUT void *des,			// 目标
 										  IN void *src,		// 源
 										  IN int nlen);		// 字节长度
-BASEGRAPH_COMMON_API void SYMemcpy_RevDWORD(OUT DWORD *pDes,		// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemcpy_RevDWORD(OUT DWORD *pDes,		// 目标
 										   IN DWORD *pSrc,	// 源
 										   IN int nsize);		// 双字的个数
 // 一列 Buffer 的拷贝
 // 如果 bUpDown 为 TRUE 则从 pDes 开始填充下面的列，否则填充上面的列。
 // 内部不做越界的安全检测，要求调用者自己注意。
-BASEGRAPH_COMMON_API void SYMemcpy_ColumnDWORD(OUT DWORD* pDes,		// 目标起点
+BASEGRAPH_COMMON_API void BaseGraphMemcpy_ColumnDWORD(OUT DWORD* pDes,		// 目标起点
 											  IN int nHeight,		// 拷贝的列高（所指向的内存必须有效）
 											  IN int nPitch,		// 目标一行字节宽度
 											  IN DWORD* pSrc,		// 源一行缓存（长度必须不小于nHeight）
 											  IN BOOL bUpDown);	// 从上往下拷贝顺序的标志，否则反向
 
 // 一行 Buffer 的设值操作
-BASEGRAPH_COMMON_API void SYMemset_LineChar(OUT void *des,		// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemset_LineChar(OUT void *des,		// 目标
 										   IN char value,		// 字节值
 										   IN int nlen);		// 字节长度
-BASEGRAPH_COMMON_API void SYMemset_LineDWORD(OUT DWORD *pDes,		// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemset_LineDWORD(OUT DWORD *pDes,		// 目标
 											IN DWORD value,	// 双字值
 											IN int nsize);	// 双字的个数
 // 兼容旧接口
-#define Common_DMemSet		SYMemset_LineDWORD
+#define Common_DMemSet		BaseGraphMemset_LineDWORD
 // 一行 Buffer 的Alpha值替换操作，包含掩码颜色的使用。
-BASEGRAPH_COMMON_API void SYMemset_LineAlpha(IN OUT DWORD *pDes,		// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemset_LineAlpha(IN OUT DWORD *pDes,		// 目标
 											IN char alpha,		// alpha 值
 											IN int nsize,			// 双字长度
 											IN Common_FILL_MODE eMode,	// 填充模式
 											IN DWORD pdwMaskCr);	// 掩码颜色值（依赖模式的可选项）
 
 // 一行 Buffer 的翻转操作
-BASEGRAPH_COMMON_API void SYMemrev_LineChar(IN OUT void *buf,		// 缓存
+BASEGRAPH_COMMON_API void BaseGraphMemrev_LineChar(IN OUT void *buf,		// 缓存
 										   IN int nlen);		// 字节长度
-BASEGRAPH_COMMON_API void SYMemrev_LineDWORD(IN OUT DWORD *pBuf,	// 缓存
+BASEGRAPH_COMMON_API void BaseGraphMemrev_LineDWORD(IN OUT DWORD *pBuf,	// 缓存
 											IN int nsize);	// 双字的个数
 
 
@@ -405,7 +405,7 @@ BASEGRAPH_COMMON_API BOOL BGRA32_ProcKey(IN OUT DWORD* pdwBuf,			// 目标
 										  IN RECT* prcDesClip = NULL);	// 裁剪区域（可选项）
 
 // 实现一块 8 位键值内存与一个标量间的操作
-BASEGRAPH_COMMON_API BOOL SYKey_ProcScalar(IN OUT LPBYTE pbyKey,		// 键目标
+BASEGRAPH_COMMON_API BOOL BaseGraphKey_ProcScalar(IN OUT LPBYTE pbyKey,		// 键目标
 										  IN int nX,				// 填充区域
 										  IN int nY,
 										  IN int nWidth,
@@ -417,7 +417,7 @@ BASEGRAPH_COMMON_API BOOL SYKey_ProcScalar(IN OUT LPBYTE pbyKey,		// 键目标
 										  IN char cAlpha,			// Alpha值
 										  IN Common_KEY_MODE eMode);	// 键操作模式
 // 实现两块 8 位键值内存间的操作
-BASEGRAPH_COMMON_API BOOL SYKey_ProcBuffer(IN OUT LPBYTE pbyDes,			// 目标键
+BASEGRAPH_COMMON_API BOOL BaseGraphKey_ProcBuffer(IN OUT LPBYTE pbyDes,			// 目标键
 										  IN int nDesX,				// 目标操作区域
 										  IN int nDesY,
 										  IN int nDesWidth,

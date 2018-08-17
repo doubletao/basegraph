@@ -117,6 +117,6 @@ int BASEGRAPH_DATARENDER_API	cell_makearc(BaseARray* parray,const point2f& ptcen
 //pt: 四个控制顶点// rt:外包矩形
 BASEGRAPH_DATARENDER_API void	CalBezier3Bound(IN const point2f *pt, OUT rectf &rt );
 
-BASEGRAPH_DATARENDER_API float SYGetBezierLength(const pointf &Pt1,const pointf &Pt2,const pointf &Pt3,const pointf &Pt4);
+BASEGRAPH_DATARENDER_API float BaseGraphGetBezierLength(const pointf &Pt1,const pointf &Pt2,const pointf &Pt3,const pointf &Pt4);
 
 #endif

@@ -8,19 +8,19 @@
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
-void SYPtCopyPt2f(point2 &P,point2f &FP)
+void BaseGraphPtCopyPt2f(point2 &P,point2f &FP)
 {
 	FP.x = (float)P.x;
 	FP.y = (float)P.y;
 }
 
-void SYPt2fCopyPt(point2f &FP,point2 &P)
+void BaseGraphPt2fCopyPt(point2f &FP,point2 &P)
 {
 	P.x = (long)FP.x;
 	P.y = (long)FP.y;
 }
 
-void SYOffsetPt2fs(point2f VerPt[],point2f &pt,int nCount)
+void BaseGraphOffsetPt2fs(point2f VerPt[],point2f &pt,int nCount)
 {
 	for (int i=0; i<nCount; ++i)
 	{
@@ -29,7 +29,7 @@ void SYOffsetPt2fs(point2f VerPt[],point2f &pt,int nCount)
 	}
 }
 
-void SYOffsetPt3fs(point3f VerPt[], point3f &pt, int nCount)
+void BaseGraphOffsetPt3fs(point3f VerPt[], point3f &pt, int nCount)
 {
 	for (int i=0; i<nCount; ++i)
 	{
@@ -39,7 +39,7 @@ void SYOffsetPt3fs(point3f VerPt[], point3f &pt, int nCount)
 	}
 }
 
-float SYPt2fDistance(point2f &pt0,point2f &pt1)
+float BaseGraphPt2fDistance(point2f &pt0,point2f &pt1)
 {
 	float dtx = (pt1.x-pt0.x);
 	float dty = (pt1.y-pt0.y);
@@ -80,7 +80,7 @@ int BaseAR_GetIndexByPtr(const BaseARray* pArray, void* pPtr)
 	return -1;
 }
 
-rectf SYGetBoundfFromPt2fs(point2f *pt,int nCount)
+rectf BaseGraphGetBoundfFromPt2fs(point2f *pt,int nCount)
 {
 	assert(nCount>0);
 

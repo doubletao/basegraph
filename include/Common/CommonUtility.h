@@ -4,18 +4,18 @@
 #include "Common\CommonDataContainer.h"
 #include "Common\PlaneDef.h"
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void	__cdecl	SYPtCopyPt2f(point2 &P, point2f &FP);
-BASEGRAPH_COMMON_API void	__cdecl	SYPt2fCopyPt(point2f &FP, point2 &P);
-BASEGRAPH_COMMON_API void	__cdecl	SYOffsetPt2fs(point2f VerPt[], point2f &pt, int nCount);
-BASEGRAPH_COMMON_API void	__cdecl	SYOffsetPt3fs(point3f VerPt[], point3f &pt, int nCount);
-BASEGRAPH_COMMON_API float	__cdecl	SYPt2fDistance(point2f &pt0, point2f &pt1);
+BASEGRAPH_COMMON_API void	__cdecl	BaseGraphPtCopyPt2f(point2 &P, point2f &FP);
+BASEGRAPH_COMMON_API void	__cdecl	BaseGraphPt2fCopyPt(point2f &FP, point2 &P);
+BASEGRAPH_COMMON_API void	__cdecl	BaseGraphOffsetPt2fs(point2f VerPt[], point2f &pt, int nCount);
+BASEGRAPH_COMMON_API void	__cdecl	BaseGraphOffsetPt3fs(point3f VerPt[], point3f &pt, int nCount);
+BASEGRAPH_COMMON_API float	__cdecl	BaseGraphPt2fDistance(point2f &pt0, point2f &pt1);
 //释放一个point2f数组
 BASEGRAPH_COMMON_API void	__cdecl	BaseAR_ReleasePt2fAry(BaseARray& ary);
 //释放一个point3f数组
 BASEGRAPH_COMMON_API void	__cdecl	BaseAR_ReleasePt3fAry(BaseARray& ary);
 //在指针数组中用指针查找索引号
 BASEGRAPH_COMMON_API int	__cdecl	BaseAR_GetIndexByPtr(const BaseARray* pArray, void* pPtr);
-BASEGRAPH_COMMON_API rectf	__cdecl	SYGetBoundfFromPt2fs(point2f *pt, int nCount=4);
+BASEGRAPH_COMMON_API rectf	__cdecl	BaseGraphGetBoundfFromPt2fs(point2f *pt, int nCount=4);
 //////////////////////////////////////////////////////////////////////////
 typedef CBaseARray<point2, point2>		CBasePoint2Array;
 typedef CBaseARray<pointf, pointf>		CBasePointfArray;

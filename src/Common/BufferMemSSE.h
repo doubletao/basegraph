@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 typedef struct tag_tpinnervertex {
 	float	x, y, z;// w;
-} SYInnerVertex, *LPCommonINNERVERTEX;
+} BaseGraphInnerVertex, *LPCommonINNERVERTEX;
 
 class BufferMemSSE
 {

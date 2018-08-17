@@ -15,9 +15,9 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 //前置声明
-void		SYFont_Init(LPCommonFont pFont);
-void		SYText_GetFontProperty(void* pTextProp, LPCommonFont pFont, int nIndex);
-unsigned long	 SYCRC32Cal(unsigned long ulCRC32, unsigned char *pBuf, unsigned long ulLen);
+void		BaseGraphFont_Init(LPCommonFont pFont);
+void		BaseGraphText_GetFontProperty(void* pTextProp, LPCommonFont pFont, int nIndex);
+unsigned long	 BaseGraphCRC32Cal(unsigned long ulCRC32, unsigned char *pBuf, unsigned long ulLen);
 //////////////////////////////////////////////////////////////////////////
 // class CBaseUsp
 // 不同操作系统字体回退硬编码
@@ -68,7 +68,7 @@ int						CBaseUsp::m_nMaxScript = 0;
 SCRIPT_DIGITSUBSTITUTE		CBaseUsp::m_sdsDigitSubstitute;
 SCRIPT_CONTROL			CBaseUsp::m_scScriptControlTemplate;
 SCRIPT_STATE				CBaseUsp::m_ssScriptStateTemplate;
-CBaseUsp::CBaseUsp(SYSCRIPTRESULT* pScriptResult)
+CBaseUsp::CBaseUsp(BaseGraphSCRIPTRESULT* pScriptResult)
 {
 	m_bGenCheckCode = TRUE;
 	m_pResult = pScriptResult;
@@ -150,9 +150,9 @@ const SCRIPT_PROPERTIES* CBaseUsp::GetScriptProperty(WORD wScript)
 	return m_ppScriptProperties != NULL ? m_ppScriptProperties[wScript] : NULL;
 }
 
-SYSCRIPTRESULT* CBaseUsp::Attach(SYSCRIPTRESULT* pScriptResult)
+BaseGraphSCRIPTRESULT* CBaseUsp::Attach(BaseGraphSCRIPTRESULT* pScriptResult)
 {
-	SYSCRIPTRESULT* pOld = m_pResult;
+	BaseGraphSCRIPTRESULT* pOld = m_pResult;
 	m_pResult = pScriptResult;
 	return pOld;
 }
@@ -197,20 +197,20 @@ BOOL CBaseUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTex
 		nFeedBackFontCnt = (int)parFeedBackFont->size();
 	}
 
-	SYFont objFont;
-	SYFont_Init(&objFont);
+	BaseGraphFont objFont;
+	BaseGraphFont_Init(&objFont);
 	for (int nRunIndex = 0; nRunIndex < nRunCnt; ++nRunIndex)
 	{
-		SYSCRIPTRUN* psrRun = aryRun[nRunIndex];
+		BaseGraphSCRIPTRUN* psrRun = aryRun[nRunIndex];
 		aryLevel[nRunIndex] = (BYTE)psrRun->m_RunAnalysis.s.uBidiLevel;
 
 		//在完整字符串中的位置
 		int nRealCharPos = psrRun->m_nRunCharPos + nCharStart;
-		SYText_GetFontProperty(pTextProp, &objFont, nRealCharPos);
+		BaseGraphText_GetFontProperty(pTextProp, &objFont, nRealCharPos);
 
 		WCHAR chStart = pwcChars[nRealCharPos];
 		HFONT hRunFont = NULL, hOldFont = NULL;
-		hRunFont = SYFont_CreateFont(&objFont, chStart, NULL, TRUE);
+		hRunFont = BaseGraphFont_CreateFont(&objFont, chStart, NULL, TRUE);
 		if (hRunFont != NULL)
 			hOldFont = (HFONT)::SelectObject(hDC, hRunFont);
 
@@ -231,7 +231,7 @@ BOOL CBaseUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTex
 			if (hRunFont != NULL)
 				::DeleteObject(hRunFont);
 
-			hRunFont = SYFont_CreateFont(&objFont, chStart, (*parFeedBackFont)[i].c_str(), TRUE);
+			hRunFont = BaseGraphFont_CreateFont(&objFont, chStart, (*parFeedBackFont)[i].c_str(), TRUE);
 			if (hRunFont != NULL)
 				hOldFont = (HFONT)::SelectObject(hDC, hRunFont);
 			if (psrRun->m_ScriptCache != NULL)
@@ -264,7 +264,7 @@ BOOL CBaseUsp::Analyse(WCHAR* pwcChars,int nCharStart, int nCharsCnt, void* pTex
 			if (hRunFont != NULL)
 				::DeleteObject(hRunFont);
 
-			hRunFont = SYFont_CreateFont(&objFont, chStart, psrRun->m_szFontName, TRUE);
+			hRunFont = BaseGraphFont_CreateFont(&objFont, chStart, psrRun->m_szFontName, TRUE);
 			if (hRunFont != NULL)
 				hOldFont = (HFONT)::SelectObject(hDC, hRunFont);
 			if (psrRun->m_ScriptCache != NULL)
@@ -359,7 +359,7 @@ HRESULT CBaseUsp::ScriptItemize(WCHAR* pwcChars,
 	return hr;
 }
 
-HRESULT CBaseUsp::ScriptGetCMap(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int nChars)
+HRESULT CBaseUsp::ScriptGetCMap(HDC hDC, BaseGraphSCRIPTRUN* psrRun, WCHAR *pwcChars, int nChars)
 {
 	SCRIPT_FONTPROPERTIES sfp;
 	ZeroMemory(&sfp, sizeof(SCRIPT_FONTPROPERTIES));
@@ -401,7 +401,7 @@ HRESULT CBaseUsp::ScriptGetCMap(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, i
 	return hr;
 }
 
-HRESULT CBaseUsp::ScriptShape(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int nChars, int* pnGlyphs)
+HRESULT CBaseUsp::ScriptShape(HDC hDC, BaseGraphSCRIPTRUN* psrRun, WCHAR *pwcChars, int nChars, int* pnGlyphs)
 {
 	CBaseUspWordArray& aryGlyphs = psrRun->m_aryCharGlyphs;
 	CBaseUspWordArray& aryLogCluster = psrRun->m_aryLogicalCluster;
@@ -486,7 +486,7 @@ HRESULT CBaseUsp::ScriptShape(HDC hDC, SYSCRIPTRUN* psrRun, WCHAR *pwcChars, int
 	return hr;
 }
 
-int	CBaseUsp::TranslateGlyphToChar(SYSCRIPTRUN* psrRun, int nGlyph)
+int	CBaseUsp::TranslateGlyphToChar(BaseGraphSCRIPTRUN* psrRun, int nGlyph)
 {
 	int nCharCount = (int)psrRun->m_aryLogicalCluster.size();
 	int nMin = 0;
@@ -536,7 +536,7 @@ BOOL CBaseUsp::ScriptIsComplex(const WCHAR *pwcChars,
 	return hr == S_OK;
 }
 
-int	CBaseUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult, 
+int	CBaseUsp::ScriptCPToGX(BaseGraphSCRIPTRESULT& usResult, 
 						 int nCharXPos, 
 						 int nRunIndex/* = -1*/)
 {
@@ -546,7 +546,7 @@ int	CBaseUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult,
 
 	if (nRunIndex >= 0 && nRunIndex < nRunCount)	// 检查 nRunIndex 是否有效
 	{
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
 		if (nCharXPos < psrRunInfo->m_nRunCharPos || 
 			nCharXPos > psrRunInfo->m_nRunCharPos + psrRunInfo->m_nRunCharLen)
 			nRunIndex = -1;
@@ -556,7 +556,7 @@ int	CBaseUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult,
 	{
 		for (nRunIndex = 0; nRunIndex < nRunCount; ++nRunIndex)
 		{
-			SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
+			BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
 			if (nCharXPos >= psrRunInfo->m_nRunCharPos && 
 				nCharXPos <= psrRunInfo->m_nRunCharPos + psrRunInfo->m_nRunCharLen)
 				break;
@@ -566,7 +566,7 @@ int	CBaseUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult,
 	int nGlyphPos = 0;
 	if (nRunIndex >= 0 && nRunIndex < nRunCount)
 	{
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
 
 		nCharXPos -= psrRunInfo->m_nRunCharPos;
 		if (psrRunInfo->m_RunAnalysis.fRTL)
@@ -586,7 +586,7 @@ int	CBaseUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult,
 	}
 	else
 	{
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunCount - 1];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunCount - 1];
 		if (!psrRunInfo->m_RunAnalysis.fRTL)
 			nGlyphPos = (int)psrRunInfo->m_aryCharIndex.size();
 
@@ -595,13 +595,13 @@ int	CBaseUsp::ScriptCPToGX(SYSCRIPTRESULT& usResult,
 	for (int n = 0; n < nRunCount; ++n)
 	{
 		nRunIndex = usResult.m_aryVis2Log[n];				// visual -> logical
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
 		nGlyphPos += (int)psrRunInfo->m_aryCharIndex.size();
 	}
 	return nGlyphPos;
 }
 
-int	CBaseUsp::ScriptGXToCP(SYSCRIPTRESULT& usResult, 
+int	CBaseUsp::ScriptGXToCP(BaseGraphSCRIPTRESULT& usResult, 
 						 int nGlyphXPos, 
 						 int nRunIndex/* = -1*/)
 {
@@ -614,7 +614,7 @@ int	CBaseUsp::ScriptGXToCP(SYSCRIPTRESULT& usResult,
 	for (; nVisRunIndex < nRunCount; ++nVisRunIndex)
 	{
 		int nLogRunIndex = usResult.m_aryVis2Log[nVisRunIndex];
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nLogRunIndex];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nLogRunIndex];
 		if (nLogRunIndex == nRunIndex)
 		{
 			if (nGlyphXPos >= nGlyphCount && nGlyphXPos <= nGlyphCount + 
@@ -635,7 +635,7 @@ int	CBaseUsp::ScriptGXToCP(SYSCRIPTRESULT& usResult,
 	if (nVisRunIndex < nRunCount)
 	{
 		int nLogRunIndex = usResult.m_aryVis2Log[nVisRunIndex];
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nLogRunIndex];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nLogRunIndex];
 
 		int n = 0;
 		int nCharCount = (int)psrRunInfo->m_aryLogicalCluster.size();
@@ -660,7 +660,7 @@ int	CBaseUsp::ScriptGXToCP(SYSCRIPTRESULT& usResult,
 	else
 	{
 		int nLogRunIndex = usResult.m_aryVis2Log[nRunCount - 1];
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nLogRunIndex];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nLogRunIndex];
 		if (psrRunInfo->m_RunAnalysis.fRTL)
 			return psrRunInfo->m_nRunCharPos;
 		else
@@ -668,7 +668,7 @@ int	CBaseUsp::ScriptGXToCP(SYSCRIPTRESULT& usResult,
 	}
 }
 
-int CBaseUsp::ScriptGPToCI(SYSCRIPTRESULT& usResult, int nGlyphPos)
+int CBaseUsp::ScriptGPToCI(BaseGraphSCRIPTRESULT& usResult, int nGlyphPos)
 {
 	int nRunCount = (int)usResult.m_aryRunPtr.size();
 	int i = 0;
@@ -676,7 +676,7 @@ int CBaseUsp::ScriptGPToCI(SYSCRIPTRESULT& usResult, int nGlyphPos)
 	for (; i < nRunCount; ++i)
 	{
 		int nRunIndex = usResult.m_aryVis2Log[i];
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
 		if (nGlyphPos >= nGlyphCount && nGlyphPos < nGlyphCount + 
 			psrRunInfo->m_aryCharIndex.size())
 			break;
@@ -689,13 +689,13 @@ int CBaseUsp::ScriptGPToCI(SYSCRIPTRESULT& usResult, int nGlyphPos)
 	return TranslateGlyphToChar(usResult.m_aryRunPtr[nRunIndex], nGlyphPos);
 }
 
-int CBaseUsp::ScriptGetRunByGlyph(SYSCRIPTRESULT& usResult, int nGlyph)
+int CBaseUsp::ScriptGetRunByGlyph(BaseGraphSCRIPTRESULT& usResult, int nGlyph)
 {
 	int nRunCount = (int)usResult.m_aryRunPtr.size();
 	for (int i = 0, nGlyphCount = 0; i < nRunCount; ++i)
 	{
 		int nRunIndex = usResult.m_aryVis2Log[i];
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[nRunIndex];
 		if (nGlyph >= nGlyphCount && 
 			nGlyph < nGlyphCount + psrRunInfo->m_aryCharIndex.size())
 			return nRunIndex;
@@ -704,12 +704,12 @@ int CBaseUsp::ScriptGetRunByGlyph(SYSCRIPTRESULT& usResult, int nGlyph)
 	return nRunCount;
 }
 
-int CBaseUsp::ScriptGetRunByChar(SYSCRIPTRESULT& usResult, int nChar)
+int CBaseUsp::ScriptGetRunByChar(BaseGraphSCRIPTRESULT& usResult, int nChar)
 {
 	int nRunCount = (int)usResult.m_aryRunPtr.size();
 	for (int i = 0; i < nRunCount; ++i)
 	{
-		SYSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[i];
+		BaseGraphSCRIPTRUN* psrRunInfo = usResult.m_aryRunPtr[i];
 		if (nChar >= psrRunInfo->m_nRunCharPos && 
 			nChar < psrRunInfo->m_nRunCharPos + psrRunInfo->m_nRunCharLen)
 			return i;
@@ -722,10 +722,10 @@ void CBaseUsp::ProduceRunsWithItems(WCHAR* pwcChars,
 								  void* pTextProp, 
 								  BOOL bTreatColor)
 {
-	SYFont objStartFont;
-	SYFont objCurFont;
-	SYFont_Init(&objStartFont);
-	SYFont_Init(&objCurFont);
+	BaseGraphFont objStartFont;
+	BaseGraphFont objCurFont;
+	BaseGraphFont_Init(&objStartFont);
+	BaseGraphFont_Init(&objCurFont);
 
 	CBaseUspItemArray& aryItem = m_pResult->m_aryScriptItem;
 	CBaseUspRunPtrArray& aryRun = m_pResult->m_aryRunPtr;
@@ -740,8 +740,8 @@ void CBaseUsp::ProduceRunsWithItems(WCHAR* pwcChars,
 			if (nChar <= nStart)
 				continue;
 
-			SYText_GetFontProperty(pTextProp, &objStartFont, nStart + nCharStart);
-			SYText_GetFontProperty(pTextProp, &objCurFont, nChar + nCharStart);
+			BaseGraphText_GetFontProperty(pTextProp, &objStartFont, nStart + nCharStart);
+			BaseGraphText_GetFontProperty(pTextProp, &objCurFont, nChar + nCharStart);
 
 			LPCTSTR lpstrStartFontName = GetWordTextsFontName(
 				pwcChars[nStart + nCharStart], 
@@ -758,7 +758,7 @@ void CBaseUsp::ProduceRunsWithItems(WCHAR* pwcChars,
 				objStartFont.lfItalic != objCurFont.lfItalic || 
 				objStartFont.bBold != objCurFont.bBold)
 			{
-				SYSCRIPTRUN* psrRun = new SYSCRIPTRUN;
+				BaseGraphSCRIPTRUN* psrRun = new BaseGraphSCRIPTRUN;
 				psrRun->m_nRunCharPos = nStart;
 				psrRun->m_nRunCharLen = nChar - nStart;
 				psrRun->m_RunAnalysis = pScriptItem->a;
@@ -770,13 +770,13 @@ void CBaseUsp::ProduceRunsWithItems(WCHAR* pwcChars,
 
 		if (nChar > nStart)
 		{
-			SYText_GetFontProperty(pTextProp, &objStartFont, nStart + nStart);
+			BaseGraphText_GetFontProperty(pTextProp, &objStartFont, nStart + nStart);
 			LPCTSTR lpstrStartFontName = GetWordTextsFontName(
 				pwcChars[nStart + nCharStart], 
 				objStartFont.lfFaceName, 
 				objStartFont.lfFaceNameEng);
 
-			SYSCRIPTRUN* psrRun = new SYSCRIPTRUN;
+			BaseGraphSCRIPTRUN* psrRun = new BaseGraphSCRIPTRUN;
 			psrRun->m_nRunCharPos = nStart;
 			psrRun->m_nRunCharLen = nChar - nStart;
 			psrRun->m_RunAnalysis = pScriptItem->a;
@@ -801,7 +801,7 @@ LPCTSTR CBaseUsp::GetWordTextsFontName(TCHAR tch, LPCTSTR lpszFontName, LPCTSTR 
 	return lpstrFontName;
 }
 
-HRESULT CBaseUsp::GenerateClusterGlyph(WCHAR* pwcChars, int nCharStart, SYFont* pFont, HDC hDC, SYSCRIPTRUN* psrRun)
+HRESULT CBaseUsp::GenerateClusterGlyph(WCHAR* pwcChars, int nCharStart, BaseGraphFont* pFont, HDC hDC, BaseGraphSCRIPTRUN* psrRun)
 {
 	SCRIPT_FONTPROPERTIES sfp;
 	ZeroMemory(&sfp, sizeof(SCRIPT_FONTPROPERTIES));
@@ -856,16 +856,16 @@ HRESULT CBaseUsp::GenerateClusterGlyph(WCHAR* pwcChars, int nCharStart, SYFont* 
 			if (m_bGenCheckCode)
 			{
 				unsigned long ullCRC = 0;
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfWidth), sizeof(float));
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfHeight), sizeof(float));
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfItalic), sizeof(LONG));
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&pFont->bBold), sizeof(BYTE));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfWidth), sizeof(float));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfHeight), sizeof(float));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfItalic), sizeof(LONG));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&pFont->bBold), sizeof(BYTE));
 				nTemp = (int)(_tcslen(psrRun->m_szFontName) * sizeof(TCHAR));
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(psrRun->m_szFontName), nTemp);
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(psrRun->m_szFontName), nTemp);
 				
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&wCharGlyph), sizeof(WORD));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&wCharGlyph), sizeof(WORD));
 				WCHAR wCh = pwcChars[nCharStart + nCharPos];
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&wCh), sizeof(WCHAR));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&wCh), sizeof(WCHAR));
 
 				psrRun->m_aryCheckCode[n] = (mtusp_code)ullCRC;
 			}
@@ -893,16 +893,16 @@ HRESULT CBaseUsp::GenerateClusterGlyph(WCHAR* pwcChars, int nCharStart, SYFont* 
 			if (m_bGenCheckCode)
 			{
 				unsigned long ullCRC = 0;
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfWidth), sizeof(float));
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfHeight), sizeof(float));
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfItalic), sizeof(LONG));
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&pFont->bBold), sizeof(BYTE));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfWidth), sizeof(float));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfHeight), sizeof(float));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&pFont->lfItalic), sizeof(LONG));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&pFont->bBold), sizeof(BYTE));
 				nTemp = (int)(_tcslen(psrRun->m_szFontName) * sizeof(TCHAR));
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(psrRun->m_szFontName), nTemp);
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(psrRun->m_szFontName), nTemp);
 
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&wCharGlyph), sizeof(WORD));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&wCharGlyph), sizeof(WORD));
 				WCHAR wCh = pwcChars[nCharStart + nCharPos];
-				ullCRC = SYCRC32Cal(ullCRC, (unsigned char*)(&wCh), sizeof(WCHAR));
+				ullCRC = BaseGraphCRC32Cal(ullCRC, (unsigned char*)(&wCh), sizeof(WCHAR));
 
 				psrRun->m_aryCheckCode[n] = (mtusp_code)ullCRC;
 			}

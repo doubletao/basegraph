@@ -62,7 +62,7 @@ BOOL CDataRenderApp::InitInstance()
 {
 	CWinApp::InitInstance();
 	//初始化typeset
-	SYTypeset_InitInterfaceEnv();
+	BaseGraphTypeset_InitInterfaceEnv();
 	//初始化栅格化表
 	rip_init_table();
 

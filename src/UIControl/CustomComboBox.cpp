@@ -348,7 +348,7 @@ void CustomComboBox::OnPaint()
 	//if (dwStyleParent & WS_CLIPCHILDREN)
 	{
 		if ( bFillSolid)
-			//MemDC.FillSolidRect(&rtTemp,SYGetColorRes(SYCOLORRES_DLG_NORMAL_BK));
+			//MemDC.FillSolidRect(&rtTemp,BaseGraphGetColorRes(BaseGraphCOLORRES_DLG_NORMAL_BK));
 			MemDC.FillRect(rtTemp,&m_brCombBK);
 	}
 

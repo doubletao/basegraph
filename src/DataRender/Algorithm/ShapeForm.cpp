@@ -23,12 +23,12 @@ void CMatrixForm::Init()
 
 CMatrixForm& CMatrixForm::operator =(CMatrixForm &Other)
 {
-	memcpy(m_Mat,Other.m_Mat,SYSIZE_OF_FMAT3);
+	memcpy(m_Mat,Other.m_Mat,BaseGraphSIZE_OF_FMAT3);
 	return *this;
 }
 CMatrixForm&  CMatrixForm::operator *=(CMatrixForm &Other)
 {
-	SYFMAT3 Mat;
+	BaseGraphFMAT3 Mat;
 	for(int i=0;i<3;i++)
 		for(int j=0;j<3;j++)
 		{
@@ -36,7 +36,7 @@ CMatrixForm&  CMatrixForm::operator *=(CMatrixForm &Other)
 			for(int m=0;m<3;m++)
 				Mat[i][j]+= m_Mat[i][m]*Other.m_Mat[m][j];
 		}
-	memcpy(m_Mat,Mat,SYSIZE_OF_FMAT3);
+	memcpy(m_Mat,Mat,BaseGraphSIZE_OF_FMAT3);
 	return *this;
 }
 point2f CMatrixForm::FPt(const point2f &fPt)
@@ -214,7 +214,7 @@ point2f CFourPtForm::FPt(const point2f &fPt)
 
 	Pt[3].x = m_FormPt[0].x+fL[0]*(m_FormPt[3].x-m_FormPt[0].x);
 	Pt[3].y = m_FormPt[0].y+fL[0]*(m_FormPt[3].y-m_FormPt[0].y);
-	SYGetTwoLineInterPt(Pt[0],Pt[2],Pt[1],Pt[3],RtPt);
+	BaseGraphGetTwoLineInterPt(Pt[0],Pt[2],Pt[1],Pt[3],RtPt);
 
 	return RtPt;
 }

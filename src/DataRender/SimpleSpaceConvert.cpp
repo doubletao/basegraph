@@ -241,7 +241,7 @@ matrix4f CSimpleSpaceConvert::getViewMatrix()
 	return *m_ConvertParam.pViewMat;
 }
 
-void CSimpleSpaceConvert::GetRayDirection( OUT SYRay *pRay, IN float3 *ptHit )
+void CSimpleSpaceConvert::GetRayDirection( OUT BaseGraphRay *pRay, IN float3 *ptHit )
 {
 	float3 vec3DPoint;
 	matrix4f viewInv,worldInv;
@@ -336,7 +336,7 @@ CUnitSpaceConvertMatrix::~CUnitSpaceConvertMatrix()
 
 matrix4f CUnitSpaceConvertMatrix::GetOriginWorld()
 {
-	SYItemRenderUnit* pRenderUnit  = (SYItemRenderUnit*)BaseAR_GetAt( m_pary3DUnit, m_nUnitIndex );
+	BaseGraphItemRenderUnit* pRenderUnit  = (BaseGraphItemRenderUnit*)BaseAR_GetAt( m_pary3DUnit, m_nUnitIndex );
 	matrix4f matWorld = pRenderUnit->unit3D.Mat_RenderV;
 	return matWorld;
 }
@@ -428,7 +428,7 @@ void CSimpleSpaceConvert2D::Convert2DPtTo3D_ZViewPlane( const float3 *ptSrc, flo
 	vNewPt.y = m_vSceneCenter.y - vNewPt.y;
 	*ptDest = vNewPt;
 }
-void CSimpleSpaceConvert2D::GetRayDirection( OUT SYRay *pRay, IN float3 *ptHit )
+void CSimpleSpaceConvert2D::GetRayDirection( OUT BaseGraphRay *pRay, IN float3 *ptHit )
 {
 	float3 vec3DPoint;
 	matrix4f viewInv,worldInv;
@@ -492,11 +492,11 @@ BOOL CSimpleSpaceConvert2D::Convert2DPtTo3D_Plane( const float3 *ptSrc, float3 *
 	center += pos;
 	float3 vplane_normal;
 	float3NormalMulMat(&vplane_normal, vPlaneNormal, &matWorld);
-	SYRay ray;
+	BaseGraphRay ray;
 	ray.vStart = vNewPt;
 	ray.vStart.z = -m_fViewWorkPlaneDis;
 	float3Set( &ray.vDir, 0,0,1 );
-	SYHitPoint hitPoint;
+	BaseGraphHitPoint hitPoint;
 	if(GetRayPlaneInt(&ray,&center,&vplane_normal,&hitPoint) != Common_NO_HIT)
 	{
 		*ptDest = hitPoint[0];
@@ -595,13 +595,13 @@ void CaclTransMatrixFromTwoPointInReal(matrix4f *dest, rectf *rtBound, const flo
 	ptRightBottom.y = max(pt0->y, pt1->y);
 	ptLeftTop.z = ptRightBottom.z = 0;
 
-	if (ptRightBottom.x - ptLeftTop.x < SYITEM_DIMENSION_MIN)
+	if (ptRightBottom.x - ptLeftTop.x < BaseGraphITEM_DIMENSION_MIN)
 	{
-		ptRightBottom.x = ptLeftTop.x + SYITEM_DIMENSION_MIN;
+		ptRightBottom.x = ptLeftTop.x + BaseGraphITEM_DIMENSION_MIN;
 	}
-	if ( ptRightBottom.y - ptLeftTop.y < SYITEM_DIMENSION_MIN)
+	if ( ptRightBottom.y - ptLeftTop.y < BaseGraphITEM_DIMENSION_MIN)
 	{
-		ptRightBottom.y = ptLeftTop.y + SYITEM_DIMENSION_MIN;
+		ptRightBottom.y = ptLeftTop.y + BaseGraphITEM_DIMENSION_MIN;
 	}
 
 
@@ -686,7 +686,7 @@ void CSimpleSpaceConvert3DIn2D::Convert3DPtTo2D( const float3 *ptSrc, float3 *pD
 
 	matWorld._41 = matWorld._42 = matWorld._43 = 0;
 
-	SYSpaceConvertParam param = m_ConvertParam;
+	BaseGraphSpaceConvertParam param = m_ConvertParam;
 	param.pWorldMat = &matWorld;
 	SpaceConvert( &vNewPt, ptSrc, &param, SY3DVEC_TO_2D );
 
@@ -777,14 +777,14 @@ BOOL CSimpleSpaceConvert3DIn2D::Convert2DPtTo3D_Plane( const float3 *ptSrc, floa
 	matrix4f_inverse( &matWorldInv, &matWorld);
 	vNewPt *=  matWorldInv;
 
-	SYRay ray;
+	BaseGraphRay ray;
 	float3Set( &ray.vStart, vNewPt.x, vNewPt.y, vNewPt.z );
 	static const float3 viewDir = {0,0,1};
 	float3 temp;
 	float3NormalMulMat(&temp,&viewDir,&matViewInv);
 	float3NormalMulMat(&ray.vDir,&temp, &matWorldInv);
 	float3Normalize(&ray.vDir,&ray.vDir);
-	SYHitPoint hitPoint;
+	BaseGraphHitPoint hitPoint;
 	if(GetRayPlaneInt(&ray,vPlaneCenter,vPlaneNormal,&hitPoint) == Common_NO_HIT)
 	{
 		return FALSE;
@@ -823,7 +823,7 @@ void CSimpleSpaceConvert2DRenderBy3D::Convert3DPtTo2D( const float3 *ptSrc, floa
 
 	matWorld._41 = matWorld._42 = matWorld._43 = 0;
 
-	SYSpaceConvertParam param = m_ConvertParam;
+	BaseGraphSpaceConvertParam param = m_ConvertParam;
 	param.pWorldMat = &matWorld;
 	SpaceConvert( &vNewPt, ptSrc, &param, SY3DVEC_TO_2D );
 
@@ -898,12 +898,12 @@ BOOL CSimpleSpaceConvert2DRenderBy3D::Convert2DPtTo3D_Plane( const float3 *ptSrc
 	matWorld._41 = matWorld._42 = matWorld._43 = 0;
 	ptReal.x -= pos.x;
 	ptReal.y -= -pos.y;
-	SYSpaceConvertParam param = m_ConvertParam;
+	BaseGraphSpaceConvertParam param = m_ConvertParam;
 	param.pWorldMat = &matWorld;
 
 	return SpaceConvert(ptDest, &ptReal, &param, SY2DVEC_TO_3D_PLANE, NULL, vPlaneNormal, vPlaneCenter );
 }
-void CSimpleSpaceConvert2DRenderBy3D::GetRayDirection( OUT SYRay *pRay, IN float3 *ptHit )
+void CSimpleSpaceConvert2DRenderBy3D::GetRayDirection( OUT BaseGraphRay *pRay, IN float3 *ptHit )
 {
 	float3 vec3DPoint;
 	matrix4f viewInv,worldInv;

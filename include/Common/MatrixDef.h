@@ -14,8 +14,8 @@ typedef struct tag_matrixf4x4
 	};
 }matrix4f,*pmatrix4f;
 
-typedef float  SYFMAT4[4][4];
-#define SYSIZE_OF_FMAT4 (sizeof(float)*16)
+typedef float  BaseGraphFMAT4[4][4];
+#define BaseGraphSIZE_OF_FMAT4 (sizeof(float)*16)
 
 typedef struct tag_matrixf3x3
 {
@@ -29,12 +29,12 @@ typedef struct tag_matrixf3x3
 	};
 }matrix3f,*pmatrix3f;
 
-typedef float  SYFMAT3[3][3];
-#define SYSIZE_OF_FMAT3 (sizeof(float)*9)
+typedef float  BaseGraphFMAT3[3][3];
+#define BaseGraphSIZE_OF_FMAT3 (sizeof(float)*9)
 
 
 struct tag_quatn;
-typedef struct tag_quatn SYQuatn;
+typedef struct tag_quatn BaseGraphQuatn;
 //struct tag_float3;
 //typedef struct tag_float3 float3,vector3f;
 ///////////////////////////////////////////////////////////////////////////////
@@ -162,9 +162,9 @@ BASEGRAPH_COMMON_API void __cdecl matrix4f_to_normal_matrix(matrix4f* pDesM,
 ///////////////////////////////////////////////////////////////////////////////
 
 BASEGRAPH_COMMON_API void __cdecl matrix4f_fromquatn(pmatrix4f pDesM,		// 目标矩阵指针
-								   const SYQuatn* pSrcQ);		// 源四元数指针
+								   const BaseGraphQuatn* pSrcQ);		// 源四元数指针
 
-BASEGRAPH_COMMON_API void __cdecl matrix4f_toquatn(SYQuatn* pDesQ,			// 目标四元数指针
+BASEGRAPH_COMMON_API void __cdecl matrix4f_toquatn(BaseGraphQuatn* pDesQ,			// 目标四元数指针
 								 const matrix4f* pSrcM);		// 源矩阵指针
 
 //////////////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ BASEGRAPH_COMMON_API void __cdecl matrix4f_toquatn(SYQuatn* pDesQ,			// 目标四元
 //////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API void __cdecl matrix4f_mulquatn(pmatrix4f pDesM,		// 目标矩阵指针
 								  pmatrix4f pSrcML,		// 源矩阵指针（左）
-								  const SYQuatn* pSrcQR);		// 源四元数指针（右）
+								  const BaseGraphQuatn* pSrcQR);		// 源四元数指针（右）
 
 //////////////////////////////////////////////////////////////////////////
 // 描述：	绕任意轴旋转某一角度的转换矩阵
@@ -512,7 +512,7 @@ inline matrix4f& operator *= (matrix4f& m1,const matrix4f& m2)
 	return m1;
 }
 
-inline matrix4f operator * (matrix4f& m1, SYQuatn& q)
+inline matrix4f operator * (matrix4f& m1, BaseGraphQuatn& q)
 {
 	matrix4f mre;
 
@@ -521,7 +521,7 @@ inline matrix4f operator * (matrix4f& m1, SYQuatn& q)
 	return mre;
 }
 
-inline matrix4f& operator *= (matrix4f& m1, SYQuatn& q)
+inline matrix4f& operator *= (matrix4f& m1, BaseGraphQuatn& q)
 {
 #ifdef _USE_SSE_OPTIMAL_
 	matrix4f_mulquatn(&m1, &m1, &q);
@@ -579,7 +579,7 @@ inline	BOOL operator != (matrix4f& m1,matrix4f& m2)
 
 BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f& pvmatrix, const float3& vCenter, const float3& vScale, const float3& vAngle, const float3& vPos, int nRotateOrder);
 BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f* pvmatrix, const vector3f *pvpos, const vector3f *pvscale, const vector3f* pqangle, const vector3f* pvcenter, const matrix4f* pbasevmatrix, const matrix4f* prot_adjust, int	nRotateOrder);
-BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f* pvmatrix, vector3f *pvpos, vector3f *pvscale, SYQuatn* pqrotate, vector3f* pvcenter, matrix4f* pbasevmatrix = NULL, matrix4f* prot_adjust = NULL);
+BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f* pvmatrix, vector3f *pvpos, vector3f *pvscale, BaseGraphQuatn* pqrotate, vector3f* pvcenter, matrix4f* pbasevmatrix = NULL, matrix4f* prot_adjust = NULL);
 #endif
 //////////////////////////////////////////////////////////////////////////
 // End of file.

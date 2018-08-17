@@ -22,7 +22,7 @@ static char THIS_FILE[] = __FILE__;
 // 如果裁减矩形为空指针，则表示裁减区覆盖整个目标。
 // 范围无效时返回 FALSE 有效时返回 TRUE
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL SYFix_CutRange(IN OUT int &nDesX,				// 目标起点
+BASEGRAPH_COMMON_API BOOL BaseGraphFix_CutRange(IN OUT int &nDesX,				// 目标起点
 										IN OUT int &nDesY,
 										IN OUT int &nDesWidth,			// 目标范围
 										IN OUT int &nDesHeight,
@@ -112,7 +112,7 @@ BASEGRAPH_COMMON_API BOOL SYFix_CutRange(IN OUT int &nDesX,				// 目标起点
 // 缩放时的范围剪切
 // 范围无效时返回 FALSE 有效时返回 TRUE
 //////////////////////////////////////////////////////////////////////////
-BOOL SYStretch_CutRange(IN OUT int &nDesX,				// 目标起点
+BOOL BaseGraphStretch_CutRange(IN OUT int &nDesX,				// 目标起点
 						IN OUT int &nDesY,
 						IN OUT int &nDesWidth,			// 目标范围
 						IN OUT int &nDesHeight,
@@ -281,7 +281,7 @@ BOOL SYStretch_CutRange(IN OUT int &nDesX,				// 目标起点
 // 填充时对目标范围的裁剪
 // 范围无效时返回 FALSE 有效时返回 TRUE
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL SYFill_ClipRange(IN OUT int &nX,			// 填充起点
+BASEGRAPH_COMMON_API BOOL BaseGraphFill_ClipRange(IN OUT int &nX,			// 填充起点
 										  IN OUT int &nY,
 										  IN OUT int &nWidth,		// 填充大小
 										  IN OUT int &nHeight,
@@ -412,7 +412,7 @@ BASEGRAPH_COMMON_API void Common_ColrWeightMix(IN OUT DWORD* pBuffer,	//RGBA
 //////////////////////////////////////////////////////////////////////////
 
 // 一行 Buffer 的拷贝操作
-BASEGRAPH_COMMON_API void SYMemcpy_Line(OUT void *des,	// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemcpy_Line(OUT void *des,	// 目标
 									   IN void *src,	// 源
 									   IN int nlen)		// 字节长度
 {
@@ -420,13 +420,13 @@ BASEGRAPH_COMMON_API void SYMemcpy_Line(OUT void *des,	// 目标
 }
 
 // 一行 Buffer 的反向拷贝操作
-BASEGRAPH_COMMON_API void SYMemcpy_RevChar(OUT void *des,	// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemcpy_RevChar(OUT void *des,	// 目标
 										  IN void *src,		// 源
 										  IN int nlen)		// 字节长度
 {
 	memcpy_rev_char(des, src, nlen, (nlen >> 4), (nlen & 0x0f));
 }
-BASEGRAPH_COMMON_API void SYMemcpy_RevDWORD(OUT DWORD *pDes,	// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemcpy_RevDWORD(OUT DWORD *pDes,	// 目标
 										   IN DWORD *pSrc,	// 源
 										   IN int nsize)	// 双字的个数
 {
@@ -436,7 +436,7 @@ BASEGRAPH_COMMON_API void SYMemcpy_RevDWORD(OUT DWORD *pDes,	// 目标
 // 一列 Buffer 的拷贝
 // 如果 bUpDown 为 TRUE 则从 pDes 开始填充下面的列，否则填充上面的列。
 // 内部不做越界的安全检测，要求调用者自己注意。
-BASEGRAPH_COMMON_API void SYMemcpy_ColumnDWORD(OUT DWORD* pDes,		// 目标起点
+BASEGRAPH_COMMON_API void BaseGraphMemcpy_ColumnDWORD(OUT DWORD* pDes,		// 目标起点
 											  IN int nHeight,		// 拷贝的列高（所指向的内存必须有效）
 											  IN int nPitch,		// 目标一行字节宽度
 											  IN DWORD* pSrc,		// 源一行缓存（长度必须不小于nHeight）
@@ -446,13 +446,13 @@ BASEGRAPH_COMMON_API void SYMemcpy_ColumnDWORD(OUT DWORD* pDes,		// 目标起点
 }
 
 // 一行 Buffer 的设值操作
-BASEGRAPH_COMMON_API void SYMemset_LineChar(OUT void *des,		// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemset_LineChar(OUT void *des,		// 目标
 										   IN char value,		// 字节值
 										   IN int nlen)			// 字节长度
 {
 	memset_char_line(des, value, (nlen >> 4), (nlen & 0x0f));
 }
-BASEGRAPH_COMMON_API void SYMemset_LineDWORD(OUT DWORD *pDes,	// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemset_LineDWORD(OUT DWORD *pDes,	// 目标
 											IN DWORD value,		// 双字值
 											IN int nsize)		// 双字的个数
 {
@@ -460,7 +460,7 @@ BASEGRAPH_COMMON_API void SYMemset_LineDWORD(OUT DWORD *pDes,	// 目标
 }
 
 // 一行Buffer的Alpha值替换操作，包含掩码颜色的使用。
-BASEGRAPH_COMMON_API void SYMemset_LineAlpha(IN OUT DWORD *pDes,		// 目标
+BASEGRAPH_COMMON_API void BaseGraphMemset_LineAlpha(IN OUT DWORD *pDes,		// 目标
 											IN char alpha,			// alpha 值
 											IN int nsize,			// 双字长度
 											IN Common_FILL_MODE eMode,	// 填充模式
@@ -481,12 +481,12 @@ BASEGRAPH_COMMON_API void SYMemset_LineAlpha(IN OUT DWORD *pDes,		// 目标
 }
 
 // 一行 Buffer 的翻转操作
-BASEGRAPH_COMMON_API void SYMemrev_LineChar(IN OUT void *buf,	// 缓存
+BASEGRAPH_COMMON_API void BaseGraphMemrev_LineChar(IN OUT void *buf,	// 缓存
 										   IN int nlen)			// 字节长度
 {
 	memrev_char_line(buf, ((BYTE*)buf + nlen), (nlen >> 5), ((nlen >> 1) & 0x0f));
 }
-BASEGRAPH_COMMON_API void SYMemrev_LineDWORD(IN OUT DWORD *pBuf,	// 缓存
+BASEGRAPH_COMMON_API void BaseGraphMemrev_LineDWORD(IN OUT DWORD *pBuf,	// 缓存
 											IN int nsize)		// 双字的个数
 {
 	memrev_dword_line(pBuf, (pBuf + nsize), (nsize >> 3), (((nsize >> 1) & 0x03) << 2));
@@ -850,8 +850,8 @@ BASEGRAPH_COMMON_API BOOL Common_StretchBlt(IN OUT DWORD* pdwDesBuffer,		// 目标
 // rotation, transfer, zoom and so on, the order of the vertexes must be LeftTop(0),
 // RightTop(1), RightBottom(2), LeftBottom(3).
 // The coordinates are formed by 4 floats cell, like this: struct vc{ float x, y, z, w; },
-// it's compitable with "vector4f" declared in the project "SYCommon\TPVector".
-// To get low coupling between "SYCommon" and "CommonBufferOperate", this declaration
+// it's compitable with "vector4f" declared in the project "BaseGraphCommon\TPVector".
+// To get low coupling between "BaseGraphCommon" and "CommonBufferOperate", this declaration
 // is very important, and it makes "CommonBufferOperate" independent.
 BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesBuf,			// 目标缓存
 											IN int nOffsetLeft,						// 目标缓存在投影平面坐标系下的位置
@@ -876,12 +876,12 @@ BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesB
 	}
 
 
-	SYInnerVertex*  pvLeftEdgeUVW = SYSSE_NEW(pDesBuf->m_nHeight, SYInnerVertex);		// @  1.f/w  v/w  u/w
-	SYInnerVertex*  pvDeltaUVW = SYSSE_NEW(pDesBuf->m_nHeight, SYInnerVertex);		// @  dw  dv  du
-	DWORD* *ppdwDesLeftEdge = SYSSE_NEW(pDesBuf->m_nHeight, DWORD*);				// 目标中左边缘的起始位置（要考虑拖出去的情况）
-	int *pnLinePixels = SYSSE_NEW(pDesBuf->m_nHeight, int);						// 每行要处理的像素个数
+	BaseGraphInnerVertex*  pvLeftEdgeUVW = BaseGraphSSE_NEW(pDesBuf->m_nHeight, BaseGraphInnerVertex);		// @  1.f/w  v/w  u/w
+	BaseGraphInnerVertex*  pvDeltaUVW = BaseGraphSSE_NEW(pDesBuf->m_nHeight, BaseGraphInnerVertex);		// @  dw  dv  du
+	DWORD* *ppdwDesLeftEdge = BaseGraphSSE_NEW(pDesBuf->m_nHeight, DWORD*);				// 目标中左边缘的起始位置（要考虑拖出去的情况）
+	int *pnLinePixels = BaseGraphSSE_NEW(pDesBuf->m_nHeight, int);						// 每行要处理的像素个数
 	int nMaxLinePixels(0);					// 最长行的像素个数
-	SYSSE_DECLARE(DWORD*) ppdwSrcStart[4] = { 0 };		// 源的起点
+	BaseGraphSSE_DECLARE(DWORD*) ppdwSrcStart[4] = { 0 };		// 源的起点
 	float *pfPowerX = NULL, *pfPowerY = NULL, *pfPowerXY = NULL;
 	DWORD* pdwSrcIndex = NULL;				// 双线性插值所需要的索引（四个像素 00  01  10  11）
 	// 临时指针
@@ -897,10 +897,10 @@ BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesB
 	//						pvDeltaUVW, ppdwDesLeftEdge, pnLinePixels, &nMaxLinePixels))
 	//	return FALSE;
 	// 申请临时缓存
-	pfPowerX = SYSSE_NEW(nMaxLinePixels, float);
-	pfPowerY = SYSSE_NEW(nMaxLinePixels, float);
-	pfPowerXY = SYSSE_NEW(nMaxLinePixels, float);
-	pdwSrcIndex = SYSSE_NEW((nMaxLinePixels << 2), DWORD);
+	pfPowerX = BaseGraphSSE_NEW(nMaxLinePixels, float);
+	pfPowerY = BaseGraphSSE_NEW(nMaxLinePixels, float);
+	pfPowerXY = BaseGraphSSE_NEW(nMaxLinePixels, float);
+	pdwSrcIndex = BaseGraphSSE_NEW((nMaxLinePixels << 2), DWORD);
 	// 循环对每行进行单独处理
 	for (int i=0; i<pDesBuf->m_nHeight; i++)
 	{
@@ -927,14 +927,14 @@ BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesB
 		ppdwTmpDesLeftEdge++;
 	}
 	// 释放缓存
-	SYSSE_FREE(pvLeftEdgeUVW);
-	SYSSE_FREE(pvDeltaUVW);
-	SYSSE_FREE(ppdwDesLeftEdge);
-	SYSSE_FREE(pnLinePixels);
-	SYSSE_FREE(pfPowerX);
-	SYSSE_FREE(pfPowerY);
-	SYSSE_FREE(pfPowerXY);
-	SYSSE_FREE(pdwSrcIndex);
+	BaseGraphSSE_FREE(pvLeftEdgeUVW);
+	BaseGraphSSE_FREE(pvDeltaUVW);
+	BaseGraphSSE_FREE(ppdwDesLeftEdge);
+	BaseGraphSSE_FREE(pnLinePixels);
+	BaseGraphSSE_FREE(pfPowerX);
+	BaseGraphSSE_FREE(pfPowerY);
+	BaseGraphSSE_FREE(pfPowerXY);
+	BaseGraphSSE_FREE(pdwSrcIndex);
 
 	return TRUE;
 }
@@ -2029,7 +2029,7 @@ BASEGRAPH_COMMON_API void BGRA32_FillRect(IN OUT DWORD* pdwBuf,	// 操作缓存
 		return;
 
 	// 有效区域裁剪
-	if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
+	if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
 		return;
 
 	// 计算必要参数
@@ -2057,7 +2057,7 @@ BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// 操作缓
 		return;
 
 	// 有效区域裁剪
-	if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
+	if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
 		return;
 
 	// 计算必要参数
@@ -2095,12 +2095,12 @@ BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// 操作缓
 	// 获得有效的操作范围
 	int nSrcWidth = nWidth;
 	int nSrcHeight = nHeight;
-	if (!SYFix_CutRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
+	if (!BaseGraphFix_CutRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
 		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufWidth, nSrcBufHeight, prcClip))
 			return;
 
 	//// 有效区域裁剪
-	//if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
+	//if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
 	//	return;
 
 	// 计算必要参数
@@ -2138,7 +2138,7 @@ BASEGRAPH_COMMON_API void BGRA32_ReplaceA_MulA(IN OUT DWORD* pdwBuf,	// 操作缓存
 	// 获得有效的操作范围
 	int nSrcWidth = nWidth;
 	int nSrcHeight = nHeight;
-	if (!SYFix_CutRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
+	if (!BaseGraphFix_CutRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
 		nSrcX, nSrcY, nSrcWidth, nSrcHeight, nSrcBufWidth, nSrcBufHeight, prcClip))
 		return;
 
@@ -2173,7 +2173,7 @@ BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB_MulA(IN OUT DWORD* pdwBuf,	// 操作缓
 		return;
 
 	// 有效区域裁剪
-	if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
+	if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
 		return;
 
 	// 计算必要参数
@@ -2202,7 +2202,7 @@ BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB_MulA_Width_HArray(IN OUT DWORD* pdwB
 		return;
 
 	// 有效区域裁剪
-	if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
+	if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
 		return;
 
 	// 计算必要参数
@@ -2231,7 +2231,7 @@ BASEGRAPH_COMMON_API void BGRA32_ReplaceRGB(IN OUT DWORD* pdwBuf,	// 操作缓存
 		return;
 
 	// 有效区域裁剪
-	if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
+	if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
 		return;
 
 	// 计算必要参数
@@ -2263,7 +2263,7 @@ BASEGRAPH_COMMON_API void BGRA32_FillAlpha(IN OUT DWORD* pdwBuf,		// 目标
 		return;
 
 	// 有效区域裁剪
-	if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
+	if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
 		return;
 
 	// 计算必要参数
@@ -2323,7 +2323,7 @@ BASEGRAPH_COMMON_API void BGRA32_FillAlpha_With_H(IN OUT DWORD* pdwBuf,		// 目标
 		return;
 
 	// 有效区域裁剪
-	if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
+	if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nBufWidth, nBufHeight, prcClip))
 		return;
 
 	// 计算必要参数
@@ -2439,7 +2439,7 @@ BASEGRAPH_COMMON_API BOOL BGRA32_ProcKey(IN OUT DWORD* pdwBuf,				// 目标
 }
 
 // 实现一块 8 位键值内存与一个标量间的操作
-BASEGRAPH_COMMON_API BOOL SYKey_ProcScalar(IN OUT LPBYTE pbyKey,		// 键目标
+BASEGRAPH_COMMON_API BOOL BaseGraphKey_ProcScalar(IN OUT LPBYTE pbyKey,		// 键目标
 										  IN int nX,				// 填充区域
 										  IN int nY,
 										  IN int nWidth,
@@ -2457,7 +2457,7 @@ BASEGRAPH_COMMON_API BOOL SYKey_ProcScalar(IN OUT LPBYTE pbyKey,		// 键目标
 		return FALSE;
 
 	// 有效区域裁剪
-	if (!SYFill_ClipRange(nX, nY, nWidth, nHeight, nKeyBufWidth, nKeyBufHeight, prcClip))
+	if (!BaseGraphFill_ClipRange(nX, nY, nWidth, nHeight, nKeyBufWidth, nKeyBufHeight, prcClip))
 		return FALSE;
 
 	// 计算必要参数
@@ -2518,7 +2518,7 @@ BASEGRAPH_COMMON_API BOOL SYKey_ProcScalar(IN OUT LPBYTE pbyKey,		// 键目标
 	return TRUE;
 }
 // 实现两块 8 位键值内存间的操作
-BASEGRAPH_COMMON_API BOOL SYKey_ProcBuffer(IN OUT LPBYTE pbyDes,				// 目标键
+BASEGRAPH_COMMON_API BOOL BaseGraphKey_ProcBuffer(IN OUT LPBYTE pbyDes,				// 目标键
 										  IN int nDesX,						// 目标操作区域
 										  IN int nDesY,
 										  IN int nDesWidth,
@@ -2608,7 +2608,7 @@ BASEGRAPH_COMMON_API void Common_MakeTranslucentBack(OUT DWORD* pBuf,			// 背景 
 	int nBlockCountV = nBufHeight / nBlockSize;		// 确定一列拥有的完整颜色块个数
 	int nLineSize = nBlockCountH * nBlockSize;
 	int na16 = (nBlockSize >> 2), nm16 = ((nBlockSize & 0x03) << 2);
-	DWORD* pBlockLine = SYSSE_NEW(nLineSize, DWORD);
+	DWORD* pBlockLine = BaseGraphSSE_NEW(nLineSize, DWORD);
 	DWORD* pTmpLine = pBlockLine;
 
 	// 填充出相间图片
@@ -2635,7 +2635,7 @@ BASEGRAPH_COMMON_API void Common_MakeTranslucentBack(OUT DWORD* pBuf,			// 背景 
 		memcpy_line(pBuf, pTmpLine, na16, nm16);
 		pBuf += nBufWidth;
 	}
-	SYSSE_FREE(pBlockLine);
+	BaseGraphSSE_FREE(pBlockLine);
 }
 
 
@@ -3638,16 +3638,16 @@ BASEGRAPH_COMMON_API BOOL rgba_mean_copy(OUT DWORD* pDest,			// 目标 Buffer
 
 	// 申请权重表、权重数量表及缓存空间
 	float fScaleW_I = 1.0f / fScaleWidth, fScaleH_I = 1.0f / fScaleHeight;
-	SYSSE_DECLARE(int*) pMapX = SYSSE_NEW(nDestWidth, int);		// X 方向上的权重数量表
-	SYSSE_DECLARE(int*) pMapY = SYSSE_NEW(nDestHeight, int);	// Y 方向上的权重数量表
-	SYSSE_DECLARE(float*) pPowerX = SYSSE_NEW((nDestWidth << 1), float);	// X 方向上的权重表
-	SYSSE_DECLARE(float*) pPowerY = SYSSE_NEW((nDestHeight << 1), float);	// Y 方向上的权重表
+	BaseGraphSSE_DECLARE(int*) pMapX = BaseGraphSSE_NEW(nDestWidth, int);		// X 方向上的权重数量表
+	BaseGraphSSE_DECLARE(int*) pMapY = BaseGraphSSE_NEW(nDestHeight, int);	// Y 方向上的权重数量表
+	BaseGraphSSE_DECLARE(float*) pPowerX = BaseGraphSSE_NEW((nDestWidth << 1), float);	// X 方向上的权重表
+	BaseGraphSSE_DECLARE(float*) pPowerY = BaseGraphSSE_NEW((nDestHeight << 1), float);	// Y 方向上的权重表
 	DWORD *pDesLine = pDest + nDestX + nDestY * nDestBufferWidth;		// Buffer 起始地址
 	float *pTmpPowerY = pPowerY;		// Y 方向权重表地址
 	int nSrcPitch = (nSrcBufferWidth << 2);
-	SYSSE_DECLARE(float*) pTmpLine = SYSSE_NEW((nSrcWidth << 2), float);	// 源行的临时缓存
-	SYSSE_DECLARE(float) fCoefW[4] = { fScaleW_I, fScaleW_I, fScaleW_I, fScaleW_I };
-	SYSSE_DECLARE(float) fCoefH[4] = { fScaleH_I, fScaleH_I, fScaleH_I, fScaleH_I };
+	BaseGraphSSE_DECLARE(float*) pTmpLine = BaseGraphSSE_NEW((nSrcWidth << 2), float);	// 源行的临时缓存
+	BaseGraphSSE_DECLARE(float) fCoefW[4] = { fScaleW_I, fScaleW_I, fScaleW_I, fScaleW_I };
+	BaseGraphSSE_DECLARE(float) fCoefH[4] = { fScaleH_I, fScaleH_I, fScaleH_I, fScaleH_I };
 
 	// 计算权重
 	strech_calc_power(pPowerX, pMapX, nDestWidth, fScaleWidth, fSrcStartX - (int)fSrcStartX);
@@ -3719,11 +3719,11 @@ BASEGRAPH_COMMON_API BOOL rgba_mean_copy(OUT DWORD* pDest,			// 目标 Buffer
 		}
 		pDesLine += nDestAddWidth;
 	}
-	SYSSE_FREE(pMapX);
-	SYSSE_FREE(pMapY);
-	SYSSE_FREE(pPowerX);
-	SYSSE_FREE(pPowerY);
-	SYSSE_FREE(pTmpLine);
+	BaseGraphSSE_FREE(pMapX);
+	BaseGraphSSE_FREE(pMapY);
+	BaseGraphSSE_FREE(pPowerX);
+	BaseGraphSSE_FREE(pPowerY);
+	BaseGraphSSE_FREE(pTmpLine);
 
 	return TRUE;
 }

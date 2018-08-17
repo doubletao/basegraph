@@ -21,32 +21,32 @@ using namespace std;
 BASEGRAPH_DATARENDER_API TCHAR			g_strDefFontFacename[LF_FACESIZE] = _T("Arial");
 BASEGRAPH_DATARENDER_API TCHAR			g_strDefChnFontFacename[LF_FACESIZE] = _T("宋体");
 BASEGRAPH_DATARENDER_API TCHAR			g_strPredefSample[8] = _T("A");
-LPCTSTR	SYGetDefaultFontFaceName()
+LPCTSTR	BaseGraphGetDefaultFontFaceName()
 {
 	return g_strDefFontFacename;
 }
 
-void	SYSetDefaultFontFaceName(LPCTSTR szFaceName)
+void	BaseGraphSetDefaultFontFaceName(LPCTSTR szFaceName)
 {
 	memcpy(g_strDefFontFacename, szFaceName, sizeof(TCHAR) * (_tcslen(szFaceName) + 1));
 }
 
-LPCTSTR	SYGetDefaultChnFontFaceName()
+LPCTSTR	BaseGraphGetDefaultChnFontFaceName()
 {
 	return g_strDefChnFontFacename;
 }
 
-void	SYSetDefaultChnFontFaceName(LPCTSTR szFaceName)
+void	BaseGraphSetDefaultChnFontFaceName(LPCTSTR szFaceName)
 {
 	memcpy(g_strDefChnFontFacename, szFaceName, sizeof(TCHAR) * (_tcslen(szFaceName) + 1));
 }
 
-LPCTSTR	SYGetPredefineSample()
+LPCTSTR	BaseGraphGetPredefineSample()
 {
 	return g_strPredefSample;
 }
 
-void	SYSetPredefineSample(LPCTSTR szSample)
+void	BaseGraphSetPredefineSample(LPCTSTR szSample)
 {
 	memcpy(g_strPredefSample, szSample, sizeof(TCHAR) * 2);
 }
@@ -61,42 +61,42 @@ BASEGRAPH_DATARENDER_API BOOL			g_bSupportBidiRender = FALSE;
 BASEGRAPH_DATARENDER_API BOOL			g_bSupportKorea = FALSE;
 //是否允许字体回退功能
 BASEGRAPH_DATARENDER_API BOOL			g_bEnableFeedBackFont = FALSE;
-BOOL	SYIsHalfAngleSpaceNew()
+BOOL	BaseGraphIsHalfAngleSpaceNew()
 {
 	return g_bHalfAngleSpaceNew;
 }
 
-void	SYSetHalfAngleSpaceNew(BOOL bSupport)
+void	BaseGraphSetHalfAngleSpaceNew(BOOL bSupport)
 {
 	g_bHalfAngleSpaceNew = bSupport;
 }
 
-BOOL	SYIsSupportBidiRender()
+BOOL	BaseGraphIsSupportBidiRender()
 {
 	return g_bSupportBidiRender;
 }
 
-void	SYSetSupportBidiRender(BOOL bSupport)
+void	BaseGraphSetSupportBidiRender(BOOL bSupport)
 {
 	g_bSupportBidiRender = bSupport;
 }
 
-BOOL	SYIsSupportKorea()
+BOOL	BaseGraphIsSupportKorea()
 {
 	return g_bSupportKorea;
 }
 
-void	SYSetSupportKorea(BOOL bSupport)
+void	BaseGraphSetSupportKorea(BOOL bSupport)
 {
 	g_bSupportKorea = bSupport;
 }
 
-void	SYSetEnableFeedBackFont(BOOL bEnable)
+void	BaseGraphSetEnableFeedBackFont(BOOL bEnable)
 {
 	g_bEnableFeedBackFont = bEnable;
 }
 
-BOOL	SYIsEnableFeedBackFont()
+BOOL	BaseGraphIsEnableFeedBackFont()
 {
 	return g_bEnableFeedBackFont;
 }
@@ -111,30 +111,30 @@ int			g_nSBCCaseReplaceSpace = 0;				//全角空格替换成若干半角空格，0不替换。
 BOOL			g_bUseTitleWordRefine = TRUE;
 
 //////////////////////////////////////////////////////////////////////////
-void  SYSetTitleWordRefine(BOOL bTitleWordRefine)
+void  BaseGraphSetTitleWordRefine(BOOL bTitleWordRefine)
 {
 	g_bUseTitleWordRefine = bTitleWordRefine;
 }
 
-BOOL  SYIsTitleWordRefine()
+BOOL  BaseGraphIsTitleWordRefine()
 {
 	return g_bUseTitleWordRefine;
 }
 
 //是否使用繁体系统下字体加粗特殊处理
 BOOL		g_bUseChnTradBoldFunc = FALSE;
-void SYSetChnTradBoldFunc(BOOL bTradBoldFunc)
+void BaseGraphSetChnTradBoldFunc(BOOL bTradBoldFunc)
 {
 	g_bUseChnTradBoldFunc = bTradBoldFunc;
 }
 
-BOOL SYGetChnTradBoldFunc()
+BOOL BaseGraphGetChnTradBoldFunc()
 {
 	return g_bUseChnTradBoldFunc;
 }
 
 BASEGRAPH_DATARENDER_API BOOL			g_bWordTransUseBorderEditMode = FALSE;
-void SYWordTransUseBorderEditMode(BOOL bUseBorderEditMode)
+void BaseGraphWordTransUseBorderEditMode(BOOL bUseBorderEditMode)
 {
 	g_bWordTransUseBorderEditMode = bUseBorderEditMode;
 }
@@ -217,7 +217,7 @@ BOOL VRollCharFinder::ReadDataFromFile()
 	aryWord.clear();
 	nWordSize = 0;
 
-	CString strFile = SYPath_GetPath(Common_PATH_SYS);
+	CString strFile = BaseGraphPath_GetPath(Common_PATH_SYS);
 	strFile.TrimRight(_T("\\"));
 	strFile += _T("\\VerticalRoll.Dat");
 	fstream file(strFile.c_str());
@@ -548,7 +548,7 @@ bool VRollCharFinder::FindChar(WORD wChar)
 	return binary_search(aryWord.begin(), aryWord.end(), wChar);
 }
 
-BASEGRAPH_DATARENDER_API BOOL SYIsNeedRollInVDisplay(TCHAR szCharName)
+BASEGRAPH_DATARENDER_API BOOL BaseGraphIsNeedRollInVDisplay(TCHAR szCharName)
 {
 	//here we only support dbcs and unicode so we use a word
 	//djt 可以从配置文件读取竖向排版时需要旋转的的字符
@@ -586,7 +586,7 @@ BASEGRAPH_DATARENDER_API BOOL SYIsNeedRollInVDisplay(TCHAR szCharName)
 
 
 //////////////////////////////////////////////////////////////////////////
-bool SYIsVisibleChar(TCHAR ch)
+bool BaseGraphIsVisibleChar(TCHAR ch)
 {
 	if (ch != _T('\n') && ch != _T('\r'))
 		return true;
@@ -594,7 +594,7 @@ bool SYIsVisibleChar(TCHAR ch)
 	return false;
 }
 
-BOOL SYIsUseLocalFont(TCHAR ch)
+BOOL BaseGraphIsUseLocalFont(TCHAR ch)
 {
 	if (!Common_bOnlyUseLocalFont)
 	{
@@ -607,7 +607,7 @@ BOOL SYIsUseLocalFont(TCHAR ch)
 	return TRUE;
 }
 
-HFONT SYFont_CreateFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint)
+HFONT BaseGraphFont_CreateFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint)
 {
 	//逻辑字高与字号转换关系
 	//LONG lFontSize = pFont->lfHeight * 72.0 / GetDeviceCaps(hDC, LOGPIXELSY) + 0.5 ;
@@ -626,7 +626,7 @@ HFONT SYFont_CreateFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint
 	BYTE bBold = pFont->bBold;
 	if (bBold)
 	{
-		if (SYGETCHNTRADBOLDFUNC && IS_NOT_ASCII_CHAR(ch))
+		if (BaseGraphGETCHNTRADBOLDFUNC && IS_NOT_ASCII_CHAR(ch))
 			nWeight = FW_MEDIUM;
 		else
 			nWeight = FW_HEAVY;
@@ -644,7 +644,7 @@ HFONT SYFont_CreateFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint
 	}
 	else
 	{
-		if (SYIsUseLocalFont(ch))
+		if (BaseGraphIsUseLocalFont(ch))
 			pFontName = pFont->lfFaceName;
 		else
 			pFontName = pFont->lfFaceNameEng;
@@ -670,7 +670,7 @@ HFONT SYFont_CreateFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint
 	return hFont;
 }
 
-HFONT SYFont_CreateScaleFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, int nScaleW, int nScaleH)
+HFONT BaseGraphFont_CreateScaleFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, int nScaleW, int nScaleH)
 {
 	HFONT hFont = NULL;
 	int nWidth = (int)(pFont->lfWidth);
@@ -686,7 +686,7 @@ HFONT SYFont_CreateScaleFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, int n
 	BYTE bBold = pFont->bBold;
 	if (bBold)
 	{
-		if (SYGETCHNTRADBOLDFUNC && IS_NOT_ASCII_CHAR(ch))
+		if (BaseGraphGETCHNTRADBOLDFUNC && IS_NOT_ASCII_CHAR(ch))
 			nWeight = FW_MEDIUM;
 		else
 			nWeight = FW_HEAVY;
@@ -704,7 +704,7 @@ HFONT SYFont_CreateScaleFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, int n
 	}
 	else
 	{
-		if (SYIsUseLocalFont(ch))
+		if (BaseGraphIsUseLocalFont(ch))
 			pFontName = pFont->lfFaceName;
 		else
 			pFontName = pFont->lfFaceNameEng;
@@ -757,7 +757,7 @@ int CALLBACK FontExistanceTest(
 }
 
 //检验某种字体是否有对应的@类型的字体族
-BOOL SYFontHasVerticalStyle(TCHAR* szFaceName)
+BOOL BaseGraphFontHasVerticalStyle(TCHAR* szFaceName)
 {
 	HWND hWnd = GetDesktopWindow();
 	HDC hDC = GetDC(hWnd);
@@ -783,7 +783,7 @@ BOOL SYFontHasVerticalStyle(TCHAR* szFaceName)
 }
 
 //指定的字体是否存在
-BOOL SYIsFontExist(TCHAR* szFaceName)
+BOOL BaseGraphIsFontExist(TCHAR* szFaceName)
 {
 	HWND hWnd = GetDesktopWindow();
 	HDC hDC = GetDC(hWnd);
@@ -836,18 +836,18 @@ static BOOL AdjustCharWidth(HDC hDC,
 	return TRUE;
 }
 
-void SYWordInfoInit(LPCommonWordInfo pWordInfo)
+void BaseGraphWordInfoInit(LPCommonWordInfo pWordInfo)
 {
-	memset(pWordInfo, 0, sizeof(SYWordInfo));
+	memset(pWordInfo, 0, sizeof(BaseGraphWordInfo));
 	pWordInfo->bVisible = true;
 }
 
-void SYWordInfoRelease(LPCommonWordInfo pWordInfo)
+void BaseGraphWordInfoRelease(LPCommonWordInfo pWordInfo)
 {
 	graph_release(&pWordInfo->vgGraph);
 }
 
-BOOL SYWordInfoFill(HDC hDC, 
+BOOL BaseGraphWordInfoFill(HDC hDC, 
 					LPCommonWordInfo pWordInfo, 
 					TCHAR* pChar, 
 					LPCommonFont pFont, 
@@ -876,10 +876,10 @@ BOOL SYWordInfoFill(HDC hDC,
 	BOOL bVRollGlyph = FALSE;
 	if (!bHorizontal)
 	{
-		if (pFont->lfVGRotate == SYVGROT_NODEF)
-			bVRollGlyph = SYIsNeedRollInVDisplay(wChar);
+		if (pFont->lfVGRotate == BaseGraphVGROT_NODEF)
+			bVRollGlyph = BaseGraphIsNeedRollInVDisplay(wChar);
 		else
-			bVRollGlyph = (pFont->lfVGRotate == SYVGROT_ROT);
+			bVRollGlyph = (pFont->lfVGRotate == BaseGraphVGROT_ROT);
 	}
 	pWordInfo->bVRollGlyph = bVRollGlyph;
 
@@ -888,7 +888,7 @@ BOOL SYWordInfoFill(HDC hDC,
 	bGlyphIndex = TRUE;
 
 	HFONT hFont;
-	hFont = SYFont_CreateFont(pFont, wChar, bGlyphIndex ? pWordInfo->szFontName : NULL, FALSE);
+	hFont = BaseGraphFont_CreateFont(pFont, wChar, bGlyphIndex ? pWordInfo->szFontName : NULL, FALSE);
 	if (hFont == NULL)
 		return FALSE;
 	HFONT hOldFont = (HFONT)SelectObject(hWndDC, hFont);
@@ -923,7 +923,7 @@ BOOL SYWordInfoFill(HDC hDC,
 			else
 				nNeedByteReal = GetGlyphOutline(hWndDC, wChar, GGO_NATIVE, &glyphm, nNeedByte, pPolyHead, &mat);
 
-			SYVectorGraph_AssignTTPOLYGONHEADER(&pWordInfo->vgGraph, pPolyHead, nNeedByteReal);
+			BaseGraphVectorGraph_AssignTTPOLYGONHEADER(&pWordInfo->vgGraph, pPolyHead, nNeedByteReal);
 			delete[] pPolyHead;
 			pPolyHead = NULL;
 

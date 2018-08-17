@@ -7,9 +7,9 @@
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
-SYMatBufferCallBack g_pObjectFun = NULL;
+BaseGraphMatBufferCallBack g_pObjectFun = NULL;
 void*				g_pObjectParam = NULL;
-SYMatBufferCallBack g_pChannelFun = NULL;
+BaseGraphMatBufferCallBack g_pChannelFun = NULL;
 void*				g_pChannelParam = NULL;
 
 TCHAR*	gShaderPath = NULL;
@@ -17,7 +17,7 @@ char*	g_strShaderMain = NULL;
 char*	g_strShaderMainHead = NULL;
 int		g_nMainSize = 0;
 int		g_nMainHeadSize = 0;
-BASEGRAPH_DATARENDER_API void SYMaterialModuleInit(LPCTSTR pShaderPath,SYMatBufferCallBack pObject /*= NULL*/,void* pObjParam /*= NULL*/,SYMatBufferCallBack pChannel /*= NULL*/,void* pChannelParam /*= NULL*/)
+BASEGRAPH_DATARENDER_API void BaseGraphMaterialModuleInit(LPCTSTR pShaderPath,BaseGraphMatBufferCallBack pObject /*= NULL*/,void* pObjParam /*= NULL*/,BaseGraphMatBufferCallBack pChannel /*= NULL*/,void* pChannelParam /*= NULL*/)
 {
 	const TCHAR* strMainFile = _T("\\PS\\materialPS\\main.txt");
 	const TCHAR* strMainHeadFile = _T("\\PS\\materialPS\\mainHead.txt");
@@ -51,15 +51,15 @@ BASEGRAPH_DATARENDER_API void SYMaterialModuleInit(LPCTSTR pShaderPath,SYMatBuff
 	CloseHandle(hFile);
 }
 
-BASEGRAPH_DATARENDER_API void SYMaterialModuleRelease()
+BASEGRAPH_DATARENDER_API void BaseGraphMaterialModuleRelease()
 {
 	SAFEDELETE_ARRAY(gShaderPath);
 	SAFEDELETE_ARRAY(g_strShaderMain);
 	SAFEDELETE_ARRAY(g_strShaderMainHead);
 }
-void BASEGRAPH_DATARENDER_API SYMaterial_RemoveShader(SYMaterial* pMaterial,int nShaderType)
+void BASEGRAPH_DATARENDER_API BaseGraphMaterial_RemoveShader(BaseGraphMaterial* pMaterial,int nShaderType)
 {
-	SYJoinShader* pShader = pMaterial->m_ShaderArray.ppShader[nShaderType];
+	BaseGraphJoinShader* pShader = pMaterial->m_ShaderArray.ppShader[nShaderType];
 	if (pShader != NULL)
 	{
 		SAFEDELETE_ARRAY(pShader->strBody);
@@ -67,7 +67,7 @@ void BASEGRAPH_DATARENDER_API SYMaterial_RemoveShader(SYMaterial* pMaterial,int 
 	}
 	SAFE_DELETE(pMaterial->m_ShaderArray.ppShader[nShaderType]);
 }
-void BASEGRAPH_DATARENDER_API SYMaterial_AddShader(SYJoinShader* pShader ,int nShaderType)
+void BASEGRAPH_DATARENDER_API BaseGraphMaterial_AddShader(BaseGraphJoinShader* pShader ,int nShaderType)
 {
 	static const TCHAR* strLightHead = _T("\\PS\\materialPS\\lighthead.txt");
 	static const TCHAR* strLigthBody = _T("\\PS\\materialPS\\lightbody.txt");
@@ -85,28 +85,28 @@ void BASEGRAPH_DATARENDER_API SYMaterial_AddShader(SYJoinShader* pShader ,int nS
 	TCHAR HeadFilePath[512],BodyFilePath[512];
 	switch (nShaderType)
 	{
-		case SYMaterial_DiffuseShader:
+		case BaseGraphMaterial_DiffuseShader:
 			_tcscpy_s(HeadFilePath,gShaderPath);
 			_tcscat_s(HeadFilePath,strDiffuseHead);
 
 			_tcscpy_s(BodyFilePath,gShaderPath);
 			_tcscat_s(BodyFilePath,strDiffuseBody);
 			break;
-		case SYMaterial_SpecShader:
+		case BaseGraphMaterial_SpecShader:
 			_tcscpy_s(HeadFilePath,gShaderPath);
 			_tcscat_s(HeadFilePath,strSpecHead);
 
 			_tcscpy_s(BodyFilePath,gShaderPath);
 			_tcscat_s(BodyFilePath,strSpecBody);
 			break;
-		case SYMaterial_EnvMapShader:
+		case BaseGraphMaterial_EnvMapShader:
 			_tcscpy_s(HeadFilePath,gShaderPath);
 			_tcscat_s(HeadFilePath,strEnvMapHead);
 
 			_tcscpy_s(BodyFilePath,gShaderPath);
 			_tcscat_s(BodyFilePath,strEnvMapBody);
 			break;
-		case SYMaterial_EmissiveShader:
+		case BaseGraphMaterial_EmissiveShader:
 			_tcscpy_s(HeadFilePath,gShaderPath);
 			_tcscat_s(HeadFilePath,strEmissiveHead);
 
@@ -114,7 +114,7 @@ void BASEGRAPH_DATARENDER_API SYMaterial_AddShader(SYJoinShader* pShader ,int nS
 			_tcscat_s(BodyFilePath,strEmissiveBody);
 			break;
 
-		case SYMaterial_BumpShader:
+		case BaseGraphMaterial_BumpShader:
 			_tcscpy_s(HeadFilePath,gShaderPath);
 			_tcscat_s(HeadFilePath,strBumpHead);
 
@@ -122,7 +122,7 @@ void BASEGRAPH_DATARENDER_API SYMaterial_AddShader(SYJoinShader* pShader ,int nS
 			_tcscat_s(BodyFilePath,strBumpBody);
 			break;
 
-		case SYMaterial_LightShader:
+		case BaseGraphMaterial_LightShader:
 			_tcscpy_s(HeadFilePath,gShaderPath);
 			_tcscat_s(HeadFilePath,strLightHead);
 
@@ -151,7 +151,7 @@ void BASEGRAPH_DATARENDER_API SYMaterial_AddShader(SYJoinShader* pShader ,int nS
 	pShader->nType = nShaderType;
 
 }
-void BASEGRAPH_DATARENDER_API SYMaterial_Init( SYMaterial* pMaterial,DWORD InitColor,BOOL bLight)
+void BASEGRAPH_DATARENDER_API BaseGraphMaterial_Init( BaseGraphMaterial* pMaterial,DWORD InitColor,BOOL bLight)
 {
 	//static const TCHAR* pPicFile = _T("\\test.bmp");
 	pMaterial->m_nVersion = 0;
@@ -167,38 +167,38 @@ void BASEGRAPH_DATARENDER_API SYMaterial_Init( SYMaterial* pMaterial,DWORD InitC
 	pMaterial->m_PhyData.fAlpha = 1;
 	pMaterial->m_PhyData.disable = FALSE;
 
-	memset(&pMaterial->m_ShaderArray,0,sizeof(SYShaderArray));
-	memset(&pMaterial->m_TexArray,0,sizeof(SYMatTexArray));
+	memset(&pMaterial->m_ShaderArray,0,sizeof(BaseGraphShaderArray));
+	memset(&pMaterial->m_TexArray,0,sizeof(BaseGraphMatTexArray));
 	//添加Shader
 	if (bLight)
 	{
-		SYJoinShader* pShder = new SYJoinShader;
-		SYMaterial_AddShader(pShder,SYMaterial_LightShader);
-		ASSERT(pMaterial->m_ShaderArray.ppShader[SYMaterial_LightShader]==NULL);
-		pMaterial->m_ShaderArray.ppShader[SYMaterial_LightShader] = pShder;
+		BaseGraphJoinShader* pShder = new BaseGraphJoinShader;
+		BaseGraphMaterial_AddShader(pShder,BaseGraphMaterial_LightShader);
+		ASSERT(pMaterial->m_ShaderArray.ppShader[BaseGraphMaterial_LightShader]==NULL);
+		pMaterial->m_ShaderArray.ppShader[BaseGraphMaterial_LightShader] = pShder;
 	}
 }
 
 void ReleaseTexPrivateData(void*& pData,int nType)
 {
-	if (nType == SYMaterial_SpecTex)
+	if (nType == BaseGraphMaterial_SpecTex)
 	{
-		SYSpecTexPrivateData* pPrivate = (SYSpecTexPrivateData* )pData;
+		BaseGraphSpecTexPrivateData* pPrivate = (BaseGraphSpecTexPrivateData* )pData;
 		SAFE_DELETE(pPrivate);
 	}
-	else if (nType == SYMaterial_EnvMapTex)
+	else if (nType == BaseGraphMaterial_EnvMapTex)
 	{
-		SYEnvMapTexPrivateData* pPrivate = (SYEnvMapTexPrivateData* )pData;
+		BaseGraphEnvMapTexPrivateData* pPrivate = (BaseGraphEnvMapTexPrivateData* )pData;
 		SAFE_DELETE(pPrivate);
 	}
-	else if(nType == SYMaterial_EmissiveTex)
+	else if(nType == BaseGraphMaterial_EmissiveTex)
 	{
-		SYEmissiveTexPrivateData* pPrivate = (SYEmissiveTexPrivateData* )pData;
+		BaseGraphEmissiveTexPrivateData* pPrivate = (BaseGraphEmissiveTexPrivateData* )pData;
 		SAFE_DELETE(pPrivate);
 	}
-	else if(nType == SYMaterial_BumpTex)
+	else if(nType == BaseGraphMaterial_BumpTex)
 	{
-		SYBumpTexPrivateData* pPrivate = (SYBumpTexPrivateData* )pData;
+		BumpTexPrivateData* pPrivate = (BumpTexPrivateData* )pData;
 		SAFE_DELETE(pPrivate);
 	}
 	pData = NULL;
@@ -206,72 +206,72 @@ void ReleaseTexPrivateData(void*& pData,int nType)
 
 void CreateTexPrivateData(void** ppData,int nType,void* pSrcData = NULL)
 {
-	if (nType == SYMaterial_SpecTex)
+	if (nType == BaseGraphMaterial_SpecTex)
 	{
 		if(!*ppData)
 		{
-			*ppData = new SYSpecTexPrivateData;
+			*ppData = new BaseGraphSpecTexPrivateData;
 		}
 		if(!pSrcData)
 		{
-			((SYSpecTexPrivateData*)*ppData)->fFactor = 1;
+			((BaseGraphSpecTexPrivateData*)*ppData)->fFactor = 1;
 		}
 		else
-			memcpy(*ppData,pSrcData,sizeof(SYSpecTexPrivateData));
+			memcpy(*ppData,pSrcData,sizeof(BaseGraphSpecTexPrivateData));
 	}
-	else if (nType == SYMaterial_EnvMapTex)
+	else if (nType == BaseGraphMaterial_EnvMapTex)
 	{
 		if(!*ppData)
 		{
-			*ppData = new SYEnvMapTexPrivateData;
+			*ppData = new BaseGraphEnvMapTexPrivateData;
 		}
 		if(!pSrcData)
 		{
-			((SYEnvMapTexPrivateData*)*ppData)->fFactor = 1;
+			((BaseGraphEnvMapTexPrivateData*)*ppData)->fFactor = 1;
 		}
 		else
-			memcpy(*ppData,pSrcData,sizeof(SYEnvMapTexPrivateData));
+			memcpy(*ppData,pSrcData,sizeof(BaseGraphEnvMapTexPrivateData));
 	}
-	else if(nType == SYMaterial_EmissiveTex)
+	else if(nType == BaseGraphMaterial_EmissiveTex)
 	{
 		if(!*ppData)
 		{
-			*ppData = new SYEmissiveTexPrivateData;
+			*ppData = new BaseGraphEmissiveTexPrivateData;
 		}
 		if(!pSrcData)
 		{
-			((SYEmissiveTexPrivateData*)*ppData)->fFactor = 1;
+			((BaseGraphEmissiveTexPrivateData*)*ppData)->fFactor = 1;
 		}
 		else
-			memcpy(*ppData,pSrcData,sizeof(SYEmissiveTexPrivateData));
+			memcpy(*ppData,pSrcData,sizeof(BaseGraphEmissiveTexPrivateData));
 	}
-	else if(nType == SYMaterial_BumpTex)
+	else if(nType == BaseGraphMaterial_BumpTex)
 	{
 		if(!*ppData)
 		{
-			*ppData = new SYBumpTexPrivateData;
+			*ppData = new BumpTexPrivateData;
 		}
 		if(!pSrcData)
 		{	
-			((SYBumpTexPrivateData*)*ppData)->fFactor = 1;
-			((SYBumpTexPrivateData*)*ppData)->bReverse = 1;
+			((BumpTexPrivateData*)*ppData)->fFactor = 1;
+			((BumpTexPrivateData*)*ppData)->bReverse = 1;
 		}
 		else
-			memcpy(*ppData,pSrcData,sizeof(SYBumpTexPrivateData));
+			memcpy(*ppData,pSrcData,sizeof(BumpTexPrivateData));
 	}
 }
-void SYMaterial_ReleaseTexSrc(SYMatTex* pTex)
+void BaseGraphMaterial_ReleaseTexSrc(BaseGraphMatTex* pTex)
 {
 	switch(pTex->nSrcType)
 	{
-	case SYMaterial_PicFile:
-	case SYMaterial_MovFile:
+	case BaseGraphMaterial_PicFile:
+	case BaseGraphMaterial_MovFile:
 		SAFEDELETE_ARRAY(pTex->pTexPath);
 		break;
-	case SYMaterial_Object:
+	case BaseGraphMaterial_Object:
 		SAFEDELETE_ARRAY(pTex->pTexSrc);
 		break;
-	case SYMaterial_Buffer:
+	case BaseGraphMaterial_Buffer:
 		if(pTex->pBufferDef)
 		{
 			SAFEDELETE_ARRAY(pTex->pBufferDef->m_dwBuffer);
@@ -280,14 +280,14 @@ void SYMaterial_ReleaseTexSrc(SYMatTex* pTex)
 		break;
 	}
 }
-void SYMaterial_CreateTexSrc(SYMatTex* pTex,int nSrcType,void* pData)
+void BaseGraphMaterial_CreateTexSrc(BaseGraphMatTex* pTex,int nSrcType,void* pData)
 {
 	pTex->nSrcType = nSrcType;
 	size_t nLen;
 	switch(pTex->nSrcType)
 	{
-	case SYMaterial_PicFile:
-	case SYMaterial_MovFile:
+	case BaseGraphMaterial_PicFile:
+	case BaseGraphMaterial_MovFile:
 		{
 			TCHAR* pPath = (TCHAR*)pData;
 			nLen = _tcsclen(pPath) + 1;
@@ -295,7 +295,7 @@ void SYMaterial_CreateTexSrc(SYMatTex* pTex,int nSrcType,void* pData)
 			_tcscpy_s(pTex->pTexPath,nLen,pPath);
 		}
 		break;
-	case SYMaterial_Object:
+	case BaseGraphMaterial_Object:
 		{
 			TCHAR* pObject = (TCHAR*)pData;
 			nLen = _tcsclen(pObject) + 1;
@@ -303,7 +303,7 @@ void SYMaterial_CreateTexSrc(SYMatTex* pTex,int nSrcType,void* pData)
 			_tcscpy_s(pTex->pTexSrc,nLen,pObject);
 		}
 		break;
-	case SYMaterial_Buffer:
+	case BaseGraphMaterial_Buffer:
 		{
 			CommonBufferDef32* pBuffer = (CommonBufferDef32*)pData;
 			if(pBuffer && pBuffer->m_dwBuffer)
@@ -318,27 +318,27 @@ void SYMaterial_CreateTexSrc(SYMatTex* pTex,int nSrcType,void* pData)
 	}
 }
 
-void SYMaterial_ReleaseTex(SYMatTex* pTex)
+void BaseGraphMaterial_ReleaseTex(BaseGraphMatTex* pTex)
 {
-	SYMaterial_ReleaseTexSrc(pTex);
+	BaseGraphMaterial_ReleaseTexSrc(pTex);
 	ReleaseTexPrivateData(pTex->pData,pTex->nType);
 }
-void BASEGRAPH_DATARENDER_API SYMaterial_Release( SYMaterial* pMaterial )
+void BASEGRAPH_DATARENDER_API BaseGraphMaterial_Release( BaseGraphMaterial* pMaterial )
 {
 	if (pMaterial == NULL)
 		return;
-	for (int i = 0; i < SYMaterial_TexTypeCount;i++)
+	for (int i = 0; i < BaseGraphMaterial_TexTypeCount;i++)
 	{
-		SYMatTex* pTex = pMaterial->m_TexArray.ppTex[i];
+		BaseGraphMatTex* pTex = pMaterial->m_TexArray.ppTex[i];
 		if(pTex)
 		{
-			SYMaterial_ReleaseTex(pTex); 
+			BaseGraphMaterial_ReleaseTex(pTex); 
 		}
 		SAFE_DELETE(pMaterial->m_TexArray.ppTex[i]);
 	}
-	for (int i = 0; i < SYMaterial_ShaderTypeCount;i++)
+	for (int i = 0; i < BaseGraphMaterial_ShaderTypeCount;i++)
 	{
-		SYJoinShader* pShader = pMaterial->m_ShaderArray.ppShader[i];
+		BaseGraphJoinShader* pShader = pMaterial->m_ShaderArray.ppShader[i];
 		if(pShader)
 		{
 			SAFEDELETE_ARRAY(pShader->strHead);
@@ -349,10 +349,10 @@ void BASEGRAPH_DATARENDER_API SYMaterial_Release( SYMaterial* pMaterial )
 	}
 }
 
-void SYMaterial_CopyTex(SYMatTex* pDesTex,SYMatTex* pSrcTex)
+void BaseGraphMaterial_CopyTex(BaseGraphMatTex* pDesTex,BaseGraphMatTex* pSrcTex)
 {
 	ReleaseTexPrivateData(pDesTex->pData,pDesTex->nType);
-	SYMaterial_ReleaseTexSrc(pDesTex);
+	BaseGraphMaterial_ReleaseTexSrc(pDesTex);
 
 	pDesTex->TexOffset = pSrcTex->TexOffset;
 	pDesTex->TexScale = pSrcTex->TexScale;
@@ -367,20 +367,20 @@ void SYMaterial_CopyTex(SYMatTex* pDesTex,SYMatTex* pSrcTex)
 	pDesTex->disable = pSrcTex->disable;
 	switch(pSrcTex->nSrcType)
 	{
-	case SYMaterial_PicFile:
-	case SYMaterial_MovFile:
+	case BaseGraphMaterial_PicFile:
+	case BaseGraphMaterial_MovFile:
 		{
-			SYMaterial_CreateTexSrc(pDesTex,pSrcTex->nSrcType,pSrcTex->pTexPath);
+			BaseGraphMaterial_CreateTexSrc(pDesTex,pSrcTex->nSrcType,pSrcTex->pTexPath);
 		}
 		break;
-	case SYMaterial_Object:
+	case BaseGraphMaterial_Object:
 		{
-			SYMaterial_CreateTexSrc(pDesTex,pSrcTex->nSrcType,pSrcTex->pTexSrc);
+			BaseGraphMaterial_CreateTexSrc(pDesTex,pSrcTex->nSrcType,pSrcTex->pTexSrc);
 		}
 		break;
-	case SYMaterial_Buffer:
+	case BaseGraphMaterial_Buffer:
 		{
-			SYMaterial_CreateTexSrc(pDesTex,pSrcTex->nSrcType,pSrcTex->pBufferDef);
+			BaseGraphMaterial_CreateTexSrc(pDesTex,pSrcTex->nSrcType,pSrcTex->pBufferDef);
 		}
 		break;
 	}
@@ -388,56 +388,56 @@ void SYMaterial_CopyTex(SYMatTex* pDesTex,SYMatTex* pSrcTex)
 	CreateTexPrivateData(&pDesTex->pData,pDesTex->nType,pSrcTex->pData);
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_Copy( OUT SYMaterial* pDesMaterial, IN const SYMaterial* pSrcMaterial )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_Copy( OUT BaseGraphMaterial* pDesMaterial, IN const BaseGraphMaterial* pSrcMaterial )
 {
 	pDesMaterial->m_nVersion = pSrcMaterial->m_nVersion;
-	int nChangeType = SYMaterial_NoChange;
-	memcpy(&pDesMaterial->m_PhyData,&pSrcMaterial->m_PhyData,sizeof(SYPhyData));
-	nChangeType |= SYMaterial_PhyDataChange;
+	int nChangeType = BaseGraphMaterial_NoChange;
+	memcpy(&pDesMaterial->m_PhyData,&pSrcMaterial->m_PhyData,sizeof(BaseGraphPhyData));
+	nChangeType |= BaseGraphMaterial_PhyDataChange;
 
-	for (int i = 0; i < SYMaterial_TexTypeCount;i++)
+	for (int i = 0; i < BaseGraphMaterial_TexTypeCount;i++)
 	{
-		SYMatTex* pDesTex = pDesMaterial->m_TexArray.ppTex[i];
-		SYMatTex* pSrcTex = pSrcMaterial->m_TexArray.ppTex[i];
+		BaseGraphMatTex* pDesTex = pDesMaterial->m_TexArray.ppTex[i];
+		BaseGraphMatTex* pSrcTex = pSrcMaterial->m_TexArray.ppTex[i];
 		if(pDesTex == NULL && pSrcTex == NULL)
 			continue;
 		else if(pDesTex != NULL && pSrcTex != NULL)
 		{
-			int nTexParamChange = SYMaterial_DiffuseParamChange << i;
+			int nTexParamChange = BaseGraphMaterial_DiffuseParamChange << i;
 			nChangeType |= nTexParamChange;
-			int nTexChange = SYMaterial_DiffTexChange << i;
+			int nTexChange = BaseGraphMaterial_DiffTexChange << i;
 			nChangeType |= nTexParamChange;
-			SYMaterial_CopyTex(pDesTex,pSrcTex);
+			BaseGraphMaterial_CopyTex(pDesTex,pSrcTex);
 		}
 		else
 		{
-			nChangeType |= SYMaterial_TexCountChange;
+			nChangeType |= BaseGraphMaterial_TexCountChange;
 			if (pDesTex)
 			{
-				SYMaterial_ReleaseTex(pDesTex);
+				BaseGraphMaterial_ReleaseTex(pDesTex);
 				SAFE_DELETE(pDesTex);
 				pDesMaterial->m_TexArray.ppTex[i] = NULL;
 			}
 
 			if(pSrcTex)
 			{
-				pDesTex = new SYMatTex;
+				pDesTex = new BaseGraphMatTex;
 				pDesMaterial->m_TexArray.ppTex[i] = pDesTex;
-				memset(pDesTex,0,sizeof(SYMatTex));
-				SYMaterial_CopyTex(pDesTex,pSrcTex);
+				memset(pDesTex,0,sizeof(BaseGraphMatTex));
+				BaseGraphMaterial_CopyTex(pDesTex,pSrcTex);
 			}
 		}
 	}
 
-	for (int i = 0; i < SYMaterial_TexTypeCount + 1;i++)
+	for (int i = 0; i < BaseGraphMaterial_TexTypeCount + 1;i++)
 	{
-		SYJoinShader* pDesShader = pDesMaterial->m_ShaderArray.ppShader[i];
-		SYJoinShader* pSrcShader = pSrcMaterial->m_ShaderArray.ppShader[i];
+		BaseGraphJoinShader* pDesShader = pDesMaterial->m_ShaderArray.ppShader[i];
+		BaseGraphJoinShader* pSrcShader = pSrcMaterial->m_ShaderArray.ppShader[i];
 		if (pDesShader == NULL && pSrcShader == NULL)
 			continue;
 		else
 		{
-			nChangeType |= SYMaterial_ShaderChange;
+			nChangeType |= BaseGraphMaterial_ShaderChange;
    			if (pDesShader)
 			{
 				SAFEDELETE_ARRAY(pDesShader->strHead);
@@ -448,8 +448,8 @@ BASEGRAPH_DATARENDER_API int SYMaterial_Copy( OUT SYMaterial* pDesMaterial, IN c
 
 			if(pSrcShader)
 			{
-				pDesShader = new SYJoinShader;
-				memset(pDesShader,0,sizeof(SYJoinShader));
+				pDesShader = new BaseGraphJoinShader;
+				memset(pDesShader,0,sizeof(BaseGraphJoinShader));
 				pDesShader->nType = i;
 				pDesMaterial->m_ShaderArray.ppShader[i] = pDesShader;
 				size_t nLen = strlen(pSrcShader->strHead) + 1;
@@ -465,7 +465,7 @@ BASEGRAPH_DATARENDER_API int SYMaterial_Copy( OUT SYMaterial* pDesMaterial, IN c
 	return nChangeType;
 }
 
-BASEGRAPH_DATARENDER_API BOOL SYMaterial_Compare( const SYMaterial* pMaterial1, const SYMaterial* pMaterial2 )
+BASEGRAPH_DATARENDER_API BOOL BaseGraphMaterial_Compare( const BaseGraphMaterial* pMaterial1, const BaseGraphMaterial* pMaterial2 )
 {
 	if (pMaterial1 == NULL && pMaterial2 == NULL)
 		return TRUE;
@@ -477,24 +477,24 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_Compare( const SYMaterial* pMaterial1, 
 	{
 		return FALSE;
 	}
-	if (memcmp(&pMaterial1->m_PhyData, &pMaterial2->m_PhyData, sizeof(SYPhyData)) != 0)
+	if (memcmp(&pMaterial1->m_PhyData, &pMaterial2->m_PhyData, sizeof(BaseGraphPhyData)) != 0)
 	{
 		return FALSE;
 	}
-	for (int i = 0; i < SYMaterial_TexTypeCount;i++)
+	for (int i = 0; i < BaseGraphMaterial_TexTypeCount;i++)
 	{
-		SYMatTex* pMatTex1 = pMaterial1->m_TexArray.ppTex[i];
-		SYMatTex* pMatTex2 = pMaterial2->m_TexArray.ppTex[i];
-		if (!SYMatTex_Compare(pMatTex1, pMatTex2))
+		BaseGraphMatTex* pMatTex1 = pMaterial1->m_TexArray.ppTex[i];
+		BaseGraphMatTex* pMatTex2 = pMaterial2->m_TexArray.ppTex[i];
+		if (!BaseGraphMatTex_Compare(pMatTex1, pMatTex2))
 		{
 			return FALSE;
 		}
 	}
-	for (int i = 0; i < SYMaterial_ShaderTypeCount;i++)
+	for (int i = 0; i < BaseGraphMaterial_ShaderTypeCount;i++)
 	{
-		SYJoinShader* pShader1 = pMaterial1->m_ShaderArray.ppShader[i];
-		SYJoinShader* pShader2 = pMaterial2->m_ShaderArray.ppShader[i];
-		if (!SYJoinShader_Compare(pShader1, pShader2))
+		BaseGraphJoinShader* pShader1 = pMaterial1->m_ShaderArray.ppShader[i];
+		BaseGraphJoinShader* pShader2 = pMaterial2->m_ShaderArray.ppShader[i];
+		if (!BaseGraphJoinShader_Compare(pShader1, pShader2))
 		{
 			return FALSE;
 		}
@@ -503,7 +503,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_Compare( const SYMaterial* pMaterial1, 
 	return TRUE;
 }
 
-BASEGRAPH_DATARENDER_API BOOL	SYMatTex_Compare( const SYMatTex* pMatTex1, const SYMatTex* pMatTex2)
+BASEGRAPH_DATARENDER_API BOOL	BaseGraphMatTex_Compare( const BaseGraphMatTex* pMatTex1, const BaseGraphMatTex* pMatTex2)
 {
 	if (pMatTex1 == NULL && pMatTex2 == NULL)
 		return TRUE;
@@ -528,8 +528,8 @@ BASEGRAPH_DATARENDER_API BOOL	SYMatTex_Compare( const SYMatTex* pMatTex1, const 
 
 	switch(pMatTex1->nSrcType)
 	{
-	case SYMaterial_PicFile:
-	case SYMaterial_MovFile:
+	case BaseGraphMaterial_PicFile:
+	case BaseGraphMaterial_MovFile:
 		{
 			if (_tcscmp(pMatTex1->pTexPath, pMatTex2->pTexPath) != 0)
 			{
@@ -537,7 +537,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYMatTex_Compare( const SYMatTex* pMatTex1, const 
 			}
 		}
 		break;
-	case SYMaterial_Object:
+	case BaseGraphMaterial_Object:
 		{
 			if (_tcscmp(pMatTex1->pTexSrc, pMatTex2->pTexSrc) != 0)
 			{
@@ -545,7 +545,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYMatTex_Compare( const SYMatTex* pMatTex1, const 
 			}
 		}
 		break;
-	case SYMaterial_Buffer:
+	case BaseGraphMaterial_Buffer:
 		{
 			if (!CommonBufferDef32_Compare(pMatTex1->pBufferDef, pMatTex2->pBufferDef))
 			{
@@ -557,40 +557,40 @@ BASEGRAPH_DATARENDER_API BOOL	SYMatTex_Compare( const SYMatTex* pMatTex1, const 
 
 	switch(pMatTex1->nSrcType)
 	{
-	case SYMaterial_SpecTex:
+	case BaseGraphMaterial_SpecTex:
 		{
-			SYSpecTexPrivateData *pData1 = (SYSpecTexPrivateData*)pMatTex1->pData;
-			SYSpecTexPrivateData *pData2 = (SYSpecTexPrivateData*)pMatTex2->pData;
+			BaseGraphSpecTexPrivateData *pData1 = (BaseGraphSpecTexPrivateData*)pMatTex1->pData;
+			BaseGraphSpecTexPrivateData *pData2 = (BaseGraphSpecTexPrivateData*)pMatTex2->pData;
 			if (pData1->fFactor != pData2->fFactor)
 			{
 				return FALSE;
 			}
 		}
 		break;
-	case SYMaterial_EnvMapTex:
+	case BaseGraphMaterial_EnvMapTex:
 		{
-			SYEnvMapTexPrivateData *pData1 = (SYEnvMapTexPrivateData*)pMatTex1->pData;
-			SYEnvMapTexPrivateData *pData2 = (SYEnvMapTexPrivateData*)pMatTex2->pData;
+			BaseGraphEnvMapTexPrivateData *pData1 = (BaseGraphEnvMapTexPrivateData*)pMatTex1->pData;
+			BaseGraphEnvMapTexPrivateData *pData2 = (BaseGraphEnvMapTexPrivateData*)pMatTex2->pData;
 			if (pData1->fFactor != pData2->fFactor)
 			{
 				return FALSE;
 			}
 		}
 		break;
-	case SYMaterial_EmissiveTex:
+	case BaseGraphMaterial_EmissiveTex:
 		{
-			SYEmissiveTexPrivateData *pData1 = (SYEmissiveTexPrivateData*)pMatTex1->pData;
-			SYEmissiveTexPrivateData *pData2 = (SYEmissiveTexPrivateData*)pMatTex2->pData;
+			BaseGraphEmissiveTexPrivateData *pData1 = (BaseGraphEmissiveTexPrivateData*)pMatTex1->pData;
+			BaseGraphEmissiveTexPrivateData *pData2 = (BaseGraphEmissiveTexPrivateData*)pMatTex2->pData;
 			if (pData1->fFactor != pData2->fFactor)
 			{
 				return FALSE;
 			}
 		}
 		break;
-	case SYMaterial_BumpTex:
+	case BaseGraphMaterial_BumpTex:
 		{
-			SYBumpTexPrivateData *pData1 = (SYBumpTexPrivateData*)pMatTex1->pData;
-			SYBumpTexPrivateData *pData2 = (SYBumpTexPrivateData*)pMatTex2->pData;
+			BumpTexPrivateData *pData1 = (BumpTexPrivateData*)pMatTex1->pData;
+			BumpTexPrivateData *pData2 = (BumpTexPrivateData*)pMatTex2->pData;
 			if (pData1->fFactor != pData2->fFactor ||
 				pData1->bReverse != pData2->bReverse)
 			{
@@ -603,7 +603,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYMatTex_Compare( const SYMatTex* pMatTex1, const 
 	return TRUE;
 }
 
-BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1, const SYJoinShader* pShader2)
+BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinShader* pShader1, const BaseGraphJoinShader* pShader2)
 {
 	if (pShader1 == NULL && pShader2 == NULL)
 		return TRUE;
@@ -621,14 +621,14 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 	return TRUE;
 }
 
-//void SYMaterial_AddTexPrivateKeyValue(double dFrame,param_def* param,SYMatTex* pTex,void* pValue)
+//void BaseGraphMaterial_AddTexPrivateKeyValue(double dFrame,param_def* param,BaseGraphMatTex* pTex,void* pValue)
 //{
 //	switch(pTex->nType)
 //	{
-//	case SYMaterial_SpecTex:
-//	case SYMaterial_EnvMapTex:
-//	case SYMaterial_EmissiveTex:
-//	case SYMaterial_BumpTex:
+//	case BaseGraphMaterial_SpecTex:
+//	case BaseGraphMaterial_EnvMapTex:
+//	case BaseGraphMaterial_EmissiveTex:
+//	case BaseGraphMaterial_BumpTex:
 //		{
 //			float* pData = (float*)pValue;
 //			float fValue = *pData - *(float*)pTex->pData;
@@ -638,19 +638,19 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //	}
 //}
 
-//void SYMaterial_AddTexKeyValue(double dFrame,BaseARray* pArTexParam,SYMatTex* pTex,void* pValue,int nType)
+//void BaseGraphMaterial_AddTexKeyValue(double dFrame,BaseARray* pArTexParam,BaseGraphMatTex* pTex,void* pValue,int nType)
 //{
 //	param_def* param = (param_def*)BaseAR_GetAt(pArTexParam,nType);
 //	switch(nType)
 //	{
-//	case SYTex_Offset_ParamDef:
+//	case BaseGraphTex_Offset_ParamDef:
 //		{
 //			float2* pData = (float2*)pValue;
 //			float2 offset = *pData - pTex->TexOffset;
 //			AddClipKeyFrame(param,dFrame,(BYTE*)&offset);
 //		}
 //		break;
-//	case SYTex_Scale_ParamDef:
+//	case BaseGraphTex_Scale_ParamDef:
 //		{
 //			float2* pData = (float2*)pValue;
 //			float2 offset = *pData;
@@ -659,29 +659,29 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //			AddClipKeyFrame(param,dFrame,(BYTE*)&offset);
 //		}
 //		break;
-//	case SYTex_Center_ParamDef:
+//	case BaseGraphTex_Center_ParamDef:
 //		{
 //			float2* pData = (float2*)pValue;
 //			float2 offset = *pData - pTex->Center;
 //			AddClipKeyFrame(param,dFrame,(BYTE*)&offset);
 //		}
 //		break;
-//	case SYTex_Rotate_ParamDef:
+//	case BaseGraphTex_Rotate_ParamDef:
 //		{
 //			float* pRotate = (float*)pValue;
 //			float rotate =  *pRotate - pTex->TexRotate;
 //			AddClipKeyFrame(param,dFrame,(BYTE*)&rotate);
 //		}
 //		break;
-//	case SYTex_Private_ParamDef:
-//		SYMaterial_AddTexPrivateKeyValue(dFrame,param,pTex,pValue);
+//	case BaseGraphTex_Private_ParamDef:
+//		BaseGraphMaterial_AddTexPrivateKeyValue(dFrame,param,pTex,pValue);
 //		break;
 //	}
 //}
 
-//void SYMaterial_AddPrivateParamdef(BaseARray* pArTexParam ,int nTexType)
+//void BaseGraphMaterial_AddPrivateParamdef(BaseARray* pArTexParam ,int nTexType)
 //{
-//	if(nTexType == SYMaterial_SpecTex)
+//	if(nTexType == BaseGraphMaterial_SpecTex)
 //	{
 //		param_def* pparamdefFactor = new param_def;
 //		sy_init_paramdef(pparamdefFactor,sizeof(float),NULL);
@@ -691,7 +691,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //		pparamdefFactor->interpolate.pRanges[0].fSecond = 1.f;
 //		BaseAR_Add( pArTexParam, pparamdefFactor );
 //	}
-//	else if(nTexType == SYMaterial_EnvMapTex)
+//	else if(nTexType == BaseGraphMaterial_EnvMapTex)
 //	{
 //		param_def* pparamdefFactor = new param_def;
 //		sy_init_paramdef(pparamdefFactor,sizeof(float),NULL);
@@ -701,7 +701,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //		pparamdefFactor->interpolate.pRanges[0].fSecond = 1.f;
 //		BaseAR_Add( pArTexParam, pparamdefFactor );
 //	}
-//	else if(nTexType == SYMaterial_EmissiveTex)
+//	else if(nTexType == BaseGraphMaterial_EmissiveTex)
 //	{
 //		param_def* pparamdefFactor = new param_def;
 //		sy_init_paramdef(pparamdefFactor,sizeof(float),NULL);
@@ -711,7 +711,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //		pparamdefFactor->interpolate.pRanges[0].fSecond = 1.f;
 //		BaseAR_Add( pArTexParam, pparamdefFactor );
 //	}
-//	else if(nTexType == SYMaterial_BumpTex)
+//	else if(nTexType == BaseGraphMaterial_BumpTex)
 //	{
 //		param_def* pparamdefFactor = new param_def;
 //		sy_init_paramdef(pparamdefFactor,sizeof(float),NULL);
@@ -722,7 +722,7 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //		BaseAR_Add( pArTexParam, pparamdefFactor );
 //	}
 //}
-//void SYMaterial_AddParamdef(BaseARray* pArTexParam ,int nTexType)
+//void BaseGraphMaterial_AddParamdef(BaseARray* pArTexParam ,int nTexType)
 //{
 //	static const float2 vec = {0,0},vec1 = {1,1};
 //	param_def* pparamdef_offset = new param_def;
@@ -763,25 +763,25 @@ BASEGRAPH_DATARENDER_API BOOL	SYJoinShader_Compare( const SYJoinShader* pShader1
 //	pparamdefrotate->interpolate.pRanges[0].fSecond = 1.f;
 //	BaseAR_Add( pArTexParam, pparamdefrotate );
 //
-//	SYMaterial_AddPrivateParamdef(pArTexParam ,nTexType);
+//	BaseGraphMaterial_AddPrivateParamdef(pArTexParam ,nTexType);
 //}
 
-BASEGRAPH_DATARENDER_API int SYMaterial_AddTex(SYMaterial* pMaterial,int nTexType)
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_AddTex(BaseGraphMaterial* pMaterial,int nTexType)
 {
 	if (pMaterial->m_TexArray.ppTex[nTexType])
 	{
 		//添加Shader
 		if (pMaterial->m_ShaderArray.ppShader[nTexType] == NULL)
 		{
-			SYJoinShader* pShder = new SYJoinShader;
-			SYMaterial_AddShader(pShder,nTexType);
+			BaseGraphJoinShader* pShder = new BaseGraphJoinShader;
+			BaseGraphMaterial_AddShader(pShder,nTexType);
 			pMaterial->m_ShaderArray.ppShader[nTexType] = pShder;
-			return SYMaterial_TexCountChange;
+			return BaseGraphMaterial_TexCountChange;
 		}
-		return SYMaterial_NoChange;
+		return BaseGraphMaterial_NoChange;
 	}
-	SYMatTex* pTex = new SYMatTex;
-	memset(pTex,0,sizeof(SYMatTex));
+	BaseGraphMatTex* pTex = new BaseGraphMatTex;
+	memset(pTex,0,sizeof(BaseGraphMatTex));
 	pTex->nType = nTexType;
 	pTex->bRepeat = TRUE;
 	pTex->TexScale.x = pTex->TexScale.y = 1.f;
@@ -789,186 +789,186 @@ BASEGRAPH_DATARENDER_API int SYMaterial_AddTex(SYMaterial* pMaterial,int nTexTyp
 	pMaterial->m_TexArray.ppTex[nTexType] = pTex;
 
 	//添加Shader
-	SYJoinShader* pShder = new SYJoinShader;
-	SYMaterial_AddShader(pShder,nTexType);
+	BaseGraphJoinShader* pShder = new BaseGraphJoinShader;
+	BaseGraphMaterial_AddShader(pShder,nTexType);
 	pMaterial->m_ShaderArray.ppShader[nTexType] = pShder;
 
-	return SYMaterial_TexCountChange;
+	return BaseGraphMaterial_TexCountChange;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_RemoveTex( SYMaterial* pMaterial,int nTexType )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_RemoveTex( BaseGraphMaterial* pMaterial,int nTexType )
 {
 	if (!pMaterial->m_TexArray.ppTex[nTexType])
-		return SYMaterial_NoChange;
-	SYMaterial_ReleaseTex(pMaterial->m_TexArray.ppTex[nTexType]);
+		return BaseGraphMaterial_NoChange;
+	BaseGraphMaterial_ReleaseTex(pMaterial->m_TexArray.ppTex[nTexType]);
 	SAFE_DELETE(pMaterial->m_TexArray.ppTex[nTexType]);
 
 	//删除Shader
-	SYMaterial_RemoveShader(pMaterial,nTexType);
-	return SYMaterial_TexCountChange;
+	BaseGraphMaterial_RemoveShader(pMaterial,nTexType);
+	return BaseGraphMaterial_TexCountChange;
 }
 
-BASEGRAPH_DATARENDER_API void* SYMaterial_GetTexSrc( SYMaterial* pMaterial,int nTexType )
+BASEGRAPH_DATARENDER_API void* BaseGraphMaterial_GetTexSrc( BaseGraphMaterial* pMaterial,int nTexType )
 {
 	if (!pMaterial->m_TexArray.ppTex[nTexType])
 		return NULL;
 	return pMaterial->m_TexArray.ppTex[nTexType]->pTexPath;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_GetTexSrcType( SYMaterial* pMaterial,int nIndex )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_GetTexSrcType( BaseGraphMaterial* pMaterial,int nIndex )
 {
 	if (!pMaterial->m_TexArray.ppTex[nIndex])
-		return SYMaterial_Invid;
+		return BaseGraphMaterial_Invid;
 	return pMaterial->m_TexArray.ppTex[nIndex]->nSrcType;
 
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetTexSrc( SYMaterial* pMat,int nTexIndex,int nSrcType,void* pData )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetTexSrc( BaseGraphMaterial* pMat,int nTexIndex,int nSrcType,void* pData )
 {
-	SYMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
 	if (!pTex)
-		return SYMaterial_NoChange;
-	SYMaterial_ReleaseTexSrc(pTex);
-	SYMaterial_CreateTexSrc(pTex,nSrcType,pData);
-	return SYMaterial_DiffTexChange << nTexIndex;
+		return BaseGraphMaterial_NoChange;
+	BaseGraphMaterial_ReleaseTexSrc(pTex);
+	BaseGraphMaterial_CreateTexSrc(pTex,nSrcType,pData);
+	return BaseGraphMaterial_DiffTexChange << nTexIndex;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetTexOffset( SYMaterial* pMat,int nTexIndex,float2* pOffset )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetTexOffset( BaseGraphMaterial* pMat,int nTexIndex,float2* pOffset )
 {
-	SYMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
 	if (!pTex)
-		return SYMaterial_NoChange;
+		return BaseGraphMaterial_NoChange;
 	pTex->TexOffset = *pOffset;
-	return SYMaterial_DiffuseParamChange << nTexIndex;
+	return BaseGraphMaterial_DiffuseParamChange << nTexIndex;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetTexScale( SYMaterial* pMat,int nTexIndex,float2* pScale )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetTexScale( BaseGraphMaterial* pMat,int nTexIndex,float2* pScale )
 {
-	SYMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
 	if (!pTex)
-		return SYMaterial_NoChange;
+		return BaseGraphMaterial_NoChange;
 	pTex->TexScale = *pScale;
-	return SYMaterial_DiffuseParamChange << nTexIndex;
+	return BaseGraphMaterial_DiffuseParamChange << nTexIndex;
 
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetTexCenter( SYMaterial* pMat,int nTexIndex,float2* pCenter )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetTexCenter( BaseGraphMaterial* pMat,int nTexIndex,float2* pCenter )
 {
-	SYMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
 	if (!pTex)
-		return SYMaterial_NoChange;
+		return BaseGraphMaterial_NoChange;
 	pTex->Center = *pCenter;
-	return SYMaterial_DiffuseParamChange << nTexIndex;
+	return BaseGraphMaterial_DiffuseParamChange << nTexIndex;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetTexRotate( SYMaterial* pMat,int nTexIndex,float fRotate )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetTexRotate( BaseGraphMaterial* pMat,int nTexIndex,float fRotate )
 {
-	SYMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
 	if (!pTex)
-		return SYMaterial_NoChange;
+		return BaseGraphMaterial_NoChange;
 	pTex->TexRotate = fRotate;
-	return SYMaterial_DiffuseParamChange << nTexIndex;
+	return BaseGraphMaterial_DiffuseParamChange << nTexIndex;
 
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetTexPrivateData( SYMaterial* pMat,int nTexIndex,void* pData )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetTexPrivateData( BaseGraphMaterial* pMat,int nTexIndex,void* pData )
 {
-	SYMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
 	if (!pTex)
-		return SYMaterial_NoChange;
+		return BaseGraphMaterial_NoChange;
 	switch(pTex->nType)
 	{
-	case SYMaterial_SpecTex:
-	case SYMaterial_EnvMapTex:
-	case SYMaterial_EmissiveTex:
+	case BaseGraphMaterial_SpecTex:
+	case BaseGraphMaterial_EnvMapTex:
+	case BaseGraphMaterial_EmissiveTex:
 		{
-			SYSpecTexPrivateData* pValue = (SYSpecTexPrivateData*)pData;
-			*(SYSpecTexPrivateData*)pTex->pData = *pValue;
+			BaseGraphSpecTexPrivateData* pValue = (BaseGraphSpecTexPrivateData*)pData;
+			*(BaseGraphSpecTexPrivateData*)pTex->pData = *pValue;
 		}
 		break;
-	case SYMaterial_BumpTex:
+	case BaseGraphMaterial_BumpTex:
 		{
-			SYBumpTexPrivateData* pValue = (SYBumpTexPrivateData*)pData;
-			*(SYBumpTexPrivateData*)pTex->pData = *pValue;
+			BumpTexPrivateData* pValue = (BumpTexPrivateData*)pData;
+			*(BumpTexPrivateData*)pTex->pData = *pValue;
 		}
 		break;
 	}
-	return SYMaterial_DiffuseParamChange << nTexIndex;
+	return BaseGraphMaterial_DiffuseParamChange << nTexIndex;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetPhyColor( SYMaterial* pMat,DWORD color )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetPhyColor( BaseGraphMaterial* pMat,DWORD color )
 {
 	pMat->m_PhyData.Diffuse = color;
 	pMat->m_PhyData.Ambient = color;
 	pMat->m_PhyData.Specular = 0xffffffff;
-	return SYMaterial_PhyDataChange;
+	return BaseGraphMaterial_PhyDataChange;
 }
 
-BASEGRAPH_DATARENDER_API int		SYMaterial_SetPhyParam(SYMaterial* pMat,const SYPhyRenderData* pData)
+BASEGRAPH_DATARENDER_API int		BaseGraphMaterial_SetPhyParam(BaseGraphMaterial* pMat,const BaseGraphPhyRenderData* pData)
 {
 	Float4ToDWORDColor(&pMat->m_PhyData.Diffuse,pData->Diffuse);
 	Float4ToDWORDColor(&pMat->m_PhyData.Ambient,pData->Ambient);
 	Float4ToDWORDColor(&pMat->m_PhyData.Specular,pData->Specular);
 	Float4ToDWORDColor(&pMat->m_PhyData.Emissive,pData->Emissive);
-	return SYMaterial_PhyDataChange;
+	return BaseGraphMaterial_PhyDataChange;
 }
-BASEGRAPH_DATARENDER_API int SYMaterial_SetPhyParam( SYMaterial* pMat,const SYPhyData* pData )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetPhyParam( BaseGraphMaterial* pMat,const BaseGraphPhyData* pData )
 {
-	memcpy(&pMat->m_PhyData,pData,sizeof(SYPhyData));
-	return SYMaterial_PhyDataChange;
+	memcpy(&pMat->m_PhyData,pData,sizeof(BaseGraphPhyData));
+	return BaseGraphMaterial_PhyDataChange;
 }
 
-BASEGRAPH_DATARENDER_API void SYMaterial_SetChangeType(SYVideoMaterial* pVideoMat,int nChangeType)
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_SetChangeType(BaseGraphVideoMaterial* pVideoMat,int nChangeType)
 {
 	if(pVideoMat)
 		pVideoMat->m_nChangeType |= nChangeType;
 }
-BASEGRAPH_DATARENDER_API void SYMaterial_ClearAllChangeType(SYVideoMaterial* pVideoMat,int nChangeType = 0)
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_ClearAllChangeType(BaseGraphVideoMaterial* pVideoMat,int nChangeType = 0)
 {
 	if(pVideoMat)
 		pVideoMat->m_nChangeType = nChangeType;
 }
-BASEGRAPH_DATARENDER_API void SYMaterial_ClearChangeType(SYVideoMaterial* pVideoMat,int nChangeType)
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_ClearChangeType(BaseGraphVideoMaterial* pVideoMat,int nChangeType)
 {
 	if(pVideoMat)
 		pVideoMat->m_nChangeType &= ~nChangeType;
 }
 
-BASEGRAPH_DATARENDER_API void SYMaterial_CreateVideoMat( SYVideoMaterial* pVideoMat,SYMaterial* pMaterial ,int hDevice,BOOL bEdit)
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_CreateVideoMat( BaseGraphVideoMaterial* pVideoMat,BaseGraphMaterial* pMaterial ,int hDevice,BOOL bEdit)
 {
-	memset(pVideoMat,0,sizeof(SYVideoMaterial));
+	memset(pVideoMat,0,sizeof(BaseGraphVideoMaterial));
 	pVideoMat->m_hDevice = hDevice;
-	//SYMaterial_PhyToPhyRenderData(&pVideoMat->m_PhyData,&pMaterial->m_PhyData);
+	//BaseGraphMaterial_PhyToPhyRenderData(&pVideoMat->m_PhyData,&pMaterial->m_PhyData);
 	pVideoMat->m_bEdit = bEdit;
 	pVideoMat->m_hPhyCB = NULL;//DX3DEngine_CreateBuffer(pVideoMat->m_hDevice,sizeof(float4),5,NULL,DXConstBuffer);
 	pVideoMat->m_dTime = 0;
 	pVideoMat->m_dTotalTime = 0;
 	pVideoMat->m_pShaderStr = NULL;
 	pVideoMat->m_pMaterial = pMaterial;
-	SYMaterial_ClearAllChangeType(pVideoMat,SYMaterial_ALLChange);
+	BaseGraphMaterial_ClearAllChangeType(pVideoMat,BaseGraphMaterial_ALLChange);
 
-	memset(&pVideoMat->m_VideoTexAr,0,sizeof(SYMatVideoTexArray));
+	memset(&pVideoMat->m_VideoTexAr,0,sizeof(BaseGraphMatVideoTexArray));
 }
 
-void SYMaterial_SetStaticPhyParam(SYVideoMaterial* pMat,SYPhyRenderData* pData,int nType)
+void BaseGraphMaterial_SetStaticPhyParam(BaseGraphVideoMaterial* pMat,BaseGraphPhyRenderData* pData,int nType)
 {
-	if(nType & SYMATERIAL_DIFFUSE_COLOR)
+	if(nType & BaseGraphMATERIAL_DIFFUSE_COLOR)
 		pMat->m_PhyDataStatic.Diffuse = pData->Diffuse;
-	if(nType & SYMATERIAL_SPECTURE_COLOR)
+	if(nType & BaseGraphMATERIAL_SPECTURE_COLOR)
 		pMat->m_PhyDataStatic.Specular = pData->Specular;
-	if(nType & SYMATERIAL_AMBEINT_COLOR	)	
+	if(nType & BaseGraphMATERIAL_AMBEINT_COLOR	)	
 		pMat->m_PhyDataStatic.Ambient = pData->Ambient;
-	if(nType & SYMATERIAL_EMISSIVE_COLOR)		
+	if(nType & BaseGraphMATERIAL_EMISSIVE_COLOR)		
 		pMat->m_PhyDataStatic.Emissive = pData->Emissive;
-	if(nType & SYMATERIAL_FACTOR)	
+	if(nType & BaseGraphMATERIAL_FACTOR)	
 		pMat->m_PhyDataStatic.Power = pData->Power;
-	if(nType & SYMATERIAL_ALPHA	)
+	if(nType & BaseGraphMATERIAL_ALPHA	)
 		pMat->m_PhyDataStatic.fAlpha = pData->fAlpha;
-	if(nType & SYMATERIAL_DISABLE	)
+	if(nType & BaseGraphMATERIAL_DISABLE	)
 		pMat->m_PhyDataStatic.disable = pData->disable;
-	SYMaterial_SetChangeType(pMat, SYMaterial_PhyDataChange);
+	BaseGraphMaterial_SetChangeType(pMat, BaseGraphMaterial_PhyDataChange);
 }
-void SYMaterial_ReleaseVideoTex(int hDevice,SYMatVideoTex* pTex,BOOL bReleaseParam = TRUE)
+void BaseGraphMaterial_ReleaseVideoTex(int hDevice,BaseGraphMatVideoTex* pTex,BOOL bReleaseParam = TRUE)
 {
 	//if (pTex)
 	//{
@@ -991,7 +991,7 @@ void SYMaterial_ReleaseVideoTex(int hDevice,SYMatVideoTex* pTex,BOOL bReleasePar
 	//	}
 	//	if(pTex->pSeekData)
 	//	{
-	//		SYMovieClose(pTex->pSeekData->pVideoSeekData);
+	//		BaseGraphMovieClose(pTex->pSeekData->pVideoSeekData);
 	//		pTex->pSeekData->pVideoSeekData = NULL;
 	//		SAFE_DELETE(pTex->pSeekData);
 	//	}
@@ -1000,7 +1000,7 @@ void SYMaterial_ReleaseVideoTex(int hDevice,SYMatVideoTex* pTex,BOOL bReleasePar
 	//}
 }
 
-BASEGRAPH_DATARENDER_API void SYMaterial_ReleaseVideoMat( SYVideoMaterial* pVideoMat )
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_ReleaseVideoMat( BaseGraphVideoMaterial* pVideoMat )
 {
 	if(!pVideoMat)
 		return;
@@ -1009,10 +1009,10 @@ BASEGRAPH_DATARENDER_API void SYMaterial_ReleaseVideoMat( SYVideoMaterial* pVide
 	delete[] pVideoMat->m_pShaderName;
 	pVideoMat->m_pMaterial = NULL;
 	
-	for (int i = 0; i < SYMaterial_TexTypeCount;i++)
+	for (int i = 0; i < BaseGraphMaterial_TexTypeCount;i++)
 	{
-		SYMatVideoTex* pTex = pVideoMat->m_VideoTexAr.ppVTex[i];
-		SYMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pTex);
+		BaseGraphMatVideoTex* pTex = pVideoMat->m_VideoTexAr.ppVTex[i];
+		BaseGraphMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pTex);
 		SAFE_DELETE(pVideoMat->m_VideoTexAr.ppVTex[i]);
 	}
 }
@@ -1020,11 +1020,11 @@ BASEGRAPH_DATARENDER_API void SYMaterial_ReleaseVideoMat( SYVideoMaterial* pVide
 const char* g_NOlightProcess = "fDiffContrib = DiffuseRef; //fSpecContrib = SpeculRef; fEmissiveContrib = Emissive;\n";
 const int g_NoLightLen = 86;
 
-int SYMaterial_GetSubShaderSize(SYMaterial* pMat)
+int BaseGraphMaterial_GetSubShaderSize(BaseGraphMaterial* pMat)
 {
 	size_t nSize = 0;
 
-	for (int i = 0; i <SYMaterial_ShaderTypeCount;i++)
+	for (int i = 0; i <BaseGraphMaterial_ShaderTypeCount;i++)
 	{
 		if (!pMat->m_ShaderArray.ppShader[i])
 			continue;
@@ -1035,7 +1035,7 @@ int SYMaterial_GetSubShaderSize(SYMaterial* pMat)
 	return (int)nSize;
 }
 
-const TCHAR* gSubShaderName[SYMaterial_ShaderTypeCount] =
+const TCHAR* gSubShaderName[BaseGraphMaterial_ShaderTypeCount] =
 {
 	_T("diffuse_"),		//材质
 	_T("spec_"),		//高光
@@ -1044,11 +1044,11 @@ const TCHAR* gSubShaderName[SYMaterial_ShaderTypeCount] =
 	_T("bump_"),		//凹凸
 	_T("light_"),
 };
-void SYMaterial_JoinShader(SYVideoMaterial* pVideoMat,int nLightNum)
+void BaseGraphMaterial_JoinShader(BaseGraphVideoMaterial* pVideoMat,int nLightNum)
 {
 	nLightNum = max(0,nLightNum);
 
-	int nShaderSize = g_nMainHeadSize + g_nMainSize + SYMaterial_GetSubShaderSize(pVideoMat->m_pMaterial) + 1;
+	int nShaderSize = g_nMainHeadSize + g_nMainSize + BaseGraphMaterial_GetSubShaderSize(pVideoMat->m_pMaterial) + 1;
 	SAFEDELETE_ARRAY(pVideoMat->m_pShaderStr);
 	pVideoMat->m_pShaderStr = new char[nShaderSize];
 	pVideoMat->m_pShaderStr[0] = 0;
@@ -1056,11 +1056,11 @@ void SYMaterial_JoinShader(SYVideoMaterial* pVideoMat,int nLightNum)
 	strShaderName[0] = 0;
 	//插入shader的头部分
 	strcpy_s(pVideoMat->m_pShaderStr,nShaderSize,g_strShaderMainHead);
-	for (int i = 0;i < SYMaterial_ShaderTypeCount;i++)
+	for (int i = 0;i < BaseGraphMaterial_ShaderTypeCount;i++)
 	{
 		if(!pVideoMat->m_pMaterial->m_ShaderArray.ppShader[i])
 			continue;
-		if((nLightNum == 0) && ( i > SYMaterial_DiffuseShader ) )
+		if((nLightNum == 0) && ( i > BaseGraphMaterial_DiffuseShader ) )
 			continue;
 		strcat_s(pVideoMat->m_pShaderStr,nShaderSize,pVideoMat->m_pMaterial->m_ShaderArray.ppShader[i]->strHead);
 		_tcscat_s(strShaderName,gSubShaderName[i]);
@@ -1111,7 +1111,7 @@ void SYMaterial_JoinShader(SYVideoMaterial* pVideoMat,int nLightNum)
 	//printf(pVideoMat->m_pShaderStr);
 }
 
-BOOL IsNeedUpdateTexParamBuffer(float2* pNewOffset,float2* pNewScale,float2* pNewCenter,float* pNewRotate,SYMatVideoTex* pVideoTex)
+BOOL IsNeedUpdateTexParamBuffer(float2* pNewOffset,float2* pNewScale,float2* pNewCenter,float* pNewRotate,BaseGraphMatVideoTex* pVideoTex)
 {
 	if(*pNewOffset != pVideoTex->CurTexOffset)
 		return TRUE;
@@ -1124,7 +1124,7 @@ BOOL IsNeedUpdateTexParamBuffer(float2* pNewOffset,float2* pNewScale,float2* pNe
 	return FALSE;
 }
 
-BOOL IsNeedUpdatePhyParamBuffer(float fAlpha,const float4& diffuse,const float4& ambient,const float4& specular,const float4& emissive,SYVideoMaterial* pVideoMat)
+BOOL IsNeedUpdatePhyParamBuffer(float fAlpha,const float4& diffuse,const float4& ambient,const float4& specular,const float4& emissive,BaseGraphVideoMaterial* pVideoMat)
 {
 	if(fAlpha != pVideoMat->m_fAlpha)
 		return TRUE;
@@ -1143,10 +1143,10 @@ BOOL IsNeedUpdatePhyParamBuffer(float fAlpha,const float4& diffuse,const float4&
 #define PHY_AMBIENT		1
 #define PHY_SPECULAR	2
 #define PHY_EMISSIVE	3
-int UpdatePhyParam(double dTime,SYMaterialParam* pMatParam,SYVideoMaterial* pVideoMat,float fAlpha)
+int UpdatePhyParam(double dTime,BaseGraphMaterialParam* pMatParam,BaseGraphVideoMaterial* pVideoMat,float fAlpha)
 {
 	//assert(pVideoMat);
-	//SYMaterial* pMaterial = pVideoMat->m_pMaterial;
+	//BaseGraphMaterial* pMaterial = pVideoMat->m_pMaterial;
 	//float4 phy[5] = {0};
 	//float fMatAlpha;
 
@@ -1184,7 +1184,7 @@ int UpdatePhyParam(double dTime,SYMaterialParam* pMatParam,SYVideoMaterial* pVid
 
 	//fAlpha *= fMatAlpha;
 	//pVideoMat->m_PhyData.fAlpha = fMatAlpha;
-	//if(!pVideoMat->m_hPhyCB || pVideoMat->m_nChangeType & SYMaterial_PhyDataChange ||
+	//if(!pVideoMat->m_hPhyCB || pVideoMat->m_nChangeType & BaseGraphMaterial_PhyDataChange ||
 	//	IsNeedUpdatePhyParamBuffer(fAlpha,phy[PHY_DIFFUSE],phy[PHY_AMBIENT],phy[PHY_SPECULAR],phy[PHY_EMISSIVE],pVideoMat))
 	//{
 	//	pVideoMat->m_PhyData.Diffuse = phy[PHY_DIFFUSE];
@@ -1201,13 +1201,13 @@ int UpdatePhyParam(double dTime,SYMaterialParam* pMatParam,SYVideoMaterial* pVid
 	//		pVideoMat->m_hPhyCB = DX3DEngine_CreateBuffer(pVideoMat->m_hDevice,sizeof(float4),5,phy,DXConstBuffer);
 	//	else
 	//		DX3DEngine_ModifyBuffer(pVideoMat->m_hDevice,pVideoMat->m_hPhyCB,phy);
-	//	return SYMaterial_PhyDataChange;
+	//	return BaseGraphMaterial_PhyDataChange;
 	//}
-	//SYMaterial_ClearChangeType(pVideoMat,SYMaterial_PhyDataChange);
-	return SYMaterial_NoChange;
+	//BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_PhyDataChange);
+	return BaseGraphMaterial_NoChange;
 }
 
-BOOL CalTexMatrix(matrix4f* pTexMat,double dTotalTime,double dFrame,BaseARray* pTexParam,SYMatVideoTex* pVideoTex,SYMatTex* pTex)
+BOOL CalTexMatrix(matrix4f* pTexMat,double dTotalTime,double dFrame,BaseARray* pTexParam,BaseGraphMatVideoTex* pVideoTex,BaseGraphMatTex* pTex)
 {
 	float2	Offset = {0,0}, Scale = {1,1}, Center = {0,0}; 
 	float	Rotate = 0;
@@ -1224,13 +1224,13 @@ BOOL CalTexMatrix(matrix4f* pTexMat,double dTotalTime,double dFrame,BaseARray* p
 	{
 		if(pTexParam)
 		{
-			//param_def* pParam = (param_def*)BaseAR_GetAt(pTexParam,SYTex_Offset_ParamDef);
+			//param_def* pParam = (param_def*)BaseAR_GetAt(pTexParam,BaseGraphTex_Offset_ParamDef);
 			//calc_get_value(pParam,dFrame,&Offset,NULL);
-			//pParam = (param_def*)BaseAR_GetAt(pTexParam,SYTex_Scale_ParamDef);
+			//pParam = (param_def*)BaseAR_GetAt(pTexParam,BaseGraphTex_Scale_ParamDef);
 			//calc_get_value(pParam,dFrame,&Scale,NULL);
-			//pParam = (param_def*)BaseAR_GetAt(pTexParam,SYTex_Center_ParamDef);
+			//pParam = (param_def*)BaseAR_GetAt(pTexParam,BaseGraphTex_Center_ParamDef);
 			//calc_get_value(pParam,dFrame,&Center,NULL);
-			//pParam = (param_def*)BaseAR_GetAt(pTexParam,SYTex_Rotate_ParamDef);
+			//pParam = (param_def*)BaseAR_GetAt(pTexParam,BaseGraphTex_Rotate_ParamDef);
 			//calc_get_value(pParam,dFrame,&Rotate,NULL);
 		}
 
@@ -1274,7 +1274,7 @@ BOOL CalTexMatrix(matrix4f* pTexMat,double dTotalTime,double dFrame,BaseARray* p
 	pVideoTex->CurTexRotate = Rotate;
 	return TRUE;
 }
-BOOL UpdateTexParam(double dTotalFrame,double dFrame,int hDevice,SYMaterialParam* pMatParam,SYMatVideoTex* pVideoTex,SYMatTex* pTex)
+BOOL UpdateTexParam(double dTotalFrame,double dFrame,int hDevice,BaseGraphMaterialParam* pMatParam,BaseGraphMatVideoTex* pVideoTex,BaseGraphMatTex* pTex)
 {
 	if(!pTex || !pVideoTex )
 		return FALSE;
@@ -1289,10 +1289,10 @@ BOOL UpdateTexParam(double dTotalFrame,double dFrame,int hDevice,SYMaterialParam
 
 	//param_def* pParam = NULL;
 	//if(pMatParam)
-	//	pParam = (param_def*)BaseAR_GetAt(&pMatParam->texParam[pTex->nType],SYTex_Private_ParamDef);
-	//if(pTex->nType == SYMaterial_SpecTex 
-	//	|| pTex->nType == SYMaterial_EnvMapTex 
-	//	|| pTex->nType == SYMaterial_EmissiveTex 
+	//	pParam = (param_def*)BaseAR_GetAt(&pMatParam->texParam[pTex->nType],BaseGraphTex_Private_ParamDef);
+	//if(pTex->nType == BaseGraphMaterial_SpecTex 
+	//	|| pTex->nType == BaseGraphMaterial_EnvMapTex 
+	//	|| pTex->nType == BaseGraphMaterial_EmissiveTex 
 	//	)
 	//{
 	//	float fValue = 0;
@@ -1315,12 +1315,12 @@ BOOL UpdateTexParam(double dTotalFrame,double dFrame,int hDevice,SYMaterialParam
 	//		nSize = 5 * sizeof(float4);
 	//	}
 	//}
-	//else if(pTex->nType == SYMaterial_BumpTex)
+	//else if(pTex->nType == BaseGraphMaterial_BumpTex)
 	//{
 	//	float fValue = 0;
 	//	if(pParam)
 	//		calc_get_value(pParam,dFrame,&fValue,NULL);
-	//	SYBumpTexPrivateData* pValue = (SYBumpTexPrivateData*)pTex->pData;
+	//	BumpTexPrivateData* pValue = (BumpTexPrivateData*)pTex->pData;
 	//	if (!pTex->disable)
 	//	{
 	//		TexData1[4].x = fValue + pValue->fFactor;
@@ -1353,35 +1353,35 @@ BOOL UpdateTexParam(double dTotalFrame,double dFrame,int hDevice,SYMaterialParam
 	return bChange;
 }
 
-BASEGRAPH_DATARENDER_API int SYUpdateDynamicTex(double dTotalFrame,int hDevice,SYMatVideoTex* pVideoTex,SYMatTex* pTex)
+BASEGRAPH_DATARENDER_API int SYUpdateDynamicTex(double dTotalFrame,int hDevice,BaseGraphMatVideoTex* pVideoTex,BaseGraphMatTex* pTex)
 {
 	return UpdateTexParam(dTotalFrame,dTotalFrame,hDevice,NULL,pVideoTex,pTex);
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_UpdateFrame( SYVideoMaterial* pVideoMat,double dFrame,float fFrameRate,float fAlpha,int nLightNum,SYMaterialParam* param,void* pEnvParam, LPRECT pBound/* = NULL*/)
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_UpdateFrame( BaseGraphVideoMaterial* pVideoMat,double dFrame,float fFrameRate,float fAlpha,int nLightNum,BaseGraphMaterialParam* param,void* pEnvParam, LPRECT pBound/* = NULL*/)
 {
 	int nChange = 0;
-	if(param || pVideoMat->m_nChangeType & SYMaterial_PhyDataChange)
+	if(param || pVideoMat->m_nChangeType & BaseGraphMaterial_PhyDataChange)
 		nChange |= UpdatePhyParam(dFrame,param,pVideoMat,fAlpha);
-	if(pVideoMat->m_nChangeType & SYMaterial_TexCountChange)
+	if(pVideoMat->m_nChangeType & BaseGraphMaterial_TexCountChange)
 	{
-		for (int i = 0; i < SYMaterial_TexTypeCount;i++)
+		for (int i = 0; i < BaseGraphMaterial_TexTypeCount;i++)
 		{
 			if (pVideoMat->m_pMaterial->m_TexArray.ppTex[i] &&
 				pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->disable)
 			{
-				SYMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i]);
+				BaseGraphMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i]);
 				SAFE_DELETE(pVideoMat->m_VideoTexAr.ppVTex[i]);
 			}
 			else if (pVideoMat->m_VideoTexAr.ppVTex[i]&& !pVideoMat->m_pMaterial->m_TexArray.ppTex[i])
 			{
-				SYMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i]);
+				BaseGraphMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i]);
 				SAFE_DELETE(pVideoMat->m_VideoTexAr.ppVTex[i]);
 			}
 			else if(!pVideoMat->m_VideoTexAr.ppVTex[i]&& pVideoMat->m_pMaterial->m_TexArray.ppTex[i])
 			{
-				SYMatVideoTex* pTex = new SYMatVideoTex;
-				memset(pTex,0,sizeof(SYMatVideoTex));
+				BaseGraphMatVideoTex* pTex = new BaseGraphMatVideoTex;
+				memset(pTex,0,sizeof(BaseGraphMatVideoTex));
 				pTex->CurTexScale.x = 1;
 				pTex->CurTexScale.y = 1;
 				pTex->bTexNeedRelease = TRUE;
@@ -1389,66 +1389,66 @@ BASEGRAPH_DATARENDER_API int SYMaterial_UpdateFrame( SYVideoMaterial* pVideoMat,
 				CreateTexPrivateData(&pTex->pCurData,i);
 				pVideoMat->m_VideoTexAr.ppVTex[i] = pTex;
 
-				SYMaterial_SetChangeType(pVideoMat,SYMaterial_DiffTexChange << i | SYMaterial_DiffuseParamChange << i);
+				BaseGraphMaterial_SetChangeType(pVideoMat,BaseGraphMaterial_DiffTexChange << i | BaseGraphMaterial_DiffuseParamChange << i);
 			}
 		}
 	}
-	if((pVideoMat->m_nChangeType & SYMaterial_TexCountChange) || (pVideoMat->m_nChangeType & SYMaterial_ShaderChange) || nLightNum != pVideoMat->m_nLightNum)
+	if((pVideoMat->m_nChangeType & BaseGraphMaterial_TexCountChange) || (pVideoMat->m_nChangeType & BaseGraphMaterial_ShaderChange) || nLightNum != pVideoMat->m_nLightNum)
 	{
-		SYMaterial_JoinShader(pVideoMat,nLightNum);
-		SYMaterial_ClearChangeType(pVideoMat,SYMaterial_TexCountChange | SYMaterial_ShaderChange);
+		BaseGraphMaterial_JoinShader(pVideoMat,nLightNum);
+		BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_TexCountChange | BaseGraphMaterial_ShaderChange);
 		pVideoMat->m_nLightNum = nLightNum;
-		nChange |=  SYMaterial_ShaderChange;
+		nChange |=  BaseGraphMaterial_ShaderChange;
 	}
 	if (pVideoMat->m_dTime != dFrame)
 	{
 		pVideoMat->m_dTotalTime += dFrame - pVideoMat->m_dTime;
 		//if(UpdatePhyParam(nTime,param,pVideoMat,fAlpha ))
-		//	nChange |= SYMaterial_PhyDataChange;
-		for(int i = 0; i< SYMaterial_TexTypeCount;i ++)
+		//	nChange |= BaseGraphMaterial_PhyDataChange;
+		for(int i = 0; i< BaseGraphMaterial_TexTypeCount;i ++)
 		{
-			if(SYMaterial_UpdateTex(NULL,NULL,NULL,SYMaterial_DiffuseTex + i,dFrame,fFrameRate, pVideoMat,pEnvParam, FALSE, pBound))
-				nChange |=  SYMaterial_DiffTexChange << i;
+			if(BaseGraphMaterial_UpdateTex(NULL,NULL,NULL,BaseGraphMaterial_DiffuseTex + i,dFrame,fFrameRate, pVideoMat,pEnvParam, FALSE, pBound))
+				nChange |=  BaseGraphMaterial_DiffTexChange << i;
 			if(UpdateTexParam(pVideoMat->m_dTotalTime,dFrame,pVideoMat->m_hDevice,param,pVideoMat->m_VideoTexAr.ppVTex[i],pVideoMat->m_pMaterial->m_TexArray.ppTex[i]))
-				nChange |=  SYMaterial_DiffuseParamChange << i;
-			SYMaterial_ClearChangeType(pVideoMat,SYMaterial_DiffTexChange << i | SYMaterial_DiffuseParamChange << i);
+				nChange |=  BaseGraphMaterial_DiffuseParamChange << i;
+			BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_DiffTexChange << i | BaseGraphMaterial_DiffuseParamChange << i);
 		}
 		pVideoMat->m_dTime = dFrame;
 	}
 	else
 	{
 		//pVideoMat->m_dTotalTime += 1;
-		for(int i = 0; i < SYMaterial_TexTypeCount; i++)
+		for(int i = 0; i < BaseGraphMaterial_TexTypeCount; i++)
 		{
 			if(!pVideoMat->m_pMaterial->m_TexArray.ppTex[i]
 			|| pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->disable)
 				continue;
 
-			if (pVideoMat->m_nChangeType & SYMaterial_DiffTexChange << i || pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->nSrcType == SYMaterial_MovFile)
+			if (pVideoMat->m_nChangeType & BaseGraphMaterial_DiffTexChange << i || pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->nSrcType == BaseGraphMaterial_MovFile)
 			{
-				if(SYMaterial_UpdateTex(NULL,NULL,NULL,SYMaterial_DiffuseTex + i,dFrame,fFrameRate,pVideoMat,pEnvParam, FALSE, pBound))
-					nChange |=  SYMaterial_DiffTexChange << i;
-				SYMaterial_ClearChangeType(pVideoMat,SYMaterial_DiffTexChange << i);
+				if(BaseGraphMaterial_UpdateTex(NULL,NULL,NULL,BaseGraphMaterial_DiffuseTex + i,dFrame,fFrameRate,pVideoMat,pEnvParam, FALSE, pBound))
+					nChange |=  BaseGraphMaterial_DiffTexChange << i;
+				BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_DiffTexChange << i);
 			}
-			if(pVideoMat->m_nChangeType & SYMaterial_DiffuseParamChange << i || pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->bAutoRun)
+			if(pVideoMat->m_nChangeType & BaseGraphMaterial_DiffuseParamChange << i || pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->bAutoRun)
 			{				
 				if(UpdateTexParam(pVideoMat->m_dTotalTime,dFrame,pVideoMat->m_hDevice,param,pVideoMat->m_VideoTexAr.ppVTex[i],pVideoMat->m_pMaterial->m_TexArray.ppTex[i]))
-					nChange |=  SYMaterial_DiffuseParamChange << i;
-				SYMaterial_ClearChangeType(pVideoMat,SYMaterial_DiffuseParamChange << i);
+					nChange |=  BaseGraphMaterial_DiffuseParamChange << i;
+				BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_DiffuseParamChange << i);
 			}
 		}
 	}
 	return nChange;
 }
 
-BASEGRAPH_DATARENDER_API void SYMaterial_SetParamToDevice( SYVideoMaterial* pVideoMat, BOOL bAdd)
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_SetParamToDevice( BaseGraphVideoMaterial* pVideoMat, BOOL bAdd)
 {
 	bool bAlpha = (pVideoMat->m_fAlpha != 1) || (pVideoMat->m_PhyData.Diffuse.w < 1);
 
-	DX3DEngine_SetConstBuffer(pVideoMat->m_hDevice,pVideoMat->m_hPhyCB,SYMaterial_PhyParam,DXShaderType_PixelShader);
-	for(int i = 0; i < SYMaterial_TexTypeCount;i++)
+	DX3DEngine_SetConstBuffer(pVideoMat->m_hDevice,pVideoMat->m_hPhyCB,BaseGraphMaterial_PhyParam,DXShaderType_PixelShader);
+	for(int i = 0; i < BaseGraphMaterial_TexTypeCount;i++)
 	{
-		SYMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[i];
+		BaseGraphMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[i];
 		if(pVideoTex)
 		{
 			if(pVideoMat==NULL || 
@@ -1456,29 +1456,29 @@ BASEGRAPH_DATARENDER_API void SYMaterial_SetParamToDevice( SYVideoMaterial* pVid
 				pVideoMat->m_pMaterial->m_TexArray.ppTex[i]==NULL)// ||
 // 				pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->disable)
 				continue;
-			if(pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->nSrcType == SYMaterial_MovFile)
+			if(pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->nSrcType == BaseGraphMaterial_MovFile)
 			{
 				int test = 0;
 			}
 			if (pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->pTexPath != NULL &&
 				_tcscmp(pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->pTexPath, _T("NONE")) == 0)
 			{
-				SYMaterial_SetChangeType(pVideoMat,SYMaterial_ShaderChange);
-				//SYMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i], FALSE);
+				BaseGraphMaterial_SetChangeType(pVideoMat,BaseGraphMaterial_ShaderChange);
+				//BaseGraphMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i], FALSE);
 				//SAFE_DELETE(pVideoMat->m_VideoTexAr.ppVTex[i]);
 			}
 			bAlpha = true;
-			DX3DEngine_SetConstBuffer(pVideoMat->m_hDevice,pVideoTex->hTexCB,SYMaterial_DiffuseShaderParam + i,DXShaderType_PixelShader);
+			DX3DEngine_SetConstBuffer(pVideoMat->m_hDevice,pVideoTex->hTexCB,BaseGraphMaterial_DiffuseShaderParam + i,DXShaderType_PixelShader);
 			DXSampleStateType nState = DXSample_Anisotropic_Clamp;
 			if(pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->bAutoRun )
 				nState = pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->bRepeat ? DXSample_Anisotropic_Wrap : DXSample_Anisotropic_Border;
-			else if(i == SYMaterial_SpecTex)
+			else if(i == BaseGraphMaterial_SpecTex)
 				nState = pVideoMat->m_bTexClamp ? DXSample_NoMipMap_Anisotropic_Clamp : DXSample_NoMipMap_Anisotropic_Wrap ;
 			else
 				nState = pVideoMat->m_bTexClamp ? DXSample_Line_Clamp : DXSample_Line_Wrap ;
 
-			DX3DEngine_SetSampleState(pVideoMat->m_hDevice,SYMaterial_DiffuseShaderParam + i,nState,DXShaderType_PixelShader);
-			DX3DEngine_SetShaderTexture(pVideoMat->m_hDevice,pVideoTex->hTex,SYMaterial_DiffuseShaderParam + i,DXShaderType_PixelShader);
+			DX3DEngine_SetSampleState(pVideoMat->m_hDevice,BaseGraphMaterial_DiffuseShaderParam + i,nState,DXShaderType_PixelShader);
+			DX3DEngine_SetShaderTexture(pVideoMat->m_hDevice,pVideoTex->hTex,BaseGraphMaterial_DiffuseShaderParam + i,DXShaderType_PixelShader);
 			if(0)
 				DX3DEngine_DumpTexture(pVideoMat->m_hDevice,pVideoTex->hTex);
 		}
@@ -1496,12 +1496,12 @@ BASEGRAPH_DATARENDER_API void SYMaterial_SetParamToDevice( SYVideoMaterial* pVid
 	}
 }
 
-SYMovieResource* CreateMovieResource(TCHAR* pTexPath,double dTime,int hDevice)
+BaseGraphMovieResource* CreateMovieResource(TCHAR* pTexPath,double dTime,int hDevice)
 {
 	//SMovieInfo movieInfo;
-	//if( !SYGetMovieInfo( pTexPath, movieInfo ) || movieInfo.dwFrameNum == 0 )
+	//if( !BaseGraphGetMovieInfo( pTexPath, movieInfo ) || movieInfo.dwFrameNum == 0 )
 	//	return FALSE;
-	//SYMovieResource* pResource = new SYMovieResource;
+	//BaseGraphMovieResource* pResource = new BaseGraphMovieResource;
 	//pResource->pVideoSource = new CFileVideoSource();
 
 	//VideoSourceInfo vs_info;   
@@ -1554,19 +1554,19 @@ int CalcMoviePlayTime( int nField, int nTotalFrame )
 	int nRealFrame = (nField/2)%nTotalFrame;
 	return nRealFrame;
 }
-BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBufferDef, DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate, SYVideoMaterial* pVideoMat,void* param,BOOL isForceUpdate /*= FALSE*/, LPRECT pBound/* = NULL*/ )
+BASEGRAPH_DATARENDER_API BOOL BaseGraphMaterial_UpdateTex( CommonBufferDef32* pSrcBufferDef, DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate, BaseGraphVideoMaterial* pVideoMat,void* param,BOOL isForceUpdate /*= FALSE*/, LPRECT pBound/* = NULL*/ )
 {
-	SYMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
 	if(!pTex)
 		return FALSE;
-	SYMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[nTexIndex];
+	BaseGraphMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[nTexIndex];
 	if(!pVideoTex)
 		return FALSE;
 
-	if(pTex->nSrcType == SYMaterial_Object)
+	if(pTex->nSrcType == BaseGraphMaterial_Object)
 	{
 		RECT rtBuffer;
-		g_pObjectFun(SYMaterial_GetBufferSize,&rtBuffer,NULL,g_pObjectParam,param);
+		g_pObjectFun(BaseGraphMaterial_GetBufferSize,&rtBuffer,NULL,g_pObjectParam,param);
 		if(!pVideoTex->hTex)
 		{
 			pVideoTex->hTex = DX3DEngine_CreateTexture(pVideoMat->m_hDevice,rtBuffer.right,rtBuffer.bottom,DXTexture_Normal2DTex);
@@ -1583,12 +1583,12 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 				pVideoTex->bTexNeedRelease = TRUE;
 			}
 		}
-		return g_pObjectFun(SYMaterial_GetBuffer,NULL,pVideoTex->hTex,g_pObjectParam,param);
+		return g_pObjectFun(BaseGraphMaterial_GetBuffer,NULL,pVideoTex->hTex,g_pObjectParam,param);
 	}
-	else if(pTex->nSrcType == SYMaterial_Channel)
+	else if(pTex->nSrcType == BaseGraphMaterial_Channel)
 	{
 		RECT rtBuffer;
-		g_pChannelFun(SYMaterial_GetBufferSize,&rtBuffer,NULL,g_pChannelParam,param);
+		g_pChannelFun(BaseGraphMaterial_GetBufferSize,&rtBuffer,NULL,g_pChannelParam,param);
 		if(!pVideoTex->hTex)
 		{
 			pVideoTex->hTex = DX3DEngine_CreateTexture(pVideoMat->m_hDevice,rtBuffer.right,rtBuffer.bottom,DXTexture_Normal2DTex);
@@ -1605,11 +1605,11 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 				pVideoTex->bTexNeedRelease = TRUE;
 			}
 		}
-		return g_pChannelFun(SYMaterial_GetBuffer,NULL,pVideoTex->hTex,g_pChannelParam,param);
+		return g_pChannelFun(BaseGraphMaterial_GetBuffer,NULL,pVideoTex->hTex,g_pChannelParam,param);
 	}
-	else if(pTex->nSrcType == SYMaterial_PicFile)
+	else if(pTex->nSrcType == BaseGraphMaterial_PicFile)
 	{
-		if(!(pVideoMat->m_nChangeType & SYMaterial_DiffTexChange << pTex->nType))
+		if(!(pVideoMat->m_nChangeType & BaseGraphMaterial_DiffTexChange << pTex->nType))
 			return FALSE;
 		//处理图片
 		if(pVideoTex->hTex)
@@ -1624,7 +1624,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 		if (/*pTex->disable || */!pTex->pTexPath || _taccess(realpath, 0) == -1)
 			return FALSE;
 
-		BOOL bMap = pTex->nType == SYMaterial_BumpTex;
+		BOOL bMap = pTex->nType == BaseGraphMaterial_BumpTex;
 
 		pVideoTex->hTex = DX3DEngine_CreateTextureFromFile(pVideoMat->m_hDevice,realpath,bMap);
 #ifdef _DEBUG
@@ -1639,9 +1639,9 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 		}
 		return TRUE;
 	}
-	else if(pTex->nSrcType == SYMaterial_MovFile)
+	else if(pTex->nSrcType == BaseGraphMaterial_MovFile)
 	{
-		//if(!(pVideoMat->m_nChangeType & SYMaterial_DiffTexChange << pTex->nType) && pVideoMat->m_dTime == dTime)
+		//if(!(pVideoMat->m_nChangeType & BaseGraphMaterial_DiffTexChange << pTex->nType) && pVideoMat->m_dTime == dTime)
 		//	return FALSE;
 
 		if (!pTex->pTexPath )
@@ -1651,9 +1651,9 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 		if( _taccess(realpath, 0) == -1)
 			return FALSE;
 
-		if((pVideoMat->m_nChangeType & SYMaterial_DiffTexChange << pTex->nType))
+		if((pVideoMat->m_nChangeType & BaseGraphMaterial_DiffTexChange << pTex->nType))
 		{
-			SYMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoTex,FALSE);
+			BaseGraphMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoTex,FALSE);
 		}
 
 		int nField = (int)pVideoMat->m_dTotalTime;
@@ -1661,9 +1661,9 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 		{
 			//if(!pVideoTex->pSeekData)
 			//{   
-			//	pVideoTex->pSeekData = new SYMovieSeekData;
+			//	pVideoTex->pSeekData = new BaseGraphMovieSeekData;
 			//	SMovieInfo movieInfo;
-			//	SYGetMovieInfo(realpath, movieInfo );
+			//	BaseGraphGetMovieInfo(realpath, movieInfo );
 			//	pVideoTex->pSeekData->nWidth = movieInfo.nMotionWidth;
 			//	pVideoTex->pSeekData->nHeight = movieInfo.nMotionHeight;
 			//	if (pBound)
@@ -1693,21 +1693,21 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 			//	}
 			//	pVideoTex->pSeekData->nTotalFrame = movieInfo.dwFrameNum;
 			//	pVideoTex->pSeekData->pVideoSeekData = NULL;
-			//	SYMoviePrePlay(realpath,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight,fFrameRate,
+			//	BaseGraphMoviePrePlay(realpath,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight,fFrameRate,
 			//		pVideoTex->pSeekData->pVideoSeekData, TRUE );
 			//	pVideoTex->pSeekData->movie_buffer.Create(pVideoTex->pSeekData->nWidth , pVideoTex->pSeekData->nHeight);
 
 			//}
 
 			//int nMovieTime = CalcMoviePlayTime(nField,pVideoTex->pSeekData->nTotalFrame);    
-			//SYMoviePlay(pVideoTex->pSeekData->pVideoSeekData, &pVideoTex->pSeekData->movie_buffer,nMovieTime , NULL, NULL );
+			//BaseGraphMoviePlay(pVideoTex->pSeekData->pVideoSeekData, &pVideoTex->pSeekData->movie_buffer,nMovieTime , NULL, NULL );
 			//if(!pVideoTex->hTex)
 			//{
 			//	pVideoTex->hTex = DX3DEngine_CreateTexture(pVideoMat->m_hDevice,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight,DXTexture_Normal2DTex);
 			//	pVideoTex->bTexNeedRelease = TRUE;
 			//}
 
-			//int hTransTex = DXTextureManager_QueryTexture(SYTexture_MemTexture,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight);
+			//int hTransTex = DXTextureManager_QueryTexture(BaseGraphTexture_MemTexture,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight);
 			//DX3DEngine_UpLoad(pVideoTex->hTex,pVideoMat->m_hDevice,hTransTex,0,0,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight, 
 			//	pVideoTex->pSeekData->movie_buffer.m_dwBuffer,0,0,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight,
 			//	pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight);
@@ -1743,20 +1743,20 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 			//	return TRUE;
 			//if(!pVideoTex->pSeekData)
 			//{   
-			//	pVideoTex->pSeekData = new SYMovieSeekData;
+			//	pVideoTex->pSeekData = new BaseGraphMovieSeekData;
 			//	SMovieInfo movieInfo;
-			//	SYGetMovieInfo(realpath, movieInfo );
+			//	BaseGraphGetMovieInfo(realpath, movieInfo );
 			//	pVideoTex->pSeekData->nWidth = movieInfo.nMotionWidth;
 			//	pVideoTex->pSeekData->nHeight = movieInfo.nMotionHeight;
 			//	pVideoTex->pSeekData->nTotalFrame = movieInfo.dwFrameNum;
 			//	pVideoTex->pSeekData->pVideoSeekData = NULL;
-			//	SYMoviePrePlay(realpath,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight,fFrameRate,
+			//	BaseGraphMoviePrePlay(realpath,pVideoTex->pSeekData->nWidth,pVideoTex->pSeekData->nHeight,fFrameRate,
 			//		pVideoTex->pSeekData->pVideoSeekData, TRUE );
 			//	pVideoTex->pSeekData->movie_buffer.Create(pVideoTex->pSeekData->nWidth , pVideoTex->pSeekData->nHeight);
 
 			//}
 			int nMovieTime = CalcMoviePlayTime(nField,pVideoTex->pResource->nTotalFrame);    
-			//SYMoviePlay(pVideoTex->pSeekData->pVideoSeekData, &pVideoTex->pSeekData->movie_buffer,nMovieTime , NULL, NULL );
+			//BaseGraphMoviePlay(pVideoTex->pSeekData->pVideoSeekData, &pVideoTex->pSeekData->movie_buffer,nMovieTime , NULL, NULL );
 
 			pVideoTex->pResource->nCur = (pVideoTex->pResource->nCur + 1)%2;
 
@@ -1792,7 +1792,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 		}
 		return TRUE;
 	}
-	else if(pTex->nSrcType == SYMaterial_Buffer)
+	else if(pTex->nSrcType == BaseGraphMaterial_Buffer)
 	{
 		int nWidth,nHeight;
 		int nSrcWidth , nSrcHeight;
@@ -1828,7 +1828,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 		}
 		else
 		{
-			if(!(pVideoMat->m_nChangeType & SYMaterial_DiffTexChange << pTex->nType))
+			if(!(pVideoMat->m_nChangeType & BaseGraphMaterial_DiffTexChange << pTex->nType))
 				return FALSE;
 			//add by zhenghang  柱图文字需要修改纹理
 			pSrcBufferDef = pTex->pBufferDef;
@@ -1862,7 +1862,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 			}
 			DXTextureManager_UnQueryTexture(hTrans);
 		}
-		SYMaterial_SetTex(pVideoTex->hTex,*pBound,pSrcBufferDef->m_nOriginX,pSrcBufferDef->m_nOriginY, pVideoMat,nTexIndex);
+		BaseGraphMaterial_SetTex(pVideoTex->hTex,*pBound,pSrcBufferDef->m_nOriginX,pSrcBufferDef->m_nOriginY, pVideoMat,nTexIndex);
 		pVideoTex->bTexNeedRelease = TRUE;
 	}
 	else
@@ -1884,12 +1884,12 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTex( CommonBufferDef32* pSrcBuffe
 //	}
 //}
 
-BASEGRAPH_DATARENDER_API void SYMaterial_CreateParam(SYMaterialParam* pMatParam ,SYMaterial*  pMaterial )
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_CreateParam(BaseGraphMaterialParam* pMatParam ,BaseGraphMaterial*  pMaterial )
 {
-	//for (int i = 0; i < SYMATERIAL_TEX_COUNT; i++)
+	//for (int i = 0; i < BaseGraphMATERIAL_TEX_COUNT; i++)
 	//{
 	//	BaseAR_Init(&pMatParam->texParam[i]);
-	//	SYMaterial_AddParamdef(&pMatParam->texParam[i],i);
+	//	BaseGraphMaterial_AddParamdef(&pMatParam->texParam[i],i);
 	//}
 	////pMatParam->diffuse
 	//InitColorParamdef(&pMatParam->common.Diffuse);
@@ -1904,9 +1904,9 @@ BASEGRAPH_DATARENDER_API void SYMaterial_CreateParam(SYMaterialParam* pMatParam 
 	//pMatParam->common.fAlpha.interpolate.pRanges[0].fSecond = 1.f;
 }
 
-BASEGRAPH_DATARENDER_API void SYMaterial_ReleaseParam( SYMaterialParam* pMatParam ,SYMaterial* pMaterial )
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_ReleaseParam( BaseGraphMaterialParam* pMatParam ,BaseGraphMaterial* pMaterial )
 {
-	//for (int i = 0; i < SYMATERIAL_TEX_COUNT; i++)
+	//for (int i = 0; i < BaseGraphMATERIAL_TEX_COUNT; i++)
 	//{
 	//	int nParamCount = BaseAR_GetCount(&pMatParam->texParam[i]);
 	//	for(int j = 0; j < nParamCount; j++)
@@ -1924,11 +1924,11 @@ BASEGRAPH_DATARENDER_API void SYMaterial_ReleaseParam( SYMaterialParam* pMatPara
 	//sy_release_paramdef(&pMatParam->common.fAlpha);
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_AddKeyValue( double dFrame,SYMaterialParam* pMatParam, SYMaterial* pMaterial,void* pValue,int nParamType )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_AddKeyValue( double dFrame,BaseGraphMaterialParam* pMatParam, BaseGraphMaterial* pMaterial,void* pValue,int nParamType )
 {
-	//if (nParamType == SYMaterial_Phy_ParamDef)
+	//if (nParamType == BaseGraphMaterial_Phy_ParamDef)
 	//{
-	//	SYPhyData* pData = (SYPhyData*)pValue;
+	//	BaseGraphPhyData* pData = (BaseGraphPhyData*)pValue;
 	//	float4 fColor;
 	//	DWORDColorToFloat4(&fColor,pData->Diffuse - pMaterial->m_PhyData.Diffuse);
 	//	AddClipKeyFrame(&pMatParam->common.Diffuse,dFrame,(BYTE*)&fColor);
@@ -1945,52 +1945,52 @@ BASEGRAPH_DATARENDER_API int SYMaterial_AddKeyValue( double dFrame,SYMaterialPar
 	//	float fValue = pData->fAlpha - pMaterial->m_PhyData.fAlpha;
 	//	AddClipKeyFrame(&pMatParam->common.fAlpha,dFrame,(BYTE*)&fValue);
 	//	pMaterial->m_PhyData.Power = pData->Power;
-	//	return SYMaterial_PhyDataChange;
+	//	return BaseGraphMaterial_PhyDataChange;
 	//}
-	//else if(nParamType == SYMaterial_Phy_Diffuse_ParamDef)
+	//else if(nParamType == BaseGraphMaterial_Phy_Diffuse_ParamDef)
 	//{
 	//	float4* pColor = (float4*)pValue;
 	//	AddClipKeyFrame(&pMatParam->common.Diffuse,dFrame,(BYTE*)pColor);
-	//	return SYMaterial_PhyDataChange;
+	//	return BaseGraphMaterial_PhyDataChange;
 	//}
-	//else if(nParamType == SYMaterial_Phy_Ambient_ParamDef)
+	//else if(nParamType == BaseGraphMaterial_Phy_Ambient_ParamDef)
 	//{
 	//	float4* pColor = (float4*)pValue;
 	//	AddClipKeyFrame(&pMatParam->common.Ambient,dFrame,(BYTE*)pColor);
-	//	return SYMaterial_PhyDataChange;
+	//	return BaseGraphMaterial_PhyDataChange;
 	//}
-	//else if(nParamType == SYMaterial_Phy_Specular_ParamDef)
+	//else if(nParamType == BaseGraphMaterial_Phy_Specular_ParamDef)
 	//{
 	//	float4* pColor = (float4*)pValue;
 	//	AddClipKeyFrame(&pMatParam->common.Specular,dFrame,(BYTE*)pColor);
-	//	return SYMaterial_PhyDataChange;
+	//	return BaseGraphMaterial_PhyDataChange;
 	//}
-	//else if(nParamType == SYMaterial_Phy_Emissive_ParamDef)
+	//else if(nParamType == BaseGraphMaterial_Phy_Emissive_ParamDef)
 	//{
 	//	float4* pColor = (float4*)pValue;
 	//	AddClipKeyFrame(&pMatParam->common.Emissive,dFrame,(BYTE*)pColor);
-	//	return SYMaterial_PhyDataChange;
+	//	return BaseGraphMaterial_PhyDataChange;
 	//}
-	//else if(nParamType == SYMaterial_Phy_Alpha_ParamDef)
+	//else if(nParamType == BaseGraphMaterial_Phy_Alpha_ParamDef)
 	//{
 	//	float* pData = (float*)pValue;
 	//	float fValue = *pData- pMaterial->m_PhyData.fAlpha;
 	//	AddClipKeyFrame(&pMatParam->common.fAlpha,dFrame,(BYTE*)&fValue);
-	//	return SYMaterial_PhyDataChange;
+	//	return BaseGraphMaterial_PhyDataChange;
 	//}
-	//else if(nParamType <= SYBumpTex_Private_ParamDef && nParamType >= SYDiffuseTex_Offset_ParamDef)
+	//else if(nParamType <= BumpTex_Private_ParamDef && nParamType >= BaseGraphDiffuseTex_Offset_ParamDef)
 	//{
-	//	int nTexType = (nParamType - SYDiffuseTex_Offset_ParamDef) / SYTex_ParamDefCount;
-	//	int paramBegin = (nParamType - SYDiffuseTex_Offset_ParamDef) % SYTex_ParamDefCount;
+	//	int nTexType = (nParamType - BaseGraphDiffuseTex_Offset_ParamDef) / BaseGraphTex_ParamDefCount;
+	//	int paramBegin = (nParamType - BaseGraphDiffuseTex_Offset_ParamDef) % BaseGraphTex_ParamDefCount;
 	//	if(!pMaterial->m_TexArray.ppTex[nTexType])
-	//		return SYMaterial_NoChange;
-	//	SYMaterial_AddTexKeyValue(dFrame,&pMatParam->texParam[nTexType],pMaterial->m_TexArray.ppTex[nTexType],pValue, paramBegin);
-	//	return SYMaterial_DiffuseParamChange << nTexType;
+	//		return BaseGraphMaterial_NoChange;
+	//	BaseGraphMaterial_AddTexKeyValue(dFrame,&pMatParam->texParam[nTexType],pMaterial->m_TexArray.ppTex[nTexType],pValue, paramBegin);
+	//	return BaseGraphMaterial_DiffuseParamChange << nTexType;
 	//}
-	return SYMaterial_NoChange;
+	return BaseGraphMaterial_NoChange;
 }
 
-BASEGRAPH_DATARENDER_API BOOL		SYMaterial_SetTex(int hTex,const rectf& pValidRt,int nOriginX, int nOriginY, SYVideoMaterial* pVideoMat, int nTexIndex,BOOL bNeedRelease )
+BASEGRAPH_DATARENDER_API BOOL		BaseGraphMaterial_SetTex(int hTex,const rectf& pValidRt,int nOriginX, int nOriginY, BaseGraphVideoMaterial* pVideoMat, int nTexIndex,BOOL bNeedRelease )
 {
 	if(!hTex)
 		return FALSE;
@@ -2002,8 +2002,8 @@ BASEGRAPH_DATARENDER_API BOOL		SYMaterial_SetTex(int hTex,const rectf& pValidRt,
 	int nWidth,nHeight;
 	DX3DEngine_GetTextureInfo(pVideoMat->m_hDevice,hTex,&nWidth,&nHeight,NULL);
 
-	SYMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[nTexIndex];
-	SYMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[nTexIndex];
+	BaseGraphMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
 	float fXScale = (float)nSrcWidth / nWidth ;
 	pTex->TexScale.x = fXScale / (pVideoTex->CurTexScale.x / pTex->TexScale.x);
 	pVideoTex->CurTexScale.x = fXScale;
@@ -2041,7 +2041,7 @@ BASEGRAPH_DATARENDER_API BOOL		SYMaterial_SetTex(int hTex,const rectf& pValidRt,
 	return TRUE;
 }
 
-BASEGRAPH_DATARENDER_API BOOL		SYMaterial_SetTex(int hTex,const RECT& pValidRt, int nOriginX, int nOriginY,SYVideoMaterial* pVideoMat, int nTexIndex,BOOL bNeedRelease)
+BASEGRAPH_DATARENDER_API BOOL		BaseGraphMaterial_SetTex(int hTex,const RECT& pValidRt, int nOriginX, int nOriginY,BaseGraphVideoMaterial* pVideoMat, int nTexIndex,BOOL bNeedRelease)
 {
 	int nWidth,nHeight;
 	int nSrcWidth , nSrcHeight;
@@ -2054,8 +2054,8 @@ BASEGRAPH_DATARENDER_API BOOL		SYMaterial_SetTex(int hTex,const RECT& pValidRt, 
 		return FALSE;
 	}
 	DX3DEngine_GetTextureInfo(pVideoMat->m_hDevice,hTex,&nWidth,&nHeight,NULL);
-	SYMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[nTexIndex];
-	SYMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[nTexIndex];
+	BaseGraphMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
 	if (pVideoTex == NULL || pVideoMat == NULL)
 	{
 		return FALSE;
@@ -2097,20 +2097,20 @@ BASEGRAPH_DATARENDER_API BOOL		SYMaterial_SetTex(int hTex,const RECT& pValidRt, 
 	return TRUE;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetTexRepeat( SYMaterial* pMat,int nTexIndex,BOOL bRepeat )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetTexRepeat( BaseGraphMaterial* pMat,int nTexIndex,BOOL bRepeat )
 {
-	SYMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pMat->m_TexArray.ppTex[nTexIndex];
 	if (!pTex)
-		return SYMaterial_NoChange;
+		return BaseGraphMaterial_NoChange;
 	pTex->bRepeat = bRepeat;
-	return SYMaterial_DiffuseParamChange << nTexIndex;
+	return BaseGraphMaterial_DiffuseParamChange << nTexIndex;
 }
 
-BASEGRAPH_DATARENDER_API void		SYMaterial_CopyParam(SYMaterialParam* pDestMatParam,const SYMaterialParam* pSrcMatParam   )
+BASEGRAPH_DATARENDER_API void		BaseGraphMaterial_CopyParam(BaseGraphMaterialParam* pDestMatParam,const BaseGraphMaterialParam* pSrcMatParam   )
 {
-	//SYMaterial_ReleaseParam(pDestMatParam,NULL);
+	//BaseGraphMaterial_ReleaseParam(pDestMatParam,NULL);
 
-	//for (int i = 0; i < SYMATERIAL_TEX_COUNT; i++)
+	//for (int i = 0; i < BaseGraphMATERIAL_TEX_COUNT; i++)
 	//{
 	//	int nCount = BaseAR_GetCount(&pSrcMatParam->texParam[i]);
 	//	for(int j = 0; j < nCount; j++)
@@ -2130,12 +2130,12 @@ BASEGRAPH_DATARENDER_API void		SYMaterial_CopyParam(SYMaterialParam* pDestMatPar
 	//sy_copy_paramdef(&pDestMatParam->common.fAlpha,&pSrcMatParam->common.fAlpha);
 }
 
-BASEGRAPH_DATARENDER_API size_t SYMaterial_GetVideoMemSize( SYVideoMaterial* pVideoMat )
+BASEGRAPH_DATARENDER_API size_t BaseGraphMaterial_GetVideoMemSize( BaseGraphVideoMaterial* pVideoMat )
 {
 	size_t size = 0;
 	size += 5 * sizeof(float4);
 
-	for (int i = 0; i < SYMATERIAL_TEX_COUNT; i++)
+	for (int i = 0; i < BaseGraphMATERIAL_TEX_COUNT; i++)
 	{
 		if(pVideoMat->m_VideoTexAr.ppVTex[i])
 		{
@@ -2146,39 +2146,39 @@ BASEGRAPH_DATARENDER_API size_t SYMaterial_GetVideoMemSize( SYVideoMaterial* pVi
 	return size;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_SetTexParam( SYMaterial* pMat,int nTexIndex,SYMatTex* pTexParam,int nType )
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_SetTexParam( BaseGraphMaterial* pMat,int nTexIndex,BaseGraphMatTex* pTexParam,int nType )
 {
-	if(nType & SYMATERIAL_TEXPARAM_TEXOFFSETX)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_TEXOFFSETX)
 		pMat->m_TexArray.ppTex[nTexIndex]->TexOffset.x = pTexParam->TexOffset.x;
-	if(nType & SYMATERIAL_TEXPARAM_TEXOFFSETY)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_TEXOFFSETY)
 		pMat->m_TexArray.ppTex[nTexIndex]->TexOffset.y = pTexParam->TexOffset.y;
-	if(nType & SYMATERIAL_TEXPARAM_TEXSCALEX	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_TEXSCALEX	)
 		pMat->m_TexArray.ppTex[nTexIndex]->TexScale.x = pTexParam->TexScale.x;
-	if(nType & SYMATERIAL_TEXPARAM_TEXSCALEY	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_TEXSCALEY	)
 		pMat->m_TexArray.ppTex[nTexIndex]->TexScale.y = pTexParam->TexScale.y;
-	if(nType & SYMATERIAL_TEXPARAM_CENTERX	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_CENTERX	)
 		pMat->m_TexArray.ppTex[nTexIndex]->Center.x = pTexParam->Center.x;
-	if(nType & SYMATERIAL_TEXPARAM_CENTERY	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_CENTERY	)
 		pMat->m_TexArray.ppTex[nTexIndex]->Center.y = pTexParam->Center.y;
-	if(nType & SYMATERIAL_TEXPARAM_TEXROTATE	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_TEXROTATE	)
 		pMat->m_TexArray.ppTex[nTexIndex]->TexRotate = pTexParam->TexRotate;
-	if(nType & SYMATERIAL_TEXPARAM_AUTORUN	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_AUTORUN	)
 		pMat->m_TexArray.ppTex[nTexIndex]->bAutoRun = pTexParam->bAutoRun;
-	if(nType & SYMATERIAL_TEXPARAM_SPEED	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_SPEED	)
 		pMat->m_TexArray.ppTex[nTexIndex]->dSpeed = pTexParam->dSpeed;
-	if(nType & SYMATERIAL_TEXPARAM_RUNDIRX	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_RUNDIRX	)
 		pMat->m_TexArray.ppTex[nTexIndex]->vRunDir.x = pTexParam->vRunDir.x;
-	if(nType & SYMATERIAL_TEXPARAM_RUNDIRY	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_RUNDIRY	)
 		pMat->m_TexArray.ppTex[nTexIndex]->vRunDir.y = pTexParam->vRunDir.y;
-	if(nType & SYMATERIAL_TEXPARAM_REPEAT	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_REPEAT	)
 		pMat->m_TexArray.ppTex[nTexIndex]->bRepeat = pTexParam->bRepeat;
-	if(nType & SYMATERIAL_TEXPARAM_DISABLE	)
+	if(nType & BaseGraphMATERIAL_TEXPARAM_DISABLE	)
 		pMat->m_TexArray.ppTex[nTexIndex]->disable = pTexParam->disable;
 
-	return SYMaterial_DiffuseParamChange << nTexIndex;
+	return BaseGraphMaterial_DiffuseParamChange << nTexIndex;
 }
 
-BASEGRAPH_DATARENDER_API void SYMaterial_PhyRenderDataToPhy( SYPhyData* pData,SYPhyRenderData* pSrcData )
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial_PhyRenderDataToPhy( BaseGraphPhyData* pData,BaseGraphPhyRenderData* pSrcData )
 {
 	Float4ToDWORDColor(&pData->Diffuse,pSrcData->Diffuse);
 	Float4ToDWORDColor(&pData->Ambient,pSrcData->Ambient);
@@ -2189,7 +2189,7 @@ BASEGRAPH_DATARENDER_API void SYMaterial_PhyRenderDataToPhy( SYPhyData* pData,SY
 	pData->disable = pSrcData->disable;
 }
 
-BASEGRAPH_DATARENDER_API void		SYMaterial_PhyToPhyRenderData(SYPhyRenderData* pData,SYPhyData* pSrcData)
+BASEGRAPH_DATARENDER_API void		BaseGraphMaterial_PhyToPhyRenderData(BaseGraphPhyRenderData* pData,BaseGraphPhyData* pSrcData)
 {
 	DWORDColorToFloat4(&pData->Diffuse,pSrcData->Diffuse);
 	DWORDColorToFloat4(&pData->Ambient,pSrcData->Ambient);
@@ -2200,30 +2200,30 @@ BASEGRAPH_DATARENDER_API void		SYMaterial_PhyToPhyRenderData(SYPhyRenderData* pD
 	pData->disable = pSrcData->disable;
 }
 
-BASEGRAPH_DATARENDER_API int SYMaterial_VideoMatUpdateCopyVideo(SYVideoMaterial* pVideoMat, double dFrame,float fFrameRate,float fAlpha,int nLightNum,SYMaterialParam* param,void* pEnvParam,SYVideoMaterial* pVideoMatSrc)
+BASEGRAPH_DATARENDER_API int BaseGraphMaterial_VideoMatUpdateCopyVideo(BaseGraphVideoMaterial* pVideoMat, double dFrame,float fFrameRate,float fAlpha,int nLightNum,BaseGraphMaterialParam* param,void* pEnvParam,BaseGraphVideoMaterial* pVideoMatSrc)
 {
 	int nChange = 0;
-	if(param || pVideoMat->m_nChangeType & SYMaterial_PhyDataChange)
+	if(param || pVideoMat->m_nChangeType & BaseGraphMaterial_PhyDataChange)
 		nChange |= UpdatePhyParam(dFrame,param,pVideoMat,fAlpha);
-	if(pVideoMat->m_nChangeType & SYMaterial_TexCountChange)
+	if(pVideoMat->m_nChangeType & BaseGraphMaterial_TexCountChange)
 	{
-		for (int i = 0; i < SYMaterial_TexTypeCount;i++)
+		for (int i = 0; i < BaseGraphMaterial_TexTypeCount;i++)
 		{
 			if (pVideoMat->m_pMaterial->m_TexArray.ppTex[i] &&
 				pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->disable)
 			{
-				SYMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i]);
+				BaseGraphMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i]);
 				SAFE_DELETE(pVideoMat->m_VideoTexAr.ppVTex[i]);
 			}
 			else if (pVideoMat->m_VideoTexAr.ppVTex[i]&& !pVideoMat->m_pMaterial->m_TexArray.ppTex[i])
 			{
-				SYMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i]);
+				BaseGraphMaterial_ReleaseVideoTex(pVideoMat->m_hDevice,pVideoMat->m_VideoTexAr.ppVTex[i]);
 				SAFE_DELETE(pVideoMat->m_VideoTexAr.ppVTex[i]);
 			}
 			else if(!pVideoMat->m_VideoTexAr.ppVTex[i]&& pVideoMat->m_pMaterial->m_TexArray.ppTex[i])
 			{
-				SYMatVideoTex* pTex = new SYMatVideoTex;
-				memset(pTex,0,sizeof(SYMatVideoTex));
+				BaseGraphMatVideoTex* pTex = new BaseGraphMatVideoTex;
+				memset(pTex,0,sizeof(BaseGraphMatVideoTex));
 				pTex->CurTexScale.x = 1;
 				pTex->CurTexScale.y = 1;
 				pTex->bTexNeedRelease = TRUE;
@@ -2231,76 +2231,76 @@ BASEGRAPH_DATARENDER_API int SYMaterial_VideoMatUpdateCopyVideo(SYVideoMaterial*
 				CreateTexPrivateData(&pTex->pCurData,i);
 				pVideoMat->m_VideoTexAr.ppVTex[i] = pTex;
 
-				SYMaterial_SetChangeType(pVideoMat,SYMaterial_DiffTexChange << i | SYMaterial_DiffuseParamChange << i);
+				BaseGraphMaterial_SetChangeType(pVideoMat,BaseGraphMaterial_DiffTexChange << i | BaseGraphMaterial_DiffuseParamChange << i);
 			}
 		}
 	}
-	if((pVideoMat->m_nChangeType & SYMaterial_TexCountChange) || (pVideoMat->m_nChangeType & SYMaterial_ShaderChange) || nLightNum != pVideoMat->m_nLightNum)
+	if((pVideoMat->m_nChangeType & BaseGraphMaterial_TexCountChange) || (pVideoMat->m_nChangeType & BaseGraphMaterial_ShaderChange) || nLightNum != pVideoMat->m_nLightNum)
 	{
-		SYMaterial_JoinShader(pVideoMat,nLightNum);
-		SYMaterial_ClearChangeType(pVideoMat,SYMaterial_TexCountChange | SYMaterial_ShaderChange);
+		BaseGraphMaterial_JoinShader(pVideoMat,nLightNum);
+		BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_TexCountChange | BaseGraphMaterial_ShaderChange);
 		pVideoMat->m_nLightNum = nLightNum;
-		nChange |=  SYMaterial_ShaderChange;
+		nChange |=  BaseGraphMaterial_ShaderChange;
 	}
 	if (pVideoMat->m_dTime != dFrame)
 	{
 		pVideoMat->m_dTotalTime += dFrame - pVideoMat->m_dTime;
 		//if(UpdatePhyParam(nTime,param,pVideoMat,fAlpha ))
-		//	nChange |= SYMaterial_PhyDataChange;
-		for(int i = 0; i< SYMaterial_TexTypeCount;i ++)
+		//	nChange |= BaseGraphMaterial_PhyDataChange;
+		for(int i = 0; i< BaseGraphMaterial_TexTypeCount;i ++)
 		{
-			if(SYMaterial_UpdateTexCopyVideo(NULL,NULL,NULL,SYMaterial_DiffuseTex + i,dFrame,fFrameRate, pVideoMat,pVideoMatSrc,pEnvParam))
-				nChange |=  SYMaterial_DiffTexChange << i;
+			if(BaseGraphMaterial_UpdateTexCopyVideo(NULL,NULL,NULL,BaseGraphMaterial_DiffuseTex + i,dFrame,fFrameRate, pVideoMat,pVideoMatSrc,pEnvParam))
+				nChange |=  BaseGraphMaterial_DiffTexChange << i;
 			if(UpdateTexParam(pVideoMat->m_dTotalTime,dFrame,pVideoMat->m_hDevice,param,pVideoMat->m_VideoTexAr.ppVTex[i],pVideoMat->m_pMaterial->m_TexArray.ppTex[i]))
-				nChange |=  SYMaterial_DiffuseParamChange << i;
-			SYMaterial_ClearChangeType(pVideoMat,SYMaterial_DiffTexChange << i | SYMaterial_DiffuseParamChange << i);
+				nChange |=  BaseGraphMaterial_DiffuseParamChange << i;
+			BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_DiffTexChange << i | BaseGraphMaterial_DiffuseParamChange << i);
 		}
 		pVideoMat->m_dTime = dFrame;
 	}
 	else
 	{
 		//pVideoMat->m_dTotalTime += 1;
-		for(int i = 0; i < SYMaterial_TexTypeCount; i++)
+		for(int i = 0; i < BaseGraphMaterial_TexTypeCount; i++)
 		{
 			if(!pVideoMat->m_pMaterial->m_TexArray.ppTex[i]
 			|| pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->disable)
 				continue;
 
-			if (pVideoMat->m_nChangeType & SYMaterial_DiffTexChange << i || pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->nSrcType == SYMaterial_MovFile)
+			if (pVideoMat->m_nChangeType & BaseGraphMaterial_DiffTexChange << i || pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->nSrcType == BaseGraphMaterial_MovFile)
 			{
-				if(SYMaterial_UpdateTexCopyVideo(NULL,NULL,NULL,SYMaterial_DiffuseTex + i,dFrame,fFrameRate,pVideoMat,pVideoMatSrc,pEnvParam))
-					nChange |=  SYMaterial_DiffTexChange << i;
-				SYMaterial_ClearChangeType(pVideoMat,SYMaterial_DiffTexChange << i);
+				if(BaseGraphMaterial_UpdateTexCopyVideo(NULL,NULL,NULL,BaseGraphMaterial_DiffuseTex + i,dFrame,fFrameRate,pVideoMat,pVideoMatSrc,pEnvParam))
+					nChange |=  BaseGraphMaterial_DiffTexChange << i;
+				BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_DiffTexChange << i);
 			}
-			if(pVideoMat->m_nChangeType & SYMaterial_DiffuseParamChange << i || pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->bAutoRun)
+			if(pVideoMat->m_nChangeType & BaseGraphMaterial_DiffuseParamChange << i || pVideoMat->m_pMaterial->m_TexArray.ppTex[i]->bAutoRun)
 			{				
 				if(UpdateTexParam(pVideoMat->m_dTotalTime,dFrame,pVideoMat->m_hDevice,param,pVideoMat->m_VideoTexAr.ppVTex[i],pVideoMat->m_pMaterial->m_TexArray.ppTex[i]))
-					nChange |=  SYMaterial_DiffuseParamChange << i;
-				SYMaterial_ClearChangeType(pVideoMat,SYMaterial_DiffuseParamChange << i);
+					nChange |=  BaseGraphMaterial_DiffuseParamChange << i;
+				BaseGraphMaterial_ClearChangeType(pVideoMat,BaseGraphMaterial_DiffuseParamChange << i);
 			}
 		}
 	}
 	return nChange;
 }
 
-BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* pSrcBufferDef, DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate,SYVideoMaterial* pVideoMat,SYVideoMaterial* pVideoMatSrc,void* param,BOOL isForceUpdate /*= FALSE*/)
+BASEGRAPH_DATARENDER_API BOOL BaseGraphMaterial_UpdateTexCopyVideo(CommonBufferDef32* pSrcBufferDef, DXHalDef32* pSrcTexDef,int hSrcTex, int nTexIndex,double dTime, float fFrameRate,BaseGraphVideoMaterial* pVideoMat,BaseGraphVideoMaterial* pVideoMatSrc,void* param,BOOL isForceUpdate /*= FALSE*/)
 {
-	SYMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
+	BaseGraphMatTex* pTex = pVideoMat->m_pMaterial->m_TexArray.ppTex[nTexIndex];
 	if(!pTex)
 		return FALSE;
-	SYMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[nTexIndex];
+	BaseGraphMatVideoTex* pVideoTex = pVideoMat->m_VideoTexAr.ppVTex[nTexIndex];
 	if(!pVideoTex)
 		return FALSE;
 	if (!pVideoMatSrc)
 		return FALSE;
-	SYMatVideoTex* pVideoTexSrc = pVideoMatSrc->m_VideoTexAr.ppVTex[nTexIndex];
+	BaseGraphMatVideoTex* pVideoTexSrc = pVideoMatSrc->m_VideoTexAr.ppVTex[nTexIndex];
 	if(!pVideoTexSrc)
 		return FALSE;
 
-	if(pTex->nSrcType == SYMaterial_Object)
+	if(pTex->nSrcType == BaseGraphMaterial_Object)
 	{
 		RECT rtBuffer;
-		g_pObjectFun(SYMaterial_GetBufferSize,&rtBuffer,NULL,g_pObjectParam,param);
+		g_pObjectFun(BaseGraphMaterial_GetBufferSize,&rtBuffer,NULL,g_pObjectParam,param);
 		if(!pVideoTex->hTex)
 		{
 			pVideoTex->hTex = DX3DEngine_CreateTexture(pVideoMat->m_hDevice,rtBuffer.right,rtBuffer.bottom,DXTexture_Normal2DTex);
@@ -2317,12 +2317,12 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* p
 				pVideoTex->bTexNeedRelease = TRUE;
 			}
 		}
-		return g_pObjectFun(SYMaterial_GetBuffer,NULL,pVideoTex->hTex,g_pObjectParam,param);
+		return g_pObjectFun(BaseGraphMaterial_GetBuffer,NULL,pVideoTex->hTex,g_pObjectParam,param);
 	}
-	else if(pTex->nSrcType == SYMaterial_Channel)
+	else if(pTex->nSrcType == BaseGraphMaterial_Channel)
 	{
 		RECT rtBuffer;
-		g_pChannelFun(SYMaterial_GetBufferSize,&rtBuffer,NULL,g_pChannelParam,param);
+		g_pChannelFun(BaseGraphMaterial_GetBufferSize,&rtBuffer,NULL,g_pChannelParam,param);
 		if(!pVideoTex->hTex)
 		{
 			pVideoTex->hTex = DX3DEngine_CreateTexture(pVideoMat->m_hDevice,rtBuffer.right,rtBuffer.bottom,DXTexture_Normal2DTex);
@@ -2339,11 +2339,11 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* p
 				pVideoTex->bTexNeedRelease = TRUE;
 			}
 		}
-		return g_pChannelFun(SYMaterial_GetBuffer,NULL,pVideoTex->hTex,g_pChannelParam,param);
+		return g_pChannelFun(BaseGraphMaterial_GetBuffer,NULL,pVideoTex->hTex,g_pChannelParam,param);
 	}
-	else if(pTex->nSrcType == SYMaterial_PicFile)
+	else if(pTex->nSrcType == BaseGraphMaterial_PicFile)
 	{
-		if(!(pVideoMat->m_nChangeType & SYMaterial_DiffTexChange << pTex->nType))
+		if(!(pVideoMat->m_nChangeType & BaseGraphMaterial_DiffTexChange << pTex->nType))
 			return FALSE;
 		//处理图片
 		if(pVideoTex->hTex)
@@ -2358,7 +2358,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* p
 		if (/*pTex->disable || */!pTex->pTexPath || _taccess(realpath, 0) == -1)
 			return FALSE;
 
-		BOOL bMap = pTex->nType == SYMaterial_BumpTex;
+		BOOL bMap = pTex->nType == BaseGraphMaterial_BumpTex;
 
 		pVideoTex->hTex = DX3DEngine_CreateTextureFromFile(pVideoMat->m_hDevice,realpath,bMap);
 #ifdef _DEBUG
@@ -2373,7 +2373,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* p
 		}
 		return TRUE;
 	}
-	else if(pTex->nSrcType == SYMaterial_MovFile)
+	else if(pTex->nSrcType == BaseGraphMaterial_MovFile)
 	{
 		if (pVideoTexSrc && pVideoTexSrc->pSeekData)
 		{
@@ -2396,7 +2396,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* p
 			}
 		}
 	}
-	else if(pTex->nSrcType == SYMaterial_Buffer)
+	else if(pTex->nSrcType == BaseGraphMaterial_Buffer)
 	{
 		int nWidth,nHeight;
 		int nSrcWidth , nSrcHeight;
@@ -2432,7 +2432,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* p
 		}
 		else
 		{
-			if(!(pVideoMat->m_nChangeType & SYMaterial_DiffTexChange << pTex->nType))
+			if(!(pVideoMat->m_nChangeType & BaseGraphMaterial_DiffTexChange << pTex->nType))
 				return FALSE;
 			//add by zhenghang  柱图文字需要修改纹理
 			pSrcBufferDef = pTex->pBufferDef;
@@ -2466,7 +2466,7 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* p
 			}
 			DXTextureManager_UnQueryTexture(hTrans);
 		}
-		SYMaterial_SetTex(pVideoTex->hTex,*pBound,pSrcBufferDef->m_nOriginX,pSrcBufferDef->m_nOriginY, pVideoMat,nTexIndex);
+		BaseGraphMaterial_SetTex(pVideoTex->hTex,*pBound,pSrcBufferDef->m_nOriginX,pSrcBufferDef->m_nOriginY, pVideoMat,nTexIndex);
 		pVideoTex->bTexNeedRelease = TRUE;
 	}
 	else
@@ -2476,12 +2476,12 @@ BASEGRAPH_DATARENDER_API BOOL SYMaterial_UpdateTexCopyVideo(CommonBufferDef32* p
 	return FALSE;
 }
 
-BASEGRAPH_DATARENDER_API void SYMatTex::Reset()
+BASEGRAPH_DATARENDER_API void BaseGraphMatTex::Reset()
 {
-	memset(this, 0, sizeof(SYMatTex));
+	memset(this, 0, sizeof(BaseGraphMatTex));
 }
 
-BASEGRAPH_DATARENDER_API void SYPhyData::Reset()
+BASEGRAPH_DATARENDER_API void BaseGraphPhyData::Reset()
 {
 	disable = 0;
 	Diffuse = 0;
@@ -2492,22 +2492,22 @@ BASEGRAPH_DATARENDER_API void SYPhyData::Reset()
 	fAlpha = 0;
 }
 
-BASEGRAPH_DATARENDER_API void SYJoinShader::Reset()
+BASEGRAPH_DATARENDER_API void BaseGraphJoinShader::Reset()
 {
-	memset(this, 0, sizeof(SYJoinShader));
+	memset(this, 0, sizeof(BaseGraphJoinShader));
 }
 
-BASEGRAPH_DATARENDER_API void SYMaterial::Reset()
+BASEGRAPH_DATARENDER_API void BaseGraphMaterial::Reset()
 {
-	memset(this, 0, sizeof(SYMaterial));
+	memset(this, 0, sizeof(BaseGraphMaterial));
 }
 
-BASEGRAPH_DATARENDER_API void SYSpecTexPrivateData::Reset()
+BASEGRAPH_DATARENDER_API void BaseGraphSpecTexPrivateData::Reset()
 {
 	fFactor = 1;
 }
 
-BASEGRAPH_DATARENDER_API void SYBumpTexPrivateData::Reset()
+BASEGRAPH_DATARENDER_API void BumpTexPrivateData::Reset()
 {
 	fFactor = 1;
 	bReverse = FALSE;

@@ -21,13 +21,13 @@ static char THIS_FILE[] = __FILE__;
 #endif
 using std::vector;
 
-struct SYTriangle
+struct BaseGraphTriangle
 {
 	int uiIndex[3];
 	float3 tangent;
 	float3 binormal;
 };
-enum SYModel_PLANE_VERTEX_TYPE
+enum BaseGraphModel_PLANE_VERTEX_TYPE
 {
 	SY3DPLANE_XY = 0,
 	SY3DPLANE_XZ,
@@ -54,13 +54,13 @@ public:
 	}
 	CBaseIntArray*	m_pArVerOfTri;
 	int				m_nVNum;
-	SYTriangle*		m_pTriangle;
+	BaseGraphTriangle*		m_pTriangle;
 	int				m_nFaceNum;
 	LPCRITICAL_SECTION m_pLock;
 };
 static CRITICAL_SECTION g_csLock;
 static ArrayVer g_arVer(&g_csLock);
-int CalFaceNum(SYTriType nType,int nINum)
+int CalFaceNum(BaseGraphTriType nType,int nINum)
 {
 	switch(nType)
 	{
@@ -73,7 +73,7 @@ int CalFaceNum(SYTriType nType,int nINum)
 	}
 	return 0;
 }
-void GetTriIndex(SYTriangle* pTriangle,DWORD* pIndex,int nFaceIndex,SYTriType nType,int nVStart)
+void GetTriIndex(BaseGraphTriangle* pTriangle,DWORD* pIndex,int nFaceIndex,BaseGraphTriType nType,int nVStart)
 {
 	if(nType == Common_TRIANGLE_LIST)
 	{
@@ -96,11 +96,11 @@ void GetTriIndex(SYTriangle* pTriangle,DWORD* pIndex,int nFaceIndex,SYTriType nT
 		pTriangle->uiIndex[2] = pIndex[nStartIndex + 1] - nVStart;
 	}
 }
-void CalTriFrame(SYTriangle* pTriangle,SYVertex3D* pVertex)
+void CalTriFrame(BaseGraphTriangle* pTriangle,BaseGraphVertex3D* pVertex)
 {
 	if(!pTriangle)
 		return;
-	SYVertex3D* pV[3]={NULL,NULL,NULL};
+	BaseGraphVertex3D* pV[3]={NULL,NULL,NULL};
 	pV[0] = &(pVertex[pTriangle->uiIndex[0]]);
 	pV[1] = &(pVertex[pTriangle->uiIndex[1]]);
 	pV[2] = &(pVertex[pTriangle->uiIndex[2]]);
@@ -129,7 +129,7 @@ void CalTriFrame(SYTriangle* pTriangle,SYVertex3D* pVertex)
 
 	pTriangle->binormal = pTriangle->binormal*ftemp;
 }
-void OrthTangentsAndBinormals(int nVNum,SYVertex3D* pVertex)
+void OrthTangentsAndBinormals(int nVNum,BaseGraphVertex3D* pVertex)
 {
 	for(int i=0; i < nVNum; i++ )
 	{
@@ -191,15 +191,15 @@ void OrthTangentsAndBinormals(int nVNum,SYVertex3D* pVertex)
 		}
 	}
 }
-typedef std::vector<SYVertex3D> CurvePtArray;
+typedef std::vector<BaseGraphVertex3D> CurvePtArray;
 
-void CreatePlaneBevelFace(float3* pV,float* pF,UINT* pDIM,SYVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,float fLength,float fHeight,float fThick,int nDivision);
-void CreatePlaneBevelFace2(float3* pV,float* pF,UINT* pDIM,BOOL bBevel,SYVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,float fLength,float fHeight,float fThick,int nDivision);
-void CreateNormalPrimitive(SYVertex3D* pVertex,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& uiVBIndex,UINT& uiIBIndex);
+void CreatePlaneBevelFace(float3* pV,float* pF,UINT* pDIM,BaseGraphVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,float fLength,float fHeight,float fThick,int nDivision);
+void CreatePlaneBevelFace2(float3* pV,float* pF,UINT* pDIM,BOOL bBevel,BaseGraphVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,float fLength,float fHeight,float fThick,int nDivision);
+void CreateNormalPrimitive(BaseGraphVertex3D* pVertex,BaseGraphVertex3D** ppVB,LPDWORD* ppIB,UINT& uiVBIndex,UINT& uiIBIndex);
 
-void CreateBevelSphere(UINT uiPrecision,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode);
-void CreateBevelCylinder(UINT uiPrecision,UINT uiSegments,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode);
-BOOL  BaseGraphCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int nVStart,SYTriType nType)
+void CreateBevelSphere(UINT uiPrecision,BaseGraphVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode);
+void CreateBevelCylinder(UINT uiPrecision,UINT uiSegments,BaseGraphVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode);
+BOOL  BaseGraphCreateTangent(BaseGraphVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int nVStart,BaseGraphTriType nType)
 {
 	// 防止多个物体同时操作时冲突
 	Autolock lock(&g_csLock);
@@ -208,10 +208,10 @@ BOOL  BaseGraphCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nIN
 	if (g_arVer.m_pTriangle == NULL || g_arVer.m_nFaceNum != nFaceNum)
 	{
 		SAFEDELETE_ARRAY(g_arVer.m_pTriangle);
-		g_arVer.m_pTriangle = new SYTriangle[nFaceNum];
+		g_arVer.m_pTriangle = new BaseGraphTriangle[nFaceNum];
 		g_arVer.m_nFaceNum = nFaceNum;
 	}
-	SYTriangle* pTriangle = g_arVer.m_pTriangle;
+	BaseGraphTriangle* pTriangle = g_arVer.m_pTriangle;
 	if (g_arVer.m_pArVerOfTri == NULL || g_arVer.m_nVNum != nVNum)
 	{
 		SAFEDELETE_ARRAY(g_arVer.m_pArVerOfTri);
@@ -275,73 +275,73 @@ BOOL  BaseGraphCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nIN
 	//SAFEDELETE_ARRAY(pArVerOfTri);
 	return TRUE;
 }
-void NewVertexIndex( IN OUT SYModel* pMod, IN int nGraphType , int nLevel = 1)
+void NewVertexIndex( IN OUT BaseGraphModel* pMod, IN int nGraphType , int nLevel = 1)
 {
 	int nSubPartCount = 0, nVertexCount = 0, nIndexCount = 0;
 
-	const SYSubModel* pSubDes = NULL;
+	const BaseGraphSubModel* pSubDes = NULL;
 	int sphereVertexNum = g_nSphere_Vertex_Num * nLevel * nLevel;
 	int sphereIndexNum = ( g_nSphere_Circle_Num * nLevel - 1 ) * ( g_nSphere_Per_Circle_VertexNum * nLevel - 1 ) * 6;
-	SYSubModel stuSphereSubs[SPHERE_MATERIAL_COUNT] = 
+	BaseGraphSubModel stuSphereSubs[SPHERE_MATERIAL_COUNT] = 
 	{
 		{ 0, sphereVertexNum, 0, sphereIndexNum, Common_TRIANGLE_LIST, sphereIndexNum / 3, BseeHTable_null },
 	};
 
 	switch (nGraphType)
 	{
-	case SYModelRENDER_CONE:
+	case BaseGraphModelRENDER_CONE:
 		nSubPartCount = CONE_MATERIAL_COUNT;
 		pSubDes       = g_stuConeSubs;
 		break;
-	case SYModelRENDER_SEGMENT:
+	case BaseGraphModelRENDER_SEGMENT:
 		nSubPartCount = SEGMENT_MATERIAL_COUNT;
 		pSubDes       = g_stuSegmentSubs;
 		break;
-	case SYModelRENDER_3DFACETS:
+	case BaseGraphModelRENDER_3DFACETS:
 		nSubPartCount = FACETS_MATERIAL_COUNT;
 		pSubDes       = g_stu3DFacetsSubs;
 		break;
-	case SYModelRENDER_SPHERE:
+	case BaseGraphModelRENDER_SPHERE:
 		nSubPartCount = SPHERE_MATERIAL_COUNT;
 		pSubDes       = stuSphereSubs;
 		break;
-	case SYModelRENDER_QUAD:
+	case BaseGraphModelRENDER_QUAD:
 		nSubPartCount = QUAD_MATERIAL_COUNT;
 		pSubDes       = g_stuQuadSubs;
 		break;
-	case SYModelRENDER_BOXWIDTHBEVEL:
+	case BaseGraphModelRENDER_BOXWIDTHBEVEL:
 		nSubPartCount = BOXWITHBEVEL_MATERIAL_COUNT;
 		pSubDes       = g_stuBoxWidthBevelSubs;
 		break;
-	case SYModelRENDER_CONEWIDTHBEVEL:
+	case BaseGraphModelRENDER_CONEWIDTHBEVEL:
 		nSubPartCount = CONEWITHBEVEL_MATERIAL_COUNT;
 		pSubDes       = g_stuConeWidthBevelSubs;
 		break;
-	case SYModelRENDER_TUBE:
+	case BaseGraphModelRENDER_TUBE:
 		nSubPartCount	= TUBE_MATERIAL_COUNT;
 		pSubDes			= g_stuTubeSubs;
 		break;
 	}
 
 	pMod->nviewsub = nSubPartCount;//子部分
-	pMod->viewsub  = new SYSubModel[pMod->nviewsub];
-	memset( pMod->viewsub, 0, pMod->nviewsub * sizeof(SYSubModel) );
+	pMod->viewsub  = new BaseGraphSubModel[pMod->nviewsub];
+	memset( pMod->viewsub, 0, pMod->nviewsub * sizeof(BaseGraphSubModel) );
 
 	for ( int i = 0; i < nSubPartCount; i++ )
 	{
-		memcpy( &pMod->viewsub[i], &pSubDes[i], sizeof(SYSubModel) );
+		memcpy( &pMod->viewsub[i], &pSubDes[i], sizeof(BaseGraphSubModel) );
 		nVertexCount += pMod->viewsub[i].vcount;
 		nIndexCount  += pMod->viewsub[i].icount;
 	}
 
 	pMod->vcount = nVertexCount;
-	pMod->v      = new SYVertex3D[pMod->vcount];
-	memset( pMod->v, 0, pMod->vcount * sizeof(SYVertex3D) );
+	pMod->v      = new BaseGraphVertex3D[pMod->vcount];
+	memset( pMod->v, 0, pMod->vcount * sizeof(BaseGraphVertex3D) );
 	pMod->icount = nIndexCount;//总的索引数
 	pMod->indecs = new DWORD[pMod->icount];
 	memset( pMod->indecs, 0, pMod->icount * sizeof(DWORD) );
 };
-void SetPlaneIndexAndUV( IN OUT SYModel* pMod, IN int nIndexSt, IN int nVertexSt, IN int nRowNum, IN int nColumnNum, IN int nType )
+void SetPlaneIndexAndUV( IN OUT BaseGraphModel* pMod, IN int nIndexSt, IN int nVertexSt, IN int nRowNum, IN int nColumnNum, IN int nType )
 {
 	int nTriIndex = 0;
 	//01
@@ -404,23 +404,23 @@ void SetPlaneIndexAndUV( IN OUT SYModel* pMod, IN int nIndexSt, IN int nVertexSt
 	}
 };
 
-BOOL SYInitialSegment(IN OUT SYModel* pMod)
+BOOL BaseGraphInitialSegment(IN OUT BaseGraphModel* pMod)
 {
 	if ( pMod->indecs == NULL )
 	{
-		NewVertexIndex( pMod, SYModelRENDER_SEGMENT );
+		NewVertexIndex( pMod, BaseGraphModelRENDER_SEGMENT );
 		SetPlaneIndexAndUV( pMod, g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].istart, g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].vstart, Common_SEGMENT_ROW_NUM, Common_SEGMENT_COLUMN_NUM, 
 			SY3DPLANE_ROW_FIRST );
 	}
 	return TRUE;
 }
-BOOL SYInitialBevel(IN OUT SYModel* pMod)
+BOOL BaseGraphInitialBevel(IN OUT BaseGraphModel* pMod)
 {
 	if ( pMod->viewsub == NULL )
 	{
 		pMod->nviewsub = 1;
-		pMod->viewsub  = new SYSubModel[pMod->nviewsub];
-		memset( pMod->viewsub, 0, pMod->nviewsub * sizeof(SYSubModel) );
+		pMod->viewsub  = new BaseGraphSubModel[pMod->nviewsub];
+		memset( pMod->viewsub, 0, pMod->nviewsub * sizeof(BaseGraphSubModel) );
 		for ( int i = 0; i < pMod->nviewsub; i++ )
 		{
 			pMod->viewsub[i].nTri_Type = Common_TRIANGLE_LIST;
@@ -429,12 +429,12 @@ BOOL SYInitialBevel(IN OUT SYModel* pMod)
 	return TRUE;
 }
 
-void ModifyVertexIndex( IN OUT SYModel* pMod, IN int nGraphType , int nLevel = 1)
+void ModifyVertexIndex( IN OUT BaseGraphModel* pMod, IN int nGraphType , int nLevel = 1)
 {
 	int newVertexNum = 0, newIndexNum = 0, newTriNum = 0;
 	switch (nGraphType)
 	{
-	case SYModelRENDER_SPHERE:
+	case BaseGraphModelRENDER_SPHERE:
 		newVertexNum = g_nSphere_Vertex_Num * nLevel * nLevel;
 		newIndexNum =( g_nSphere_Circle_Num * nLevel - 1 ) * ( g_nSphere_Per_Circle_VertexNum * nLevel - 1 ) * 6; 
 		newTriNum = newIndexNum / 3;
@@ -448,26 +448,26 @@ void ModifyVertexIndex( IN OUT SYModel* pMod, IN int nGraphType , int nLevel = 1
  	SAFE_DELETE(pMod->v);
 
 	pMod->vcount = newVertexNum ;
-	pMod->v      = new SYVertex3D[pMod->vcount];
-	memset( pMod->v, 0, pMod->vcount * sizeof(SYVertex3D) );
+	pMod->v      = new BaseGraphVertex3D[pMod->vcount];
+	memset( pMod->v, 0, pMod->vcount * sizeof(BaseGraphVertex3D) );
 	pMod->icount = newIndexNum;//总的索引数
 	pMod->indecs = new DWORD[pMod->icount];
 	memset( pMod->indecs, 0, pMod->icount * sizeof(DWORD) );
 }
-BOOL SYInitialSphere(IN OUT SYModel* pMod, int nLevel /* = 1*/)
+BOOL BaseGraphInitialSphere(IN OUT BaseGraphModel* pMod, int nLevel /* = 1*/)
 {
 	if ( pMod->indecs != NULL ){
-		ModifyVertexIndex(pMod,SYModelRENDER_SPHERE,nLevel);
+		ModifyVertexIndex(pMod,BaseGraphModelRENDER_SPHERE,nLevel);
 	}
 	else
-		NewVertexIndex( pMod, SYModelRENDER_SPHERE ,nLevel);
+		NewVertexIndex( pMod, BaseGraphModelRENDER_SPHERE ,nLevel);
 	SetPlaneIndexAndUV( pMod, g_stuSphereSubs[SPHERE_MATERIAL_PARAMCHG].istart, g_stuSphereSubs[SPHERE_MATERIAL_PARAMCHG].vstart, 
 		g_nSphere_Circle_Num * nLevel, (Common_SPHERE_CIRCLE_SEGMENT + 1) * nLevel, SY3DPLANE_ROW_FIRST );
 
 	return TRUE;
 }
 
-void SetSegmentPoint( IN OUT SYVertex3D* pPlanePt, IN int nRowNum, IN int nColumnNum, IN float fLeftWidth, IN float fWidth, IN float fTopHeight, IN float fHeight, IN vector3f* pvNorm, IN float fValue, IN int nType )
+void SetSegmentPoint( IN OUT BaseGraphVertex3D* pPlanePt, IN int nRowNum, IN int nColumnNum, IN float fLeftWidth, IN float fWidth, IN float fTopHeight, IN float fHeight, IN vector3f* pvNorm, IN float fValue, IN int nType )
 {
 	if ( nType == SY3DPLANE_XY )//行优先
 	{
@@ -504,7 +504,7 @@ void SetSegmentPoint( IN OUT SYVertex3D* pPlanePt, IN int nRowNum, IN int nColum
 		}
 	}
 }
-BOOL BaseGraphCreateSegmentGraph( IN OUT SYModel* pMod, IN float fLeftWidth, IN float fRightWidth, IN float fTopHeight, IN float fBottomHeight )
+BOOL BaseGraphCreateSegmentGraph( IN OUT BaseGraphModel* pMod, IN float fLeftWidth, IN float fRightWidth, IN float fTopHeight, IN float fBottomHeight )
 {
 	float fWidth = fRightWidth - fLeftWidth, fHeight = fTopHeight - fBottomHeight;
 	vector3f vNorm = { 0.f, 0.f, -1.f };
@@ -907,13 +907,13 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CBasePoint3fPtrArray* pptrTri, IN 
 			if(pCurveCell->type == close_line)
 			{
 				calccount = 2;
-				SYOffsetCell(&pFigure->cell[i],  // 输入曲线
+				BaseGraphOffsetCell(&pFigure->cell[i],  // 输入曲线
 					NULL,
 					pFigure->cell[i].width*0.5f,  // 偏移距离
 					&cellline[0], // 输出偏移曲线
 					ndirect
 					);
-				SYOffsetCell(&pFigure->cell[i],  // 输入曲线
+				BaseGraphOffsetCell(&pFigure->cell[i],  // 输入曲线
 					NULL,
 					pFigure->cell[i].width*0.5f,  // 偏移距离
 					&cellline[1], // 输出偏移曲线
@@ -944,7 +944,7 @@ void CreateF(IN vectorgraph * pFigure, IN OUT CBasePoint3fPtrArray* pptrTri, IN 
 				BaseARray ptrPolyNorm;
 				BaseAR_Init(&ptrPoly);
 				BaseAR_Init(&ptrPolyNorm);
-				SYOC_Cell2PtfPoly(pCurveCell, &ptrPoly, &ptrPolyNorm,NULL);
+				BaseGraphOC_Cell2PtfPoly(pCurveCell, &ptrPoly, &ptrPolyNorm,NULL);
 				nSize = (int)BaseAR_GetSize(&ptrPoly);
 				if (nSize<3) 
 				{
@@ -1569,9 +1569,9 @@ void GenerateBevel( IN vectorgraph * pFigure,
 
 	}
 	int nBevelTriSize = (int)pptrTri->GetSize();
-	SYTriangulateApp tri;
-	tri.SYTriangulateLine( pFigure, pptrTri, pptrUV,bAntiClockwise );
-	tri.SYTriangulateGL( pFigure, pptrTri, pptrUV,bAntiClockwise );
+	BaseGraphTriangulateApp tri;
+	tri.BaseGraphTriangulateLine( pFigure, pptrTri, pptrUV,bAntiClockwise );
+	tri.BaseGraphTriangulateGL( pFigure, pptrTri, pptrUV,bAntiClockwise );
 
 	nTriPtSize = (int)pptrTri->GetSize();
 	// 法线
@@ -1587,9 +1587,9 @@ void GenerateBevel( IN vectorgraph * pFigure,
 	if(dface)
 		*dface = nTriPtSize;
 	//添加对称面
-	//SYProgress_SectionBegin(0.95f,0.05f);
+	//BaseGraphProgress_SectionBegin(0.95f,0.05f);
 	AddSym( pptrTri, pptrTriNorm,pptrUV,fBevelHeight, fFlankHeight, nBevelType > 0 );
-	//SYProgress_SetValue(0.3f);
+	//BaseGraphProgress_SetValue(0.3f);
 
 	if(side)
 		*side = (int)pptrTri->GetSize();
@@ -1654,7 +1654,7 @@ void GetBoundRt( CBasePoint3fPtrArray *pptrTri, rectf &rt )
 		}
 	}
 }
-BOOL BaseGraphCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN int nBevelType)
+BOOL BaseGraphCreateBevelGraph( IN OUT BaseGraphModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN int nBevelType)
 {
 	if(fBevelWidth == 0 || fBevelHeight == 0)
 		nBevelType = Common_BEVEL_NONE;
@@ -1718,8 +1718,8 @@ BOOL BaseGraphCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, 
 	int nTriPtSize = (int)ptrTri.GetSize();
 	pMod->vcount   = nTriPtSize;
 	SAFE_DELETE(pMod->v)
-		pMod->v        = new SYVertex3D[nTriPtSize];
-	memset( pMod->v, 0, nTriPtSize * sizeof(SYVertex3D) );
+		pMod->v        = new BaseGraphVertex3D[nTriPtSize];
+	memset( pMod->v, 0, nTriPtSize * sizeof(BaseGraphVertex3D) );
 
 	rectf rt;
 	GetBoundRt( &ptrTri, rt );
@@ -1775,8 +1775,8 @@ BOOL BaseGraphCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, 
 	if(pMod->viewsub)
 		delete[] pMod->viewsub;
 	pMod->nviewsub = 3;
-	pMod->viewsub = new SYSubModel[3];
-	memset(pMod->viewsub,0,sizeof(SYSubModel) * 3);
+	pMod->viewsub = new BaseGraphSubModel[3];
+	memset(pMod->viewsub,0,sizeof(BaseGraphSubModel) * 3);
 	pMod->viewsub[0].vstart = nStartF;
 	pMod->viewsub[0].vcount = nStartB - nStartF;
 	pMod->viewsub[0].istart = nStartF;
@@ -1823,34 +1823,34 @@ BOOL BaseGraphCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, 
 	return TRUE;
 }
 
-void BaseGraphCreateModelTangent(SYModel* pMod)
+void BaseGraphCreateModelTangent(BaseGraphModel* pMod)
 {
 	for(int i = 0;i < pMod->nviewsub;i++)
 	{
 		DWORD* pIndex = pMod->indecs + pMod->viewsub[i].istart;
-		SYVertex3D* pVertex = pMod->v + pMod->viewsub[i].vstart;
+		BaseGraphVertex3D* pVertex = pMod->v + pMod->viewsub[i].vstart;
 		BaseGraphCreateTangent(pVertex ,pMod->viewsub[i].vcount,pIndex,pMod->viewsub[i].icount,pMod->viewsub[i].vstart,pMod->viewsub[i].nTri_Type);
 	}
 }
 
-BOOL SYModel_CreateSegment( IN OUT SYModel* pMod, IN float fLeftWidth, IN float fRightWidth, IN float fTopHeight, IN float fBottomHeight )
+BOOL BaseGraphModel_CreateSegment( IN OUT BaseGraphModel* pMod, IN float fLeftWidth, IN float fRightWidth, IN float fTopHeight, IN float fBottomHeight )
 {
 	if(pMod==NULL)
 		return FALSE;
-	SYInitialSegment(pMod);
+	BaseGraphInitialSegment(pMod);
 	BaseGraphCreateSegmentGraph( pMod, fLeftWidth, fRightWidth, fTopHeight, fBottomHeight );
 	BaseGraphCreateModelTangent(pMod);
 	return TRUE;
 }
 
-BOOL SYModel_CreateBevel( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN const int nBevelType) 
+BOOL BaseGraphModel_CreateBevel( IN OUT BaseGraphModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN const int nBevelType) 
 {
-	SYInitialBevel(pMod);
+	BaseGraphInitialBevel(pMod);
 	BaseGraphCreateBevelGraph( pMod, p2DGraph, fHeight, fBevelWidth, fBevelHeight, nBevelType);
 	BaseGraphCreateModelTangent(pMod);
 	return TRUE;
 }
-void SetSpherePoint( IN OUT SYVertex3D* pSpherePt, IN float fRadius, IN int nSphereCircleNum, IN int nSphere_Per_Circle_VertexNum, IN BOOL bFinished )
+void SetSpherePoint( IN OUT BaseGraphVertex3D* pSpherePt, IN float fRadius, IN int nSphereCircleNum, IN int nSphere_Per_Circle_VertexNum, IN BOOL bFinished )
 {
 	float flat_angle(0.f), flong_angle(0.f);
 	float fFanNum = (float)( nSphere_Per_Circle_VertexNum - 1 );
@@ -1877,7 +1877,7 @@ void SetSpherePoint( IN OUT SYVertex3D* pSpherePt, IN float fRadius, IN int nSph
 		}
 	}
 }
-BOOL BaseGraphCreateSphereGraph(IN OUT SYModel* pMod, IN float fRad ,BOOL bSphereTex, IN int nLevel /* = 1 */){
+BOOL BaseGraphCreateSphereGraph(IN OUT BaseGraphModel* pMod, IN float fRad ,BOOL bSphereTex, IN int nLevel /* = 1 */){
 	SetSpherePoint( &pMod->v[g_stuSphereSubs[SPHERE_MATERIAL_PARAMCHG].vstart], fRad, g_nSphere_Circle_Num * nLevel, g_nSphere_Per_Circle_VertexNum * nLevel, FALSE );
 	if(!bSphereTex)
 	{
@@ -1889,11 +1889,11 @@ BOOL BaseGraphCreateSphereGraph(IN OUT SYModel* pMod, IN float fRad ,BOOL bSpher
 	}
 	return TRUE;
 }
-BOOL SYModel_CreateWidthLine(IN OUT vector3f* pFourVertex, const vector3f* pStart,const vector3f* pEnd, float width, const SYSpaceConvertParam* pProj)
+BOOL BaseGraphModel_CreateWidthLine(IN OUT vector3f* pFourVertex, const vector3f* pStart,const vector3f* pEnd, float width, const BaseGraphSpaceConvertParam* pProj)
 {
 	vector3f screenStart,screenEnd, viewStart = *pStart, viewEnd = *pEnd;
 	vector3f screenPoint[4];
-	SYSpaceConvertParam newProj = *pProj;
+	BaseGraphSpaceConvertParam newProj = *pProj;
 	SpaceConvert(&screenStart,pStart,&newProj,SY3DVEC_TO_2D);
 	SpaceConvert(&screenEnd,pEnd,&newProj,SY3DVEC_TO_2D);
 	float deltX = screenEnd.x - screenStart.x;
@@ -1937,7 +1937,7 @@ BOOL SYModel_CreateWidthLine(IN OUT vector3f* pFourVertex, const vector3f* pStar
 
 	return TRUE;
 }
-BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,int nDivision,int uiType,float fTransitionLen,float fTransitionHeight, BOOL bBevel)
+BOOL CreatePlaneBevelBox(BaseGraphModel* pMod,float fLength,float fHeight,float fThick,int nDivision,int uiType,float fTransitionLen,float fTransitionHeight, BOOL bBevel)
 {
 	//create box
 	UINT uiFVNum = 0;
@@ -1964,11 +1964,11 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 		//nF = nDivision*nDivision*12 + uiFVNum*8;
 	}
 
-	pMod->v = new SYVertex3D[pMod->vcount]; 
+	pMod->v = new BaseGraphVertex3D[pMod->vcount]; 
 	pMod->indecs = new DWORD[pMod->icount];
 	//pAttrTable = new D3DX10_ATTRIBUTE_RANGE[6];
 	pMod->nviewsub = 6;
-	pMod->viewsub = new SYSubModel[6];
+	pMod->viewsub = new BaseGraphSubModel[6];
 
 	float fTrans[3] = {0.f,0.f,0.f};
 	float fTransL,fTransH,fTransW;
@@ -2054,7 +2054,7 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 		pIB[uiIBIndex]=pIB[uiFi*3 + 1] + uiVBIndex;
 		uiIBIndex++;
 	}
-	SYVertex3D* pVB = pMod->v;
+	BaseGraphVertex3D* pVB = pMod->v;
 
 	for(uiFi = 0; uiFi < uiFFVCnt; uiFi++)
 	{
@@ -2232,7 +2232,7 @@ BOOL CreatePlaneBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
 
 	return TRUE;
 }
-void CreateNormalPrimitive(SYVertex3D* pVertex,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& uiVBIndex,UINT& uiIBIndex)
+void CreateNormalPrimitive(BaseGraphVertex3D* pVertex,BaseGraphVertex3D** ppVB,LPDWORD* ppIB,UINT& uiVBIndex,UINT& uiIBIndex)
 {
 	if(!pVertex)
 		return;
@@ -2271,7 +2271,7 @@ void CreateNormalPrimitive(SYVertex3D* pVertex,SYVertex3D** ppVB,LPDWORD* ppIB,U
 	matrix4f_transpose(&mRotvNorm,&mRotvNorm);
 
 
-	SYVertex3D V4[4]; 
+	BaseGraphVertex3D V4[4]; 
 	float3Set(&V4[0].vDyn,0,0,0.002f);
 	float3Set(&V4[0].vNorm,0,0,1);
 
@@ -2327,7 +2327,7 @@ void CreateNormalPrimitive(SYVertex3D* pVertex,SYVertex3D** ppVB,LPDWORD* ppIB,U
 	}
 }
 
-void CreatePlaneBevelFace(float3* pV,float* pF,UINT* pDIM,SYVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,float fLength,float fHeight,float fThick,int nDivision)
+void CreatePlaneBevelFace(float3* pV,float* pF,UINT* pDIM,BaseGraphVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,float fLength,float fHeight,float fThick,int nDivision)
 {
 	float fL = fLength - 2*pF[0];
 	float fH = fHeight - 2*pF[1];
@@ -2694,7 +2694,7 @@ void CreatePlaneBevelFace(float3* pV,float* pF,UINT* pDIM,SYVertex3D* pVB,UINT& 
 	}
 }
 
-void CreatePlaneBevelFace2(float3* pV,float* pF,UINT* pDIM,BOOL bBevel,SYVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,float fLength,float fHeight,float fThick,int nDivision)
+void CreatePlaneBevelFace2(float3* pV,float* pF,UINT* pDIM,BOOL bBevel,BaseGraphVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,float fLength,float fHeight,float fThick,int nDivision)
 {
 	float fL = fLength - 2*pF[0];
 	float fH = fHeight - 2*pF[1];
@@ -3102,7 +3102,7 @@ void CreatePlaneBevelFace2(float3* pV,float* pF,UINT* pDIM,BOOL bBevel,SYVertex3
 	}
 }
 
-void CreateBevelSphere(UINT uiPrecision,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode)
+void CreateBevelSphere(UINT uiPrecision,BaseGraphVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode)
 {
 	assert(uiPrecision > 0 && ppVB && ppIB);
 	if(!ppVB || !ppIB) 
@@ -3117,7 +3117,7 @@ void CreateBevelSphere(UINT uiPrecision,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF
 			uSlices = uStacks = uPrecisionFactor;
 		nV = (uSlices + 1) * (uStacks + 1);
 		nF = uSlices * uStacks * 2;
-		*ppVB = new SYVertex3D[nV];
+		*ppVB = new BaseGraphVertex3D[nV];
 		*ppIB = new DWORD[nF*3];
 
 		float fHalfPai = ((float)FLOAT_PI/ 2.0f);
@@ -3174,7 +3174,7 @@ void CreateBevelSphere(UINT uiPrecision,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF
 			uSegs = uPrecisionFactor;
 		nV = (uSegs + 1) * (uSegs + 1);
 		nF = uSegs * uSegs * 2;
-		*ppVB = new SYVertex3D[nV];
+		*ppVB = new BaseGraphVertex3D[nV];
 		*ppIB = new DWORD[nF*3];
 
 		float fQuadPai = (float)(FLOAT_PI / 4.0f);	
@@ -3236,7 +3236,7 @@ void CreateBevelSphere(UINT uiPrecision,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF
 }
 
 
-void CreateBevelCylinder(UINT uiPrecision,UINT uiSegments,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode)
+void CreateBevelCylinder(UINT uiPrecision,UINT uiSegments,BaseGraphVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode)
 {
 	assert(uiPrecision > 0 && ppVB && ppIB);
 	if(!ppVB || !ppIB) 
@@ -3251,7 +3251,7 @@ void CreateBevelCylinder(UINT uiPrecision,UINT uiSegments,SYVertex3D** ppVB,LPDW
 
 	nV = (uSlices + 1) * (uiSegments+1);
 	nF = uSlices * uiSegments * 2;
-	*ppVB = new SYVertex3D[nV];
+	*ppVB = new BaseGraphVertex3D[nV];
 	*ppIB = new DWORD[nF*3];
 
 	float fAngle = bCenterSplitMode ? (float)(FLOAT_PI / 4.0f / uSlices) : (float)(FLOAT_PI / 2.0f / uSlices); 
@@ -3305,11 +3305,11 @@ void CreateBevelCylinder(UINT uiPrecision,UINT uiSegments,SYVertex3D** ppVB,LPDW
 	}
 }
 
-BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_fThick,int m_nDivision,float uPartType,float m_fTransitionLen,float m_fTransitionHeight,UINT nTSPrecission)
+BOOL CreateSphereBevelBox(BaseGraphModel* pMod,float m_fLength,float m_fHeight,float m_fThick,int m_nDivision,float uPartType,float m_fTransitionLen,float m_fTransitionHeight,UINT nTSPrecission)
 {
 	//Create elements,these elements can be shared between box models!
 	UINT uiBSVCnt = 0,uiBSFCnt = 0,uiBCVCnt = 0,uiBCFCnt = 0,uiBHCVCnt = 0,uiBHCFCnt = 0;
-	SYVertex3D *pBSVB = NULL,*pBCVB = NULL,*pBHCVB = NULL;
+	BaseGraphVertex3D *pBSVB = NULL,*pBCVB = NULL,*pBHCVB = NULL;
 	DWORD *pBSIB = NULL,*pBCIB = NULL,*pBHCIB = NULL;
 	if(m_fTransitionLen > ABS_FLOAT_0)
 	{
@@ -3332,7 +3332,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 	//4. Create plane
 	UINT uiPlaneVCnt = (m_nDivision+1)*(m_nDivision+1);
 	UINT uiPlaneFCnt = m_nDivision*m_nDivision*2;
-	/*MODELVERTEX*/SYVertex3D* pPlaneVB = new SYVertex3D[uiPlaneVCnt];
+	/*MODELVERTEX*/BaseGraphVertex3D* pPlaneVB = new BaseGraphVertex3D[uiPlaneVCnt];
 	DWORD* pPlaneIB = new DWORD[uiPlaneFCnt*3];
 	float fStep = 1.f / (m_nDivision);
 	float px,py;
@@ -3343,7 +3343,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 		for (int nC=0;nC<m_nDivision+1;nC++)
 		{
 			px = fStep * nC - .5f;
-			//pPlaneVB[nRIndex+nC] = //SYVertex3D(,,);
+			//pPlaneVB[nRIndex+nC] = //BaseGraphVertex3D(,,);
 
 			float3Set(&pPlaneVB[nRIndex+nC].vDyn, px,py,0.f);	
 			float3Set(&pPlaneVB[nRIndex+nC].vNorm, 0.f,0.f,1.f);
@@ -3379,10 +3379,10 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 // 	m_pIB = new DWORD[m_nF*3];
 // 	m_pAttrTable = new D3DX10_ATTRIBUTE_RANGE[6];
 
-	pMod->v = new SYVertex3D[pMod->vcount]; 
+	pMod->v = new BaseGraphVertex3D[pMod->vcount]; 
 	pMod->indecs = new DWORD[pMod->icount];
 	pMod->nviewsub = 6;
-	pMod->viewsub = new SYSubModel[6];
+	pMod->viewsub = new BaseGraphSubModel[6];
 
 	float fL = m_fLength - 2*m_fTransitionLen;
 	float fH = m_fHeight - 2*m_fTransitionLen;
@@ -3411,7 +3411,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 		pIB[uiIBIndex]=pBHCIB[uiFi] + uiVBIndex;
 		uiIBIndex++;
 	}
-	SYVertex3D *pVB = pMod->v;
+	BaseGraphVertex3D *pVB = pMod->v;
 	for(uiFi = 0; uiFi < uiBHCVCnt; uiFi++)
 	{
 		xx = pBHCVB[uiFi].x;
@@ -4097,7 +4097,7 @@ BOOL CreateSphereBevelBox(SYModel* pMod,float m_fLength,float m_fHeight,float m_
 }
 
 //该函数以后要修改的
-void _TransFaceCoord(eFACETYPE FaceType,  SYVertex3D *pVB, const UINT uiVBIndex)
+void _TransFaceCoord(eFACETYPE FaceType,  BaseGraphVertex3D *pVB, const UINT uiVBIndex)
 {
 	float fTemp;
 	if(FaceType == FACETYPE_BOTTOM)
@@ -4122,7 +4122,7 @@ void _TransFaceCoord(eFACETYPE FaceType,  SYVertex3D *pVB, const UINT uiVBIndex)
 	}
 }
 
-void _CalcTexCoord(eFACETYPE FaceType,float fInvfL,float fInvfH,float fInvfW, SYVertex3D *pVB, const UINT uiVBIndex)
+void _CalcTexCoord(eFACETYPE FaceType,float fInvfL,float fInvfH,float fInvfW, BaseGraphVertex3D *pVB, const UINT uiVBIndex)
 {
 	switch(FaceType)
 	{
@@ -4148,13 +4148,13 @@ void _CalcTexCoord(eFACETYPE FaceType,float fInvfL,float fInvfH,float fInvfW, SY
 	}
 }
 
-void BuildSSPhereOneFace(float fL,float fH,float fW,eFACETYPE FaceType, const float fTransitionLen, SYVertex3D *pVB, UINT &uiVBIndex,  DWORD *pIB, UINT  &uiIBIndex,
+void BuildSSPhereOneFace(float fL,float fH,float fW,eFACETYPE FaceType, const float fTransitionLen, BaseGraphVertex3D *pVB, UINT &uiVBIndex,  DWORD *pIB, UINT  &uiIBIndex,
 				DWORD *pBCIB, const UINT uiBCFCnt, 
-				SYVertex3D *pBCVB, const UINT uiBCVCnt, 
+				BaseGraphVertex3D *pBCVB, const UINT uiBCVCnt, 
 				const UINT uiBSFCnt,  DWORD *pBSIB, 
-				SYVertex3D *pBSVB, const UINT uiBSVCnt,
+				BaseGraphVertex3D *pBSVB, const UINT uiBSVCnt,
 				DWORD *pPlaneIB, const UINT uiPlaneFCnt,
-				SYVertex3D *pPlaneVB, const UINT uiPlaneVCnt,
+				BaseGraphVertex3D *pPlaneVB, const UINT uiPlaneVCnt,
 				float fLength,float fHeight,float fThick)
 {
 	float xx,yy,zz;
@@ -4503,12 +4503,12 @@ void BuildSSPhereOneFace(float fL,float fH,float fW,eFACETYPE FaceType, const fl
 }
 
 
-BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,int nDivision,float uPartType,float fTransitionLen,float fTransitionHeight, UINT nTSPrecission)
+BOOL CreateSplitSphereBevelBox(BaseGraphModel* pMod,float fLength,float fHeight,float fThick,int nDivision,float uPartType,float fTransitionLen,float fTransitionHeight, UINT nTSPrecission)
 {
 	//Create elements,these elements can be shared between box models!
 	
 	UINT uiBSVCnt = 0,uiBSFCnt = 0,uiBCVCnt = 0,uiBCFCnt = 0,uiBHCVCnt = 0,uiBHCFCnt = 0;
-	SYVertex3D *pBSVB = NULL,*pBCVB = NULL,*pBHCVB = NULL;
+	BaseGraphVertex3D *pBSVB = NULL,*pBCVB = NULL,*pBHCVB = NULL;
 	DWORD *pBSIB = NULL,*pBCIB = NULL,*pBHCIB = NULL;
 
 	if(fTransitionLen > ABS_FLOAT_0)
@@ -4528,7 +4528,7 @@ BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float f
 	//3. Create plane
 	UINT uiPlaneVCnt = (nDivision+1)*(nDivision+1);
 	UINT uiPlaneFCnt = nDivision*nDivision*2;
-	SYVertex3D *pPlaneVB = new SYVertex3D[uiPlaneVCnt];
+	BaseGraphVertex3D *pPlaneVB = new BaseGraphVertex3D[uiPlaneVCnt];
 	DWORD * pPlaneIB = new DWORD[uiPlaneFCnt*3];
 	float fStep = 1.f / (nDivision);
 	float px,py;
@@ -4570,15 +4570,15 @@ BOOL CreateSplitSphereBevelBox(SYModel* pMod,float fLength,float fHeight,float f
 	/*nV*/pMod->vcount = (nDivision+1)*(nDivision+1)*6 + (uiBSVCnt+uiBCVCnt)*24 + uiFVNum*8;
 	/*nF*/pMod->icount = (nDivision*nDivision*12 + (uiBSFCnt+uiBCFCnt)*24 +uiFVNum*8) * 3;
 
-	pMod->v = new SYVertex3D[pMod->vcount]; 
+	pMod->v = new BaseGraphVertex3D[pMod->vcount]; 
 	pMod->indecs = new DWORD[pMod->icount];
 	pMod->nviewsub = 6;
-	pMod->viewsub = new SYSubModel[6];
+	pMod->viewsub = new BaseGraphSubModel[6];
 
 // 	pVB = new MODELVERTEX[nV];
 // 	pIB = new DWORD[nF*3];
 // 	pAttrTable = new D3DX10_ATTRIBUTE_RANGE[6];
-	SYVertex3D *pVB = pMod->v;
+	BaseGraphVertex3D *pVB = pMod->v;
 	DWORD *	   pIB = pMod->indecs;
 
 	float fL = fLength - 2*fTransitionLen;
@@ -4927,8 +4927,8 @@ void _CreateCornerCurves(
 
 	float3 vTemp = v3;
 	BOOL bAddExtra = FALSE;
-	SYVertex3D vPt2;vPt2.vDyn = v4;vPt2.vNorm = vNormal2;
-	SYVertex3D vPt3;vPt3.vDyn = v5;vPt3.vNorm = v4C;
+	BaseGraphVertex3D vPt2;vPt2.vDyn = v4;vPt2.vNorm = vNormal2;
+	BaseGraphVertex3D vPt3;vPt3.vDyn = v5;vPt3.vNorm = v4C;
 	for(int i = 0; i <=  nTransitionPresition; i++)
 	{
 		vTemp = v3;  
@@ -4936,7 +4936,7 @@ void _CreateCornerCurves(
 		float3NormalMulMat(&vTemp,&vTemp,&matRot);
 		//D3DXMatrixRotationZ(&matRot,-fAngle);						
 		//D3DXVec3TransformNormal(&vTemp,&vTemp,&matRot);       
-		SYVertex3D vPt;
+		BaseGraphVertex3D vPt;
 		vPt.vNorm = vTemp;
 		vPt.vDyn = vCenter + fTransitionLen *vTemp;
 
@@ -5074,7 +5074,7 @@ void _CreateCurves(const float fRU, const float fRD, const float frU, const floa
 		_CreateCornerCurves(TopCurve,LocalInnerCurve,vID,vIU,vOU,fBiAngle2, fTransitionLen, fHeight, BevelCenter, nTransitionPresition);
 	else
 	{
-		SYVertex3D vPt;
+		BaseGraphVertex3D vPt;
 		float3Set(&vPt.vDyn, vIU.x, vIU.y, vIU.z);
 		float3Set(&vPt.vNorm, 0.f,1.f,0.f);
 		TopCurve.push_back(vPt);
@@ -5100,7 +5100,7 @@ void _CreateCurves(const float fRU, const float fRD, const float frU, const floa
 		_CreateCornerCurves(BottomCurve,InnerCurve,vOD,vID,vIU,fBiAngle4, fTransitionLen, fHeight, BevelCenter, nTransitionPresition);
 	else
 	{
-		SYVertex3D vPt;
+		BaseGraphVertex3D vPt;
 		float3Set(&vPt.vDyn, vID.x, vID.y, vID.z);
 		float3Set(&vPt.vNorm, 0.f, -1.f,0.f);
 		BottomCurve.push_back(vPt);
@@ -5119,12 +5119,12 @@ void _CreateCurves(const float fRU, const float fRD, const float frU, const floa
 }
 
 void _CreateRotYShape(
-	std::vector<SYVertex3D>& Curve,
+	std::vector<BaseGraphVertex3D>& Curve,
 	float fDiameter,float fOffSet,
 	eCYLTEXCTYPE TexCoordType,UINT uivTexDim,BOOL bFlip,BOOL bPlane, 
 	const float fBeginAngle, const float fEndAngle,
 	UINT uSlices,
-	SYVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,
+	BaseGraphVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,
 	float3 *BevelCenter,
 	std::vector<float3 *> &PlaneVectors1, std::vector<float3 *> &PlaneVectors2
 	)
@@ -5166,7 +5166,7 @@ void _CreateRotYShape(
 
 	float fBevelR = 0.f;
 	matrix4f matRotY;
-	SYVertex3D** PreVec = new SYVertex3D*[nSize];
+	BaseGraphVertex3D** PreVec = new BaseGraphVertex3D*[nSize];
 	for (int i=0;i<=(int) uSlices;i++)
 	{
 		nx = sinf(fAngle);
@@ -5303,10 +5303,10 @@ void _CreateRotYShape(
 	PreVec = NULL;
 }
 
-void _CreateRotLineYShape(SYVertex3D* pV,float fDiameter,float fOffSet,eCYLTEXCTYPE TexCoordType,UINT uivTexDim,BOOL bFlip,BOOL bPlane,
+void _CreateRotLineYShape(BaseGraphVertex3D* pV,float fDiameter,float fOffSet,eCYLTEXCTYPE TexCoordType,UINT uivTexDim,BOOL bFlip,BOOL bPlane,
 						  const float fBeginAngle, const float fEndAngle,
 						  UINT uSlices,
-						  SYVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,
+						  BaseGraphVertex3D* pVB,UINT& uiVBIndex,DWORD* pIB,UINT& uiIBIndex,
 						  std::vector<float3 *> &PlaneVectors1, std::vector<float3 *> &PlaneVectors2)
 {
 	int nSize = 2;
@@ -5341,7 +5341,7 @@ void _CreateRotLineYShape(SYVertex3D* pV,float fDiameter,float fOffSet,eCYLTEXCT
 
 	float fBevelR = 0.f;
 	matrix4f matRotY;
-	SYVertex3D* PreVec[2] = {NULL,NULL};
+	BaseGraphVertex3D* PreVec[2] = {NULL,NULL};
 	for (int i=0;i<=(int) uSlices;i++)
 	{
 		nx = sinf(fAngle);
@@ -5496,15 +5496,15 @@ void _CalcuLineNormal(vector3f* pOut,vector3f* pIn1,vector3f* pIn2)
 }
 
 // 球
-BOOL SYModel_CreateSphere(IN OUT SYModel* pMod, IN float fRad ,BOOL bShpereTex,IN int nLevel /* = 1 */){
-	SYInitialSphere(pMod,nLevel);
+BOOL BaseGraphModel_CreateSphere(IN OUT BaseGraphModel* pMod, IN float fRad ,BOOL bShpereTex,IN int nLevel /* = 1 */){
+	BaseGraphInitialSphere(pMod,nLevel);
 	BaseGraphCreateSphereGraph( pMod, fRad ,bShpereTex,nLevel);	
 	BaseGraphCreateModelTangent(pMod);
 	return TRUE;
 }
 
 //创建立方体
-BOOL SYModel_CreateBevelBox(SYModel* pMod,float fLength,float fHeight,float fThick,
+BOOL BaseGraphModel_CreateBevelBox(BaseGraphModel* pMod,float fLength,float fHeight,float fThick,
 							int uPartType,
 							int nTransitionType,float fTransitionLen,float fTransitionHeight,
 							UINT nTSPrecission)
@@ -5542,7 +5542,7 @@ BOOL SYModel_CreateBevelBox(SYModel* pMod,float fLength,float fHeight,float fThi
 }
 
 //创建柱体
-BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight, 
+BOOL BaseGraphModel_CreateCylinder(BaseGraphModel* pMod, BOOL bPrism,float fHeight, 
 							UINT uSlices,  
 							float fRU, float fRD, float frU, float frD,
 							float fTransitionLen, float fTransitionHeight,
@@ -5616,10 +5616,10 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		nTransitionType == TRANSITION_NONE ||!bBevel);
 
 	pMod->nviewsub = 6;
-	pMod->viewsub = new SYSubModel[6];
+	pMod->viewsub = new BaseGraphSubModel[6];
 
 	UINT uiVBIndex = 0, uiIBIndex = 0;
-	CurvePtArray TopCurve, BottomCurve, OuterCurve, InnerCurve ; //SYVertex3D;
+	CurvePtArray TopCurve, BottomCurve, OuterCurve, InnerCurve ; //BaseGraphVertex3D;
  	
 	std::vector<float3 *> PlaneVectors1, PlaneVectors2;
 
@@ -5652,11 +5652,11 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 			/*nF*/pMod->icount += ((uiCurPts-1)*2) * 3;
 		}
 
-		/*pVB*/pMod->v = new SYVertex3D[pMod->vcount];
+		/*pVB*/pMod->v = new BaseGraphVertex3D[pMod->vcount];
 		/*pIB*/pMod->indecs = new DWORD[pMod->icount];
 
 		DWORD *pIB = pMod->indecs;
-		SYVertex3D* pVB = pMod->v;
+		BaseGraphVertex3D* pVB = pMod->v;
 
 		UINT uiFaceStart = 0;
 		float fDiameter =  fRU- frU;
@@ -5892,10 +5892,10 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 			pMod->icount += uiPlaneTri * 3;//bBevel ? 12 : 4;  
 		}
 
-		pMod->v = new SYVertex3D[pMod->vcount]; 
+		pMod->v = new BaseGraphVertex3D[pMod->vcount]; 
 		pMod->indecs = new DWORD[pMod->icount];
 
-		SYVertex3D *pVB = pMod->v;
+		BaseGraphVertex3D *pVB = pMod->v;
 		DWORD *pIB = pMod->indecs;
 
 		if(fTransitionHeight -  fHeight/2.f > ABS_FLOAT_0)
@@ -5947,7 +5947,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 
 		UINT uiFaceStart = 0;
 
-		SYVertex3D vPt[2];
+		BaseGraphVertex3D vPt[2];
 		float fDiameter =  fRU- frU;
 		float fStart =  frU;
 		//top
@@ -6209,7 +6209,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 }
 
 //创建棱柱
-BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
+BOOL BaseGraphModel_CreatePrism(BaseGraphModel* pMod, float fHeight,
 							UINT uSlices, 
 							float fRU, float fRD, float frU, float frD,
 							float fTransitionLen, float fTransitionHeight,
@@ -6276,7 +6276,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 	UINT uiAttrCnt = uSlices*4;
 
 	pMod->nviewsub = uiAttrCnt+2;
-	pMod->viewsub = new SYSubModel[uiAttrCnt+2];
+	pMod->viewsub = new BaseGraphSubModel[uiAttrCnt+2];
 
 	UINT uiVBIndex = 0;
 	UINT uiIBIndex = 0;
@@ -6291,7 +6291,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 	UINT uiTotalBottomFaceCnt = 0;
 	UINT uiTotalInnerFaceCnt = 0;
 
-	CurvePtArray TopCurve, BottomCurve, OuterCurve, InnerCurve ; //SYVertex3D;
+	CurvePtArray TopCurve, BottomCurve, OuterCurve, InnerCurve ; //BaseGraphVertex3D;
 	float3 BevelCenter[3];
 	float3Set(&BevelCenter[2], 0.f,0.f,0.f);
 	std::vector<float3 *> PlaneVectors1, PlaneVectors2;
@@ -6322,11 +6322,11 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 			/*nF*/pMod->icount += (uiCurPts-1)*2 * 3;
 		}
 
-		pMod->v = new SYVertex3D[pMod->vcount];
+		pMod->v = new BaseGraphVertex3D[pMod->vcount];
 		pMod->indecs = new DWORD[pMod->icount];
 
 		DWORD *pIB = pMod->indecs;
-		SYVertex3D* pVB = pMod->v;
+		BaseGraphVertex3D* pVB = pMod->v;
 
 		UINT uiFaceStart = 0;
 		float fDiameter =  fRU- frU;
@@ -6489,10 +6489,10 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 			pMod->icount += uiPlaneTri * 3;//bBevel ? 12 : 4;  
 		}
 
-		pMod->v = new SYVertex3D[pMod->vcount]; 
+		pMod->v = new BaseGraphVertex3D[pMod->vcount]; 
 		pMod->indecs = new DWORD[pMod->icount];
 
-		SYVertex3D *pVB = pMod->v;
+		BaseGraphVertex3D *pVB = pMod->v;
 		DWORD	   *pIB = pMod->indecs;
 
 	
@@ -6546,7 +6546,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 
 		UINT uiFaceStart = 0;
 
-		SYVertex3D vPt[2];
+		BaseGraphVertex3D vPt[2];
 		float fDiameter =  fRU- frU;
 		float fStart =  frU;
 		//top
@@ -6831,7 +6831,7 @@ BOOL SYModel_CreatePrism(SYModel* pMod, float fHeight,
 }
 
 //创建圆环
-BOOL SYModel_CreateRing(SYModel* pMod, 
+BOOL BaseGraphModel_CreateRing(BaseGraphModel* pMod, 
 					   UINT uSlices, UINT uStacks, //精度，界面精度
 					   float fRU,  float frU,//半径，截面半径
 					  float fStartAng, float fEndAng )//起始角度，终止角度
@@ -6846,21 +6846,21 @@ BOOL SYModel_CreateRing(SYModel* pMod,
 		pMod->vcount += 2 * (uStacks + 1 + 1);
 		pMod->icount += 2 * (/*uStacks + 2*/uStacks * 3);
 	}
-	pMod->v = new SYVertex3D[pMod->vcount]; 
+	pMod->v = new BaseGraphVertex3D[pMod->vcount]; 
 	pMod->indecs = new DWORD[pMod->icount];
 
-	SYVertex3D *pVB = pMod->v;
+	BaseGraphVertex3D *pVB = pMod->v;
 	DWORD *pIB = pMod->indecs;
 	
 	if(bNeedPlane)
 	{
 		pMod->nviewsub = 3;
-		pMod->viewsub = new SYSubModel[3];//3个
+		pMod->viewsub = new BaseGraphSubModel[3];//3个
 	}
 	else
 	{
 		pMod->nviewsub = 1;
-		pMod->viewsub = new SYSubModel[1];//3个
+		pMod->viewsub = new BaseGraphSubModel[1];//3个
 	}
 	
 
@@ -7046,7 +7046,7 @@ BOOL SYModel_CreateRing(SYModel* pMod,
 }
 
 //柱图
-BOOL  SYModel_CreateBar(SYModel* pMod,UINT uSharpType,float fRadius,UINT uFragMent,BOOL bText)
+BOOL  BaseGraphModel_CreateBar(BaseGraphModel* pMod,UINT uSharpType,float fRadius,UINT uFragMent,BOOL bText)
 {
 	UINT nV = 0;
 	UINT nF = 0;
@@ -7055,10 +7055,10 @@ BOOL  SYModel_CreateBar(SYModel* pMod,UINT uSharpType,float fRadius,UINT uFragMe
 	{
 		pMod->vcount = 8;//32;
 		pMod->icount = 12;//16*3;
-		pMod->v = new SYVertex3D[pMod->vcount];
+		pMod->v = new BaseGraphVertex3D[pMod->vcount];
 		pMod->indecs = new DWORD[pMod->icount];
 		pMod->nviewsub = 1;
-		pMod->viewsub = new SYSubModel[1];
+		pMod->viewsub = new BaseGraphSubModel[1];
 
 		pMod->v[0].x = -0.5f*fRadius;
 		pMod->v[0].y = 0.5f*fRadius+fRadius;
@@ -7156,10 +7156,10 @@ BOOL  SYModel_CreateBar(SYModel* pMod,UINT uSharpType,float fRadius,UINT uFragMe
 		{
 			pMod->vcount = (uFragMent +1) * 4 + 2;
 			pMod->icount = (uFragMent * 4 )*3;
-			pMod->v = new SYVertex3D[pMod->vcount];
+			pMod->v = new BaseGraphVertex3D[pMod->vcount];
 			pMod->indecs = new DWORD[pMod->icount];
 			pMod->nviewsub = 1;
-			pMod->viewsub = new SYSubModel[1];
+			pMod->viewsub = new BaseGraphSubModel[1];
 
 			float fAngle = (float)PAI * 2.0f / (float)uFragMent; 
 			float fAngleSum = 0;
@@ -7306,10 +7306,10 @@ BOOL  SYModel_CreateBar(SYModel* pMod,UINT uSharpType,float fRadius,UINT uFragMe
 		{
 			pMod->vcount = 24;//32;
 			pMod->icount = 36;//16*3;
-			pMod->v = new SYVertex3D[pMod->vcount];
+			pMod->v = new BaseGraphVertex3D[pMod->vcount];
 			pMod->indecs = new DWORD[pMod->icount];
 			pMod->nviewsub = 1;
-			pMod->viewsub = new SYSubModel[1];
+			pMod->viewsub = new BaseGraphSubModel[1];
 
 			pMod->v[0].x = 0.5f*fRadius;
 			pMod->v[0].y = 0.5f;
@@ -7570,7 +7570,7 @@ BOOL  SYModel_CreateBar(SYModel* pMod,UINT uSharpType,float fRadius,UINT uFragMe
 }
 
 //翻牌
-void MODELVERTEX(SYVertex3D& V,float x,float y,float z,float nx,float ny,float nz,float tu,float tv)
+void MODELVERTEX(BaseGraphVertex3D& V,float x,float y,float z,float nx,float ny,float nz,float tu,float tv)
 {
 	V.x = x;
 	V.y = y;
@@ -7583,7 +7583,7 @@ void MODELVERTEX(SYVertex3D& V,float x,float y,float z,float nx,float ny,float n
 };
 
 
-BOOL  SYModel_CreateTablet_TwoFace(SYModel* pMod,
+BOOL  BaseGraphModel_CreateTablet_TwoFace(BaseGraphModel* pMod,
 								   float fWidth,
 								   float fHeight,
 								   float fThick,
@@ -7597,11 +7597,11 @@ BOOL  SYModel_CreateTablet_TwoFace(SYModel* pMod,
 
 	pMod->vcount = 24;
 	pMod->icount = 36;
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	pMod->nviewsub = nSubset;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
 	//bottom
 	MODELVERTEX(pMod->v[0],0.5f*fWidth,	-0.5f*fHeight,	-0.5f*fThick,	0.0f,	-1.0f,	0.0f,	1.0f,	0.0f);
@@ -7727,7 +7727,7 @@ BOOL  SYModel_CreateTablet_TwoFace(SYModel* pMod,
 	return TRUE;
 }
 	
-BOOL  SYModel_CreateTablet_TriFace(SYModel* pMod,
+BOOL  BaseGraphModel_CreateTablet_TriFace(BaseGraphModel* pMod,
 								   float fWidth,
 								   float fHeight,
 								   float fThick,
@@ -7742,11 +7742,11 @@ BOOL  SYModel_CreateTablet_TriFace(SYModel* pMod,
 	pMod->vcount = 18;
 	pMod->icount = 24;
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	pMod->nviewsub = nSubset;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
 	float z1 = -sqrtf(3) / 6.f;
 	float z2 = sqrtf(3) / 3.f;
@@ -7857,7 +7857,7 @@ BOOL  SYModel_CreateTablet_TriFace(SYModel* pMod,
 
 
 
-BOOL  SYModel_CreateTablet_Text_TwoFace(SYModel* pMod,
+BOOL  BaseGraphModel_CreateTablet_Text_TwoFace(BaseGraphModel* pMod,
 									   float fWidth,
 									   float fHeight,
 									   float fThick,
@@ -7865,12 +7865,12 @@ BOOL  SYModel_CreateTablet_Text_TwoFace(SYModel* pMod,
 									   BOOL bRotY)
 {
 	pMod->nviewsub = 2;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
 	pMod->vcount = 8;
 	pMod->icount = 12;
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	//////////////////////////////////////////////////////////////////////////
@@ -7935,19 +7935,19 @@ BOOL  SYModel_CreateTablet_Text_TwoFace(SYModel* pMod,
 
 }
 
-BOOL  SYModel_CreateTablet_Text_TriFace(SYModel* pMod,
+BOOL  BaseGraphModel_CreateTablet_Text_TriFace(BaseGraphModel* pMod,
 										float fWidth,
 										float fHeight,
 										float fThick,
 										SIZE* txt_sz)
 {
 	pMod->nviewsub = 3;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
 	pMod->vcount = 12;
 	pMod->icount = 18;
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	float z1 = -sqrtf(3) / 6.f;
@@ -8056,7 +8056,7 @@ BOOL  SYModel_CreateTablet_Text_TriFace(SYModel* pMod,
 }
 
 
-BOOL  SYModel_CreateTablet(SYModel* pMod,
+BOOL  BaseGraphModel_CreateTablet(BaseGraphModel* pMod,
 						   UINT uModelType,
 						   UINT uStacks,
 						   int  nPartCount,
@@ -8076,21 +8076,21 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 		{
 			pMod->vcount = 24*nPartCount;
 			pMod->icount = 36*nPartCount;
-			pMod->v = new SYVertex3D[pMod->vcount];
+			pMod->v = new BaseGraphVertex3D[pMod->vcount];
 			pMod->indecs = new DWORD[pMod->icount];
 			
 			pMod->nviewsub = nSubPart*nPartCount;
-			pMod->viewsub = new SYSubModel[pMod->nviewsub];
+			pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 		}
 		else
 		{
 			pMod->vcount = 8*nPartCount;
 			pMod->icount = 12*nPartCount;
-			pMod->v = new SYVertex3D[pMod->vcount];
+			pMod->v = new BaseGraphVertex3D[pMod->vcount];
 			pMod->indecs = new DWORD[pMod->icount];
 
 			pMod->nviewsub = nSubPart;
-			pMod->viewsub = new SYSubModel[pMod->nviewsub];
+			pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
 		}
 
@@ -8244,7 +8244,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 		if(bText)
 		{
 			pMod->nviewsub = nSubPart*nPartCount;
-			pMod->viewsub = new SYSubModel[nSubPart*nPartCount];
+			pMod->viewsub = new BaseGraphSubModel[nSubPart*nPartCount];
 
 			pMod->vcount = 30*nPartCount;
 			pMod->icount = 14*nPartCount*3;
@@ -8253,17 +8253,17 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 		else
 		{
 			pMod->nviewsub = nSubPart*nPartCount;
-			pMod->viewsub = new SYSubModel[nSubPart*nPartCount];
+			pMod->viewsub = new BaseGraphSubModel[nSubPart*nPartCount];
 
 		}
 
 		pMod->vcount = 30*nPartCount;
 		pMod->icount = 14*nPartCount*3;
-		pMod->v = new SYVertex3D[pMod->vcount];
+		pMod->v = new BaseGraphVertex3D[pMod->vcount];
 		pMod->indecs = new DWORD[pMod->icount];
 		
 		pMod->nviewsub = nSubPart*nPartCount;
-		pMod->viewsub = new SYSubModel[nSubPart*nPartCount];
+		pMod->viewsub = new BaseGraphSubModel[nSubPart*nPartCount];
 
 		float z1 = -sqrtf(3) / 6.f;
 		float z2 = sqrtf(3) / 3.f;
@@ -8445,7 +8445,7 @@ BOOL  SYModel_CreateTablet(SYModel* pMod,
 	return TRUE;
 }
 //星
-BOOL  SYModel_CreateStar(SYModel* pMod,UINT uStacks,UINT uSlices,int  nPartCount,float fRU,float frU,float fRD,
+BOOL  BaseGraphModel_CreateStar(BaseGraphModel* pMod,UINT uStacks,UINT uSlices,int  nPartCount,float fRU,float frU,float fRD,
 						 float frD,float fTLength,float fTHeight,float fThick)
 {
 	UINT nSinglePoint = (uStacks + uSlices) * 2;
@@ -8459,9 +8459,9 @@ BOOL  SYModel_CreateStar(SYModel* pMod,UINT uStacks,UINT uSlices,int  nPartCount
 	pMod->vcount = nV;
 	pMod->icount = nF*3;
 	pMod->nviewsub = 3;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	SYVertex3D* pVB = new SYVertex3D[pMod->vcount];
+	BaseGraphVertex3D* pVB = new BaseGraphVertex3D[pMod->vcount];
 	DWORD* pIB = new DWORD[pMod->icount];	
 
 	pMod->v = pVB; 
@@ -8842,7 +8842,7 @@ BOOL  SYModel_CreateStar(SYModel* pMod,UINT uStacks,UINT uSlices,int  nPartCount
 
 
 //饼图
-BOOL  SYModel_CreatePie(SYModel* pMod,
+BOOL  BaseGraphModel_CreatePie(BaseGraphModel* pMod,
 						UINT	uSharp,
 						UINT	uFragMent,
 						float	fAngle0,
@@ -8891,12 +8891,12 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 	pMod->vcount = vcount;
 	pMod->icount = icount;
 	pMod->nviewsub = 5;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[vcount];
+	pMod->v = new BaseGraphVertex3D[vcount];
 	pMod->indecs = new DWORD[icount];
 
-	SYVertex3D*  pv =  pMod->v;
+	BaseGraphVertex3D*  pv =  pMod->v;
 	DWORD*		 pi =  pMod->indecs;
 
 	//制作index时的顶点基数
@@ -8908,7 +8908,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 	//上面
 	{	
 		//圆心
-		SYVertex3D v0;
+		BaseGraphVertex3D v0;
 		v0.x = 0;
 		v0.y = 0;
 		v0.z = -thick;
@@ -8928,7 +8928,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 
 		//弧点
 		{
-			SYVertex3D v;
+			BaseGraphVertex3D v;
 			v.z = -thick;
 
 			v.nx = 0;
@@ -8993,7 +8993,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 	{	
 
 		//圆心
-		SYVertex3D v0;
+		BaseGraphVertex3D v0;
 		v0.x = 0;
 		v0.y = 0;
 		v0.z = 0;
@@ -9012,7 +9012,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 		++vbase;
 		//
 		{
-			SYVertex3D v;
+			BaseGraphVertex3D v;
 			v.z = 0;
 
 			v.nx = 0;
@@ -9074,7 +9074,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 
 	//弧面
 	{	
-		SYVertex3D v;
+		BaseGraphVertex3D v;
 
 		v.nx = 0;
 		v.ny = 0;
@@ -9154,7 +9154,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 			float c = cosf(fAngle0);
 			float s = sinf(fAngle0);
 			
-			SYVertex3D v0,v1,v2,v3;
+			BaseGraphVertex3D v0,v1,v2,v3;
 
 			v0.x = 0;
 			v0.y = 0;
@@ -9278,7 +9278,7 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 	{	
 		//4个点
 		{
-			SYVertex3D v0,v1,v2,v3;
+			BaseGraphVertex3D v0,v1,v2,v3;
 
 			v0.x = fAngle0;
 			v0.y = fAngle1;
@@ -9390,14 +9390,14 @@ BOOL  SYModel_CreatePie(SYModel* pMod,
 	return TRUE;
 }
 
-BOOL  SYModel_CreateTitlePlane(SYModel* pMod)
+BOOL  BaseGraphModel_CreateTitlePlane(BaseGraphModel* pMod)
 {
     pMod->vcount = 4;
     pMod->icount = 6;
     pMod->nviewsub = 1;
-    pMod->viewsub = new SYSubModel[pMod->nviewsub];
+    pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-    pMod->v = new SYVertex3D[pMod->vcount];
+    pMod->v = new BaseGraphVertex3D[pMod->vcount];
     pMod->indecs = new DWORD[pMod->icount];
 
     pMod->v[0].x = -0.5f;
@@ -9478,7 +9478,7 @@ BOOL  SYModel_CreateTitlePlane(SYModel* pMod)
     return TRUE;
 }
 
-BOOL SYModel_CreateChamferPie(	SYModel* pMod,
+BOOL BaseGraphModel_CreateChamferPie(	BaseGraphModel* pMod,
 								UINT uSharp,
 								UINT uFragMent,
 								float fAngle0,
@@ -9508,14 +9508,14 @@ BOOL SYModel_CreateChamferPie(	SYModel* pMod,
 	return TRUE;
 }
 
-BOOL  SYModel_CreateXYPlane(SYModel* pMod,float width,float height,float3 OrginPt)
+BOOL  BaseGraphModel_CreateXYPlane(BaseGraphModel* pMod,float width,float height,float3 OrginPt)
 {
 	pMod->vcount = 8;
 	pMod->icount = 12;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	for(int i = 0 ;i< pMod->vcount;  ++i)
@@ -9613,14 +9613,14 @@ BOOL  SYModel_CreateXYPlane(SYModel* pMod,float width,float height,float3 OrginP
 	return TRUE;
 }
 
-BOOL  SYModel_CreateYZPlane(SYModel* pMod,float width,float height, float3 OrginPt)
+BOOL  BaseGraphModel_CreateYZPlane(BaseGraphModel* pMod,float width,float height, float3 OrginPt)
 {
 	pMod->vcount = 8;
 	pMod->icount = 12;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	for(int i = 0 ;i< pMod->vcount;  ++i)
@@ -9719,14 +9719,14 @@ BOOL  SYModel_CreateYZPlane(SYModel* pMod,float width,float height, float3 Orgin
 	return TRUE;
 }
 
-BOOL  SYModel_CreateZXPlane(SYModel* pMod,float width,float height, float3 OrginPt)
+BOOL  BaseGraphModel_CreateZXPlane(BaseGraphModel* pMod,float width,float height, float3 OrginPt)
 {
 	pMod->vcount = 8;
 	pMod->icount = 12;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	for(int i = 0 ;i< pMod->vcount;  ++i)
@@ -9817,7 +9817,7 @@ BOOL  SYModel_CreateZXPlane(SYModel* pMod,float width,float height, float3 Orgin
 	return TRUE;
 }
 
-BOOL SYModel_CreateXYLabels(SYModel* pMod,float width,float height, float3 OrginPt, UINT segment, float labelWidth)
+BOOL BaseGraphModel_CreateXYLabels(BaseGraphModel* pMod,float width,float height, float3 OrginPt, UINT segment, float labelWidth)
 {
 	int label_count = segment + 1;
 
@@ -9827,15 +9827,15 @@ BOOL SYModel_CreateXYLabels(SYModel* pMod,float width,float height, float3 Orgin
 	{
 		OrginPt.z -= 1;
 
-		return SYModel_CreateXYPlane(pMod,width,height,OrginPt);
+		return BaseGraphModel_CreateXYPlane(pMod,width,height,OrginPt);
 	}
 	
 	pMod->vcount = 4*label_count;
 	pMod->icount = 6*label_count ;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	for(int i = 0 ;i< pMod->vcount;  ++i)
@@ -9927,7 +9927,7 @@ BOOL SYModel_CreateXYLabels(SYModel* pMod,float width,float height, float3 Orgin
 	return TRUE;
 }
 
-BOOL SYModel_CreateYZLabels(SYModel* pMod,float width,float height, float3 OrginPt, UINT segment, float labelWidth)
+BOOL BaseGraphModel_CreateYZLabels(BaseGraphModel* pMod,float width,float height, float3 OrginPt, UINT segment, float labelWidth)
 {
 	int label_count = segment + 1;
 	
@@ -9937,15 +9937,15 @@ BOOL SYModel_CreateYZLabels(SYModel* pMod,float width,float height, float3 Orgin
 	{
 		OrginPt.x += 1;
 
-		return SYModel_CreateYZPlane(pMod,width,height,OrginPt);
+		return BaseGraphModel_CreateYZPlane(pMod,width,height,OrginPt);
 	}
 		
 	pMod->vcount = 4*label_count;
 	pMod->icount = 6*label_count ;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	for(int i = 0 ;i< pMod->vcount;  ++i)
@@ -10039,7 +10039,7 @@ BOOL SYModel_CreateYZLabels(SYModel* pMod,float width,float height, float3 Orgin
 
 }
 	
-BOOL SYModel_CreateZXLabels(SYModel* pMod,float width,float height, float3 OrginPt, UINT segment, float labelWidth)
+BOOL BaseGraphModel_CreateZXLabels(BaseGraphModel* pMod,float width,float height, float3 OrginPt, UINT segment, float labelWidth)
 {
 	int label_count = segment + 1;
 
@@ -10049,15 +10049,15 @@ BOOL SYModel_CreateZXLabels(SYModel* pMod,float width,float height, float3 Orgin
 	{
 		OrginPt.y += 1;
 
-		return SYModel_CreateZXPlane(pMod,width,height,OrginPt);
+		return BaseGraphModel_CreateZXPlane(pMod,width,height,OrginPt);
 	}
 
 	pMod->vcount = 4*label_count;
 	pMod->icount = 6*label_count ;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 
@@ -10150,7 +10150,7 @@ BOOL SYModel_CreateZXLabels(SYModel* pMod,float width,float height, float3 Orgin
 	return TRUE;
 }
 	
-BOOL  SYModel_CreatePlaneLineModel(SYModel* pMod,float width,float z,float2* ptArray, int count)
+BOOL  BaseGraphModel_CreatePlaneLineModel(BaseGraphModel* pMod,float width,float z,float2* ptArray, int count)
 {
 	if(count == 1)
 		return FALSE;
@@ -10189,12 +10189,12 @@ BOOL  SYModel_CreatePlaneLineModel(SYModel* pMod,float width,float z,float2* ptA
 	pMod->vcount = 8*seg;
 	pMod->icount = 12*seg ;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
 	float z0 = z - width/2.0;
 	float z1 = z0 + width;
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 	
 	for(int i = 0; i< seg;i++)
@@ -10306,7 +10306,7 @@ BOOL  SYModel_CreatePlaneLineModel(SYModel* pMod,float width,float z,float2* ptA
 	return TRUE;
 }
 
-BOOL  SYModel_CreatePlaneLineModel2(SYModel* pMod,float height,float z,float2* ptArray, int count)
+BOOL  BaseGraphModel_CreatePlaneLineModel2(BaseGraphModel* pMod,float height,float z,float2* ptArray, int count)
 {
 	if(count == 1)
 		return FALSE;
@@ -10532,9 +10532,9 @@ BOOL  SYModel_CreatePlaneLineModel2(SYModel* pMod,float height,float z,float2* p
 	pMod->vcount = face_count*4;
 	pMod->icount = tri_count*3 ;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	int v_idx = 0;
@@ -10611,7 +10611,7 @@ BOOL  SYModel_CreatePlaneLineModel2(SYModel* pMod,float height,float z,float2* p
 }
 
 
-BOOL  SYModel_CreateCubeLineModel(SYModel* pMod,float width,float height,float z,float2* ptArray, int count)
+BOOL  BaseGraphModel_CreateCubeLineModel(BaseGraphModel* pMod,float width,float height,float z,float2* ptArray, int count)
 {
 	if(count == 1)
 		return FALSE;
@@ -10860,12 +10860,12 @@ BOOL  SYModel_CreateCubeLineModel(SYModel* pMod,float width,float height,float z
 	pMod->vcount = 8 + seg*16;
 	pMod->icount = tri_count*3 ;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
 // 	float z0 = z - width/2.0;
 // 	float z1 = z0 + width;
 
-	pMod->v = new SYVertex3D[pMod->vcount];
+	pMod->v = new BaseGraphVertex3D[pMod->vcount];
 	pMod->indecs = new DWORD[pMod->icount];
 
 	int v_idx = 0;
@@ -11044,7 +11044,7 @@ BOOL  SYModel_CreateCubeLineModel(SYModel* pMod,float width,float height,float z
 #define OBJ_COMMENT			_T("#")
 #define OBJ_SPACE					_T(" ")
 #define OBJ_FACESPACE			_T("/")
-#define OBJ_SYLIB					_T("mtllib ")
+#define OBJ_BaseGraphLIB					_T("mtllib ")
 #define OBJ_VERTICES				_T("v ")
 #define OBJ_NORMALS				_T("vn ")
 #define OBJ_COORDS				_T("vt ")
@@ -11178,7 +11178,7 @@ BOOL GetFace(CString& szText, std::vector<int>& ArgList)
 	return TRUE;
 }
 
-SYVertex3D TransFace(vector<int>& FaceList, 
+BaseGraphVertex3D TransFace(vector<int>& FaceList, 
 	vector<float3>& PostionList,
 	vector<float3>& NormalList,
 	vector<float2>& TextureCoordList,
@@ -11186,8 +11186,8 @@ SYVertex3D TransFace(vector<int>& FaceList,
 	int nNormalListCount,
 	int nTextureCoordList)
 {
-	SYVertex3D v;				
-	ZeroMemory(&v,sizeof(SYVertex3D));
+	BaseGraphVertex3D v;				
+	ZeroMemory(&v,sizeof(BaseGraphVertex3D));
 
 	if(FaceList.size() > 0)
 	{
@@ -11441,19 +11441,19 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 	return TRUE;
 }
 
-SYModel* MakeModel( SYModel* pNewModel, 
-	SYVertex3D* pVB,
+BaseGraphModel* MakeModel( BaseGraphModel* pNewModel, 
+	BaseGraphVertex3D* pVB,
 	DWORD* pIB,
 	DWORD* pAB,
 	UINT nV,
 	UINT nF,
 	BOOL bCalcNormal)
 {
-	//SYModel* pNewModel = new SYModel;
+	//BaseGraphModel* pNewModel = new BaseGraphModel;
 	//sy_init_moddef(pNewModel);
 	pNewModel->vcount = nV;
-	pNewModel->v = new SYVertex3D[nV];
-	memcpy(pNewModel->v,pVB,sizeof(SYVertex3D) * nV);
+	pNewModel->v = new BaseGraphVertex3D[nV];
+	memcpy(pNewModel->v,pVB,sizeof(BaseGraphVertex3D) * nV);
 	pNewModel->icount = nF * 3;
 	pNewModel->indecs = new DWORD[pNewModel->icount];
 	memset(pNewModel->indecs,0,sizeof(DWORD) * pNewModel->icount);
@@ -11468,8 +11468,8 @@ SYModel* MakeModel( SYModel* pNewModel,
 		subCount[nMatIndex]++;
 	}
 	pNewModel->nviewsub = subCount.size();
-	pNewModel->viewsub = new SYSubModel[pNewModel->nviewsub];
-	memset(pNewModel->viewsub,0,sizeof(SYSubModel) * pNewModel->nviewsub);
+	pNewModel->viewsub = new BaseGraphSubModel[pNewModel->nviewsub];
+	memset(pNewModel->viewsub,0,sizeof(BaseGraphSubModel) * pNewModel->nviewsub);
 	int vCount = 0;
 	for(int i = 0; i < pNewModel->nviewsub;i++)
 	{

@@ -54,10 +54,10 @@ enum BUFFER_DEFINITION_TYPE
 
 const int COEF_SCALE_16384 = 16384;			// 14 位放大，不需要补偿
 											// SSE 内存对齐声明、申请与释放宏定义
-#define		SYSSE_DECLARE(TYPE)				__declspec(align(16)) ##TYPE
-#define		SYSSE_NEW(nSize, TYPE)			(##TYPE*)_mm_malloc(sizeof(##TYPE) * (nSize), 16)
-#define		SYSSE_FREE(p)					_mm_free((p))
-#define		SYSSE_SAFEFREE(p)				if((p)!=NULL) _mm_free(p)
+#define		BaseGraphSSE_DECLARE(TYPE)				__declspec(align(16)) ##TYPE
+#define		BaseGraphSSE_NEW(nSize, TYPE)			(##TYPE*)_mm_malloc(sizeof(##TYPE) * (nSize), 16)
+#define		BaseGraphSSE_FREE(p)					_mm_free((p))
+#define		BaseGraphSSE_SAFEFREE(p)				if((p)!=NULL) _mm_free(p)
 
 // 填充模式
 enum Common_FILL_MODE

@@ -25,16 +25,16 @@ typedef CBaseARray<PtNode*> CPtNodeArray;
 typedef CBaseARray<LineNode*> CLineNodeArray;
 typedef CBaseARray<Triangle*> CTriangleArray;
 
-class SYTriangulateApp
+class BaseGraphTriangulateApp
 {
 public:
-	SYTriangulateApp(void);
-	~SYTriangulateApp(void);
-	void SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
-	void SYTriangulate(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
-	void SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPtSize, int* nUnitStart, int nUnit, int nCurUnit, 
+	BaseGraphTriangulateApp(void);
+	~BaseGraphTriangulateApp(void);
+	void BaseGraphTriangulateLine(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
+	void BaseGraphTriangulate(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
+	void BaseGraphTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPtSize, int* nUnitStart, int nUnit, int nCurUnit, 
 		int* nCellStart, int nCell, OUT CBasePoint3fPtrArray *pptrTri, IN BOOL bAntiClockwise);
-	void SYTriangulateGL(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
+	void BaseGraphTriangulateGL(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise);
 protected:
 	//--------------------------------------------------------------------------------
 	//功能：判断两点是否在直线两侧

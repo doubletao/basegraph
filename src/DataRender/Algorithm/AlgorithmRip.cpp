@@ -829,8 +829,8 @@ void rip_addnode_x(rip_edge_node_x_list*& pNodexheader,rip_edge_node* pnodeheade
 		pnode = pnode->pNext;
 	}
 }
-static const SYSSE_DECLARE(DWORD) gc_dwMaskDLB_temp[4] = { 0x00ff00ff, 0x00ff00ff, 0x000ff0ff, 0x00ff00ff };
-static const SYSSE_DECLARE(DWORD) gc_dwScale_temp[4] = { 0x0ff00ff0, 0x0ff00ff0, 0x00ff0ff0, 0x00ff0ff0 };
+static const BaseGraphSSE_DECLARE(DWORD) gc_dwMaskDLB_temp[4] = { 0x00ff00ff, 0x00ff00ff, 0x000ff0ff, 0x00ff00ff };
+static const BaseGraphSSE_DECLARE(DWORD) gc_dwScale_temp[4] = { 0x0ff00ff0, 0x0ff00ff0, 0x00ff0ff0, 0x00ff0ff0 };
 
 void rip_update_buf_byte(unsigned char*	buf,
 					int nwidth,
@@ -1321,7 +1321,7 @@ BOOL SplitBezier3(pointf* pOPoint,pointf* pSplit1,pointf* pSplit2)
 
 	return 1;
 }
-void rip_splitconic_node_ex(pointf* pconicf,SYList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
+void rip_splitconic_node_ex(pointf* pconicf,BaseGraphList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
 {
 	pointf mid = pconicf[2]*0.25;
 	if(fabs(mid.x)>0.05|| fabs(mid.y)>0.05)
@@ -1340,10 +1340,10 @@ void rip_splitconic_node_ex(pointf* pconicf,SYList* pNodeList,pointf* ptOrigin,f
 		rip_edge_node* pnode = rip_malloc_node(pool,poolend);
 		//根据信息产生新的节点
 		rip_calcnode(pnode,&pconicf[0],&pconicf[1],ptOrigin,fscale,nsubpixel);
-		SYList_AddTail(pNodeList,(LT_DATA_PTR)pnode,&pool,poolend);
+		BaseGraphList_AddTail(pNodeList,(LT_DATA_PTR)pnode,&pool,poolend);
 	}
 }
-void rip_splitconic_node(pointf* pconicf,SYList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
+void rip_splitconic_node(pointf* pconicf,BaseGraphList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
 {
 	//分别看两条曲线是否接近直线，如果接近，那么分割完成否则继续分割
 	BOOL bNearline = Common_Beizer2IsNearLine(&pconicf[0],&pconicf[1],&pconicf[2],fscale);
@@ -1353,10 +1353,10 @@ void rip_splitconic_node(pointf* pconicf,SYList* pNodeList,pointf* ptOrigin,floa
 
 		//根据信息产生新的节点
 		rip_calcnode(pnode,&pconicf[0],&pconicf[1],ptOrigin,fscale,nsubpixel);
-		SYList_AddTail(pNodeList,(LT_DATA_PTR)pnode,&pool,poolend);
+		BaseGraphList_AddTail(pNodeList,(LT_DATA_PTR)pnode,&pool,poolend);
 		pnode = rip_malloc_node(pool,poolend);
 		rip_calcnode(pnode,&pconicf[1],&pconicf[2],ptOrigin,fscale,nsubpixel);
-		SYList_AddTail(pNodeList,(LT_DATA_PTR)pnode,&pool,poolend);
+		BaseGraphList_AddTail(pNodeList,(LT_DATA_PTR)pnode,&pool,poolend);
 	}
 	else
 	{
@@ -1367,7 +1367,7 @@ void rip_splitconic_node(pointf* pconicf,SYList* pNodeList,pointf* ptOrigin,floa
 	}
 }
 
-void rip_conic_line(pointf* inpoint,int ncount,SYList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
+void rip_conic_line(pointf* inpoint,int ncount,BaseGraphList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
 {
 	pointf pf[3];
 	pointf ptcalc[3];
@@ -1406,7 +1406,7 @@ void rip_conic_line(pointf* inpoint,int ncount,SYList* pNodeList,pointf* ptOrigi
 }
 
 //计算
-void rip_splitbezier_node(pointf* inpoint,SYList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
+void rip_splitbezier_node(pointf* inpoint,BaseGraphList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
 {
 	//分别看两条曲线是否接近直线，如果接近，那么分割完成否则继续分割
 	int a;
@@ -1427,7 +1427,7 @@ void rip_splitbezier_node(pointf* inpoint,SYList* pNodeList,pointf* ptOrigin,flo
 			ptOrigin,
 			fscale,
 			nsubpixel);
-		SYList_AddTail(pNodeList,(LT_DATA_PTR)pnode,&pool,poolend);
+		BaseGraphList_AddTail(pNodeList,(LT_DATA_PTR)pnode,&pool,poolend);
 	}
 	else
 	{
@@ -1439,7 +1439,7 @@ void rip_splitbezier_node(pointf* inpoint,SYList* pNodeList,pointf* ptOrigin,flo
 }
 
 //把bezier曲线转为直线
-void rip_bezier_line(pointf* inpoint,int nallcount,int nstart,int ncount,SYList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
+void rip_bezier_line(pointf* inpoint,int nallcount,int nstart,int ncount,BaseGraphList* pNodeList,pointf* ptOrigin,float fscale,int nsubpixel,unsigned char*&	pool,unsigned char*	poolend)
 {	
 	//存储分割的临时曲线
 	pointf ptf[4];
@@ -1938,14 +1938,14 @@ void BASEGRAPH_DATARENDER_API cell_merge(vectorcell * descell, const vectorcell 
 //			vectorcell firstCell, seccell;
 //			memset(&firstCell, 0, sizeof(vectorcell));
 //			memset(&seccell, 0, sizeof(vectorcell));
-//			SYOffsetCell(&figure->cell[k],  // 输入曲线
+//			BaseGraphOffsetCell(&figure->cell[k],  // 输入曲线
 //				NULL,
 //				figure->cell[k].width*0.5f,  // 偏移距离
 //				&firstCell, // 输出偏移曲线
 //				ndirect
 //			);
 //
-//			SYOffsetCell(&figure->cell[k],  // 输入曲线
+//			BaseGraphOffsetCell(&figure->cell[k],  // 输入曲线
 //				NULL,
 //				figure->cell[k].width*0.5f,  // 偏移距离
 //				&seccell, // 输出偏移曲线
@@ -1955,8 +1955,8 @@ void BASEGRAPH_DATARENDER_API cell_merge(vectorcell * descell, const vectorcell 
 //			cell_reverse(&seccell);
 //			cell_merge(&cellline, &firstCell, &seccell);
 //			cell = &cellline;
-//			SYReleaseOffsetCell(&firstCell);
-//			SYReleaseOffsetCell(&seccell);
+//			BaseGraphReleaseOffsetCell(&firstCell);
+//			BaseGraphReleaseOffsetCell(&seccell);
 //			cell = &cellline;
 //			////////////////////////////////////////////////////////////////////////// end
 //		}
@@ -2376,17 +2376,17 @@ BASEGRAPH_DATARENDER_API void  rip_figure_X(IN vectorgraph* figure,IN OUT void*	
 						}
 					}
 
-					SYList NodeList;
-					SYList_Init(&NodeList);
+					BaseGraphList NodeList;
+					BaseGraphList_Init(&NodeList);
 
 					//把曲线分割为小直线段
 					rip_bezier_line(cell->point,cell->npoint,i,ncuvercount,&NodeList,ptOrigin,fscale,g_rip_nsubpixel,pool,pool_end);
 
 					//依次插入
-					LISTPOSITION pos = SYList_GetHeadPosition(&NodeList);
+					LISTPOSITION pos = BaseGraphList_GetHeadPosition(&NodeList);
 					while(pos)
 					{
-						rip_edge_node* pnode = (rip_edge_node*)SYList_GetNext(&NodeList,&pos);
+						rip_edge_node* pnode = (rip_edge_node*)BaseGraphList_GetNext(&NodeList,&pos);
 
 						int y = (int)floor(pnode->start.y);
 						nmin_y = min(y,nmin_y);
@@ -2402,7 +2402,7 @@ BASEGRAPH_DATARENDER_API void  rip_figure_X(IN vectorgraph* figure,IN OUT void*	
 						}
 					}
 
-					SYList_RemoveAll(&NodeList);
+					BaseGraphList_RemoveAll(&NodeList);
 
 					if( i + ncuvercount  >= cell->npoint)
 						i += ncuvercount;
@@ -2419,18 +2419,18 @@ BASEGRAPH_DATARENDER_API void  rip_figure_X(IN vectorgraph* figure,IN OUT void*	
 							break;
 					}
 
-					SYList NodeList;
-					SYList_Init(&NodeList);
+					BaseGraphList NodeList;
+					BaseGraphList_Init(&NodeList);
 
 					//把曲线分割为小直线段
 					rip_conic_line(&cell->point[i],ncuvercount,&NodeList,ptOrigin,fscale,g_rip_nsubpixel,pool,pool_end);
 					//rip_bezier_line
 
 					//依次插入
-					LISTPOSITION pos = SYList_GetHeadPosition(&NodeList);
+					LISTPOSITION pos = BaseGraphList_GetHeadPosition(&NodeList);
 					while(pos)
 					{
-						rip_edge_node* pnode = (rip_edge_node*)SYList_GetNext(&NodeList,&pos);
+						rip_edge_node* pnode = (rip_edge_node*)BaseGraphList_GetNext(&NodeList,&pos);
 
 						int y = (int)floor(pnode->start.y);
 						nmin_y = min(y,nmin_y);
@@ -2438,7 +2438,7 @@ BASEGRAPH_DATARENDER_API void  rip_figure_X(IN vectorgraph* figure,IN OUT void*	
 
 						rip_insertnode(&pNodeY[y - topsub],pnode);
 					}
-					SYList_RemoveAll(&NodeList);
+					BaseGraphList_RemoveAll(&NodeList);
 
 
 					if( i + ncuvercount  >= cell->npoint)
@@ -2889,14 +2889,14 @@ long BASEGRAPH_DATARENDER_API rip_trans_float_to_fix(float f)
 //			vectorcell firstCell,seccell;
 //			memset(&firstCell,0,sizeof(vectorcell));
 //			memset(&seccell,0,sizeof(vectorcell));
-//			SYOffsetCell(&figure->cell[k],  // 输入曲线
+//			BaseGraphOffsetCell(&figure->cell[k],  // 输入曲线
 //				NULL,
 //				figure->cell[k].width*0.5f,  // 偏移距离
 //				&firstCell, // 输出偏移曲线
 //				ndirect
 //				);
 //
-//			SYOffsetCell(&figure->cell[k],  // 输入曲线
+//			BaseGraphOffsetCell(&figure->cell[k],  // 输入曲线
 //				NULL,
 //				figure->cell[k].width*0.5f,  // 偏移距离
 //				&seccell, // 输出偏移曲线
@@ -2906,8 +2906,8 @@ long BASEGRAPH_DATARENDER_API rip_trans_float_to_fix(float f)
 //			cell_reverse(&seccell);
 //			cell_merge(&cellline,&firstCell,&seccell);
 //			cell = &cellline;
-//			SYReleaseOffsetCell(&firstCell);
-//			SYReleaseOffsetCell(&seccell);
+//			BaseGraphReleaseOffsetCell(&firstCell);
+//			BaseGraphReleaseOffsetCell(&seccell);
 //			cell = &cellline;
 //			////////////////////////////////////////////////////////////////////////// end
 //		}
@@ -3118,7 +3118,7 @@ int  cell_get_mindirect(vectorcell*	cell, float* fminy, float* fminx, int* ndire
 					nnext = (nnext + 1) % cell->npoint;
 				} while (float2Equal(&pt[1], &pt[2]));
 
-				if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
+				if (BaseGraphOC_PtOnRight(pt[0], pt[1], pt[2]))
 				{
 					*ndirect = -1;
 				}
@@ -3162,7 +3162,7 @@ int  cell_get_mindirect(vectorcell*	cell, float* fminy, float* fminx, int* ndire
 					//	*ndirect = -1;
 					else
 					{
-						if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
+						if (BaseGraphOC_PtOnRight(pt[0], pt[1], pt[2]))
 							*ndirect = -1;
 						else
 							*ndirect = 1;
@@ -3207,7 +3207,7 @@ int  cell_get_mindirect(vectorcell*	cell, float* fminy, float* fminx, int* ndire
 					{
 						*ndirect = -1;
 
-						if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
+						if (BaseGraphOC_PtOnRight(pt[0], pt[1], pt[2]))
 							*ndirect = -1;
 						else
 							*ndirect = 1;
@@ -3215,18 +3215,18 @@ int  cell_get_mindirect(vectorcell*	cell, float* fminy, float* fminx, int* ndire
 					else if (abs(t - 1) < ABS_FLOAT_0)
 					{
 						*ndirect = 1;
-						if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
+						if (BaseGraphOC_PtOnRight(pt[0], pt[1], pt[2]))
 							*ndirect = -1;
 						else
 							*ndirect = 1;
-						//if(SYOC_PtOnRight(pt[2],pt[3],cell->point[(i + k + 1) % cell->npoint]))
+						//if(BaseGraphOC_PtOnRight(pt[2],pt[3],cell->point[(i + k + 1) % cell->npoint]))
 						//	*ndirect = -1;
 						//else
 						//	*ndirect = -1;
 					}
 					else
 					{
-						if (SYOC_PtOnRight(pt[0], pt[1], pt[2]))
+						if (BaseGraphOC_PtOnRight(pt[0], pt[1], pt[2]))
 							*ndirect = 1;
 						else
 							*ndirect = -1;
@@ -3285,14 +3285,14 @@ int  cell_line_extend_close(OUT vectorcell*	descell1,
 		fwidth / 2);
 
 
-	//SYOffsetCell(srccell,  // 输入曲线
+	//BaseGraphOffsetCell(srccell,  // 输入曲线
 	//	vOffset,
 	//	fwidth * 0.5f,  // 偏移距离
 	//	descell1, // 输出偏移曲线
 	//	ndirect
 	//	);
 
-	//SYOffsetCell(srccell,  // 输入曲线
+	//BaseGraphOffsetCell(srccell,  // 输入曲线
 	//	vOffset,
 	//	fwidth * 0.5f,  // 偏移距离
 	//	descell2, // 输出偏移曲线
@@ -3590,7 +3590,7 @@ int  cell_extend_cube_close(OUT vectorcell*		descell,
 {
 	vectorcell dessrc;
 	memset(&dessrc, 0, sizeof(vectorcell));
-	SYOffsetCellCube(srccell, vOffset, fcubeOffset, fangle, descell, ndirect);
+	BaseGraphOffsetCellCube(srccell, vOffset, fcubeOffset, fangle, descell, ndirect);
 	return 1;
 }
 

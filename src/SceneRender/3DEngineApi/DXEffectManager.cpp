@@ -18,12 +18,12 @@ void CTechUnit::Release()
 	SAFE_DELETE(m_resource_ptr);
 }
 
-BOOL CTechUnit::Create(LPCTSTR strResName,SYTechCreateParam* pCreateParam)
+BOOL CTechUnit::Create(LPCTSTR strResName,BaseGraphTechCreateParam* pCreateParam)
 {
 	if(!pCreateParam)
 		return FALSE;
 	ID3D10Effect* pd3dEffect = pCreateParam->pd3deffect;
-	m_resource_ptr = new SYTechUnit;
+	m_resource_ptr = new BaseGraphTechUnit;
 	_tcscpy_s(m_resource_name,strResName);
 	size_t nLen =    _tcslen(m_resource_name); 
 #ifdef UNICODE
@@ -71,7 +71,7 @@ void CEffectUnit::Release()
 	m_resource_ptr = 0;
 }
 
-BOOL CEffectUnit::Create(LPCTSTR strResName,SYEffectCreateParam* pCreateParam)
+BOOL CEffectUnit::Create(LPCTSTR strResName,BaseGraphEffectCreateParam* pCreateParam)
 {
 	_tcscpy_s(m_resource_name,strResName);
 
@@ -113,7 +113,7 @@ SYD3DEffectManager::SYD3DEffectManager(ID3D10Device* device):m_d3d_device(device
 	
 }
 
-CEffectUnit*	SYD3DEffectManager::CreateEffectUnit(SYEffectCreateParam* pParam)
+CEffectUnit*	SYD3DEffectManager::CreateEffectUnit(BaseGraphEffectCreateParam* pParam)
 {
 	return m_EffectPool.CreateResource(pParam->pEffectName,pParam);
 }

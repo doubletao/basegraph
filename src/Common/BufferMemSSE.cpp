@@ -1002,18 +1002,18 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 
 	// 申请权重表、权重数量表及缓存空间
 	float fScaleW_I = 1.0f / fScaleWidth, fScaleH_I = 1.0f / fScaleHeight;
-	SYSSE_DECLARE(int*) pMapX = SYSSE_NEW(nDesWidth, int);					// X 方向上的权重数量表
-	SYSSE_DECLARE(int*) pMapY = SYSSE_NEW(nDesHeight, int);					// Y 方向上的权重数量表
-	SYSSE_DECLARE(float*) pPowerX = SYSSE_NEW((nDesWidth << 1), float);		// X 方向上的权重表
-	SYSSE_DECLARE(float*) pPowerY = SYSSE_NEW((nDesHeight << 1), float);	// Y 方向上的权重表
+	BaseGraphSSE_DECLARE(int*) pMapX = BaseGraphSSE_NEW(nDesWidth, int);					// X 方向上的权重数量表
+	BaseGraphSSE_DECLARE(int*) pMapY = BaseGraphSSE_NEW(nDesHeight, int);					// Y 方向上的权重数量表
+	BaseGraphSSE_DECLARE(float*) pPowerX = BaseGraphSSE_NEW((nDesWidth << 1), float);		// X 方向上的权重表
+	BaseGraphSSE_DECLARE(float*) pPowerY = BaseGraphSSE_NEW((nDesHeight << 1), float);	// Y 方向上的权重表
 	DWORD *pDesLine = pDes + nDesX + nDesY * nDesBufferWidth;				// Buffer 起始地址
 	DWORD *pSrcLine = pSrc + nSrcX + nSrcY * nSrcBufferWidth;
 	float *pTmpPowerY = pPowerY;											// Y 方向权重表地址
 	int nSrcPitch = (nSrcBufferWidth << 2), na16 = (nDesWidth >> 2), nm16 = ((nDesWidth & 0x03) << 2);
-	SYSSE_DECLARE(float*) pTmpLine = SYSSE_NEW((nSrcWidth << 2), float);	// 源行的临时缓存
-	SYSSE_DECLARE(DWORD*) pTmpBuf = NULL;			// 临时缓存
-	SYSSE_DECLARE(float) fCoefW[4] = { fScaleW_I, fScaleW_I, fScaleW_I, fScaleW_I };
-	SYSSE_DECLARE(float) fCoefH[4] = { fScaleH_I, fScaleH_I, fScaleH_I, fScaleH_I };
+	BaseGraphSSE_DECLARE(float*) pTmpLine = BaseGraphSSE_NEW((nSrcWidth << 2), float);	// 源行的临时缓存
+	BaseGraphSSE_DECLARE(DWORD*) pTmpBuf = NULL;			// 临时缓存
+	BaseGraphSSE_DECLARE(float) fCoefW[4] = { fScaleW_I, fScaleW_I, fScaleW_I, fScaleW_I };
+	BaseGraphSSE_DECLARE(float) fCoefH[4] = { fScaleH_I, fScaleH_I, fScaleH_I, fScaleH_I };
 
 	// 计算权重
 	strech_calc_power(pPowerX, pMapX, nDesWidth, fScaleWidth, fSrcStartX - (int)fSrcStartX);
@@ -1032,7 +1032,7 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 		}
 		break;
 	case BUFFER_MIX:			// Alpha 混叠
-		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, DWORD);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
@@ -1052,7 +1052,7 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 		}
 		break;
 	case BUFFER_MIX_NOTSRC:	// Alpha 反向源混叠
-		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, DWORD);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
@@ -1064,7 +1064,7 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 		}
 		break;
 	case BUFFER_ALPHA_BLEND:		// 快速 Alpha 混合
-		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, DWORD);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
@@ -1076,7 +1076,7 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 		}
 		break;
 	case BUFFER_ALPHA_BLEND_NOT:	// 快速 Alpha 反向源混合
-		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, DWORD);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
@@ -1088,7 +1088,7 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 		}
 		break;
 	case BUFFER_LINEAR_DODGE:	// 线性减淡
-		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, DWORD);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
@@ -1100,7 +1100,7 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 		}
 		break;
 	case BUFFER_LINEAR_BURN:		// 线性加深
-		pTmpBuf = SYSSE_NEW(nDesWidth, DWORD);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, DWORD);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			bgra32_mean_copy_add_y_quick(pTmpLine, pSrcLine, nSrcWidth, nSrcPitch, pTmpPowerY, fCoefH, pMapY[nLineIndex]);
@@ -1148,12 +1148,12 @@ BOOL BufferMemSSE::Buffer_BGRA_MeanStretch_SSE(OUT DWORD * pDes, IN int nDesX, I
 		//assert(FALSE);
 	}
 	// 释放缓存资源
-	SYSSE_FREE(pMapX);
-	SYSSE_FREE(pMapY);
-	SYSSE_FREE(pPowerX);
-	SYSSE_FREE(pPowerY);
-	SYSSE_FREE(pTmpLine);
-	SYSSE_SAFEFREE(pTmpBuf);
+	BaseGraphSSE_FREE(pMapX);
+	BaseGraphSSE_FREE(pMapY);
+	BaseGraphSSE_FREE(pPowerX);
+	BaseGraphSSE_FREE(pPowerY);
+	BaseGraphSSE_FREE(pTmpLine);
+	BaseGraphSSE_SAFEFREE(pTmpBuf);
 
 	return TRUE;
 }
@@ -1265,11 +1265,11 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 		return FALSE;
 
 	// 申请权重表与索引表的内存空间
-	SYSSE_DECLARE(DWORD*) pPowerX = SYSSE_NEW(nDesWidth, DWORD);	// X 方向上目标列映射到源列的权重表
-	SYSSE_DECLARE(int*) pMapX = SYSSE_NEW(nDesWidth, int);			// X 方向上目标列映射到源列的索引表
-	SYSSE_DECLARE(DWORD*) pPowerY = SYSSE_NEW(nDesHeight, DWORD);	// Y 方向上目标行映射到源行的权重表
-	SYSSE_DECLARE(int*) pMapY = SYSSE_NEW(nDesHeight, int);			// Y 方向上目标行映射到源行的索引表
-	SYSSE_DECLARE(BYTE*) pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);		// 临时缓存
+	BaseGraphSSE_DECLARE(DWORD*) pPowerX = BaseGraphSSE_NEW(nDesWidth, DWORD);	// X 方向上目标列映射到源列的权重表
+	BaseGraphSSE_DECLARE(int*) pMapX = BaseGraphSSE_NEW(nDesWidth, int);			// X 方向上目标列映射到源列的索引表
+	BaseGraphSSE_DECLARE(DWORD*) pPowerY = BaseGraphSSE_NEW(nDesHeight, DWORD);	// Y 方向上目标行映射到源行的权重表
+	BaseGraphSSE_DECLARE(int*) pMapY = BaseGraphSSE_NEW(nDesHeight, int);			// Y 方向上目标行映射到源行的索引表
+	BaseGraphSSE_DECLARE(BYTE*) pTmpBuf = BaseGraphSSE_NEW(nDesWidth, BYTE);		// 临时缓存
 																	// Buffer 起始地址
 	DWORD* pdwDesLine = pdwBuf + nDesY * nDesBufWidth + nDesX;		// 目标 Buffer 起始地址
 	BYTE* pbyKeyLine = NULL;
@@ -1351,11 +1351,11 @@ BOOL BufferMemSSE::Buffer_BGRA_Key_BLStretch_SSE(IN OUT DWORD * pdwBuf, IN int n
 		//assert(FALSE);
 	}
 	// 释放权重表与索引表
-	SYSSE_FREE(pPowerX);
-	SYSSE_FREE(pMapX);
-	SYSSE_FREE(pPowerY);
-	SYSSE_FREE(pMapY);
-	SYSSE_FREE(pTmpBuf);
+	BaseGraphSSE_FREE(pPowerX);
+	BaseGraphSSE_FREE(pMapX);
+	BaseGraphSSE_FREE(pPowerY);
+	BaseGraphSSE_FREE(pMapY);
+	BaseGraphSSE_FREE(pTmpBuf);
 
 	return TRUE;
 }
@@ -1468,11 +1468,11 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 	nDesAddPitch = (nDesKeyPitch << (nLineInc - 1));
 
 	// 申请权重表与索引表的内存空间
-	SYSSE_DECLARE(DWORD*) pPowerX = SYSSE_NEW(nDesWidth, DWORD);	// X 方向上目标列映射到源列的权重表
-	SYSSE_DECLARE(int*) pMapX = SYSSE_NEW(nDesWidth, int);			// X 方向上目标列映射到源列的索引表
-	SYSSE_DECLARE(DWORD*) pPowerY = SYSSE_NEW(nDesHeight, DWORD);	// Y 方向上目标行映射到源行的权重表
-	SYSSE_DECLARE(int*) pMapY = SYSSE_NEW(nDesHeight, int);			// Y 方向上目标行映射到源行的索引表
-	SYSSE_DECLARE(BYTE*) pTmpBuf = NULL;				// 临时缓存
+	BaseGraphSSE_DECLARE(DWORD*) pPowerX = BaseGraphSSE_NEW(nDesWidth, DWORD);	// X 方向上目标列映射到源列的权重表
+	BaseGraphSSE_DECLARE(int*) pMapX = BaseGraphSSE_NEW(nDesWidth, int);			// X 方向上目标列映射到源列的索引表
+	BaseGraphSSE_DECLARE(DWORD*) pPowerY = BaseGraphSSE_NEW(nDesHeight, DWORD);	// Y 方向上目标行映射到源行的权重表
+	BaseGraphSSE_DECLARE(int*) pMapY = BaseGraphSSE_NEW(nDesHeight, int);			// Y 方向上目标行映射到源行的索引表
+	BaseGraphSSE_DECLARE(BYTE*) pTmpBuf = NULL;				// 临时缓存
 														// Buffer 起始地址
 	LPBYTE pbyDesLine = pbyDes + nDesY * nDesKeyPitch + nDesX, pbySrcLine = NULL;
 	int na4 = (nDesWidth >> 2), nm4 = (nDesWidth & 0x03);
@@ -1486,7 +1486,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 	switch (eMode)
 	{
 	case Common_KEY_MULTIPLY:		// 相乘
-		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
@@ -1496,7 +1496,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 		}
 		break;
 	case Common_KEY_MULTIPLY_NOTSRC:		// 反向源键相乘
-		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
@@ -1506,7 +1506,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 		}
 		break;
 	case Common_KEY_MULTIPLY_NOTDES:		// 反向目标键相乘
-		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
@@ -1524,7 +1524,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 		}
 		break;
 	case Common_KEY_MIX:		// 混叠
-		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
@@ -1534,7 +1534,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 		}
 		break;
 	case Common_KEY_MIX_NOTSRC:		// 反向源键混叠
-		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
@@ -1544,7 +1544,7 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 		}
 		break;
 	case Common_KEY_SAT_SUB:		// 饱和差值
-		pTmpBuf = SYSSE_NEW(nDesWidth, BYTE);
+		pTmpBuf = BaseGraphSSE_NEW(nDesWidth, BYTE);
 		for (; nLineIndex<nDesHeight; nLineIndex += nLineInc)
 		{
 			pbySrcLine = pbySrc + pMapY[nLineIndex] * nSrcKeyPitch;
@@ -1558,11 +1558,11 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 		//assert(FALSE);
 	}
 	// 释放权重表与索引表
-	SYSSE_FREE(pPowerX);
-	SYSSE_FREE(pMapX);
-	SYSSE_FREE(pPowerY);
-	SYSSE_FREE(pMapY);
-	SYSSE_SAFEFREE(pTmpBuf);
+	BaseGraphSSE_FREE(pPowerX);
+	BaseGraphSSE_FREE(pMapX);
+	BaseGraphSSE_FREE(pPowerY);
+	BaseGraphSSE_FREE(pMapY);
+	BaseGraphSSE_SAFEFREE(pTmpBuf);
 
 	return TRUE;
 }

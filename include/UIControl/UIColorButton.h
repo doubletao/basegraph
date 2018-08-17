@@ -4,7 +4,7 @@
 class BASEGRAPH_UICONTROL_API UIColorButton : public UIElement
 {
 protected:
-	sycolor m_color;
+	common_color m_color;
 public:
 	UIColorButton();
 	virtual ~UIColorButton();
@@ -15,7 +15,7 @@ public:
 	bool Create(int nX, int nY, int nWidth, int nHeight, int nID, HWND hParentWnd, UIElement * pParent);
 	virtual EmUIElementMsgRet HandleMsg(UINT nMsg, WPARAM wParam, LPARAM lParam);
 	virtual void OnButtonClickDown();
-	void SetColor(const sycolor & color, bool bRefresh = true);
-	sycolor GetColor();
+	void SetColor(const common_color & color, bool bRefresh = true);
+	common_color GetColor();
 };
 

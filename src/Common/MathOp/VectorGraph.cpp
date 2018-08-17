@@ -254,10 +254,10 @@ void vg_rotate_matrix(vectorgraph* vg,matrix4f* matrix)
 void vg_rotate_angle(vectorgraph* vg,float x,float y,float z,float xoffset,float yoffset,float zoffset)
 {
 	point3f veuler = {x,y,z};
-	SYQuatn vQ;
+	BaseGraphQuatn vQ;
 	matrix4f vMatrix;
-	SYQuatn_FromEuler_LYXZ(&vQ,x,y,z);
-	SYQuatn_ToMatrix4(&vMatrix,&vQ);
+	BaseGraphQuatn_FromEuler_LYXZ(&vQ,x,y,z);
+	BaseGraphQuatn_ToMatrix4(&vMatrix,&vQ);
 	vMatrix._41 = -xoffset;
 	vMatrix._42 = -yoffset;
 	vMatrix._43 = -zoffset;

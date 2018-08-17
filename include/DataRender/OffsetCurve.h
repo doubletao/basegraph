@@ -1,33 +1,33 @@
-#ifndef _SYOFFSETCURVE_H
-#define _SYOFFSETCURVE_H
+#ifndef _BaseGraphOFFSETCURVE_H
+#define _BaseGraphOFFSETCURVE_H
 
 //////////////////////////////////////////////////////////////////////////
 // ¶ÔÍâ½Ó¿Úº¯Êý
 
 //------------------------------------------------------------------
-//º¯Êý SYOffsetCurve ËµÃ÷£º
+//º¯Êý BaseGraphOffsetCurve ËµÃ÷£º
 //¹¦ÄÜ£ºÊäÈëÇúÏßpGraphIn ÏòÍâoffset¾àÀëfDisºóµÃµ½µÄµãÁÐ
 //ÊäÈë£ºptSrcArr: ¸ø¶¨µãÁÐ¡£
 //Êä³ö£ºptDesArr: ÏòÍâoffset¾àÀëfDisºóµÃµ½µÄµãÁÐ
 //×¢Òâ£¡
 //------------------------------------------------------------------
-BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇúÏß
+BASEGRAPH_DATARENDER_API void BaseGraphOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇúÏß
 				   IN float fDis,  // Æ«ÒÆ¾àÀë
 				   OUT vectorgraph* pGraphOffset // Êä³öÆ«ÒÆÇúÏß
 				   );
-BASEGRAPH_DATARENDER_API BOOL SYReleaseOffsetCell(vectorcell* pcell);
+BASEGRAPH_DATARENDER_API BOOL BaseGraphReleaseOffsetCell(vectorcell* pcell);
 //------------------------------------------------------------------
-//º¯Êý SYOffsetCell ËµÃ÷£º
+//º¯Êý BaseGraphOffsetCell ËµÃ÷£º
 //¹¦ÄÜ£ºÊäÈëÇúÏßpCellIn ÏòÍâoffset¾àÀëfDisºóµÃµ½µÄcell
 //------------------------------------------------------------------
-BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
+BASEGRAPH_DATARENDER_API void BaseGraphOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 									IN vector2f* vOffset,
 									IN float fDis,  // Æ«ÒÆ¾àÀë
 									OUT vectorcell* pCellOffset, // Êä³öÆ«ÒÆÇúÏß
 									IN const int ndirect
 									);
 
-BASEGRAPH_DATARENDER_API void SYOffsetCellCube(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
+BASEGRAPH_DATARENDER_API void BaseGraphOffsetCellCube(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 										vector2f* vOffset,
 										IN float fCubOffset,  // Æ«ÒÆ¾àÀë
 										IN float fAngle,
@@ -36,10 +36,10 @@ BASEGRAPH_DATARENDER_API void SYOffsetCellCube(IN vectorcell* pCellIn,  // ÊäÈëÇ
 										);
 
 //------------------------------------------------------------------
-//º¯Êý SYOffsetCell ËµÃ÷£º
+//º¯Êý BaseGraphOffsetCell ËµÃ÷£º
 //¹¦ÄÜ£ºÊäÈëÇúÏßpCellIn ÏòÍâoffset¾àÀëfDisºóµÃµ½µÄcell
 //------------------------------------------------------------------
-BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
+BASEGRAPH_DATARENDER_API void BaseGraphOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 									IN float fDis,  // Æ«ÒÆ¾àÀë
 									OUT BaseARray &aptOrig, //Ô­Ê¼±ßÀëÉ¢µã
 									OUT BaseARray &aptOrigNorm, //Ô­Ê¼±ßÀëÉ¢µã
@@ -52,13 +52,13 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 ////////////////////////////////////////////////////////////////////////////
 //// ÄÚ²¿ÊµÏÖ
 //BASEGRAPH_DATARENDER_API int SolveSqure(double a, double b, double c, double *xx);
-BASEGRAPH_DATARENDER_API BOOL SYOC_PtOnRight(IN point2f pt0,IN point2f pt1,IN point2f pt2);//ÅÐ¶Ï×ó²àÊÇ·ñÍâ²à
-BASEGRAPH_DATARENDER_API void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,IN OUT int* pMidPtIndex);
-BASEGRAPH_DATARENDER_API void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex);
-BASEGRAPH_DATARENDER_API void SYOC_DelColine(IN OUT BaseARray *pptfArr,int* pMidPtIndex);
-BASEGRAPH_DATARENDER_API void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,int* pMidPtIndex);
+BASEGRAPH_DATARENDER_API BOOL BaseGraphOC_PtOnRight(IN point2f pt0,IN point2f pt1,IN point2f pt2);//ÅÐ¶Ï×ó²àÊÇ·ñÍâ²à
+BASEGRAPH_DATARENDER_API void BaseGraphOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,IN OUT int* pMidPtIndex);
+BASEGRAPH_DATARENDER_API void BaseGraphOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex);
+BASEGRAPH_DATARENDER_API void BaseGraphOC_DelColine(IN OUT BaseARray *pptfArr,int* pMidPtIndex);
+BASEGRAPH_DATARENDER_API void BaseGraphOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,int* pMidPtIndex);
 //////////////////////////////////////////////////////////////////////////
 //ÎªÌá¸ßÐ§ÂÊ²ÉÈ¡µÄÎþÉü²¿·ÖÕ¹Ê¾Ð§¹ûµÄ¿ª¹Ø
-BASEGRAPH_DATARENDER_API void SYOC_CloseNearLine();//¹Ø±ÕNearLineº¯Êý
-BASEGRAPH_DATARENDER_API void SYOC_OpenNearLine();//´ò¿ªNearLineº¯Êý
+BASEGRAPH_DATARENDER_API void BaseGraphOC_CloseNearLine();//¹Ø±ÕNearLineº¯Êý
+BASEGRAPH_DATARENDER_API void BaseGraphOC_OpenNearLine();//´ò¿ªNearLineº¯Êý
 #endif

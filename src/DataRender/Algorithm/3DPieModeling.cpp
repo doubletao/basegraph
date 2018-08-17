@@ -374,7 +374,7 @@ void CBasePieModeling::GetModelParam(int* v_count, int* i_count, int* t_count)
 		*t_count = m_triangle_count;
 }
 
-int CBasePieModeling::modeling_top_plane( SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_top_plane( BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	int v_count = 0;
 
@@ -384,7 +384,7 @@ int CBasePieModeling::modeling_top_plane( SYVertex3D*& v_buf, DWORD*& i_buf, int
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 	v.nx = 0;
 	v.ny = 0;
 	v.nz = -1;
@@ -499,7 +499,7 @@ int CBasePieModeling::modeling_top_plane( SYVertex3D*& v_buf, DWORD*& i_buf, int
 	return v_count;
 }
 
-int CBasePieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_bottom_plane(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	int v_count = 0;
 
@@ -510,7 +510,7 @@ int CBasePieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, i
 
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.nx = 0;
 	v.ny = 0;
@@ -628,7 +628,7 @@ int CBasePieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, i
 	return v_count;
 }
 
-// int CBasePieModeling::modeling_plane_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_plane_face(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 int v_count = 0;
 // 
@@ -638,7 +638,7 @@ int CBasePieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, i
 //			
 //		 float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 // 
-//		 SYVertex3D v;
+//		 BaseGraphVertex3D v;
 // 
 //		 v.tu = 0.5f;
 //		 v.tv = 0.5f;
@@ -759,7 +759,7 @@ int CBasePieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, i
 //		 {
 //			 //上面
 //			 {
-//				 SYVertex3D v;
+//				 BaseGraphVertex3D v;
 // 
 //				 v.nx = 0;
 //				 v.ny = 0;
@@ -826,7 +826,7 @@ int CBasePieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, i
 //			 //下面
 //			 {
 //				 //圆心
-//				 SYVertex3D v;
+//				 BaseGraphVertex3D v;
 // 
 //				 v.nx = 0;
 //				 v.ny = 0;
@@ -893,14 +893,14 @@ int CBasePieModeling::modeling_bottom_plane(SYVertex3D*& v_buf, DWORD*& i_buf, i
 // }
 // 
 
-int CBasePieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_start_face(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	int v_count = 0;
 
 	float c = cosf(m_angle_start);
 	float s = sinf(m_angle_start);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;
 	v.y = m_angle_start;
@@ -1187,14 +1187,14 @@ int CBasePieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int
 	return v_count;
 }
 
-// int CBasePieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_start_face(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 int v_count = 0;
 // 
 //	 float c = cosf(m_angle_start);
 //	 float s = sinf(m_angle_start);
 // 
-//	 SYVertex3D v;
+//	 BaseGraphVertex3D v;
 // 
 //	 v.x = m_angle_start;
 //	 v.y = m_angle_start;
@@ -1598,14 +1598,14 @@ int CBasePieModeling::modeling_start_face(SYVertex3D*& v_buf, DWORD*& i_buf, int
 //	 return v_count;
 // }
 
-int CBasePieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_end_face(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	int v_count = 0;
 
 	float c = cosf(m_angle_start);
 	float s = sinf(m_angle_start);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;
 	v.y = m_angle_end;
@@ -1901,14 +1901,14 @@ int CBasePieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v
 	return v_count;
 }
 
-// int CBasePieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_end_face(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 int v_count = 0;
 // 
 //	 float c = cosf(m_angle_start);
 //	 float s = sinf(m_angle_start);
 // 
-//	 SYVertex3D v;
+//	 BaseGraphVertex3D v;
 // 
 //	 v.x = m_angle_start;
 //	 v.y = m_angle_end;
@@ -2380,7 +2380,7 @@ int CBasePieModeling::modeling_end_face(SYVertex3D*& v_buf, DWORD*& i_buf, int v
 // 
 // }
 
-int CBasePieModeling::modeling_outer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_arc(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_outer_arc)
 		return 0;
@@ -2389,7 +2389,7 @@ int CBasePieModeling::modeling_outer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int 
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 		
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -2471,7 +2471,7 @@ int CBasePieModeling::modeling_outer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int 
 	return v_count;
 }
 
-int CBasePieModeling::modeling_inner_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_arc(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_inner_arc)
 		return 0;
@@ -2480,7 +2480,7 @@ int CBasePieModeling::modeling_inner_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int 
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -2560,7 +2560,7 @@ int CBasePieModeling::modeling_inner_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int 
 	return v_count;
 }
 
-int CBasePieModeling::modeling_outer_top_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_top_chamfer_plane(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_top_out_chamfer)
 		return 0;
@@ -2569,7 +2569,7 @@ int CBasePieModeling::modeling_outer_top_chamfer_plane(SYVertex3D*& v_buf, DWORD
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -2644,7 +2644,7 @@ int CBasePieModeling::modeling_outer_top_chamfer_plane(SYVertex3D*& v_buf, DWORD
 	return v_count;
 }
 
-int CBasePieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_bottom_chamfer_plane(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_bottom_out_chamfer)
 		return 0;
@@ -2653,7 +2653,7 @@ int CBasePieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DW
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -2722,7 +2722,7 @@ int CBasePieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DW
 	return v_count;
 }
 
-// int CBasePieModeling::modeling_outer_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_outer_chamfer_plane(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 if(!m_has_chamfer)
 //		 return 0;
@@ -2733,7 +2733,7 @@ int CBasePieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DW
 // 
 //	 float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 // 
-//	 SYVertex3D v;
+//	 BaseGraphVertex3D v;
 // 
 //	 v.x = m_angle_start;//起始角度
 // 
@@ -2857,7 +2857,7 @@ int CBasePieModeling::modeling_outer_bottom_chamfer_plane(SYVertex3D*& v_buf, DW
 //	 return v_count;
 // }
 
-int CBasePieModeling::modeling_inner_top_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_top_chamfer_plane(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_top_in_chamfer)
 		return 0;
@@ -2866,7 +2866,7 @@ int CBasePieModeling::modeling_inner_top_chamfer_plane(SYVertex3D*& v_buf, DWORD
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -2943,7 +2943,7 @@ int CBasePieModeling::modeling_inner_top_chamfer_plane(SYVertex3D*& v_buf, DWORD
 	return v_count;
 }
 
-int CBasePieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_bottom_chamfer_plane(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_bottom_in_chamfer)
 		return 0;
@@ -2952,7 +2952,7 @@ int CBasePieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DW
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -3022,7 +3022,7 @@ int CBasePieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DW
 	return v_count;
 }
 
-// int CBasePieModeling::modeling_inner_chamfer_plane(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_inner_chamfer_plane(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 if(!m_has_chamfer)
 //		 return 0;
@@ -3033,7 +3033,7 @@ int CBasePieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DW
 // 
 //	 float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 // 
-//	 SYVertex3D v;
+//	 BaseGraphVertex3D v;
 // 
 //	 v.x = m_angle_start;//起始角度
 // 
@@ -3160,7 +3160,7 @@ int CBasePieModeling::modeling_inner_bottom_chamfer_plane(SYVertex3D*& v_buf, DW
 //	 return v_count;
 // }
 
-int CBasePieModeling::modeling_outer_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_top_chamfer_arc(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_top_out_chamfer)
 		return 0;
@@ -3169,7 +3169,7 @@ int CBasePieModeling::modeling_outer_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*&
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -3263,7 +3263,7 @@ int CBasePieModeling::modeling_outer_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*&
 	return v_count;
 }
 
-int CBasePieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_outer_bottom_chamfer_arc(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_bottom_out_chamfer)
 		return 0;
@@ -3272,7 +3272,7 @@ int CBasePieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWOR
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -3348,7 +3348,7 @@ int CBasePieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWOR
 	return v_count;
 }
 
-// int CBasePieModeling::modeling_outer_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_outer_chamfer_arc(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 if(!m_has_chamfer)
 //		 return 0;
@@ -3356,7 +3356,7 @@ int CBasePieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWOR
 //	 int v_count = 0; 
 //	 UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end); 
 //	 float da = (m_angle_end - m_angle_start)/(arc_point_count -1); 
-//	 SYVertex3D v;
+//	 BaseGraphVertex3D v;
 // 
 //	 v.x = m_angle_start;//起始角度
 // 
@@ -3485,7 +3485,7 @@ int CBasePieModeling::modeling_outer_bottom_chamfer_arc(SYVertex3D*& v_buf, DWOR
 //	 return v_count;
 // }
 
-int CBasePieModeling::modeling_inner_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_top_chamfer_arc(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_top_in_chamfer)
 		return 0;
@@ -3494,7 +3494,7 @@ int CBasePieModeling::modeling_inner_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*&
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -3570,7 +3570,7 @@ int CBasePieModeling::modeling_inner_top_chamfer_arc(SYVertex3D*& v_buf, DWORD*&
 	return v_count;
 }
 
-int CBasePieModeling::modeling_inner_bottom_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+int CBasePieModeling::modeling_inner_bottom_chamfer_arc(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 {
 	if(!m_has_bottom_in_chamfer)
 		return 0;
@@ -3579,7 +3579,7 @@ int CBasePieModeling::modeling_inner_bottom_chamfer_arc(SYVertex3D*& v_buf, DWOR
 	UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 	float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
 
-	SYVertex3D v;
+	BaseGraphVertex3D v;
 
 	v.x = m_angle_start;//起始角度
 
@@ -3655,7 +3655,7 @@ int CBasePieModeling::modeling_inner_bottom_chamfer_arc(SYVertex3D*& v_buf, DWOR
 	return v_count;
 }
 
-// int CBasePieModeling::modeling_inner_chamfer_arc(SYVertex3D*& v_buf, DWORD*& i_buf, int v_start)
+// int CBasePieModeling::modeling_inner_chamfer_arc(BaseGraphVertex3D*& v_buf, DWORD*& i_buf, int v_start)
 // {
 //	 if(!m_has_chamfer)
 //		 return 0;
@@ -3663,7 +3663,7 @@ int CBasePieModeling::modeling_inner_bottom_chamfer_arc(SYVertex3D*& v_buf, DWOR
 //	 int v_count = 0; 
 //	 UINT arc_point_count = calc_arc_point_count(m_angle_start,m_angle_end);
 //	 float da = (m_angle_end - m_angle_start)/(arc_point_count -1);
-//	 SYVertex3D v;
+//	 BaseGraphVertex3D v;
 // 
 //	 v.x = m_angle_start;//起始角度
 // 
@@ -3791,7 +3791,7 @@ int CBasePieModeling::modeling_inner_bottom_chamfer_arc(SYVertex3D*& v_buf, DWOR
 //	 return v_count;
 // }
 
-BOOL Test(SYModel* pMod)
+BOOL Test(BaseGraphModel* pMod)
 {
 	int vcount = 4;
 	int icount = 6;
@@ -3800,12 +3800,12 @@ BOOL Test(SYModel* pMod)
 	pMod->vcount = vcount;
 	pMod->icount = icount;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[vcount];
+	pMod->v = new BaseGraphVertex3D[vcount];
 	pMod->indecs = new DWORD[icount];
 
-	SYVertex3D*  pv =  pMod->v;
+	BaseGraphVertex3D*  pv =  pMod->v;
 	DWORD*		 pi =  pMod->indecs;
 
 	pMod->viewsub[0].vstart = 0;
@@ -3821,7 +3821,7 @@ BOOL Test(SYModel* pMod)
 	return TRUE;
 }
 
-BOOL CBasePieModeling::CreateModel(SYModel* pMod)
+BOOL CBasePieModeling::CreateModel(BaseGraphModel* pMod)
 {
 	int vcount = 0;
 	int icount = 0;
@@ -3832,12 +3832,12 @@ BOOL CBasePieModeling::CreateModel(SYModel* pMod)
 	pMod->vcount = vcount;
 	pMod->icount = icount;
 	pMod->nviewsub = 1;
-	pMod->viewsub = new SYSubModel[pMod->nviewsub];
+	pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
 
-	pMod->v = new SYVertex3D[vcount];
+	pMod->v = new BaseGraphVertex3D[vcount];
 	pMod->indecs = new DWORD[icount];
 
-	SYVertex3D*  pv =  pMod->v;
+	BaseGraphVertex3D*  pv =  pMod->v;
 	DWORD*		 pi =  pMod->indecs;
 
 	int		 vbase = 0;

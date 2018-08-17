@@ -32,7 +32,7 @@ CalculatorTitleword::CalculatorTitleword(CString strObjID)
 
 CalculatorTitleword::~CalculatorTitleword()
 {
-	SYText_Release(&m_text);
+	BaseGraphText_Release(&m_text);
 }
 
 bool CalculatorTitleword::PrepareObjBuffer(int nWidth, int nHeight)
@@ -127,12 +127,12 @@ bool CalculatorTitleword::GetCurrentParam()
 bool CalculatorTitleword::Update2DUnit()
 {
 	//造一个Text并由此对象生成一个排版器并排版
-	SYText_Release(&m_text);
+	BaseGraphText_Release(&m_text);
 	m_text.Reset();
-	SYText_Init(&m_text);
+	BaseGraphText_Init(&m_text);
 
 	//字体
-	SYFont newFont;
+	BaseGraphFont newFont;
 	newFont.lfWidth = m_nFontWidth;
 	newFont.lfHeight = m_nFontHeight;
 	newFont.lfDistance = m_nFontDistance;
@@ -149,7 +149,7 @@ bool CalculatorTitleword::Update2DUnit()
 		}
 	}
 
-	SYText_Create(&m_text,
+	BaseGraphText_Create(&m_text,
 		m_strText,
 		rectf(),
 		&newFont,
@@ -211,7 +211,7 @@ rectf CalculatorTitleword::CalUnitBound()
 	vector3f v3d[4] = { 0 };
 	for (int i = 0; i<nRenderCount; i++)
 	{
-		SYItemRenderUnit * pRenderUnit = (SYItemRenderUnit *)BaseAR_GetAt(&arRenderUnitArray, i);
+		BaseGraphItemRenderUnit * pRenderUnit = (BaseGraphItemRenderUnit *)BaseAR_GetAt(&arRenderUnitArray, i);
 		
 		//得到每一个Unit的边界(包括面边体影信息)在这个层面图形特技已经完成，RenderUnit单元中已经包含了图形特技的因素
 		GetRenderUnitBound(i, fbound);
@@ -279,7 +279,7 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 		{
 			for (int i = 0; i < nRenderUnitCount; i++)
 			{
-				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(pRenderArray, i);
+				BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(pRenderArray, i);
 				ReleaseRenderUnit(pRenderUnit, FALSE, DX3DEngine_GetMainDevice(), this);
 				delete pRenderUnit;
 			}
@@ -287,12 +287,12 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 
 #if 0
 			//djt 3D暂时不考虑
-			BOOL b3DUnit = (dwUnitType == SYITEM_UNITTYPE_3DTEXT || dwUnitType == SYITEM_UNITTYPE_3DSHAPE) ? TRUE : FALSE;
+			BOOL b3DUnit = (dwUnitType == BaseGraphITEM_UNITTYPE_3DTEXT || dwUnitType == BaseGraphITEM_UNITTYPE_3DSHAPE) ? TRUE : FALSE;
 #endif
 			BOOL b3DUnit = FALSE;
 			for (int i = 0; i< nUnitCount; i++)
 			{
-				SYItemRenderUnit* pRenderUnit = CreateRenderUnit(b3DUnit);
+				BaseGraphItemRenderUnit* pRenderUnit = CreateRenderUnit(b3DUnit);
 				BaseAR_Add(pRenderArray, pRenderUnit);
 			}
 			SetChgLevel(ChgLevel_Figure);
@@ -315,21 +315,21 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 		pBuffer->m_dwBuffer[i] = bPerUnitReverseOrder ? nUnitCount - i - 1 : i;
 
 	if (bPerUnit && pAction->GetPerUnitInfo()->nOrder == Common_PER_UNIT_RAMDOM_ORDER)
-		SYShuffle((int*)pBuffer->m_dwBuffer, nUnitCount);
+		BaseGraphShuffle((int*)pBuffer->m_dwBuffer, nUnitCount);
 #endif
 
 	for (int i = 0; i<nUnitCount; i++)
 	{
-		SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(pRenderArray, i);
+		BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(pRenderArray, i);
 		if (pRenderUnit->m_bChanged || GetChgLevel() >= ChgLevel_Buffer || !pRenderUnit->m_pUnit) //材质发生改变时，也需要重新拷贝
 		{
-			SYUnit* pUnit = GetUnit(i);
+			BaseGraphUnit* pUnit = GetUnit(i);
 			if (pUnit)
 			{
 				if (!pRenderUnit->m_pUnit)
 				{
 
-					pRenderUnit->m_pUnit = new SYUnit;
+					pRenderUnit->m_pUnit = new BaseGraphUnit;
 					sy_init_unit(pRenderUnit->m_pUnit, pUnit->type);
 					pRenderUnit->m_bChanged = TRUE;
 				}
@@ -342,7 +342,7 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 			}
 		}
 
-		SYUnit* punitin = pRenderUnit->m_pUnit;
+		BaseGraphUnit* punitin = pRenderUnit->m_pUnit;
 		if (!punitin)
 			continue;
 
@@ -385,7 +385,7 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 		}
 #if 0
 		//djt 3D
-		else if ((dwUnitType == SYITEM_UNITTYPE_3DTEXT || dwUnitType == SYITEM_UNITTYPE_3DSHAPE)
+		else if ((dwUnitType == BaseGraphITEM_UNITTYPE_3DTEXT || dwUnitType == BaseGraphITEM_UNITTYPE_3DSHAPE)
 			&& (pRenderUnit->m_bChanged || nChgLevel > CBaseCGEnv::Envchg_UnitTrans /*|| pEnv->m_nRenderChangedLevel > CBaseCGEnv::Envchg_RotateZoom*/))
 		{
 			FillRenderUnit(pEnv, pRenderUnit, punitin);
@@ -411,8 +411,8 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 
 BOOL CalculatorTitleword::_trans_calcunit(int nFrame, int nUnitIndex, int nOrderIndex, BOOL bInherit)
 {
-	SYItemRenderUnit* prenderunit = ObjectCalculator::GetRenderUnit(nUnitIndex, m_2DTextRenderUnitArray);
-	SYUnit* punitin = prenderunit->m_pUnit;//GetUnit(dwUnitType,nUnitIndex,lpEnv);
+	BaseGraphItemRenderUnit* prenderunit = ObjectCalculator::GetRenderUnit(nUnitIndex, m_2DTextRenderUnitArray);
+	BaseGraphUnit* punitin = prenderunit->m_pUnit;//GetUnit(dwUnitType,nUnitIndex,lpEnv);
 	if (!punitin)
 	{
 		//prenderunit->m_pUnit = punitin;//定义	
@@ -474,13 +474,13 @@ BOOL CalculatorTitleword::_trans_calcunit_matrix(matrix4f * pVMatrix, int * pdwM
 		return FALSE;
 #endif
 	//得到单元
-	SYUnit* punitin = GetRenderUnit(nUnitIndex)->m_pUnit;//  GetUnit(dwUnitType,nUnitIndex,lpPlayEnv);
+	BaseGraphUnit* punitin = GetRenderUnit(nUnitIndex)->m_pUnit;//  GetUnit(dwUnitType,nUnitIndex,lpPlayEnv);
 																		   //位置
 	vector3f v = { punitin->pos.x, punitin->pos.y, punitin->pos.z };
 	/////////////////计算unit自身的形变/////////////////
 	////////////////////////2.计算形变/////////////////
 	vector3f vPosition = { 0.0f,0.0f,0.0f }, vScale = { 1.0f,1.0f,1.0f }, VCenter = { 0.0f,0.0f,0.0f }, vScale2 = { 1.0f,1.0f,1.0f };
-	SYQuatn Qrotate = { 0.0f,0.0f,0.0f,1.0f };
+	BaseGraphQuatn Qrotate = { 0.0f,0.0f,0.0f,1.0f };
 	vector3f vAngle = { 0,0,0 };
 	matrix4f tempVMatrix;
 
@@ -506,7 +506,7 @@ BOOL CalculatorTitleword::_trans_calcunit_matrix(matrix4f * pVMatrix, int * pdwM
 	if (punitin->parentbone > 0)
 	{
 		BoneEnvNode* pBoneEnv = (BoneEnvNode*)BaseAR_GetAt(&pEnv->m_pBoneEnvData->BoneEnvArray, punitin->parentbone);
-		SYBoneDef* pBonedef = (SYBoneDef*)GetBone(punitin->parentbone);
+		BoneDef* pBonedef = (BoneDef*)GetBone(punitin->parentbone);
 		vector3f vBone = { pBonedef->pivot.x, pBonedef->pivot.y, pBonedef->pivot.z };
 		matrix4f matpivotE;
 		float3ToTransMatQ(&matpivotE, &vBone);
@@ -516,7 +516,7 @@ BOOL CalculatorTitleword::_trans_calcunit_matrix(matrix4f * pVMatrix, int * pdwM
 	else//5.2：如果没有骨骼，乘上到父物件的转换矩阵
 	{
 		//转换到Item空间
-		if (dwUnitType == SYITEM_UNITTYPE_3DSHAPE || dwUnitType == SYITEM_UNITTYPE_3DTEXT)
+		if (dwUnitType == BaseGraphITEM_UNITTYPE_3DSHAPE || dwUnitType == BaseGraphITEM_UNITTYPE_3DTEXT)
 			tempVMatrix *= punitin->MatVToItem;
 	}
 #endif
@@ -593,7 +593,7 @@ void CalculatorTitleword::DeleteWholeRenderGraph()
 		for (int i = 0; i < nGraphCnt; ++i)
 		{
 			vectorgraph* pSingleGraph = (vectorgraph*)BaseAR_GetAt(parGraph, i);
-			SYVectorGraph_Release(pSingleGraph);
+			BaseGraphVectorGraph_Release(pSingleGraph);
 			delete pSingleGraph;
 		}
 		BaseAR_RemoveAll(parGraph);
@@ -655,7 +655,7 @@ BOOL CalculatorTitleword::UpdateWholeRenderGraph(BaseARray * pRenderUnitArray)
 		int i = nOrderStart;
 		while (i != nOrderEnd)
 		{
-			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);
+			BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);
 			if (pRenderUnit)
 				nCellCnt += pRenderUnit->graph->ncell;
 			i += nStep;
@@ -668,7 +668,7 @@ BOOL CalculatorTitleword::UpdateWholeRenderGraph(BaseARray * pRenderUnitArray)
 
 			i = nOrderStart;
 			vector3f pt1stUnit;
-			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);
+			BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);
 			pt1stUnit = pRenderUnit->m_pUnit->pos;
 
 			pSingleGraph->ncell = nCellCnt;
@@ -677,12 +677,12 @@ BOOL CalculatorTitleword::UpdateWholeRenderGraph(BaseARray * pRenderUnitArray)
 			BaseRectf_SetRectEmpty(&pSingleGraph->bound);
 			while (i != nOrderEnd)
 			{
-				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);
+				BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);
 				if (pRenderUnit)
 				{
 					pGraphTemp = pRenderUnit->graph;
 					CopyVectorGraph(&vgTemp, pGraphTemp);
-					SYVectorGraph_Offset(&vgTemp, pRenderUnit->m_pUnit->pos.x - pt1stUnit.x, -(pRenderUnit->m_pUnit->pos.y - pt1stUnit.y));
+					BaseGraphVectorGraph_Offset(&vgTemp, pRenderUnit->m_pUnit->pos.x - pt1stUnit.x, -(pRenderUnit->m_pUnit->pos.y - pt1stUnit.y));
 					for (int nC = 0; nC<pGraphTemp->ncell; ++nC)
 					{
 						CopyCell(&(pSingleGraph->cell[nCellIdx]), &(vgTemp.cell[nC]));
@@ -763,7 +763,7 @@ void CalculatorTitleword::UpdateItemGpuBuffer(BOOL bLock)
 		int i = nOrderStart;
 		while (i != nOrderEnd)
 		{
-			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);;
+			BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(pRenderUnitArray, i);;
 			if (!pRenderUnit)
 			{
 				i += nStep;
@@ -772,7 +772,7 @@ void CalculatorTitleword::UpdateItemGpuBuffer(BOOL bLock)
 			//计算原始buffer
 			DWORD *pBuffer = NULL;
 			int facew = 0, faceh = 0, pitch = 0;
-			SYRenderUnitView * pUnitView = GetRenderUnitView(pRenderUnit->szID);
+			BaseGraphRenderUnitView * pUnitView = GetRenderUnitView(pRenderUnit->szID);
 			if (!pUnitView)
 			{
 				i += nStep;
@@ -808,10 +808,10 @@ void CalculatorTitleword::UpdateItemGpuBuffer(BOOL bLock)
 		DX3DEngine_UnLock(nDevice);
 }
 
-SYItemRenderUnit * CalculatorTitleword::GetRenderUnit(int nIndex)
+BaseGraphItemRenderUnit * CalculatorTitleword::GetRenderUnit(int nIndex)
 {
 	BaseARray* pRenderArray = &m_2DTextRenderUnitArray;
-	return (SYItemRenderUnit*)BaseAR_GetAt(pRenderArray, nIndex);
+	return (BaseGraphItemRenderUnit*)BaseAR_GetAt(pRenderArray, nIndex);
 }
 
 int CalculatorTitleword::Get2DTextUnitCount()
@@ -822,7 +822,7 @@ int CalculatorTitleword::Get2DTextUnitCount()
 void CalculatorTitleword::GetRenderUnitBound(int nIndex, rectf & rtBoundf)
 {
 	BaseARray* pRenderUnitArray = &m_2DTextRenderUnitArray;
-	SYItemRenderUnit * pRenderUnit = (SYItemRenderUnit *)BaseAR_GetAt(pRenderUnitArray, nIndex);
+	BaseGraphItemRenderUnit * pRenderUnit = (BaseGraphItemRenderUnit *)BaseAR_GetAt(pRenderUnitArray, nIndex);
 	if (!pRenderUnit->graph || !pRenderUnit->m_pUnit)
 	{
 		memset(&rtBoundf, 0, sizeof(rtBoundf));
@@ -973,7 +973,7 @@ int CalculatorTitleword::GetHeight()
 	return BaseRectf_Height(&m_rtUnitBound);
 }
 
-SYText * CalculatorTitleword::GetText()
+BaseGraphText * CalculatorTitleword::GetText()
 {
 	return &m_text;
 }
@@ -983,19 +983,19 @@ BaseARray * CalculatorTitleword::Get2DTextUnitArray()
 	return &m_text.ar2DUnit;
 }
 
-SYUnit * CalculatorTitleword::GetUnit(int nIndex)
+BaseGraphUnit * CalculatorTitleword::GetUnit(int nIndex)
 {
 	BaseARray* pAryUnit = Get2DTextUnitArray();
 	if (nIndex < 0 || nIndex >= BaseAR_GetCount(pAryUnit))
 		return NULL;
-	return (SYUnit*)BaseAR_GetAt(pAryUnit, nIndex);
+	return (BaseGraphUnit*)BaseAR_GetAt(pAryUnit, nIndex);
 }
 
 void CalculatorTitleword::DeleteRenderUnitView(LPCTSTR szUnitID)
 {
 	for (int i = 1; i < BaseAR_GetCount(&m_text.ar2DUnit); ++i)
 	{
-		SYUnit* pTemplUnit = (SYUnit*)BaseAR_GetAt(&m_text.ar2DUnit, i);
+		BaseGraphUnit* pTemplUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_text.ar2DUnit, i);
 		if (pTemplUnit)
 		{
 			assert(false);
@@ -1013,14 +1013,14 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 	int nUnitCnt = BaseAR_GetCount(pUnitArray);
 	for (int i = 0; i < nUnitCnt; i++)
 	{
-		SYItemRenderUnit * pRenderUnit = (SYItemRenderUnit *)BaseAR_GetAt(pUnitArray, i);
+		BaseGraphItemRenderUnit * pRenderUnit = (BaseGraphItemRenderUnit *)BaseAR_GetAt(pUnitArray, i);
 		//计算原始buffer
 		DWORD *pBuffer = NULL;
 		int facew = 0, faceh = 0, pitch = 0;
 		pointf ptOrg;
 		RECT rtResultBound;// = pRenderUnit->unit2D.bound; 
 
-		SYRenderUnitView* pUnitView = GetRenderUnitView(pRenderUnit->szID);
+		BaseGraphRenderUnitView* pUnitView = GetRenderUnitView(pRenderUnit->szID);
 		if (!pRenderUnit || pRenderUnit->graph == 0 || pRenderUnit->graph->ncell == 0)
 		{
 			if (pUnitView)
@@ -1038,7 +1038,7 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 
 		CCommonBuffer* pBufferPool = NULL;
 		//MAC_STARTTIME_TEST();
-		SYRenderGraphToOpBuff(pRenderUnit->graph,
+		BaseGraphRenderGraphToOpBuff(pRenderUnit->graph,
 			&pRenderUnit->m_pUnit->u.u2d.staticeffect,
 			pBufferPool,
 			rtResultBound,
@@ -1063,7 +1063,7 @@ void CalculatorTitleword::RenderUnitBufferForGpu()
 
 		if (!pUnitView)
 		{
-			pUnitView = new SYRenderUnitView;
+			pUnitView = new BaseGraphRenderUnitView;
 			pUnitView->pUnitBuffer = NULL;
 			pUnitView->pUnitDymHalBuffer = NULL;
 			pUnitView->pUnitHalBuf = new DXHalDef32;

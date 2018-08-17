@@ -1720,14 +1720,14 @@ int __cdecl BaseAR_SetMaxSize(LPBaseARRAY pA,			// 数组结构指针
 	return BaseAR_SUCCESS;
 }
 
-void __cdecl BaseAR_Sort(LPBaseARRAY pA, SYCompareFun fun)
+void __cdecl BaseAR_Sort(LPBaseARRAY pA, BaseGraphCompareFun fun)
 {
 	if (pA->m_nSize <= 0)
 		return;
 	qsort(pA->m_pData, pA->m_nSize, sizeof(BaseAR_ELEMENT), fun);
 }
 
-void __cdecl SYStrAR_Release(CBaseStrArray& ary)
+void __cdecl BaseGraphStrAR_Release(CBaseStrArray& ary)
 {
 	int nCnt = ary.GetCount();
 	for (int i = 0; i<nCnt; ++i)
@@ -1754,7 +1754,7 @@ void __cdecl SYStrAR_Release(CBaseStrArray& ary)
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYList_Init(pSYList pList)			// 链表指针
+void __cdecl BaseGraphList_Init(pBaseGraphList pList)			// 链表指针
 {
 
 
@@ -1768,7 +1768,7 @@ void __cdecl SYList_Init(pSYList pList)			// 链表指针
 		pList->idelpool = NULL;
 	}
 }
-void __cdecl SYList_SetIdelSize(pSYList pList, int nSize)			// 链表指针
+void __cdecl BaseGraphList_SetIdelSize(pBaseGraphList pList, int nSize)			// 链表指针
 {
 	pList->idelpool = (listnode*)malloc(sizeof(listnode) * nSize);
 	pList->idelfirst = pList->idelpool;
@@ -1783,7 +1783,7 @@ void __cdecl SYList_SetIdelSize(pSYList pList, int nSize)			// 链表指针
 	}
 }
 
-listnode* __cdecl _SYList_QueryIdelNode(pSYList pList)			// 链表指针
+listnode* __cdecl _BaseGraphList_QueryIdelNode(pBaseGraphList pList)			// 链表指针
 {
 	if (!pList->idelfirst)
 		return NULL;
@@ -1804,7 +1804,7 @@ listnode* __cdecl _SYList_QueryIdelNode(pSYList pList)			// 链表指针
 	return pnode;
 }
 
-BOOL __cdecl _SYList_FreeIdelNode(pSYList pList, listnode* pnode)			// 链表指针
+BOOL __cdecl _BaseGraphList_FreeIdelNode(pBaseGraphList pList, listnode* pnode)			// 链表指针
 {
 	if (!pnode->idelpool)
 		return FALSE;
@@ -1831,7 +1831,7 @@ BOOL __cdecl _SYList_FreeIdelNode(pSYList pList, listnode* pnode)			// 链表指针
 //
 // 返回值:	LISTPOSITION
 ///////////////////////////////////////////////////////////////////////////////
-LISTPOSITION __cdecl SYList_GetHeadPosition(SYList* pList)	// 链表指针
+LISTPOSITION __cdecl BaseGraphList_GetHeadPosition(BaseGraphList* pList)	// 链表指针
 {
 	if (pList == NULL)
 		return NULL;
@@ -1844,7 +1844,7 @@ LISTPOSITION __cdecl SYList_GetHeadPosition(SYList* pList)	// 链表指针
 //
 // 返回值:	LISTPOSITION
 ///////////////////////////////////////////////////////////////////////////////
-LISTPOSITION __cdecl SYList_GetTailPosition(SYList* pList)	// 链表指针
+LISTPOSITION __cdecl BaseGraphList_GetTailPosition(BaseGraphList* pList)	// 链表指针
 {
 	if (pList == NULL)
 		return NULL;
@@ -1857,7 +1857,7 @@ LISTPOSITION __cdecl SYList_GetTailPosition(SYList* pList)	// 链表指针
 //
 // 返回值:	INT_PTR			当前链表结点个数
 ///////////////////////////////////////////////////////////////////////////////
-INT_PTR	__cdecl SYList_GetCount(SYList* pList)		// 链表指针
+INT_PTR	__cdecl BaseGraphList_GetCount(BaseGraphList* pList)		// 链表指针
 {
 
 
@@ -1873,7 +1873,7 @@ INT_PTR	__cdecl SYList_GetCount(SYList* pList)		// 链表指针
 // 返回值:	TRUE		为空
 //			FALSE		不为空
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYList_IsEmpty(pSYList pList)			// 链表指针
+BOOL __cdecl BaseGraphList_IsEmpty(pBaseGraphList pList)			// 链表指针
 {
 
 
@@ -1888,7 +1888,7 @@ BOOL __cdecl SYList_IsEmpty(pSYList pList)			// 链表指针
 //
 // 返回值:	LT_DATA_PTR
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_GetNext(const SYList* pList,	// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_GetNext(const BaseGraphList* pList,	// 链表指针
 	LISTPOSITION* pPos)	// 当前节点的位置的指针
 {
 
@@ -1908,7 +1908,7 @@ LT_DATA_PTR __cdecl SYList_GetNext(const SYList* pList,	// 链表指针
 //
 // 返回值:	LT_DATA_PTR
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_GetPrev(pSYList pList,		// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_GetPrev(pBaseGraphList pList,		// 链表指针
 	LISTPOSITION* pPos)	// 当前节点的位置的指针
 {
 
@@ -1928,7 +1928,7 @@ LT_DATA_PTR __cdecl SYList_GetPrev(pSYList pList,		// 链表指针
 //
 // 返回值:	LT_DATA_PTR
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_GetAt(pSYList pList,		// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_GetAt(pBaseGraphList pList,		// 链表指针
 	LISTPOSITION pos)		// 当前节点的位置
 {
 	if (pList == NULL || pos == NULL)
@@ -1942,7 +1942,7 @@ LT_DATA_PTR __cdecl SYList_GetAt(pSYList pList,		// 链表指针
 //
 // 返回值:	LT_DATA_PTR
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_GetHead(pSYList pList)		// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_GetHead(pBaseGraphList pList)		// 链表指针
 {
 
 
@@ -1957,7 +1957,7 @@ LT_DATA_PTR __cdecl SYList_GetHead(pSYList pList)		// 链表指针
 //
 // 返回值:	LT_DATA_PTR
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_GetTail(pSYList pList)		// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_GetTail(pBaseGraphList pList)		// 链表指针
 {
 
 
@@ -1972,7 +1972,7 @@ LT_DATA_PTR __cdecl SYList_GetTail(pSYList pList)		// 链表指针
 //
 // 返回值:	LT_DATA_PTR	原数据指针
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_SetAt(pSYList pList,			// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_SetAt(pBaseGraphList pList,			// 链表指针
 	LISTPOSITION pos,			// 设置数据的节点位置
 	LT_DATA_PTR pData)		// 数据指针
 {
@@ -1991,7 +1991,7 @@ LT_DATA_PTR __cdecl SYList_SetAt(pSYList pList,			// 链表指针
 //
 // 返回值:	LISTPOSITION		新节点的位置
 ///////////////////////////////////////////////////////////////////////////////
-LISTPOSITION __cdecl SYList_AddHead(pSYList pList,			// 链表指针
+LISTPOSITION __cdecl BaseGraphList_AddHead(pBaseGraphList pList,			// 链表指针
 	LT_DATA_PTR pData,
 	unsigned char** pool,
 	unsigned char* poolend)		// 新节点的数据
@@ -2013,7 +2013,7 @@ LISTPOSITION __cdecl SYList_AddHead(pSYList pList,			// 链表指针
 		pNode = (plistnode)pool_malloc(pool, nsize, bRelease);
 	else
 	{
-		pNode = _SYList_QueryIdelNode(pList);			// 链表指针
+		pNode = _BaseGraphList_QueryIdelNode(pList);			// 链表指针
 		if (pNode)
 		{
 			bRelease = FALSE;
@@ -2048,7 +2048,7 @@ LISTPOSITION __cdecl SYList_AddHead(pSYList pList,			// 链表指针
 //
 // 返回值:	LISTPOSITION		新节点的位置
 ///////////////////////////////////////////////////////////////////////////////
-LISTPOSITION __cdecl SYList_AddTail(pSYList pList,			// 链表指针
+LISTPOSITION __cdecl BaseGraphList_AddTail(pBaseGraphList pList,			// 链表指针
 	LT_DATA_PTR pData,
 	unsigned char** pool,
 	unsigned char* poolend)		// 新节点的数据
@@ -2070,7 +2070,7 @@ LISTPOSITION __cdecl SYList_AddTail(pSYList pList,			// 链表指针
 		pNode = (plistnode)pool_malloc(pool, nsize, bRelease);
 	else
 	{
-		pNode = _SYList_QueryIdelNode(pList);			// 链表指针
+		pNode = _BaseGraphList_QueryIdelNode(pList);			// 链表指针
 		if (!pNode)
 			pNode = (plistnode)malloc(sizeof(listnode));
 		else
@@ -2103,8 +2103,8 @@ LISTPOSITION __cdecl SYList_AddTail(pSYList pList,			// 链表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYList_AddListHead(pSYList pList,			// 链表指针
-	pSYList pNewList)		// 新链表指针
+void __cdecl BaseGraphList_AddListHead(pBaseGraphList pList,			// 链表指针
+	pBaseGraphList pNewList)		// 新链表指针
 {
 	if (pList != NULL && pNewList != NULL && pList != pNewList)
 	{
@@ -2113,7 +2113,7 @@ void __cdecl SYList_AddListHead(pSYList pList,			// 链表指针
 		// 从新链表的尾节点开始向前一个一个加入
 		while (pos != NULL)
 		{
-			SYList_AddHead(pList, SYList_GetPrev(pNewList, &pos), NULL, NULL);
+			BaseGraphList_AddHead(pList, BaseGraphList_GetPrev(pNewList, &pos), NULL, NULL);
 		}
 	}
 }
@@ -2123,8 +2123,8 @@ void __cdecl SYList_AddListHead(pSYList pList,			// 链表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYList_AddListTail(pSYList pList,			// 链表指针
-	pSYList pNewList)		// 新链表指针
+void __cdecl BaseGraphList_AddListTail(pBaseGraphList pList,			// 链表指针
+	pBaseGraphList pNewList)		// 新链表指针
 {
 	if (pList != NULL && pNewList != NULL && pList != pNewList)
 	{
@@ -2133,7 +2133,7 @@ void __cdecl SYList_AddListTail(pSYList pList,			// 链表指针
 		// 从新链表的头节点开始向后一个一个加入
 		while (pos != NULL)
 		{
-			SYList_AddTail(pList, SYList_GetNext(pNewList, &pos), NULL, NULL);
+			BaseGraphList_AddTail(pList, BaseGraphList_GetNext(pNewList, &pos), NULL, NULL);
 		}
 	}
 }
@@ -2143,7 +2143,7 @@ void __cdecl SYList_AddListTail(pSYList pList,			// 链表指针
 //
 // 返回值:	LISTPOSITION		新节点的位置
 ///////////////////////////////////////////////////////////////////////////////
-LISTPOSITION __cdecl SYList_InsertBefore(pSYList pList,		// 链表指针
+LISTPOSITION __cdecl BaseGraphList_InsertBefore(pBaseGraphList pList,		// 链表指针
 	LISTPOSITION pos,		// 被插节点的位置
 	LT_DATA_PTR pData)	// 新节点数据
 {
@@ -2198,11 +2198,11 @@ LISTPOSITION __cdecl SYList_InsertBefore(pSYList pList,		// 链表指针
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// 描述：	SYList_InsertAfter() 在某一节点后插一个新的节点
+// 描述：	BaseGraphList_InsertAfter() 在某一节点后插一个新的节点
 //
 // 返回值:	LISTPOSITION		新节点的位置
 ///////////////////////////////////////////////////////////////////////////////
-LISTPOSITION __cdecl SYList_InsertAfter(pSYList pList,		// 链表指针
+LISTPOSITION __cdecl BaseGraphList_InsertAfter(pBaseGraphList pList,		// 链表指针
 	LISTPOSITION pos,		// 被插节点的位置
 	LT_DATA_PTR pData)	// 新节点数据
 {
@@ -2261,7 +2261,7 @@ LISTPOSITION __cdecl SYList_InsertAfter(pSYList pList,		// 链表指针
 //
 // 返回值:	LT_DATA_PTR
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_RemoveAt(pSYList pList,		// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_RemoveAt(pBaseGraphList pList,		// 链表指针
 	LISTPOSITION pos)		// 预删除节点的位置
 {
 	if (pList == NULL || pos == NULL)
@@ -2288,7 +2288,7 @@ LT_DATA_PTR __cdecl SYList_RemoveAt(pSYList pList,		// 链表指针
 		pList->tail = pNode->prev;
 	}
 	pList->count--;
-	if (!_SYList_FreeIdelNode(pList, pNode))
+	if (!_BaseGraphList_FreeIdelNode(pList, pNode))
 	{
 		if (pNode->needrelease)
 			free(pos);
@@ -2305,7 +2305,7 @@ LT_DATA_PTR __cdecl SYList_RemoveAt(pSYList pList,		// 链表指针
 //
 // 返回值:	LT_DATA_PTR	原尾节点数据
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_RemoveHead(pSYList pList)		// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_RemoveHead(pBaseGraphList pList)		// 链表指针
 {
 
 
@@ -2325,7 +2325,7 @@ LT_DATA_PTR __cdecl SYList_RemoveHead(pSYList pList)		// 链表指针
 		pList->head = pNode->next;
 		pNode->next->prev = NULL;
 	}
-	if (!_SYList_FreeIdelNode(pList, pNode))
+	if (!_BaseGraphList_FreeIdelNode(pList, pNode))
 	{
 		if (pNode->needrelease)
 			free(pNode);
@@ -2340,7 +2340,7 @@ LT_DATA_PTR __cdecl SYList_RemoveHead(pSYList pList)		// 链表指针
 //
 // 返回值:	LT_DATA_PTR	原尾节点数据
 ///////////////////////////////////////////////////////////////////////////////
-LT_DATA_PTR __cdecl SYList_RemoveTail(pSYList pList)		// 链表指针
+LT_DATA_PTR __cdecl BaseGraphList_RemoveTail(pBaseGraphList pList)		// 链表指针
 {
 
 
@@ -2360,7 +2360,7 @@ LT_DATA_PTR __cdecl SYList_RemoveTail(pSYList pList)		// 链表指针
 		pList->tail = pNode->prev;
 		pNode->prev->next = NULL;
 	}
-	if (!_SYList_FreeIdelNode(pList, pNode))
+	if (!_BaseGraphList_FreeIdelNode(pList, pNode))
 	{
 		if (pNode->needrelease)
 			free(pNode);
@@ -2375,7 +2375,7 @@ LT_DATA_PTR __cdecl SYList_RemoveTail(pSYList pList)		// 链表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYList_RemoveAll(pSYList pList)		// 链表指针
+void __cdecl BaseGraphList_RemoveAll(pBaseGraphList pList)		// 链表指针
 {
 	if (pList == NULL)
 		return;
@@ -2386,7 +2386,7 @@ void __cdecl SYList_RemoveAll(pSYList pList)		// 链表指针
 	{
 		pCurNode = pNode;
 		pNode = pNode->next;
-		if (!_SYList_FreeIdelNode(pList, pCurNode))
+		if (!_BaseGraphList_FreeIdelNode(pList, pCurNode))
 		{
 			if (pCurNode->needrelease)
 				free(pCurNode);
@@ -2402,7 +2402,7 @@ void __cdecl SYList_RemoveAll(pSYList pList)		// 链表指针
 //
 // 返回值:	LISTPOSITION
 ///////////////////////////////////////////////////////////////////////////////
-LISTPOSITION __cdecl SYList_FindNode(pSYList pList,			// 链表指针
+LISTPOSITION __cdecl BaseGraphList_FindNode(pBaseGraphList pList,			// 链表指针
 	LT_DATA_PTR pData,		// 查找的数据
 	LISTPOSITION posStart)		// 查找起始位置
 {
@@ -2419,7 +2419,7 @@ LISTPOSITION __cdecl SYList_FindNode(pSYList pList,			// 链表指针
 	{
 		LISTPOSITION posCur = posStart;
 
-		if (SYList_GetNext(pList, &posStart) == pData)
+		if (BaseGraphList_GetNext(pList, &posStart) == pData)
 			return posCur;
 	}
 	return NULL;
@@ -2430,7 +2430,7 @@ LISTPOSITION __cdecl SYList_FindNode(pSYList pList,			// 链表指针
 //
 // 返回值:	LISTPOSITION
 ///////////////////////////////////////////////////////////////////////////////
-LISTPOSITION __cdecl SYList_FindByIndex(pSYList pList,		// 链表指针
+LISTPOSITION __cdecl BaseGraphList_FindByIndex(pBaseGraphList pList,		// 链表指针
 	INT_PTR nIndex)		// 查找序号
 {
 
@@ -2452,7 +2452,7 @@ LISTPOSITION __cdecl SYList_FindByIndex(pSYList pList,		// 链表指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYList_Reverse(pSYList pList)			// 链表指针
+void __cdecl BaseGraphList_Reverse(pBaseGraphList pList)			// 链表指针
 {
 
 
@@ -2477,9 +2477,9 @@ void __cdecl SYList_Reverse(pSYList pList)			// 链表指针
 	pList->head = pCurHeadNode;
 }
 
-void __cdecl SYList_Release(pSYList pList)
+void __cdecl BaseGraphList_Release(pBaseGraphList pList)
 {
-	SYList_RemoveAll(pList);
+	BaseGraphList_RemoveAll(pList);
 	if (pList->idelpool)
 		free(pList->idelpool);
 	pList->idelpool = NULL;

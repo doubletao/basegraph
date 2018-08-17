@@ -74,7 +74,7 @@ bool PointInCone(IN const vector3f& snapPoint,IN float heightMax, IN float heigh
 }
 
 //int Intersection_Cone(IN const Common_Cone_Intersection* pIn,OUT Point_Intersection* pOut)
-BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const DX_Cone_Parameter* pCone,SYHitPoint* pHitPoint )
+BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const BaseGraphRay* pRay,const DX_Cone_Parameter* pCone,BaseGraphHitPoint* pHitPoint )
 {
 	int return_result=0;
 	const float Radius_max=pCone->fBaseRadius > pCone->fTopRadius ? pCone->fBaseRadius : pCone->fTopRadius;
@@ -327,7 +327,7 @@ int Intersection_Tetrahedron(IN const DX_Tetrahedron_Intersection* pIn,OUT Point
 	return_result = Intersect_Triangle(&triangle_Int,pOut);
 	return return_result;
 }
-BOOL GetTriangleInt( const SYRay* pRay, const float3*  v0, const float3*  v1, const float3*  v2, SYHitPoint* pHitPoint )
+BOOL GetTriangleInt( const BaseGraphRay* pRay, const float3*  v0, const float3*  v1, const float3*  v2, BaseGraphHitPoint* pHitPoint )
 {
 	float3 point;
 	if(IntersectTriangle( &pRay->vStart,&pRay->vDir,v0,v1,v2, &point ))
@@ -338,7 +338,7 @@ BOOL GetTriangleInt( const SYRay* pRay, const float3*  v0, const float3*  v1, co
 	return FALSE;
 }
 //射线与面片相交
-BOOL GetRaySegment(const SYRay* pRay,const float3& v1,const float3& v2,const float3& v3,const float3& v4,SYHitPoint* pHitPoint)//顺时针
+BOOL GetRaySegment(const BaseGraphRay* pRay,const float3& v1,const float3& v2,const float3& v3,const float3& v4,BaseGraphHitPoint* pHitPoint)//顺时针
 {
 	if(!GetTriangleInt( pRay, &v1, &v2, &v3, pHitPoint ))
 	{
@@ -495,7 +495,7 @@ BOOL IntersectTriangle( const vector3f* orig,const vector3f* dir,const vector3f*
 }
 
 
-void Generate_Quatn_BetweenDir( OUT SYQuatn* pqQuatn, IN vector3f* pvStartDir, IN vector3f* pvEndDir )
+void Generate_Quatn_BetweenDir( OUT BaseGraphQuatn* pqQuatn, IN vector3f* pvStartDir, IN vector3f* pvEndDir )
 {
 	vector3f vAxis = { 0.f, 0.f, 0.f };
 	float3CrossProduct( &vAxis, pvStartDir, pvEndDir );
@@ -530,7 +530,7 @@ void Generate_Quatn_BetweenDir( OUT SYQuatn* pqQuatn, IN vector3f* pvStartDir, I
 	// 暂时简单将vAxis反向
 	vAxis = -vAxis;
 	//////////////////////////////////////////////////////////////////////////  end
-	SYQuatn_FromAngleAxis( pqQuatn, &vAxis, (float)fAngle );
+	BaseGraphQuatn_FromAngleAxis( pqQuatn, &vAxis, (float)fAngle );
 }
 
 void GetCubeIntersection(const vector3f* center,float fHeight,DX_QuadRang_Intersection* pInt,const matrix4f* pMatrix /*= NULL*/)
@@ -577,7 +577,7 @@ void GetCubeIntersection(const vector3f* center,float fHeight,DX_QuadRang_Inters
 	pInt->eighthPoint *= worldMatrix;
 }
 
-SYHitPoint::~SYHitPoint()
+BaseGraphHitPoint::~BaseGraphHitPoint()
 {
 	int nCount = GetPointCount();
 	for (int i = 0; i < nCount; i++)
@@ -588,14 +588,14 @@ SYHitPoint::~SYHitPoint()
 	BaseAR_RemoveAll(&m_arHitPoint);
 }
 
-int SYHitPoint::AddPoint( const float3* pHitPoint )
+int BaseGraphHitPoint::AddPoint( const float3* pHitPoint )
 {
 	float3* newPoint = new float3;
 	memcpy(newPoint,pHitPoint,sizeof(float3));
 	return (int)BaseAR_Add(&m_arHitPoint,newPoint);
 }
 
-bool SYHitPoint::DelPoint( int nIndex )
+bool BaseGraphHitPoint::DelPoint( int nIndex )
 {
 	float3* removePoint = (float3*)BaseAR_GetAt(&m_arHitPoint,nIndex);
 	SAFE_DELETE(removePoint);
@@ -603,12 +603,12 @@ bool SYHitPoint::DelPoint( int nIndex )
 	return true;
 }
 
-const float3& SYHitPoint::operator[]( int nIndex )const
+const float3& BaseGraphHitPoint::operator[]( int nIndex )const
 {
 	return *GetPoint(nIndex);
 }
 
-BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt( const SYRay* pRay,const float3* pCenter,const float3* pNormal,SYHitPoint* pHitPoint )
+BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt( const BaseGraphRay* pRay,const float3* pCenter,const float3* pNormal,BaseGraphHitPoint* pHitPoint )
 {
 	int return_result = Common_NO_HIT;
 	float IsIntersec = float3DotProduct(pNormal, &pRay->vDir);
@@ -628,7 +628,7 @@ BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt( const SYRay* pRay,const float3* p
 	return return_result;
 }
 
-BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const float3* pSegEnd,float fRadius,const float3* pCenter,const float3* pNormal,SYHitPoint* pHitPoint)
+BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const float3* pSegEnd,float fRadius,const float3* pCenter,const float3* pNormal,BaseGraphHitPoint* pHitPoint)
 {
 	int return_result = Common_NO_HIT;
 	float3 vDirect = *pCenter - *pSegStart;
@@ -682,7 +682,7 @@ BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const
 	return return_result;
 }
 
-BASEGRAPH_SCENE_RENDER_API int GetRaySphereInt( const SYRay* pRay,float fRadius,SYHitPoint* pHitPoint )
+BASEGRAPH_SCENE_RENDER_API int GetRaySphereInt( const BaseGraphRay* pRay,float fRadius,BaseGraphHitPoint* pHitPoint )
 {
 	float3 stPointToCenter = pRay->vStart;
 	float projection = float3DotProduct(&stPointToCenter,&pRay->vDir);
@@ -725,11 +725,11 @@ int SY3DModelHitTest( int nSubModel,
 					  const DWORD* pIndex,
 					  const DXVertex3D* pVertex,          //物件顶点
 					  const float3* pvScreenPt,	//屏幕坐标
-					  const SYSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
+					  const BaseGraphSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 					  float3* pOutPt,BOOL isHitReturn)
 {
 	//float3 desVector,eyeDir;
-	SYRay ray;
+	BaseGraphRay ray;
 	GetRayDirection(&ray,pvScreenPt,pParam);
 	return SY3DRayHitModel( nSubModel, pSubModelDes, pIndex, pVertex, &ray, pParam, pOutPt, isHitReturn );
 }
@@ -739,13 +739,13 @@ int SY3DModelHitTest( int nSubModel,
 						  const DXRenderSubModel* pSubModelDes,
 						  const DWORD* pIndex,
 						  const DXVertex3D* pVertex,          //物件顶点
-						  const SYRay* pRay,	
-						  const SYSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
+						  const BaseGraphRay* pRay,	
+						  const BaseGraphSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 						  float3* pOutPt,BOOL isHitReturn)
  {
-	 const SYRay& ray = *pRay;
+	 const BaseGraphRay& ray = *pRay;
 
-	 SYHitPoint HitPoint;
+	 BaseGraphHitPoint HitPoint;
 	 BaseARray arHitModel;
 	 BaseAR_Init(&arHitModel);
 	 float3 vPoint;
@@ -830,7 +830,7 @@ int SY3DModelHitTest( int nSubModel,
 
 
 
-BASEGRAPH_SCENE_RENDER_API void GetRayDirection(SYRay* pRay,const float3* pScreenPoint,const SYSpaceConvertParam* pParam)
+BASEGRAPH_SCENE_RENDER_API void GetRayDirection(BaseGraphRay* pRay,const float3* pScreenPoint,const BaseGraphSpaceConvertParam* pParam)
 {
 	if(!pRay)
 		return;
@@ -857,7 +857,7 @@ BASEGRAPH_SCENE_RENDER_API void GetRayDirection(SYRay* pRay,const float3* pScree
 	float3Normalize(&pRay->vDir,&pRay->vDir);
 }
 
-BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const SYSpaceConvertParam* pSpaceParam,IN const float3* p2DStart, IN const float3* p2DEnd, const SYLine* pLine,const float3* pNormal)
+BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const BaseGraphSpaceConvertParam* pSpaceParam,IN const float3* p2DStart, IN const float3* p2DEnd, const BaseGraphLine* pLine,const float3* pNormal)
 {
 	if(!pNormal)
 	{
@@ -889,17 +889,17 @@ BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const SYSpaceConvertPa
 	return 0;
 }
 
-BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle( const SYSpaceConvertParam* pSpaceParam,
+BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle( const BaseGraphSpaceConvertParam* pSpaceParam,
 									  IN const float3* p2DStart, /*2D平面起始点 */ 
 									  IN const float3* p2DEnd, /*2D平面结束点 */ 
 									  const float3* pCenter,
 									  const float3* pNormal )
 {
-	SYRay rayStart,rayEnd;
+	BaseGraphRay rayStart,rayEnd;
 	GetRayDirection(&rayStart,p2DStart,pSpaceParam);
 	GetRayDirection(&rayEnd,p2DEnd,pSpaceParam);
 
-	SYHitPoint HitPoint1,HitPoint2;
+	BaseGraphHitPoint HitPoint1,HitPoint2;
 	if(GetRayPlaneInt(&rayStart,pCenter,pNormal,&HitPoint1) == Common_NO_HIT ||
 		GetRayPlaneInt(&rayEnd,pCenter,pNormal,&HitPoint2) == Common_NO_HIT)
 	{
@@ -920,7 +920,7 @@ BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle( const SYSpaceConvertParam* pSpac
 	return fAngle2;
 }
 
-BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const SYRay* pRay,const float3* pCenter,const float3* pNormal,float Radius,SYHitPoint* pHitPoint )
+BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const BaseGraphRay* pRay,const float3* pCenter,const float3* pNormal,float Radius,BaseGraphHitPoint* pHitPoint )
 {
 	int return_result = Common_NO_HIT;
 	if (GetRayPlaneInt(pRay,pCenter,pNormal,pHitPoint) == Common_NO_HIT) //射线与平面平行
@@ -955,7 +955,7 @@ BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const SYRay* pRay,const float3* pC
 	return return_result;
 }
 
-BASEGRAPH_SCENE_RENDER_API BOOL GetPointInt( const SYRay* pRay,const float3* pPoint,float fDeviation /*= POINT_DEVIATION*/ )
+BASEGRAPH_SCENE_RENDER_API BOOL GetPointInt( const BaseGraphRay* pRay,const float3* pPoint,float fDeviation /*= POINT_DEVIATION*/ )
 {
 	vector3f pointToStart = *pPoint - pRay->vStart;
 	float projection = float3DotProduct(&pointToStart,&pRay->vDir);
@@ -1004,7 +1004,7 @@ void CreateBox( float3* pEightPt,const float3& vMin,const float3& vMax,float fWi
 
 }
 
-int GetRayBoxInt( const SYRay* pRay,const float3* pMin,const float3* pMax,SYHitPoint* pHitPoint )
+int GetRayBoxInt( const BaseGraphRay* pRay,const float3* pMin,const float3* pMax,BaseGraphHitPoint* pHitPoint )
 {
 	float3 bound[8];
 	CreateBox(bound,*pMin,*pMax);

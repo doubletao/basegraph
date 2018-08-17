@@ -59,16 +59,16 @@ enum RASTER_FLAG_DEF
 #define POINT_BEZIER_COUNT		4			// 一条贝塞尔曲线的表示点个数
 #define BEZIER_DIST_LIMIT		0.25f		// 误差极限的平方（半个像素）
 
-enum SYTEXT_DIRECTION		// 文本方向
+enum BaseGraphTEXT_DIRECTION		// 文本方向
 {
-	SYTEXT_DIRECTION_ANGLE_0 = 0,	// 0度
-	SYTEXT_DIRECTION_QUADRANT_1,	// 第一象限
-	SYTEXT_DIRECTION_ANGLE_90,		// 90度
-	SYTEXT_DIRECTION_QUADRANT_2,	// 第二象限
-	SYTEXT_DIRECTION_ANGLE_180,		// 180度
-	SYTEXT_DIRECTION_QUADRANT_3,	// 第三象限
-	SYTEXT_DIRECTION_ANGLE_270,		// 270度
-	SYTEXT_DIRECTION_QUADRANT_4,	// 第四象限
+	BaseGraphTEXT_DIRECTION_ANGLE_0 = 0,	// 0度
+	BaseGraphTEXT_DIRECTION_QUADRANT_1,	// 第一象限
+	BaseGraphTEXT_DIRECTION_ANGLE_90,		// 90度
+	BaseGraphTEXT_DIRECTION_QUADRANT_2,	// 第二象限
+	BaseGraphTEXT_DIRECTION_ANGLE_180,		// 180度
+	BaseGraphTEXT_DIRECTION_QUADRANT_3,	// 第三象限
+	BaseGraphTEXT_DIRECTION_ANGLE_270,		// 270度
+	BaseGraphTEXT_DIRECTION_QUADRANT_4,	// 第四象限
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ CCommonBufferDC::CCommonBufferDC(void)
 	, m_nPatCount(0)
 	, m_hFont(NULL)					// 文本属性
 	, m_dwTextColor(0xff000000)
-	, m_nTextDirection(SYTEXT_DIRECTION_ANGLE_0)
+	, m_nTextDirection(BaseGraphTEXT_DIRECTION_ANGLE_0)
 	, m_fTextAngleSin(0.f)
 	, m_fTextAngleCos(1.f)
 	, m_hMemDC(NULL)				// GDI相关参数
@@ -290,35 +290,35 @@ HFONT CCommonBufferDC::SetFont(IN HFONT hNewFont)		// 新字体
 	m_fTextAngleCos = cosf(fAngle);
 	if (lfValidAngle == 0)		// 水平向右
 	{
-		m_nTextDirection = SYTEXT_DIRECTION_ANGLE_0;
+		m_nTextDirection = BaseGraphTEXT_DIRECTION_ANGLE_0;
 	}
 	else if (lfValidAngle < 900)	// 第一象限
 	{
-		m_nTextDirection = SYTEXT_DIRECTION_QUADRANT_1;
+		m_nTextDirection = BaseGraphTEXT_DIRECTION_QUADRANT_1;
 	}
 	else if (lfValidAngle == 900)	// 垂直向上
 	{
-		m_nTextDirection = SYTEXT_DIRECTION_ANGLE_90;
+		m_nTextDirection = BaseGraphTEXT_DIRECTION_ANGLE_90;
 	}
 	else if (lfValidAngle < 1800)	// 第二角限
 	{
-		m_nTextDirection = SYTEXT_DIRECTION_QUADRANT_2;
+		m_nTextDirection = BaseGraphTEXT_DIRECTION_QUADRANT_2;
 	}
 	else if (lfValidAngle == 1800)		// 水平向左
 	{
-		m_nTextDirection = SYTEXT_DIRECTION_ANGLE_180;
+		m_nTextDirection = BaseGraphTEXT_DIRECTION_ANGLE_180;
 	}
 	else if (lfValidAngle < 2700)		// 第三象限
 	{
-		m_nTextDirection = SYTEXT_DIRECTION_QUADRANT_3;
+		m_nTextDirection = BaseGraphTEXT_DIRECTION_QUADRANT_3;
 	}
 	else if (lfValidAngle ==  2700)		// 垂直向下
 	{
-		m_nTextDirection = SYTEXT_DIRECTION_ANGLE_270;
+		m_nTextDirection = BaseGraphTEXT_DIRECTION_ANGLE_270;
 	}
 	else		// 第四象限
 	{
-		m_nTextDirection = SYTEXT_DIRECTION_QUADRANT_4;
+		m_nTextDirection = BaseGraphTEXT_DIRECTION_QUADRANT_4;
 	}
 	return hOldFont;
 }
@@ -412,7 +412,7 @@ void CCommonBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// 曲线点与控制点
 	for (nPtStart=0; nPtStart<nPtCount; nPtStart+=3)
 	{
 		// 读取一段贝塞尔曲线并进行坐标转换
-		SYMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), nLen);
+		BaseGraphMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), nLen);
 		for (int i=0; i<POINT_BEZIER_COUNT; i++)
 		{
 			ClientToScreen(pPtOrigin[i]);
@@ -423,7 +423,7 @@ void CCommonBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// 曲线点与控制点
 	if (nPtStart == nPtCount)	// 数组大小为 3 * n，则自动闭合曲线
 	{
 		// 读取一段贝塞尔曲线并进行坐标转换
-		SYMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), sizeof(pointf) * 3);
+		BaseGraphMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), sizeof(pointf) * 3);
 		pPtOrigin[3].x = pPtBezier[0].x;		// 闭合时使用第一个点
 		pPtOrigin[3].y = pPtBezier[0].y;
 		for (int i=0; i<POINT_BEZIER_COUNT; i++)
@@ -506,7 +506,7 @@ void CCommonBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// 曲线点与控制点
 		for (nPtStart=0; nPtStart<nPtCount; nPtStart+=3)
 		{
 			// 读取一段贝塞尔曲线并进行坐标转换
-			SYMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), nLen);
+			BaseGraphMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), nLen);
 			for (int i=0; i<POINT_BEZIER_COUNT; i++)
 			{
 				ClientToScreen(pPtOrigin[i]);
@@ -517,7 +517,7 @@ void CCommonBufferDC::DrawBezier3(IN const pointf *pPtBezier,		// 曲线点与控制点
 		if (nPtStart == nPtCount)	// 数组大小为 3 * n，则自动闭合曲线
 		{
 			// 读取一段贝塞尔曲线并进行坐标转换
-			SYMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), sizeof(pointf) * 3);
+			BaseGraphMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), sizeof(pointf) * 3);
 			pPtOrigin[3].x = pPtBezier[0].x;		// 闭合时使用第一个点
 			pPtOrigin[3].y = pPtBezier[0].y;
 			for (int i=0; i<POINT_BEZIER_COUNT; i++)
@@ -802,7 +802,7 @@ void CCommonBufferDC::_DrawBezier3(IN const pointf *pPtBezier,	// 曲线点与控制点
 		pointf pPtOrigin[POINT_BEZIER_COUNT];
 
 		// 读取一段贝塞尔曲线
-		SYMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), sizeof(pointf) * 3);
+		BaseGraphMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), sizeof(pointf) * 3);
 		pPtOrigin[3].x = pPtBezier[0].x;		// 闭合时使用第一个点
 		pPtOrigin[3].y = pPtBezier[0].y;
 		// 递归画出该曲线
@@ -890,7 +890,7 @@ void CCommonBufferDC::_DrawBezier3(IN const pointf *pPtBezier,	// 曲线点与控制点
 			pointf pPtOrigin[POINT_BEZIER_COUNT];
 
 			// 读取一段贝塞尔曲线
-			SYMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), sizeof(pointf) * 3);
+			BaseGraphMemcpy_Line(pPtOrigin, ((pointf*)pPtBezier + nPtStart), sizeof(pointf) * 3);
 			pPtOrigin[3].x = pPtBezier[0].x;		// 闭合时使用第一个点
 			pPtOrigin[3].y = pPtBezier[0].y;
 			// 递归画出该曲线
@@ -3632,8 +3632,8 @@ void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// 文本的绘制区域
 	// 文本的角度是以原点坐标进行逆时针旋转的，以水平状况下的顶端水平线为X轴。
 	switch (m_nTextDirection)
 	{
-	case SYTEXT_DIRECTION_ANGLE_0:		// 0度
-	case SYTEXT_DIRECTION_ANGLE_270:	// 270度//纵向排布有问题，先不做处理
+	case BaseGraphTEXT_DIRECTION_ANGLE_0:		// 0度
+	case BaseGraphTEXT_DIRECTION_ANGLE_270:	// 270度//纵向排布有问题，先不做处理
 		rcDraw.left = 0L;
 		rcDraw.right = rcDraw.left + lWidth;
 		rcDraw.top = 0L;
@@ -3643,7 +3643,7 @@ void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// 文本的绘制区域
 		nFillWidth = (int)lWidth;
 		nFillHeight = (int)lHeight;
 		break;
-	case SYTEXT_DIRECTION_ANGLE_90:		// 90度
+	case BaseGraphTEXT_DIRECTION_ANGLE_90:		// 90度
 		rcDraw.left = 0L;
 		rcDraw.right = rcDraw.left + lWidth;
 		rcDraw.top = lWidth;
@@ -3653,7 +3653,7 @@ void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// 文本的绘制区域
 		nFillWidth = (int)lHeight;
 		nFillHeight = (int)lWidth;
 		break;
-	case SYTEXT_DIRECTION_ANGLE_180:	// 180度
+	case BaseGraphTEXT_DIRECTION_ANGLE_180:	// 180度
 		rcDraw.left = 0L;
 		rcDraw.right = rcDraw.left + lWidth;
 		rcDraw.top = 0L;
@@ -3663,7 +3663,7 @@ void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// 文本的绘制区域
 		nFillWidth = (int)lWidth;
 		nFillHeight = (int)lHeight;
 		break;
-	//case SYTEXT_DIRECTION_ANGLE_270:	// 270度
+	//case BaseGraphTEXT_DIRECTION_ANGLE_270:	// 270度
 	//	rcDraw.left = lHeight;
 	//	rcDraw.right = rcDraw.left + lWidth;
 	//	rcDraw.top = 0L;
@@ -3673,7 +3673,7 @@ void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// 文本的绘制区域
 	//	nFillWidth = (int)lHeight;
 	//	nFillHeight = (int)lWidth;
 	//	break;
-	case SYTEXT_DIRECTION_QUADRANT_1:	// 第一象限
+	case BaseGraphTEXT_DIRECTION_QUADRANT_1:	// 第一象限
 		rcDraw.left = 0L;
 		rcDraw.right = rcDraw.left + lWidth;
 		rcDraw.top = (LONG)ceilf(lWidth * m_fTextAngleSin);
@@ -3683,7 +3683,7 @@ void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// 文本的绘制区域
 		nFillWidth = (int)ceilf(lWidth * m_fTextAngleCos + lHeight * m_fTextAngleSin);
 		nFillHeight = (int)(lpRect->top + (LONG)ceilf(lHeight * m_fTextAngleCos)) - nDesY;
 		break;
-	case SYTEXT_DIRECTION_QUADRANT_2:	// 第二象限
+	case BaseGraphTEXT_DIRECTION_QUADRANT_2:	// 第二象限
 		rcDraw.left = (LONG)ceilf(-lWidth * m_fTextAngleCos);
 		rcDraw.right = rcDraw.left + lWidth;
 		rcDraw.top = (LONG)ceilf(lWidth * m_fTextAngleSin - lHeight * m_fTextAngleCos);
@@ -3693,7 +3693,7 @@ void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// 文本的绘制区域
 		nFillWidth = (int)(lpRect->left + (LONG)ceilf(lHeight * m_fTextAngleSin)) - nDesX;
 		nFillHeight = (int)rcDraw.top;
 		break;
-	case SYTEXT_DIRECTION_QUADRANT_3:	// 第三象限
+	case BaseGraphTEXT_DIRECTION_QUADRANT_3:	// 第三象限
 		rcDraw.left = (LONG)ceilf(-lHeight * m_fTextAngleSin - lWidth * m_fTextAngleCos);
 		rcDraw.right = rcDraw.left + lWidth;
 		rcDraw.top = (LONG)ceilf(-lHeight * m_fTextAngleCos);
@@ -3703,7 +3703,7 @@ void CCommonBufferDC::CalcTextDrawParam(OUT RECT &rcDraw,			// 文本的绘制区域
 		nFillWidth = (int)rcDraw.left;
 		nFillHeight = (int)(lpRect->top - (LONG)floorf(lWidth * m_fTextAngleSin)) - nDesY;
 		break;
-	case SYTEXT_DIRECTION_QUADRANT_4:	// 第四象限
+	case BaseGraphTEXT_DIRECTION_QUADRANT_4:	// 第四象限
 		rcDraw.left = (LONG)ceilf(-lHeight * m_fTextAngleSin);
 		rcDraw.right = rcDraw.left + lWidth;
 		rcDraw.top = 0L;

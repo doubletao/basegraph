@@ -17,7 +17,7 @@ static char THIS_FILE[] = __FILE__;
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Set(SYQuatn* pQ,			// 四元数指针
+void __cdecl BaseGraphQuatn_Set(BaseGraphQuatn* pQ,			// 四元数指针
 						 float r,				// 纯量
 						 float x,				// i
 						 float y,				// j
@@ -36,7 +36,7 @@ void __cdecl SYQuatn_Set(SYQuatn* pQ,			// 四元数指针
 //
 // Return Value:	None
 //////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Identity(SYQuatn* pQ)		// destination pointer
+void __cdecl BaseGraphQuatn_Identity(BaseGraphQuatn* pQ)		// destination pointer
 {
 	assert(pQ != NULL);
 
@@ -50,8 +50,8 @@ void __cdecl SYQuatn_Identity(SYQuatn* pQ)		// destination pointer
 // 返回值:	TRUE		相等
 //			FALSE		不相等
 ///////////////////////////////////////////////////////////////////////////////
-BOOL __cdecl SYQuatn_Equal(const SYQuatn* pQ1,		// 四元数指针
-						   const SYQuatn* pQ2)		// 四元数指针
+BOOL __cdecl BaseGraphQuatn_Equal(const BaseGraphQuatn* pQ1,		// 四元数指针
+						   const BaseGraphQuatn* pQ2)		// 四元数指针
 {
 	assert((pQ1 != NULL) && (pQ2 != NULL));
 
@@ -63,7 +63,7 @@ BOOL __cdecl SYQuatn_Equal(const SYQuatn* pQ1,		// 四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Negtive(SYQuatn* pQ)		// 四元数指针
+void __cdecl BaseGraphQuatn_Negtive(BaseGraphQuatn* pQ)		// 四元数指针
 {
 	assert(pQ != NULL);
 
@@ -94,9 +94,9 @@ void __cdecl SYQuatn_Negtive(SYQuatn* pQ)		// 四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Add(SYQuatn* pDesQ,			// 目标四元数指针
-						 const SYQuatn* pSrcQL,			// 左源四元数指针
-						 const SYQuatn* pSrcQR)			// 右源四元数指针
+void __cdecl BaseGraphQuatn_Add(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+						 const BaseGraphQuatn* pSrcQL,			// 左源四元数指针
+						 const BaseGraphQuatn* pSrcQR)			// 右源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQL != NULL) && (pSrcQR != NULL));
 
@@ -124,9 +124,9 @@ void __cdecl SYQuatn_Add(SYQuatn* pDesQ,			// 目标四元数指针
 #endif
 }
 
-void __cdecl SYQuatn_Minus(SYQuatn* pDesQ,			// 目标四元数指针
-						   const SYQuatn* pSrcQL,		// 左源四元数指针
-						   const SYQuatn* pSrcQR)		// 右源四元数指针
+void __cdecl BaseGraphQuatn_Minus(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+						   const BaseGraphQuatn* pSrcQL,		// 左源四元数指针
+						   const BaseGraphQuatn* pSrcQR)		// 右源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQL != NULL) && (pSrcQR != NULL));
 
@@ -155,11 +155,11 @@ void __cdecl SYQuatn_Minus(SYQuatn* pDesQ,			// 目标四元数指针
 #endif
 }
 
-void __cdecl SYQuatn_Sub(SYQuatn* pDesQ,		// 目标四元数指针
-						 const SYQuatn* pSrcQL,		// 左源四元数指针
-						 const SYQuatn* pSrcQR)		// 右源四元数指针
+void __cdecl BaseGraphQuatn_Sub(BaseGraphQuatn* pDesQ,		// 目标四元数指针
+						 const BaseGraphQuatn* pSrcQL,		// 左源四元数指针
+						 const BaseGraphQuatn* pSrcQR)		// 右源四元数指针
 {
-	SYQuatn_Minus(pDesQ, pSrcQL, pSrcQR);
+	BaseGraphQuatn_Minus(pDesQ, pSrcQL, pSrcQR);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -176,9 +176,9 @@ void __cdecl SYQuatn_Sub(SYQuatn* pDesQ,		// 目标四元数指针
 //	x = │ r1*x2 + r2*x1 + y1*z2 - z1*y2 │
 //	y = │ r1*y2 + r2*y1 + z1*x2 - x1*z2 │
 //	z = ┕ r1*z2 + r2*z1 + x1*y2 - y1*x2 ┘
-void __cdecl SYQuatn_StandardMul(SYQuatn* pDesQ,		// 目标四元数指针
-								 const SYQuatn* pSrcQL,		// 左源四元数指针
-								 const SYQuatn* pSrcQR)		// 右源四元数指针
+void __cdecl BaseGraphQuatn_StandardMul(BaseGraphQuatn* pDesQ,		// 目标四元数指针
+								 const BaseGraphQuatn* pSrcQL,		// 左源四元数指针
+								 const BaseGraphQuatn* pSrcQR)		// 右源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQL != NULL) && (pSrcQR != NULL));
 
@@ -243,9 +243,9 @@ void __cdecl SYQuatn_StandardMul(SYQuatn* pDesQ,		// 目标四元数指针
 //	x = │ r1*x2 + r2*x1 + y2*z1 - z2*y1 │
 //	y = │ r1*y2 + r2*y1 + z2*x1 - x2*z1 │
 //	z = ┕ r1*z2 + r2*z1 + x2*y1 - y2*x1 ┘
-void __cdecl SYQuatn_CustomMul(SYQuatn* pDesQ,			// 目标四元数指针
-							   const SYQuatn* pSrcQL,		// 左源四元数指针
-							   const SYQuatn* pSrcQR)		// 右源四元数指针
+void __cdecl BaseGraphQuatn_CustomMul(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+							   const BaseGraphQuatn* pSrcQL,		// 左源四元数指针
+							   const BaseGraphQuatn* pSrcQR)		// 右源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQL != NULL) && (pSrcQR != NULL));
 
@@ -309,8 +309,8 @@ void __cdecl SYQuatn_CustomMul(SYQuatn* pDesQ,			// 目标四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Conjugate(SYQuatn* pDesQ,			// 目标四元数指针
-							   const SYQuatn* pSrcQ)			// 源四元数指针
+void __cdecl BaseGraphQuatn_Conjugate(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+							   const BaseGraphQuatn* pSrcQ)			// 源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQ != NULL));
 
@@ -325,8 +325,8 @@ void __cdecl SYQuatn_Conjugate(SYQuatn* pDesQ,			// 目标四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Normalize(SYQuatn* pDesQ,			// 目标四元数指针
-							   const SYQuatn* pSrcQ)			// 源四元数指针
+void __cdecl BaseGraphQuatn_Normalize(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+							   const BaseGraphQuatn* pSrcQ)			// 源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQ != NULL));
 
@@ -355,7 +355,7 @@ void __cdecl SYQuatn_Normalize(SYQuatn* pDesQ,			// 目标四元数指针
 #endif
 
 #else
-	float d = 1.f / SYQuatn_Mode(pSrcQ);
+	float d = 1.f / BaseGraphQuatn_Mode(pSrcQ);
 
 	pDesQ->r = pSrcQ->r * d;
 	pDesQ->x = pSrcQ->x * d;
@@ -369,7 +369,7 @@ void __cdecl SYQuatn_Normalize(SYQuatn* pDesQ,			// 目标四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Scale(SYQuatn* pQ,			// 源四元数指针
+void __cdecl BaseGraphQuatn_Scale(BaseGraphQuatn* pQ,			// 源四元数指针
 						   float k)					// 系数
 {
 	assert(pQ != NULL);
@@ -398,8 +398,8 @@ void __cdecl SYQuatn_Scale(SYQuatn* pQ,			// 源四元数指针
 #endif
 }
 
-void __cdecl SYQuatn_MulNum(SYQuatn* pDesQ,			// 目标四元数指针
-							const SYQuatn* pSrcQ,			// 源四元数指针
+void __cdecl BaseGraphQuatn_MulNum(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+							const BaseGraphQuatn* pSrcQ,			// 源四元数指针
 							float k)					// 系数
 {
 	assert((pDesQ != NULL) && (pSrcQ != NULL));
@@ -436,7 +436,7 @@ void __cdecl SYQuatn_MulNum(SYQuatn* pDesQ,			// 目标四元数指针
 //
 // 返回值:	float
 ///////////////////////////////////////////////////////////////////////////////
-float __cdecl SYQuatn_Mode(const SYQuatn* pQ)			// 四元数指针
+float __cdecl BaseGraphQuatn_Mode(const BaseGraphQuatn* pQ)			// 四元数指针
 {
 	assert(pQ != NULL);
 
@@ -474,16 +474,16 @@ float __cdecl SYQuatn_Mode(const SYQuatn* pQ)			// 四元数指针
 //
 // 返回值:	float
 ///////////////////////////////////////////////////////////////////////////////
-float __cdecl SYQuatn_Distance(const SYQuatn* pQ1,			// 四元数指针
-							   const SYQuatn* pQ2)			// 四元数指针
+float __cdecl BaseGraphQuatn_Distance(const BaseGraphQuatn* pQ1,			// 四元数指针
+							   const BaseGraphQuatn* pQ2)			// 四元数指针
 {
 	assert((pQ1 != NULL) && (pQ2 != NULL));
 
-	SYQuatn q;
+	BaseGraphQuatn q;
 
-	SYQuatn_Minus(&q, pQ1, pQ2);
+	BaseGraphQuatn_Minus(&q, pQ1, pQ2);
 
-	return SYQuatn_Mode(&q);
+	return BaseGraphQuatn_Mode(&q);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -491,8 +491,8 @@ float __cdecl SYQuatn_Distance(const SYQuatn* pQ1,			// 四元数指针
 //
 // 返回值:	float
 ///////////////////////////////////////////////////////////////////////////////
-float __cdecl SYQuatn_DotProduct(const SYQuatn* pQ1,			// 四元数指针
-								 const SYQuatn* pQ2)			// 四元数指针
+float __cdecl BaseGraphQuatn_DotProduct(const BaseGraphQuatn* pQ1,			// 四元数指针
+								 const BaseGraphQuatn* pQ2)			// 四元数指针
 {
 	assert((pQ1 != NULL) && (pQ2 != NULL));
 
@@ -531,9 +531,9 @@ float __cdecl SYQuatn_DotProduct(const SYQuatn* pQ1,			// 四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_OutterProduct(SYQuatn* pDesQ,			// 目标四元数指针
-								   const SYQuatn* pSrcQL,		// 左源四元数指针
-								   const SYQuatn* pSrcQR)		// 右源四元数指针
+void __cdecl BaseGraphQuatn_OutterProduct(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+								   const BaseGraphQuatn* pSrcQL,		// 左源四元数指针
+								   const BaseGraphQuatn* pSrcQR)		// 右源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQR != NULL) && (pSrcQL != NULL));
 	assert((pDesQ != pSrcQR) && (pDesQ != pSrcQL));
@@ -549,9 +549,9 @@ void __cdecl SYQuatn_OutterProduct(SYQuatn* pDesQ,			// 目标四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_EvenProduct(SYQuatn* pDesQ,		// 目标四元数指针
-								 const SYQuatn* pSrcQL,		// 左源四元数指针
-								 const SYQuatn* pSrcQR)		// 右源四元数指针
+void __cdecl BaseGraphQuatn_EvenProduct(BaseGraphQuatn* pDesQ,		// 目标四元数指针
+								 const BaseGraphQuatn* pSrcQL,		// 左源四元数指针
+								 const BaseGraphQuatn* pSrcQR)		// 右源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQR != NULL) && (pSrcQL != NULL));
 	assert((pDesQ != pSrcQR) && (pDesQ != pSrcQL));
@@ -567,9 +567,9 @@ void __cdecl SYQuatn_EvenProduct(SYQuatn* pDesQ,		// 目标四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_CrossProduct(float3* pDesV,	// 目标向量指针
-								  const SYQuatn* pSrcQL,		// 左源四元数指针
-								  const SYQuatn* pSrcQR)		// 右源四元数指针
+void __cdecl BaseGraphQuatn_CrossProduct(float3* pDesV,	// 目标向量指针
+								  const BaseGraphQuatn* pSrcQL,		// 左源四元数指针
+								  const BaseGraphQuatn* pSrcQR)		// 右源四元数指针
 {
 	assert((pDesV != NULL) && (pSrcQR != NULL) && (pSrcQL != NULL));
 
@@ -583,17 +583,17 @@ void __cdecl SYQuatn_CrossProduct(float3* pDesV,	// 目标向量指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Inverse(SYQuatn* pDesQ,		// 目标四元数指针
-							 const SYQuatn* pSrcQ)		// 源四元数指针
+void __cdecl BaseGraphQuatn_Inverse(BaseGraphQuatn* pDesQ,		// 目标四元数指针
+							 const BaseGraphQuatn* pSrcQ)		// 源四元数指针
 {
 	assert((pDesQ != NULL) && (pSrcQ != NULL) && (pDesQ != pSrcQ));
 
-	SYQuatn_Conjugate(pDesQ, pSrcQ);
-	SYQuatn_Scale(pDesQ, 1.f / SYQuatn_DotProduct(pSrcQ, pSrcQ));
+	BaseGraphQuatn_Conjugate(pDesQ, pSrcQ);
+	BaseGraphQuatn_Scale(pDesQ, 1.f / BaseGraphQuatn_DotProduct(pSrcQ, pSrcQ));
 }
 
 
-void __cdecl SYQuatn_Slerp_AxisAngle( vector4f* vresult,vector4f* v1,vector4f* v2 ,float f)
+void __cdecl BaseGraphQuatn_Slerp_AxisAngle( vector4f* vresult,vector4f* v1,vector4f* v2 ,float f)
 {
 	if ( v1->x == v2->x && v1->y == v2->y && v1->z == v2->z )
 	{
@@ -605,11 +605,11 @@ void __cdecl SYQuatn_Slerp_AxisAngle( vector4f* vresult,vector4f* v1,vector4f* v
 	}
 	else
 	{
-		SYQuatn sk,ek,qresult;
-		SYQuatn_FromVector4f(&sk, v1 );
-		SYQuatn_FromVector4f(&ek, v2 );
-		SYQuatn_Slerp(&qresult, &sk, &ek ,f);
-		SYQuatn_ToAxisAngle( vresult,&qresult);
+		BaseGraphQuatn sk,ek,qresult;
+		BaseGraphQuatn_FromVector4f(&sk, v1 );
+		BaseGraphQuatn_FromVector4f(&ek, v2 );
+		BaseGraphQuatn_Slerp(&qresult, &sk, &ek ,f);
+		BaseGraphQuatn_ToAxisAngle( vresult,&qresult);
 	}
 }
 
@@ -625,14 +625,14 @@ void __cdecl SYQuatn_Slerp_AxisAngle( vector4f* vresult,vector4f* v1,vector4f* v
 //
 // 返回值：	无
 //////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_Slerp(SYQuatn* pDesQ,			// 目标四元数指针
-						   const SYQuatn* pSrcQ0,		// 源起始四元数
-						   const SYQuatn* pSrcQ1,		// 源终端四元数
+void __cdecl BaseGraphQuatn_Slerp(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+						   const BaseGraphQuatn* pSrcQ0,		// 源起始四元数
+						   const BaseGraphQuatn* pSrcQ1,		// 源终端四元数
 						   float t)					// 插值系数 [0～1]
 {
 	assert((pDesQ != NULL) && (pSrcQ0 != NULL) && (pSrcQ1 != NULL));
 
-	float fCosOmega = SYQuatn_DotProduct(pSrcQ0, pSrcQ1);
+	float fCosOmega = BaseGraphQuatn_DotProduct(pSrcQ0, pSrcQ1);
 	float k0 = 1.f - t, k1 = t;
 
 	if (fCosOmega < 0.f)	// 由于最短弧路径的要求
@@ -686,8 +686,8 @@ void __cdecl SYQuatn_Slerp(SYQuatn* pDesQ,			// 目标四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_ToMatrix4(matrix4f* pDesM,		// 目标矩阵指针
-							  const SYQuatn* pSrcQ)			// 源四元数指针
+void __cdecl BaseGraphQuatn_ToMatrix4(matrix4f* pDesM,		// 目标矩阵指针
+							  const BaseGraphQuatn* pSrcQ)			// 源四元数指针
 {
 	assert((pDesM != NULL) && (pSrcQ != NULL));
 
@@ -729,7 +729,7 @@ void __cdecl SYQuatn_ToMatrix4(matrix4f* pDesM,		// 目标矩阵指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_FromMatrix(SYQuatn* pDesQ,		// 目标四元数指针
+void __cdecl BaseGraphQuatn_FromMatrix(BaseGraphQuatn* pDesQ,		// 目标四元数指针
 								const matrix4f* pSrcM)		// 源矩阵指针
 {
 	assert((pDesQ != NULL) && (pSrcM != NULL));
@@ -835,31 +835,31 @@ void __cdecl SYQuatn_FromMatrix(SYQuatn* pDesQ,		// 目标四元数指针
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl quatnToMatrixQ4F(matrix4f* pDesM,		// 目标矩阵指针
-								 const SYQuatn* pSrcQ)			// 源四元数指针
+								 const BaseGraphQuatn* pSrcQ)			// 源四元数指针
 {
 	assert((pDesM != NULL) && (pSrcQ != NULL));
 
 	matrix4f_fromquatn(pDesM, pSrcQ);
 }
 
-void __cdecl quatnFromMatrix4(SYQuatn* pDesQ,			// 四元数指针
+void __cdecl quatnFromMatrix4(BaseGraphQuatn* pDesQ,			// 四元数指针
 								   const matrix4f* pSrcM)		// 源矩阵指针
 {
 	assert((pDesQ != NULL) && (pSrcM != NULL));
 
 	matrix4f_toquatn(pDesQ, pSrcM);
 }
-void __cdecl SYQuatn_FromVector4f(SYQuatn* pDesQ,			// 目标四元数指针
+void __cdecl BaseGraphQuatn_FromVector4f(BaseGraphQuatn* pDesQ,			// 目标四元数指针
 								   const float4* pSrcV)// 角度（弧度）
 {
-	SYQuatn_FromAngleAxis(pDesQ,			// 目标四元数指针
+	BaseGraphQuatn_FromAngleAxis(pDesQ,			// 目标四元数指针
 						(float3*)pSrcV,		// 源向量指针
 						pSrcV->w);			// 角度（弧度）
 }
 
 
 
-void __cdecl SYQuatn_ToAxisAngle(vector4f* pAxisAngle,SYQuatn* pQ4 )
+void __cdecl BaseGraphQuatn_ToAxisAngle(vector4f* pAxisAngle,BaseGraphQuatn* pQ4 )
 {
 	pAxisAngle->w = float(2 * acos( pQ4->r ));
 	if(pAxisAngle->w != 0)
@@ -881,7 +881,7 @@ void __cdecl SYQuatn_ToAxisAngle(vector4f* pAxisAngle,SYQuatn* pQ4 )
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_FromAngleAxis(SYQuatn* pDesQ,			// 目标四元数指针
+void __cdecl BaseGraphQuatn_FromAngleAxis(BaseGraphQuatn* pDesQ,			// 目标四元数指针
 								   const float3* pSrcV,		// 源向量指针
 								   float fAngle)			// 角度（弧度）
 {
@@ -922,7 +922,7 @@ void __cdecl SYQuatn_FromAngleAxis(SYQuatn* pDesQ,			// 目标四元数指针
 #endif
 }
 // Rotate about special axes, such as X(1, 0, 0)、Y(0, 1, 0)、Z(0, 0, 1).
-void __cdecl SYQuatn_FromAngleX(SYQuatn* pDesQ,	// destination pointer
+void __cdecl BaseGraphQuatn_FromAngleX(BaseGraphQuatn* pDesQ,	// destination pointer
 								float fAngle)		// radian of ratation
 {
 	assert(pDesQ != NULL);
@@ -933,7 +933,7 @@ void __cdecl SYQuatn_FromAngleX(SYQuatn* pDesQ,	// destination pointer
 	pDesQ->r = cosf(fHalfA);
 	pDesQ->y = pDesQ->z = 0.f;
 }
-void __cdecl SYQuatn_FromAngleY(SYQuatn* pDesQ,	// destination pointer
+void __cdecl BaseGraphQuatn_FromAngleY(BaseGraphQuatn* pDesQ,	// destination pointer
 								float fAngle)		// radian of ratation
 {
 	assert(pDesQ != NULL);
@@ -944,7 +944,7 @@ void __cdecl SYQuatn_FromAngleY(SYQuatn* pDesQ,	// destination pointer
 	pDesQ->r = cosf(fHalfA);
 	pDesQ->x = pDesQ->z = 0.f;
 }
-void __cdecl SYQuatn_FromAngleZ(SYQuatn* pDesQ,	// destination pointer
+void __cdecl BaseGraphQuatn_FromAngleZ(BaseGraphQuatn* pDesQ,	// destination pointer
 								float fAngle)		// radian of ratation
 {
 	assert(pDesQ != NULL);
@@ -970,7 +970,7 @@ void __cdecl SYQuatn_FromAngleZ(SYQuatn* pDesQ,	// destination pointer
 // x = │ -sin(y/2)cos(x/2)sin(z/2) - cos(y/2)sin(x/2)cos(z/2) │
 // y = │ -sin(y/2)cos(x/2)cos(z/2) + cos(y/2)sin(x/2)sin(z/2) │
 // z = └ -cos(y/2)cos(x/2)sin(z/2) + sin(y/2)sin(x/2)cos(z/2) ┘
-void __cdecl SYQuatn_FromEuler_LYXZ(SYQuatn* pDesQ,	// 目标四元数指针
+void __cdecl BaseGraphQuatn_FromEuler_LYXZ(BaseGraphQuatn* pDesQ,	// 目标四元数指针
 									float fAngleY,		// 绕 Y 轴旋转角度
 									float fAngleX,		// 绕 X 轴旋转角度
 									float fAngleZ)		// 绕 Z 轴旋转角度
@@ -1047,20 +1047,20 @@ void __cdecl SYQuatn_FromEuler_LYXZ(SYQuatn* pDesQ,	// 目标四元数指针
 // 正常情况则通过 m13 和 m33 计算 Y，通过 m21 和 m22 计算 Z
 // Y = atan2(m13, m33) = atan2(2xz - 2ry, r^2 + z^2 - x^2 - y^2)
 // Z = atan2(m21, m22) = atan2(2xy - 2rz, r^2 + y^2 - x^2 - z^2)
-void __cdecl SYQuatn_ToEuler_LYXZ(const SYQuatn* pSrcQ,		// 源四元数指针
+void __cdecl BaseGraphQuatn_ToEuler_LYXZ(const BaseGraphQuatn* pSrcQ,		// 源四元数指针
 								  float* pfAngleY,		// Y 旋转角度（弧度制）
 								  float* pfAngleX,		// X 旋转角度（弧度制）
 								  float* pfAngleZ)		// Z 旋转角度（弧度制）
 {
 	assert((pSrcQ != NULL) && (pfAngleY != NULL) && (pfAngleX != NULL) && (pfAngleZ != NULL));
 
-	SYQuatn tmpQX, tmpQY, tmpQZ, tmpQR;
+	BaseGraphQuatn tmpQX, tmpQY, tmpQZ, tmpQR;
 	float fSinX(0.f);
 
-	SYQuatn_MulNum(&tmpQR, pSrcQ, pSrcQ->r);	// r^2  rz  ry  rx
-	SYQuatn_MulNum(&tmpQZ, pSrcQ, pSrcQ->z);	// rz  z^2  yz  xz
-	SYQuatn_MulNum(&tmpQY, pSrcQ, pSrcQ->y);	// ry  yz  y^2  xy
-	SYQuatn_MulNum(&tmpQX, pSrcQ, pSrcQ->x);	// rx  xz  xy  x^2
+	BaseGraphQuatn_MulNum(&tmpQR, pSrcQ, pSrcQ->r);	// r^2  rz  ry  rx
+	BaseGraphQuatn_MulNum(&tmpQZ, pSrcQ, pSrcQ->z);	// rz  z^2  yz  xz
+	BaseGraphQuatn_MulNum(&tmpQY, pSrcQ, pSrcQ->y);	// ry  yz  y^2  xy
+	BaseGraphQuatn_MulNum(&tmpQX, pSrcQ, pSrcQ->x);	// rx  xz  xy  x^2
 	fSinX = -2.f * (tmpQZ.y + tmpQR.x);
 
 	// 检查万向锁（万向锁出现时，绕 Y 与 Z 的旋转将会退化为按同一根轴旋转）
@@ -1087,9 +1087,9 @@ void __cdecl SYQuatn_ToEuler_LYXZ(const SYQuatn* pSrcQ,		// 源四元数指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_RotVectorL(long3* pDesV,		// 目标向量指针
+void __cdecl BaseGraphQuatn_RotVectorL(long3* pDesV,		// 目标向量指针
 								const long3* pSrcV,		// 源向量指针
-								const SYQuatn* pUQ)				// 单位轴四元数指针
+								const BaseGraphQuatn* pUQ)				// 单位轴四元数指针
 {
 	assert((pDesV != NULL) && (pUQ != NULL) && (pSrcV != NULL));
 
@@ -1102,9 +1102,9 @@ void __cdecl SYQuatn_RotVectorL(long3* pDesV,		// 目标向量指针
 	long3Set(pDesV, (LONG)vd.x, (LONG)vd.y, (LONG)vd.z);
 }
 
-void __cdecl SYQuatn_RotVector3f(float3* pDesV,		// 目标向量指针
+void __cdecl BaseGraphQuatn_RotVector3f(float3* pDesV,		// 目标向量指针
 								const float3* pSrcV,		// 源向量指针
-								const SYQuatn* pUQ)				// 单位轴四元数指针
+								const BaseGraphQuatn* pUQ)				// 单位轴四元数指针
 {
 	assert((pDesV != NULL) && (pUQ != NULL) && (pSrcV != NULL));
 
@@ -1114,9 +1114,9 @@ void __cdecl SYQuatn_RotVector3f(float3* pDesV,		// 目标向量指针
 	float3MulMatQ(pDesV, pSrcV, &mat);
 }
 
-void __cdecl SYQuatn_RotVector3lf(double3* pDesV,		// 目标向量指针
+void __cdecl BaseGraphQuatn_RotVector3lf(double3* pDesV,		// 目标向量指针
 								const double3* pSrcV,		// 源向量指针
-								const SYQuatn* pUQ)				// 单位轴四元数指针
+								const BaseGraphQuatn* pUQ)				// 单位轴四元数指针
 {
 	assert((pDesV != NULL) && (pUQ != NULL) && (pSrcV != NULL));
 
@@ -1134,8 +1134,8 @@ void __cdecl SYQuatn_RotVector3lf(double3* pDesV,		// 目标向量指针
 //
 // 返回值：	无
 //////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_MulMatQ(SYQuatn* pDesQ,			// 目标四元数指针
-							 const SYQuatn* pSrcQ,			// 源四元数指针
+void __cdecl BaseGraphQuatn_MulMatQ(BaseGraphQuatn* pDesQ,			// 目标四元数指针
+							 const BaseGraphQuatn* pSrcQ,			// 源四元数指针
 							 const matrix4f* pSrcM)		// 源矩阵指针
 {
 	assert((pDesQ != NULL) && (pSrcQ != NULL) && (pSrcM != NULL));
@@ -1196,7 +1196,7 @@ void __cdecl SYQuatn_MulMatQ(SYQuatn* pDesQ,			// 目标四元数指针
 //
 // 返回值：	无
 //////////////////////////////////////////////////////////////////////////
-void __cdecl SYQuatn_In2Vector(SYQuatn* pDesQ,			// 目标四元数指针
+void __cdecl BaseGraphQuatn_In2Vector(BaseGraphQuatn* pDesQ,			// 目标四元数指针
 							   const float3* pStartV,	// 起始向量指针
 							   const float3* pEndV)		// 结束向量指针
 {
@@ -1241,11 +1241,11 @@ void __cdecl SYQuatn_In2Vector(SYQuatn* pDesQ,			// 目标四元数指针
 	vFAxis.x = (float)vAxis.x;
 	vFAxis.y = (float)vAxis.y;
 	vFAxis.z = (float)vAxis.z;
-	SYQuatn_FromAngleAxis(pDesQ, &vFAxis, fangle);
+	BaseGraphQuatn_FromAngleAxis(pDesQ, &vFAxis, fangle);
 }
 
 
-void __cdecl SYQuatn_In2Vector3lf(SYQuatn* pDesQ,			// 目标四元数指针
+void __cdecl BaseGraphQuatn_In2Vector3lf(BaseGraphQuatn* pDesQ,			// 目标四元数指针
 							 const double3* pStartV,	// 起始向量指针
 							 const double3* pEndV)		// 结束向量指针
 {
@@ -1290,6 +1290,6 @@ void __cdecl SYQuatn_In2Vector3lf(SYQuatn* pDesQ,			// 目标四元数指针
 	vFAxis.x = (float)vAxis.x;
 	vFAxis.y = (float)vAxis.y;
 	vFAxis.z = (float)vAxis.z;
-	SYQuatn_FromAngleAxis(pDesQ, &vFAxis, fangle);
+	BaseGraphQuatn_FromAngleAxis(pDesQ, &vFAxis, fangle);
 }
 //------------------------------- End of File ---------------------------------

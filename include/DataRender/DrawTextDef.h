@@ -16,86 +16,86 @@ BASEGRAPH_DATARENDER_API LPCTSTR	GetPredefineSample();
 BASEGRAPH_DATARENDER_API void		SetPredefineSample(LPCTSTR szSample);
 
 //需要调用的外部接口，由调用者根据自己的实际情况来实现
-typedef BOOL(*SYTypesetInterface_GetPropFromPropPage)(LPVOID pFont, LPVOID pParagraph, LPVOID pEffect);
+typedef BOOL(*BaseGraphTypesetInterface_GetPropFromPropPage)(LPVOID pFont, LPVOID pParagraph, LPVOID pEffect);
 
-#define SYVGROT_NODEF		0		//未定义（使用默认设置）
-#define SYVGROT_ROT			1		//旋转
-#define SYVGROT_UNROT		2		//不旋转
-#define SYCHARSCRIPT_BAS	0		//（默认）基线对齐
-#define SYCHARSCRIPT_SUP	1		//上标（Superscript）
-#define SYCHARSCRIPT_SUB	2		//下标（Subscript）
-#define SYCHARSCRIPT_TOP	3		//顶对齐
-#define SYCHARSCRIPT_BOT	4		//底对齐
-#define SYCHARSCRIPT_OFF	5		//自定义脚注偏移
+#define BaseGraphVGROT_NODEF		0		//未定义（使用默认设置）
+#define BaseGraphVGROT_ROT			1		//旋转
+#define BaseGraphVGROT_UNROT		2		//不旋转
+#define CHARSCRIPT_BAS	0		//（默认）基线对齐
+#define CHARSCRIPT_SUP	1		//上标（Superscript）
+#define CHARSCRIPT_SUB	2		//下标（Subscript）
+#define CHARSCRIPT_TOP	3		//顶对齐
+#define CHARSCRIPT_BOT	4		//底对齐
+#define CHARSCRIPT_OFF	5		//自定义脚注偏移
 #define RENDERUNITIDLENGTH	64
-#define SYTEXT_SUBFACE_CNT	3		//3D文字子面个数
-#define SYTEXT_DIMENSION_MIN			60		//文字排版矩形最小值
-#define SYTEXT_TEMPFLAG_EMPTYTEXT		0x01		//空标题字
-#define SYTEXT_TEMPFLAG_WHOLERENDER		0x02		//整体渲染
+#define BaseGraphTEXT_SUBFACE_CNT	3		//3D文字子面个数
+#define BaseGraphTEXT_DIMENSION_MIN			60		//文字排版矩形最小值
+#define BaseGraphTEXT_TEMPFLAG_EMPTYTEXT		0x01		//空标题字
+#define BaseGraphTEXT_TEMPFLAG_WHOLERENDER		0x02		//整体渲染
 //判断是否是标准格式回车换行符“\r\n”
-#define SYISCRLF(szText, ni, nLen)		((ni) < (nLen) && szText[(ni)] == _T('\r') && ((ni)+1 < (nLen) && szText[(ni)+1] == _T('\n')))
-#define SYISTAB(szText, ni, nLen)		((ni) < (nLen) && szText[(ni)] == _T('\t'))
+#define BaseGraphISCRLF(szText, ni, nLen)		((ni) < (nLen) && szText[(ni)] == _T('\r') && ((ni)+1 < (nLen) && szText[(ni)+1] == _T('\n')))
+#define BaseGraphISTAB(szText, ni, nLen)		((ni) < (nLen) && szText[(ni)] == _T('\t'))
 
 //字体属性设置掩膜
-#define	 SYTEXTFONTMASK_ALL				0xffffffff
-#define SYTEXTFONTMASK_HEIGHT			0x00000001
-#define SYTEXTFONTMASK_WIDTH			0x00000002
-#define SYTEXTFONTMASK_FONTSIZE			0x00000003		//HEIGHT与WIDTH复合
-#define SYTEXTFONTMASK_ESCAPEMENT		0x00000004
-#define SYTEXTFONTMASK_ORIENTATION		0x00000008
-#define SYTEXTFONTMASK_BOLD				0x00000010
-#define SYTEXTFONTMASK_ITALIC			0x00000020
-#define SYTEXTFONTMASK_UNDERLINE		0x00000040
-#define SYTEXTFONTMASK_STRIKEOUT		0x00000080
-#define SYTEXTFONTMASK_CHARSET			0x00000100
-#define SYTEXTFONTMASK_OUTPRECISION		0x00000200
-#define SYTEXTFONTMASK_CLIPPRECISION	0x00000400
-#define SYTEXTFONTMASK_QUALITY			0x00000800
-#define SYTEXTFONTMASK_PITCHANDFAMILY	0x00001000
-#define SYTEXTFONTMASK_FACENAME			0x00002000
-#define SYTEXTFONTMASK_FACENAMEENG		0x00004000
-#define SYTEXTFONTMASK_DISTANCE			0x00008000
-#define SYTEXTFONTMASK_VGROTATE			0x00010000
-#define SYTEXTFONTMASK_SCRIPT			0x00020000
-#define SYTEXTFONTMASK_VEMBEDING		0x00040000
-#define SYTEXTFONTMASK_HEMBEDING		0x00080000
+#define	 BaseGraphTEXTFONTMASK_ALL				0xffffffff
+#define BaseGraphTEXTFONTMASK_HEIGHT			0x00000001
+#define BaseGraphTEXTFONTMASK_WIDTH			0x00000002
+#define BaseGraphTEXTFONTMASK_FONTSIZE			0x00000003		//HEIGHT与WIDTH复合
+#define BaseGraphTEXTFONTMASK_ESCAPEMENT		0x00000004
+#define BaseGraphTEXTFONTMASK_ORIENTATION		0x00000008
+#define BaseGraphTEXTFONTMASK_BOLD				0x00000010
+#define BaseGraphTEXTFONTMASK_ITALIC			0x00000020
+#define BaseGraphTEXTFONTMASK_UNDERLINE		0x00000040
+#define BaseGraphTEXTFONTMASK_STRIKEOUT		0x00000080
+#define BaseGraphTEXTFONTMASK_CHARSET			0x00000100
+#define BaseGraphTEXTFONTMASK_OUTPRECISION		0x00000200
+#define BaseGraphTEXTFONTMASK_CLIPPRECISION	0x00000400
+#define BaseGraphTEXTFONTMASK_QUALITY			0x00000800
+#define BaseGraphTEXTFONTMASK_PITCHANDFAMILY	0x00001000
+#define BaseGraphTEXTFONTMASK_FACENAME			0x00002000
+#define BaseGraphTEXTFONTMASK_FACENAMEENG		0x00004000
+#define BaseGraphTEXTFONTMASK_DISTANCE			0x00008000
+#define BaseGraphTEXTFONTMASK_VGROTATE			0x00010000
+#define BaseGraphTEXTFONTMASK_SCRIPT			0x00020000
+#define BaseGraphTEXTFONTMASK_VEMBEDING		0x00040000
+#define BaseGraphTEXTFONTMASK_HEMBEDING		0x00080000
 //下划线（作为字体子属性）
-#define SYTEXTFONTMASK_UNDERLINE_ALL		0x0f000000
-#define SYTEXTFONTMASK_UNDERLINE_TYPE		0x01000000
-#define SYTEXTFONTMASK_UNDERLINE_DISTANCE	0x02000000
-#define SYTEXTFONTMASK_UNDERLINE_HEIGHT		0x04000000
-#define SYTEXTFONTMASK_UNDERLINE_2DCOLOR	0x08000000
+#define BaseGraphTEXTFONTMASK_UNDERLINE_ALL		0x0f000000
+#define BaseGraphTEXTFONTMASK_UNDERLINE_TYPE		0x01000000
+#define BaseGraphTEXTFONTMASK_UNDERLINE_DISTANCE	0x02000000
+#define BaseGraphTEXTFONTMASK_UNDERLINE_HEIGHT		0x04000000
+#define BaseGraphTEXTFONTMASK_UNDERLINE_2DCOLOR	0x08000000
 
 //颜色属性设置掩膜
-#define SYTEXTCOLORMASK_ALL				0xffffffff
-#define SYTEXTCOLORMASK_FACE			0x00000001
-#define SYTEXTCOLORMASK_BORDER			0x00000002
-#define SYTEXTCOLORMASK_SHADOW			0x00000004
-#define SYTEXTCOLORMASK_CUBE			0x00000008
-#define SYTEXTCOLORMASK_BORDERCUBE		0x00000010
-#define SYTEXTCOLORMASK_BORDERSHADOW	0x00000020
-#define SYTEXTCOLORMASK_FACELIGHT		0x00000040
-#define SYTEXTCOLORMASK_CUBELIGHT		0x00000080
-#define SYTEXTCOLORMASK_CHANNEL			0x00000100
-#define SYTEXTCOLORMASK_MATERIAL		0x00000200
-#define SYTEXTCOLORMASK_APPENDMATERIAL	0x00000400
-#define SYTEXTCOLORMASK_RENDERLINE		0x00000800
-#define SYTEXTCOLORMASK_WIDTH			0x00001000
-#define SYTEXTCOLORMASK_INDEX			0x00002000
+#define BaseGraphTEXTCOLORMASK_ALL				0xffffffff
+#define BaseGraphTEXTCOLORMASK_FACE			0x00000001
+#define BaseGraphTEXTCOLORMASK_BORDER			0x00000002
+#define BaseGraphTEXTCOLORMASK_SHADOW			0x00000004
+#define BaseGraphTEXTCOLORMASK_CUBE			0x00000008
+#define BaseGraphTEXTCOLORMASK_BORDERCUBE		0x00000010
+#define BaseGraphTEXTCOLORMASK_BORDERSHADOW	0x00000020
+#define BaseGraphTEXTCOLORMASK_FACELIGHT		0x00000040
+#define BaseGraphTEXTCOLORMASK_CUBELIGHT		0x00000080
+#define BaseGraphTEXTCOLORMASK_CHANNEL			0x00000100
+#define BaseGraphTEXTCOLORMASK_MATERIAL		0x00000200
+#define BaseGraphTEXTCOLORMASK_APPENDMATERIAL	0x00000400
+#define BaseGraphTEXTCOLORMASK_RENDERLINE		0x00000800
+#define BaseGraphTEXTCOLORMASK_WIDTH			0x00001000
+#define BaseGraphTEXTCOLORMASK_INDEX			0x00002000
 
-#define SYTEXTCOLORMASK_FACELIGHTCHANNEL	0x00010000
-#define SYTEXTCOLORMASK_CUBELIGHTCHANNEL	0x00020000
-#define SYTEXTCOLORMASK_ACTIVEATTRIBLE		0x00040000
-#define SYTEXTCOLORMASK_FACEADORNCHANNEL	0x00080000
-#define SYTEXTCOLORMASK_CUBEADORNCHANNEL	0x00100000
-#define SYTEXTCOLORMASK_MASKADORNCHANNEL	0x00200000
-#define SYTEXTCOLORMASK_PATTANADORNCHANNEL	0x00400000
-#define SYTEXTCOLORMASK_APPENDADORNCHANNEL	0x00800000
+#define BaseGraphTEXTCOLORMASK_FACELIGHTCHANNEL	0x00010000
+#define BaseGraphTEXTCOLORMASK_CUBELIGHTCHANNEL	0x00020000
+#define BaseGraphTEXTCOLORMASK_ACTIVEATTRIBLE		0x00040000
+#define BaseGraphTEXTCOLORMASK_FACEADORNCHANNEL	0x00080000
+#define BaseGraphTEXTCOLORMASK_CUBEADORNCHANNEL	0x00100000
+#define BaseGraphTEXTCOLORMASK_MASKADORNCHANNEL	0x00200000
+#define BaseGraphTEXTCOLORMASK_PATTANADORNCHANNEL	0x00400000
+#define BaseGraphTEXTCOLORMASK_APPENDADORNCHANNEL	0x00800000
 
-#define SYTEXT_UNIT_AUTO				0000
-#define SYTEXT_UNIT_2D					0001
-#define SYTEXT_UNIT_3D					0002
-#define SYTEXT_UNIT_2D3D				0003
+#define BaseGraphTEXT_UNIT_AUTO				0000
+#define BaseGraphTEXT_UNIT_2D					0001
+#define BaseGraphTEXT_UNIT_3D					0002
+#define BaseGraphTEXT_UNIT_2D3D				0003
 
 //效果
 typedef struct tag_staticeffect
@@ -140,7 +140,7 @@ typedef struct tag_staticeffect
 		index = 0;
 	}
 }static_effect;
-typedef static_effect SYStaticEffect, *LPCommonStaticEffect;
+typedef static_effect BaseGraphStaticEffect, *LPCommonStaticEffect;
 typedef const LPCommonStaticEffect LPCBaseStaticEffect;
 
 enum Common_BEVEL_TYPE
@@ -152,7 +152,7 @@ enum Common_BEVEL_TYPE
 	Common_BEVEL_CONCAVE,//凹面
 };
 
-enum SYGRAPH_TYPE
+enum CommonGRAPH_TYPE
 {
 	NORMAL_GRAPH,    //正常
 	EMBOSS_GRAPH,	//浮雕
@@ -171,16 +171,16 @@ enum Common_POST_PROCESS_TYPE
 };
 
 //特殊效果
-typedef struct tag_syspecialeffect
+typedef struct tag_common_specialeffect
 {
 	int				m_nVersion;     //版本号
-	SYGRAPH_TYPE	m_GraphType;	//图形类型
+	CommonGRAPH_TYPE	m_GraphType;	//图形类型
 	struct
 	{
 		//浮雕字
 		struct
 		{
-			SYStaticEffect	m_BKPublicAttr; //背景属性 
+			BaseGraphStaticEffect	m_BKPublicAttr; //背景属性 
 			rectf			m_BKRect;       //背景位置
 			BOOL			m_bUnitary;		//矩形是否归一化
 			DWORD			m_nAlignMode;   //若不归一化，矩形坐标原点在字的哪个点。
@@ -188,14 +188,14 @@ typedef struct tag_syspecialeffect
 		//火焰字
 		struct
 		{
-			SYColor		m_FireColor;      //火焰色
+			BaseGraphColor		m_FireColor;      //火焰色
 			DWORD		m_nFireType;      //火焰形状
 			DWORD     	m_nAngle;		  //火焰偏移方向
 			DWORD		m_nDegree;        //火焰幅度
 		};
 	};
-}syspecial_effect;
-typedef  syspecial_effect SYSpecialEffect, *LPCommonSpecialEffect;
+}common_special_effect;
+typedef  common_special_effect SYSpecialEffect, *LPCommonSpecialEffect;
 typedef  const LPCommonSpecialEffect *LPCBaseSpecialEffect;
 //拉伸数据结构
 typedef struct sy_stretch_param
@@ -215,7 +215,7 @@ typedef struct sy_stretch_param
 		fBevelLen = 0;
 		fBevelPrecision = 0;
 	}
-}SYStretchParam, *LPCommonStretchParam;
+}BaseGraphStretchParam, *LPCommonStretchParam;
 
 
 //扩充的字体数据结构
@@ -256,7 +256,7 @@ struct sy_font_def
 	BASEGRAPH_DATARENDER_API void Reset();
 };
 
-typedef sy_font_def SYFont, *LPCommonFont;
+typedef sy_font_def BaseGraphFont, *LPCommonFont;
 typedef const LPCommonFont LPCBaseFont;
 
 //横向对齐方式
@@ -280,16 +280,16 @@ typedef enum e_text_align_vertical
 //艺术与路径曲线样式
 enum  eBaseARtTypesetPath
 {
-	SYPATH_NULL,
-	SYPATH_ARC,				//弧
-	SYPATH_BEZIER,			//任意BEZIER
-	SYPATH_ARTPATH_START,	//艺术字样式开始
-	SYPATH_FLAT,			//直线
-	SYPATH_UPBEZIER,		//上BEZIER
-	SYPATH_DOWNBEZIER,		//下BEZIER
-	SYPATH_SYMMETRYBEZIER,	//对称BEZIER
-	SYPATH_SAMEBEZIER,		//上下一样BEZIER
-	SYPATH_ARTPATH_END,		//艺术字样式结束
+	BaseGraphPATH_NULL,
+	BaseGraphPATH_ARC,				//弧
+	BaseGraphPATH_BEZIER,			//任意BEZIER
+	BaseGraphPATH_ARTPATH_START,	//艺术字样式开始
+	BaseGraphPATH_FLAT,			//直线
+	BaseGraphPATH_UPBEZIER,		//上BEZIER
+	BaseGraphPATH_DOWNBEZIER,		//下BEZIER
+	BaseGraphPATH_BaseGraphMMETRYBEZIER,	//对称BEZIER
+	BaseGraphPATH_SAMEBEZIER,		//上下一样BEZIER
+	BaseGraphPATH_ARTPATH_END,		//艺术字样式结束
 };
 
 //文字属性结构体
@@ -303,8 +303,8 @@ typedef struct sy_text_prop_def
 	BaseARray		arIndex;			//属性检索表
 	sy_text_prop_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYTextProp, *LPCommonTextProp;
-typedef const SYTextProp* LPCBaseTextProp;
+}BaseGraphTextProp, *LPCommonTextProp;
+typedef const BaseGraphTextProp* LPCBaseTextProp;
 
 //下划线类型
 typedef enum e_text_under_line
@@ -360,7 +360,7 @@ typedef struct sy_text_def
 	BOOL				bSmallFontCalcBorder;//小字清晰
 
 	BaseARray				arParagraph;			//段落数组
-	SYTextProp			stuTextProp;			//属性数据集合
+	BaseGraphTextProp			stuTextProp;			//属性数据集合
 
 	point2f				vGraphScale;			//图形放缩
 
@@ -393,8 +393,8 @@ typedef struct sy_text_def
 	LPVOID				lpParam;			//预留数据
 	sy_text_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYText, *LPCommonText;
-typedef const SYText* LPCBaseText;
+}BaseGraphText, *LPCommonText;
+typedef const BaseGraphText* LPCBaseText;
 
 //项目符号的原始数据定义
 typedef struct sy_textsymbol_def
@@ -409,7 +409,7 @@ typedef struct sy_textsymbol_def
 	LPVOID				lpParam;			//预留数据
 	sy_textsymbol_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYTextSymbol, *LPCommonTextSymbol;
+}BaseGraphTextSymbol, *LPCommonTextSymbol;
 
 //段落的原始数据定义
 typedef struct sy_textparagraph_def
@@ -430,13 +430,13 @@ typedef struct sy_textparagraph_def
 	LPVOID					lpParam;		//预留数据
 	sy_textparagraph_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYTextParagraph, *LPCommonTextParagraph;
-typedef struct  tag_SYTypesetPrivate
+}BaseGraphTextParagraph, *LPCommonTextParagraph;
+typedef struct  tag_BaseGraphTypesetPrivate
 {
 	BaseARray				m_arParagraph;		//段落
 	LPVOID				lpParam;			//需要做同步的Env
 	rectf				rtTypesetBorder;	//排版实际使用的矩形
-}SYTypesetPrivate, *LPCommonTypesetPrivate;
+}BaseGraphTypesetPrivate, *LPCommonTypesetPrivate;
 
 //扩充的字体数据结构
 struct sy_under_line_def
@@ -449,7 +449,7 @@ struct sy_under_line_def
 	sy_under_line_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 };
-typedef sy_under_line_def SYUnderLine, *LPCommonUnderLine;
+typedef sy_under_line_def BaseGraphUnderLine, *LPCommonUnderLine;
 typedef const LPCommonUnderLine LPCBaseUnderLine;
 //文字属性数据块类别定义
 typedef enum e_text_property_type
@@ -511,7 +511,7 @@ typedef struct sy_text_prop_index_def
 {
 	LPVOID					pFont;		//字体属性索引
 	LPVOID					p2DColor;	//2D颜色属性索引
-	LPVOID					p3DColor[SYTEXT_SUBFACE_CNT];	//3D颜色属性索引
+	LPVOID					p3DColor[BaseGraphTEXT_SUBFACE_CNT];	//3D颜色属性索引
 	LPVOID					pUnderLine;	//下划线属性索引
-}SYTextPropIndex, *LPCommonTextPropIndex;
-typedef const SYTextPropIndex* LPCBaseTextPropIndex;
+}BaseGraphTextPropIndex, *LPCommonTextPropIndex;
+typedef const BaseGraphTextPropIndex* LPCBaseTextPropIndex;

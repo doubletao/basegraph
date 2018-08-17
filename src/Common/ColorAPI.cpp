@@ -54,27 +54,27 @@ LPTSTR		g_szImagePath = NULL;		// the working directory of the image texture fil
 
 
 // Add file for templet gradual color or image texture.
-SYCOLOR_RESULT SYColor_AddFile(IN LPCTSTR szFilePath,		// file path
+BaseGraphCOLOR_RESULT BaseGraphColor_AddFile(IN LPCTSTR szFilePath,		// file path
 							   IN int nIconWidth,			// icon size
 							   IN int nIconHeight,
 							   OUT int *pnIndex,			// index of the new file
 							   IN int nType);				// type of color
 // Delete file for templet gradual color or image texture.
-SYCOLOR_RESULT SYColor_DeleteFile(IN int nIndex,		// index of the file in the library
+BaseGraphCOLOR_RESULT BaseGraphColor_DeleteFile(IN int nIndex,		// index of the file in the library
 								  IN int nType);		// type of color
 
 // ÑÕÉ«¶¯»­´¦Àí
-void SYColor_ProcAniColor(IN OUT DWORD* pdwLine,
+void BaseGraphColor_ProcAniColor(IN OUT DWORD* pdwLine,
 						  IN int nWidth,
 						  IN int nFrame,
 						  IN float fSpeed,
 						  IN DWORD dwStyle);
 
 // ³õÊ¼»¯ÑÕÉ«Â·¾¶
-BASEGRAPH_COMMON_API SYCOLOR_RESULT SYColor_InitEnv(LPCTSTR szBinPath)
+BASEGRAPH_COMMON_API BaseGraphCOLOR_RESULT BaseGraphColor_InitEnv(LPCTSTR szBinPath)
 {
 	//if (g_bInit)
-	//	return SYCOLOR_RET_INITED;
+	//	return BaseGraphCOLOR_RET_INITED;
 
 	//TCHAR szColorPath[MAX_PATH];
 	//int nColorPathLen(0), nRetaivePathLen(0);
@@ -82,7 +82,7 @@ BASEGRAPH_COMMON_API SYCOLOR_RESULT SYColor_InitEnv(LPCTSTR szBinPath)
 	//szColorPath[0] = _T('\0');
 	//if (szBinPath == NULL)
 	//{
-	//	LPCTSTR szBinPath = SYPath_GetPath(Common_PATH_BIN);
+	//	LPCTSTR szBinPath = BaseGraphPath_GetPath(Common_PATH_BIN);
 	//	wcscpy_s(szColorPath,MAX_PATH,szBinPath);
 	//}
 	//else
@@ -102,13 +102,13 @@ BASEGRAPH_COMMON_API SYCOLOR_RESULT SYColor_InitEnv(LPCTSTR szBinPath)
 	//CreateDirectory(g_szTempletPath,NULL);
 	//g_bInit = TRUE;
 
-	return SYCOLOR_RET_SUCCESS;
+	return BaseGraphCOLOR_RET_SUCCESS;
 }
 
-BASEGRAPH_COMMON_API SYCOLOR_RESULT SYColor_ReleaseEnv()
+BASEGRAPH_COMMON_API BaseGraphCOLOR_RESULT BaseGraphColor_ReleaseEnv()
 {
 	if (!g_bInit)
-		return SYCOLOR_RET_NOT_INIT;
+		return BaseGraphCOLOR_RET_NOT_INIT;
 
 	SAFEDELETE_ARRAY(g_szTempletPath);
 	//	g_libTemplet.CloseLib();
@@ -116,38 +116,38 @@ BASEGRAPH_COMMON_API SYCOLOR_RESULT SYColor_ReleaseEnv()
 	//	g_libImage.CloseLib();
 	g_bInit = FALSE;
 
-	return SYCOLOR_RET_SUCCESS;
+	return BaseGraphCOLOR_RET_SUCCESS;
 }
 
 // ¿½±´ÑÕÉ«
-BASEGRAPH_COMMON_API void SYColor_CopyColor(OUT SYColor* pDes,	// Ä¿±ê
-								   IN SYColor* pSrc)	// Ô´
+BASEGRAPH_COMMON_API void BaseGraphColor_CopyColor(OUT BaseGraphColor* pDes,	// Ä¿±ê
+								   IN BaseGraphColor* pSrc)	// Ô´
 {
-	SYMemcpy_Line(pDes, pSrc, sizeof(SYColor));
+	BaseGraphMemcpy_Line(pDes, pSrc, sizeof(BaseGraphColor));
 }
 
-BASEGRAPH_COMMON_API DWORD SYColor_GetRGBColor(IN SYColor* pColor)
+BASEGRAPH_COMMON_API DWORD BaseGraphColor_GetRGBColor(IN BaseGraphColor* pColor)
 {
 	switch(pColor->type)
 	{
-	case SYCOLOR_NONE:
-	case SYCOLOR_HOMO:
+	case BaseGraphCOLOR_NONE:
+	case BaseGraphCOLOR_HOMO:
 		return (DWORD)pColor->color;
-    case SYCOLOR_GRAD_LINEAR:
-    case SYCOLOR_GRAD_CENTER_ROUND:
-    case SYCOLOR_GRAD_CENTER_POLYGON:
-    case SYCOLOR_GRAD_OUTLINE_CIRCLE:
-    case SYCOLOR_GRAD_OUTLINE_POLYGON:
-    case SYCOLOR_GRAD_PT_CONTOUR:
-    case SYCOLOR_GRAD_PT_BLEND:
-    //case SYCOLOR_GRAD_TEMPLET:
+    case BaseGraphCOLOR_GRAD_LINEAR:
+    case BaseGraphCOLOR_GRAD_CENTER_ROUND:
+    case BaseGraphCOLOR_GRAD_CENTER_POLYGON:
+    case BaseGraphCOLOR_GRAD_OUTLINE_CIRCLE:
+    case BaseGraphCOLOR_GRAD_OUTLINE_POLYGON:
+    case BaseGraphCOLOR_GRAD_PT_CONTOUR:
+    case BaseGraphCOLOR_GRAD_PT_BLEND:
+    //case BaseGraphCOLOR_GRAD_TEMPLET:
         return (DWORD)pColor->gradual.color[0];
 	default:
 		return 0xffffffff;
 	}
 }
 // Ìî³äÑÕÉ«
-BASEGRAPH_COMMON_API void SYColor_FillColor(IN SYColor* pColor,			// ÑÕÉ«
+BASEGRAPH_COMMON_API void BaseGraphColor_FillColor(IN BaseGraphColor* pColor,			// ÑÕÉ«
 								   OUT DWORD* pdwBuf,			// Ìî³ä¶ÔÏó
 								   IN int nBufWidth,			// ¶ÔÏó´óÐ¡
 								   IN int nBufHeight,
@@ -162,36 +162,36 @@ BASEGRAPH_COMMON_API void SYColor_FillColor(IN SYColor* pColor,			// ÑÕÉ«
 {
 	switch(pColor->type)
 	{
-	case SYCOLOR_NONE:
-	case SYCOLOR_HOMO:
-		SYColor_FillHomo(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_NONE:
+	case BaseGraphCOLOR_HOMO:
+		BaseGraphColor_FillHomo(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_GRAD_LINEAR:
-		SYColor_FillGradLinear(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_GRAD_LINEAR:
+		BaseGraphColor_FillGradLinear(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_GRAD_CENTER_ROUND:
-		SYColor_FillGradCenterRound(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_GRAD_CENTER_ROUND:
+		BaseGraphColor_FillGradCenterRound(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_GRAD_CENTER_POLYGON:
-		SYColor_FillGradCenterPolygon(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_GRAD_CENTER_POLYGON:
+		BaseGraphColor_FillGradCenterPolygon(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_GRAD_OUTLINE_CIRCLE:
-		SYColor_FillGradOutlineCircle(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_GRAD_OUTLINE_CIRCLE:
+		BaseGraphColor_FillGradOutlineCircle(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_GRAD_OUTLINE_POLYGON:
-		SYColor_FillGradOutlinePolygon(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_GRAD_OUTLINE_POLYGON:
+		BaseGraphColor_FillGradOutlinePolygon(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_GRAD_PT_CONTOUR:
-		SYColor_FillGradPtContour(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_GRAD_PT_CONTOUR:
+		BaseGraphColor_FillGradPtContour(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_GRAD_PT_BLEND:
-		SYColor_FillGradPtBlend(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_GRAD_PT_BLEND:
+		BaseGraphColor_FillGradPtBlend(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_GRAD_TEMPLET:
-		SYColor_FillGradTemplet(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_GRAD_TEMPLET:
+		BaseGraphColor_FillGradTemplet(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, nFrame, pbyMask, nMaskPitch);
 		break;
-	case SYCOLOR_TEX_IMG:
-		SYColor_FillTexImg(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, fScale,nFrame, pbyMask, nMaskPitch);
+	case BaseGraphCOLOR_TEX_IMG:
+		BaseGraphColor_FillTexImg(pColor, pdwBuf, nBufWidth, nBufHeight, nX, nY, nWidth, nHeight, fScale,nFrame, pbyMask, nMaskPitch);
 		break;
 	default:
 		break;
@@ -199,8 +199,8 @@ BASEGRAPH_COMMON_API void SYColor_FillColor(IN SYColor* pColor,			// ÑÕÉ«
 	}
 }
 // ¼ÆËã½¥±äÉ«µÄ¶¯»­²ÎÊý£¬Èç¹ûÓÐ¶¯»­Ôò·µ»ØTRUE¡£
-BASEGRAPH_COMMON_API BOOL SYColor_CalcAniParam(OUT SYColor *pNewColor,	// ¸ù¾Ý¶¯»­²ÎÊý¼ÆËãµÃµ½µÄ¾²Ì¬ÑÕÉ«²ÎÊý
-									  IN SYColor* pSrcColor,	// ¶¯»­ÑÕÉ«²ÎÊý
+BASEGRAPH_COMMON_API BOOL BaseGraphColor_CalcAniParam(OUT BaseGraphColor *pNewColor,	// ¸ù¾Ý¶¯»­²ÎÊý¼ÆËãµÃµ½µÄ¾²Ì¬ÑÕÉ«²ÎÊý
+									  IN BaseGraphColor* pSrcColor,	// ¶¯»­ÑÕÉ«²ÎÊý
 									  IN int nFrame)			// ¶¯»­Ö¡ºÅ
 {
 	//assert(pNewColor != NULL && pSrcColor != NULL);
@@ -209,13 +209,13 @@ BASEGRAPH_COMMON_API BOOL SYColor_CalcAniParam(OUT SYColor *pNewColor,	// ¸ù¾Ý¶¯
 
 	switch (pSrcColor->type)
 	{
-	case SYCOLOR_GRAD_LINEAR:
+	case BaseGraphCOLOR_GRAD_LINEAR:
 		// ÓÐÐ§µÄ¶¯»­ÀàÐÍ
 		dwValidType = (GRAD_ANI_COLOR | GRAD_ANI_LINEAR_RAD | GRAD_ANI_REPEAT);
 		if ((pSrcColor->gradual.animation & dwValidType)== GRAD_ANI_NONE)
 			break;
 
-		SYMemcpy_Line(pNewColor, pSrcColor, sizeof(SYColor));
+		BaseGraphMemcpy_Line(pNewColor, pSrcColor, sizeof(BaseGraphColor));
 		pNewColor->gradual.animation = GRAD_ANI_NONE;
 		if ((pSrcColor->gradual.animation & GRAD_ANI_LINEAR_RAD) != GRAD_ANI_NONE)
 		{
@@ -231,18 +231,18 @@ BASEGRAPH_COMMON_API BOOL SYColor_CalcAniParam(OUT SYColor *pNewColor,	// ¸ù¾Ý¶¯
 // µ¥É«
 
 // ´´½¨
-BASEGRAPH_COMMON_API void SYColor_CreateHomo(OUT SYColor* pColor,
+BASEGRAPH_COMMON_API void BaseGraphColor_CreateHomo(OUT BaseGraphColor* pColor,
 									IN unsigned long color)
 {
 	//assert(pColor != NULL);
 
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
-	pColor->type = SYCOLOR_HOMO;
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
+	pColor->type = BaseGraphCOLOR_HOMO;
 	pColor->color = color;
 }
 
 // Ìî³ä
-void SYColor_FillHomo(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillHomo(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 					  OUT DWORD* pdwBuf,			// Ìî³ä¶ÔÏó
 					  IN int nBufWidth,				// ¶ÔÏó´óÐ¡
 					  IN int nBufHeight,
@@ -262,13 +262,13 @@ void SYColor_FillHomo(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 
 	for(int i=0; i<nminh; i++)
 	{
-		SYMemset_LineDWORD(pdwFillBuf, pColor->color, nminw);
+		BaseGraphMemset_LineDWORD(pdwFillBuf, pColor->color, nminw);
 		pdwFillBuf += nBufWidth;
 	}
 }
 
 // Ìî³ä
-void SYColor_FillGradLinear(IN SYColor* pColor,				// Ìî³äÑÕÉ«
+void BaseGraphColor_FillGradLinear(IN BaseGraphColor* pColor,				// Ìî³äÑÕÉ«
 							OUT DWORD* pdwBuf,				// Ìî³ä¶ÔÏó
 							IN int nBufWidth,				// ¶ÔÏó´óÐ¡
 							IN int nBufHeight,
@@ -295,14 +295,14 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// Ìî³äÑÕÉ«
 		   pColor->gradual.linear.repeat,
 		   pColor->gradual.linear.style,
 		   pColor->gradual.linear.frad);
-	SYColor crStatic, *pcrFill = pColor;		// ÓÃÓÚ¶¯»­ÑÕÉ«
+	BaseGraphColor crStatic, *pcrFill = pColor;		// ÓÃÓÚ¶¯»­ÑÕÉ«
 	int nminw = min(nBufWidth - nX, nWidth);
 	int nminh = min(nBufHeight - nY, nHeight);
 	DWORD* pdwFillBuf = pdwBuf + nY * nBufWidth + nX;
 	int nAngle(0);
 
 	// Èç¹ûÓÐ¶¯»­£¬ÔòÊ¹ÓÃ¼ÆËãµÃµ½µÄ¾²Ì¬ÑÕÉ«²ÎÊý½øÐÐÌî³ä¡£
-	if (SYColor_CalcAniParam(&crStatic, pColor, nFrame))
+	if (BaseGraphColor_CalcAniParam(&crStatic, pColor, nFrame))
 	{
 		pcrFill = &crStatic;
 	}
@@ -314,49 +314,49 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// Ìî³äÑÕÉ«
 		int nPitch = (nminw << 2);
 
 		// Ìî³äÒ»ÐÐ
-		SYColor_FillLineBaseAR_1_Recursive(pdwTmpLine, nminw, pcrFill->gradual.color,
+		BaseGraphColor_FillLineBaseAR_1_Recursive(pdwTmpLine, nminw, pcrFill->gradual.color,
 			pcrFill->gradual.pos, pcrFill->gradual.mid, pcrFill->gradual.ncount,
 			pcrFill->gradual.linear.repeat, pcrFill->gradual.linear.style);
 		// ½ÚµãÑÕÉ«¶¯»­µÄ²âÊÔ°æ
 		if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)
 		{
-			SYColor_ProcAniColor(pdwTmpLine, nminw, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pcrFill->gradual.linear.style);
+			BaseGraphColor_ProcAniColor(pdwTmpLine, nminw, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pcrFill->gradual.linear.style);
 		}
 		// ·´ÏòÔò·­×ªÄÚ´æ
 		if (nAngle == 180)
 		{
-			SYMemrev_LineDWORD(pdwTmpLine, nminw);
+			BaseGraphMemrev_LineDWORD(pdwTmpLine, nminw);
 		}
 		// Ìî³äÆäËüÐÐ
 		for(int i=1; i<nminh; i++)
 		{
 			pdwTmpLine += nBufWidth;
-			SYMemcpy_Line(pdwTmpLine, pdwFillBuf, nPitch);
+			BaseGraphMemcpy_Line(pdwTmpLine, pdwFillBuf, nPitch);
 		}
 	}
 	else if (nAngle == 90 || nAngle == 270)		// ´¹Ö±
 	{
-		DWORD *pdwTmpVert = SYSSE_NEW(nminh, DWORD), *pdwTmpPixel = NULL;
+		DWORD *pdwTmpVert = BaseGraphSSE_NEW(nminh, DWORD), *pdwTmpPixel = NULL;
 		int nStep = (nAngle == 90) ? -1 : 1;
 
 		// Ìî³äÒ»ÁÐ
-		SYColor_FillLineBaseAR_1_Recursive(pdwTmpVert, nminh, pcrFill->gradual.color,
+		BaseGraphColor_FillLineBaseAR_1_Recursive(pdwTmpVert, nminh, pcrFill->gradual.color,
 			pcrFill->gradual.pos, pcrFill->gradual.mid, pcrFill->gradual.ncount,
 			pcrFill->gradual.linear.repeat, pcrFill->gradual.linear.style);
 		// ½ÚµãÑÕÉ«¶¯»­µÄ²âÊÔ°æ
 		if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)
 		{
-			SYColor_ProcAniColor(pdwTmpVert, nminh, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pcrFill->gradual.linear.style);
+			BaseGraphColor_ProcAniColor(pdwTmpVert, nminh, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pcrFill->gradual.linear.style);
 		}
 		// ¸ù¾Ý·½Ïò½øÐÐË®Æ½Ìî³ä
 		pdwTmpPixel = (nAngle == 90) ? (pdwTmpVert + nminh - 1) : pdwTmpVert;
 		for (int i=0; i<nminh; i++)
 		{
-			SYMemset_LineDWORD(pdwFillBuf, *pdwTmpPixel, nminw);
+			BaseGraphMemset_LineDWORD(pdwFillBuf, *pdwTmpPixel, nminw);
 			pdwFillBuf += nBufWidth;
 			pdwTmpPixel += nStep;
 		}
-		SYSSE_FREE(pdwTmpVert);
+		BaseGraphSSE_FREE(pdwTmpVert);
 	}
 	else	// ÇãÐ±£¬ÔòÐèÒª¸ù¾ÝÇãÐ±¶ÈÀ´¾ö¶¨ÊÇ¿í¶ÈÖ÷´ò»¹ÊÇ¸ß¶ÈÖ÷´ò
 	{
@@ -374,16 +374,16 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// Ìî³äÑÕÉ«
 			fAbsSlope = 1.f / fAbsSlope;
 			fStart = nminw * fAbsSlope;
 			nRealLen = nminh + (int)ceilf(fStart);
-			pdwRealLine = SYSSE_NEW(nRealLen, DWORD);
+			pdwRealLine = BaseGraphSSE_NEW(nRealLen, DWORD);
 			// Ìî³äÒ»ÐÐ
 
-			SYColor_FillLineBaseAR_1_Recursive(pdwRealLine, nRealLen, pcrFill->gradual.color,
+			BaseGraphColor_FillLineBaseAR_1_Recursive(pdwRealLine, nRealLen, pcrFill->gradual.color,
 				pcrFill->gradual.pos, pcrFill->gradual.mid, pcrFill->gradual.ncount,
 				pcrFill->gradual.linear.repeat, pcrFill->gradual.linear.style);
 			// ½ÚµãÑÕÉ«¶¯»­µÄ²âÊÔ°æ
 			if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)
 			{
-				SYColor_ProcAniColor(pdwRealLine, nRealLen, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pcrFill->gradual.linear.style);
+				BaseGraphColor_ProcAniColor(pdwRealLine, nRealLen, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pcrFill->gradual.linear.style);
 			}
 			// ¸ù¾Ý½Ç¶ÈËùÔÚµÄÎ»ÖÃÅÐ¶ÏÊÇ·ñÐèÒª½øÐÐ·­×ª
 			if (nAngle < 90)	// Ò»ÏóÏÞ´Ó×îºóÒ»ÐÐµÄµÚÒ»ÁÐ¿ªÊ¼
@@ -408,7 +408,7 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// Ìî³äÑÕÉ«
 			// ¼ÆËãÃ¿Ò»ÁÐµÄÆðµãÎ»ÖÃ
 			for (int i=0; i<nminw; i++)
 			{
-				SYMemcpy_ColumnDWORD(pdwFillBuf, nminh, nPitch, (pdwRealLine + (int)fStart), bUpDown);
+				BaseGraphMemcpy_ColumnDWORD(pdwFillBuf, nminh, nPitch, (pdwRealLine + (int)fStart), bUpDown);
 				pdwFillBuf += nStep;
 				fStart += fSlope;
 			}
@@ -418,20 +418,20 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// Ìî³äÑÕÉ«
 			nPitch = (nminw << 2);		// Ìî³äµÄ³¤¶È
 			fStart = nminh * fAbsSlope;
 			nRealLen = nminw + (int)ceilf(fStart);
-			pdwRealLine = SYSSE_NEW(nRealLen, DWORD);
+			pdwRealLine = BaseGraphSSE_NEW(nRealLen, DWORD);
 			// Ìî³äÒ»ÐÐ
-			SYColor_FillLineBaseAR_1_Recursive(pdwRealLine, nRealLen, pcrFill->gradual.color,
+			BaseGraphColor_FillLineBaseAR_1_Recursive(pdwRealLine, nRealLen, pcrFill->gradual.color,
 				pcrFill->gradual.pos, pcrFill->gradual.mid, pcrFill->gradual.ncount,
 				pcrFill->gradual.linear.repeat, pcrFill->gradual.linear.style);
 			// ½ÚµãÑÕÉ«¶¯»­µÄ²âÊÔ°æ
 			if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)
 			{
-				SYColor_ProcAniColor(pdwRealLine, nRealLen, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pcrFill->gradual.linear.style);
+				BaseGraphColor_ProcAniColor(pdwRealLine, nRealLen, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pcrFill->gradual.linear.style);
 			}
 			// ¸ù¾Ý½Ç¶ÈËùÔÚµÄÎ»ÖÃÅÐ¶ÏÊÇ·ñÐèÒª½øÐÐ·­×ª
 			if (nAngle > 90 && nAngle < 270)	// ÔÚ¶þÈýÏóÏÞÄÚ
 			{
-				SYMemrev_LineDWORD(pdwRealLine, nRealLen);
+				BaseGraphMemrev_LineDWORD(pdwRealLine, nRealLen);
 			}
 			// ¼ÆËã³ö½¥±äÉ«ÒÆ¶¯µÄ·½Ïò£¬Ò»ÈýÏóÏÞ´ÓÓÒÍù×óÒÆ£¬¶þËÄÏóÏÞ´Ó×óÍùÓÒÒÆ
 			if (fSlope < 0.f)
@@ -442,18 +442,18 @@ void SYColor_FillGradLinear(IN SYColor* pColor,				// Ìî³äÑÕÉ«
 			// ¼ÆËãÃ¿Ò»ÐÐµÄÆðµãÎ»ÖÃ
 			for (int i=0; i<nminh; i++)
 			{
-				SYMemcpy_Line(pdwFillBuf, (pdwRealLine + (int)fStart), nPitch);
+				BaseGraphMemcpy_Line(pdwFillBuf, (pdwRealLine + (int)fStart), nPitch);
 				pdwFillBuf += nBufWidth;
 				fStart += fSlope;
 			}
 		}
-		SYSSE_SAFEFREE(pdwRealLine);
+		BaseGraphSSE_SAFEFREE(pdwRealLine);
 	}
 }
 // ²ÉÓÃ¸¡µãÑÕÉ«µÝ¹éÔËËã½øÐÐÌî³ä
 // £¨1£©ÔÚÖÐ¼äµã×ó±ßÊ±£¨x < m£©£º0.5*(c1-c0)/(m-p0) * (x-p0) + c0 = A1 * (x - B1) + C1
 // £¨2£©ÔÚÖÐ¼äµãÓÒ±ßÊ±£¨y > m£©£º0.5*(c1-c0)/(p1-m) * (y-p1) + c1 = A2 * (y - B2) + C2
-void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
+void BaseGraphColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
 									IN int nBufWidth,
 									IN DWORD *pdwColor,		// µ¥É«×é
 									IN float *pfPos,		// Î»ÖÃ×é
@@ -477,7 +477,7 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
 	fP0 = pfPos[0] * fSectLen;
 	nP0 = (int)ceilf(fP0);		// ¸¡µãÎ»ÖÃËùÔÚÏñËØµÄÏÂÒ»¸öË÷Òý
 	dwCrP0 = pdwColor[0];
-	SYMemset_LineDWORD(pdwTmpBuf, dwCrP0, nP0);
+	BaseGraphMemset_LineDWORD(pdwTmpBuf, dwCrP0, nP0);
 	pdwTmpBuf += nP0;
 	// ÆðµãÑÕÉ«
 	fCrP0[0] = (float)GetBGRA_B(dwCrP0);
@@ -494,7 +494,7 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
 		{
 			// ·ÀÖ¹³öÏÖÁ½¸öÎ»ÖÃµßµ¹Çé¿ö
 			int nLen = max(0, nP1 - nP0);
-			SYMemset_LineDWORD(pdwTmpBuf, dwCrP0, nLen);
+			BaseGraphMemset_LineDWORD(pdwTmpBuf, dwCrP0, nLen);
 		}
 		else	// °´ÖÐ¼äµã½«¶Î·Ö³ÉÇ°ºóÁ½²¿·Ö½øÐÐ²åÖµ
 		{
@@ -529,7 +529,7 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
 			}
 			// ÐèÒª½»»»ÑÕÉ«Êý¾Ý
 			dwCrP0 = dwCrP1;
-			SYMemcpy_Line(fCrP0, fCrP1, (sizeof(float) << 2));
+			BaseGraphMemcpy_Line(fCrP0, fCrP1, (sizeof(float) << 2));
 		}
 		// ½»»»Î»ÖÃ£¬½øÐÐÏÂÒ»´ÎµÄµÝ¹é
 		pdwTmpBuf += (nP1 - nP0);
@@ -561,7 +561,7 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
 		{
 			fStartPos += fSectLen;		// Ë³ÐòÅÅÁÐµÄÆðµãÓëÖÕµã
 			fEndPos += fSectLen;
-			if ((dwStyle == SYCOLOR_STYLE_SYMMETRY) && (i & 0x01))	// ¶Ô³ÆÅÅÁÐÇÒ´¦ÓÚ¶Ô³Æ×´Ì¬
+			if ((dwStyle == BaseGraphCOLOR_STYLE_BaseGraphMMETRY) && (i & 0x01))	// ¶Ô³ÆÅÅÁÐÇÒ´¦ÓÚ¶Ô³Æ×´Ì¬
 			{
 				// ·­×ªÆðµãÓëÖÕµã£¬ÕâÒ»¶ÎµÄÆðµãÒ²¼´¿ÕÏ¶µÄÖÕµãÈ¡×îºóÒ»¸ö½Úµã
 				fP1 = fEndPos - fFirstLen;
@@ -596,7 +596,7 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
 				pdwTmpBuf = pdwBuf + nLastEndPos;			// ¿ÕÏ¶»º´æÆðµã
 				if (*pdwCrLastEnd == *pdwCrCurrStart)	// Ç°ºóµãÑÕÉ«ÏàÍ¬ÔòÖ±½ÓÌî³ä
 				{
-					SYMemset_LineDWORD(pdwTmpBuf, *pdwCrCurrStart, nStartPos - nLastEndPos);
+					BaseGraphMemset_LineDWORD(pdwTmpBuf, *pdwCrCurrStart, nStartPos - nLastEndPos);
 				}
 				else	// ÑÕÉ«²»Í¬Ôò²åÖµ
 				{
@@ -608,14 +608,14 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
 			pdwTmpBuf = pdwBuf + nStartPos;
 			if (bRevCopy)		// ¶Ô³Æ
 			{
-				SYMemcpy_RevDWORD(pdwTmpBuf, pdwFirst, nCurrLen);
+				BaseGraphMemcpy_RevDWORD(pdwTmpBuf, pdwFirst, nCurrLen);
 				pdwCrLastEnd = &dwCrP0;
 				pfCrLastEnd = fCrP0;
 				bRevCopy = FALSE;
 			}
 			else	// Ë³Ðò
 			{
-				SYMemcpy_Line(pdwTmpBuf, pdwFirst, (nCurrLen << 2));
+				BaseGraphMemcpy_Line(pdwTmpBuf, pdwFirst, (nCurrLen << 2));
 				pdwCrLastEnd = &dwCrP1;
 				pfCrLastEnd = fCrP1;
 			}
@@ -629,12 +629,12 @@ void SYColor_FillLineBaseAR_1_Recursive(OUT DWORD* pdwBuf,		// Ìî³ä¶ÔÏó
 		dwCrP0 = *pdwCrLastEnd;
 	}
 	// ×îºóÒ»¸ö½ÚµãµÄÓÒ±ßÍêÈ«Ìî³äÎª×îºóÒ»¸ö½ÚµãµÄÑÕÉ«
-	SYMemset_LineDWORD(pdwTmpBuf, dwCrP0, nBufWidth - nP0);
+	BaseGraphMemset_LineDWORD(pdwTmpBuf, dwCrP0, nBufWidth - nP0);
 }
 
 // Ìî³ä
 // Ô²ÐÎÖÐÐÄ½¥±äÉ«
-void SYColor_FillGradCenterRound(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillGradCenterRound(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 								 OUT DWORD* pdwBuf,				// Ìî³ä¶ÔÏó
 								 IN int nBufWidth,				// ¶ÔÏó´óÐ¡
 								 IN int nBufHeight,
@@ -660,22 +660,22 @@ void SYColor_FillGradCenterRound(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	float fMaxDy = ((pColor->gradual.center.centery < 0.5f) ? (nminh - fCenterY) : fCenterY);
 	// ÏßÐÔ±íµÄ×î´ó³¤¶È£¬·Å´ó¶à±¶ÒÔµÃµ½¸üºÃµÄ¾«¶È£¨¶à¼ÓÒ»¸öÏñËØ·ÀÖ¹·ÃÎÊÔ½½ç£©
 	int nMaxLen_Z = (int)ceilf(sqrtf(fMaxDx * fMaxDx + fMaxDy * fMaxDy) * CENTER_ROUND_LINEAR_SCALING + CENTER_ROUND_LINEAR_SCALING);
-	DWORD* pdwMaxLineTable = SYSSE_NEW(nMaxLen_Z, DWORD);		// °ë¾¶·½ÏòÉÏµÄ±í
-	float* pfRadiusX = SYSSE_NEW(nminw, float);		// Çóµãµ½Ô²ÐÄµÄ¾àÀëÊ±µÄ X ·ÖÁ¿£º(x - xc)^2
-	float* pfRadiusY = SYSSE_NEW(nminh, float);		// Çóµãµ½Ô²ÐÄµÄ¾àÀëÊ±µÄ Y ·ÖÁ¿£º(y - yc)^2
+	DWORD* pdwMaxLineTable = BaseGraphSSE_NEW(nMaxLen_Z, DWORD);		// °ë¾¶·½ÏòÉÏµÄ±í
+	float* pfRadiusX = BaseGraphSSE_NEW(nminw, float);		// Çóµãµ½Ô²ÐÄµÄ¾àÀëÊ±µÄ X ·ÖÁ¿£º(x - xc)^2
+	float* pfRadiusY = BaseGraphSSE_NEW(nminh, float);		// Çóµãµ½Ô²ÐÄµÄ¾àÀëÊ±µÄ Y ·ÖÁ¿£º(y - yc)^2
 	float* pfTmpRadiusY = pfRadiusY;
 
 	// ÑØ°ë¾¶·½Ïò½øÐÐÏßÐÔ½¥±äÉú³ÉÒ»ÐÐ±í
-	SYColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nRadius_Z, pColor->gradual.color,
+	BaseGraphColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nRadius_Z, pColor->gradual.color,
 		pColor->gradual.pos, pColor->gradual.mid, pColor->gradual.ncount,
 		pColor->gradual.center.repeat, pColor->gradual.center.style);
 	// ½ÚµãÑÕÉ«¶¯»­µÄ²âÊÔ°æ
 	if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)
 	{
-		SYColor_ProcAniColor(pdwMaxLineTable, nRadius_Z, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pColor->gradual.center.style);
+		BaseGraphColor_ProcAniColor(pdwMaxLineTable, nRadius_Z, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pColor->gradual.center.style);
 	}
 	// Ê¹ÓÃ×îºóÒ»¸ö½¥±äÉ«Ìî³ä½¥±äÇøÓòÖ®ÍâµÄ»º´æ
-	SYMemset_LineDWORD((pdwMaxLineTable + nRadius_Z), *(pdwMaxLineTable + nRadius_Z - 1), (nMaxLen_Z - nRadius_Z));
+	BaseGraphMemset_LineDWORD((pdwMaxLineTable + nRadius_Z), *(pdwMaxLineTable + nRadius_Z - 1), (nMaxLen_Z - nRadius_Z));
 	// Éú³ÉÇóµãµ½Ô²ÐÄµÄ¾àÀëµÄ·ÖÁ¿±í
 	Common_SerialPerfectSquare(pfRadiusX, nminw, 0.f, 1.f, -fCenterX);
 	Common_SerialPerfectSquare(pfRadiusY, nminh, 0.f, 1.f, -fCenterY);
@@ -687,12 +687,12 @@ void SYColor_FillGradCenterRound(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 		pfTmpRadiusY++;
 	}
 	// ÊÍ·Å»º´æ±í
-	SYSSE_FREE(pdwMaxLineTable);
-	SYSSE_FREE(pfRadiusX);
-	SYSSE_FREE(pfRadiusY);
+	BaseGraphSSE_FREE(pdwMaxLineTable);
+	BaseGraphSSE_FREE(pfRadiusX);
+	BaseGraphSSE_FREE(pfRadiusY);
 }
 // Í¹¶à±ßÐÎÖÐÐÄ½¥±äÉ«
-void SYColor_FillGradCenterPolygon(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillGradCenterPolygon(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 								   OUT DWORD* pdwBuf,			// Ìî³ä¶ÔÏó
 								   IN int nBufWidth,			// ¶ÔÏó´óÐ¡
 								   IN int nBufHeight,
@@ -719,7 +719,7 @@ void SYColor_FillGradCenterPolygon(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	float fMaxDy = ((pColor->gradual.center.centery < 0.5f) ? (nminh - fCenterY) : fCenterY);
 	// ÏßÐÔ±íµÄ×î´ó³¤¶È£¬·Å´ó¶à±¶ÒÔµÃµ½¸üºÃµÄ¾«¶È£¨¶à¼ÓÒ»¸öÏñËØ·ÀÖ¹·ÃÎÊÔ½½ç£©
 	int nMaxLen_Z = (int)ceilf(sqrtf(fMaxDx * fMaxDx + fMaxDy * fMaxDy) * CENTER_ROUND_LINEAR_SCALING + CENTER_ROUND_LINEAR_SCALING);
-	DWORD* pdwMaxLineTable = SYSSE_NEW(nMaxLen_Z, DWORD);		// °ë¾¶·½ÏòÉÏµÄ±í
+	DWORD* pdwMaxLineTable = BaseGraphSSE_NEW(nMaxLen_Z, DWORD);		// °ë¾¶·½ÏòÉÏµÄ±í
 	// ÒªÇóÍ¹¶à±ßÐÎ°´Ë³Ê±Õë»òÄæÊ±ÕëË³Ðò¸ø³ö¶¥µã£¬ÒªÇóÖÐÐÄµãÒªÔÚÍ¹¶à±ßÐÎÄÚ²¿
 	float fDist_Inv[8] = { 0.f };			// ÖÐÐÄµãµ½±ßµÄ¾àÀëµÄµ¹Êý£¨²»¿¼ÂÇ (a^2 + b^2)^1/2£©
 	float fCoefLine[8][9] = { 0.f };		// Ë³ÐòÈý½ÇÐÎË³Ðò±ßµÄÖ±ÏßÏµÊý (x2-x1)*y+(y1-y2)*x+(y2x1-y1x2)=0
@@ -729,16 +729,16 @@ void SYColor_FillGradCenterPolygon(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	BOOL bInTriangle = FALSE;
 
 	// ÑØ°ë¾¶·½Ïò½øÐÐÏßÐÔ½¥±äÉú³ÉÒ»ÐÐ±í
-	SYColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nRadius_Z, pColor->gradual.color,
+	BaseGraphColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nRadius_Z, pColor->gradual.color,
 		pColor->gradual.pos, pColor->gradual.mid, pColor->gradual.ncount,
 		pColor->gradual.center.repeat, pColor->gradual.center.style);
 	// ½ÚµãÑÕÉ«¶¯»­µÄ²âÊÔ°æ
 	if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)
 	{
-		SYColor_ProcAniColor(pdwMaxLineTable, nRadius_Z, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pColor->gradual.center.style);
+		BaseGraphColor_ProcAniColor(pdwMaxLineTable, nRadius_Z, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pColor->gradual.center.style);
 	}
 	// Ê¹ÓÃ×îºóÒ»¸ö½¥±äÉ«Ìî³ä½¥±äÇøÓòÖ®ÍâµÄ»º´æ
-	SYMemset_LineDWORD((pdwMaxLineTable + nRadius_Z), *(pdwMaxLineTable + nRadius_Z - 1), (nMaxLen_Z - nRadius_Z));
+	BaseGraphMemset_LineDWORD((pdwMaxLineTable + nRadius_Z), *(pdwMaxLineTable + nRadius_Z - 1), (nMaxLen_Z - nRadius_Z));
 	// Éú³ÉÍ¹¶à±ßÐÎµÄÏµÊý
 	fx[2] = fCenterX, fy[2] = fCenterY;
 	for (int i=0; i<pColor->gradual.center.nvertex; i++)
@@ -802,11 +802,11 @@ void SYColor_FillGradCenterPolygon(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 		pdwFillBuf += nBufWidth;
 	}
 	// ÊÍ·Å»º´æ±í
-	SYSSE_FREE(pdwMaxLineTable);
+	BaseGraphSSE_FREE(pdwMaxLineTable);
 }
 // Ìî³ä
 // Ô²ÖÜÂÖÀª½¥±äÉ«
-void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillGradOutlineCircle(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 								   OUT DWORD* pdwBuf,			// Ìî³ä¶ÔÏó
 								   IN int nBufWidth,			// ¶ÔÏó´óÐ¡
 								   IN int nBufHeight,
@@ -860,30 +860,30 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	int nGirth_Z = (int)ceilf(fGirth_Z);
 	int nMaxLen_Z = (int)ceilf(fGirth_Z + OUTLINE_CIRCLE_LINEAR_SCALING);
 	// »º´æ
-	DWORD* pdwMaxLineTable = SYSSE_NEW(nMaxLen_Z, DWORD);		// Ô²ÖÜÉÏµÄ±í
-	float* pfQuarticX = SYSSE_NEW(nminw, float);				// (x - xc)^4
-	float* pfRadiusX = SYSSE_NEW(nminw, float);					// (x - xc)^2
-	float* pfSubX = SYSSE_NEW(nminw, float);					// (x - xc) * R
-	float* pfQuarticY = SYSSE_NEW(nminh, float);				// (y - yc)^4
-	float* pfRadiusY = SYSSE_NEW(nminh, float);					// (y - yc)^2
-	float* pfSubY = SYSSE_NEW(nminh, float);					// (y - yc) * R
-	int* pnLine45_X = SYSSE_NEW(nminh, int);					// Ö±Ïß y = x ÓëÄ¿±êÇøÓòµÄ½»µã xc - yc + y
-	int* pnLine135_X = SYSSE_NEW(nminh, int);					// Ö±Ïß y = -x ÓëÄ¿±êÇøÓòµÄ½»µã xc + yc - y
+	DWORD* pdwMaxLineTable = BaseGraphSSE_NEW(nMaxLen_Z, DWORD);		// Ô²ÖÜÉÏµÄ±í
+	float* pfQuarticX = BaseGraphSSE_NEW(nminw, float);				// (x - xc)^4
+	float* pfRadiusX = BaseGraphSSE_NEW(nminw, float);					// (x - xc)^2
+	float* pfSubX = BaseGraphSSE_NEW(nminw, float);					// (x - xc) * R
+	float* pfQuarticY = BaseGraphSSE_NEW(nminh, float);				// (y - yc)^4
+	float* pfRadiusY = BaseGraphSSE_NEW(nminh, float);					// (y - yc)^2
+	float* pfSubY = BaseGraphSSE_NEW(nminh, float);					// (y - yc) * R
+	int* pnLine45_X = BaseGraphSSE_NEW(nminh, int);					// Ö±Ïß y = x ÓëÄ¿±êÇøÓòµÄ½»µã xc - yc + y
+	int* pnLine135_X = BaseGraphSSE_NEW(nminh, int);					// Ö±Ïß y = -x ÓëÄ¿±êÇøÓòµÄ½»µã xc + yc - y
 	float *pfTmpQuarticY = pfQuarticY, *pfTmpRadiusY = pfRadiusY, *pfTmpSubY = pfSubY;
 	int *pnTmpLine45_X = pnLine45_X, *pnTmpLine135_X = pnLine135_X;
 	int nLeft(0), nRight(0), nTmpLoop(0);
 
 	// ÑØÔ²ÖÜ·½Ïò½øÐÐÏßÐÔ½¥±äÉú³ÉÒ»ÐÐ±í£¬ÉèÆðµãÎª×ó±ßÖÐµã
-	SYColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nGirth_Z, pColor->gradual.color,
+	BaseGraphColor_FillLineBaseAR_1_Recursive(pdwMaxLineTable, nGirth_Z, pColor->gradual.color,
 		pColor->gradual.pos, pColor->gradual.mid, pColor->gradual.ncount,
 		pColor->gradual.outline.repeat, pColor->gradual.outline.style);
 	// ½ÚµãÑÕÉ«¶¯»­µÄ²âÊÔ°æ
 	if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)
 	{
-		SYColor_ProcAniColor(pdwMaxLineTable, nGirth_Z, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pColor->gradual.outline.style);
+		BaseGraphColor_ProcAniColor(pdwMaxLineTable, nGirth_Z, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], pColor->gradual.outline.style);
 	}
 	// Ê¹ÓÃ×îºóÒ»¸ö½¥±äÉ«Ìî³ä°²È«Çø»º´æ
-	SYMemset_LineDWORD((pdwMaxLineTable + nGirth_Z), *(pdwMaxLineTable + nGirth_Z - 1), (nMaxLen_Z - nGirth_Z));
+	BaseGraphMemset_LineDWORD((pdwMaxLineTable + nGirth_Z), *(pdwMaxLineTable + nGirth_Z - 1), (nMaxLen_Z - nGirth_Z));
 	// Éú³É»º´æ±í
 	Common_SerialPerfectSquareEx(pfRadiusX, pfQuarticX, pfSubX, nminw, 0.f, 1.f, -fCenterX, fMaxRadius_Z);
 	Common_SerialPerfectSquareEx(pfRadiusY, pfQuarticY, pfSubY, nminh, 0.f, 1.f, -fCenterY, fMaxRadius_Z);
@@ -925,8 +925,8 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	{
 		IN_RANGE(nCenterX, 0, nminw);
 		// Ô²ÐÄ×ó±ßÌî³äÆðµãÑÕÉ«£¬ÓÒ±ßÌî³äÖÐ¼äÑÕÉ«
-		SYMemset_LineDWORD(pdwFillBuf, *pdwMaxLineTable, nCenterX);
-		SYMemset_LineDWORD((pdwFillBuf + nCenterX), *(pdwMaxLineTable + (nGirth_Z >> 1)), (nminw - nCenterX));
+		BaseGraphMemset_LineDWORD(pdwFillBuf, *pdwMaxLineTable, nCenterX);
+		BaseGraphMemset_LineDWORD((pdwFillBuf + nCenterX), *(pdwMaxLineTable + (nGirth_Z >> 1)), (nminw - nCenterX));
 		pdwFillBuf += nBufWidth;
 		pfTmpQuarticY++;
 		pfTmpRadiusY++;
@@ -973,18 +973,18 @@ void SYColor_FillGradOutlineCircle(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 		}
 	}
 	// ÊÍ·Å»º´æ±í
-	SYSSE_FREE(pdwMaxLineTable);
-	SYSSE_FREE(pfQuarticX);
-	SYSSE_FREE(pfRadiusX);
-	SYSSE_FREE(pfSubX);
-	SYSSE_FREE(pfQuarticY);
-	SYSSE_FREE(pfRadiusY);
-	SYSSE_FREE(pfSubY);
-	SYSSE_FREE(pnLine45_X);
-	SYSSE_FREE(pnLine135_X);
+	BaseGraphSSE_FREE(pdwMaxLineTable);
+	BaseGraphSSE_FREE(pfQuarticX);
+	BaseGraphSSE_FREE(pfRadiusX);
+	BaseGraphSSE_FREE(pfSubX);
+	BaseGraphSSE_FREE(pfQuarticY);
+	BaseGraphSSE_FREE(pfRadiusY);
+	BaseGraphSSE_FREE(pfSubY);
+	BaseGraphSSE_FREE(pnLine45_X);
+	BaseGraphSSE_FREE(pnLine135_X);
 }
 // ¶à±ßÐÎÂÖÀª½¥±äÉ«
-void SYColor_FillGradOutlinePolygon(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillGradOutlinePolygon(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 									OUT DWORD* pdwBuf,			// Ìî³ä¶ÔÏó
 									IN int nBufWidth,			// ¶ÔÏó´óÐ¡
 									IN int nBufHeight,
@@ -997,7 +997,7 @@ void SYColor_FillGradOutlinePolygon(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 									IN int nMaskPitch/* = 0*/)	// ÑÚÄ¤»º´æµÄÌØÊâÐÔ£¬pitch¿ÉÄÜ²»µÈÓÚ¿í¶È
 {
 	//assert((pColor != NULL) && (pdwBuf != NULL));
-	//assert(pColor->gradual.ncount >= SYCOLOR_GRAD_VERTEX_MIN);
+	//assert(pColor->gradual.ncount >= BaseGraphCOLOR_GRAD_VERTEX_MIN);
 
 	int nminw = min(nBufWidth - nX, nWidth);
 	int nminh = min(nBufHeight - nY, nHeight);
@@ -1033,11 +1033,11 @@ void SYColor_FillGradOutlinePolygon(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 		fDx = fx[0] - fx[1];
 		fDy = fy[0] - fy[1];
 		nSideLen[i] = (int)ceilf(sqrtf(fDx * fDx + fDy * fDy) * OUTLINE_POLYGON_LINEAR_SCALING);
-		pdwSideLineTable[i] = SYSSE_NEW(nSideLen[i], DWORD);
+		pdwSideLineTable[i] = BaseGraphSSE_NEW(nSideLen[i], DWORD);
 		dwCr[0] = pColor->gradual.color[i];
 		dwCr[1] = pColor->gradual.color[nNext];
 		fMid[0] = (nNext == 0) ? 0.5f : pColor->gradual.mid[i];
-		SYColor_FillLineBaseAR_1_Recursive(pdwSideLineTable[i], nSideLen[i], dwCr, fPos, fMid, 2, 1, 0);
+		BaseGraphColor_FillLineBaseAR_1_Recursive(pdwSideLineTable[i], nSideLen[i], dwCr, fPos, fMid, 2, 1, 0);
 		// Èý½ÇÐÎÖØÐÄ
 		fTmpX = (fx[0] + fx[1] + fx[2]) / 3.f;
 		fTmpY = (fy[0] + fy[1] + fy[2]) / 3.f;
@@ -1101,14 +1101,14 @@ void SYColor_FillGradOutlinePolygon(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	// ÊÍ·Å»º´æ±í
 	for (int i=0; i<pColor->gradual.ncount; i++)
 	{
-		SYSSE_FREE(pdwSideLineTable[i]);
+		BaseGraphSSE_FREE(pdwSideLineTable[i]);
 	}
 }
 // Ìî³ä
 // ¶àµãµÈ¸ß½¥±äÉ«
 // Áî sn = [(x - xn)^2 + (y - yn)^2]^1/2 ±íÊ¾Ä¿±êµãµ½µÚ n ¸ö¶¥µãµÄ¾àÀë
 // ÒÔÆäµ¹ÊýÎªÈ¨ÖØ£¬Ä¿±êÑÕÉ«Îª c_des = (c1/s1 + c2/s2 + ¡­¡­) / (1/s1 + 1/s2 + ¡­¡­)
-void SYColor_FillGradPtContour(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillGradPtContour(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 							   OUT DWORD* pdwBuf,			// Ìî³ä¶ÔÏó
 							   IN int nBufWidth,			// ¶ÔÏó´óÐ¡
 							   IN int nBufHeight,
@@ -1121,7 +1121,7 @@ void SYColor_FillGradPtContour(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 							   IN int nMaskPitch/* = 0*/)	// ÑÚÄ¤»º´æµÄÌØÊâÐÔ£¬pitch¿ÉÄÜ²»µÈÓÚ¿í¶È
 {
 	//assert((pColor != NULL) && (pdwBuf != NULL));
-	//assert(pColor->gradual.ncount >= SYCOLOR_GRAD_VERTEX_MIN);
+	//assert(pColor->gradual.ncount >= BaseGraphCOLOR_GRAD_VERTEX_MIN);
 
 	int nminw = min(nBufWidth - nX, nWidth);
 	int nminh = min(nBufHeight - nY, nHeight);
@@ -1133,8 +1133,8 @@ void SYColor_FillGradPtContour(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	// ÉêÇë»º´æ²¢Éú³ÉÊý¾Ý
 	for (int i=0; i<pColor->gradual.ncount; i++)
 	{
-		ppfDistX[i] = SYSSE_NEW(nminw, float);
-		ppfDistY[i] = SYSSE_NEW(nminh, float);
+		ppfDistX[i] = BaseGraphSSE_NEW(nminw, float);
+		ppfDistY[i] = BaseGraphSSE_NEW(nminh, float);
 		Common_SerialPerfectSquare(ppfDistX[i], nminw, 0.f, 1.f, -(pColor->gradual.multipt.xpt[i] * nminw));
 		Common_SerialPerfectSquare(ppfDistY[i], nminh, 0.f, 1.f, -(pColor->gradual.multipt.ypt[i] * nminh));
 		ppfCrCell[i][0] = (float)GetBGRA_B(pColor->gradual.color[i]);
@@ -1180,14 +1180,14 @@ void SYColor_FillGradPtContour(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	// ÊÍ·Å»º´æ
 	for (int i=0; i<pColor->gradual.ncount; i++)
 	{
-		SYSSE_FREE(ppfDistX[i]);
-		SYSSE_FREE(ppfDistY[i]);
+		BaseGraphSSE_FREE(ppfDistX[i]);
+		BaseGraphSSE_FREE(ppfDistY[i]);
 	}
 }
 // ¶àµã»ì³É½¥±äÉ«
 // Áî sn = [(x - xn)^2 + (y - yn)^2]^1/2 ±íÊ¾Ä¿±êµãµ½µÚ n ¸ö¶¥µãµÄ¾àÀë
 // ÒÔÆäÎªÈ¨ÖØ£¬Ä¿±êÑÕÉ«Îª c_des = (c1 * s1 + c2 * s2 + ¡­¡­) / (s1 + s2 + ¡­¡­)
-void SYColor_FillGradPtBlend(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillGradPtBlend(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 							 OUT DWORD* pdwBuf,				// Ìî³ä¶ÔÏó
 							 IN int nBufWidth,				// ¶ÔÏó´óÐ¡
 							 IN int nBufHeight,
@@ -1214,8 +1214,8 @@ void SYColor_FillGradPtBlend(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	// ÉêÇë»º´æ²¢Éú³ÉÊý¾Ý
 	for (int i=0; i<pColor->gradual.ncount; i++)
 	{
-		ppfDistX[i] = SYSSE_NEW(nminw, float);
-		ppfDistY[i] = SYSSE_NEW(nminh, float);
+		ppfDistX[i] = BaseGraphSSE_NEW(nminw, float);
+		ppfDistY[i] = BaseGraphSSE_NEW(nminh, float);
 		Common_SerialPerfectSquare(ppfDistX[i], nminw, 0.f, 1.f, -(pColor->gradual.multipt.xpt[i] * nminw));
 		Common_SerialPerfectSquare(ppfDistY[i], nminh, 0.f, 1.f, -(pColor->gradual.multipt.ypt[i] * nminh));
 		ppfCrCell[i][0] = (float)GetBGRA_B(pColor->gradual.color[i]);
@@ -1264,12 +1264,12 @@ void SYColor_FillGradPtBlend(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	// ÊÍ·Å»º´æ
 	for (int i=0; i<pColor->gradual.ncount; i++)
 	{
-		SYSSE_FREE(ppfDistX[i]);
-		SYSSE_FREE(ppfDistY[i]);
+		BaseGraphSSE_FREE(ppfDistX[i]);
+		BaseGraphSSE_FREE(ppfDistY[i]);
 	}
 }
 // Ìî³ä
-void SYColor_FillGradTemplet(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillGradTemplet(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 							 OUT DWORD* pdwBuf,				// Ìî³ä¶ÔÏó
 							 IN int nBufWidth,				// ¶ÔÏó´óÐ¡
 							 IN int nBufHeight,
@@ -1307,11 +1307,11 @@ void SYColor_FillGradTemplet(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 	nminw = (nminw/4 + nmod) * 4;
 
 	int nSize = (int)nminh * (int)nminw;
-	BYTE *pbyTemplet = SYSSE_NEW(nSize, BYTE), *pbyTmpTemplet = pbyTemplet;
+	BYTE *pbyTemplet = BaseGraphSSE_NEW(nSize, BYTE), *pbyTmpTemplet = pbyTemplet;
 	
-	if(!SYReadMaskImage(szFilePath,pbyTemplet,nminw,nminh))
+	if(!BaseGraphReadMaskImage(szFilePath,pbyTemplet,nminw,nminh))
 	{
-		SYSSE_FREE(pbyTemplet);
+		BaseGraphSSE_FREE(pbyTemplet);
 		return;
 	}
 
@@ -1322,15 +1322,15 @@ void SYColor_FillGradTemplet(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 
 	// Ò»ÐÐ 256 µÄ½¥±äÌõ
 	DWORD dwLineSize = 256;
-	DWORD *pdwLine = SYSSE_NEW(dwLineSize, DWORD);
+	DWORD *pdwLine = BaseGraphSSE_NEW(dwLineSize, DWORD);
 
 	// Ìî³ä½¥±äÉ«
-	SYColor_FillLineBaseAR_1_Recursive(pdwLine, dwLineSize, pColor->gradual.color,
+	BaseGraphColor_FillLineBaseAR_1_Recursive(pdwLine, dwLineSize, pColor->gradual.color,
 		pColor->gradual.pos, pColor->gradual.mid, pColor->gradual.ncount, 1, 0);
 	// ½ÚµãÑÕÉ«¶¯»­µÄ²âÊÔ°æ
 	if ((pColor->gradual.animation & GRAD_ANI_COLOR) != GRAD_ANI_NONE)
 	{
-		SYColor_ProcAniColor(pdwLine, dwLineSize, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], 0);
+		BaseGraphColor_ProcAniColor(pdwLine, dwLineSize, nFrame, pColor->gradual.aniparam[GRAD_ANI_PARAM_COLOR], 0);
 	}
 	// Ìî³äÄÚ´æ
 	int nmin = min(nminw,nBufWidth);
@@ -1343,13 +1343,13 @@ void SYColor_FillGradTemplet(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 		pbyTmpTemplet += nminw;
 		pdwFillBuf += nBufWidth;
 	}
-	SYSSE_FREE(pbyTemplet);
-	SYSSE_FREE(pdwLine);
+	BaseGraphSSE_FREE(pbyTemplet);
+	BaseGraphSSE_FREE(pdwLine);
 #endif
 }
 
 // Ìî³ä
-void SYColor_FillTexImg(IN SYColor* pColor,			// Ìî³äÑÕÉ«
+void BaseGraphColor_FillTexImg(IN BaseGraphColor* pColor,			// Ìî³äÑÕÉ«
 						OUT DWORD* pdwBuf,			// Ìî³ä¶ÔÏó
 						IN int nBufWidth,			// ¶ÔÏó´óÐ¡
 						IN int nBufHeight,
@@ -1364,68 +1364,68 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 {
 	// »ñÈ¡Í¼Æ¬ÎÆÀíµÄ¾ø¶ÔÄ¿Â¼£¨Í¼Æ¬»á×Ô¶¯Ìí¼Óµ½ÏµÍ³È±Ê¡µÄÒ»¸öÎ»ÖÃ£¬ÔöÇ¿¹ÜÀí£©
 	TCHAR szFilePath[MAX_PATH];
-//	SYImageRes tmpRes;
-//	SYImageInfo tmpInfo;
+//	BaseGraphImageRes tmpRes;
+//	BaseGraphImageInfo tmpInfo;
 	assert(false);
 #if 0
 	szFilePath[0] = _T('\0');
 	GetFileManager()->TagPathTrans(pColor->imgtex.name,szFilePath,GetFileManager()->lpParam);
 //	_tcscpy(szFilePath, g_szImagePath);
 	int xStart,yStart,nImgWidth,nImgHeight;
-	if(!SYGetImgInfo(szFilePath,xStart,yStart,nImgWidth,nImgHeight))
+	if(!BaseGraphGetImgInfo(szFilePath,xStart,yStart,nImgWidth,nImgHeight))
 		return;
 	nImgWidth = nImgWidth * fScale;
 	nImgHeight = nImgHeight * fScale;
-	DWORD *pdwSrc = SYSSE_NEW((int)nImgWidth * (int)nImgHeight, DWORD);		// Ö±½Ó¶Á³ö 32 Î»Êý¾Ý
+	DWORD *pdwSrc = BaseGraphSSE_NEW((int)nImgWidth * (int)nImgHeight, DWORD);		// Ö±½Ó¶Á³ö 32 Î»Êý¾Ý
 	int nSrcX(0), nSrcY(0), nSrcWidth(nImgWidth), nSrcHeight(nImgHeight);
 	int nTmpX(0), nTmpY(0), nStepWidth(nImgWidth), nStepHeight(nImgHeight);
 	int nLeftEdge(0), nTopEdge(0), nRightEdge(0), nBottomEdge(0);
 	int nHorCount(0), nVerCount(0);
 
-	if(!SYReadImage(szFilePath,pdwSrc,nImgWidth, nImgHeight))
+	if(!BaseGraphReadImage(szFilePath,pdwSrc,nImgWidth, nImgHeight))
 	{
-		SYSSE_FREE(pdwSrc);
+		BaseGraphSSE_FREE(pdwSrc);
 		return;
 	}
 	// ¸ù¾ÝÌî³ä·½Ê½Ìî³äÄ¿±ê
-	if (pColor->imgtex.fill == SYCOLOR_IMG_ZOOM)	// À­Éì
+	if (pColor->imgtex.fill == BaseGraphCOLOR_IMG_ZOOM)	// À­Éì
 	{
 		switch (pColor->imgtex.align)
 		{
-		case SYCOLOR_ALIGN_ZOOM_WIDTH:		// °´¿í¶È±È
+		case BaseGraphCOLOR_ALIGN_ZOOM_WIDTH:		// °´¿í¶È±È
 			nSrcHeight = (int)(nSrcWidth * nHeight / (float)nWidth + 0.5f);
 			nSrcY += (((int)nImgHeight - nSrcHeight) >> 1);
 			break;
-		case SYCOLOR_ALIGN_ZOOM_HEIGHT:		// °´¸ß¶È±È
+		case BaseGraphCOLOR_ALIGN_ZOOM_HEIGHT:		// °´¸ß¶È±È
 			nSrcWidth = (int)(nSrcHeight * nWidth / (float)nHeight + 0.5f);
 			nSrcX += (((int)nImgWidth - nSrcWidth) >> 1);
 			break;
-		case SYCOLOR_ALIGN_ZOOM_FULL:		// ÂúÆÁ
+		case BaseGraphCOLOR_ALIGN_ZOOM_FULL:		// ÂúÆÁ
 		default:
 			break;
 		}
 		Common_BitBlt(pdwBuf, nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
 			pdwSrc, nSrcX, nSrcY, nSrcWidth, nSrcHeight, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 	}
-	else if (pColor->imgtex.fill == SYCOLOR_IMG_COPY)		// Ô­Ê¼´óÐ¡¿½±´
+	else if (pColor->imgtex.fill == BaseGraphCOLOR_IMG_COPY)		// Ô­Ê¼´óÐ¡¿½±´
 	{
 		switch (pColor->imgtex.align)
 		{
-		case SYCOLOR_ALIGN_COPY_CENTER:		// ¾ÓÖÐ
+		case BaseGraphCOLOR_ALIGN_COPY_CENTER:		// ¾ÓÖÐ
 			nSrcX += ((nSrcWidth - nWidth) >> 1);
 			nSrcY += ((nSrcHeight - nHeight) >> 1);
 			break;
-		case SYCOLOR_ALIGN_COPY_LEFTBOTTOM:	// ×óÏÂ½Ç
+		case BaseGraphCOLOR_ALIGN_COPY_LEFTBOTTOM:	// ×óÏÂ½Ç
 			nSrcY += (nSrcHeight - nHeight);
 			break;
-		case SYCOLOR_ALIGN_COPY_RIGHTTOP:	// ÓÒÉÏ½Ç
+		case BaseGraphCOLOR_ALIGN_COPY_RIGHTTOP:	// ÓÒÉÏ½Ç
 			nSrcX += (nSrcWidth - nWidth);
 			break;
-		case SYCOLOR_ALIGN_COPY_RIGHTBOTTOM:	// ÓÒÏÂ½Ç
+		case BaseGraphCOLOR_ALIGN_COPY_RIGHTBOTTOM:	// ÓÒÏÂ½Ç
 			nSrcX += (nSrcWidth - nWidth);
 			nSrcY += (nSrcHeight - nHeight);
 			break;
-		case SYCOLOR_ALIGN_COPY_LEFTTOP:	// ×óÉÏ½Ç
+		case BaseGraphCOLOR_ALIGN_COPY_LEFTTOP:	// ×óÉÏ½Ç
 		default:
 			break;
 		}
@@ -1433,12 +1433,12 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 		Common_BitBlt(pdwBuf, nX, nY, nWidth, nHeight, nBufWidth, nBufHeight,
 			pdwSrc, nSrcX, nSrcY, nWidth, nHeight, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 	}
-	else if (pColor->imgtex.fill == SYCOLOR_IMG_TILES)		// Ô­Ê¼´óÐ¡ÅÅÁÐ
+	else if (pColor->imgtex.fill == BaseGraphCOLOR_IMG_TILES)		// Ô­Ê¼´óÐ¡ÅÅÁÐ
 	{
 		// ÒªÇó²»ÄÜÔ½³öÖ¸¶¨µÄÄ¿±ê·¶Î§£¬Òò´Ë²ÉÓÃÄ¿±ê´óÐ¡Îª»ù×¼£¬²¢¶Ô±ßÔµ½øÐÐÌØÊâµÄ´¦Àí
 		switch (pColor->imgtex.align)
 		{
-		case SYCOLOR_ALIGN_COPY_CENTER:			// ¾ÓÖÐ£¨»á³öÏÖËÄ¸ö±ßÔµ£©
+		case BaseGraphCOLOR_ALIGN_COPY_CENTER:			// ¾ÓÖÐ£¨»á³öÏÖËÄ¸ö±ßÔµ£©
 			if (nWidth < nSrcWidth)		// Ä¿±ê±ÈÔ´Ð¡£¬ÔòÈÃÆäÖÐÐÄ¶Ô³Æ
 			{
 				nSrcX += ((nSrcWidth - nWidth) >> 1);
@@ -1476,25 +1476,25 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 				nVerCount += (nTmpX + 1);
 			}
 			break;
-		case SYCOLOR_ALIGN_COPY_LEFTBOTTOM:		// ×óÏÂ½Ç£¨»á³öÏÖÓÒ±ßÔµÓë¶¥±ßÔµ£©
+		case BaseGraphCOLOR_ALIGN_COPY_LEFTBOTTOM:		// ×óÏÂ½Ç£¨»á³öÏÖÓÒ±ßÔµÓë¶¥±ßÔµ£©
 			nHorCount = (int)(nWidth / nSrcWidth);
 			nVerCount = (int)(nHeight / nSrcHeight);
 			nRightEdge = nWidth - nSrcWidth * nHorCount;
 			nTopEdge = nHeight - nSrcHeight * nVerCount;
 			break;
-		case SYCOLOR_ALIGN_COPY_RIGHTTOP:		// ÓÒÉÏ½Ç£¨»á³öÏÖ×ó±ßÔµÓëµ×±ßÔµ£©
+		case BaseGraphCOLOR_ALIGN_COPY_RIGHTTOP:		// ÓÒÉÏ½Ç£¨»á³öÏÖ×ó±ßÔµÓëµ×±ßÔµ£©
 			nHorCount = (int)(nWidth / nSrcWidth);
 			nVerCount = (int)(nHeight / nSrcHeight);
 			nLeftEdge = nWidth - nSrcWidth * nHorCount;
 			nBottomEdge = nHeight - nSrcHeight * nVerCount;
 			break;
-		case SYCOLOR_ALIGN_COPY_RIGHTBOTTOM:	// ÓÒÏÂ½Ç£¨»á³öÏÖ×ó±ßÔµÓë¶¥±ßÔµ£©
+		case BaseGraphCOLOR_ALIGN_COPY_RIGHTBOTTOM:	// ÓÒÏÂ½Ç£¨»á³öÏÖ×ó±ßÔµÓë¶¥±ßÔµ£©
 			nHorCount = (int)(nWidth / nSrcWidth);
 			nVerCount = (int)(nHeight / nSrcHeight);
 			nLeftEdge = nWidth - nSrcWidth * nHorCount;
 			nTopEdge = nHeight - nSrcHeight * nVerCount;
 			break;
-		case SYCOLOR_ALIGN_COPY_LEFTTOP:	// ×óÉÏ½Ç£¨»á³öÏÖÓÒ±ßÔµÓëµ×±ßÔµ£©
+		case BaseGraphCOLOR_ALIGN_COPY_LEFTTOP:	// ×óÉÏ½Ç£¨»á³öÏÖÓÒ±ßÔµÓëµ×±ßÔµ£©
 		default:
 			nHorCount = (int)(nWidth / nSrcWidth);
 			nVerCount = (int)(nHeight / nSrcHeight);
@@ -1589,37 +1589,37 @@ void SYColor_FillTexImg(IN SYColor* pColor,			// Ìî³äÑÕÉ«
 				pdwSrc, nSrcX, nSrcY, nRightEdge, nBottomEdge, (int)nImgWidth, (int)nImgHeight, Common_BUFFER_COPY, Common_PARITY_BOTH);
 		}
 	}
-	SYSSE_FREE(pdwSrc);
+	BaseGraphSSE_FREE(pdwSrc);
 #endif
 }
 // ÑÕÉ«¶¯»­´¦Àí
-void SYColor_ProcAniColor(IN OUT DWORD* pdwLine,
+void BaseGraphColor_ProcAniColor(IN OUT DWORD* pdwLine,
 						  IN int nWidth,
 						  IN int nFrame,
 						  IN float fSpeed,
 						  IN DWORD dwStyle)
 {
 	float fOffset = nFrame * fSpeed;
-	DWORD* pdwTestBuf = SYSSE_NEW(nWidth, DWORD);
+	DWORD* pdwTestBuf = BaseGraphSSE_NEW(nWidth, DWORD);
 	BOOL bReverse = FALSE;
 	int nOffset(0), nOffLen(0);
 
 	fOffset = fOffset - floorf(fOffset * 0.5f) * 2.f;		// [0, 2.f)
-	bReverse = ((dwStyle == SYCOLOR_STYLE_SYMMETRY) && (fOffset >= 1.f));
+	bReverse = ((dwStyle == BaseGraphCOLOR_STYLE_BaseGraphMMETRY) && (fOffset >= 1.f));
 	nOffset = (int)((fOffset - floorf(fOffset)) * nWidth + 0.5f);
 	nOffLen = nWidth - nOffset;
 	if (bReverse)
 	{
-		SYMemcpy_RevDWORD(pdwTestBuf + nOffset, pdwLine + nOffset, nOffLen);
-		SYMemcpy_Line(pdwTestBuf, pdwLine + nOffLen, (nOffset << 2));
+		BaseGraphMemcpy_RevDWORD(pdwTestBuf + nOffset, pdwLine + nOffset, nOffLen);
+		BaseGraphMemcpy_Line(pdwTestBuf, pdwLine + nOffLen, (nOffset << 2));
 	}
 	else
 	{
-		SYMemcpy_Line(pdwTestBuf + nOffset, pdwLine, (nOffLen << 2));
-		SYMemcpy_RevDWORD(pdwTestBuf, pdwLine, nOffset);
+		BaseGraphMemcpy_Line(pdwTestBuf + nOffset, pdwLine, (nOffLen << 2));
+		BaseGraphMemcpy_RevDWORD(pdwTestBuf, pdwLine, nOffset);
 	}
-	SYMemcpy_Line(pdwLine, pdwTestBuf, (nWidth << 2));
-	SYSSE_FREE(pdwTestBuf);
+	BaseGraphMemcpy_Line(pdwLine, pdwTestBuf, (nWidth << 2));
+	BaseGraphSSE_FREE(pdwTestBuf);
 }
   
 BASEGRAPH_COMMON_API void DWORDColorToFloat4( float4* pOutColor,DWORD colorIn )
@@ -1638,10 +1638,10 @@ BASEGRAPH_COMMON_API void Float4ToDWORDColor(DWORD* pColorOut , const float4& Co
 	*pColorOut = BGRA(b,g,r,a);
 }
 
-BASEGRAPH_COMMON_API int SYColor_SaveColor(IN SYColor* pColor,void* pBuffer,int nCount)
+BASEGRAPH_COMMON_API int BaseGraphColor_SaveColor(IN BaseGraphColor* pColor,void* pBuffer,int nCount)
 {
 	int factsize = 0;
-	if(pColor->type == SYCOLOR_TEX_IMG)
+	if(pColor->type == BaseGraphCOLOR_TEX_IMG)
 	{
 		TCHAR szNewName[MAX_PATH];
 		TCHAR szFilePath[MAX_PATH];
@@ -1650,28 +1650,28 @@ BASEGRAPH_COMMON_API int SYColor_SaveColor(IN SYColor* pColor,void* pBuffer,int 
 		//	_tcscpy(pColor->imgtex.name,szFilePath);
 	}
 	if(pBuffer)
-		memcpy(pBuffer,pColor,sizeof(SYColor));
-	factsize = sizeof(SYColor);
+		memcpy(pBuffer,pColor,sizeof(BaseGraphColor));
+	factsize = sizeof(BaseGraphColor);
 	return factsize;
 }
 
-BASEGRAPH_COMMON_API int SYColor_LoadColor(IN SYColor* pColor,void* pBuffer,int nCount)
+BASEGRAPH_COMMON_API int BaseGraphColor_LoadColor(IN BaseGraphColor* pColor,void* pBuffer,int nCount)
 {
 	int factsize = 0;
-	memcpy(pColor,pBuffer,sizeof(SYColor));
-	if(pColor->type == SYCOLOR_TEX_IMG)
+	memcpy(pColor,pBuffer,sizeof(BaseGraphColor));
+	if(pColor->type == BaseGraphCOLOR_TEX_IMG)
 	{
 		//PathFile_LoadFromStg(pColor->imgtex.name,pFileInterface);
 	}
-	factsize = sizeof(SYColor);
+	factsize = sizeof(BaseGraphColor);
 	return factsize;
 }
 
-void SYColor_CreateLinearDefault(OUT SYColor* pColor)	// Ä¿±ê
+void BaseGraphColor_CreateLinearDefault(OUT BaseGraphColor* pColor)	// Ä¿±ê
 {
 	//_ASSERT(pColor != NULL);
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
-	pColor->type = SYCOLOR_GRAD_LINEAR;
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
+	pColor->type = BaseGraphCOLOR_GRAD_LINEAR;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
 	pColor->gradual.color[1] = DEFAULT_GRAD_END_COLOR;
 	pColor->gradual.ncount = DEFAULT_GRAD_PEG_COUNT_2;
@@ -1680,13 +1680,13 @@ void SYColor_CreateLinearDefault(OUT SYColor* pColor)	// Ä¿±ê
 	pColor->gradual.mid[0] = DEFAULT_GRAD_MID;
 	pColor->gradual.linear.frad = DFFAULT_GRAD_LINEAR_RADIAN;
 	pColor->gradual.linear.repeat = DEFAULT_GRAD_RAPEAT;
-	pColor->gradual.linear.style = SYCOLOR_STYLE_SYMMETRY;
+	pColor->gradual.linear.style = BaseGraphCOLOR_STYLE_BaseGraphMMETRY;
 }
-void SYColor_CreateCenterRoundDefault(OUT SYColor* pColor)	// Ä¿±ê
+void BaseGraphColor_CreateCenterRoundDefault(OUT BaseGraphColor* pColor)	// Ä¿±ê
 {
 	//_ASSERT(pColor != NULL);
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
-	pColor->type = SYCOLOR_GRAD_CENTER_ROUND;
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
+	pColor->type = BaseGraphCOLOR_GRAD_CENTER_ROUND;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
 	pColor->gradual.color[1] = DEFAULT_GRAD_END_COLOR;
 	pColor->gradual.ncount = DEFAULT_GRAD_PEG_COUNT_2;
@@ -1696,14 +1696,14 @@ void SYColor_CreateCenterRoundDefault(OUT SYColor* pColor)	// Ä¿±ê
 	pColor->gradual.center.centerx = DEFAULT_GRAD_CENTER_XY;
 	pColor->gradual.center.centery = DEFAULT_GRAD_CENTER_XY;
 	pColor->gradual.center.repeat = DEFAULT_GRAD_RAPEAT;
-	pColor->gradual.center.style = SYCOLOR_STYLE_SYMMETRY;
+	pColor->gradual.center.style = BaseGraphCOLOR_STYLE_BaseGraphMMETRY;
 	pColor->gradual.center.nvertex = 0;
 }
-void SYColor_CreateCenterPolygonDefault(OUT SYColor* pColor)
+void BaseGraphColor_CreateCenterPolygonDefault(OUT BaseGraphColor* pColor)
 {
 	//_ASSERT(pColor != NULL);
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
-	pColor->type = SYCOLOR_GRAD_CENTER_POLYGON;
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
+	pColor->type = BaseGraphCOLOR_GRAD_CENTER_POLYGON;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
 	pColor->gradual.color[1] = DEFAULT_GRAD_END_COLOR;
 	pColor->gradual.ncount = DEFAULT_GRAD_PEG_COUNT_2;
@@ -1713,7 +1713,7 @@ void SYColor_CreateCenterPolygonDefault(OUT SYColor* pColor)
 	pColor->gradual.center.centerx = DEFAULT_GRAD_CENTER_XY;
 	pColor->gradual.center.centery = DEFAULT_GRAD_CENTER_XY;
 	pColor->gradual.center.repeat = DEFAULT_GRAD_RAPEAT;
-	pColor->gradual.center.style = SYCOLOR_STYLE_SYMMETRY;
+	pColor->gradual.center.style = BaseGraphCOLOR_STYLE_BaseGraphMMETRY;
 	pColor->gradual.center.nvertex = DEFAULT_GRAD_PEG_COUNT_4;
 	pColor->gradual.center.xpt[0] = DEFAULT_GRAD_XY_MIN;
 	pColor->gradual.center.ypt[0] = DEFAULT_GRAD_XY_MIN;
@@ -1724,11 +1724,11 @@ void SYColor_CreateCenterPolygonDefault(OUT SYColor* pColor)
 	pColor->gradual.center.xpt[3] = DEFAULT_GRAD_XY_MIN;
 	pColor->gradual.center.ypt[3] = DEFAULT_GRAD_XY_MAX;
 }
-void SYColor_CreateOutlineCircleDefault(OUT SYColor* pColor)
+void BaseGraphColor_CreateOutlineCircleDefault(OUT BaseGraphColor* pColor)
 {
 	//_ASSERT(pColor != NULL);
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
-	pColor->type = SYCOLOR_GRAD_OUTLINE_CIRCLE;
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
+	pColor->type = BaseGraphCOLOR_GRAD_OUTLINE_CIRCLE;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
 	pColor->gradual.color[1] = DEFAULT_GRAD_END_COLOR;
 	pColor->gradual.ncount = DEFAULT_GRAD_PEG_COUNT_2;
@@ -1738,13 +1738,13 @@ void SYColor_CreateOutlineCircleDefault(OUT SYColor* pColor)
 	pColor->gradual.outline.centerx = DEFAULT_GRAD_CENTER_XY;
 	pColor->gradual.outline.centery = DEFAULT_GRAD_CENTER_XY;
 	pColor->gradual.outline.repeat = DEFAULT_GRAD_RAPEAT;
-	pColor->gradual.outline.style = SYCOLOR_STYLE_SYMMETRY;
+	pColor->gradual.outline.style = BaseGraphCOLOR_STYLE_BaseGraphMMETRY;
 }
-void SYColor_CreateOutlinePolygonDefault(OUT SYColor* pColor)
+void BaseGraphColor_CreateOutlinePolygonDefault(OUT BaseGraphColor* pColor)
 {
 	//_ASSERT(pColor != NULL);
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
-	pColor->type = SYCOLOR_GRAD_OUTLINE_POLYGON;
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
+	pColor->type = BaseGraphCOLOR_GRAD_OUTLINE_POLYGON;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
 	pColor->gradual.color[1] = DEFAULT_GRAD_END_COLOR;
 	pColor->gradual.color[2] = DEFAULT_GRAD_START_COLOR;
@@ -1768,10 +1768,10 @@ void SYColor_CreateOutlinePolygonDefault(OUT SYColor* pColor)
 	pColor->gradual.outline.xpt[3] = DEFAULT_GRAD_XY_MIN;
 	pColor->gradual.outline.ypt[3] = DEFAULT_GRAD_XY_MAX;
 }
-void SYColor_CreateMultiPtDefault(OUT SYColor* pColor, IN DWORD dwType)			// ¶àµã½¥±äÉ«µÄÄÇ¼¸¸öÖÖÀà
+void BaseGraphColor_CreateMultiPtDefault(OUT BaseGraphColor* pColor, IN DWORD dwType)			// ¶àµã½¥±äÉ«µÄÄÇ¼¸¸öÖÖÀà
 {
 	//_ASSERT(pColor != NULL);
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
 	pColor->type = dwType;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
 	pColor->gradual.color[1] = DEFAULT_GRAD_END_COLOR;
@@ -1794,11 +1794,11 @@ void SYColor_CreateMultiPtDefault(OUT SYColor* pColor, IN DWORD dwType)			// ¶àµ
 	pColor->gradual.multipt.xpt[3] = DEFAULT_GRAD_XY_MIN;
 	pColor->gradual.multipt.ypt[3] = DEFAULT_GRAD_XY_MAX;
 }
-void SYColor_CreateTempletDefault(OUT SYColor* pColor)
+void BaseGraphColor_CreateTempletDefault(OUT BaseGraphColor* pColor)
 {
 	//_ASSERT(pColor != NULL);
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
-	pColor->type = SYCOLOR_GRAD_TEMPLET;
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
+	pColor->type = BaseGraphCOLOR_GRAD_TEMPLET;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
 	pColor->gradual.color[1] = DEFAULT_GRAD_END_COLOR;
 	pColor->gradual.ncount = DEFAULT_GRAD_PEG_COUNT_2;
@@ -1807,47 +1807,47 @@ void SYColor_CreateTempletDefault(OUT SYColor* pColor)
 	pColor->gradual.mid[0] = DEFAULT_GRAD_MID;
 	pColor->gradual.templet.name[0] = 0;
 }
-void SYColor_CreateTexImgDefault(OUT SYColor* pColor)
+void BaseGraphColor_CreateTexImgDefault(OUT BaseGraphColor* pColor)
 {
 	//_ASSERT(pColor != NULL);
-	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
-	pColor->type = SYCOLOR_TEX_IMG;
+	BaseGraphMemset_LineChar(pColor, 0, sizeof(BaseGraphColor));
+	pColor->type = BaseGraphCOLOR_TEX_IMG;
 	pColor->imgtex.name[0] = 0;
-	pColor->imgtex.fill = SYCOLOR_IMG_ZOOM;
-	pColor->imgtex.align = SYCOLOR_ALIGN_ZOOM_FULL;
+	pColor->imgtex.fill = BaseGraphCOLOR_IMG_ZOOM;
+	pColor->imgtex.align = BaseGraphCOLOR_ALIGN_ZOOM_FULL;
 }
-BASEGRAPH_COMMON_API void SYColor_CreateDefault(OUT SYColor* pColor, IN DWORD dwType)	// ÑÕÉ«ÖÖÀà
+BASEGRAPH_COMMON_API void BaseGraphColor_CreateDefault(OUT BaseGraphColor* pColor, IN DWORD dwType)	// ÑÕÉ«ÖÖÀà
 {
 	switch(dwType)
 	{
-	case SYCOLOR_NONE:
-	case SYCOLOR_HOMO:
-		SYColor_CreateHomo(pColor, DEFAULT_HOMO_COLOR);
+	case BaseGraphCOLOR_NONE:
+	case BaseGraphCOLOR_HOMO:
+		BaseGraphColor_CreateHomo(pColor, DEFAULT_HOMO_COLOR);
 		break;
-	case SYCOLOR_GRAD_LINEAR:
-		SYColor_CreateLinearDefault(pColor);
+	case BaseGraphCOLOR_GRAD_LINEAR:
+		BaseGraphColor_CreateLinearDefault(pColor);
 		break;
-	case SYCOLOR_GRAD_CENTER_ROUND:
-		SYColor_CreateCenterRoundDefault(pColor);
+	case BaseGraphCOLOR_GRAD_CENTER_ROUND:
+		BaseGraphColor_CreateCenterRoundDefault(pColor);
 		break;
-	case SYCOLOR_GRAD_CENTER_POLYGON:
-		SYColor_CreateCenterPolygonDefault(pColor);
+	case BaseGraphCOLOR_GRAD_CENTER_POLYGON:
+		BaseGraphColor_CreateCenterPolygonDefault(pColor);
 		break;
-	case SYCOLOR_GRAD_OUTLINE_CIRCLE:
-		SYColor_CreateOutlineCircleDefault(pColor);
+	case BaseGraphCOLOR_GRAD_OUTLINE_CIRCLE:
+		BaseGraphColor_CreateOutlineCircleDefault(pColor);
 		break;
-	case SYCOLOR_GRAD_OUTLINE_POLYGON:
-		SYColor_CreateOutlinePolygonDefault(pColor);
+	case BaseGraphCOLOR_GRAD_OUTLINE_POLYGON:
+		BaseGraphColor_CreateOutlinePolygonDefault(pColor);
 		break;
-	case SYCOLOR_GRAD_PT_CONTOUR:
-	case SYCOLOR_GRAD_PT_BLEND:
-		SYColor_CreateMultiPtDefault(pColor, dwType);
+	case BaseGraphCOLOR_GRAD_PT_CONTOUR:
+	case BaseGraphCOLOR_GRAD_PT_BLEND:
+		BaseGraphColor_CreateMultiPtDefault(pColor, dwType);
 		break;
-	case SYCOLOR_GRAD_TEMPLET:
-		SYColor_CreateTempletDefault(pColor);
+	case BaseGraphCOLOR_GRAD_TEMPLET:
+		BaseGraphColor_CreateTempletDefault(pColor);
 		break;
-	case SYCOLOR_TEX_IMG:
-		SYColor_CreateTexImgDefault(pColor);
+	case BaseGraphCOLOR_TEX_IMG:
+		BaseGraphColor_CreateTexImgDefault(pColor);
 		break;
 	default:
 		break;

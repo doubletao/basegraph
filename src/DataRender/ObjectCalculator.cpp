@@ -346,9 +346,9 @@ bool ObjectCalculator::NeedUpdateBuffer()
 	return false;
 }
 
-SYRenderUnitView * ObjectCalculator::GetRenderUnitView(CString strUnitID)
+BaseGraphRenderUnitView * ObjectCalculator::GetRenderUnitView(CString strUnitID)
 {
-	SYRenderUnitView * pRenderUnitView = nullptr;
+	BaseGraphRenderUnitView * pRenderUnitView = nullptr;
 	if (m_mapRenderUnitView.count(strUnitID) > 0)
 	{
 		pRenderUnitView = m_mapRenderUnitView[strUnitID];
@@ -356,7 +356,7 @@ SYRenderUnitView * ObjectCalculator::GetRenderUnitView(CString strUnitID)
 	return pRenderUnitView;
 }
 
-void ObjectCalculator::AddRenderUnitView(CString strUnitID, SYRenderUnitView * pRenderUnitView)
+void ObjectCalculator::AddRenderUnitView(CString strUnitID, BaseGraphRenderUnitView * pRenderUnitView)
 {
 	if (m_mapRenderUnitView.count(strUnitID) > 0)
 	{
@@ -367,7 +367,7 @@ void ObjectCalculator::AddRenderUnitView(CString strUnitID, SYRenderUnitView * p
 
 void ObjectCalculator::ClearRenderUnitView()
 {
-	for (std::map<CString, SYRenderUnitView *>::iterator it = m_mapRenderUnitView.begin(); it != m_mapRenderUnitView.end(); it++)
+	for (std::map<CString, BaseGraphRenderUnitView *>::iterator it = m_mapRenderUnitView.begin(); it != m_mapRenderUnitView.end(); it++)
 	{
 		SAFE_DELETE(it->second);
 	}
@@ -458,9 +458,9 @@ inline bool ObjectCalculator::ValidAction()
 	return bRet;
 }
 
-SYItemRenderUnit * ObjectCalculator::GetRenderUnit(int nIndex, const BaseARray & pUnitArray)
+BaseGraphItemRenderUnit * ObjectCalculator::GetRenderUnit(int nIndex, const BaseARray & pUnitArray)
 {
-	return (SYItemRenderUnit*)BaseAR_GetAt(&pUnitArray, nIndex);
+	return (BaseGraphItemRenderUnit*)BaseAR_GetAt(&pUnitArray, nIndex);
 }
 
 void ObjectCalculator::GetSceneCenter(float3& pt)
@@ -517,9 +517,9 @@ EmObjectChgLevel ObjectCalculator::GetChgLevel()
 	return m_emChgLevel;
 }
 
-////////////////////////SYRenderUnitView//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////BaseGraphRenderUnitView//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-SYRenderUnitView::SYRenderUnitView()
+BaseGraphRenderUnitView::BaseGraphRenderUnitView()
 {
 	bChanged = FALSE;
 	pUnitBuffer = NULL;
@@ -528,7 +528,7 @@ SYRenderUnitView::SYRenderUnitView()
 	bUseColorAlpha = FALSE;
 }
 
-SYRenderUnitView::~SYRenderUnitView()
+BaseGraphRenderUnitView::~BaseGraphRenderUnitView()
 {
 	bChanged = FALSE;
 	if (pUnitBuffer)

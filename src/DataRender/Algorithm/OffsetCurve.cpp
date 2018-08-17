@@ -25,8 +25,8 @@ typedef CBaseARray<OffsetNode *> COffsetNodeArray;
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-int _SYOC_LineCross(point2f* ptstart,point2f* ptend,point2f * pptShift ,int nShiftCount,point2f* ptout,int nstart);
-int SYOC_GetMinYPt(IN vectorcell* pCurveCell )//µÃµ½×îÐ¡yÖµµã //¶à±ßÐÎ¶¥µãÊý×é¡¡¶¥µãÊý¾ÝÀàÐÍ£ºShiftNode*
+int _BaseGraphOC_LineCross(point2f* ptstart,point2f* ptend,point2f * pptShift ,int nShiftCount,point2f* ptout,int nstart);
+int BaseGraphOC_GetMinYPt(IN vectorcell* pCurveCell )//µÃµ½×îÐ¡yÖµµã //¶à±ßÐÎ¶¥µãÊý×é¡¡¶¥µãÊý¾ÝÀàÐÍ£ºShiftNode*
 {
 	int nPtCount = pCurveCell->npoint;
 	if(nPtCount<=0) 
@@ -53,7 +53,7 @@ int SYOC_GetMinYPt(IN vectorcell* pCurveCell )//µÃµ½×îÐ¡yÖµµã //¶à±ßÐÎ¶¥µãÊý×é¡¡
 		}
 	}
 	return nRetNum;
-}//end of SYOC_GetMinYPt
+}//end of BaseGraphOC_GetMinYPt
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÅÐ¶Ï×ó²àÊÇ·ñÎªÍâ²à
@@ -62,7 +62,7 @@ int SYOC_GetMinYPt(IN vectorcell* pCurveCell )//µÃµ½×îÐ¡yÖµµã //¶à±ßÐÎ¶¥µãÊý×é¡¡
 //·µ»ØÖµ£ºÈôpt2ÔÚÏòÁ¿pt0,pt1ÓÒ²à, Ôò·µ»Øtrue
 //×¢Òâ! Ä¬ÈÏÇ°ÌáÊÇ ,Èýµã²»¹²Ïß
 //------------------------------------------------------------------
-BASEGRAPH_DATARENDER_API BOOL SYOC_PtOnRight(IN point2f pt0,IN point2f pt1,IN point2f pt2)//ÅÐ¶Ï×ó²àÊÇ·ñÍâ²à
+BASEGRAPH_DATARENDER_API BOOL BaseGraphOC_PtOnRight(IN point2f pt0,IN point2f pt1,IN point2f pt2)//ÅÐ¶Ï×ó²àÊÇ·ñÍâ²à
 {
 	if(fabs(pt2.y - pt0.y) < ABS_FLOAT_0 && fabs(pt1.y - pt0.y) < ABS_FLOAT_0 )
 	{
@@ -76,13 +76,13 @@ BASEGRAPH_DATARENDER_API BOOL SYOC_PtOnRight(IN point2f pt0,IN point2f pt1,IN po
 	{
 		return FALSE;//ÓÒ²à
 	}
-}//end of SYOC_PtOnRight
+}//end of BaseGraphOC_PtOnRight
 
-BOOL SYOC_IsAntiClockwise(IN vectorcell* pCurveCell )
+BOOL BaseGraphOC_IsAntiClockwise(IN vectorcell* pCurveCell )
 {
 	/////////////////////////////////////////////////
 	//µÃµ½×îÐ¡£ùÖµµã¡£
-	int nNum = SYOC_GetMinYPt(pCurveCell);
+	int nNum = BaseGraphOC_GetMinYPt(pCurveCell);
 
 	//ÅÐ¶ÏÄÄ²àÊÇÍâ²à
 	BOOL bAntiClockwise;
@@ -108,17 +108,17 @@ BOOL SYOC_IsAntiClockwise(IN vectorcell* pCurveCell )
 		pt3 = pCurveCell->point[nNum+1];
 	}
 
-	bAntiClockwise = SYOC_PtOnRight(pt1,pt2,pt3);
+	bAntiClockwise = BaseGraphOC_PtOnRight(pt1,pt2,pt3);
 	return bAntiClockwise;
-} // END OF SYOC_IsAntiClockwise
+} // END OF BaseGraphOC_IsAntiClockwise
 
 //------------------------------------------------------------------
-//º¯Êý SYOC_NearLine ËµÃ÷
+//º¯Êý BaseGraphOC_NearLine ËµÃ÷
 //¹¦ÄÜ£ºÈý´ÎBezierÇúÏß¿ØÖÆ¶¥µã½Ó½üÒ»ÌõÏß¶Î
 //ÊäÈë£º
 //Êä³ö£º
 //------------------------------------------------------------------
-BOOL SYOC_NearLine(IN point2f* ptf ) 
+BOOL BaseGraphOC_NearLine(IN point2f* ptf ) 
 {
 	if (g_nNearLineClosed)
 	{
@@ -172,7 +172,7 @@ BOOL SYOC_NearLine(IN point2f* ptf )
 	}
 	return FALSE;
 	//ÐèÒª·Ö¸î	
-} // end of SYOC_NearLine
+} // end of BaseGraphOC_NearLine
 
 
 void AddCurve2PtfPoly(OUT BaseARray * pptrPoly, OUT BaseARray * pptrPolyNorm, IN pointf * ctrlPoints,float* falllength)
@@ -183,7 +183,7 @@ void AddCurve2PtfPoly(OUT BaseARray * pptrPoly, OUT BaseARray * pptrPolyNorm, IN
 	if(falllength)
 		flength = *falllength;
 	point3f *ptfNew;
-	if ( SYOC_NearLine(ctrlPoints) )
+	if ( BaseGraphOC_NearLine(ctrlPoints) )
 	{
 		pointf ptNormal;
 		for(int i = 2;i >= 0;i --)
@@ -266,7 +266,7 @@ void AddCurve2PtlfPoly(OUT BaseARray * pptrPoly, OUT BaseARray * pptrPolyNorm, I
 	if(falllength)
 		flength = *falllength;
 	point3lf *ptfNew;
-	if ( SYOC_NearLine(ctrlPoints) )
+	if ( BaseGraphOC_NearLine(ctrlPoints) )
 	{
 		pointf ptNormal;
 		for(int i = 2;i >= 0;i --)
@@ -339,17 +339,17 @@ void AddCurve2PtlfPoly(OUT BaseARray * pptrPoly, OUT BaseARray * pptrPolyNorm, I
 	}
 } // END OF AddCurve2PtfPoly
 //------------------------------------------------------------------
-//º¯Êý SYOC_AddCurve2PtfPoly ËµÃ÷
+//º¯Êý BaseGraphOC_AddCurve2PtfPoly ËµÃ÷
 //¹¦ÄÜ£º½«Èý´ÎBezierÇúÏß¶Î×ª»¯²¢¼ÓÈë¶à±ßÐÎÊý×é
 //ÊäÈë£º
 //Êä³ö£º
 //------------------------------------------------------------------
-void SYOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, IN point2f * ctrlPoints)
+void BaseGraphOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, IN point2f * ctrlPoints)
 {
 	// ½Ó½üÖ±Ïß£¬ÔòÖ±½Ó¼ÓÈë
 	// ·ñÔò·Ö³ÉÁ½¶Î£¬µÝ¹éµ÷ÓÃ
 	point2f *ptfNew;
-	if ( SYOC_NearLine(ctrlPoints) )
+	if ( BaseGraphOC_NearLine(ctrlPoints) )
 	{
 		ptfNew = new point2f;
 		ptfNew->x = ctrlPoints[3].x;
@@ -388,10 +388,10 @@ void SYOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, IN point2f * ctr
 		ptfLatter[0].x = ptfFormer[3].x;
 		ptfLatter[0].y = ptfFormer[3].y;
 
-		SYOC_AddCurve2PtfPoly(pptrPoly, ptfFormer ) ;
-		SYOC_AddCurve2PtfPoly(pptrPoly, ptfLatter ) ;
+		BaseGraphOC_AddCurve2PtfPoly(pptrPoly, ptfFormer ) ;
+		BaseGraphOC_AddCurve2PtfPoly(pptrPoly, ptfLatter ) ;
 	}
-} // END OF SYOC_AddCurve2PtfPoly
+} // END OF BaseGraphOC_AddCurve2PtfPoly
 
 
 //------------------------------------------------------------------
@@ -400,7 +400,7 @@ void SYOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, IN point2f * ctr
 //ÊäÈë£º
 //Êä³ö£ºpoint3f,x,yÎª×ª»»ºóx£¬yÖµ£¬zÎªµ½¿ªÍ·³¤¶È¡£
 //------------------------------------------------------------------
-void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex)
+void BaseGraphOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex)
 {
 	int i, j;
 	point3f * pptf = NULL;
@@ -518,7 +518,7 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT 
 } // END OF Cell2PtfPoly 
 
 
-void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex)
+void BaseGraphOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT BaseARray * pptrPolyNorm,int* pMidPtIndex)
 {
 	int i, j;
 	point3lf * pptf = NULL;
@@ -636,7 +636,7 @@ void SYOC_Cell2PtlfPoly(IN vectorcell * pCurveCell, OUT BaseARray * pptrPoly,OUT
 	}
 } // END OF Cell2PtfPoly 
 
-void SYOC_DelColine(IN OUT BaseARray *pptfArr,int* pMidPtIndex)
+void BaseGraphOC_DelColine(IN OUT BaseARray *pptfArr,int* pMidPtIndex)
 {
 	int i;
 	pointf *prePt = NULL;
@@ -684,16 +684,16 @@ void SYOC_DelColine(IN OUT BaseARray *pptfArr,int* pMidPtIndex)
 	}
 } // END OF DelColine
 //------------------------------------------------------------------
-//º¯Êý SYOC_AddCurve2PtfPoly ËµÃ÷
+//º¯Êý BaseGraphOC_AddCurve2PtfPoly ËµÃ÷
 //¹¦ÄÜ£º½«Èý´ÎBezierÇúÏß¶Î×ª»¯²¢¼ÓÈë¶à±ßÐÎÊý×é
 //ÊäÈë£º
 //Êä³ö£º
 //------------------------------------------------------------------
-void SYOC_AddCurve2PtfPoly(OUT point2f * pptPoly, OUT int &nPolyCount, IN point2f * ctrlPoints)
+void BaseGraphOC_AddCurve2PtfPoly(OUT point2f * pptPoly, OUT int &nPolyCount, IN point2f * ctrlPoints)
 {
 	// ½Ó½üÖ±Ïß£¬ÔòÖ±½Ó¼ÓÈë
 	// ·ñÔò·Ö³ÉÁ½¶Î£¬µÝ¹éµ÷ÓÃ
-	if ( SYOC_NearLine(ctrlPoints) )
+	if ( BaseGraphOC_NearLine(ctrlPoints) )
 	{
 		if (pptPoly)
 		{
@@ -734,18 +734,18 @@ void SYOC_AddCurve2PtfPoly(OUT point2f * pptPoly, OUT int &nPolyCount, IN point2
 		ptfLatter[0].x = ptfFormer[3].x;
 		ptfLatter[0].y = ptfFormer[3].y;
 
-		SYOC_AddCurve2PtfPoly(pptPoly, nPolyCount, ptfFormer ) ;
-		SYOC_AddCurve2PtfPoly(pptPoly, nPolyCount, ptfLatter ) ;
+		BaseGraphOC_AddCurve2PtfPoly(pptPoly, nPolyCount, ptfFormer ) ;
+		BaseGraphOC_AddCurve2PtfPoly(pptPoly, nPolyCount, ptfLatter ) ;
 	}
-} // END OF SYOC_AddCurve2PtfPoly
+} // END OF BaseGraphOC_AddCurve2PtfPoly
 
 //------------------------------------------------------------------
-//º¯Êý SYOC_Cell2PtfPoly ËµÃ÷
+//º¯Êý BaseGraphOC_Cell2PtfPoly ËµÃ÷
 //¹¦ÄÜ£º½«pCurveCell×ª»¯Îª¶à±ßÐÎÊý×é
 //ÊäÈë£º
 //Êä³ö£º
 //------------------------------------------------------------------
-void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT point2f * pptPoly, OUT int &nPolyCount)
+void BaseGraphOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT point2f * pptPoly, OUT int &nPolyCount)
 {
 	int i, j;
 	point2f * pptf = NULL;
@@ -792,7 +792,7 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT point2f * pptPoly, OUT in
 
 				nPolyCount++;
 
-				SYOC_AddCurve2PtfPoly(pptPoly, nPolyCount, ctrlPoints);
+				BaseGraphOC_AddCurve2PtfPoly(pptPoly, nPolyCount, ctrlPoints);
 
 				k++;
 				i = k;
@@ -837,12 +837,12 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT point2f * pptPoly, OUT in
 
 			nPolyCount++;
 
-			SYOC_AddCurve2PtfPoly(pptPoly, nPolyCount, ctrlPoints);
+			BaseGraphOC_AddCurve2PtfPoly(pptPoly, nPolyCount, ctrlPoints);
 
 			i += 2;
 		}
 	}
-} // END OF SYOC_Cell2PtfPoly
+} // END OF BaseGraphOC_Cell2PtfPoly
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÈ¥µôÏàÁÚÖØºÏµã
@@ -850,7 +850,7 @@ void SYOC_Cell2PtfPoly(IN vectorcell * pCurveCell, OUT point2f * pptPoly, OUT in
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray, // point2f*ÐÍ
+void BaseGraphOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray, // point2f*ÐÍ
 					 IN OUT int* pMidIndex)
 {
 	int nPtCount = (int)BaseAR_GetSize(pptrOutlineArray);
@@ -880,7 +880,7 @@ void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray, // point2f*ÐÍ
 		j -= nDel;
 	}
 
-} // END OF SYOC_DelOverlap
+} // END OF BaseGraphOC_DelOverlap
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÈ¥µôÏàÁÚÖØºÏµã
@@ -888,7 +888,7 @@ void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray, // point2f*ÐÍ
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,  // point2f*ÐÍ
+void BaseGraphOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,  // point2f*ÐÍ
 					 IN OUT BaseARray *pptrNormArray  // point2f*ÐÍ
 					 )
 {
@@ -925,7 +925,7 @@ void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,  // point2f*ÐÍ
 		j -= nDel;
 	}
 
-} // END OF SYOC_DelOverlap
+} // END OF BaseGraphOC_DelOverlap
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÈ¥µôÏàÁÚ¹²ÏßÈßÓàµã
@@ -933,7 +933,7 @@ void SYOC_DelOverlap(IN OUT BaseARray *pptrOutlineArray,  // point2f*ÐÍ
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_DelColine(IN OUT CBasePoint2fPtrArray *pptfArr)
+void BaseGraphOC_DelColine(IN OUT CBasePoint2fPtrArray *pptfArr)
 {
 	int i;
 	point2f *prePt = NULL;
@@ -983,7 +983,7 @@ void SYOC_DelColine(IN OUT CBasePoint2fPtrArray *pptfArr)
 			}
 		}
 	}
-} // END OF SYOC_DelColine
+} // END OF BaseGraphOC_DelColine
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÈ¥µôÏàÁÚ¹²ÏßÈßÓàµã
@@ -991,7 +991,7 @@ void SYOC_DelColine(IN OUT CBasePoint2fPtrArray *pptfArr)
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_DelColine(IN OUT BaseARray *pptfArr, IN OUT BaseARray *pptfArrNorm)
+void BaseGraphOC_DelColine(IN OUT BaseARray *pptfArr, IN OUT BaseARray *pptfArrNorm)
 {
 	int i;
 	point2f *prePt = NULL;
@@ -1050,7 +1050,7 @@ void SYOC_DelColine(IN OUT BaseARray *pptfArr, IN OUT BaseARray *pptfArrNorm)
 			}
 		}
 	}
-} // END OF SYOC_DelColine
+} // END OF BaseGraphOC_DelColine
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÈ¥µôÖØºÏµã
@@ -1058,7 +1058,7 @@ void SYOC_DelColine(IN OUT BaseARray *pptfArr, IN OUT BaseARray *pptfArrNorm)
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_DelOverlap(IN OUT point2f * pPoly, int &nPtCount)
+void BaseGraphOC_DelOverlap(IN OUT point2f * pPoly, int &nPtCount)
 {
 	// È¥µôÏàÁÚÖØºÏµã
 	int nDel = 0;
@@ -1109,7 +1109,7 @@ void SYOC_DelOverlap(IN OUT point2f * pPoly, int &nPtCount)
 		}
 		nPtCount -= nDelAll;
 	}	
-} // END OF SYOC_DelOverlap
+} // END OF BaseGraphOC_DelOverlap
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÈ¥µôÏàÁÚ¹²ÏßÈßÓàµã
@@ -1117,7 +1117,7 @@ void SYOC_DelOverlap(IN OUT point2f * pPoly, int &nPtCount)
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_DelColine(IN OUT point2f * pPoly, int &nSize)
+void BaseGraphOC_DelColine(IN OUT point2f * pPoly, int &nSize)
 {
 	int i;
 	point2f prePt, curPt, nextPt;
@@ -1164,7 +1164,7 @@ void SYOC_DelColine(IN OUT point2f * pPoly, int &nSize)
 			}
 		}
 	}
-} // END OF SYOC_DelColine
+} // END OF BaseGraphOC_DelColine
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÈ¥µôÈßÓàµã
@@ -1172,10 +1172,10 @@ void SYOC_DelColine(IN OUT point2f * pPoly, int &nSize)
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_DelRedundance(IN OUT point2f * pPoly, int &nPtCount)
+void BaseGraphOC_DelRedundance(IN OUT point2f * pPoly, int &nPtCount)
 {
-	SYOC_DelOverlap(pPoly, nPtCount);
-	SYOC_DelColine(pPoly, nPtCount);
+	BaseGraphOC_DelOverlap(pPoly, nPtCount);
+	BaseGraphOC_DelColine(pPoly, nPtCount);
 }
 
 //------------------------------------------------------------------
@@ -1184,7 +1184,7 @@ void SYOC_DelRedundance(IN OUT point2f * pPoly, int &nPtCount)
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_Identify(point2f &v)
+void BaseGraphOC_Identify(point2f &v)
 {
 	float d = sqrt(v.x * v.x + v.y * v.y);
 	//ASSERT(d > ABS_FLOAT_0);
@@ -1195,7 +1195,7 @@ void SYOC_Identify(point2f &v)
 
 	v.x /= d;
 	v.y /= d;
-} // END OF SYOC_Identify
+} // END OF BaseGraphOC_Identify
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÅÐ¶ÏÁ½¸öÏòÁ¿¹éÒ»»¯ºóÊÇ·ñÏàµÈ
@@ -1203,7 +1203,7 @@ void SYOC_Identify(point2f &v)
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-BOOL SYOC_SameDir(const point2f *p)
+BOOL BaseGraphOC_SameDir(const point2f *p)
 {
 	point2f v0, v1;
 	v0.x = p[1].x - p[0].x;
@@ -1212,14 +1212,14 @@ BOOL SYOC_SameDir(const point2f *p)
 	v1.y = p[3].y - p[2].y;
 
 	// ¹éÒ»»¯ÏòÁ¿
-	SYOC_Identify(v0);
-	SYOC_Identify(v1);
+	BaseGraphOC_Identify(v0);
+	BaseGraphOC_Identify(v1);
 	if ( abs(v0.x - v1.x) < ABS_FLOAT_0 && abs(v0.y - v1.y) < ABS_FLOAT_0 ) 
 	{
 		return TRUE;
 	}
 	return FALSE;
-} // END OF SYOC_SameDir
+} // END OF BaseGraphOC_SameDir
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÆ«ÒÆÏß¶Îp[1], p[2]
@@ -1227,7 +1227,7 @@ BOOL SYOC_SameDir(const point2f *p)
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_CalShiftPt(IN const point2f *p, // 0, 1, 2, 3
+void BaseGraphOC_CalShiftPt(IN const point2f *p, // 0, 1, 2, 3
 					 IN const float fDis, 
 					 IN const int ndirect, 
 					 OUT point2f &Q1, 
@@ -1283,20 +1283,20 @@ void SYOC_CalShiftPt(IN const point2f *p, // 0, 1, 2, 3
 	{
 		bTemp = TRUE;
 	}
-	if ( !(bTemp^SYOC_PtOnRight(p[1],p[2],Q1)) ) 
+	if ( !(bTemp^BaseGraphOC_PtOnRight(p[1],p[2],Q1)) ) 
 	{
 		Q1 = p[1] * 2 -Q1;
 		//Q1.x = p[1].x + p[1].x - Q1.x;
 		//Q1.y = p[1].y + p[1].y - Q1.y;
 	}
 
-	if ( !(bTemp^SYOC_PtOnRight(p[1],p[2],Q2)) ) 
+	if ( !(bTemp^BaseGraphOC_PtOnRight(p[1],p[2],Q2)) ) 
 	{
 		Q2 = p[2]* 2 - Q2;
 		//Q2.x = p[2].x + p[2].x - Q2.x;
 		//Q2.y = p[2].y + p[2].y - Q2.y;
 	}
-} // END OF SYOC_CalShiftPt
+} // END OF BaseGraphOC_CalShiftPt
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÆ«ÒÆÏß¶Îp[1], p[2], Á½¶Ô½ÇÏß²»Æ½ÐÐ
@@ -1304,7 +1304,7 @@ void SYOC_CalShiftPt(IN const point2f *p, // 0, 1, 2, 3
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_CalShiftPt2(IN const point2f *p, // 0, 1, 2, 3
+void BaseGraphOC_CalShiftPt2(IN const point2f *p, // 0, 1, 2, 3
 					 IN const float fDis, 
 					 IN const int ndirect,
 					 OUT point2f &Q1, 
@@ -1321,16 +1321,16 @@ void SYOC_CalShiftPt2(IN const point2f *p, // 0, 1, 2, 3
 	v2.y = p[3].y - p[2].y;
 
 	// ¹éÒ»»¯ÏòÁ¿
-	SYOC_Identify(v0);
-	SYOC_Identify(v1);
-	SYOC_Identify(v2);
+	BaseGraphOC_Identify(v0);
+	BaseGraphOC_Identify(v1);
+	BaseGraphOC_Identify(v2);
 
 	// ×ª»¯³É¶Ô½ÇÏß·½Ïò, ×¢Òâ! ·½Ïò¿ÉÄÜÊÇ·´Ïò
 	v0 = v1 - v0;
 	v2 = v2 - v1;
 
-	SYOC_Identify(v0);
-	SYOC_Identify(v2);
+	BaseGraphOC_Identify(v0);
+	BaseGraphOC_Identify(v2);
 
 	// ¹éÒ»»¯ºóµÄµã»ý, ¾ÍÊÇcos, È»ºó¿ÉÒÔËã³ösin. È»ºófDis/sin¼´ÏòÁ¿³¤¶È. ÔÙ³ËÒÔ½ÇÆ½·ÖÏßµÄµ¥Î»ÏòÁ¿, ¾Í¿ÉÒÔµÃµ½ÏòÁ¿. È»ºóÔÙ¼ÓÉÏ¶Ëµã¾ÍµÃµ½
 	float fCos = v2.x * v1.x + v2.y * v1.y;
@@ -1353,13 +1353,13 @@ void SYOC_CalShiftPt2(IN const point2f *p, // 0, 1, 2, 3
 	{
 		bTemp = FALSE;
 	}
-	if ( !(bTemp^SYOC_PtOnRight(p[1],p[2],Q1)) ) 
+	if ( !(bTemp^BaseGraphOC_PtOnRight(p[1],p[2],Q1)) ) 
 	{
 		Q1.x = p[1].x + p[1].x - Q1.x;
 		Q1.y = p[1].y + p[1].y - Q1.y;
 	}
 
-	if ( !(bTemp^SYOC_PtOnRight(p[1],p[2],Q2)) ) 
+	if ( !(bTemp^BaseGraphOC_PtOnRight(p[1],p[2],Q2)) ) 
 	{
 		Q2.x = p[2].x + p[2].x - Q2.x;
 		Q2.y = p[2].y + p[2].y - Q2.y;
@@ -1373,16 +1373,16 @@ void SYOC_CalShiftPt2(IN const point2f *p, // 0, 1, 2, 3
 		point2f MCC;
 		MCC.x = p[1].x + v0.x * a;
 		MCC.y = p[1].y + v0.y * a;
-		if ( !(bTemp^SYOC_PtOnRight(p[1],p[2],MCC)) ) 
+		if ( !(bTemp^BaseGraphOC_PtOnRight(p[1],p[2],MCC)) ) 
 		{
 			return;
 		}
 		Q1 = Q2 = MCC;
 	}
 
-} // END OF SYOC_CalShiftPt2
+} // END OF BaseGraphOC_CalShiftPt2
 
-int	SYOC_arc_near_line(point2f ptcenter,point2f ptstart,point2f ptend,float frad)
+int	BaseGraphOC_arc_near_line(point2f ptcenter,point2f ptstart,point2f ptend,float frad)
 {
 	point2f ptv1 = ptstart - ptcenter;
 	point2f ptv2 = ptend - ptcenter;
@@ -1401,12 +1401,12 @@ int	SYOC_arc_near_line(point2f ptcenter,point2f ptstart,point2f ptend,float frad
 	//	return 1;
 	//return 0;
 
-} // END OF SYOC_arc_near_line
+} // END OF BaseGraphOC_arc_near_line
 
-int SYOC_makearc(COffsetNodeArray* parray,point2f ptcenter,point2f ptstart,point2f ptend,float rad)
+int BaseGraphOC_makearc(COffsetNodeArray* parray,point2f ptcenter,point2f ptstart,point2f ptend,float rad)
 {
 	point2f ptv1 = ptstart - ptcenter;
-	if(SYOC_arc_near_line(ptcenter,ptstart,ptend,rad))
+	if(BaseGraphOC_arc_near_line(ptcenter,ptstart,ptend,rad))
 	{
 		OffsetNode *pNode = new OffsetNode;
 		pNode->pt = ptend;
@@ -1436,10 +1436,10 @@ int SYOC_makearc(COffsetNodeArray* parray,point2f ptcenter,point2f ptstart,point
 			int a = 0;
 		}
 	}
-	SYOC_makearc(parray,ptcenter,ptstart,ptmid,rad);
-	SYOC_makearc(parray,ptcenter,ptmid,ptend,rad);
+	BaseGraphOC_makearc(parray,ptcenter,ptstart,ptmid,rad);
+	BaseGraphOC_makearc(parray,ptcenter,ptmid,ptend,rad);
 	return 1;
-} // END OF SYOC_makearc
+} // END OF BaseGraphOC_makearc
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÆ«ÒÆµÃµ½Æ«ÒÆÇúÏß
@@ -1447,7 +1447,7 @@ int SYOC_makearc(COffsetNodeArray* parray,point2f ptcenter,point2f ptstart,point
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_ShiftData(IN BaseARray *pptSrcArr, 
+void BaseGraphOC_ShiftData(IN BaseARray *pptSrcArr, 
 				   OUT COffsetNodeArray *pOffsetArray, // OffsetNode*ÐÍ
 				   IN float fDis,
 				   IN int ndirect
@@ -1494,7 +1494,7 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 		
 		ptstart.x = p[1].x + fDis * (p[1].x - p[2].x) * fD;
 		ptstart.y = p[1].y + fDis * (p[1].y - p[2].y) * fD;
-		SYOC_makearc(pOffsetArray, p[1], ptstart, ptend, fDis);
+		BaseGraphOC_makearc(pOffsetArray, p[1], ptstart, ptend, fDis);
 	}
 	else
 	{
@@ -1502,8 +1502,8 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 		prePt = (point2f*)BaseAR_GetAt(pptSrcArr,nPtCount-2);
 		p[0] = *prePt;
 		
-		if (   ( !SYOC_PtOnRight(p[0],p[1],p[2]) && (ndirect == -1) )
-			|| ( SYOC_PtOnRight(p[0],p[1],p[2]) && (ndirect == 1) )
+		if (   ( !BaseGraphOC_PtOnRight(p[0],p[1],p[2]) && (ndirect == -1) )
+			|| ( BaseGraphOC_PtOnRight(p[0],p[1],p[2]) && (ndirect == 1) )
 			)
 		{
 			// Èç¹ûÊÇ½ÇÍâ, Éú³ÉÔ²»¡. ×îºóÒ»¸öµã²»ÔÙÌí¼ÓÈÎºÎ¶«Î÷.(ÒòÎª±ÕºÏÇé¿öÏÂ, ×îºóÒ»¸öµã, ¾ÍÊÇµÚÒ»¸öµã)
@@ -1523,7 +1523,7 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 			ptend.x = p[1].x - ndirect * fDis * (p[2].y - p[1].y) * fD;
 			ptend.y = p[1].y + ndirect * fDis * (p[2].x - p[1].x) * fD;
 			
-			SYOC_makearc(pOffsetArray, p[1], ptstart, ptend, fDis);
+			BaseGraphOC_makearc(pOffsetArray, p[1], ptstart, ptend, fDis);
 		}
 		else
 		{
@@ -1577,20 +1577,20 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 
 		// 1. ÏÈÇóAngleBisector i, i+1.
 		// 1.1 Èç¹ûÁ½¸ö½ÇÆ½·ÖÏßÆ½ÐÐ, Ö±½ÓÇó¶ÔÓ¦µã
-		//if ( SYOC_SameDir(p) ) //ÆäÊµ¾ÍÊÇp[i-1]p[i]Óëp[i+1]p[i+2]Æ½ÐÐ(ÓÐÏòÏòÁ¿), Ò²¼´¹éÒ»»¯ºóµã»ýÎª1.²»ÄÜÓÃ²æ»ý,·ñÔòÆ½ÐÐµ«Ïà·´Ê±³ö´í
+		//if ( BaseGraphOC_SameDir(p) ) //ÆäÊµ¾ÍÊÇp[i-1]p[i]Óëp[i+1]p[i+2]Æ½ÐÐ(ÓÐÏòÏòÁ¿), Ò²¼´¹éÒ»»¯ºóµã»ýÎª1.²»ÄÜÓÃ²æ»ý,·ñÔòÆ½ÐÐµ«Ïà·´Ê±³ö´í
 		//{
-			SYOC_CalShiftPt(p, fDis, ndirect, Q1, Q2 );
+			BaseGraphOC_CalShiftPt(p, fDis, ndirect, Q1, Q2 );
 		//}
 		//else
 		//{
-		//	SYOC_CalShiftPt2(p, fDis, ndirect, Q1, Q2 );
+		//	BaseGraphOC_CalShiftPt2(p, fDis, ndirect, Q1, Q2 );
 		//}
 		
 		// Ìí¼Ó½ø½á¹û
 		////////////////////////////////////////////////////////////////////////// begin
 		// ´Ë´¦½«ÒªÐÞ¸Ä:¡¡Èç¹ûÊÇ½ÇÍâ£¬¡¡Éú³ÉÔ²»¡
 		// ÅÐ¶ÏÊÇ·ñ½ÇÍâ: ÅÐ¶ÏQ1Óëp2ÊÇ·ñÎ»ÓÚp0p1Í¬²à.²»Í¬²àÔòÎª½ÇÍâ.
-		if ( SYOC_PtOnRight(p[0],p[1],Q1)^SYOC_PtOnRight(p[0],p[1],p[2]) ) 
+		if ( BaseGraphOC_PtOnRight(p[0],p[1],Q1)^BaseGraphOC_PtOnRight(p[0],p[1],p[2]) ) 
 		{
 			// Èç¹ûÊÇ½ÇÍâ, Éú³ÉÔ²»¡
 			// 1 ¼ÆËãÔ²»¡µÄÆðÖÕµã
@@ -1608,8 +1608,8 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 			fD = 1.f / sqrtf(fD);
 			ptend.x = p[1].x - ndirect * fDis * (p[2].y - p[1].y) * fD;
 			ptend.y = p[1].y + ndirect * fDis * (p[2].x - p[1].x) * fD;
-			// 2 µ÷ÓÃSYOC_makearcÉú³É²¢Ìí¼ÓÔ²»¡ÀëÉ¢µã
-			SYOC_makearc(pOffsetArray, p[1], ptstart, ptend, fDis);
+			// 2 µ÷ÓÃBaseGraphOC_makearcÉú³É²¢Ìí¼ÓÔ²»¡ÀëÉ¢µã
+			BaseGraphOC_makearc(pOffsetArray, p[1], ptstart, ptend, fDis);
 		}
 		else
 		{
@@ -1622,7 +1622,7 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 
 		if (i == nPtCount-3) 
 		{
-			if ( SYOC_PtOnRight(p[1],p[2],Q2)^SYOC_PtOnRight(p[1],p[2],p[3]) ) 
+			if ( BaseGraphOC_PtOnRight(p[1],p[2],Q2)^BaseGraphOC_PtOnRight(p[1],p[2],p[3]) ) 
 			{
 				float fD = (p[1].x - p[2].x) * (p[1].x - p[2].x) + (p[1].y - p[2].y) * (p[1].y - p[2].y);
 				fD = 1.f / sqrtf(fD);
@@ -1638,7 +1638,7 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 				ptend.x = p[2].x - ndirect * fDis * (p[3].y - p[2].y) * fD;
 				ptend.y = p[2].y + ndirect * fDis * (p[3].x - p[2].x) * fD;
 
-				SYOC_makearc(pOffsetArray, p[2], ptstart, ptend, fDis);
+				BaseGraphOC_makearc(pOffsetArray, p[2], ptstart, ptend, fDis);
 			}
 			else
 			{
@@ -1671,13 +1671,13 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 		v1.y = p[2].y - p[1].y;
 		
 		// ¹éÒ»»¯ÏòÁ¿
-		SYOC_Identify(v0);
-		SYOC_Identify(v1);
+		BaseGraphOC_Identify(v0);
+		BaseGraphOC_Identify(v1);
 		
 		// ×ª»¯³É¶Ô½ÇÏß·½Ïò, ×¢Òâ! ·½Ïò¿ÉÄÜÊÇ·´Ïò
 		v0 = v1 - v0;
 		
-		SYOC_Identify(v0); // ¶Ô½ÇÏß·½Ïò¹éÒ»»¯ÏòÁ¿
+		BaseGraphOC_Identify(v0); // ¶Ô½ÇÏß·½Ïò¹éÒ»»¯ÏòÁ¿
 
 		// °¼²àÉú³ÉÒ»¸öµã
 		pNode = new OffsetNode;
@@ -1714,20 +1714,20 @@ void SYOC_ShiftData(IN BaseARray *pptSrcArr,
 
 		ptend.x = p[1].x + fDis * (p[1].x - p[0].x) * fD;
 		ptend.y = p[1].y + fDis * (p[1].y - p[0].y) * fD;
-		SYOC_makearc(pOffsetArray, p[1], ptstart, ptend, fDis);
+		BaseGraphOC_makearc(pOffsetArray, p[1], ptstart, ptend, fDis);
 	}
 
-}//end of SYOC_ShiftData
+}//end of BaseGraphOC_ShiftData
 
-int SYOC_makearc(OUT point2f * pptPoly, OUT int &nPolyCount, point2f ptcenter,point2f ptstart,point2f ptend,float rad)
+int BaseGraphOC_makearc(OUT point2f * pptPoly, OUT int &nPolyCount, point2f ptcenter,point2f ptstart,point2f ptend,float rad)
 {
 	point2f ptv1 = ptstart - ptcenter;
-	if(SYOC_arc_near_line(ptcenter,ptstart,ptend,rad))
+	if(BaseGraphOC_arc_near_line(ptcenter,ptstart,ptend,rad))
 	{
 		if (pptPoly)
 		{
 			//point2f ptout;
-			//int nIndex = _SYOC_LineCross(&pptPoly[nPolyCount - 1],&ptend,pptPoly,nPolyCount,&ptout,1);
+			//int nIndex = _BaseGraphOC_LineCross(&pptPoly[nPolyCount - 1],&ptend,pptPoly,nPolyCount,&ptout,1);
 			//if(nIndex > 0)
 			//{
 			//	//nPolyCount = nIndex;
@@ -1773,10 +1773,10 @@ int SYOC_makearc(OUT point2f * pptPoly, OUT int &nPolyCount, point2f ptcenter,po
 			int a = 0;
 		}
 	}
-	SYOC_makearc(pptPoly, nPolyCount,ptcenter,ptstart,ptmid,rad);
-	SYOC_makearc(pptPoly, nPolyCount,ptcenter,ptmid,ptend,rad);
+	BaseGraphOC_makearc(pptPoly, nPolyCount,ptcenter,ptstart,ptmid,rad);
+	BaseGraphOC_makearc(pptPoly, nPolyCount,ptcenter,ptmid,ptend,rad);
 	return 1;
-} // END OF SYOC_makearc
+} // END OF BaseGraphOC_makearc
 void Perpendicular_offset(point2f* pout,point2f* base,vector2f v,float flength,int ndirect)
 {
 	float fratio = flength/float2Mode(&v);
@@ -1791,7 +1791,7 @@ void Perpendicular_offset(point2f* pout,point2f* base,vector2f v,float flength,i
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_ShiftCubeData(OUT point2f * pptShift, 
+void BaseGraphOC_ShiftCubeData(OUT point2f * pptShift, 
 					OUT int& nShiftCount, 
 					IN const point2f * pptPoly, 
 					IN const int nPolyCount,
@@ -1822,7 +1822,7 @@ void SYOC_ShiftCubeData(OUT point2f * pptShift,
 		p[1] = pptPoly[(i + 1)%nPolyCount];
 		vector2f v1 = p[0] + vOffset;
 		//Èç¹ûÊÇÄÚ²à
-		BOOL bOnRight = SYOC_PtOnRight(p[0],p[1],v1);
+		BOOL bOnRight = BaseGraphOC_PtOnRight(p[0],p[1],v1);
 		if((!bOnRight && ndirect == -1)||(bOnRight && ndirect == 1))
 		{
 			nStart = (i+1)%nPolyCount;
@@ -1839,7 +1839,7 @@ void SYOC_ShiftCubeData(OUT point2f * pptShift,
 		p[0] = pptPoly[nindex];
 		p[1] = pptPoly[(nindex+1)%nPolyCount];
 		vector2f v1 = p[0] + vOffset;
-		BOOL bOnRight = SYOC_PtOnRight(p[0],p[1],v1);
+		BOOL bOnRight = BaseGraphOC_PtOnRight(p[0],p[1],v1);
 		if((!bOnRight && ndirect == -1)||(bOnRight && ndirect == 1))
 		{
 			if(!bVisible)
@@ -1859,10 +1859,10 @@ void SYOC_ShiftCubeData(OUT point2f * pptShift,
 			pptShift[nShiftCount++] = p[0];
 		}
 	}
-}//end of SYOC_ShiftData
+}//end of BaseGraphOC_ShiftData
 
 //Ïß¶ÎÏà½»
-int _SYOC_LineCross(point2f* ptstart,point2f* ptend,point2f * pptShift ,int nShiftCount,point2f* ptout,int nstart)
+int _BaseGraphOC_LineCross(point2f* ptstart,point2f* ptend,point2f * pptShift ,int nShiftCount,point2f* ptout,int nstart)
 {
 	vector2f vline1 = *ptend - *ptstart;
 	int nmincross = -1;
@@ -1880,8 +1880,8 @@ int _SYOC_LineCross(point2f* ptstart,point2f* ptend,point2f * pptShift ,int nShi
 			continue;
 		}
 
-		if( SYOC_PtOnRight(*ptstart,*ptend,pptShift[i]) != SYOC_PtOnRight(*ptstart,*ptend,pptShift[i - 1])
-			&&SYOC_PtOnRight(pptShift[i - 1],pptShift[i],*ptstart) != SYOC_PtOnRight(pptShift[i - 1],pptShift[i],*ptend))
+		if( BaseGraphOC_PtOnRight(*ptstart,*ptend,pptShift[i]) != BaseGraphOC_PtOnRight(*ptstart,*ptend,pptShift[i - 1])
+			&&BaseGraphOC_PtOnRight(pptShift[i - 1],pptShift[i],*ptstart) != BaseGraphOC_PtOnRight(pptShift[i - 1],pptShift[i],*ptend))
 		{
 			
 			vector2f  vline2 = pptShift[i] - pptShift[i - 1];
@@ -1903,7 +1903,7 @@ int _SYOC_LineCross(point2f* ptstart,point2f* ptend,point2f * pptShift ,int nShi
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_ShiftData(OUT point2f * pptShift, 
+void BaseGraphOC_ShiftData(OUT point2f * pptShift, 
 					OUT int &nShiftCount, 
 					IN const point2f * pptPoly, 
 					IN const int nPolyCount,
@@ -1957,7 +1957,7 @@ void SYOC_ShiftData(OUT point2f * pptShift,
 		ptstart.x = p[1].x - vstep.x;
 		ptstart.y = p[1].y - vstep.y;
 
-		SYOC_makearc(pptShift, nShiftCount, p[1], ptstart, ptend, fDis);
+		BaseGraphOC_makearc(pptShift, nShiftCount, p[1], ptstart, ptend, fDis);
 		nStart = 1;
 		bClose = FALSE;
 		nmodCount = nPolyCount;
@@ -1974,13 +1974,13 @@ void SYOC_ShiftData(OUT point2f * pptShift,
 		// 1. ÏÈÇóAngleBisector i, i+1.
 		// 1.1 Èç¹ûÁ½¸ö½ÇÆ½·ÖÏßÆ½ÐÐ, Ö±½ÓÇó¶ÔÓ¦µã
 			//Ìí¼Ó½ÇÆ½·ÖÏß
-		SYOC_CalShiftPt(p, fDis, ndirect, Q1, Q2 );
+		BaseGraphOC_CalShiftPt(p, fDis, ndirect, Q1, Q2 );
 		
 		// Ìí¼Ó½ø½á¹û
 		////////////////////////////////////////////////////////////////////////// begin
 		// ´Ë´¦½«ÒªÐÞ¸Ä:¡¡Èç¹ûÊÇ½ÇÍâ£¬¡¡Éú³ÉÔ²»¡
 		// ÅÐ¶ÏÊÇ·ñ½ÇÍâ: ÅÐ¶ÏQ1Óëp2ÊÇ·ñÎ»ÓÚp0p1Í¬²à.²»Í¬²àÔòÎª½ÇÍâ.
-		if ( SYOC_PtOnRight(p[0],p[1],Q1) != SYOC_PtOnRight(p[0],p[1],p[2])) 
+		if ( BaseGraphOC_PtOnRight(p[0],p[1],Q1) != BaseGraphOC_PtOnRight(p[0],p[1],p[2])) 
 		{
 			Perpendicular_offset(&ptstart,&p[1],p[1] - p[0],fDis,ndirect);
 			if (pptShift)
@@ -1990,7 +1990,7 @@ void SYOC_ShiftData(OUT point2f * pptShift,
 			nShiftCount++;
 
 			Perpendicular_offset(&ptend,&p[1],p[2] - p[1],fDis,ndirect);
-			SYOC_makearc(pptShift, nShiftCount, p[1], ptstart, ptend, fDis);
+			BaseGraphOC_makearc(pptShift, nShiftCount, p[1], ptstart, ptend, fDis);
 		}
 		else
 		{
@@ -2030,7 +2030,7 @@ void SYOC_ShiftData(OUT point2f * pptShift,
 		ptend.x = p[1].x + vstep.x;
 		ptend.y = p[1].y + vstep.y;
 
-		SYOC_makearc(pptShift, nShiftCount, p[1], ptstart, ptend, fDis);
+		BaseGraphOC_makearc(pptShift, nShiftCount, p[1], ptstart, ptend, fDis);
 	}
 	else
 	{
@@ -2038,7 +2038,7 @@ void SYOC_ShiftData(OUT point2f * pptShift,
 		if (pptShift)
 		{
 			point2f ptout;
-			int nIndex = _SYOC_LineCross(&pptShift[nShiftCount - 1],&pptShift[0],pptShift,nShiftCount,&ptout,2);
+			int nIndex = _BaseGraphOC_LineCross(&pptShift[nShiftCount - 1],&pptShift[0],pptShift,nShiftCount,&ptout,2);
 			if(nIndex > 0)
 			{
 				nShiftCount = nIndex;
@@ -2058,7 +2058,7 @@ void SYOC_ShiftData(OUT point2f * pptShift,
 		//nShiftCount ++;
 	}
 
-}//end of SYOC_ShiftData
+}//end of BaseGraphOC_ShiftData
 
 
 //------------------------------------------------------------------
@@ -2066,7 +2066,7 @@ void SYOC_ShiftData(OUT point2f * pptShift,
 //ÊäÈë£º
 //Êä³ö£º
 //------------------------------------------------------------------
-void SYOC_ReleaseGraph(vectorgraph* graph)
+void BaseGraphOC_ReleaseGraph(vectorgraph* graph)
 {
 	if (graph == NULL)
 	{
@@ -2084,15 +2084,15 @@ void SYOC_ReleaseGraph(vectorgraph* graph)
 		graph->cell = NULL;
 	}
 	memset(graph, 0, sizeof(vectorgraph));
-} // END OF SYOC_ReleaseGraph
+} // END OF BaseGraphOC_ReleaseGraph
 
 //------------------------------------------------------------------
-//º¯Êý SYOC_Poly2Fig ËµÃ÷
+//º¯Êý BaseGraphOC_Poly2Fig ËµÃ÷
 //¹¦ÄÜ£º½«Poly×ª»¯Îªvectorgraph
 //ÊäÈë£º
 //Êä³ö£º
 //------------------------------------------------------------------
-void SYOC_Poly2Fig(OUT vectorgraph* pGraphOffset, IN COffsetNodeArray *pOffsetArray)
+void BaseGraphOC_Poly2Fig(OUT vectorgraph* pGraphOffset, IN COffsetNodeArray *pOffsetArray)
 {
 	int i, j;
 	int nSize = (int)pOffsetArray->GetSize();
@@ -2117,7 +2117,7 @@ void SYOC_Poly2Fig(OUT vectorgraph* pGraphOffset, IN COffsetNodeArray *pOffsetAr
 		return;
 	}
 
-	SYOC_ReleaseGraph(pGraphOffset);
+	BaseGraphOC_ReleaseGraph(pGraphOffset);
 	pGraphOffset->ncell = nCellSize;
 	pGraphOffset->cell = new vectorcell[ nCellSize ];
 	vectorcell * pCurveCell;
@@ -2180,16 +2180,16 @@ void SYOC_Poly2Fig(OUT vectorgraph* pGraphOffset, IN COffsetNodeArray *pOffsetAr
 		pGraphOffset->bound.bottom = max(pGraphOffset->bound.bottom,pCurveCell->bound.bottom);
 	}
 	// È»ºóÉú³É¸÷CellÊý¾Ý
-} // END OF SYOC_Poly2Fig
+} // END OF BaseGraphOC_Poly2Fig
 
 //------------------------------------------------------------------
-//º¯Êý SYOffsetCurve ËµÃ÷£º
+//º¯Êý BaseGraphOffsetCurve ËµÃ÷£º
 //¹¦ÄÜ£ºÊäÈëÇúÏßpGraphIn ÏòÍâoffset¾àÀëfDisºóµÃµ½µÄµãÁÐ
 //ÊäÈë£ºptSrcArr: ¸ø¶¨µãÁÐ¡£
 //Êä³ö£ºptDesArr: ÏòÍâoffset¾àÀëfDisºóµÃµ½µÄµãÁÐ
 //×¢Òâ£¡
 //------------------------------------------------------------------
-BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇúÏß
+BASEGRAPH_DATARENDER_API void BaseGraphOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇúÏß
 				   IN float fDis,  // Æ«ÒÆ¾àÀë
 				   OUT vectorgraph* pGraphOffset // Êä³öÆ«ÒÆÇúÏß
 				  )
@@ -2221,7 +2221,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇú
 	}
 	// 2 £¬ÅÐ¶Ï×îÍâ»·ÊÇ·ñÄæÊ±Õë£¬²»ÊÇµÄ»°£¬´øÒ»¸ö±êÖ¾Î»£¬
 	//         ÔÚ¸÷ÖÖ´¦ÀíÇ°£¬°Ñ»·Â·Êý¾Ý£¨ÒÑ×ª»¯Îª¶à±ßÐÎ£©·´×ª
-	//BOOL bAntiClockwise = SYOC_IsAntiClockwise(&pGraphIn->cell[nOutCell]);
+	//BOOL bAntiClockwise = BaseGraphOC_IsAntiClockwise(&pGraphIn->cell[nOutCell]);
 
 	for (i=0; i<pGraphIn->ncell; i++) 
 	{
@@ -2234,12 +2234,12 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇú
 
 		BaseARray ptrPoly;
 		BaseAR_GetSize(&ptrPoly);
-		SYOC_Cell2PtfPoly(pCell, &ptrPoly,NULL,NULL);
+		BaseGraphOC_Cell2PtfPoly(pCell, &ptrPoly,NULL,NULL);
 
 		// È¥µôÖØºÏµã
-		SYOC_DelOverlap(&ptrPoly,(int*)NULL);
+		BaseGraphOC_DelOverlap(&ptrPoly,(int*)NULL);
 		// Ô¤´¦Àí£ºÈ¥µôÁ¬Ðø¹²Ïßµã
-		SYOC_DelColine(&ptrPoly,(int*)NULL);
+		BaseGraphOC_DelColine(&ptrPoly,(int*)NULL);
 
 		//Æ«ÒÆµÃµ½³õ²½Æ«ÒÆÇúÏß
 		int nPtCount = (int)BaseAR_GetSize(&ptrPoly);
@@ -2257,7 +2257,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇú
 		// ÏÈ¼ÇÂ¼¿ªÊ¼µã
 		int nStart = (int)OffsetArray.GetSize();
 		// È»ºó×öoffset,
-		SYOC_ShiftData(&ptrPoly, &OffsetArray, fDis, 1);
+		BaseGraphOC_ShiftData(&ptrPoly, &OffsetArray, fDis, 1);
 
 		// ·´Ïò×öÒ»´Î
 		for(int i = 1; i < nPtCount; i++)
@@ -2267,7 +2267,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇú
 			BaseAR_InsertAt(&ptrPoly,0, pPt,1);
 		}
 
-		SYOC_ShiftData(&ptrPoly, &OffsetArray, fDis, 1);
+		BaseGraphOC_ShiftData(&ptrPoly, &OffsetArray, fDis, 1);
 
 		// ½«ÐÂ¼Ó»ØÂ·µÄµÚÒ»¸öµãµÄbStartÉèÖÃÎªTRUE. 
 		OffsetNode *pNode = (OffsetNode *)OffsetArray.GetAt(nStart);
@@ -2287,7 +2287,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇú
 		BaseAR_RemoveAll(&ptrPoly);
 	} // end of outer-for
 	//// µÃµ½µÄÊÇ¶à±ßÐÎÊý×é,ÐÎ³Écell,ÌîÈëµ½pGraphOffset
-	SYOC_Poly2Fig(pGraphOffset, &OffsetArray);
+	BaseGraphOC_Poly2Fig(pGraphOffset, &OffsetArray);
 	// ÊÍ·Å
 	nSize = (int)OffsetArray.GetSize();
 	for (j=0; j<nSize; j++)
@@ -2297,15 +2297,15 @@ BASEGRAPH_DATARENDER_API void SYOffsetCurve(IN vectorgraph* pGraphIn,  // ÊäÈëÇú
 		pOffsetNode = NULL;
 	}
 	OffsetArray.RemoveAll();
-} // END OF SYOffsetCurve
+} // END OF BaseGraphOffsetCurve
 
 //------------------------------------------------------------------
-//º¯Êý SYOC_Poly2Cell ËµÃ÷
+//º¯Êý BaseGraphOC_Poly2Cell ËµÃ÷
 //¹¦ÄÜ£º½«Poly×ª»¯Îªvectorgraph
 //ÊäÈë£º
 //Êä³ö£º
 //------------------------------------------------------------------
-void SYOC_Poly2Cell(OUT vectorcell* pCurveCell, IN COffsetNodeArray *pOffsetArray)
+void BaseGraphOC_Poly2Cell(OUT vectorcell* pCurveCell, IN COffsetNodeArray *pOffsetArray)
 {
 	int nSize = (int)pOffsetArray->GetSize();
 	if (nSize<2) 
@@ -2342,9 +2342,9 @@ void SYOC_Poly2Cell(OUT vectorcell* pCurveCell, IN COffsetNodeArray *pOffsetArra
 		pCurveCell->pttype[j] = point_line;
 	}
 
-} // END OF SYOC_Poly2Cell
+} // END OF BaseGraphOC_Poly2Cell
 
-BASEGRAPH_DATARENDER_API void SYOffsetCellCube(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
+BASEGRAPH_DATARENDER_API void BaseGraphOffsetCellCube(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 									IN vector2f* vOffset,
 									IN float fCubOffset,  // Æ«ÒÆ¾àÀë
 									IN float fAngle,
@@ -2364,7 +2364,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCellCube(IN vectorcell* pCellIn,  // ÊäÈëÇ
 	int nPolySize = 0;
 
 	// 1.1 ÊÔËã´óÐ¡
-	SYOC_Cell2PtfPoly(pCell, NULL, nPolySize);
+	BaseGraphOC_Cell2PtfPoly(pCell, NULL, nPolySize);
 	// 1.2 new³öÊý×é, È»ºóÉú³ÉÊµ¼ÊÊý¾Ý
 	if (pCellIn->type != uncloss_line)
 	{
@@ -2374,9 +2374,9 @@ BASEGRAPH_DATARENDER_API void SYOffsetCellCube(IN vectorcell* pCellIn,  // ÊäÈëÇ
 	point2f * pPoly = new point2f[nPolySize];
 	memset(pPoly,0,sizeof(point2f) * nPolySize);
 	nPolySize = 0;
-	SYOC_Cell2PtfPoly(pCell, pPoly, nPolySize);
+	BaseGraphOC_Cell2PtfPoly(pCell, pPoly, nPolySize);
 	// Ô¤´¦Àí£¬É¾³ýÖØ¸´µã
-	SYOC_DelRedundance(pPoly, nPolySize);
+	BaseGraphOC_DelRedundance(pPoly, nPolySize);
 
 	//Èç¹ûÊÇ·Ç±ÕºÏ»ØÂ·×îºóÒ»¸ö½ÚµãµÈÓÚµÚÒ»¸ö£¿
 	if (pCellIn->type != uncloss_line)
@@ -2392,7 +2392,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCellCube(IN vectorcell* pCellIn,  // ÊäÈëÇ
 	pCellOffset->npoint = nPolySize* 2;
 	pCellOffset->point = new point2f[nPolySize* 2];
 
-	SYOC_ShiftCubeData(pCellOffset->point, 
+	BaseGraphOC_ShiftCubeData(pCellOffset->point, 
 		pCellOffset->npoint, 
 		pPoly, 
 		nPolySize,
@@ -2489,10 +2489,10 @@ BASEGRAPH_DATARENDER_API void CorrectPoly(point2f *pPoly,int nCount)
 	CorrectFindLink(pPoly,dwType,nCount,0);
 }
 //------------------------------------------------------------------
-//º¯Êý SYOffsetCell ËµÃ÷£º
+//º¯Êý BaseGraphOffsetCell ËµÃ÷£º
 //¹¦ÄÜ£ºÊäÈëÇúÏßpCellIn ÏòÍâoffset¾àÀëfDisºóµÃµ½µÄcell
 //------------------------------------------------------------------
-BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
+BASEGRAPH_DATARENDER_API void BaseGraphOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 									IN vector2f* voffset,
 									 IN float fDis,  // Æ«ÒÆ¾àÀë
 									 OUT vectorcell* pCellOffset, // Êä³öÆ«ÒÆÇúÏß
@@ -2512,7 +2512,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 	int nPolySize = 0;
 	CBasePoint2fPtrArray ptrPoly;
 	// 1.1 ÊÔËã´óÐ¡
-	SYOC_Cell2PtfPoly(pCell, NULL, nPolySize);
+	BaseGraphOC_Cell2PtfPoly(pCell, NULL, nPolySize);
 	// 1.2 new³öÊý×é, È»ºóÉú³ÉÊµ¼ÊÊý¾Ý
 	if (pCellIn->type != uncloss_line)
 	{
@@ -2523,10 +2523,10 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 	memset(pPoly,0,sizeof(point2f) * nPolySize);
 	nPolySize = 0;
 	
-	SYOC_Cell2PtfPoly(pCell, pPoly, nPolySize);
+	BaseGraphOC_Cell2PtfPoly(pCell, pPoly, nPolySize);
 	
 	// Ô¤´¦Àí£¬É¾³ýÖØ¸´µã
-	SYOC_DelRedundance(pPoly, nPolySize);
+	BaseGraphOC_DelRedundance(pPoly, nPolySize);
 
 	//Èç¹ûÊÇ·Ç±ÕºÏ»ØÂ·×îºóÒ»¸ö½ÚµãµÈÓÚµÚÒ»¸ö£¿
 	if (pCellIn->type != uncloss_line)
@@ -2547,7 +2547,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 
 	// 2.1 Ê×ÏÈ¼ÆËã´óÐ¡
 	int nShiftSize = 0;
-	SYOC_ShiftData(NULL,nShiftSize, pPoly, nPolySize, fDis, ndirect);
+	BaseGraphOC_ShiftData(NULL,nShiftSize, pPoly, nPolySize, fDis, ndirect);
 
 	// 2.2 new³öpCellOffsetµÄµãÊý×é, È»ºóÔÙÀ´Ò»´ÎÌî³äºÃ
 
@@ -2557,7 +2557,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 
 
 	nShiftSize = 0;
-	SYOC_ShiftData(pCellOffset->point,nShiftSize, pPoly, nPolySize, fDis, ndirect);
+	BaseGraphOC_ShiftData(pCellOffset->point,nShiftSize, pPoly, nPolySize, fDis, ndirect);
 	//ÊÍ·Å
 	SAFEDELETE_ARRAY(pPoly);
 	pCellOffset->npoint = nShiftSize;
@@ -2589,14 +2589,14 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 		pCellOffset->pttype[j] = point_line;
 	}
 
-} // END OF SYOffsetCell
+} // END OF BaseGraphOffsetCell
 
-void SYOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBasePoint2fPtrArray * pptrPolyNorm, IN point2f * ctrlPoints)
+void BaseGraphOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBasePoint2fPtrArray * pptrPolyNorm, IN point2f * ctrlPoints)
 {
 	// ½Ó½üÖ±Ïß£¬ÔòÖ±½Ó¼ÓÈë
 	// ·ñÔò·Ö³ÉÁ½¶Î£¬µÝ¹éµ÷ÓÃ
 	point2f *ptfNew;
-	if ( SYOC_NearLine(ctrlPoints) )
+	if ( BaseGraphOC_NearLine(ctrlPoints) )
 	{
 		ptfNew = new point2f;
 		ptfNew->x = ctrlPoints[3].x;
@@ -2646,15 +2646,15 @@ void SYOC_AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBasePoint2f
 		ptfLatter[0].x = ptfFormer[3].x;
 		ptfLatter[0].y = ptfFormer[3].y;
 
-		SYOC_AddCurve2PtfPoly(pptrPoly, pptrPolyNorm, ptfFormer ) ;
-		SYOC_AddCurve2PtfPoly(pptrPoly, pptrPolyNorm, ptfLatter ) ;
+		BaseGraphOC_AddCurve2PtfPoly(pptrPoly, pptrPolyNorm, ptfFormer ) ;
+		BaseGraphOC_AddCurve2PtfPoly(pptrPoly, pptrPolyNorm, ptfLatter ) ;
 	}
-} // END OF SYOC_AddCurve2PtfPoly
+} // END OF BaseGraphOC_AddCurve2PtfPoly
 
-int SYOC_makearc(CBasePoint2fPtrArray & aptShift, CBasePoint2fPtrArray & aptShiftNorm, CBaseDWORDPtrArray &aOrigIndex, point2f ptcenter,point2f ptstart,point2f ptend,float rad, int index)
+int BaseGraphOC_makearc(CBasePoint2fPtrArray & aptShift, CBasePoint2fPtrArray & aptShiftNorm, CBaseDWORDPtrArray &aOrigIndex, point2f ptcenter,point2f ptstart,point2f ptend,float rad, int index)
 {
 	point2f ptv1 = ptstart - ptcenter;
-	if(SYOC_arc_near_line(ptcenter,ptstart,ptend,rad))
+	if(BaseGraphOC_arc_near_line(ptcenter,ptstart,ptend,rad))
 	{
 		point2f *pptf = new point2f;
 		*pptf = ptend;
@@ -2702,10 +2702,10 @@ int SYOC_makearc(CBasePoint2fPtrArray & aptShift, CBasePoint2fPtrArray & aptShif
 			int a = 0;
 		}
 	}
-	SYOC_makearc(aptShift, aptShiftNorm, aOrigIndex, ptcenter,ptstart,ptmid,rad, index);
-	SYOC_makearc(aptShift, aptShiftNorm, aOrigIndex, ptcenter,ptmid,ptend,rad, index);
+	BaseGraphOC_makearc(aptShift, aptShiftNorm, aOrigIndex, ptcenter,ptstart,ptmid,rad, index);
+	BaseGraphOC_makearc(aptShift, aptShiftNorm, aOrigIndex, ptcenter,ptmid,ptend,rad, index);
 	return 1;
-} // END OF SYOC_makearc
+} // END OF BaseGraphOC_makearc
 
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÆ«ÒÆµÃµ½Æ«ÒÆÇúÏß
@@ -2713,7 +2713,7 @@ int SYOC_makearc(CBasePoint2fPtrArray & aptShift, CBasePoint2fPtrArray & aptShif
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-void SYOC_ShiftData(IN BaseARray &aptOrig, 
+void BaseGraphOC_ShiftData(IN BaseARray &aptOrig, 
 				   IN BaseARray &aptOrigNorm, //Ô­Ê¼±ßÀëÉ¢µã
 				   OUT CBasePoint2fPtrArray &aptShift, //Æ«ÒÆ±ßÀëÉ¢µã
 				   OUT CBasePoint2fPtrArray &aptShiftNorm, //Æ«ÒÆ±ßÀëÉ¢µã
@@ -2794,20 +2794,20 @@ void SYOC_ShiftData(IN BaseARray &aptOrig,
 
 		// 1. ÏÈÇóAngleBisector i, i+1.
 		// 1.1 Èç¹ûÁ½¸ö½ÇÆ½·ÖÏßÆ½ÐÐ, Ö±½ÓÇó¶ÔÓ¦µã
-		//if ( SYOC_SameDir(p) ) //ÆäÊµ¾ÍÊÇp[i-1]p[i]Óëp[i+1]p[i+2]Æ½ÐÐ(ÓÐÏòÏòÁ¿), Ò²¼´¹éÒ»»¯ºóµã»ýÎª1.²»ÄÜÓÃ²æ»ý,·ñÔòÆ½ÐÐµ«Ïà·´Ê±³ö´í
+		//if ( BaseGraphOC_SameDir(p) ) //ÆäÊµ¾ÍÊÇp[i-1]p[i]Óëp[i+1]p[i+2]Æ½ÐÐ(ÓÐÏòÏòÁ¿), Ò²¼´¹éÒ»»¯ºóµã»ýÎª1.²»ÄÜÓÃ²æ»ý,·ñÔòÆ½ÐÐµ«Ïà·´Ê±³ö´í
 		//{
-			SYOC_CalShiftPt(p, fDis, ndirect, Q1, Q2 );
+			BaseGraphOC_CalShiftPt(p, fDis, ndirect, Q1, Q2 );
 		//}
 		//else
 		//{
-		//	SYOC_CalShiftPt2(p, fDis, ndirect, Q1, Q2 );
+		//	BaseGraphOC_CalShiftPt2(p, fDis, ndirect, Q1, Q2 );
 		//}
 		
 		// Ìí¼Ó½ø½á¹û
 		////////////////////////////////////////////////////////////////////////// begin
 		// ´Ë´¦½«ÒªÐÞ¸Ä:¡¡Èç¹ûÊÇ½ÇÍâ£¬¡¡Éú³ÉÔ²»¡
 		// ÅÐ¶ÏÊÇ·ñ½ÇÍâ: ÅÐ¶ÏQ1Óëp2ÊÇ·ñÎ»ÓÚp0p1Í¬²à.²»Í¬²àÔòÎª½ÇÍâ.
-		if ( SYOC_PtOnRight(p[0],p[1],Q1)^SYOC_PtOnRight(p[0],p[1],p[2]) ) 
+		if ( BaseGraphOC_PtOnRight(p[0],p[1],Q1)^BaseGraphOC_PtOnRight(p[0],p[1],p[2]) ) 
 		{
 			// Èç¹ûÊÇ½ÇÍâ, Éú³ÉÔ²»¡
 			// 1 ¼ÆËãÔ²»¡µÄÆðÖÕµã
@@ -2842,8 +2842,8 @@ void SYOC_ShiftData(IN BaseARray &aptOrig,
 			fD = sqrtf(fD);
 			ptend.x = p[1].x - ndirect * fDis * (p[2].y - p[1].y) / fD;
 			ptend.y = p[1].y + ndirect * fDis * (p[2].x - p[1].x) / fD;
-			// 2 µ÷ÓÃSYOC_makearcÉú³É²¢Ìí¼ÓÔ²»¡ÀëÉ¢µã
-			SYOC_makearc(aptShift, aptShiftNorm, aOrigIndex, p[1], ptstart, ptend, fDis, i);
+			// 2 µ÷ÓÃBaseGraphOC_makearcÉú³É²¢Ìí¼ÓÔ²»¡ÀëÉ¢µã
+			BaseGraphOC_makearc(aptShift, aptShiftNorm, aOrigIndex, p[1], ptstart, ptend, fDis, i);
 		}
 		else
 		{
@@ -2870,7 +2870,7 @@ void SYOC_ShiftData(IN BaseARray &aptOrig,
 
 		if (i == nPtCount-3) 
 		{
-			if ( SYOC_PtOnRight(p[1],p[2],Q2)^SYOC_PtOnRight(p[1],p[2],p[3]) ) 
+			if ( BaseGraphOC_PtOnRight(p[1],p[2],Q2)^BaseGraphOC_PtOnRight(p[1],p[2],p[3]) ) 
 			{
 				point2f ptstart, ptend;
 
@@ -2903,7 +2903,7 @@ void SYOC_ShiftData(IN BaseARray &aptOrig,
 				ptend.x = p[2].x - ndirect * fDis * (p[3].y - p[2].y) / fD;
 				ptend.y = p[2].y + ndirect * fDis * (p[3].x - p[2].x) / fD;
 
-				SYOC_makearc(aptShift, aptShiftNorm, aOrigIndex, p[2], ptstart, ptend, fDis, i+1);
+				BaseGraphOC_makearc(aptShift, aptShiftNorm, aOrigIndex, p[2], ptstart, ptend, fDis, i+1);
 			}
 			else
 			{
@@ -2954,13 +2954,13 @@ void SYOC_ShiftData(IN BaseARray &aptOrig,
 	pptf = new point2f;
 	*pptf = *pptfNorm;
 	aptShiftNorm.Add(pptf);
-}//end of SYOC_ShiftData
+}//end of BaseGraphOC_ShiftData
 
 //------------------------------------------------------------------
-//º¯Êý SYOffsetCell ËµÃ÷£º
+//º¯Êý BaseGraphOffsetCell ËµÃ÷£º
 //¹¦ÄÜ£ºÊäÈëÇúÏßpCellIn ÏòÍâoffset¾àÀëfDisºóµÃµ½µÄcell
 //------------------------------------------------------------------
-BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
+BASEGRAPH_DATARENDER_API void BaseGraphOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 									IN float fDis,  // Æ«ÒÆ¾àÀë
 									OUT BaseARray &aptOrig, //Ô­Ê¼±ßÀëÉ¢µã
 									OUT BaseARray &aptOrigNorm, //Ô­Ê¼±ßÀëÉ¢µã
@@ -2989,17 +2989,17 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 
 	// ¶ÔÓÚgraphÖÐµÄÃ¿Ò»¸öcell,ÒªÏÈ×ª»¯³É¶à±ßÐÎÇúÏß.
 	pCell = pCellIn;
-	SYOC_Cell2PtfPoly(pCell, &aptOrig,&aptOrigNorm,NULL);
-//	SYOC_Cell2PtfPoly(pCell, &aptOrig, &aptOrigNorm);
+	BaseGraphOC_Cell2PtfPoly(pCell, &aptOrig,&aptOrigNorm,NULL);
+//	BaseGraphOC_Cell2PtfPoly(pCell, &aptOrig, &aptOrigNorm);
 
 	// È¥µôÖØºÏµã
-	SYOC_DelOverlap(&aptOrig, &aptOrigNorm);
+	BaseGraphOC_DelOverlap(&aptOrig, &aptOrigNorm);
 
 	nSize = (int)BaseAR_GetSize(&aptOrig);
 	if(nSize < 2)
 		return;
 	// Ô¤´¦Àí£ºÈ¥µôÁ¬Ðø¹²Ïßµã
-	SYOC_DelColine(&aptOrig, &aptOrigNorm);
+	BaseGraphOC_DelColine(&aptOrig, &aptOrigNorm);
 	nSize = (int)BaseAR_GetSize(&aptOrig);
 	if(nSize < 2)
 		return;
@@ -3047,8 +3047,8 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 	// ÏÈ¼ÇÂ¼¿ªÊ¼µã
 	int nStart = (int)OffsetArray.GetSize();
 	// È»ºó×öoffset,
-	//SYOC_ShiftData(&aptOrig, &OffsetArray, fDis, ndirect);
-	SYOC_ShiftData(aptOrig, aptOrigNorm, aptShift, aptShiftNorm, aOrigIndex, fDis, ndirect);
+	//BaseGraphOC_ShiftData(&aptOrig, &OffsetArray, fDis, ndirect);
+	BaseGraphOC_ShiftData(aptOrig, aptOrigNorm, aptShift, aptShiftNorm, aOrigIndex, fDis, ndirect);
 
 	nSize = (int)OffsetArray.GetSize();
 	if (nSize < 2) 
@@ -3063,7 +3063,7 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 	}
 
 	//// µÃµ½µÄÊÇ¶à±ßÐÎÊý×é,ÐÎ³Écell,ÌîÈëµ½pGraphOffset
-	//SYOC_Poly2Cell(pCellOffset, &OffsetArray);
+	//BaseGraphOC_Poly2Cell(pCellOffset, &OffsetArray);
 	
 	// ÊÍ·Å
 	//ÊÍ·ÅptrPoly
@@ -3085,19 +3085,19 @@ BASEGRAPH_DATARENDER_API void SYOffsetCell(IN vectorcell* pCellIn,  // ÊäÈëÇúÏß
 	}
 	OffsetArray.RemoveAll();
 }
-BASEGRAPH_DATARENDER_API BOOL SYReleaseOffsetCell(vectorcell* pcell)
+BASEGRAPH_DATARENDER_API BOOL BaseGraphReleaseOffsetCell(vectorcell* pcell)
 {
 	delete [] pcell->point;
 	delete [] pcell->pttype;
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API void SYOC_CloseNearLine()
+BASEGRAPH_DATARENDER_API void BaseGraphOC_CloseNearLine()
 {
 	g_nNearLineClosed = TRUE;
 }
 
-BASEGRAPH_DATARENDER_API void SYOC_OpenNearLine()
+BASEGRAPH_DATARENDER_API void BaseGraphOC_OpenNearLine()
 {
 	g_nNearLineClosed = FALSE;
 }

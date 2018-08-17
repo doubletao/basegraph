@@ -566,8 +566,8 @@ BASEGRAPH_COMMON_API void __cdecl BaseAR_MoveElement(LPBaseARRAY pA,		//  ˝◊ÈΩ·π
 	size_t i,			// “™“∆∂Øµƒ‘™ÀÿµƒÀ˜“˝£¨”¶∏√ Ù”⁄[0,size)
 	size_t j);		// “™“∆∂ØµΩµƒŒª÷√£¨”¶∏√ Ù”⁄[0,size]
 
-typedef int(*SYCompareFun)(const void*, const void*);
-BASEGRAPH_COMMON_API void __cdecl BaseAR_Sort(LPBaseARRAY pA, SYCompareFun fun);
+typedef int(*BaseGraphCompareFun)(const void*, const void*);
+BASEGRAPH_COMMON_API void __cdecl BaseAR_Sort(LPBaseARRAY pA, BaseGraphCompareFun fun);
 ///////////////////////////////////////////////////////////////////////////////
 // ¿‡∑‚◊∞
 #ifdef __cplusplus
@@ -1133,7 +1133,7 @@ typedef CBaseARray<DWORD*, DWORD*>		CBaseDWORDPtrArray;
 typedef CBaseARray<LPTSTR, LPTSTR>		CBaseStrArray;
 typedef CBaseARray<LPCTSTR, LPCTSTR>		CBaseConstStrArray;
 
-BASEGRAPH_COMMON_API void __cdecl SYStrAR_Release(CBaseStrArray& ary);
+BASEGRAPH_COMMON_API void __cdecl BaseGraphStrAR_Release(CBaseStrArray& ary);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define DSLT_NULL		-2						// ≤ª¥Ê‘⁄µƒ¡¥±Ì
@@ -1161,22 +1161,22 @@ typedef struct tag_list
 	plistnode		idelfirst;
 	plistnode		ideltail;
 	plistnode		idelpool;
-}SYList, *pSYList;
+}BaseGraphList, *pBaseGraphList;
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	≥ı ºªØ¡¥±Ì
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYList_Init(pSYList pList);			// ¡¥±Ì÷∏’Î
-BASEGRAPH_COMMON_API void __cdecl SYList_Release(pSYList pList);			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseGraphList_Init(pBaseGraphList pList);			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseGraphList_Release(pBaseGraphList pList);			// ¡¥±Ì÷∏’Î
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// √Ë ˆ£∫	…Ë÷√ø’œ–Ω⁄µ„≥ÿ
 																	//
 																	// ∑µªÿ÷µ:	Œﬁ
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYList_SetIdelSize(pSYList pList, int nSize);			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseGraphList_SetIdelSize(pBaseGraphList pList, int nSize);			// ¡¥±Ì÷∏’Î
 
 
 																					///////////////////////////////////////////////////////////////////////////////
@@ -1184,21 +1184,21 @@ BASEGRAPH_COMMON_API void __cdecl SYList_SetIdelSize(pSYList pList, int nSize);	
 																					//
 																					// ∑µªÿ÷µ:	LISTPOSITION
 																					///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_GetHeadPosition(SYList* pList);	// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl BaseGraphList_GetHeadPosition(BaseGraphList* pList);	// ¡¥±Ì÷∏’Î
 
 																			///////////////////////////////////////////////////////////////////////////////
 																			// √Ë ˆ£∫	ªÒ»°Œ≤Ω⁄µ„Œª÷√
 																			//
 																			// ∑µªÿ÷µ:	LISTPOSITION
 																			///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_GetTailPosition(pSYList pList);	// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl BaseGraphList_GetTailPosition(pBaseGraphList pList);	// ¡¥±Ì÷∏’Î
 
 																			///////////////////////////////////////////////////////////////////////////////
 																			// √Ë ˆ£∫	ªÒ»°¡¥±ÌµƒΩ⁄µ„∏ˆ ˝
 																			//
 																			// ∑µªÿ÷µ:	INT_PTR			µ±«∞¡¥±ÌΩ·µ„∏ˆ ˝
 																			///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API INT_PTR	__cdecl SYList_GetCount(pSYList pList);		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API INT_PTR	__cdecl BaseGraphList_GetCount(pBaseGraphList pList);		// ¡¥±Ì÷∏’Î
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// √Ë ˆ£∫	≈–∂œ «∑ÒŒ™ø’¡¥±Ì
@@ -1206,14 +1206,14 @@ BASEGRAPH_COMMON_API INT_PTR	__cdecl SYList_GetCount(pSYList pList);		// ¡¥±Ì÷∏’
 																	// ∑µªÿ÷µ:	TRUE		Œ™ø’
 																	//			FALSE		≤ªŒ™ø’
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYList_IsEmpty(pSYList pList);			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API BOOL __cdecl BaseGraphList_IsEmpty(pBaseGraphList pList);			// ¡¥±Ì÷∏’Î
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// √Ë ˆ£∫	ªÒ»°∫Û“ªΩ⁄µ„Œª÷√≤¢∑µªÿ‘≠Ω⁄µ„µƒ ˝æ›
 																	//
 																	// ∑µªÿ÷µ:	LT_DATA_PTR
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetNext(const SYList* pList,	// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_GetNext(const BaseGraphList* pList,	// ¡¥±Ì÷∏’Î
 	LISTPOSITION* pPos);	// µ±«∞Ω⁄µ„µƒŒª÷√µƒ÷∏’Î
 
 							///////////////////////////////////////////////////////////////////////////////
@@ -1221,7 +1221,7 @@ BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetNext(const SYList* pList,	// 
 							//
 							// ∑µªÿ÷µ:	LT_DATA_PTR
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetPrev(pSYList pList,		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_GetPrev(pBaseGraphList pList,		// ¡¥±Ì÷∏’Î
 	LISTPOSITION* pPos);	// µ±«∞Ω⁄µ„µƒŒª÷√µƒ÷∏’Î
 
 							///////////////////////////////////////////////////////////////////////////////
@@ -1229,7 +1229,7 @@ BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetPrev(pSYList pList,		// ¡¥±Ì÷
 							//
 							// ∑µªÿ÷µ:	LT_DATA_PTR
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetAt(pSYList pList,		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_GetAt(pBaseGraphList pList,		// ¡¥±Ì÷∏’Î
 	LISTPOSITION pos);		// µ±«∞Ω⁄µ„µƒŒª÷√
 
 							///////////////////////////////////////////////////////////////////////////////
@@ -1237,21 +1237,21 @@ BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetAt(pSYList pList,		// ¡¥±Ì÷∏’
 							//
 							// ∑µªÿ÷µ:	LT_DATA_PTR
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetHead(pSYList pList);		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_GetHead(pBaseGraphList pList);		// ¡¥±Ì÷∏’Î
 
 																		///////////////////////////////////////////////////////////////////////////////
 																		// √Ë ˆ£∫	ªÒ»°Œ≤Ω⁄µ„µƒ ˝æ›
 																		//
 																		// ∑µªÿ÷µ:	LT_DATA_PTR
 																		///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_GetTail(pSYList pList);		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_GetTail(pBaseGraphList pList);		// ¡¥±Ì÷∏’Î
 
 																		///////////////////////////////////////////////////////////////////////////////
 																		// √Ë ˆ£∫	…Ë÷√ƒ≥“ªΩ⁄µ„µƒ ˝æ›
 																		//
 																		// ∑µªÿ÷µ:	LT_DATA_PTR	‘≠ ˝æ›÷∏’Î
 																		///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_SetAt(pSYList pList,			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_SetAt(pBaseGraphList pList,			// ¡¥±Ì÷∏’Î
 	LISTPOSITION pos,			// …Ë÷√ ˝æ›µƒΩ⁄µ„Œª÷√
 	LT_DATA_PTR pData);	//  ˝æ›÷∏’Î
 
@@ -1260,7 +1260,7 @@ BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_SetAt(pSYList pList,			// ¡¥±Ì÷∏
 						//
 						// ∑µªÿ÷µ:	LISTPOSITION		–¬Ω⁄µ„µƒŒª÷√
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_AddHead(pSYList pList,			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl BaseGraphList_AddHead(pBaseGraphList pList,			// ¡¥±Ì÷∏’Î
 	LT_DATA_PTR pData, unsigned char** pool, unsigned char* poolend);		// –¬Ω⁄µ„µƒ ˝æ›
 
 																			///////////////////////////////////////////////////////////////////////////////
@@ -1268,7 +1268,7 @@ BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_AddHead(pSYList pList,			// ¡¥±
 																			//
 																			// ∑µªÿ÷µ:	LISTPOSITION		–¬Ω⁄µ„µƒŒª÷√
 																			///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_AddTail(pSYList pList,			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl BaseGraphList_AddTail(pBaseGraphList pList,			// ¡¥±Ì÷∏’Î
 	LT_DATA_PTR pData, unsigned char** pool, unsigned char* poolend);		// –¬Ω⁄µ„µƒ ˝æ›
 
 																			///////////////////////////////////////////////////////////////////////////////
@@ -1276,32 +1276,32 @@ BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_AddTail(pSYList pList,			// ¡¥±
 																			//
 																			// ∑µªÿ÷µ:	Œﬁ
 																			///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYList_AddListHead(pSYList pList,			// ¡¥±Ì÷∏’Î
-	pSYList pNewList);		// –¬¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseGraphList_AddListHead(pBaseGraphList pList,			// ¡¥±Ì÷∏’Î
+	pBaseGraphList pNewList);		// –¬¡¥±Ì÷∏’Î
 
 							///////////////////////////////////////////////////////////////////////////////
 							// √Ë ˆ£∫	‘⁄Œ≤Ω⁄µ„∫Û‘ˆº”“ª∏ˆ–¬µƒ¡¥±Ì
 							//
 							// ∑µªÿ÷µ:	Œﬁ
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYList_AddListTail(pSYList pList,			// ¡¥±Ì÷∏’Î
-	pSYList pNewList);		// –¬¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseGraphList_AddListTail(pBaseGraphList pList,			// ¡¥±Ì÷∏’Î
+	pBaseGraphList pNewList);		// –¬¡¥±Ì÷∏’Î
 
 							///////////////////////////////////////////////////////////////////////////////
 							// √Ë ˆ£∫	‘⁄ƒ≥“ªΩ⁄µ„«∞≤Â“ª∏ˆ–¬µƒΩ⁄µ„
 							//
 							// ∑µªÿ÷µ:	LISTPOSITION		–¬Ω⁄µ„µƒŒª÷√
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_InsertBefore(pSYList pList,		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl BaseGraphList_InsertBefore(pBaseGraphList pList,		// ¡¥±Ì÷∏’Î
 	LISTPOSITION pos,		// ±ª≤ÂΩ⁄µ„µƒŒª÷√
 	LT_DATA_PTR pData);// –¬Ω⁄µ„ ˝æ›
 
 					   ///////////////////////////////////////////////////////////////////////////////
-					   // √Ë ˆ£∫	SYList_InsertAfter() ‘⁄ƒ≥“ªΩ⁄µ„∫Û≤Â“ª∏ˆ–¬µƒΩ⁄µ„
+					   // √Ë ˆ£∫	BaseGraphList_InsertAfter() ‘⁄ƒ≥“ªΩ⁄µ„∫Û≤Â“ª∏ˆ–¬µƒΩ⁄µ„
 					   //
 					   // ∑µªÿ÷µ:	LISTPOSITION		–¬Ω⁄µ„µƒŒª÷√
 					   ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_InsertAfter(pSYList pList,		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl BaseGraphList_InsertAfter(pBaseGraphList pList,		// ¡¥±Ì÷∏’Î
 	LISTPOSITION pos,		// ±ª≤ÂΩ⁄µ„µƒŒª÷√
 	LT_DATA_PTR pData);	// –¬Ω⁄µ„ ˝æ›
 
@@ -1310,7 +1310,7 @@ BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_InsertAfter(pSYList pList,		// 
 						//
 						// ∑µªÿ÷µ:	LT_DATA_PTR
 						///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_RemoveAt(pSYList pList,		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_RemoveAt(pBaseGraphList pList,		// ¡¥±Ì÷∏’Î
 	LISTPOSITION pos);		// ‘§…æ≥˝Ω⁄µ„µƒŒª÷√
 
 							///////////////////////////////////////////////////////////////////////////////
@@ -1318,28 +1318,28 @@ BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_RemoveAt(pSYList pList,		// ¡¥±Ì
 							//
 							// ∑µªÿ÷µ:	LT_DATA_PTR	‘≠Œ≤Ω⁄µ„ ˝æ›
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_RemoveHead(pSYList pList);		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_RemoveHead(pBaseGraphList pList);		// ¡¥±Ì÷∏’Î
 
 																			///////////////////////////////////////////////////////////////////////////////
 																			// √Ë ˆ£∫	…æ≥˝Œ≤Ω⁄µ„
 																			//
 																			// ∑µªÿ÷µ:	LT_DATA_PTR	‘≠Œ≤Ω⁄µ„ ˝æ›
 																			///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl SYList_RemoveTail(pSYList pList);	// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LT_DATA_PTR __cdecl BaseGraphList_RemoveTail(pBaseGraphList pList);	// ¡¥±Ì÷∏’Î
 
 																		///////////////////////////////////////////////////////////////////////////////
 																		// √Ë ˆ£∫	…æ≥˝À˘”–Ω⁄µ„
 																		//
 																		// ∑µªÿ÷µ:	Œﬁ
 																		///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYList_RemoveAll(pSYList pList);		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseGraphList_RemoveAll(pBaseGraphList pList);		// ¡¥±Ì÷∏’Î
 
 																	///////////////////////////////////////////////////////////////////////////////
 																	// √Ë ˆ£∫	¥”ƒ≥“ªΩ⁄µ„Œª÷√ø™ º∏˘æ› ˝æ›≤È’“Ω⁄µ„µƒŒª÷√
 																	//
 																	// ∑µªÿ÷µ:	LISTPOSITION
 																	///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_FindNode(pSYList pList,			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl BaseGraphList_FindNode(pBaseGraphList pList,			// ¡¥±Ì÷∏’Î
 	LT_DATA_PTR pData,		// ≤È’“µƒ ˝æ›
 	LISTPOSITION posStart);	// ≤È’“∆ ºŒª÷√
 
@@ -1348,7 +1348,7 @@ BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_FindNode(pSYList pList,			// ¡¥
 							//
 							// ∑µªÿ÷µ:	LISTPOSITION
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_FindByIndex(pSYList pList,		// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API LISTPOSITION __cdecl BaseGraphList_FindByIndex(pBaseGraphList pList,		// ¡¥±Ì÷∏’Î
 	INT_PTR nIndex);		// ≤È’“–Ú∫≈
 
 							///////////////////////////////////////////////////////////////////////////////
@@ -1356,5 +1356,5 @@ BASEGRAPH_COMMON_API LISTPOSITION __cdecl SYList_FindByIndex(pSYList pList,		// 
 							//
 							// ∑µªÿ÷µ:	Œﬁ
 							///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYList_Reverse(pSYList pList);			// ¡¥±Ì÷∏’Î
+BASEGRAPH_COMMON_API void __cdecl BaseGraphList_Reverse(pBaseGraphList pList);			// ¡¥±Ì÷∏’Î
 #endif

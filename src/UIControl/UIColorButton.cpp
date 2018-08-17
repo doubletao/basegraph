@@ -50,7 +50,7 @@ void UIColorButton::DrawElement(CDC * pDC)
 			CCommonBuffer	DrawBuffer(nBkWidth, nBkHeight);
 			memset(DrawBuffer.m_dwBuffer, 0, nBkWidth * nBkHeight * sizeof(DWORD));
 			CRect rt(0, 0, nBkWidth, nBkHeight);
-			SYColor_FillColor(&m_color, DrawBuffer.m_dwBuffer, nBkWidth, nBkHeight, 0, 0, nBkWidth, nBkHeight, 1.0f);
+			BaseGraphColor_FillColor(&m_color, DrawBuffer.m_dwBuffer, nBkWidth, nBkHeight, 0, 0, nBkWidth, nBkHeight, 1.0f);
 			//ÑÕÉ«¿éÌùµ½µ×Í¼ÉÏ
 			BITMAPINFO  BmpInfo;
 			BmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -129,7 +129,7 @@ void UIColorButton::OnButtonClickDown()
 	Refresh();
 }
 
-void UIColorButton::SetColor(const sycolor & color, bool bRefresh/* = true*/)
+void UIColorButton::SetColor(const common_color & color, bool bRefresh/* = true*/)
 {
 	m_color = color;
 	if (bRefresh)
@@ -138,7 +138,7 @@ void UIColorButton::SetColor(const sycolor & color, bool bRefresh/* = true*/)
 	}
 }
 
-sycolor UIColorButton::GetColor()
+common_color UIColorButton::GetColor()
 {
 	return m_color;
 }

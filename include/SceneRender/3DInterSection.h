@@ -35,16 +35,16 @@
 #define		RAY_TO_TUBE			11;
 BASEGRAPH_SCENE_RENDER_API int	GetPoint_Intersection(IN const void* paramin,OUT Point_Intersection* pOut,const int type);
 BASEGRAPH_SCENE_RENDER_API void	GetCubeIntersection(const vector3f* center,float fHeight,DX_QuadRang_Intersection* pInt,const matrix4f* pMatrix = NULL);
-BASEGRAPH_SCENE_RENDER_API void	Generate_Quatn_BetweenDir( OUT SYQuatn* pqQuatn, IN vector3f* pvStartDir, IN vector3f* pvEndDir );
+BASEGRAPH_SCENE_RENDER_API void	Generate_Quatn_BetweenDir( OUT BaseGraphQuatn* pqQuatn, IN vector3f* pvStartDir, IN vector3f* pvEndDir );
 BASEGRAPH_SCENE_RENDER_API BOOL	IntersectTriangle( const vector3f* orig,const vector3f* dir,const vector3f* v0,const vector3f* v1,const vector3f* v2, vector3f* pOutPt );
-class BASEGRAPH_SCENE_RENDER_API SYHitPoint
+class BASEGRAPH_SCENE_RENDER_API BaseGraphHitPoint
 {
 public:
-	SYHitPoint()
+	BaseGraphHitPoint()
 	{ 
 		BaseAR_Init(&m_arHitPoint);
 	}
-	~SYHitPoint();
+	~BaseGraphHitPoint();
 	int AddPoint(const float3* pHitPoint);
 	bool DelPoint(int nIndex);
 	const float3* GetPoint(int nIndex)const 
@@ -88,54 +88,54 @@ public:
 protected:
 	BaseARray m_arHitPoint;//float3 BaseARray
 };
-struct SYRay
+struct BaseGraphRay
 {
 	float3 vStart;
 	float3 vDir;
 };
-typedef struct SYRay SYLine;
-enum SYHitType
+typedef struct BaseGraphRay BaseGraphLine;
+enum BaseGraphHitType
 {
 	Common_NO_HIT = 0,
 	Common_NORMAL_HIT,
 	Common_HIT_EDGE,
 };
-BASEGRAPH_SCENE_RENDER_API void GetRayDirection(SYRay* pRay,const float3* pScreenPoint,const SYSpaceConvertParam* pParam);
-BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const float3* pSegEnd,float fRadius,const float3* pCenter,const float3* pNormal,SYHitPoint* pHitPoint);
+BASEGRAPH_SCENE_RENDER_API void GetRayDirection(BaseGraphRay* pRay,const float3* pScreenPoint,const BaseGraphSpaceConvertParam* pParam);
+BASEGRAPH_SCENE_RENDER_API int GetSegmentCircleInt(const float3* pSegStart,const float3* pSegEnd,float fRadius,const float3* pCenter,const float3* pNormal,BaseGraphHitPoint* pHitPoint);
 //球的中心在圆点，射线在球的空间内
-BASEGRAPH_SCENE_RENDER_API int GetRaySphereInt(const SYRay* pRay,float fRadius,SYHitPoint* pHitPoint);
+BASEGRAPH_SCENE_RENDER_API int GetRaySphereInt(const BaseGraphRay* pRay,float fRadius,BaseGraphHitPoint* pHitPoint);
 //射线与平面相交
-BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt(const SYRay* pRay,const float3* pCenter,const float3* pNormal,SYHitPoint* pHitPoint);
+BASEGRAPH_SCENE_RENDER_API int GetRayPlaneInt(const BaseGraphRay* pRay,const float3* pCenter,const float3* pNormal,BaseGraphHitPoint* pHitPoint);
 //射线与平面圆相交
-BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const SYRay* pRay,const float3* pCenter,const float3* pNormal,float Radius,SYHitPoint* pHitPoint );
+BASEGRAPH_SCENE_RENDER_API BOOL GetCircleInt( const BaseGraphRay* pRay,const float3* pCenter,const float3* pNormal,float Radius,BaseGraphHitPoint* pHitPoint );
 //射线与点相交
-BASEGRAPH_SCENE_RENDER_API BOOL GetPointInt( const SYRay* pRay,const float3* pPoint,float fDeviation = POINT_DEVIATION );
-BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const SYRay* pRay,const DX_Cone_Parameter* pCone,SYHitPoint* pHitPoint );
-BASEGRAPH_SCENE_RENDER_API int GetRayBoxInt( const SYRay* pRay,const float3* pMin,const float3* pMax,SYHitPoint* pHitPoint );
+BASEGRAPH_SCENE_RENDER_API BOOL GetPointInt( const BaseGraphRay* pRay,const float3* pPoint,float fDeviation = POINT_DEVIATION );
+BASEGRAPH_SCENE_RENDER_API int GetRayConeInt( const BaseGraphRay* pRay,const DX_Cone_Parameter* pCone,BaseGraphHitPoint* pHitPoint );
+BASEGRAPH_SCENE_RENDER_API int GetRayBoxInt( const BaseGraphRay* pRay,const float3* pMin,const float3* pMax,BaseGraphHitPoint* pHitPoint );
 
-BASEGRAPH_SCENE_RENDER_API BOOL GetTriangleInt( const SYRay* pRay, const float3*  v0, const float3*  v1, const float3*  v2, SYHitPoint* pHitPoint );
-BASEGRAPH_SCENE_RENDER_API BOOL GetRaySegment(const SYRay* pRay,const float3& v1,const float3& v2,const float3& v3,const float3& v4,SYHitPoint* pHitPoint);//顺时针
+BASEGRAPH_SCENE_RENDER_API BOOL GetTriangleInt( const BaseGraphRay* pRay, const float3*  v0, const float3*  v1, const float3*  v2, BaseGraphHitPoint* pHitPoint );
+BASEGRAPH_SCENE_RENDER_API BOOL GetRaySegment(const BaseGraphRay* pRay,const float3& v1,const float3& v2,const float3& v3,const float3& v4,BaseGraphHitPoint* pHitPoint);//顺时针
 BASEGRAPH_SCENE_RENDER_API int SY3DModelHitTest( int nSubModel,
 					  const DXRenderSubModel* pSubModelDes,
 					  const DWORD* pIndex,
 					  const DXVertex3D* pVertex,          //物件顶点
 					  const float3* pvScreenPt,	//屏幕坐标
-					  const SYSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
+					  const BaseGraphSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 					  float3* pOutPt = NULL,BOOL isHitReturn = TRUE);
 BASEGRAPH_SCENE_RENDER_API int SY3DRayHitModel( int nSubModel,
 									const DXRenderSubModel* pSubModelDes,
 									const DWORD* pIndex,
 									const DXVertex3D* pVertex,          //物件顶点
-									const SYRay* pRay,	//屏幕坐标
-									const SYSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
+									const BaseGraphRay* pRay,	//屏幕坐标
+									const BaseGraphSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 									float3* pOutPt = NULL,BOOL isHitReturn = TRUE);
 //二维向量在三维方向上的投影长度
-BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const SYSpaceConvertParam* pSpaceParam,
+BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const BaseGraphSpaceConvertParam* pSpaceParam,
 											IN const float3* p2DStart, IN const float3* p2DEnd, 
-											const SYLine* pLine,const float3* pNormal = NULL);
+											const BaseGraphLine* pLine,const float3* pNormal = NULL);
 
 //2D平面上两个点在指定三维平面上的夹角
-BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle(const SYSpaceConvertParam* pSpaceParam,
+BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle(const BaseGraphSpaceConvertParam* pSpaceParam,
 					  IN const float3* p2DStart, //2D平面起始点
 					  IN const float3* p2DEnd, //2D平面结束点
 					  const float3* pCenter,const float3* pNormal);//3D平面

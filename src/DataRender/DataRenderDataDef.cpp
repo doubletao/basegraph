@@ -20,12 +20,12 @@ BASEGRAPH_DATARENDER_API void tag_sy3dunit::Reset()
 	memset(this, 0, sizeof(tag_sy3dunit));
 }
 
-BASEGRAPH_DATARENDER_API void tag_syunit::Reset()
+BASEGRAPH_DATARENDER_API void tag_common_unit::Reset()
 {
-	memset(this, 0, sizeof(tag_syunit));
+	memset(this, 0, sizeof(tag_common_unit));
 }
 
-BASEGRAPH_DATARENDER_API void tag_sybonedef::Reset()
+BASEGRAPH_DATARENDER_API void tag_common_bonedef::Reset()
 {
 	nAnimID = 0;
 	rotationOrder = 0;
@@ -40,5 +40,5 @@ BASEGRAPH_DATARENDER_API void tag_sybonedef::Reset()
 
 BASEGRAPH_DATARENDER_API void tag_symodel::Reset()
 {
-	memset(this, 0, sizeof(SYModel));
+	memset(this, 0, sizeof(BaseGraphModel));
 }

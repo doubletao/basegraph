@@ -263,15 +263,15 @@ T1*	ResourcePool<T1,T2>::GetResource(LPCTSTR strResName)
 	}
 
 }
-struct SYTechUnit
+struct BaseGraphTechUnit
 {
-	SYTechUnit()
+	BaseGraphTechUnit()
 	{
 		m_pTech = 0;
 		m_pLayout = 0;
 	}
 
-	~SYTechUnit()
+	~BaseGraphTechUnit()
 	{
 		Release();
 	}
@@ -287,9 +287,9 @@ struct SYTechUnit
 	ID3D10InputLayout*	m_pLayout;
 };
 
-struct SYTechCreateParam
+struct BaseGraphTechCreateParam
 {
-	SYTechCreateParam()
+	BaseGraphTechCreateParam()
 	{
 		pInputDesc = 0;
 		nInputElements = 0;
@@ -304,9 +304,9 @@ struct SYTechCreateParam
 	LPCTSTR							pTechName;				
 };	
 
-struct SYEffectCreateParam
+struct BaseGraphEffectCreateParam
 {
-	SYEffectCreateParam()
+	BaseGraphEffectCreateParam()
 	{
 		pTechParam	= 0;
 		nTechs		= 0;
@@ -316,7 +316,7 @@ struct SYEffectCreateParam
 		pEffectName = 0;
 	}
 	
-	SYTechCreateParam*	pTechParam;
+	BaseGraphTechCreateParam*	pTechParam;
 	int					nTechs;
 	D3D10_SHADER_MACRO*	pDefines;
 	ID3D10Device*		pDevice;
@@ -324,25 +324,25 @@ struct SYEffectCreateParam
 	LPCTSTR				pEffectName;
 };
 //////////////////////////////////////////////////////////////////////////
-class  CTechUnit:public ResourceUnit <SYTechUnit, SYTechCreateParam*>
+class  CTechUnit:public ResourceUnit <BaseGraphTechUnit, BaseGraphTechCreateParam*>
 {
 public:
 	CTechUnit(){};	
 	virtual ~CTechUnit();
 	virtual void Release();
-	virtual BOOL Create(LPCTSTR	strResName,SYTechCreateParam* pCreateParam);
+	virtual BOOL Create(LPCTSTR	strResName,BaseGraphTechCreateParam* pCreateParam);
 };
 
-class  CEffectUnit:public ResourceUnit <ID3D10Effect,SYEffectCreateParam*>
+class  CEffectUnit:public ResourceUnit <ID3D10Effect,BaseGraphEffectCreateParam*>
 {
 public:
 	CEffectUnit(){};
 	virtual ~CEffectUnit();
-	virtual BOOL Create(LPCTSTR strResName,SYEffectCreateParam* pCreateParam);
+	virtual BOOL Create(LPCTSTR strResName,BaseGraphEffectCreateParam* pCreateParam);
 	virtual void Release();
 	CTechUnit*	GetTechnique(LPCTSTR strTechName);
 protected :
-	ResourcePool<CTechUnit, SYTechCreateParam*>	m_TechPool;
+	ResourcePool<CTechUnit, BaseGraphTechCreateParam*>	m_TechPool;
 };
 
 class SYD3DEffectManager
@@ -350,14 +350,14 @@ class SYD3DEffectManager
 private:
 	SYD3DEffectManager(void);
 	int	CreateQuadVB();
-	ResourcePool<CEffectUnit,SYEffectCreateParam*> m_EffectPool;
+	ResourcePool<CEffectUnit,BaseGraphEffectCreateParam*> m_EffectPool;
 	ID3D10Device*	m_d3d_device;
 	TCHAR		m_fx_path[MAX_PATH] ;	
 	int			m_hQuadVB;
 public:
 	SYD3DEffectManager(ID3D10Device* device);
 	~SYD3DEffectManager(void);
-	CEffectUnit*	CreateEffectUnit(SYEffectCreateParam* pCreateParam);	
+	CEffectUnit*	CreateEffectUnit(BaseGraphEffectCreateParam* pCreateParam);	
 	void			ReleaseEffectUnit(LPCTSTR strEffectName);
 	CTechUnit*	GetTechUnit(LPCTSTR strEffectName,LPCTSTR strTechName);	
 	int			GetQuadVB()

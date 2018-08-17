@@ -60,11 +60,11 @@ int vz_pointdirect(t1* ptPrv,t1* ptCur,t1* ptNext)
 	else
 		return -1;
 }
-SYTriangulateApp::SYTriangulateApp(void)
+BaseGraphTriangulateApp::BaseGraphTriangulateApp(void)
 {
 }
 
-SYTriangulateApp::~SYTriangulateApp(void)
+BaseGraphTriangulateApp::~BaseGraphTriangulateApp(void)
 {
 }
 
@@ -176,7 +176,7 @@ void AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, IN pointf * ctrlPoint
 //--------------------------------------------------------------------------------
 //¹¦ÄÜ£ºÅÐ¶ÏÁ½µãÊÇ·ñÔÚÖ±ÏßÁ½²à
 //--------------------------------------------------------------------------------
-BOOL SYTriangulateApp::PtsOnDiffSide(IN pointf p1, IN pointf p2, IN pointf l1, IN pointf l2)
+BOOL BaseGraphTriangulateApp::PtsOnDiffSide(IN pointf p1, IN pointf p2, IN pointf l1, IN pointf l2)
 {
 	// Ö»ÐèÅÐ¶ÏÏß¶Îpt1,pt2ÊÇ·ñÓëÖ±ÏßÏà½»(²»¿¼ÂÇÏß¶Î¶Ëµã)
 	if (l2.x == l1.x) 
@@ -215,7 +215,7 @@ BOOL SYTriangulateApp::PtsOnDiffSide(IN pointf p1, IN pointf p2, IN pointf l1, I
 	return FALSE;
 } // END OF PtsOnDiffSide
 
-BOOL SYTriangulateApp::PtsOnDiffSide(IN point3f p1, IN point3f p2, IN point3f l1, IN point3f l2)
+BOOL BaseGraphTriangulateApp::PtsOnDiffSide(IN point3f p1, IN point3f p2, IN point3f l1, IN point3f l2)
 {
 	// Ö»ÐèÅÐ¶ÏÏß¶Îpt1,pt2ÊÇ·ñÓëÖ±ÏßÏà½»(²»¿¼ÂÇÏß¶Î¶Ëµã)
 	if (l2.x == l1.x) 
@@ -257,7 +257,7 @@ BOOL SYTriangulateApp::PtsOnDiffSide(IN point3f p1, IN point3f p2, IN point3f l1
 //--------------------------------------------------------------------------------
 //¹¦ÄÜ£º´ò¶Ï²¢¼ÓÈëÄÚ»·ÉÏµÄ¶¥µã
 //--------------------------------------------------------------------------------
-void SYTriangulateApp::BreakAndAddCurCell(CBasePoint3fPtrArray *pptrTri, 
+void BaseGraphTriangulateApp::BreakAndAddCurCell(CBasePoint3fPtrArray *pptrTri, 
 						CPtNodeArray &ptPolyArray, //ptfArrayÖÐµÄ¶¥µã¼ÓÈëµ½ptPolyArray
 						BaseARray &ptfArray, 
 						int nMinXIndex, // ptfArrayÖÐ×îÐ¡xÖµµãµÄÐòºÅ
@@ -681,7 +681,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CBasePoint3fPtrArray *pptrTri,
 //ÊäÈë£º
 //Êä³ö£º
 //--------------------------------------------------------------------------------
-//void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph,IN CBaseEnvelopeArray* pLineEnvelopeAr,OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV,IN BOOL bAntiClockwise)
+//void BaseGraphTriangulateApp::BaseGraphTriangulateLine(IN vectorgraph* pGraph,IN CBaseEnvelopeArray* pLineEnvelopeAr,OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV,IN BOOL bAntiClockwise)
 //{
 //	vectorcell* pCell = NULL;
 //	int nEnvelopeNum = (int)pLineEnvelopeAr->GetSize();
@@ -691,7 +691,7 @@ void SYTriangulateApp::BreakAndAddCurCell(CBasePoint3fPtrArray *pptrTri,
 //		pCell = &pGraph->cell[pEnvelopeNode->nCellIndex];
 //	}
 //}
-void SYTriangulateApp::SYTriangulateLine(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
+void BaseGraphTriangulateApp::BaseGraphTriangulateLine(IN vectorgraph* pGraph, OUT OUT CBasePoint3fPtrArray *pptrTri, OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
 {
 	if (pGraph == NULL || pGraph->ncell < 1) 
 	{
@@ -940,10 +940,10 @@ void DivGraphics(vectorgraph* pGraph,PolyDivInfo* infov)
 		if(pcell->type == uncloss_line ||pcell->type == close_line)
 			continue;
 
-		SYOC_Cell2PtlfPoly(pcell, &ptfArray,NULL,NULL);
-		//SYCommon_CallDebug(_T("Cell2PtfPoly"),pcell,&ptfArray,NULL,NULL);
-		//SYOC_DelOverlap(&ptfArray,NULL);
-		//SYOC_DelColine(&ptfArray,NULL);
+		BaseGraphOC_Cell2PtlfPoly(pcell, &ptfArray,NULL,NULL);
+		//BaseGraphCommon_CallDebug(_T("Cell2PtfPoly"),pcell,&ptfArray,NULL,NULL);
+		//BaseGraphOC_DelOverlap(&ptfArray,NULL);
+		//BaseGraphOC_DelColine(&ptfArray,NULL);
 
 		int nPoint = BaseAR_GetSize(&ptfArray);
 		int nstartindex = BaseAR_GetSize(&infov->m_PolyVectorAr);
@@ -959,7 +959,7 @@ void DivGraphics(vectorgraph* pGraph,PolyDivInfo* infov)
 
 			//if(prv != NULL)
 			//{
-			//	SYCommon_CallDebug(_T("LineTo"),prv,p,&ptfArray,NULL);
+			//	BaseGraphCommon_CallDebug(_T("LineTo"),prv,p,&ptfArray,NULL);
 			//}
 			//prv = p;
 			
@@ -971,7 +971,7 @@ void DivGraphics(vectorgraph* pGraph,PolyDivInfo* infov)
 
 }
 
-void SYTriangulateApp::SYTriangulateGL(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
+void BaseGraphTriangulateApp::BaseGraphTriangulateGL(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
 {
 	PolyDivInfo	infov;
 	bAntiClockwise = FALSE;
@@ -1022,13 +1022,13 @@ void SYTriangulateApp::SYTriangulateGL(IN vectorgraph* pGraph, OUT CBasePoint3fP
 	}
 	BaseAR_RemoveAll(&infov.m_PolyVectorAr);
 }
-void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
+void BaseGraphTriangulateApp::BaseGraphTriangulate(IN vectorgraph* pGraph, OUT CBasePoint3fPtrArray *pptrTri,OUT CBasePoint3fPtrArray *pptrUV, IN BOOL bAntiClockwise)
 {
 	if (pGraph == NULL || pGraph->ncell < 1) 
 	{
 		return;
 	}
-	SYTriangulateLine(pGraph, pptrTri, pptrUV, bAntiClockwise);
+	BaseGraphTriangulateLine(pGraph, pptrTri, pptrUV, bAntiClockwise);
 
 	int i, j;
 	vectorcell* pCell = NULL;
@@ -1166,9 +1166,9 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CBasePoint3fPtr
 				pEnvelopeNode = pEnvelopeNode->nextNode;
 				continue;
 			}
-			SYOC_Cell2PtfPoly(pCell, &ptfArray,NULL,NULL);
-			SYOC_DelOverlap(&ptfArray,NULL);
-			SYOC_DelColine(&ptfArray,NULL);
+			BaseGraphOC_Cell2PtfPoly(pCell, &ptfArray,NULL,NULL);
+			BaseGraphOC_DelOverlap(&ptfArray,NULL);
+			BaseGraphOC_DelColine(&ptfArray,NULL);
 
 			int nDesSize = (int)ptPolyArray.GetSize();
 			pointf ptOld;
@@ -1271,7 +1271,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CBasePoint3fPtr
 		//Triangulate2( &ptPolyArray, &lineArray, &TriangleArray, bAntiClockwise);
 		Triangulate3WithPoly( &ptPolyArray, &TriangleArray, bAntiClockwise);
 		//Triangulate3( &ptPolyArray, &lineArray, &TriangleArray, bAntiClockwise);
-		//SYProgress_SetValue((1.0f / nEnvelopeNum) * (i + 1));
+		//BaseGraphProgress_SetValue((1.0f / nEnvelopeNum) * (i + 1));
 
 		point3f* lpPtf3D = NULL;
 		int nTriNum = (int)TriangleArray.GetSize();
@@ -1346,14 +1346,14 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, OUT CBasePoint3fPtr
 	delete []bOutLoop;
 	bOutLoop = NULL;
 
-}// END OF SYTriangulate
+}// END OF BaseGraphTriangulate
 
 //--------------------------------------------------------------------------------
 //¹¦ÄÜ£ºÆ½Ãæ·Ç×Ô½»¶à±ßÐÎTriangulation
 //ÊäÈë£º
 //Êä³ö£º
 //--------------------------------------------------------------------------------
-void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPtSize, int* nUnitStart, int nUnit, int nCurUnit, int* nCellStart, int nCell, OUT CBasePoint3fPtrArray *pptrTri, IN BOOL bAntiClockwise)
+void BaseGraphTriangulateApp::BaseGraphTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPtSize, int* nUnitStart, int nUnit, int nCurUnit, int* nCellStart, int nCell, OUT CBasePoint3fPtrArray *pptrTri, IN BOOL bAntiClockwise)
 {
 	if (pGraph == NULL || pGraph->ncell < 1) 
 	{
@@ -1539,7 +1539,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 				} // end of for
 			} // end of while
 
-			SYOC_DelColine(&ptfArray,NULL);
+			BaseGraphOC_DelColine(&ptfArray,NULL);
 
 			nSize = (int)BaseAR_GetSize(&ptfArray);
 			if (nSize < 3) 
@@ -1648,7 +1648,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 		//InitLines2( &ptPolyArray, &lineArray, &TriangleArray, bAntiClockwise);
 		//Triangulate2( &ptPolyArray, &lineArray, &TriangleArray, bAntiClockwise);
 		Triangulate3( &ptPolyArray, &lineArray, &TriangleArray, bAntiClockwise);
-		//SYProgress_SetValue((1.0f / nEnvelopeNum) * (i + 1));
+		//BaseGraphProgress_SetValue((1.0f / nEnvelopeNum) * (i + 1));
 
 		point3f* lpPtf3D = NULL;
 		int nTriNum = (int)TriangleArray.GetSize();
@@ -1718,7 +1718,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 	delete []bOutLoop;
 	bOutLoop = NULL;
 
-}// END OF SYTriangulate
+}// END OF BaseGraphTriangulate
 
 //--------------------------------------------------------------------------------
 //¹¦ÄÜ£ºÆ½Ãæ·Ç×Ô½»¶à±ßÐÎTriangulation
@@ -1726,7 +1726,7 @@ void SYTriangulateApp::SYTriangulate(IN vectorgraph* pGraph, pointf* pt, int nPt
 //Êä³ö£ºÈý½ÇÐÎÊý×é£¨Ã¿¸öÔªËØº¬Èý¸ö¶¥µã£©
 //ËµÃ÷: Ã»ÓÐ¶´
 //--------------------------------------------------------------------------------
-void SYTriangulateApp::Triangulate2(CPtNodeArray* pptPolyArray, CLineNodeArray* pLineArray, CTriangleArray* pTriangleArray, BOOL bAntiClockWise)
+void BaseGraphTriangulateApp::Triangulate2(CPtNodeArray* pptPolyArray, CLineNodeArray* pLineArray, CTriangleArray* pTriangleArray, BOOL bAntiClockWise)
 {
 	///Ëã·¨¿ªÊ¼
 	int i = 0;
@@ -1975,7 +1975,7 @@ void SYTriangulateApp::Triangulate2(CPtNodeArray* pptPolyArray, CLineNodeArray* 
 //ËµÃ÷: Ã»ÓÐ¶´
 //--------------------------------------------------------------------------------
 
-void SYTriangulateApp::Triangulate3WithPoly(CPtNodeArray* pptPolyArray,CTriangleArray* pTriangleArray, BOOL bAntiClockWise)
+void BaseGraphTriangulateApp::Triangulate3WithPoly(CPtNodeArray* pptPolyArray,CTriangleArray* pTriangleArray, BOOL bAntiClockWise)
 {
 	Triangle *pTriangle = NULL;
 	//´ÓÐ¡µ½´óÅÅÐò
@@ -2061,11 +2061,11 @@ void SYTriangulateApp::Triangulate3WithPoly(CPtNodeArray* pptPolyArray,CTriangle
 		nstart %= nPolySize;
 	} while (nptcount >= 3);
 }
-void SYTriangulateApp::Triangulate3(CPtNodeArray* pptPolyArray, CLineNodeArray* pLineArray, CTriangleArray* pTriangleArray, BOOL bAntiClockWise)
+void BaseGraphTriangulateApp::Triangulate3(CPtNodeArray* pptPolyArray, CLineNodeArray* pLineArray, CTriangleArray* pTriangleArray, BOOL bAntiClockWise)
 {
 	// Ë³ÐòÕÒµ½Èý¸öË³ÐòÄÜÐÎ³ÉÈý½ÇÐÎµÄ¶¥µã, ¸îµô´Ë½Ç. ¼ÌÐø. Ò»Ö±µ½Ö»Ê£ÏÂ3¸ö¶¥µã.
 	///Ëã·¨¿ªÊ¼
-SYTri_START:
+BaseGraphTri_START:
 	int nLineCount = (int)pLineArray->GetSize(); 
 	if ( nLineCount < 3 ) //ÊäÈë·Ç·¨ 
 		return;
@@ -2271,7 +2271,7 @@ SYTri_START:
 		pLineArray->RemoveAt((nChoose+1) % nLineCount);
 
 		//Triangulate3(pptPolyArray, pLineArray, pTriangleArray, bAntiClockWise);
-		goto SYTri_START;
+		goto BaseGraphTri_START;
 	}
 	else
 	{
@@ -2285,7 +2285,7 @@ SYTri_START:
 //ÊäÈë£º¶à±ßÐÎ¶¥µãÊý×é
 //Êä³ö£ºÈý½ÇÐÎÊý×é£¨Ã¿¸öÔªËØº¬Èý¸ö¶¥µã£©
 //--------------------------------------------------------------------------------
-void SYTriangulateApp::Triangulate(CPtNodeArray* pptPolyArray, CLineNodeArray* pLineArray, CTriangleArray* pTriangleArray, BOOL bAntiClockWise)
+void BaseGraphTriangulateApp::Triangulate(CPtNodeArray* pptPolyArray, CLineNodeArray* pLineArray, CTriangleArray* pTriangleArray, BOOL bAntiClockWise)
 {
 	///Ëã·¨¿ªÊ¼
 	//ÈôpTriangleArray ·Ç¿Õ,ÔòÇå¿Õ
@@ -2510,7 +2510,7 @@ void SYTriangulateApp::Triangulate(CPtNodeArray* pptPolyArray, CLineNodeArray* p
 //     ÏòÁ¿bÆðÆýµã: s2,e2
 //Êä³ö:·µ»ØÖµÎªÁ½Õß¼Ð½ÇÓàÏÒÖµ. Èç¹ûa»òÕßbÍË»¯ÎªÒ»µã,Ôò·µ»Ø -1 (180¶È¶ÔÓ¦µÄÓàÏÒÖµ)
 //--------------------------------------------------------------------------------
-float SYTriangulateApp::cosine(pointf s1, pointf e1, pointf s2, pointf e2) 
+float BaseGraphTriangulateApp::cosine(pointf s1, pointf e1, pointf s2, pointf e2) 
 {
 	float dist1 = ( (e1.x - s1.x)*(e1.x - s1.x) + (e1.y - s1.y)*(e1.y - s1.y) );
 	if( dist1 < 0.00001 ) 
@@ -2538,7 +2538,7 @@ float SYTriangulateApp::cosine(pointf s1, pointf e1, pointf s2, pointf e2)
 //     ±»²âµã: pt2
 //Êä³ö:·µ»ØÖµÎªTRUE: ÔÚ×ó²à¡£·ñÔòFALSE
 //--------------------------------------------------------------------------------
-BOOL SYTriangulateApp::PtOnLeft(IN pointf pt0, IN pointf pt1, IN pointf pt2, IN BOOL bAntiClockWise) 
+BOOL BaseGraphTriangulateApp::PtOnLeft(IN pointf pt0, IN pointf pt1, IN pointf pt2, IN BOOL bAntiClockWise) 
 {
 	if(bAntiClockWise) 
 	{
@@ -2572,7 +2572,7 @@ BOOL SYTriangulateApp::PtOnLeft(IN pointf pt0, IN pointf pt1, IN pointf pt2, IN 
 //     ±»²âµã: pt2
 //Êä³ö:·µ»ØÖµÎªTRUE: ÔÚ×ó²à¡£·ñÔòFALSE
 //--------------------------------------------------------------------------------
-BOOL SYTriangulateApp::PtOnLeft2(IN pointf pt0, IN pointf pt1, IN pointf pt2, IN BOOL bAntiClockWise) 
+BOOL BaseGraphTriangulateApp::PtOnLeft2(IN pointf pt0, IN pointf pt1, IN pointf pt2, IN BOOL bAntiClockWise) 
 {
 	if(bAntiClockWise) 
 	{
@@ -2604,7 +2604,7 @@ BOOL SYTriangulateApp::PtOnLeft2(IN pointf pt0, IN pointf pt1, IN pointf pt2, IN
 //ÊäÈë:ptPolyArray : ¶à±ßÐÎ¶¥µãÊý×é
 //Êä³ö:·µ»ØÖµÎªÁ½Õß¼Ð½ÇÓàÏÒÖµ. Èç¹ûa»òÕßbÍË»¯ÎªÒ»µã,Ôò·µ»Ø -1 (180¶È¶ÔÓ¦µÄÓàÏÒÖµ)
 //--------------------------------------------------------------------------------
-BOOL SYTriangulateApp::InitLines( IN CPtNodeArray* pptPolyArray, OUT CLineNodeArray* pLineArray ) 
+BOOL BaseGraphTriangulateApp::InitLines( IN CPtNodeArray* pptPolyArray, OUT CLineNodeArray* pLineArray ) 
 {
 	//²ÎÊý¼ì²é
 	int nPtCount = (int)pptPolyArray->GetSize();
@@ -2663,7 +2663,7 @@ BOOL SYTriangulateApp::InitLines( IN CPtNodeArray* pptPolyArray, OUT CLineNodeAr
 //Êä³ö£º
 //·µ»ØÖµ£ºÈôÏà½»£¬Ôò·µ»ØTRUE;·ñÔò£¬·µ»ØFALSE
 //------------------------------------------------------------------
-BOOL SYTriangulateApp::SingleLineIntersection(IN pointf startPt1, IN pointf endPt1, IN pointf startPt2, IN pointf endPt2)
+BOOL BaseGraphTriangulateApp::SingleLineIntersection(IN pointf startPt1, IN pointf endPt1, IN pointf startPt2, IN pointf endPt2)
 {
 	//if (startPt1 == startPt2 || startPt1 == endPt2 || endPt1 == startPt2 || endPt1 == endPt2) 
 	//if(( (startPt1.x - startPt2.x)*(startPt1.x - startPt2.x) + (startPt1.y - startPt2.y)*(startPt1.y - startPt2.y) )< 0.00001
@@ -2725,7 +2725,7 @@ BOOL SYTriangulateApp::SingleLineIntersection(IN pointf startPt1, IN pointf endP
 //Êä³ö£º
 //·µ»ØÖµ£ºÈôÏà½»£¬Ôò·µ»ØTRUE;·ñÔò£¬·µ»ØFALSE
 //------------------------------------------------------------------
-BOOL SYTriangulateApp::LineIntersection(IN pointf startPt1, IN pointf endPt1, IN CLineNodeArray* pLineArray,IN CPtNodeArray* pptPolyArray )
+BOOL BaseGraphTriangulateApp::LineIntersection(IN pointf startPt1, IN pointf endPt1, IN CLineNodeArray* pLineArray,IN CPtNodeArray* pptPolyArray )
 {
 	int nLineCount = (int)pLineArray->GetSize();
 	int i = 0;
@@ -2754,7 +2754,7 @@ BOOL SYTriangulateApp::LineIntersection(IN pointf startPt1, IN pointf endPt1, IN
 //////////////////////////////////////////////////////////
 // Çóµãpµ½Ïß¶ÎlËùÔÚÖ±ÏßµÄ¾àÀë 
 //////////////////////////////////////////////////////////
-double SYTriangulateApp::PToLDist(pointf* p, pointf* pLS, pointf* pLE) 
+double BaseGraphTriangulateApp::PToLDist(pointf* p, pointf* pLS, pointf* pLE) 
 { 
 	double l = sqrt(double( (pLE->x - pLS->x)*(pLE->x - pLS->x) + (pLE->y - pLS->y)*(pLE->y - pLS->y) ));
 	if (l<0.0000001) 
@@ -2768,7 +2768,7 @@ double SYTriangulateApp::PToLDist(pointf* p, pointf* pLS, pointf* pLE)
 //------------------------------------------------------------------
 //¹¦ÄÜ£ºÅÐ¶ÏµãptÊÇ·ñÎ»ÓÚÏß¶ÎÉÏ
 //------------------------------------------------------------------
-BOOL SYTriangulateApp::PtOnLineSeg(IN pointf pt, IN pointf line1, IN pointf line2 )
+BOOL BaseGraphTriangulateApp::PtOnLineSeg(IN pointf pt, IN pointf line1, IN pointf line2 )
 {
 	BOOL bRtn = PToLDist(&pt, &line1, &line2) < ABS_FLOAT_0 
 		&& pt.x >= min(line1.x, line2.x) && pt.y >= min(line1.y, line2.y) 
@@ -2783,7 +2783,7 @@ BOOL SYTriangulateApp::PtOnLineSeg(IN pointf pt, IN pointf line1, IN pointf line
 //Êä³ö£º
 //·µ»ØÖµ£ºÈôÏà½»£¬Ôò·µ»ØTRUE;·ñÔò£¬·µ»ØFALSE
 //------------------------------------------------------------------
-BOOL SYTriangulateApp::SingleLineIntersection2(IN pointf startPt1, IN pointf endPt1, IN pointf startPt2, IN pointf endPt2)
+BOOL BaseGraphTriangulateApp::SingleLineIntersection2(IN pointf startPt1, IN pointf endPt1, IN pointf startPt2, IN pointf endPt2)
 {
 	// startPt1, ÊÇÄÚ»·ÉÏµÄµã. ¿Ï¶¨²»ÄÜÓëÍâ»·ÉÏµÄµãÖØºÏ
 	// endPt1, ÊÇÍâ»·ÉÏµÄ±¸Ñ¡µã
@@ -2854,7 +2854,7 @@ BOOL SYTriangulateApp::SingleLineIntersection2(IN pointf startPt1, IN pointf end
 //Êä³ö£º
 //·µ»ØÖµ£ºÈôÏà½»£¬Ôò·µ»ØTRUE;·ñÔò£¬·µ»ØFALSE
 //------------------------------------------------------------------
-BOOL SYTriangulateApp::LineIntersection2(IN pointf startPt1, IN pointf endPt1, IN CPtNodeArray &ptPolyArray)
+BOOL BaseGraphTriangulateApp::LineIntersection2(IN pointf startPt1, IN pointf endPt1, IN CPtNodeArray &ptPolyArray)
 {
 	int i = 0;
 	PtNode* pPt0 = NULL; 
@@ -2886,7 +2886,7 @@ BOOL SYTriangulateApp::LineIntersection2(IN pointf startPt1, IN pointf endPt1, I
 //·µ»ØÖµ£ºÓÐ¼¸ÌõÐÂµÄÏß¶Î(ÏÒ)
 //Í¬Ê±ÓÃm,n·µ»ØÒÑÓÐÏß¶ÎµÄÐòºÅ
 //------------------------------------------------------------------
-int SYTriangulateApp::CountLineInArray(IN int nPt1, IN int nPt2, IN int nTheOne, CLineNodeArray* pLineArray, OUT int& m, OUT int& n)
+int BaseGraphTriangulateApp::CountLineInArray(IN int nPt1, IN int nPt2, IN int nTheOne, CLineNodeArray* pLineArray, OUT int& m, OUT int& n)
 {
 	int nRet = 0;//·µ»ØÖµ
 	int i = 0;
@@ -2934,7 +2934,7 @@ int SYTriangulateApp::CountLineInArray(IN int nPt1, IN int nPt2, IN int nTheOne,
 //--------------------------------------------------------------------------------------
 // ¸øÊý×ébOutLoop¸³Öµ
 //--------------------------------------------------------------------------------------
-void SYTriangulateApp::InitOutLoopArr(OUT BOOL *bOutLoop, IN const vectorgraph* pGraph, IN const BOOL bAntiClockwise)
+void BaseGraphTriangulateApp::InitOutLoopArr(OUT BOOL *bOutLoop, IN const vectorgraph* pGraph, IN const BOOL bAntiClockwise)
 {
 	for(int i=0; i<pGraph->ncell; i++)
 	{
@@ -2951,7 +2951,7 @@ void SYTriangulateApp::InitOutLoopArr(OUT BOOL *bOutLoop, IN const vectorgraph* 
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-int SYTriangulateApp::GetMinYPt(IN vectorcell* pCurveCell )//µÃµ½×îÐ¡yÖµµã //¶à±ßÐÎ¶¥µãÊý×é¡¡¶¥µãÊý¾ÝÀàÐÍ£ºShiftNode*
+int BaseGraphTriangulateApp::GetMinYPt(IN vectorcell* pCurveCell )//µÃµ½×îÐ¡yÖµµã //¶à±ßÐÎ¶¥µãÊý×é¡¡¶¥µãÊý¾ÝÀàÐÍ£ºShiftNode*
 {
 	int nPtCount = pCurveCell->npoint;
 	if(nPtCount<=0) 
@@ -2986,7 +2986,7 @@ int SYTriangulateApp::GetMinYPt(IN vectorcell* pCurveCell )//µÃµ½×îÐ¡yÖµµã //¶à±
 //Êä³ö£º
 //·µ»ØÖµ£º
 //------------------------------------------------------------------
-BOOL SYTriangulateApp::OutIsLeft(IN pointf pt0,IN pointf pt1,IN pointf pt2)//ÅÐ¶Ï×ó²àÊÇ·ñÍâ²à
+BOOL BaseGraphTriangulateApp::OutIsLeft(IN pointf pt0,IN pointf pt1,IN pointf pt2)//ÅÐ¶Ï×ó²àÊÇ·ñÍâ²à
 {
 	if ( (pt1.x - pt0.x)*(pt2.y - pt0.y) - (pt1.y - pt0.y)*(pt2.x - pt0.x) > 0 )  
 	{
@@ -2998,7 +2998,7 @@ BOOL SYTriangulateApp::OutIsLeft(IN pointf pt0,IN pointf pt1,IN pointf pt2)//ÅÐ¶
 	}
 }//end of OutIsLeft
 
-BOOL SYTriangulateApp::IsAntiClockwise(IN vectorcell* pCurveCell )
+BOOL BaseGraphTriangulateApp::IsAntiClockwise(IN vectorcell* pCurveCell )
 {
 	if(pCurveCell->npoint <= 0)
 		return FALSE;

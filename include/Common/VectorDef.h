@@ -3,23 +3,23 @@
 #include "Common\MathDef.h"
 struct tag_matrixf4x4;
 typedef struct tag_matrixf4x4 matrix4f;
-//////////////////////////////// 二维向量 和 SYPoint/////////////////////////////////////
+//////////////////////////////// 二维向量 和 BaseGraphPoint/////////////////////////////////////
 
 typedef struct tag_long2{		// 整型
 	long	x;
 	long	y;
-}long2,point2,vector2,SYPoint, *LPCommonPOINTL;
+}long2,point2,vector2,BaseGraphPoint, *LPCommonPOINTL;
 
 typedef struct tag_float2{		// 浮点型
 	float	x;
 	float	y;
-}float2,pointf,point2f,vector2f,SYPoint2f, *LPCommonPOINTF;
+}float2,pointf,point2f,vector2f,BaseGraphPoint2f, *LPCommonPOINTF;
 
 
 typedef struct tag_double2{		// 双精度型
 	double	x;
 	double	y;
-}double2,point2lf,vector2lf,SYPoint2lf, *LPCommonPOINTD;
+}double2,point2lf,vector2lf,BaseGraphPoint2lf, *LPCommonPOINTD;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -256,7 +256,7 @@ typedef struct tag_double3{		// 双精度浮点型
 	double	z;
 }double3,point3lf,vector3lf;
 
-enum SYPlane_Type
+enum BaseGraphPlane_Type
 {
 	Plane_XY = 0,
 	Plane_XZ,

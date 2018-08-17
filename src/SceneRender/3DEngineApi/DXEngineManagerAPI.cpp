@@ -109,7 +109,7 @@ CBase3DLineManager::CBase3DLineManager(int nMaxVertexSize/* = DEFAULT_LINE_NUM*/
 	m_hLineVertex = 0;
 	m_NumVertex = 0;
 	m_dColor = 0xffffffff;
-	m_pNowVertex = new SYEasyVertex;
+	m_pNowVertex = new BaseGraphEasyVertex;
 
 	m_hMatrixBufferfog = 0;
 	m_hVertexShaderfog = 0;
@@ -176,8 +176,8 @@ void CBase3DLineManager::ReleaseManager(int hDevice)
 void CBase3DLineManager::InitialManager(int hDevice)
 {
 	m_hDevice = hDevice;
-	m_pLineVertex = new SYEasyVertex[m_MaxVertexSize];
-	m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_MaxVertexSize,m_pLineVertex,DXVertexBuffer,LINE_LIST);
+	m_pLineVertex = new BaseGraphEasyVertex[m_MaxVertexSize];
+	m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(BaseGraphEasyVertex),m_MaxVertexSize,m_pLineVertex,DXVertexBuffer,LINE_LIST);
 	m_nVedioVertexNum = m_MaxVertexSize;
 	{
 		matrix4f temp;
@@ -312,8 +312,8 @@ void CBase3DLineManager::LineTo(int hDevice,const float3* vEndPos,DWORD* color /
 	if (m_NumVertex + 2 >= m_MaxVertexSize)
 	{
 		m_MaxVertexSize = max(m_MaxVertexSize * 2,m_NumVertex + 2);
-		SYEasyVertex* tmpVertex = new SYEasyVertex[m_MaxVertexSize];
-		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(SYEasyVertex));
+		BaseGraphEasyVertex* tmpVertex = new BaseGraphEasyVertex[m_MaxVertexSize];
+		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(BaseGraphEasyVertex));
 		delete []m_pLineVertex;
 		m_pLineVertex = tmpVertex;
 	}
@@ -336,7 +336,7 @@ void CBase3DLineManager::Render(int hDevice,matrix4f* pViewPorjMat)
 		if (m_NumVertex > m_nVedioVertexNum)
 		{
 			DX3DEngine_ReleaseBuffer(hDevice,m_hLineVertex);
-			m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_NumVertex,m_pLineVertex,DXVertexBuffer,LINE_LIST);
+			m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(BaseGraphEasyVertex),m_NumVertex,m_pLineVertex,DXVertexBuffer,LINE_LIST);
 			m_nVedioVertexNum = m_NumVertex;
 		}
 		else
@@ -355,7 +355,7 @@ void CBase3DLineManager::RenderFog(int hDevice,matrix4f* pViewMat,matrix4f* pPro
 		if (m_NumVertex > m_nVedioVertexNum)
 		{
 			DX3DEngine_ReleaseBuffer(hDevice,m_hLineVertex);
-			m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(SYEasyVertex),m_NumVertex,m_pLineVertex,DXVertexBuffer,LINE_LIST);
+			m_hLineVertex = DX3DEngine_CreateBuffer(hDevice,sizeof(BaseGraphEasyVertex),m_NumVertex,m_pLineVertex,DXVertexBuffer,LINE_LIST);
 			m_nVedioVertexNum = m_NumVertex;
 		}
 		else
@@ -385,8 +385,8 @@ void CBase3DLineManager::DrawSquare(int hDevice,const float3* center, float leng
 	if (m_NumVertex + nVerNum > m_MaxVertexSize)
 	{
 		m_MaxVertexSize = m_MaxVertexSize + 2 * nVerNum;
-		SYEasyVertex* tmpVertex = new SYEasyVertex[m_MaxVertexSize];
-		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(SYEasyVertex));
+		BaseGraphEasyVertex* tmpVertex = new BaseGraphEasyVertex[m_MaxVertexSize];
+		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(BaseGraphEasyVertex));
 		delete []m_pLineVertex;
 		m_pLineVertex = tmpVertex;
 	}
@@ -435,8 +435,8 @@ void CBase3DLineManager::DrawCircle( int hDevice,float fRad,const float3* pCente
 	if (m_NumVertex + nCircleNum * 2 >= m_MaxVertexSize)
 	{
 		m_MaxVertexSize = m_MaxVertexSize + 2 * nCircleNum;
-		SYEasyVertex* tmpVertex = new SYEasyVertex[m_MaxVertexSize];
-		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(SYEasyVertex));
+		BaseGraphEasyVertex* tmpVertex = new BaseGraphEasyVertex[m_MaxVertexSize];
+		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(BaseGraphEasyVertex));
 		delete []m_pLineVertex;
 		m_pLineVertex = tmpVertex;
 	}
@@ -480,8 +480,8 @@ void CBase3DLineManager::DrawEllipse(int hDevice,float fRad_A,float fRad_B,const
 	if (m_NumVertex + nCircleNum * 2 >= m_MaxVertexSize)
 	{
 		m_MaxVertexSize = m_MaxVertexSize + 2 * nCircleNum;
-		SYEasyVertex* tmpVertex = new SYEasyVertex[m_MaxVertexSize];
-		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(SYEasyVertex));
+		BaseGraphEasyVertex* tmpVertex = new BaseGraphEasyVertex[m_MaxVertexSize];
+		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(BaseGraphEasyVertex));
 		delete []m_pLineVertex;
 		m_pLineVertex = tmpVertex;
 	}
@@ -519,8 +519,8 @@ void CBase3DLineManager::DrawBox( int hDevice, const float3& vMin,const float3 v
 	if (m_NumVertex + nAppendNums >= m_MaxVertexSize)
 	{
 		m_MaxVertexSize = max(m_MaxVertexSize * 2,m_NumVertex + nAppendNums);
-		SYEasyVertex* tmpVertex = new SYEasyVertex[m_MaxVertexSize];
-		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(SYEasyVertex));
+		BaseGraphEasyVertex* tmpVertex = new BaseGraphEasyVertex[m_MaxVertexSize];
+		memcpy(tmpVertex,m_pLineVertex,m_NumVertex * sizeof(BaseGraphEasyVertex));
 		delete []m_pLineVertex;
 		m_pLineVertex = tmpVertex;
 	}
@@ -652,7 +652,7 @@ BOOL DXTextureManager_Release()
 	return TRUE;
 }
 
-int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nWidth,int nHeight, DXTextureType nTexType)
+int BaseGraphTexture_GetUnUsedTexture(CTextureSet* pTexture,int nWidth,int nHeight, DXTextureType nTexType)
 {
 	pTexture->Lock();
 	int nCount = pTexture->GetCount();
@@ -681,7 +681,7 @@ int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nWidth,int nHeight, DXT
 	return -1;
 }
 
-int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nAAFactor, DXTextureType nTexType,BOOL bForce = TRUE)
+int BaseGraphTexture_GetUnUsedTexture(CTextureSet* pTexture,int nAAFactor, DXTextureType nTexType,BOOL bForce = TRUE)
 {
 	pTexture->Lock();
 	int nCount = pTexture->GetCount();
@@ -714,7 +714,7 @@ int SYTexture_GetUnUsedTexture(CTextureSet* pTexture,int nAAFactor, DXTextureTyp
 	return -1;
 }
 
-int SYTexture_GetTexture(CTextureSet* pTexture, int hTexture)
+int BaseGraphTexture_GetTexture(CTextureSet* pTexture, int hTexture)
 {
 	pTexture->Lock();
 	int nCount = pTexture->GetCount();
@@ -734,7 +734,7 @@ int SYTexture_GetTexture(CTextureSet* pTexture, int hTexture)
 int DXTextureManager_QueryTexture( IN DXTextureType nTexType,int nFactor)
 {
 	g_TexSet->Lock();
-	int nIndex = SYTexture_GetUnUsedTexture(g_TexSet,nFactor,nTexType);
+	int nIndex = BaseGraphTexture_GetUnUsedTexture(g_TexSet,nFactor,nTexType);
 	g_TexSet->SetResourceUsed(nIndex,true);
 	g_TexSet->UnLock();
 	int nRes =  g_TexSet->GetResource(nIndex);
@@ -747,9 +747,9 @@ int DXTextureManager_QueryTexture( IN DXTextureType nTexType,int nWidth,int nHei
 	int nBaseWidth = DXTMGetTexBufferWidth();
 	int nBaseHeight = DXTMGetTexBufferHeight();
 	int nScale = max((nWidth - 1) / DXTMGetTexBufferWidth() ,(nHeight - 1) / DXTMGetTexBufferHeight() ) + 1;
-	int nIndex = SYTexture_GetUnUsedTexture(g_TexSet,nScale,nTexType,nScale < 3);
+	int nIndex = BaseGraphTexture_GetUnUsedTexture(g_TexSet,nScale,nTexType,nScale < 3);
 	if(nIndex < 0 )
-		nIndex = SYTexture_GetUnUsedTexture(g_TexSet,nWidth,nHeight,nTexType);
+		nIndex = BaseGraphTexture_GetUnUsedTexture(g_TexSet,nWidth,nHeight,nTexType);
 	assert( nIndex != -1 );
 	g_TexSet->SetResourceUsed(nIndex,true);
 	int nRes =  g_TexSet->GetResource(nIndex);
@@ -762,7 +762,7 @@ BOOL DXTextureManager_UnQueryTexture(IN int hTexture,BOOL bForceRelease /*= FALS
 	if(hTexture <= 0)
 		return TRUE;
 	g_TexSet->Lock();
-	int nIndex = SYTexture_GetTexture(g_TexSet,hTexture) ;
+	int nIndex = BaseGraphTexture_GetTexture(g_TexSet,hTexture) ;
 	if(nIndex >= 0)
 	{
 		if(bForceRelease && g_TexSet->GetResourceFactor(nIndex) < 0)

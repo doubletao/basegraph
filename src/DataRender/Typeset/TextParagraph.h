@@ -1,5 +1,5 @@
-#ifndef _SYTEXTPARAGRAPH_INC_
-#define _SYTEXTPARAGRAPH_INC_
+#ifndef _BaseGraphTEXTPARAGRAPH_INC_
+#define _BaseGraphTEXTPARAGRAPH_INC_
 #include "TextUsp.h"
 #include "TextTypeset.h"
 //////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@ public:
 	inline int	GetWordInfoCount() { return m_nWordInfoCount; }
 	inline int	GetWordInfoBeginIndex() { return m_nBeginIndex; }
 	inline void	SetWordInfoBeginIndex(int nBeginIndex) { m_nBeginIndex = nBeginIndex; }
-	SYSizef*	GetRealSizePtr();
+	BaseGraphSizef*	GetRealSizePtr();
 	float		GetBaseLineOffset();
 	void		SetLineOffset(point2f ptOffset);
 	point2f		GetLineOffset();
@@ -68,7 +68,7 @@ private:
 	float			m_fLength;			//行的长度（此长度是由段指定的长度，而非实际长度）
 	//以下均为临时计算值
 	point2f			m_ptLineOffset;		//行相对于段的偏移
-	SYSizef			m_RealSize;			//行实际包围大小（不含行距）
+	BaseGraphSizef			m_RealSize;			//行实际包围大小（不含行距）
 	float			m_fBaseLineOffset;	//基线的偏移量，相对于行
 	float			m_fLineDistance;		//行间距（与从属段的行间距值不同，已经过放缩等调整。）
 	float			m_fMaxAscent;
@@ -119,7 +119,7 @@ public:
 	LPCommonWordInfo	GetWordInfo(int nIndex);
 	int			GetLineWordInfoCount(int nLineIdx);
 	int			GetTrailLineWordInfoBeginIndex();
-	SYUnit*		GetUnit(int nWordInfoIdx);
+	BaseGraphUnit*		GetUnit(int nWordInfoIdx);
 	//////////////////////////////////////////////////////////////////////////
 	// 排版
 	void	Typeset(BOOL bIsHorizontal);
@@ -154,12 +154,12 @@ private:
 	void	TypesetVertical();
 	void	AddBlankLine(CBaseTextLine* pLine);
 public:
-	SYSCRIPTRESULT	m_uspResult;
+	BaseGraphSCRIPTRESULT	m_uspResult;
 	BaseARray			m_arWordInfo;			//字符WordInfo数组
 	int				m_nPreAllWordInfoCnt;	//本段之前所有WordInfo元素个数（便于推算Unit）
 	int				m_nChgLevel;			//修改等级
 private:
-	LPCommonText		m_pTextObj;			//段所属的SYText
+	LPCommonText		m_pTextObj;			//段所属的BaseGraphText
 	int				m_nParaIndex;			//段索引
 	float			m_fWidth;			//占位符宽度
 	float			m_fHeight;
@@ -169,4 +169,4 @@ private:
 	rectf			m_rtBorder;			//段占据的矩形
 	BaseARray			m_arLine;
 };
-#endif //_SYTEXTPARAGRAPH_INC_
+#endif //_BaseGraphTEXTPARAGRAPH_INC_

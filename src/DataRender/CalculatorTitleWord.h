@@ -10,7 +10,7 @@ public:
 	virtual ~CalculatorTitleword();
 protected:
 	CBaseTypeset m_TypeSet;
-	SYText m_text;
+	BaseGraphText m_text;
 	rectf m_rtUnitBound;//根据unit算出来的静态bound
 	BaseARray m_2DTextRenderUnitArray;
 	BaseARray m_arWholeRenderTextGraph;	//文字整体渲染时的临时Graph（可以从零散Graph重建得到）
@@ -31,9 +31,9 @@ protected:
 	BOOL m_bVLeftTypeset;
 	BOOL m_bFixedFrame;
 	//字色
-	SYStaticEffect m_TextStaitcEffect;
+	BaseGraphStaticEffect m_TextStaitcEffect;
 	//下划线
-	SYUnderLine m_TextUnderLine;
+	BaseGraphUnderLine m_TextUnderLine;
 protected:
 	bool PrepareObjBuffer(int nWidth, int nHeight);
 public:
@@ -56,14 +56,14 @@ public:
 	virtual void DeleteWholeRenderGraph();
 	virtual BOOL UpdateWholeRenderGraph(BaseARray* pRenderUnitArray);
 	virtual void UpdateItemGpuBuffer(BOOL bLock = FALSE);
-	SYItemRenderUnit * GetRenderUnit(int nIndex);
+	BaseGraphItemRenderUnit * GetRenderUnit(int nIndex);
 	virtual int Get2DTextUnitCount();
 	virtual void GetRenderUnitBound(int nIndex, rectf& rtBoundf);
 	virtual int GetWidth();
 	virtual int GetHeight();
-	virtual SYText * GetText();
+	virtual BaseGraphText * GetText();
 	virtual BaseARray * Get2DTextUnitArray();
-	virtual SYUnit*	GetUnit(int nIndex);
+	virtual BaseGraphUnit*	GetUnit(int nIndex);
 	virtual void DeleteRenderUnitView(LPCTSTR szUnitID);
 	virtual void RenderUnitBufferForGpu();
 	virtual bool PrepareItemHalBufer(int nDevice);

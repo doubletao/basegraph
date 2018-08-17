@@ -13,23 +13,23 @@ private:
 
 	UINT calc_arc_point_count(float angle_start,float m_angle_end);
 
-	int modeling_top_plane(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_bottom_plane(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_start_face(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_end_face(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_top_plane(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_bottom_plane(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_start_face(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_end_face(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
 
-	int modeling_outer_arc(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_inner_arc(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_outer_arc(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_inner_arc(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
 	
-	int modeling_outer_top_chamfer_plane(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_inner_top_chamfer_plane(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_outer_bottom_chamfer_plane(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_inner_bottom_chamfer_plane(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_outer_top_chamfer_plane(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_inner_top_chamfer_plane(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_outer_bottom_chamfer_plane(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_inner_bottom_chamfer_plane(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
 
-	int modeling_outer_top_chamfer_arc(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_inner_top_chamfer_arc(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_outer_bottom_chamfer_arc(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
-	int modeling_inner_bottom_chamfer_arc(SYVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_outer_top_chamfer_arc(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_inner_top_chamfer_arc(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_outer_bottom_chamfer_arc(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
+	int modeling_inner_bottom_chamfer_arc(BaseGraphVertex3D*& vertex_buffer, DWORD*& index_buffer, int vertex_start);
 
 
 	UINT m_shape;   //ÐÎ×´
@@ -131,5 +131,5 @@ public:
 	~CBasePieModeling(void);
 
 	void GetModelParam(int* vertex_count, int* index_count, int* triangle_count);
-	BOOL CreateModel(SYModel* pMod);
+	BOOL CreateModel(BaseGraphModel* pMod);
 };

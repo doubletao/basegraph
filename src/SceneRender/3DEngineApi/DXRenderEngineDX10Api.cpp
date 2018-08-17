@@ -432,7 +432,7 @@ int CreateShaderFromFile(Common_DeviceDX10* pDevice,LPCTSTR shaderName,LPCTSTR f
 	}
 #endif // _DEBUG
 
-	SYShader* pNewShader = new SYShader;
+	BaseGraphShader* pNewShader = new BaseGraphShader;
 	pNewShader->pLayout = NULL;
 	pNewShader->nType = nType;
 	switch (nType)
@@ -665,28 +665,28 @@ void CreateDepthState(Common_DeviceDX10* pDevice)
 	desc.BackFace.StencilPassOp = D3D10_STENCIL_OP_KEEP;
 	desc.BackFace.StencilFunc = D3D10_COMPARISON_ALWAYS;
 	////////////////////////////////////////////////////////////////////////////
-	////SYDepthEnable_LessPass,
+	////BaseGraphDepthEnable_LessPass,
 	//desc.DepthEnable = TRUE;
 	//desc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
 	//desc.DepthFunc = D3D10_COMPARISON_LESS;
 
-	//pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[SYDepthEnable_LessPass]);
+	//pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[BaseGraphDepthEnable_LessPass]);
 
 	//////////////////////////////////////////////////////////////////////////
-	//SYDepthEnable_LessEqualPass,
+	//BaseGraphDepthEnable_LessEqualPass,
 	desc.DepthEnable = TRUE;
 	desc.DepthFunc = D3D10_COMPARISON_LESS_EQUAL;
 	desc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
 	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[DXDepthEnable_LessEqualPass]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYDepthEnable_LessEqualPass_DepthNoWrite,
+	//BaseGraphDepthEnable_LessEqualPass_DepthNoWrite,
 	desc.DepthEnable = TRUE;
 	desc.DepthFunc = D3D10_COMPARISON_LESS_EQUAL;
 	desc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ZERO;
 	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[DXDepthEnable_LessEqualPass_DepthNoWrite]);
 	
 	//////////////////////////////////////////////////////////////////////////
-	//SYDepthLessEqual_Mask_01 - SYDepthLessEqual_Mask_FF
+	//BaseGraphDepthLessEqual_Mask_01 - BaseGraphDepthLessEqual_Mask_FF
 	desc.DepthEnable = TRUE;
 	desc.DepthFunc = D3D10_COMPARISON_LESS_EQUAL;
 	desc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ALL;
@@ -711,7 +711,7 @@ void CreateDepthState(Common_DeviceDX10* pDevice)
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//SYDepthLessEqual_NoWrite_Mask_01 - SYDepthLessEqual_NoWrite_Mask_FF
+	//BaseGraphDepthLessEqual_NoWrite_Mask_01 - BaseGraphDepthLessEqual_NoWrite_Mask_FF
 	desc.DepthEnable = TRUE;
 	desc.DepthFunc = D3D10_COMPARISON_LESS_EQUAL;
 	desc.DepthWriteMask = D3D10_DEPTH_WRITE_MASK_ZERO;
@@ -736,7 +736,7 @@ void CreateDepthState(Common_DeviceDX10* pDevice)
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//SYDepthDisable_Mask_01 - SYDepthDisable_Mask_FF
+	//BaseGraphDepthDisable_Mask_01 - BaseGraphDepthDisable_Mask_FF
 	//desc.DepthEnable = FALSE;
 
 	//desc.StencilEnable = TRUE;
@@ -752,13 +752,13 @@ void CreateDepthState(Common_DeviceDX10* pDevice)
 	//desc.BackFace.StencilPassOp = D3D10_STENCIL_OP_KEEP;
 	//desc.BackFace.StencilFunc = D3D10_COMPARISON_EQUAL;
 
-	//for (int i = SYDepthDisable_Mask_01; i <= SYDepthDisable_Mask_FF; i++ )
+	//for (int i = BaseGraphDepthDisable_Mask_01; i <= BaseGraphDepthDisable_Mask_FF; i++ )
 	//{
-	//	desc.StencilReadMask = 0x01 + i - SYDepthDisable_Mask_01;
+	//	desc.StencilReadMask = 0x01 + i - BaseGraphDepthDisable_Mask_01;
 	//	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[i]);
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	//SYDepthDisable_WriteMask_01 - SYDepthDisable_WriteMask_FF
+	//BaseGraphDepthDisable_WriteMask_01 - BaseGraphDepthDisable_WriteMask_FF
 	desc.DepthEnable = FALSE;
 
 	desc.StencilEnable = TRUE;
@@ -779,7 +779,7 @@ void CreateDepthState(Common_DeviceDX10* pDevice)
 		desc.StencilWriteMask = 0x01 + i - DXDepthDisable_WriteMask_01;
 		pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[i]);
 	}
-	//SYDepthDisable,
+	//BaseGraphDepthDisable,
 	desc.DepthEnable = FALSE;
 	desc.StencilEnable = FALSE;
 	pDevice->pDevice->CreateDepthStencilState(&desc,&pDevice->pDepthState[DXDepthDisable]);
@@ -794,75 +794,75 @@ void CreateRasterizerState(Common_DeviceDX10* pDevice)
 	desc.ScissorEnable = TRUE;
 	//desc.FrontCounterClockwise = TRUE;
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_Line_MultiSample,
+	//BaseGraphRas_Line_MultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = TRUE;
 	desc.AntialiasedLineEnable = TRUE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Line_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_Line_NoMultiSample,
+	//BaseGraphRas_Line_NoMultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = FALSE;
 	desc.AntialiasedLineEnable = FALSE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Line_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_Solid_CullBack_MultiSample,
+	//BaseGraphRas_Solid_CullBack_MultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_BACK;
 	desc.MultisampleEnable = TRUE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_CullBack_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_Solid_CullBack_NoMultiSample,
+	//BaseGraphRas_Solid_CullBack_NoMultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_BACK;
 	desc.MultisampleEnable = FALSE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_CullBack_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_Solid_CullFront_MultiSample,
+	//BaseGraphRas_Solid_CullFront_MultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_FRONT;
 	desc.MultisampleEnable = TRUE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_CullFront_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_Solid_CullFront_NoMultiSample,
+	//BaseGraphRas_Solid_CullFront_NoMultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_FRONT;
 	desc.MultisampleEnable = FALSE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_CullFront_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_Solid_NoCullBack_MultiSample,
+	//BaseGraphRas_Solid_NoCullBack_MultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = TRUE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_NoCullBack_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_Solid_NoCullBack_NoMultiSample,
+	//BaseGraphRas_Solid_NoCullBack_NoMultiSample,
 	desc.FillMode = D3D10_FILL_SOLID;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = FALSE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_Solid_NoCullBack_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_WireFrame_CullBack_MultiSample,
+	//BaseGraphRas_WireFrame_CullBack_MultiSample,
 	desc.FillMode = D3D10_FILL_WIREFRAME;
 	desc.CullMode = D3D10_CULL_BACK;
 	desc.MultisampleEnable = TRUE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_WireFrame_CullBack_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_WireFrame_CullBack_NoMultiSample, 
+	//BaseGraphRas_WireFrame_CullBack_NoMultiSample, 
 	desc.FillMode = D3D10_FILL_WIREFRAME;
 	desc.CullMode = D3D10_CULL_BACK;
 	desc.MultisampleEnable = FALSE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_WireFrame_CullBack_NoMultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_WireFrame_NoCullBack_MultiSample,
+	//BaseGraphRas_WireFrame_NoCullBack_MultiSample,
 	desc.FillMode = D3D10_FILL_WIREFRAME;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = TRUE;
 	pDevice->pDevice->CreateRasterizerState(&desc,&pDevice->pRasterizerState[DXRas_WireFrame_NoCullBack_MultiSample]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYRas_WireFrame_NoCullBack_NoMultiSample,
+	//BaseGraphRas_WireFrame_NoCullBack_NoMultiSample,
 	desc.FillMode = D3D10_FILL_WIREFRAME;
 	desc.CullMode = D3D10_CULL_NONE;
 	desc.MultisampleEnable = FALSE;
@@ -884,63 +884,63 @@ void CreateSampleState(Common_DeviceDX10* pDevice)
 	dsec.MaxLOD = 100;
 	dsec.ComparisonFunc = D3D10_COMPARISON_NEVER;
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Point_Clamp,
+	//BaseGraphSample_Point_Clamp,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_POINT ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Point_Clamp]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Point_Wrap,
+	//BaseGraphSample_Point_Wrap,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_POINT ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Point_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Point_Mirror,
+	//BaseGraphSample_Point_Mirror,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_POINT ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_MIRROR;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Point_Mirror]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Point_Border,
+	//BaseGraphSample_Point_Border,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_POINT ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_BORDER;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Point_Border]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Line_Clamp,
+	//BaseGraphSample_Line_Clamp,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Line_Clamp]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Line_Wrap,
+	//BaseGraphSample_Line_Wrap,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_WRAP ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Line_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Line_Mirror,
+	//BaseGraphSample_Line_Mirror,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_MIRROR ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_MIRROR;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Line_Mirror]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Line_Border,
+	//BaseGraphSample_Line_Border,
 	dsec.Filter = D3D10_FILTER_MIN_MAG_MIP_LINEAR ;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressV = D3D10_TEXTURE_ADDRESS_BORDER ;
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_BORDER;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Line_Border]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Anisotropic_Clamp,
+	//BaseGraphSample_Anisotropic_Clamp,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
 	dsec.MaxAnisotropy = 16;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP ;
@@ -948,7 +948,7 @@ void CreateSampleState(Common_DeviceDX10* pDevice)
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Anisotropic_Clamp]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Anisotropic_Wrap,
+	//BaseGraphSample_Anisotropic_Wrap,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
 	dsec.MaxAnisotropy = 16;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_WRAP ;
@@ -956,7 +956,7 @@ void CreateSampleState(Common_DeviceDX10* pDevice)
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Anisotropic_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Anisotropic_Mirror,
+	//BaseGraphSample_Anisotropic_Mirror,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
 	dsec.MaxAnisotropy = 16;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_MIRROR ;
@@ -964,7 +964,7 @@ void CreateSampleState(Common_DeviceDX10* pDevice)
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_MIRROR;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Anisotropic_Mirror]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_Anisotropic_Border,
+	//BaseGraphSample_Anisotropic_Border,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
 	dsec.MaxAnisotropy = 16;
 	dsec.AddressU = D3D10_TEXTURE_ADDRESS_BORDER ;
@@ -972,7 +972,7 @@ void CreateSampleState(Common_DeviceDX10* pDevice)
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_BORDER;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_Anisotropic_Border]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_NoMipMap_Line_Clamp,
+	//BaseGraphSample_NoMipMap_Line_Clamp,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
 	dsec.MaxAnisotropy = 16;
 	dsec.MaxLOD = 0;
@@ -981,7 +981,7 @@ void CreateSampleState(Common_DeviceDX10* pDevice)
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_NoMipMap_Anisotropic_Clamp]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_NoMipMap_Line_Wrap,
+	//BaseGraphSample_NoMipMap_Line_Wrap,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
 	dsec.MaxAnisotropy = 16;
 	dsec.MaxLOD = 0;
@@ -990,7 +990,7 @@ void CreateSampleState(Common_DeviceDX10* pDevice)
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_WRAP;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_NoMipMap_Anisotropic_Wrap]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_NoMipMap_Line_Mirror,
+	//BaseGraphSample_NoMipMap_Line_Mirror,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
 	dsec.MaxAnisotropy = 16;
 	dsec.MaxLOD = 0;
@@ -999,7 +999,7 @@ void CreateSampleState(Common_DeviceDX10* pDevice)
 	dsec.AddressW = D3D10_TEXTURE_ADDRESS_MIRROR;
 	pDevice->pDevice->CreateSamplerState(&dsec,&pDevice->pSamplerState[DXSample_NoMipMap_Anisotropic_Mirror]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYSample_NoMipMap_Line_Border,
+	//BaseGraphSample_NoMipMap_Line_Border,
 	dsec.Filter = D3D10_FILTER_ANISOTROPIC ;
 	dsec.MaxAnisotropy = 16;
 	dsec.MaxLOD = 0;
@@ -1317,7 +1317,7 @@ bool Render_init(int hDevice,void* paramin,void* paramout)
 	return true;
 }
 
-void Render_ReleaseTexture(SYTexture* pWDTexture)
+void Render_ReleaseTexture(BaseGraphTexture* pWDTexture)
 {
 	SAFEDELETE_ARRAY(pWDTexture->pTexFile);
 	switch (pWDTexture->nType)
@@ -1355,17 +1355,17 @@ void Render_ReleaseTexture(SYTexture* pWDTexture)
 	SAFE_DELETE(pWDTexture);
 }
 
-void ReleaseSwapChainBufferTex(Common_DeviceDX10* pDevice,SYSwapChain* pSwapChain)
+void ReleaseSwapChainBufferTex(Common_DeviceDX10* pDevice,BaseGraphSwapChain* pSwapChain)
 {
 	SAFE_RELEASE(pSwapChain->pShareTexture);
 	if(pSwapChain->hShareTexture > 0)
 	{
-		SYTexture* pShareTex = (SYTexture*)BseeHTable_RemoveAt(&pDevice->httexture,pSwapChain->hShareTexture);
+		BaseGraphTexture* pShareTex = (BaseGraphTexture*)BseeHTable_RemoveAt(&pDevice->httexture,pSwapChain->hShareTexture);
 		Render_ReleaseTexture(pShareTex);
 	}
 	if(pSwapChain->hBufferTexture > 0)
 	{
-		SYTexture* pBufferTex = (SYTexture*)BseeHTable_RemoveAt(&pDevice->httexture,pSwapChain->hBufferTexture);
+		BaseGraphTexture* pBufferTex = (BaseGraphTexture*)BseeHTable_RemoveAt(&pDevice->httexture,pSwapChain->hBufferTexture);
 		Render_ReleaseTexture(pBufferTex);
 	}
 }
@@ -1380,21 +1380,21 @@ void Render_ReleaseDevice(Common_DeviceDX10* pDevice)
 	DeleteCriticalSection(&pDevice->RenderLock);
 
 	UINT firstSwapChain = BseeHTable_GetFirstValid(&pDevice->htSwapChain);		
-	SYSwapChain* pSwapTexture = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,firstSwapChain);
+	BaseGraphSwapChain* pSwapTexture = (BaseGraphSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,firstSwapChain);
 	while(pSwapTexture)
 	{
 		ReleaseSwapChainBufferTex(pDevice,pSwapTexture);
 		SAFE_RELEASE(pSwapTexture->pSwapChain);
 		SAFE_DELETE(pSwapTexture);
-		pSwapTexture = (SYSwapChain*)BseeHTable_GetNextValid(&pDevice->htSwapChain,&firstSwapChain);
+		pSwapTexture = (BaseGraphSwapChain*)BseeHTable_GetNextValid(&pDevice->htSwapChain,&firstSwapChain);
 	}
 
 	UINT firstTexture = BseeHTable_GetFirstValid(&pDevice->httexture);		
-	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,firstTexture);
+	BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,firstTexture);
 	while(pTexture)
 	{
 		Render_ReleaseTexture(pTexture);
-		pTexture = (SYTexture*)BseeHTable_GetNextValid(&pDevice->httexture,&firstTexture);
+		pTexture = (BaseGraphTexture*)BseeHTable_GetNextValid(&pDevice->httexture,&firstTexture);
 	}
 
 	UINT nShdCount = BseeHTable_GetCount(&pDevice->htShaderTable);
@@ -1570,7 +1570,7 @@ bool Render_GetSwapChainDesc(int hDevice,void* paramin,void* paramout)
 	createSwapChainIn* pIn = (createSwapChainIn*)paramin;
 	createSwapChainIn* pOut = (createSwapChainIn*)paramout;
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYSwapChain* pWDSwapChain = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,(int)pIn->hWnd);
+	BaseGraphSwapChain* pWDSwapChain = (BaseGraphSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,(int)pIn->hWnd);
 	if(pWDSwapChain)
 	{
 		DXGI_SWAP_CHAIN_DESC Desc;
@@ -1585,7 +1585,7 @@ bool Render_GetSwapChainDesc(int hDevice,void* paramin,void* paramout)
 }
 
 bool Render_CreateTexture(int hDevice,void* paramin,void* paramout);
-void CreateSwapChainBufferTex(int hDevice,int nWidth,int nHeight,SYSwapChain* pSwapChain)
+void CreateSwapChainBufferTex(int hDevice,int nWidth,int nHeight,BaseGraphSwapChain* pSwapChain)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	if(pDevice->pSwapChainDevice != pDevice->pDevice)
@@ -1612,8 +1612,8 @@ void CreateSwapChainBufferTex(int hDevice,int nWidth,int nHeight,SYSwapChain* pS
 		}
 	}
 
-	SYTexture* pSwapChainBuffer = new SYTexture;
-	memset(pSwapChainBuffer,0,sizeof(SYTexture));
+	BaseGraphTexture* pSwapChainBuffer = new BaseGraphTexture;
+	memset(pSwapChainBuffer,0,sizeof(BaseGraphTexture));
 	pSwapChainBuffer->nNeedWidth = pSwapChainBuffer->nRealWidth = nWidth;
 	pSwapChainBuffer->nNeedHeight = pSwapChainBuffer->nRealHeight = nHeight;
 	ID3D10Texture2D* m_pTexture = NULL;
@@ -1654,8 +1654,8 @@ bool Render_CreateSwapChain(int hDevice,void* paramin,void* paramout)
 	if (!pSwapChain)
 		return false; 
 
-	SYSwapChain* pWDSwapChain = new SYSwapChain;
-	memset(pWDSwapChain,0,sizeof(SYSwapChain));
+	BaseGraphSwapChain* pWDSwapChain = new BaseGraphSwapChain;
+	memset(pWDSwapChain,0,sizeof(BaseGraphSwapChain));
 	pWDSwapChain->pSwapChain = pSwapChain;
 	CreateSwapChainBufferTex(hDevice,pIn->nWidth,pIn->nHeight,pWDSwapChain);
 	int hNewSwapChain = (int)BseeHTable_Insert(&pDevice->htSwapChain,pWDSwapChain);
@@ -1672,7 +1672,7 @@ bool Render_UpdateSwapChain(int hDevice,int hSwapChain)
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	if(pDevice->pDevice == pDevice->pSwapChainDevice)
 		return false;
-	SYSwapChain* pTexture = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,hSwapChain);
+	BaseGraphSwapChain* pTexture = (BaseGraphSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,hSwapChain);
 	pDevice->pDevice->Flush();
 
 	DXGI_SWAP_CHAIN_DESC Desc;
@@ -1709,7 +1709,7 @@ int Render_Present(int hDevice,void* paramin,void* paramout)
 	if(pDevice->pSwapChainDevice == pDevice->pDevice)
 		EngineThreadLock();
 	Render_UpdateSwapChain(hDevice,*pHSwapChain);
-	SYSwapChain* pTexture = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,*pHSwapChain);
+	BaseGraphSwapChain* pTexture = (BaseGraphSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,*pHSwapChain);
 	//pDevice->pDevice->Flush();
 	HRESULT hr = pTexture->pSwapChain->Present(*pTimeSyn,0);
 	if(pDevice->pSwapChainDevice == pDevice->pDevice)
@@ -1945,8 +1945,8 @@ bool Render_CreateTexture(int hDevice,void* paramin,void* paramout)
 		return false;
 	}
 
-	SYTexture* pNewTex = new SYTexture;
-	memset(pNewTex,0,sizeof(SYTexture));
+	BaseGraphTexture* pNewTex = new BaseGraphTexture;
+	memset(pNewTex,0,sizeof(BaseGraphTexture));
 
 	pNewTex->pTexture = pNewTexture;
 	pNewTex->nType = param->nType;
@@ -1995,7 +1995,7 @@ bool render_ClearTexture(int hDevice,void* paramin,void* paramout)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	clearTextureIn* param = (clearTextureIn*)paramin;
-	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,param->hTexture);
+	BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,param->hTexture);
 	if(!pTexture)
 		return false;
 
@@ -2045,7 +2045,7 @@ bool Render_GetTextureView(int hDevice,void* paramin,void* paramout)
 {
 	void** pDXTexture = (void**)paramout;
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	if(pTexture)
 	{
 		*pDXTexture = pTexture->pResourceView;
@@ -2060,7 +2060,7 @@ bool Render_GetTextureView(int hDevice,void* paramin,void* paramout)
 bool render_GetTexture(int hDevice,void* paramin,void* paramout)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	void** pDXTexture = (void**)paramout;
 	*pDXTexture = pTexture->pTexture;
 	return true;
@@ -2074,7 +2074,7 @@ bool render_GetTextureInfo(int hDevice,void* paramin,void* paramout)
 	getTextureInfoOut* pOut = (getTextureInfoOut*)paramout;
 	getTextureInfo(pDevice,*(int*)paramin,pOut->nWidth,pOut->nHeight,pOut->nMipMap); 
 
-	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	BaseGraphTexture* pSrcWDTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	if (pOut->nType)
 		*pOut->nType = pSrcWDTexture->nType;
 	return true;
@@ -2109,8 +2109,8 @@ bool Render_CopyTexture(int hDevice,void* paramin,void* paramout)
 	IsNeedScaleTexParam(pDevice,param->hDesTex,fDstScale);
 	xScale *= fDstScale / fSrcScale;
 	yScale *= fDstScale / fSrcScale;
-	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,param->hSrcTex);
-	SYTexture* pDstWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,param->hDesTex);
+	BaseGraphTexture* pSrcWDTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,param->hSrcTex);
+	BaseGraphTexture* pDstWDTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,param->hDesTex);
 	if (pSrcWDTexture && pDstWDTexture)
 	{
 		BOOL bCanCopy = (xScale == 1 && yScale == 1);
@@ -2128,7 +2128,7 @@ bool Render_CopyTexture(int hDevice,void* paramin,void* paramout)
 		}
 		else
 		{
-			//出于效率考虑，并不支持SYTexture_MemTexture的放缩拷贝
+			//出于效率考虑，并不支持BaseGraphTexture_MemTexture的放缩拷贝
 			if ( !pSrcWDTexture->pResourceView || !pDstWDTexture->pRenderTarget)
 			{
 				return false;
@@ -2164,7 +2164,7 @@ bool render_DumpTexture(int hDevice,void* paramin,void* paramout)
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ID3D10Texture2D* pTexture = getTexture(pDevice,hTexture);
 
-	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	BaseGraphTexture* pSrcWDTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	if(pSrcWDTexture->nType == DXTexture_MS2DTex )
 	{
 		int nSrcWidth = pSrcWDTexture->nNeedWidth;
@@ -2210,7 +2210,7 @@ bool render_DumpTexture(int hDevice,void* paramin,void* paramout)
 bool Render_ReleaseSwapChain(int hDevice,void* paramin,void* paramout)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYSwapChain* pSrcWDTexture = (SYSwapChain*)BseeHTable_RemoveAt(&pDevice->htSwapChain,*(int*)paramin);
+	BaseGraphSwapChain* pSrcWDTexture = (BaseGraphSwapChain*)BseeHTable_RemoveAt(&pDevice->htSwapChain,*(int*)paramin);
 	ReleaseSwapChainBufferTex(pDevice,pSrcWDTexture);
 
 	SAFE_RELEASE(pSrcWDTexture->pSwapChain);
@@ -2237,7 +2237,7 @@ void ClearTexState(Common_DeviceDX10* pDevice,int hTex)
 bool Render_ReleaseTexture(int hDevice,void* paramin,void* paramout)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYTexture* pSrcWDTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	BaseGraphTexture* pSrcWDTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	assert(pSrcWDTexture);
 	if (pSrcWDTexture&&pSrcWDTexture->pTexFile)//有pSrcWDTexture == NULL的时候
 	{
@@ -2271,7 +2271,7 @@ bool Render_ResizeSwapChain(int hDevice,void* paramin,void* paramout)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ResizeSwapChainIn* pIn = (ResizeSwapChainIn*)paramin;
-	SYSwapChain* pSrcWDTexture = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,pIn->hSwapChain);
+	BaseGraphSwapChain* pSrcWDTexture = (BaseGraphSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,pIn->hSwapChain);
 	ReleaseSwapChainBufferTex(pDevice,pSrcWDTexture);
 
 	HRESULT hr = pSrcWDTexture->pSwapChain->ResizeBuffers(2,pIn->nWidth,pIn->nHeight,DXGI_FORMAT_R8G8B8A8_UNORM,0);
@@ -2300,7 +2300,7 @@ bool Render_DownLoad(int hDevice,void* paramin,void* paramout)
 
 	Render_CopyTexture(hDevice,&copyParam,NULL);
 	
-	SYTexture* pMemTex = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,pIn->hTransTex);
+	BaseGraphTexture* pMemTex = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,pIn->hTransTex);
 	float fScale = 1;
 	IsNeedScaleTexParam(pDevice,pIn->hTransTex,fScale);
 	ID3D10Texture2D* pMem2DTex = (ID3D10Texture2D* )pMemTex->pTexture;
@@ -2402,7 +2402,7 @@ bool Render_RenderTex(int hDevice,void* paramin,void* paramout)
  	int nRTWidth,nRTHeight;
 	getTextureInfo(pDevice,pDevice->hNowRenderTarget,&nRTWidth,&nRTHeight,NULL);
 
-	SYTexture* pTex = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,pIn->hTex);
+	BaseGraphTexture* pTex = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,pIn->hTex);
 	SetRenderState(pDevice,DXDepthState,DXDepthDisable);
 	if(pIn->bStretch)
 	{
@@ -2440,7 +2440,7 @@ bool Render_UpLoad(int hDevice,void* paramin,void* paramout)
 	if(pIn->bLock)
 		Render_EngineLock(hDevice,NULL,NULL);
 	EngineThreadLock();
-	SYTexture* pMemTex = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,pIn->hTransTex);
+	BaseGraphTexture* pMemTex = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,pIn->hTransTex);
 	ID3D10Texture2D* pMem2DTex = (ID3D10Texture2D*)pMemTex->pTexture;
 
 	D3D10_MAPPED_TEXTURE2D mapTex;
@@ -2505,7 +2505,7 @@ bool Render_EndTex(int hDevice,void* paramin,void* paramout)
 	return true;
 }
 
-struct SYMeshVertex
+struct BaseGraphMeshVertex
 {
 	float3 pos;
 	float3 normal;
@@ -2530,7 +2530,7 @@ BOOL TransMesh9to10Ex(ID3DXMesh* pMesh9,ID3D10Device* pDevice10,ID3DX10Mesh** pp
 
 	void* pVertices = NULL;
 	hr = pMesh9->LockVertexBuffer(0,&pVertices);
-	SYMeshVertex* test = (SYMeshVertex*)pVertices;
+	BaseGraphMeshVertex* test = (BaseGraphMeshVertex*)pVertices;
 	hr = (*ppMesh10)->SetVertexData( 0, pVertices );
 	pMesh9->UnlockVertexBuffer();
 
@@ -2717,7 +2717,7 @@ bool Render_CreateShader(int hDevice,void* paramin,void* paramout)
 		}
 		else
 		{
-			SYShader* pNewShader = new SYShader;
+			BaseGraphShader* pNewShader = new BaseGraphShader;
 			pNewShader->pLayout = NULL;
 			pNewShader->nType = param->nType;
 			switch (param->nType)
@@ -2856,7 +2856,7 @@ bool Render_CreateShader(Common_DeviceDX10* pDevice, void* paramin, void* paramo
 		}
 		else
 		{
-			SYShader* pNewShader = new SYShader;
+			BaseGraphShader* pNewShader = new BaseGraphShader;
 			pNewShader->pLayout = NULL;
 			pNewShader->nType = param->nType;
 			switch (param->nType)
@@ -3381,8 +3381,8 @@ bool Render_CreateTexFromFile(int hDevice,void* paramin,void* paramout)
 		return false;
 	}
 
-	SYTexture* pFileTex = new SYTexture;
-	memset(pFileTex,0,sizeof(SYTexture));
+	BaseGraphTexture* pFileTex = new BaseGraphTexture;
+	memset(pFileTex,0,sizeof(BaseGraphTexture));
 	pFileTex->pTexture = pNewTexture;
 	pFileTex->nType = nType;
 
@@ -3571,7 +3571,7 @@ BOOL Render_RenderMesh(int hDevice,void* paramin,void* paramout)
 }
 BOOL Render_GetMeshInfo( int hDevice, void* paramin,void* paramout )
 {
-	SYGetMeshInfoIn* paramIn = (SYGetMeshInfoIn*)paramin;
+	BaseGraphGetMeshInfoIn* paramIn = (BaseGraphGetMeshInfoIn*)paramin;
 	DXGetMeshInfoOut* paramOut = (DXGetMeshInfoOut*)paramout;
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)BseeHTable_GetAt(&pDevice->htModel,paramIn->hMesh);
@@ -3594,10 +3594,10 @@ BOOL Render_GetMeshBox(int hDevice,void* paramin,void* paramout)
 	ID3DX10Mesh* pMesh10 = (ID3DX10Mesh*)BseeHTable_GetAt(&pDevice->htModel,*(int*)paramin);
 	ID3DX10MeshBuffer* pBuffer;
 	pMesh10->GetVertexBuffer(0,&pBuffer);
-	SYMeshVertex* pVertex = NULL;
+	BaseGraphMeshVertex* pVertex = NULL;
 	SIZE_T nSize = 0;
 	pBuffer->Map((void**)&pVertex,&nSize);
-	size_t nVertexSize = nSize / sizeof(SYMeshVertex);
+	size_t nVertexSize = nSize / sizeof(BaseGraphMeshVertex);
 	*(pParam->pMin) = pVertex[0].pos;
 	*(pParam->pMax) = pVertex[0].pos;
 	for (size_t i = 1; i < nVertexSize;i++)
@@ -3618,8 +3618,8 @@ BOOL Render_GetMeshBox(int hDevice,void* paramin,void* paramout)
 BOOL Render_ComputeNormalMap(int hDevice,void* paramin,void* paramout)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYTexture* pSrcTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
-	SYTexture* pDestTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramout);
+	BaseGraphTexture* pSrcTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	BaseGraphTexture* pDestTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramout);
 	D3DX10ComputeNormalMap((ID3D10Texture2D*)pSrcTexture->pTexture,0,D3DX_CHANNEL_RED,1.f,(ID3D10Texture2D*)pDestTexture->pTexture);
 	if(0)
 	{
@@ -3646,7 +3646,7 @@ BOOL Render_GetScissor(int hDevice,void* paramin,void* paramout)
 BOOL Render_GenerateMipMap(int hDevice,void* paramin,void* paramout)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	if(pTexture->nType != DXTexture_MipMap)
 		return FALSE;
 	pDevice->pDevice->GenerateMips(pTexture->pResourceView);
@@ -3697,7 +3697,7 @@ BOOL Render_CreatEffectUnit(int hDevice,void* paramin,void* paramout)
 	DXCreateEffectUnitIn* param = (DXCreateEffectUnitIn*)paramin;
 	if(param)
 	{	
-		SYTechCreateParam* techs = new  SYTechCreateParam[param->nTechs];
+		BaseGraphTechCreateParam* techs = new  BaseGraphTechCreateParam[param->nTechs];
 		for(int i = 0; i<param->nTechs ;i++)
 		{
 			techs[i].pDevice = pDevice->pDevice;
@@ -3706,7 +3706,7 @@ BOOL Render_CreatEffectUnit(int hDevice,void* paramin,void* paramout)
 			techs[i].nInputElements = g_pLayoutNum[param->pTechDesc[i].vertexType];
 			techs[i].pTechName	= param->pTechDesc[i].pstrName;
 		}
-		SYEffectCreateParam ecparam;
+		BaseGraphEffectCreateParam ecparam;
 		ecparam.nTechs = param->nTechs;
 		ecparam.pTechParam = techs;
 		ecparam.pPath = g_szDX10PathEffect;
@@ -3853,7 +3853,7 @@ BOOL Render_EffectSetTexture(int hDevice,void* paramin,void* paramout)
 	CEffectUnit* pEU = (CEffectUnit*)BseeHTable_GetAt(&(pDevice->htEffectUnit),in_param->hEffect);
 	ID3D10EffectShaderResourceVariable*	pTexVar = pEU->GetResourcePtr()->GetVariableByName(in_param->szTexName)->AsShaderResource();
 	assert(pTexVar);
-	SYTexture* pTex = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,in_param->hTex);
+	BaseGraphTexture* pTex = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,in_param->hTex);
 	pTexVar->SetResource(pTex->pResourceView);
 	memset(pDevice->nShaderTexstate,0,sizeof(pDevice->nShaderTexstate));
 	return TRUE;
@@ -3862,7 +3862,7 @@ BOOL Render_EffectSetTexture(int hDevice,void* paramin,void* paramout)
 BOOL Render_GetMemTexBuffer(int hDevice,void* paramin,void* paramout)
 {
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYTexture* pTexture = (SYTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
+	BaseGraphTexture* pTexture = (BaseGraphTexture*)BseeHTable_GetAt(&pDevice->httexture,*(int*)paramin);
 	DXGetMemTexBufferOut* pBuffer = (DXGetMemTexBufferOut*)paramout;
 	if (pTexture->nType != DXTexture_MemTexture)
 	{
@@ -4293,7 +4293,7 @@ BOOL Render_GetSwapChainBufferTex(int hDevice,void* paramin,void* paramout)
 {
 	int* hSwapChain = (int*)paramin;
 	Common_DeviceDX10* pDevice = (Common_DeviceDX10*)BseeHTable_GetAt(&g_deviceHT,hDevice);
-	SYSwapChain* pSwapChain = (SYSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,*hSwapChain);
+	BaseGraphSwapChain* pSwapChain = (BaseGraphSwapChain*)BseeHTable_GetAt(&pDevice->htSwapChain,*hSwapChain);
 	int* pOut = (int*)paramout;
 	*pOut = (pDevice->pDevice == pDevice->pSwapChainDevice) ? pSwapChain->hBufferTexture : pSwapChain->hShareTexture;
 	return TRUE;

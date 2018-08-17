@@ -509,7 +509,7 @@ loop_line:
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
 void __cdecl matrix4f_fromquatn(pmatrix4f pDesM,		// 目标矩阵指针
-								   const SYQuatn* pSrcQ)			// 源四元数指针
+								   const BaseGraphQuatn* pSrcQ)			// 源四元数指针
 {
 #ifdef _USE_SSE_OPTIMAL_
 	float fOne(1.f);
@@ -595,7 +595,7 @@ void __cdecl matrix4f_fromquatn(pmatrix4f pDesM,		// 目标矩阵指针
 #endif
 }
 
-void __cdecl matrix4f_toquatn(SYQuatn* pDesQ,			// 目标四元数指针
+void __cdecl matrix4f_toquatn(BaseGraphQuatn* pDesQ,			// 目标四元数指针
 								 const matrix4f* pSrcM)		// 源矩阵指针
 {
 	float max_s = pSrcM->_11 + pSrcM->_22 + pSrcM->_33;		// r
@@ -660,7 +660,7 @@ void __cdecl matrix4f_toquatn(SYQuatn* pDesQ,			// 目标四元数指针
 //////////////////////////////////////////////////////////////////////////
 void __cdecl matrix4f_mulquatn(pmatrix4f pDesM,		// 目标矩阵指针
 								  pmatrix4f pSrcML,		// 源矩阵指针（左）
-								  const SYQuatn* pSrcQR)			// 源四元数指针（右）
+								  const BaseGraphQuatn* pSrcQR)			// 源四元数指针（右）
 {
 	matrix4f tmpMR;
 
@@ -1407,7 +1407,7 @@ BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f * pvmatrix, const 
 	*pvmatrix *= mattrans;
 }
 
-BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f * pvmatrix, vector3f * pvpos, vector3f * pvscale, SYQuatn * pqrotate, vector3f * pvcenter, matrix4f * pbasevmatrix, matrix4f * prot_adjust)
+BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f * pvmatrix, vector3f * pvpos, vector3f * pvscale, BaseGraphQuatn * pqrotate, vector3f * pvcenter, matrix4f * pbasevmatrix, matrix4f * prot_adjust)
 {
 	matrix4f mattrans, matrot, matscale, matcenterneg;
 	matrix4f_identity(&matcenterneg);
@@ -1415,7 +1415,7 @@ BASEGRAPH_COMMON_API void calc_trans_vector_tomatrix(matrix4f * pvmatrix, vector
 	matcenterneg._42 = -pvcenter->y;
 	matcenterneg._43 = -pvcenter->z;
 	float3ToScaleMatQ(&matscale, pvscale);
-	SYQuatn_ToMatrix4(&matrot, pqrotate);
+	BaseGraphQuatn_ToMatrix4(&matrot, pqrotate);
 	float3ToTransMatQ(&mattrans, pvpos);
 	*pvmatrix = matcenterneg * matscale * matrot;
 	if (prot_adjust)

@@ -1,5 +1,5 @@
 // Header FileName:	Common\PlaneDef.h
-// CPP FileName:	SYPlane.cpp
+// CPP FileName:	BaseGraphPlane.cpp
 
 #ifndef __Common_PLANE_INC__
 #define __Common_PLANE_INC__
@@ -35,22 +35,22 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-//////////////////////////////// SYPoint //////////////////////////////////////
+//////////////////////////////// BaseGraphPoint //////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	ÉèÖÃµãÖµ
 //
 // ·µ»ØÖµ:	ÎÞ
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYPoint_SetPoint(LPCommonPOINTL pP,			// µãÖ¸Õë
+void __cdecl BaseGraphPoint_SetPoint(LPCommonPOINTL pP,			// µãÖ¸Õë
 							   LONG x,					// xÖµ
 							   LONG y);					// yÖµ
 
-void __cdecl SYPoint2f_SetPoint(LPCommonPOINTF pP,			// µãÖ¸Õë
+void __cdecl BaseGraphPoint2f_SetPoint(LPCommonPOINTF pP,			// µãÖ¸Õë
 							   float x,					// xÖµ
 							   float y);				// yÖµ
 
-void __cdecl SYPoint2lf_SetPoint(LPCommonPOINTD pP,			// µãÖ¸Õë
+void __cdecl BaseGraphPoint2lf_SetPoint(LPCommonPOINTD pP,			// µãÖ¸Õë
 							   double x,				// xÖµ
 							   double y);				// yÖµ
 
@@ -59,59 +59,59 @@ void __cdecl SYPoint2lf_SetPoint(LPCommonPOINTD pP,			// µãÖ¸Õë
 //
 // ·µ»ØÖµ:	ÎÞ
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYPoint_Offset(LPCommonPOINTL pP,			// µãÖ¸Õë
+void __cdecl BaseGraphPoint_Offset(LPCommonPOINTL pP,			// µãÖ¸Õë
 							 LONG xOffset,			// xÆ«ÒÆÁ¿
 							 LONG yOffset);			// yÆ«ÒÆÁ¿
 
-void __cdecl SYPoint2f_Offset(LPCommonPOINTF pP,			// µãÖ¸Õë
+void __cdecl BaseGraphPoint2f_Offset(LPCommonPOINTF pP,			// µãÖ¸Õë
 							 float xOffset,			// xÆ«ÒÆÁ¿
 							 float yOffset);		// yÆ«ÒÆÁ¿
 
-void __cdecl SYPoint2lf_Offset(LPCommonPOINTD pP,			// µãÖ¸Õë
+void __cdecl BaseGraphPoint2lf_Offset(LPCommonPOINTD pP,			// µãÖ¸Õë
 							 double xOffset,		// xÆ«ÒÆÁ¿
 							 double yOffset);		// yÆ«ÒÆÁ¿
 
 
 
 
-///////////////////////////// End of SYPoint //////////////////////////////////
+///////////////////////////// End of BaseGraphPoint //////////////////////////////////
 
 
-///////////////////////////////// SYSize //////////////////////////////////////
+///////////////////////////////// BaseGraphSize //////////////////////////////////////
 
-typedef struct tag_SYSizeL{		// ÕûÐÍ
+typedef struct tag_BaseGraphSizeL{		// ÕûÐÍ
 	LONG	cx;
 	LONG	cy;
-}SYSizeL, *LPCommonSIZE;
+}BaseGraphSizeL, *LPCommonSIZE;
 
-typedef struct tag_SYSizef{		// ¸¡µãÐÍ
+typedef struct tag_BaseGraphSizef{		// ¸¡µãÐÍ
 	float	cx;
 	float	cy;
-}SYSizef, *LPCommonSIZEF;
+}BaseGraphSizef, *LPCommonSIZEF;
 
-typedef struct tag_SYSizelf{		// Ë«¾«¶ÈÐÍ
+typedef struct tag_BaseGraphSizelf{		// Ë«¾«¶ÈÐÍ
 	double	cx;
 	double	cy;
-}SYSizelf, *LPCommonSIZELF;
+}BaseGraphSizelf, *LPCommonSIZELF;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	ÉèÖÃsizeÖµ
 //
 // ·µ»ØÖµ:	ÎÞ
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYSize_SetSize(LPCommonSIZE pS,			// sizeÖ¸Õë
+void __cdecl BaseGraphSize_SetSize(LPCommonSIZE pS,			// sizeÖ¸Õë
 							 LONG cx,				// cxÖµ
 							 LONG cy);				// cyÖµ
 
-void __cdecl SYSizef_SetSize(LPCommonSIZEF pS,			// sizeÖ¸Õë
+void __cdecl BaseGraphSizef_SetSize(LPCommonSIZEF pS,			// sizeÖ¸Õë
 							 float cx,					// cxÖµ
 							 float cy);				// cyÖµ
 
-void __cdecl SYSizelf_SetSize(LPCommonSIZELF pS,			// sizeÖ¸Õë
+void __cdecl BaseGraphSizelf_SetSize(LPCommonSIZELF pS,			// sizeÖ¸Õë
 							 double cx,				// cxÖµ
 							 double cy);			// cyÖµ
 
-///////////////////////////// End of SYSize ///////////////////////////////////
+///////////////////////////// End of BaseGraphSize ///////////////////////////////////
 
 
 ///////////////////////////////// BaseRect //////////////////////////////////////
@@ -218,7 +218,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl BaseRect_IsRectEmpty(LPBaseRect pR);			// ¾ØÐÎ
 //			FALSE		·ñ
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API BOOL __cdecl BaseRect_PtInRect(LPBaseRect pR,				// ¾ØÐÎÖ¸Õë
-							  SYPoint point);			// µã
+							  BaseGraphPoint point);			// µã
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	¾ØÐÎÏàµÈÅÐ¶Ï
@@ -247,7 +247,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_InflateRect1(LPBaseRect pR,			// ¾ØÐÎ
 								  int y);				// ÉÏ¡¢ÏÂÍâÀ©Æ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRect_InflateRect2(LPBaseRect pR,			// ¾ØÐÎÖ¸Õë
-								  SYSizeL size);		// ÍâÀ©Æ«ÒÆÁ¿
+								  BaseGraphSizeL size);		// ÍâÀ©Æ«ÒÆÁ¿
 								 
 BASEGRAPH_COMMON_API void __cdecl BaseRect_InflateRect3(LPBaseRect pR,			// ¾ØÐÎÖ¸Õë
 								  int l,				// ×óÍâÀ©Æ«ÒÆÁ¿
@@ -265,7 +265,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_DeflateRect1(LPBaseRect pR,			// ¾ØÐÎ
 								  int y);				// ÉÏ¡¢ÏÂÄÚËõÆ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRect_DeflateRect2(LPBaseRect pR,			// ¾ØÐÎÖ¸Õë
-								  SYSizeL size);		// ÄÚËõÆ«ÒÆÁ¿
+								  BaseGraphSizeL size);		// ÄÚËõÆ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRect_DeflateRect3(LPBaseRect pR,			// ¾ØÐÎÖ¸Õë
 								  int l,				// ×óÄÚËõÆ«ÒÆÁ¿
@@ -287,7 +287,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_NormalizeRect(LPBaseRect pR);			// ¾Ø
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API void __cdecl BaseRect_NormalizeDRect(rectf* pDesR,		// Ä¿±ê¾ØÐÎ
 									LPBaseRect pSrcR,		// ¾ØÐÎÖ¸Õë
-								    SYPoint point,			// ¹éÒ»»¯ÖÐÐÄµã
+								    BaseGraphPoint point,			// ¹éÒ»»¯ÖÐÐÄµã
 								    int nWidth,				// ¹éÒ»»¯¿í
 								    int nHeight);			// ¹éÒ»»¯¸ß
 
@@ -298,7 +298,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_NormalizeDRect(rectf* pDesR,		// Ä¿±ê
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API void __cdecl BaseRect_RevertDRect(LPBaseRect pDesR,			// Ä¿±ê¾ØÐÎÖ¸Õë
 								 rectf* pSrcR,			// Ô´¾ØÐÎ
-								 SYPoint point,			// »¹Ô­ÖÐÐÄµã
+								 BaseGraphPoint point,			// »¹Ô­ÖÐÐÄµã
 								 int nWidth,				// »¹Ô­¿í
 								 int nHeight);				// »¹Ô­¸ß
 
@@ -312,10 +312,10 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_OffsetRect1(LPBaseRect pR,			// ¾ØÐÎÖ
 								 int y);				// ´¹Ö±Æ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRect_OffsetRect2(LPBaseRect pR,			// ¾ØÐÎÖ¸Õë
-								 SYPoint point);		// Æ«ÒÆµã
+								 BaseGraphPoint point);		// Æ«ÒÆµã
 
 BASEGRAPH_COMMON_API void __cdecl BaseRect_OffsetRect3(LPBaseRect pR,			// ¾ØÐÎÖ¸Õë
-								 SYSizeL size);			// Æ«ÒÆ´óÐ¡
+								 BaseGraphSizeL size);			// Æ«ÒÆ´óÐ¡
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	»ñÈ¡¾ØÐÎ·¶Î§µÄ´óÐ¡
@@ -437,7 +437,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl BaseRectf_IsRectEmpty(rectf* pR);			// ¾ØÐÎÖ¸Õ
 //			FALSE		·ñ
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API BOOL __cdecl BaseRectf_PtInRect(rectf* pR,				// ¾ØÐÎÖ¸Õë
-							  SYPoint2f point);			// µã
+							  BaseGraphPoint2f point);			// µã
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	¾ØÐÎÏàµÈÅÐ¶Ï
@@ -466,7 +466,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_InflateRect1(rectf* pR,			// ¾ØÐÎÖ¸Õ
 								  float y);				// ÉÏ¡¢ÏÂÍâÀ©Æ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectf_InflateRect2(rectf* pR,			// ¾ØÐÎÖ¸Õë
-								  SYSizef size);		// ÍâÀ©Æ«ÒÆÁ¿
+								  BaseGraphSizef size);		// ÍâÀ©Æ«ÒÆÁ¿
 								 
 BASEGRAPH_COMMON_API void __cdecl BaseRectf_InflateRect3(rectf* pR,			// ¾ØÐÎÖ¸Õë
 								  float l,				// ×óÍâÀ©Æ«ÒÆÁ¿
@@ -484,7 +484,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_DeflateRect1(rectf* pR,			// ¾ØÐÎÖ¸Õ
 								  float y);				// ÉÏ¡¢ÏÂÄÚËõÆ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectf_DeflateRect2(rectf* pR,			// ¾ØÐÎÖ¸Õë
-								  SYSizef size);		// ÄÚËõÆ«ÒÆÁ¿
+								  BaseGraphSizef size);		// ÄÚËõÆ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectf_DeflateRect3(rectf* pR,			// ¾ØÐÎÖ¸Õë
 								  float l,				// ×óÄÚËõÆ«ÒÆÁ¿
@@ -506,7 +506,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_NormalizeRect(rectf* pR);			// ¾ØÐÎÖ
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API void __cdecl BaseRectf_NormalizeDRect(rectf* pDesR,		// Ä¿±ê¾ØÐÎ
 									rectf* pSrcR,		// ¾ØÐÎÖ¸Õë
-								    SYPoint2f point,			// ¹éÒ»»¯ÖÐÐÄµã
+								    BaseGraphPoint2f point,			// ¹éÒ»»¯ÖÐÐÄµã
 								    float fWidth,			// ¹éÒ»»¯¿í
 								    float fHeight);			// ¹éÒ»»¯¸ß
 
@@ -517,7 +517,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_NormalizeDRect(rectf* pDesR,		// Ä¿±
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API void __cdecl BaseRectf_RevertDRect(rectf* pDesR,			// Ä¿±ê¾ØÐÎÖ¸Õë
 								 rectf* pSrcR,			// Ô´¾ØÐÎ
-								 SYPoint2f point,			// »¹Ô­ÖÐÐÄµã
+								 BaseGraphPoint2f point,			// »¹Ô­ÖÐÐÄµã
 								 float fWidth,				// »¹Ô­¿í
 								 float fHeight);			// »¹Ô­¸ß
 
@@ -531,10 +531,10 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_OffsetRect1(rectf* pR,			// ¾ØÐÎÖ¸Õë
 								 float y);				// ´¹Ö±Æ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectf_OffsetRect2(rectf* pR,			// ¾ØÐÎÖ¸Õë
-								 SYPoint2f point);		// Æ«ÒÆµã
+								 BaseGraphPoint2f point);		// Æ«ÒÆµã
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectf_OffsetRect3(rectf* pR,			// ¾ØÐÎÖ¸Õë
-								 SYSizef size);			// Æ«ÒÆ´óÐ¡
+								 BaseGraphSizef size);			// Æ«ÒÆ´óÐ¡
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	»ñÈ¡¾ØÐÎ·¶Î§µÄ´óÐ¡
@@ -661,7 +661,7 @@ BASEGRAPH_COMMON_API BOOL __cdecl BaseRectlf_IsRectEmpty(LPBaseRectLF pR);			// 
 //			FALSE		·ñ
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API BOOL __cdecl BaseRectlf_PtInRect(LPBaseRectLF pR,				// ¾ØÐÎÖ¸Õë
-							  SYPoint2lf point);			// µã
+							  BaseGraphPoint2lf point);			// µã
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	¾ØÐÎÏàµÈÅÐ¶Ï
@@ -690,7 +690,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_InflateRect1(LPBaseRectLF pR,			// 
 								  double y);			// ÉÏ¡¢ÏÂÍâÀ©Æ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectlf_InflateRect2(LPBaseRectLF pR,			// ¾ØÐÎÖ¸Õë
-								  SYSizelf size);		// ÍâÀ©Æ«ÒÆÁ¿
+								  BaseGraphSizelf size);		// ÍâÀ©Æ«ÒÆÁ¿
 								 
 BASEGRAPH_COMMON_API void __cdecl BaseRectlf_InflateRect3(LPBaseRectLF pR,			// ¾ØÐÎÖ¸Õë
 								  double l,				// ×óÍâÀ©Æ«ÒÆÁ¿
@@ -708,7 +708,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_DeflateRect1(LPBaseRectLF pR,			// 
 								  double y);			// ÉÏ¡¢ÏÂÄÚËõÆ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectlf_DeflateRect2(LPBaseRectLF pR,			// ¾ØÐÎÖ¸Õë
-								  SYSizelf size);		// ÄÚËõÆ«ÒÆÁ¿
+								  BaseGraphSizelf size);		// ÄÚËõÆ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectlf_DeflateRect3(LPBaseRectLF pR,			// ¾ØÐÎÖ¸Õë
 								  double l,				// ×óÄÚËõÆ«ÒÆÁ¿
@@ -730,7 +730,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_NormalizeRect(LPBaseRectLF pR);			/
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API void __cdecl BaseRectlf_NormalizeDRect(rectf* pDesR,		// Ä¿±ê¾ØÐÎ
 									LPBaseRectLF pSrcR,		// ¾ØÐÎÖ¸Õë
-								    SYPoint2lf point,			// ¹éÒ»»¯ÖÐÐÄµã
+								    BaseGraphPoint2lf point,			// ¹éÒ»»¯ÖÐÐÄµã
 								    double dWidth,			// ¹éÒ»»¯¿í
 								    double dHeight);		// ¹éÒ»»¯¸ß
 
@@ -741,7 +741,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_NormalizeDRect(rectf* pDesR,		// Ä¿
 ///////////////////////////////////////////////////////////////////////////////
 BASEGRAPH_COMMON_API void __cdecl BaseRectlf_RevertDRect(LPBaseRectLF pDesR,			// Ä¿±ê¾ØÐÎÖ¸Õë
 								 rectf* pSrcR,			// Ô´¾ØÐÎ
-								 SYPoint2lf point,			// »¹Ô­ÖÐÐÄµã
+								 BaseGraphPoint2lf point,			// »¹Ô­ÖÐÐÄµã
 								 double dWidth,				// »¹Ô­¿í
 								 double dHeight);			// »¹Ô­¸ß
 
@@ -755,10 +755,10 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_OffsetRect1(LPBaseRectLF pR,			// ¾
 								 double y);				// ´¹Ö±Æ«ÒÆÁ¿
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectlf_OffsetRect2(LPBaseRectLF pR,			// ¾ØÐÎÖ¸Õë
-								 SYPoint2lf point);		// Æ«ÒÆµã
+								 BaseGraphPoint2lf point);		// Æ«ÒÆµã
 
 BASEGRAPH_COMMON_API void __cdecl BaseRectlf_OffsetRect3(LPBaseRectLF pR,			// ¾ØÐÎÖ¸Õë
-								 SYSizelf size);			// Æ«ÒÆ´óÐ¡
+								 BaseGraphSizelf size);			// Æ«ÒÆ´óÐ¡
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	»ñÈ¡¾ØÐÎ·¶Î§µÄ´óÐ¡
@@ -838,19 +838,19 @@ void __cdecl rectf_scale(rectf* prect,float fscale);
 
 // ÕûÐÍÊµÏÖ
 
-inline BOOL operator == (SYPoint& p1, SYPoint& p2)
+inline BOOL operator == (BaseGraphPoint& p1, BaseGraphPoint& p2)
 {
 	return (p1.x == p2.x && p1.y == p2.y);
 }
 
-inline BOOL operator != (SYPoint& p1, SYPoint& p2)
+inline BOOL operator != (BaseGraphPoint& p1, BaseGraphPoint& p2)
 {
 	return (p1.x != p2.x || p1.y != p2.y);
 }
 
-inline SYPoint operator + (SYPoint& p1, SYPoint& p2)
+inline BaseGraphPoint operator + (BaseGraphPoint& p1, BaseGraphPoint& p2)
 {
-	SYPoint p3;
+	BaseGraphPoint p3;
 
 	p3.x = p1.x + p2.x;
 	p3.y = p1.y + p2.y;
@@ -858,7 +858,7 @@ inline SYPoint operator + (SYPoint& p1, SYPoint& p2)
 	return p3;
 }
 
-inline SYPoint& operator += (SYPoint& p1, SYPoint& p2)
+inline BaseGraphPoint& operator += (BaseGraphPoint& p1, BaseGraphPoint& p2)
 {
 	p1.x += p2.x;
 	p1.y += p2.y;
@@ -866,9 +866,9 @@ inline SYPoint& operator += (SYPoint& p1, SYPoint& p2)
 	return p1;
 }
 
-inline SYPoint operator + (SYPoint& p1, LONG k)
+inline BaseGraphPoint operator + (BaseGraphPoint& p1, LONG k)
 {
-	SYPoint p3;
+	BaseGraphPoint p3;
 
 	p3.x = p1.x + k;
 	p3.y = p1.y + k;
@@ -876,7 +876,7 @@ inline SYPoint operator + (SYPoint& p1, LONG k)
 	return p3;
 }
 
-inline SYPoint& operator += (SYPoint& p1, LONG k)
+inline BaseGraphPoint& operator += (BaseGraphPoint& p1, LONG k)
 {
 	p1.x += k;
 	p1.y += k;
@@ -884,9 +884,9 @@ inline SYPoint& operator += (SYPoint& p1, LONG k)
 	return p1;
 }
 
-inline SYPoint operator + (SYPoint& p1, SYSizeL& s1)
+inline BaseGraphPoint operator + (BaseGraphPoint& p1, BaseGraphSizeL& s1)
 {
-	SYPoint p3;
+	BaseGraphPoint p3;
 
 	p3.x = p1.x + s1.cx;
 	p3.y = p1.y + s1.cy;
@@ -894,7 +894,7 @@ inline SYPoint operator + (SYPoint& p1, SYSizeL& s1)
 	return p3;
 }
 
-inline SYPoint& operator += (SYPoint& p1, SYSizeL& s1)
+inline BaseGraphPoint& operator += (BaseGraphPoint& p1, BaseGraphSizeL& s1)
 {
 	p1.x += s1.cx;
 	p1.y += s1.cy;
@@ -902,9 +902,9 @@ inline SYPoint& operator += (SYPoint& p1, SYSizeL& s1)
 	return p1;
 }
 
-inline SYPoint operator - (SYPoint& p1, SYPoint& p2)
+inline BaseGraphPoint operator - (BaseGraphPoint& p1, BaseGraphPoint& p2)
 {
-	SYPoint p3;
+	BaseGraphPoint p3;
 
 	p3.x = p1.x - p2.x;
 	p3.y = p1.y - p2.y;
@@ -912,7 +912,7 @@ inline SYPoint operator - (SYPoint& p1, SYPoint& p2)
 	return p3;
 }
 
-inline SYPoint& operator -= (SYPoint& p1, SYPoint& p2)
+inline BaseGraphPoint& operator -= (BaseGraphPoint& p1, BaseGraphPoint& p2)
 {
 	p1.x -= p2.x;
 	p1.y -= p2.y;
@@ -920,9 +920,9 @@ inline SYPoint& operator -= (SYPoint& p1, SYPoint& p2)
 	return p1;
 }
 
-inline SYPoint operator - (SYPoint& p1, LONG k)
+inline BaseGraphPoint operator - (BaseGraphPoint& p1, LONG k)
 {
-	SYPoint p3;
+	BaseGraphPoint p3;
 
 	p3.x = p1.x - k;
 	p3.y = p1.y - k;
@@ -930,7 +930,7 @@ inline SYPoint operator - (SYPoint& p1, LONG k)
 	return p3;
 }
 
-inline SYPoint& operator -= (SYPoint& p1, LONG k)
+inline BaseGraphPoint& operator -= (BaseGraphPoint& p1, LONG k)
 {
 	p1.x -= k;
 	p1.y -= k;
@@ -938,9 +938,9 @@ inline SYPoint& operator -= (SYPoint& p1, LONG k)
 	return p1;
 }
 
-inline SYPoint operator - (SYPoint& p1, SYSizeL& s1)
+inline BaseGraphPoint operator - (BaseGraphPoint& p1, BaseGraphSizeL& s1)
 {
-	SYPoint p3;
+	BaseGraphPoint p3;
 
 	p3.x = p1.x - s1.cx;
 	p3.y = p1.y - s1.cy;
@@ -948,7 +948,7 @@ inline SYPoint operator - (SYPoint& p1, SYSizeL& s1)
 	return p3;
 }
 
-inline SYPoint& operator -= (SYPoint& p1, SYSizeL& s1)
+inline BaseGraphPoint& operator -= (BaseGraphPoint& p1, BaseGraphSizeL& s1)
 {
 	p1.x -= s1.cx;
 	p1.y -= s1.cy;
@@ -956,9 +956,9 @@ inline SYPoint& operator -= (SYPoint& p1, SYSizeL& s1)
 	return p1;
 }
 
-inline SYPoint operator * (SYPoint& p1, LONG k)
+inline BaseGraphPoint operator * (BaseGraphPoint& p1, LONG k)
 {
-	SYPoint p3;
+	BaseGraphPoint p3;
 
 	p3.x = p1.x * k;
 	p3.y = p1.y * k;
@@ -966,7 +966,7 @@ inline SYPoint operator * (SYPoint& p1, LONG k)
 	return p3;
 }
 
-inline SYPoint& operator *= (SYPoint& p1, LONG k)
+inline BaseGraphPoint& operator *= (BaseGraphPoint& p1, LONG k)
 {
 	p1.x *= k;
 	p1.y *= k;
@@ -974,9 +974,9 @@ inline SYPoint& operator *= (SYPoint& p1, LONG k)
 	return p1;
 }
 
-inline SYPoint operator / (SYPoint& p1, LONG k)
+inline BaseGraphPoint operator / (BaseGraphPoint& p1, LONG k)
 {
-	SYPoint p3;
+	BaseGraphPoint p3;
 	double kTmp = 1.0 / (double)k;
 
 	p3.x = (LONG)(p1.x * kTmp);
@@ -985,7 +985,7 @@ inline SYPoint operator / (SYPoint& p1, LONG k)
 	return p3;
 }
 
-inline SYPoint& operator /= (SYPoint& p1, LONG k)
+inline BaseGraphPoint& operator /= (BaseGraphPoint& p1, LONG k)
 {
 	double kTmp = 1.0 / (double)k;
 
@@ -997,19 +997,19 @@ inline SYPoint& operator /= (SYPoint& p1, LONG k)
 
 // µ¥¾«¶ÈÊµÏÖ
 
-inline BOOL operator == (SYPoint2f& p1, SYPoint2f& p2)
+inline BOOL operator == (BaseGraphPoint2f& p1, BaseGraphPoint2f& p2)
 {
 	return (p1.x == p2.x && p1.y == p2.y);
 }
 
-inline BOOL operator != (SYPoint2f& p1, SYPoint2f& p2)
+inline BOOL operator != (BaseGraphPoint2f& p1, BaseGraphPoint2f& p2)
 {
 	return (p1.x != p2.x || p1.y != p2.y);
 }
 
-inline SYPoint2f operator + (SYPoint2f& p1, SYPoint2f& p2)
+inline BaseGraphPoint2f operator + (BaseGraphPoint2f& p1, BaseGraphPoint2f& p2)
 {
-	SYPoint2f p3;
+	BaseGraphPoint2f p3;
 
 	p3.x = p1.x + p2.x;
 	p3.y = p1.y + p2.y;
@@ -1017,7 +1017,7 @@ inline SYPoint2f operator + (SYPoint2f& p1, SYPoint2f& p2)
 	return p3;
 }
 
-inline SYPoint2f& operator += (SYPoint2f& p1, SYPoint2f& p2)
+inline BaseGraphPoint2f& operator += (BaseGraphPoint2f& p1, BaseGraphPoint2f& p2)
 {
 	p1.x += p2.x;
 	p1.y += p2.y;
@@ -1025,9 +1025,9 @@ inline SYPoint2f& operator += (SYPoint2f& p1, SYPoint2f& p2)
 	return p1;
 }
 
-inline SYPoint2f operator + (SYPoint2f& p1, float k)
+inline BaseGraphPoint2f operator + (BaseGraphPoint2f& p1, float k)
 {
-	SYPoint2f p3;
+	BaseGraphPoint2f p3;
 
 	p3.x = p1.x + k;
 	p3.y = p1.y + k;
@@ -1035,7 +1035,7 @@ inline SYPoint2f operator + (SYPoint2f& p1, float k)
 	return p3;
 }
 
-inline SYPoint2f& operator += (SYPoint2f& p1, float k)
+inline BaseGraphPoint2f& operator += (BaseGraphPoint2f& p1, float k)
 {
 	p1.x += k;
 	p1.y += k;
@@ -1043,9 +1043,9 @@ inline SYPoint2f& operator += (SYPoint2f& p1, float k)
 	return p1;
 }
 
-inline SYPoint2f operator + (SYPoint2f& p1, SYSizef& s1)
+inline BaseGraphPoint2f operator + (BaseGraphPoint2f& p1, BaseGraphSizef& s1)
 {
-	SYPoint2f p3;
+	BaseGraphPoint2f p3;
 
 	p3.x = p1.x + s1.cx;
 	p3.y = p1.y + s1.cy;
@@ -1053,7 +1053,7 @@ inline SYPoint2f operator + (SYPoint2f& p1, SYSizef& s1)
 	return p3;
 }
 
-inline SYPoint2f& operator += (SYPoint2f& p1, SYSizef& s1)
+inline BaseGraphPoint2f& operator += (BaseGraphPoint2f& p1, BaseGraphSizef& s1)
 {
 	p1.x += s1.cx;
 	p1.y += s1.cy;
@@ -1061,9 +1061,9 @@ inline SYPoint2f& operator += (SYPoint2f& p1, SYSizef& s1)
 	return p1;
 }
 
-inline SYPoint2f operator - (SYPoint2f& p1, SYPoint2f& p2)
+inline BaseGraphPoint2f operator - (BaseGraphPoint2f& p1, BaseGraphPoint2f& p2)
 {
-	SYPoint2f p3;
+	BaseGraphPoint2f p3;
 
 	p3.x = p1.x - p2.x;
 	p3.y = p1.y - p2.y;
@@ -1071,7 +1071,7 @@ inline SYPoint2f operator - (SYPoint2f& p1, SYPoint2f& p2)
 	return p3;
 }
 
-inline SYPoint2f& operator -= (SYPoint2f& p1, SYPoint2f& p2)
+inline BaseGraphPoint2f& operator -= (BaseGraphPoint2f& p1, BaseGraphPoint2f& p2)
 {
 	p1.x -= p2.x;
 	p1.y -= p2.y;
@@ -1079,9 +1079,9 @@ inline SYPoint2f& operator -= (SYPoint2f& p1, SYPoint2f& p2)
 	return p1;
 }
 
-inline SYPoint2f operator - (SYPoint2f& p1, float k)
+inline BaseGraphPoint2f operator - (BaseGraphPoint2f& p1, float k)
 {
-	SYPoint2f p3;
+	BaseGraphPoint2f p3;
 
 	p3.x = p1.x - k;
 	p3.y = p1.y - k;
@@ -1089,7 +1089,7 @@ inline SYPoint2f operator - (SYPoint2f& p1, float k)
 	return p3;
 }
 
-inline SYPoint2f& operator -= (SYPoint2f& p1, float k)
+inline BaseGraphPoint2f& operator -= (BaseGraphPoint2f& p1, float k)
 {
 	p1.x -= k;
 	p1.y -= k;
@@ -1097,9 +1097,9 @@ inline SYPoint2f& operator -= (SYPoint2f& p1, float k)
 	return p1;
 }
 
-inline SYPoint2f operator - (SYPoint2f& p1, SYSizef& s1)
+inline BaseGraphPoint2f operator - (BaseGraphPoint2f& p1, BaseGraphSizef& s1)
 {
-	SYPoint2f p3;
+	BaseGraphPoint2f p3;
 
 	p3.x = p1.x - s1.cx;
 	p3.y = p1.y - s1.cy;
@@ -1107,7 +1107,7 @@ inline SYPoint2f operator - (SYPoint2f& p1, SYSizef& s1)
 	return p3;
 }
 
-inline SYPoint2f& operator -= (SYPoint2f& p1, SYSizef& s1)
+inline BaseGraphPoint2f& operator -= (BaseGraphPoint2f& p1, BaseGraphSizef& s1)
 {
 	p1.x -= s1.cx;
 	p1.y -= s1.cy;
@@ -1115,9 +1115,9 @@ inline SYPoint2f& operator -= (SYPoint2f& p1, SYSizef& s1)
 	return p1;
 }
 
-inline SYPoint2f operator * (SYPoint2f& p1, float k)
+inline BaseGraphPoint2f operator * (BaseGraphPoint2f& p1, float k)
 {
-	SYPoint2f p3;
+	BaseGraphPoint2f p3;
 
 	p3.x = p1.x * k;
 	p3.y = p1.y * k;
@@ -1125,9 +1125,9 @@ inline SYPoint2f operator * (SYPoint2f& p1, float k)
 	return p3;
 }
 
-inline SYPoint2f operator / (SYPoint2f& p1, float k)
+inline BaseGraphPoint2f operator / (BaseGraphPoint2f& p1, float k)
 {
-	SYPoint2f p3;
+	BaseGraphPoint2f p3;
 	float kTmp = 1.f / k;
 
 	p3.x = p1.x * kTmp;
@@ -1138,19 +1138,19 @@ inline SYPoint2f operator / (SYPoint2f& p1, float k)
 
 // Ë«¾«¶ÈÊµÏÖ
 
-inline BOOL operator == (SYPoint2lf& p1, SYPoint2lf& p2)
+inline BOOL operator == (BaseGraphPoint2lf& p1, BaseGraphPoint2lf& p2)
 {
 	return (p1.x == p2.x && p1.y == p2.y);
 }
 
-inline BOOL operator != (SYPoint2lf& p1, SYPoint2lf& p2)
+inline BOOL operator != (BaseGraphPoint2lf& p1, BaseGraphPoint2lf& p2)
 {
 	return (p1.x != p2.x || p1.y != p2.y);
 }
 
-inline SYPoint2lf operator + (SYPoint2lf& p1, SYPoint2lf& p2)
+inline BaseGraphPoint2lf operator + (BaseGraphPoint2lf& p1, BaseGraphPoint2lf& p2)
 {
-	SYPoint2lf p3;
+	BaseGraphPoint2lf p3;
 
 	p3.x = p1.x + p2.x;
 	p3.y = p1.y + p2.y;
@@ -1158,7 +1158,7 @@ inline SYPoint2lf operator + (SYPoint2lf& p1, SYPoint2lf& p2)
 	return p3;
 }
 
-inline SYPoint2lf& operator += (SYPoint2lf& p1, SYPoint2lf& p2)
+inline BaseGraphPoint2lf& operator += (BaseGraphPoint2lf& p1, BaseGraphPoint2lf& p2)
 {
 	p1.x += p2.x;
 	p1.y += p2.y;
@@ -1166,9 +1166,9 @@ inline SYPoint2lf& operator += (SYPoint2lf& p1, SYPoint2lf& p2)
 	return p1;
 }
 
-inline SYPoint2lf operator + (SYPoint2lf& p1, double k)
+inline BaseGraphPoint2lf operator + (BaseGraphPoint2lf& p1, double k)
 {
-	SYPoint2lf p3;
+	BaseGraphPoint2lf p3;
 
 	p3.x = p1.x + k;
 	p3.y = p1.y + k;
@@ -1176,7 +1176,7 @@ inline SYPoint2lf operator + (SYPoint2lf& p1, double k)
 	return p3;
 }
 
-inline SYPoint2lf& operator += (SYPoint2lf& p1, double k)
+inline BaseGraphPoint2lf& operator += (BaseGraphPoint2lf& p1, double k)
 {
 	p1.x += k;
 	p1.y += k;
@@ -1184,9 +1184,9 @@ inline SYPoint2lf& operator += (SYPoint2lf& p1, double k)
 	return p1;
 }
 
-inline SYPoint2lf operator + (SYPoint2lf& p1, SYSizelf& s1)
+inline BaseGraphPoint2lf operator + (BaseGraphPoint2lf& p1, BaseGraphSizelf& s1)
 {
-	SYPoint2lf p3;
+	BaseGraphPoint2lf p3;
 
 	p3.x = p1.x + s1.cx;
 	p3.y = p1.y + s1.cy;
@@ -1194,7 +1194,7 @@ inline SYPoint2lf operator + (SYPoint2lf& p1, SYSizelf& s1)
 	return p3;
 }
 
-inline SYPoint2lf& operator += (SYPoint2lf& p1, SYSizelf& s1)
+inline BaseGraphPoint2lf& operator += (BaseGraphPoint2lf& p1, BaseGraphSizelf& s1)
 {
 	p1.x += s1.cx;
 	p1.y += s1.cy;
@@ -1202,9 +1202,9 @@ inline SYPoint2lf& operator += (SYPoint2lf& p1, SYSizelf& s1)
 	return p1;
 }
 
-inline SYPoint2lf operator - (SYPoint2lf& p1, SYPoint2lf& p2)
+inline BaseGraphPoint2lf operator - (BaseGraphPoint2lf& p1, BaseGraphPoint2lf& p2)
 {
-	SYPoint2lf p3;
+	BaseGraphPoint2lf p3;
 
 	p3.x = p1.x - p2.x;
 	p3.y = p1.y - p2.y;
@@ -1212,7 +1212,7 @@ inline SYPoint2lf operator - (SYPoint2lf& p1, SYPoint2lf& p2)
 	return p3;
 }
 
-inline SYPoint2lf& operator -= (SYPoint2lf& p1, SYPoint2lf& p2)
+inline BaseGraphPoint2lf& operator -= (BaseGraphPoint2lf& p1, BaseGraphPoint2lf& p2)
 {
 	p1.x -= p2.x;
 	p1.y -= p2.y;
@@ -1220,9 +1220,9 @@ inline SYPoint2lf& operator -= (SYPoint2lf& p1, SYPoint2lf& p2)
 	return p1;
 }
 
-inline SYPoint2lf operator - (SYPoint2lf& p1, double k)
+inline BaseGraphPoint2lf operator - (BaseGraphPoint2lf& p1, double k)
 {
-	SYPoint2lf p3;
+	BaseGraphPoint2lf p3;
 
 	p3.x = p1.x - k;
 	p3.y = p1.y - k;
@@ -1230,7 +1230,7 @@ inline SYPoint2lf operator - (SYPoint2lf& p1, double k)
 	return p3;
 }
 
-inline SYPoint2lf& operator -= (SYPoint2lf& p1, double k)
+inline BaseGraphPoint2lf& operator -= (BaseGraphPoint2lf& p1, double k)
 {
 	p1.x -= k;
 	p1.y -= k;
@@ -1238,9 +1238,9 @@ inline SYPoint2lf& operator -= (SYPoint2lf& p1, double k)
 	return p1;
 }
 
-inline SYPoint2lf operator - (SYPoint2lf& p1, SYSizelf& s1)
+inline BaseGraphPoint2lf operator - (BaseGraphPoint2lf& p1, BaseGraphSizelf& s1)
 {
-	SYPoint2lf p3;
+	BaseGraphPoint2lf p3;
 
 	p3.x = p1.x - s1.cx;
 	p3.y = p1.y - s1.cy;
@@ -1248,7 +1248,7 @@ inline SYPoint2lf operator - (SYPoint2lf& p1, SYSizelf& s1)
 	return p3;
 }
 
-inline SYPoint2lf& operator -= (SYPoint2lf& p1, SYSizelf& s1)
+inline BaseGraphPoint2lf& operator -= (BaseGraphPoint2lf& p1, BaseGraphSizelf& s1)
 {
 	p1.x -= s1.cx;
 	p1.y -= s1.cy;
@@ -1256,9 +1256,9 @@ inline SYPoint2lf& operator -= (SYPoint2lf& p1, SYSizelf& s1)
 	return p1;
 }
 
-inline SYPoint2lf operator * (SYPoint2lf& p1, double k)
+inline BaseGraphPoint2lf operator * (BaseGraphPoint2lf& p1, double k)
 {
-	SYPoint2lf p3;
+	BaseGraphPoint2lf p3;
 
 	p3.x = p1.x * k;
 	p3.y = p1.y * k;
@@ -1266,7 +1266,7 @@ inline SYPoint2lf operator * (SYPoint2lf& p1, double k)
 	return p3;
 }
 
-inline SYPoint2lf& operator *= (SYPoint2lf& p1, double k)
+inline BaseGraphPoint2lf& operator *= (BaseGraphPoint2lf& p1, double k)
 {
 	p1.x *= k;
 	p1.y *= k;
@@ -1274,9 +1274,9 @@ inline SYPoint2lf& operator *= (SYPoint2lf& p1, double k)
 	return p1;
 }
 
-inline SYPoint2lf operator / (SYPoint2lf& p1, double k)
+inline BaseGraphPoint2lf operator / (BaseGraphPoint2lf& p1, double k)
 {
-	SYPoint2lf p3;
+	BaseGraphPoint2lf p3;
 	double kTmp = 1.0 / k;
 
 	p3.x = p1.x * kTmp;
@@ -1285,7 +1285,7 @@ inline SYPoint2lf operator / (SYPoint2lf& p1, double k)
 	return p3;
 }
 
-inline SYPoint2lf& operator /= (SYPoint2lf& p1, double k)
+inline BaseGraphPoint2lf& operator /= (BaseGraphPoint2lf& p1, double k)
 {
 	double kTmp = 1.0 / k;
 
@@ -1451,9 +1451,9 @@ public:
 	CBasePoint(const CBaseSize<TYPE, ARG_TYPE>& size);
 	CBasePoint(CBaseSize<TYPE, ARG_TYPE> size);
 	// È¡½á¹¹Öµ´´½¨
-	CBasePoint(const SYPoint& pointL);
-	CBasePoint(const SYPoint2f& pointF);
-	CBasePoint(const SYPoint2lf& pointD);
+	CBasePoint(const BaseGraphPoint& pointL);
+	CBasePoint(const BaseGraphPoint2f& pointF);
+	CBasePoint(const BaseGraphPoint2lf& pointD);
 
 	// °´Ö¸¶¨Æ«ÒÆÁ¿ÒÆ¶¯
 	void Offset(ARG_TYPE xOffset, ARG_TYPE yOffset);
@@ -1468,12 +1468,12 @@ public:
 	void CopyPoint(CBasePoint point);
 
 	CBasePoint& operator=(const CBasePoint<TYPE, ARG_TYPE>& point);
-	CBasePoint& operator=(const SYPoint& pointL);
-	CBasePoint& operator=(SYPoint pointL);
-	CBasePoint& operator=(const SYPoint2f& pointL);
-	CBasePoint& operator=(SYPoint2f pointL);
-	CBasePoint& operator=(const SYPoint2lf& pointL);
-	CBasePoint& operator=(SYPoint2lf pointL);
+	CBasePoint& operator=(const BaseGraphPoint& pointL);
+	CBasePoint& operator=(BaseGraphPoint pointL);
+	CBasePoint& operator=(const BaseGraphPoint2f& pointL);
+	CBasePoint& operator=(BaseGraphPoint2f pointL);
+	CBasePoint& operator=(const BaseGraphPoint2lf& pointL);
+	CBasePoint& operator=(BaseGraphPoint2lf pointL);
 
 	BOOL operator==(const CBasePoint& point);
 	BOOL operator!=(const CBasePoint& point);
@@ -1488,18 +1488,18 @@ public:
 	CBasePoint& operator-=(CBaseSize<TYPE, ARG_TYPE> size);
 	CBasePoint& operator+=(CBasePoint point);
 	CBasePoint& operator-=(CBasePoint point);
-	CBasePoint& operator+=(const SYPoint& pointL);
-	CBasePoint& operator-=(const SYPoint& pointL);
-	CBasePoint& operator+=(const SYPoint2f& pointF);
-	CBasePoint& operator-=(const SYPoint2f& pointF);
-	CBasePoint& operator+=(const SYPoint2lf& pointD);
-	CBasePoint& operator-=(const SYPoint2lf& pointD);
-	CBasePoint& operator+=(SYPoint pointL);
-	CBasePoint& operator-=(SYPoint pointL);
-	CBasePoint& operator+=(SYPoint2f pointF);
-	CBasePoint& operator-=(SYPoint2f pointF);
-	CBasePoint& operator+=(SYPoint2lf pointD);
-	CBasePoint& operator-=(SYPoint2lf pointD);
+	CBasePoint& operator+=(const BaseGraphPoint& pointL);
+	CBasePoint& operator-=(const BaseGraphPoint& pointL);
+	CBasePoint& operator+=(const BaseGraphPoint2f& pointF);
+	CBasePoint& operator-=(const BaseGraphPoint2f& pointF);
+	CBasePoint& operator+=(const BaseGraphPoint2lf& pointD);
+	CBasePoint& operator-=(const BaseGraphPoint2lf& pointD);
+	CBasePoint& operator+=(BaseGraphPoint pointL);
+	CBasePoint& operator-=(BaseGraphPoint pointL);
+	CBasePoint& operator+=(BaseGraphPoint2f pointF);
+	CBasePoint& operator-=(BaseGraphPoint2f pointF);
+	CBasePoint& operator+=(BaseGraphPoint2lf pointD);
+	CBasePoint& operator-=(BaseGraphPoint2lf pointD);
 
 // Operators returning CBasePoint values
 	CBasePoint operator+(const CBaseSize<TYPE, ARG_TYPE>& size);
@@ -1509,22 +1509,22 @@ public:
 	CBasePoint operator-();
 	CBasePoint operator+(const CBasePoint& point);
 	CBasePoint operator+(CBasePoint point);
-	CBasePoint operator+(const SYPoint& pointL);
-	CBasePoint operator+(const SYPoint2f& pointF);
-	CBasePoint operator+(const SYPoint2lf& pointD);
-	CBasePoint operator+(SYPoint pointL);
-	CBasePoint operator+(SYPoint2f pointF);
-	CBasePoint operator+(SYPoint2lf pointD);
+	CBasePoint operator+(const BaseGraphPoint& pointL);
+	CBasePoint operator+(const BaseGraphPoint2f& pointF);
+	CBasePoint operator+(const BaseGraphPoint2lf& pointD);
+	CBasePoint operator+(BaseGraphPoint pointL);
+	CBasePoint operator+(BaseGraphPoint2f pointF);
+	CBasePoint operator+(BaseGraphPoint2lf pointD);
 
 // Operators returning CBaseSize values
 	CBaseSize<TYPE, ARG_TYPE> operator-(const CBasePoint& point);
 	CBaseSize<TYPE, ARG_TYPE> operator-(CBasePoint point);
-	CBaseSize<TYPE, ARG_TYPE> operator-(const SYPoint& pointL);
-	CBaseSize<TYPE, ARG_TYPE> operator-(const SYPoint2f& pointF);
-	CBaseSize<TYPE, ARG_TYPE> operator-(const SYPoint2lf& pointD);
-	CBaseSize<TYPE, ARG_TYPE> operator-(SYPoint pointL);
-	CBaseSize<TYPE, ARG_TYPE> operator-(SYPoint2f pointF);
-	CBaseSize<TYPE, ARG_TYPE> operator-(SYPoint2lf pointD);
+	CBaseSize<TYPE, ARG_TYPE> operator-(const BaseGraphPoint& pointL);
+	CBaseSize<TYPE, ARG_TYPE> operator-(const BaseGraphPoint2f& pointF);
+	CBaseSize<TYPE, ARG_TYPE> operator-(const BaseGraphPoint2lf& pointD);
+	CBaseSize<TYPE, ARG_TYPE> operator-(BaseGraphPoint pointL);
+	CBaseSize<TYPE, ARG_TYPE> operator-(BaseGraphPoint2f pointF);
+	CBaseSize<TYPE, ARG_TYPE> operator-(BaseGraphPoint2lf pointD);
 };
 
 //////////////////////////// End of CBasePoint //////////////////////////////////
@@ -1550,9 +1550,9 @@ public:
 	CBaseSize(const CBasePoint<TYPE, ARG_TYPE>& point);
 	CBaseSize(CBasePoint<TYPE, ARG_TYPE> point);
 	// ´Ó½á¹¹´´½¨
-	CBaseSize(const SYSizeL& sizeL);
-	CBaseSize(const SYSizef& sizeF);
-	CBaseSize(const SYSizelf& sizeD);
+	CBaseSize(const BaseGraphSizeL& sizeL);
+	CBaseSize(const BaseGraphSizef& sizeF);
+	CBaseSize(const BaseGraphSizelf& sizeD);
 
 	// ÉèÖµ
 	void SetSize(ARG_TYPE CX, ARG_TYPE CY);
@@ -1561,12 +1561,12 @@ public:
 	void CopySize(CBaseSize size);
 
 	CBaseSize& operator=(const CBaseSize<TYPE, ARG_TYPE>& size);
-	CBaseSize& operator=(const SYSizeL& sizeL);
-	CBaseSize& operator=(SYSizeL sizeL);
-	CBaseSize& operator=(const SYSizef& sizeF);
-	CBaseSize& operator=(SYSizef sizeF);
-	CBaseSize& operator=(const SYSizelf& sizeD);
-	CBaseSize& operator=(SYSizelf sizeD);
+	CBaseSize& operator=(const BaseGraphSizeL& sizeL);
+	CBaseSize& operator=(BaseGraphSizeL sizeL);
+	CBaseSize& operator=(const BaseGraphSizef& sizeF);
+	CBaseSize& operator=(BaseGraphSizef sizeF);
+	CBaseSize& operator=(const BaseGraphSizelf& sizeD);
+	CBaseSize& operator=(BaseGraphSizelf sizeD);
 
 	BOOL operator==(const CBaseSize& size);
 	BOOL operator!=(const CBaseSize& size);
@@ -1577,18 +1577,18 @@ public:
 	CBaseSize& operator-=(const CBaseSize& size);
 	CBaseSize& operator+=(CBaseSize size);
 	CBaseSize& operator-=(CBaseSize size);
-	CBaseSize& operator+=(const SYSizeL& sizeL);
-	CBaseSize& operator-=(const SYSizeL& sizeL);
-	CBaseSize& operator+=(const SYSizef& sizeF);
-	CBaseSize& operator-=(const SYSizef& sizeF);
-	CBaseSize& operator+=(const SYSizelf& sizeD);
-	CBaseSize& operator-=(const SYSizelf& sizeD);
-	CBaseSize& operator+=(SYSizeL sizeL);
-	CBaseSize& operator-=(SYSizeL sizeL);
-	CBaseSize& operator+=(SYSizef sizeF);
-	CBaseSize& operator-=(SYSizef sizeF);
-	CBaseSize& operator+=(SYSizelf sizeD);
-	CBaseSize& operator-=(SYSizelf sizeD);
+	CBaseSize& operator+=(const BaseGraphSizeL& sizeL);
+	CBaseSize& operator-=(const BaseGraphSizeL& sizeL);
+	CBaseSize& operator+=(const BaseGraphSizef& sizeF);
+	CBaseSize& operator-=(const BaseGraphSizef& sizeF);
+	CBaseSize& operator+=(const BaseGraphSizelf& sizeD);
+	CBaseSize& operator-=(const BaseGraphSizelf& sizeD);
+	CBaseSize& operator+=(BaseGraphSizeL sizeL);
+	CBaseSize& operator-=(BaseGraphSizeL sizeL);
+	CBaseSize& operator+=(BaseGraphSizef sizeF);
+	CBaseSize& operator-=(BaseGraphSizef sizeF);
+	CBaseSize& operator+=(BaseGraphSizelf sizeD);
+	CBaseSize& operator-=(BaseGraphSizelf sizeD);
 
 // Operators returning CBaseSize values
 	CBaseSize operator+(const CBaseSize& size);
@@ -1596,18 +1596,18 @@ public:
 	CBaseSize operator+(CBaseSize size);
 	CBaseSize operator-(CBaseSize size);
 	CBaseSize operator-();
-	CBaseSize operator+(const SYSizeL& sizeL);
-	CBaseSize operator-(const SYSizeL& sizeL);
-	CBaseSize operator+(const SYSizef& sizeF);
-	CBaseSize operator-(const SYSizef& sizeF);
-	CBaseSize operator+(const SYSizelf& sizeD);
-	CBaseSize operator-(const SYSizelf& sizeD);
-	CBaseSize operator+(SYSizeL sizeL);
-	CBaseSize operator-(SYSizeL sizeL);
-	CBaseSize operator+(SYSizef sizeF);
-	CBaseSize operator-(SYSizef sizeF);
-	CBaseSize operator+(SYSizelf sizeD);
-	CBaseSize operator-(SYSizelf sizeD);
+	CBaseSize operator+(const BaseGraphSizeL& sizeL);
+	CBaseSize operator-(const BaseGraphSizeL& sizeL);
+	CBaseSize operator+(const BaseGraphSizef& sizeF);
+	CBaseSize operator-(const BaseGraphSizef& sizeF);
+	CBaseSize operator+(const BaseGraphSizelf& sizeD);
+	CBaseSize operator-(const BaseGraphSizelf& sizeD);
+	CBaseSize operator+(BaseGraphSizeL sizeL);
+	CBaseSize operator-(BaseGraphSizeL sizeL);
+	CBaseSize operator+(BaseGraphSizef sizeF);
+	CBaseSize operator-(BaseGraphSizef sizeF);
+	CBaseSize operator+(BaseGraphSizelf sizeD);
+	CBaseSize operator-(BaseGraphSizelf sizeD);
 
 // Operators returning CBasePoint values
 	CBasePoint<TYPE, ARG_TYPE> operator+(const CBasePoint<TYPE, ARG_TYPE>& point);

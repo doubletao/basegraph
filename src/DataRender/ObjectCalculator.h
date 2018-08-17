@@ -28,15 +28,15 @@ enum Matrix_type
 	enum_Matrix_Title = 0x00000008,
 };
 
-struct SYRenderUnitView
+struct BaseGraphRenderUnitView
 {
 	BOOL			bChanged;
 	CommonBufferDef32*	pUnitBuffer;
 	DXHalDef32*		pUnitHalBuf;
 	DXHalDef32*		pUnitDymHalBuffer;
 	BOOL			bUseColorAlpha;
-	SYRenderUnitView();
-	~SYRenderUnitView();
+	BaseGraphRenderUnitView();
+	~BaseGraphRenderUnitView();
 };
 
 class ObjectCalculator
@@ -50,7 +50,7 @@ protected:
 	CRITICAL_SECTION m_Lock;
 	int m_nLastFrame;
 	int m_nRotateOrder;
-	std::map<CString, SYRenderUnitView *> m_mapRenderUnitView;
+	std::map<CString, BaseGraphRenderUnitView *> m_mapRenderUnitView;
 protected:
 	/*矩阵相关*/
 	matrix4f	m_VSelfMatrix;			//只计算自身的矩阵
@@ -74,7 +74,7 @@ public:
 	virtual bool IsItemNeedRender();
 	bool ValidAction();
 
-	virtual SYItemRenderUnit * GetRenderUnit(int nIndex, const BaseARray& pUnitArray);
+	virtual BaseGraphItemRenderUnit * GetRenderUnit(int nIndex, const BaseARray& pUnitArray);
 	static void GetSceneCenter(float3& pt);
 
 	void SetChgLevel(EmObjectChgLevel emChgLevel);//set是赋值
@@ -102,7 +102,7 @@ public:
 	bool BoxInterTest(IN rectf rtBox);//框选，条件是框住了才算
 protected:
 	virtual bool NeedUpdateBuffer();
-	SYRenderUnitView * GetRenderUnitView(CString strUintID);
-	void AddRenderUnitView(CString strUnitID, SYRenderUnitView * pRenderUnitView);
+	BaseGraphRenderUnitView * GetRenderUnitView(CString strUintID);
+	void AddRenderUnitView(CString strUnitID, BaseGraphRenderUnitView * pRenderUnitView);
 	void ClearRenderUnitView();
 };

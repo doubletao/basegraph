@@ -2,23 +2,23 @@
 #include "Common\DataDef.h"
 // 颜色种类
 
-enum SYCOLOR_TYPE
+enum BaseGraphCOLOR_TYPE
 {
-	SYCOLOR_HOMO = 0,				// 单色
-	SYCOLOR_GRAD_LINEAR,			// 线性渐变色
-	SYCOLOR_GRAD_CENTER_ROUND,		// 圆形中心渐变色
-	SYCOLOR_GRAD_CENTER_POLYGON,	// 凸多边形中心渐变色
-	SYCOLOR_GRAD_OUTLINE_CIRCLE,	// 圆周轮廓渐变色
-	SYCOLOR_GRAD_OUTLINE_POLYGON,	// 多边形轮廓渐变色
-	SYCOLOR_GRAD_PT_CONTOUR,		// 多点等高渐变色
-	SYCOLOR_GRAD_PT_BLEND,			// 多点混成渐变色
-	SYCOLOR_TYPE_COUNT,				// 种类数量
-	SYCOLOR_GRAD_TEMPLET,			// 模板渐变色
-	SYCOLOR_TEX_IMG,				// 图片纹理
-	SYCOLOR_NONE,					//没有颜色
+	BaseGraphCOLOR_HOMO = 0,				// 单色
+	BaseGraphCOLOR_GRAD_LINEAR,			// 线性渐变色
+	BaseGraphCOLOR_GRAD_CENTER_ROUND,		// 圆形中心渐变色
+	BaseGraphCOLOR_GRAD_CENTER_POLYGON,	// 凸多边形中心渐变色
+	BaseGraphCOLOR_GRAD_OUTLINE_CIRCLE,	// 圆周轮廓渐变色
+	BaseGraphCOLOR_GRAD_OUTLINE_POLYGON,	// 多边形轮廓渐变色
+	BaseGraphCOLOR_GRAD_PT_CONTOUR,		// 多点等高渐变色
+	BaseGraphCOLOR_GRAD_PT_BLEND,			// 多点混成渐变色
+	BaseGraphCOLOR_TYPE_COUNT,				// 种类数量
+	BaseGraphCOLOR_GRAD_TEMPLET,			// 模板渐变色
+	BaseGraphCOLOR_TEX_IMG,				// 图片纹理
+	BaseGraphCOLOR_NONE,					//没有颜色
 };
 //player status
-enum SYPLAYERSTATUS
+enum BaseGraphPLAYERSTATUS
 {
 	PRERUN = 0,			//being preparation
 	PRERUNFINISH,		//preparation finished
@@ -54,69 +54,69 @@ enum SYPLAYERSTATUS
 #define GETFRAME(dwOutData)		((DWORD)(dwOutData & 0x00ffffff))        //obtain player current frame number
 
 // 重复渲染方式
-enum SYCOLOR_STYLE
+enum BaseGraphCOLOR_STYLE
 {
-	SYCOLOR_STYLE_SYMMETRY = 0,		// 对称排列
-	SYCOLOR_STYLE_SEQUENCE,			// 顺序排列
+	BaseGraphCOLOR_STYLE_BaseGraphMMETRY = 0,		// 对称排列
+	BaseGraphCOLOR_STYLE_SEQUENCE,			// 顺序排列
 
-	SYCOLOR_STYLE_COUNT,
+	BaseGraphCOLOR_STYLE_COUNT,
 };
 // 颜色容器支持颜色的定义
-enum SYCOLOR_SUPPORT
+enum BaseGraphCOLOR_SUPPORT
 {
 	SUPPROT_NONE = 0x00000000,											// 不支持任何
 
-	SUPPORT_HOMO = (1 << SYCOLOR_HOMO),									// 支持单色
-	SUPPORT_GRAD_LINEAR = (1 << SYCOLOR_GRAD_LINEAR),					// 支持线性渐变色
-	SUPPORT_GRAD_CENTER_ROUND = (1 << SYCOLOR_GRAD_CENTER_ROUND),		// 支持圆形中心渐变色
-	SUPPORT_GRAD_CENTER_POLYGON = (1 << SYCOLOR_GRAD_CENTER_POLYGON),	// 支持凸多边形中心渐变色
-	SUPPORT_GRAD_OUTLINE_CIRCLE = (1 << SYCOLOR_GRAD_OUTLINE_CIRCLE),	// 支持圆周轮廓渐变色
-	SUPPORT_GRAD_OUTLINE_POLYGON = (1 << SYCOLOR_GRAD_OUTLINE_POLYGON),	// 支持多边形轮廓渐变色
-	SUPPORT_GRAD_PT_CONTOUR = (1 << SYCOLOR_GRAD_PT_CONTOUR),			// 支持多点等高渐变色
-	SUPPORT_GRAD_PT_BLEND = (1 << SYCOLOR_GRAD_PT_BLEND),				// 支持多点混成渐变色
-	SUPPORT_GRAD_TEMPLET = (1 << SYCOLOR_GRAD_TEMPLET),					// 支持模板渐变色
-	SUPPORT_TEX_IMG = (1 << SYCOLOR_TEX_IMG),							// 支持图片纹理
+	SUPPORT_HOMO = (1 << BaseGraphCOLOR_HOMO),									// 支持单色
+	SUPPORT_GRAD_LINEAR = (1 << BaseGraphCOLOR_GRAD_LINEAR),					// 支持线性渐变色
+	SUPPORT_GRAD_CENTER_ROUND = (1 << BaseGraphCOLOR_GRAD_CENTER_ROUND),		// 支持圆形中心渐变色
+	SUPPORT_GRAD_CENTER_POLYGON = (1 << BaseGraphCOLOR_GRAD_CENTER_POLYGON),	// 支持凸多边形中心渐变色
+	SUPPORT_GRAD_OUTLINE_CIRCLE = (1 << BaseGraphCOLOR_GRAD_OUTLINE_CIRCLE),	// 支持圆周轮廓渐变色
+	SUPPORT_GRAD_OUTLINE_POLYGON = (1 << BaseGraphCOLOR_GRAD_OUTLINE_POLYGON),	// 支持多边形轮廓渐变色
+	SUPPORT_GRAD_PT_CONTOUR = (1 << BaseGraphCOLOR_GRAD_PT_CONTOUR),			// 支持多点等高渐变色
+	SUPPORT_GRAD_PT_BLEND = (1 << BaseGraphCOLOR_GRAD_PT_BLEND),				// 支持多点混成渐变色
+	SUPPORT_GRAD_TEMPLET = (1 << BaseGraphCOLOR_GRAD_TEMPLET),					// 支持模板渐变色
+	SUPPORT_TEX_IMG = (1 << BaseGraphCOLOR_TEX_IMG),							// 支持图片纹理
 
 	SUPPORT_ALL_COLOR = 0x0000ffff,										// 支持所有颜色
 };
 // 颜色特殊常量定义
-enum SYCOLOR_CONSTANT
+enum BaseGraphCOLOR_CONSTANT
 {
-	SYCOLOR_GRAD_PEG_MAX = 8,			// 渐变色的最多节点数
-	SYCOLOR_GRAD_PEG_MIN = 2,			// 渐变色的最少节点数
+	BaseGraphCOLOR_GRAD_PEG_MAX = 8,			// 渐变色的最多节点数
+	BaseGraphCOLOR_GRAD_PEG_MIN = 2,			// 渐变色的最少节点数
 
-	SYCOLOR_GRAD_VERTEX_MIN = 3,		// 渐变色的最少顶点数
-	SYCOLOR_GRAD_VERTEX_MAX = 8,		// 渐变色的最多顶点数
+	BaseGraphCOLOR_GRAD_VERTEX_MIN = 3,		// 渐变色的最少顶点数
+	BaseGraphCOLOR_GRAD_VERTEX_MAX = 8,		// 渐变色的最多顶点数
 
-	SYCOLOR_GRAD_REPEAT_MAX = 32,		// 渐变色重复的最大数
+	BaseGraphCOLOR_GRAD_REPEAT_MAX = 32,		// 渐变色重复的最大数
 };
 // 图片纹理的填充与排列方式定义
-enum SYCOLOR_IMG_TYPE {
-	SYCOLOR_IMG_ZOOM = 0,		// 缩放
-	SYCOLOR_IMG_COPY,			// 拷贝
-	SYCOLOR_IMG_TILES,			// 平铺
+enum BaseGraphCOLOR_IMG_TYPE {
+	BaseGraphCOLOR_IMG_ZOOM = 0,		// 缩放
+	BaseGraphCOLOR_IMG_COPY,			// 拷贝
+	BaseGraphCOLOR_IMG_TILES,			// 平铺
 
-	SYCOLOR_IMG_TYPE_COUNT,
+	BaseGraphCOLOR_IMG_TYPE_COUNT,
 };
-enum SYCOLOR_IMG_ALIGN_ZOOM {	// 缩放的对齐方式
-	SYCOLOR_ALIGN_ZOOM_FULL = 0,	// 满屏填充
-	SYCOLOR_ALIGN_ZOOM_WIDTH,		// 按宽度比例
-	SYCOLOR_ALIGN_ZOOM_HEIGHT,		// 按高度比例
+enum BaseGraphCOLOR_IMG_ALIGN_ZOOM {	// 缩放的对齐方式
+	BaseGraphCOLOR_ALIGN_ZOOM_FULL = 0,	// 满屏填充
+	BaseGraphCOLOR_ALIGN_ZOOM_WIDTH,		// 按宽度比例
+	BaseGraphCOLOR_ALIGN_ZOOM_HEIGHT,		// 按高度比例
 
-	SYCOLOR_ALIGN_ZOOM_COUNT,
+	BaseGraphCOLOR_ALIGN_ZOOM_COUNT,
 };
-enum SYCOLOR_IMG_ALIGN_COPY {	// 拷贝的对齐方式
-	SYCOLOR_ALIGN_COPY_CENTER = 0,		// 居中
-	SYCOLOR_ALIGN_COPY_LEFTTOP,			// 左上角
-	SYCOLOR_ALIGN_COPY_LEFTBOTTOM,		// 左下角
-	SYCOLOR_ALIGN_COPY_RIGHTTOP,		// 右上角
-	SYCOLOR_ALIGN_COPY_RIGHTBOTTOM,		// 右下角
+enum BaseGraphCOLOR_IMG_ALIGN_COPY {	// 拷贝的对齐方式
+	BaseGraphCOLOR_ALIGN_COPY_CENTER = 0,		// 居中
+	BaseGraphCOLOR_ALIGN_COPY_LEFTTOP,			// 左上角
+	BaseGraphCOLOR_ALIGN_COPY_LEFTBOTTOM,		// 左下角
+	BaseGraphCOLOR_ALIGN_COPY_RIGHTTOP,		// 右上角
+	BaseGraphCOLOR_ALIGN_COPY_RIGHTBOTTOM,		// 右下角
 
-	SYCOLOR_ALIGN_COPY_COUNT,
+	BaseGraphCOLOR_ALIGN_COPY_COUNT,
 };
 
-#define SYCOLOR_POINT_VALUE_MIN		-10.f	// 点的最小位置（允许点落在一个范围）
-#define SYCOLOR_POINT_VALUE_MAX		10.f	// 点的最大位置
+#define BaseGraphCOLOR_POINT_VALUE_MIN		-10.f	// 点的最小位置（允许点落在一个范围）
+#define BaseGraphCOLOR_POINT_VALUE_MAX		10.f	// 点的最大位置
 
 // 渐变动画类型定义
 enum GRAD_ANI_STYLE
@@ -202,7 +202,7 @@ enum GRAD_ANI_PARAM
 
 //////////////////////////////////////////////////////////////////////////
 // 颜色结构定义，采用联合的方式做到对所有种类颜色的兼容
-typedef   struct tag_sycolor : public BaseGraph_Common::ValueAbleInterface
+typedef   struct tag_common_color : public BaseGraph_Common::ValueAbleInterface
 {
 	unsigned long type;				// 颜色种类
 									// 按分类定义
@@ -268,7 +268,7 @@ typedef   struct tag_sycolor : public BaseGraph_Common::ValueAbleInterface
 	short				theme;			//0表示不使用主题色，从1开始编号
 	short				subtheme;		//饱和度
 
-	BOOL operator == (const  tag_sycolor & other)
+	BOOL operator == (const  tag_common_color & other)
 	{
 		if (type != other.type)
 		{
@@ -276,18 +276,18 @@ typedef   struct tag_sycolor : public BaseGraph_Common::ValueAbleInterface
 		}
 		if (type == other.type)
 		{
-			if (type == SYCOLOR_NONE)
+			if (type == BaseGraphCOLOR_NONE)
 			{
 				return TRUE;
 			}
-			else if (type == SYCOLOR_HOMO)
+			else if (type == BaseGraphCOLOR_HOMO)
 			{
 				if (color != other.color)
 				{
 					return FALSE;
 				}
 			}
-			else if (type == SYCOLOR_TEX_IMG)
+			else if (type == BaseGraphCOLOR_TEX_IMG)
 			{
 				if (memcmp(&imgtex, &other.imgtex, sizeof(imgtex)) != 0)
 				{
@@ -305,17 +305,17 @@ typedef   struct tag_sycolor : public BaseGraph_Common::ValueAbleInterface
 
 		return TRUE;
 	}
-	BASEGRAPH_COMMON_API tag_sycolor();
+	BASEGRAPH_COMMON_API tag_common_color();
 	BASEGRAPH_COMMON_API void Reset();
 	BASEGRAPH_COMMON_API virtual int GetSerializeSize() const;
 	BASEGRAPH_COMMON_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 	BASEGRAPH_COMMON_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
-}sycolor;
+}common_color;
 
-typedef sycolor SYColor, *LPCommonCOLOR;
+typedef common_color BaseGraphColor, *LPCommonCOLOR;
 
-// SYRGBA 联合定义
-union SYRGBA
+// BaseGraphRGBA 联合定义
+union BaseGraphRGBA
 {
 	struct
 	{

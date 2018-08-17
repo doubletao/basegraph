@@ -9,14 +9,14 @@ typedef struct tag_quatn {
 	float	y;				// j
 	float	z;				// k
 	float	r;				// ´¿Á¿
-}SYQuatn;
+}BaseGraphQuatn;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	ÉèÖÃ
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Set(SYQuatn* pQ,			// ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Set(BaseGraphQuatn* pQ,			// ËÄÔªÊıÖ¸Õë
 						 float r,				// ´¿Á¿
 						 float x,				// i
 						 float y,				// j
@@ -27,7 +27,7 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_Set(SYQuatn* pQ,			// ËÄÔªÊıÖ¸Õë
 //
 // Return Value:	None
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Identity(SYQuatn* pQ);	// destination pointer
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Identity(BaseGraphQuatn* pQ);	// destination pointer
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	±È½Ï
@@ -35,32 +35,32 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_Identity(SYQuatn* pQ);	// destination 
 // ·µ»ØÖµ:	TRUE		ÏàµÈ
 //			FALSE		²»ÏàµÈ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API BOOL __cdecl SYQuatn_Equal(const SYQuatn* pQ1,		// ËÄÔªÊıÖ¸Õë
-						   const SYQuatn* pQ2);		// ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API BOOL __cdecl BaseGraphQuatn_Equal(const BaseGraphQuatn* pQ1,		// ËÄÔªÊıÖ¸Õë
+						   const BaseGraphQuatn* pQ2);		// ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	¸ºËÄÔªÊı
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Negtive(SYQuatn* pQ);		// ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Negtive(BaseGraphQuatn* pQ);		// ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	¼Ó¼õ·¨
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Add(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-						 const SYQuatn* pSrcQL,			// ×óÔ´ËÄÔªÊıÖ¸Õë
-						 const SYQuatn* pSrcQR);			// ÓÒÔ´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Add(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+						 const BaseGraphQuatn* pSrcQL,			// ×óÔ´ËÄÔªÊıÖ¸Õë
+						 const BaseGraphQuatn* pSrcQR);			// ÓÒÔ´ËÄÔªÊıÖ¸Õë
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Minus(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-						   const SYQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
-						   const SYQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Minus(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+						   const BaseGraphQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
+						   const BaseGraphQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Sub(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-						 const SYQuatn* pSrcQL,			// ×óÔ´ËÄÔªÊıÖ¸Õë
-						 const SYQuatn* pSrcQR);			// ÓÒÔ´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Sub(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+						 const BaseGraphQuatn* pSrcQL,			// ×óÔ´ËÄÔªÊıÖ¸Õë
+						 const BaseGraphQuatn* pSrcQR);			// ÓÒÔ´ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	³Ë·¨
@@ -76,9 +76,9 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_Sub(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õ
 //	x = ©¦ r1*x2 + r2*x1 + y1*z2 - z1*y2 ©¦
 //	y = ©¦ r1*y2 + r2*y1 + z1*x2 - x1*z2 ©¦
 //	z = ©¹ r1*z2 + r2*z1 + x1*y2 - y1*x2 ©¼
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_StandardMul(SYQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
-								 const SYQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
-								 const SYQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_StandardMul(BaseGraphQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
+								 const BaseGraphQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
+								 const BaseGraphQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
 
 // ×Ô¶¨Òå³Ë·¨¶¨Òå£ºq1 * q2 = [ r1*r2 - v1*v2	r1*v2 + r2*v1 + v2 x v1 ]
 // Ğı×ª¹«Ê½Îª£ºp2 = q^(-1) * p1 * q
@@ -86,38 +86,38 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_StandardMul(SYQuatn* pDesQ,		// Ä¿±êËÄ
 //	x = ©¦ r1*x2 + r2*x1 + y2*z1 - z2*y1 ©¦
 //	y = ©¦ r1*y2 + r2*y1 + z2*x1 - x2*z1 ©¦
 //	z = ©¹ r1*z2 + r2*z1 + x2*y1 - y2*x1 ©¼
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_CustomMul(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-							   const SYQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
-							   const SYQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_CustomMul(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+							   const BaseGraphQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
+							   const BaseGraphQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
 
-#define quatnMul			SYQuatn_CustomMul
+#define quatnMul			BaseGraphQuatn_CustomMul
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	¹²éî
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Conjugate(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-							   const SYQuatn* pSrcQ);		// Ô´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Conjugate(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+							   const BaseGraphQuatn* pSrcQ);		// Ô´ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	¹éÒ»»¯
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Normalize(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-							   const SYQuatn* pSrcQ);		// Ô´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Normalize(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+							   const BaseGraphQuatn* pSrcQ);		// Ô´ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	Ëõ·Å
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Scale(SYQuatn* pQ,			// Ô´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Scale(BaseGraphQuatn* pQ,			// Ô´ËÄÔªÊıÖ¸Õë
 						   float k);				// ÏµÊı
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_MulNum(SYQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
-							const SYQuatn* pSrcQ,		// Ô´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_MulNum(BaseGraphQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
+							const BaseGraphQuatn* pSrcQ,		// Ô´ËÄÔªÊıÖ¸Õë
 							float k);				// ÏµÊı
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -125,58 +125,58 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_MulNum(SYQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ
 //
 // ·µ»ØÖµ:	float
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API float __cdecl SYQuatn_Mode(const SYQuatn* pQ);			// ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API float __cdecl BaseGraphQuatn_Mode(const BaseGraphQuatn* pQ);			// ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	¾àÀë
 //
 // ·µ»ØÖµ:	float
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API float __cdecl SYQuatn_Distance(const SYQuatn* pQ1,			// ËÄÔªÊıÖ¸Õë
-							   const SYQuatn* pQ2);			// ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API float __cdecl BaseGraphQuatn_Distance(const BaseGraphQuatn* pQ1,			// ËÄÔªÊıÖ¸Õë
+							   const BaseGraphQuatn* pQ2);			// ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	µã»ı£¨ÄÚ»ı£©
 //
 // ·µ»ØÖµ:	float
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API float __cdecl SYQuatn_DotProduct(const SYQuatn* pQ1,			// ËÄÔªÊıÖ¸Õë
-								 const SYQuatn* pQ2);		// ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API float __cdecl BaseGraphQuatn_DotProduct(const BaseGraphQuatn* pQ1,			// ËÄÔªÊıÖ¸Õë
+								 const BaseGraphQuatn* pQ2);		// ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	Íâ»ı
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_OutterProduct(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-								   const SYQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
-								   const SYQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_OutterProduct(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+								   const BaseGraphQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
+								   const BaseGraphQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	Å¼»ı
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_EvenProduct(SYQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
-								 const SYQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
-								 const SYQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_EvenProduct(BaseGraphQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
+								 const BaseGraphQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
+								 const BaseGraphQuatn* pSrcQR);		// ÓÒÔ´ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	²æ»ı
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_CrossProduct(float3* pDesV,	// Ä¿±êÏòÁ¿Ö¸Õë
-								  const SYQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
-								  const SYQuatn* pSrcQR);	// ÓÒÔ´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_CrossProduct(float3* pDesV,	// Ä¿±êÏòÁ¿Ö¸Õë
+								  const BaseGraphQuatn* pSrcQL,		// ×óÔ´ËÄÔªÊıÖ¸Õë
+								  const BaseGraphQuatn* pSrcQR);	// ÓÒÔ´ËÄÔªÊıÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	ÇóÄæ
 //
 // ·µ»ØÖµ£º	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Inverse(SYQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
-							 const SYQuatn* pSrcQ);		// Ô´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Inverse(BaseGraphQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
+							 const BaseGraphQuatn* pSrcQ);		// Ô´ËÄÔªÊıÖ¸Õë
 
 //////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	ÇòÃæ²åÖµ£¬ÒÔ×î¶Ì»¡Â·¾¶½øĞĞ²åÖµ£¬ÔòÒªÇóÁ½¸öËÄÔªÊıµÄµã»ı±ØĞëÎªÕıÖµ£¬
@@ -190,21 +190,21 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_Inverse(SYQuatn* pDesQ,		// Ä¿±êËÄÔªÊı
 //
 // ·µ»ØÖµ£º	ÎŞ
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Slerp(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-						   const SYQuatn* pSrcQ0,		// Ô´ÆğÊ¼ËÄÔªÊı
-						   const SYQuatn* pSrcQ1,		// Ô´ÖÕ¶ËËÄÔªÊı
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Slerp(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+						   const BaseGraphQuatn* pSrcQ0,		// Ô´ÆğÊ¼ËÄÔªÊı
+						   const BaseGraphQuatn* pSrcQ1,		// Ô´ÖÕ¶ËËÄÔªÊı
 						   float t);				// ²åÖµÏµÊı [0¡«1]
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_Slerp_AxisAngle( vector4f* vresult,vector4f* v1,vector4f* v2 ,float f);
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_Slerp_AxisAngle( vector4f* vresult,vector4f* v1,vector4f* v2 ,float f);
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	Óë¾ØÕóµÄ×ª»»
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_ToMatrix4(matrix4f* pDesM,		// Ä¿±ê¾ØÕóÖ¸Õë
-							  const SYQuatn* pSrcQ);			// Ô´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_ToMatrix4(matrix4f* pDesM,		// Ä¿±ê¾ØÕóÖ¸Õë
+							  const BaseGraphQuatn* pSrcQ);			// Ô´ËÄÔªÊıÖ¸Õë
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromMatrix(SYQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_FromMatrix(BaseGraphQuatn* pDesQ,		// Ä¿±êËÄÔªÊıÖ¸Õë
 								const matrix4f* pSrcM);		// Ô´¾ØÕóÖ¸Õë
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -237,12 +237,12 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromMatrix(SYQuatn* pDesQ,		// Ä¿±êËÄÔ
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
 //void __cdecl quatnToMatrixQ4F(const matrix4f* pDesM,		// Ä¿±ê¾ØÕóÖ¸Õë
-//								 const SYQuatn* pSrcQ);			// Ô´ËÄÔªÊıÖ¸Õë
+//								 const BaseGraphQuatn* pSrcQ);			// Ô´ËÄÔªÊıÖ¸Õë
 //
-//void __cdecl quatnFromMatrix4(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+//void __cdecl quatnFromMatrix4(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
 //								   const matrix4f* pSrcM);	// Ô´¾ØÕóÖ¸Õë
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromVector4f(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_FromVector4f(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
 								   const float4* pSrcV);// ½Ç¶È£¨»¡¶È£©
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	ÈÆÈÎÒâÖáĞı×ªµÄËÄÔªÊı£¨ÎªÁË±£Ö¤Óë¾ØÕóµÄĞı×ªÍ³Ò»£¬½«ÔÚÄÚ²¿Ê¹ÓÃ¸º½Ç¶È£¬
@@ -250,18 +250,18 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromVector4f(SYQuatn* pDesQ,			// Ä¿±ê
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromAngleAxis(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_FromAngleAxis(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
 								   const float3* pSrcV,		// Ô´ÏòÁ¿Ö¸Õë
 								   float fAngle);			// ½Ç¶È£¨»¡¶È£©
 // Rotate about special axes, such as X(1, 0, 0)¡¢Y(0, 1, 0)¡¢Z(0, 0, 1).
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromAngleX(SYQuatn* pDesQ,	// destination pointer
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_FromAngleX(BaseGraphQuatn* pDesQ,	// destination pointer
 								float fAngle);		// radian of ratation
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromAngleY(SYQuatn* pDesQ,	// destination pointer
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_FromAngleY(BaseGraphQuatn* pDesQ,	// destination pointer
 								float fAngle);		// radian of ratation
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromAngleZ(SYQuatn* pDesQ,	// destination pointer
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_FromAngleZ(BaseGraphQuatn* pDesQ,	// destination pointer
 								float fAngle);		// radian of ratation
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_ToAxisAngle(vector4f* pAxisAngle,SYQuatn* pQ4 );
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_ToAxisAngle(vector4f* pAxisAngle,BaseGraphQuatn* pQ4 );
 ///////////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	Å·À­½ÇÓëËÄÔªÊıµÄ×ª»»£¨ÒªÇó´ÓËÄÔªÊıµ½Å·À­½Ç±ä»»ÖĞ£¬±ØĞëÊäÈë¹éÒ»»¯Ê½£©
 //			±¾ÏµÍ³Ê¹ÓÃĞĞÏòÁ¿Óë¾ØÕóµÄ³Ë·¨£¬²¢¶¨Òå×óÊÖ×ø±êÏµ£¬Ğı×ªµÄÕı·½Ïò¶¨ÒåÎª£º
@@ -276,7 +276,7 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_ToAxisAngle(vector4f* pAxisAngle,SYQua
 // x = ©¦ -sin(y/2)cos(x/2)sin(z/2) - cos(y/2)sin(x/2)cos(z/2) ©¦
 // y = ©¦ -sin(y/2)cos(x/2)cos(z/2) + cos(y/2)sin(x/2)sin(z/2) ©¦
 // z = ©¸ -cos(y/2)cos(x/2)sin(z/2) + sin(y/2)sin(x/2)cos(z/2) ©¼
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromEuler_LYXZ(SYQuatn* pDesQ,	// Ä¿±êËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_FromEuler_LYXZ(BaseGraphQuatn* pDesQ,	// Ä¿±êËÄÔªÊıÖ¸Õë
 									float fAngleY,		// ÈÆ Y ÖáĞı×ª½Ç¶È
 									float fAngleX,		// ÈÆ X ÖáĞı×ª½Ç¶È
 									float fAngleZ);		// ÈÆ Z ÖáĞı×ª½Ç¶È
@@ -294,7 +294,7 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_FromEuler_LYXZ(SYQuatn* pDesQ,	// Ä¿±ê
 // Õı³£Çé¿öÔòÍ¨¹ı m13 ºÍ m33 ¼ÆËã Y£¬Í¨¹ı m21 ºÍ m22 ¼ÆËã Z
 // Y = atan2(m13, m33) = atan2(2xz - 2ry, r^2 + z^2 - x^2 - y^2)
 // Z = atan2(m21, m22) = atan2(2xy - 2rz, r^2 + y^2 - x^2 - z^2)
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_ToEuler_LYXZ(const SYQuatn* pSrcQ,		// Ô´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_ToEuler_LYXZ(const BaseGraphQuatn* pSrcQ,		// Ô´ËÄÔªÊıÖ¸Õë
 								  float* pfAngleY,		// Y Ğı×ª½Ç¶È£¨»¡¶ÈÖÆ£©
 								  float* pfAngleX,		// X Ğı×ª½Ç¶È£¨»¡¶ÈÖÆ£©
 								  float* pfAngleZ);		// Z Ğı×ª½Ç¶È£¨»¡¶ÈÖÆ£©
@@ -304,25 +304,25 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_ToEuler_LYXZ(const SYQuatn* pSrcQ,		//
 //
 // ·µ»ØÖµ:	ÎŞ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_RotVectorL(long3* pDesV,		// Ä¿±êÏòÁ¿Ö¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_RotVectorL(long3* pDesV,		// Ä¿±êÏòÁ¿Ö¸Õë
 								const long3* pSrcV,		// Ô´ÏòÁ¿Ö¸Õë
-								const SYQuatn* pUQ);				// µ¥Î»ÖáËÄÔªÊıÖ¸Õë
+								const BaseGraphQuatn* pUQ);				// µ¥Î»ÖáËÄÔªÊıÖ¸Õë
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_RotVector3f(float3* pDesV,		// Ä¿±êÏòÁ¿Ö¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_RotVector3f(float3* pDesV,		// Ä¿±êÏòÁ¿Ö¸Õë
 								const float3* pSrcV,		// Ô´ÏòÁ¿Ö¸Õë
-								const SYQuatn* pUQ);				// µ¥Î»ÖáËÄÔªÊıÖ¸Õë
+								const BaseGraphQuatn* pUQ);				// µ¥Î»ÖáËÄÔªÊıÖ¸Õë
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_RotVector3lf(double3* pDesV,		// Ä¿±êÏòÁ¿Ö¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_RotVector3lf(double3* pDesV,		// Ä¿±êÏòÁ¿Ö¸Õë
 								const double3* pSrcV,		// Ô´ÏòÁ¿Ö¸Õë
-								const SYQuatn* pUQ);				// µ¥Î»ÖáËÄÔªÊıÖ¸Õë
+								const BaseGraphQuatn* pUQ);				// µ¥Î»ÖáËÄÔªÊıÖ¸Õë
 
 //////////////////////////////////////////////////////////////////////////
 // ÃèÊö£º	Óë¾ØÕóµÄ³Ë»ı
 //
 // ·µ»ØÖµ£º	ÎŞ
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_MulMatQ(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
-							 const SYQuatn* pSrcQ,			// Ô´ËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_MulMatQ(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+							 const BaseGraphQuatn* pSrcQ,			// Ô´ËÄÔªÊıÖ¸Õë
 							 const matrix4f* pSrcM);		// Ô´¾ØÕóÖ¸Õë
 
 //////////////////////////////////////////////////////////////////////////
@@ -330,11 +330,11 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_MulMatQ(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊ
 //
 // ·µ»ØÖµ£º	ÎŞ
 //////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_In2Vector(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_In2Vector(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
 							   const float3* pStartV,	// ÆğÊ¼ÏòÁ¿Ö¸Õë
 							   const float3* pEndV);	// ½áÊøÏòÁ¿Ö¸Õë
 
-BASEGRAPH_COMMON_API void __cdecl SYQuatn_In2Vector3lf(SYQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
+BASEGRAPH_COMMON_API void __cdecl BaseGraphQuatn_In2Vector3lf(BaseGraphQuatn* pDesQ,			// Ä¿±êËÄÔªÊıÖ¸Õë
 							 const double3* pStartV,	// ÆğÊ¼ÏòÁ¿Ö¸Õë
 							 const double3* pEndV);		// ½áÊøÏòÁ¿Ö¸Õë
 
@@ -348,10 +348,10 @@ BASEGRAPH_COMMON_API void __cdecl SYQuatn_In2Vector3lf(SYQuatn* pDesQ,			// Ä¿±ê
 //////////////////////////////////////////////////////////////////////////
 // ½á¹¹²Ù×÷·ûÖØÔØ
 
-inline SYQuatn& operator - (SYQuatn& q1)
+inline BaseGraphQuatn& operator - (BaseGraphQuatn& q1)
 {
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_Negtive(&q1);
+	BaseGraphQuatn_Negtive(&q1);
 #else
 	q1.x = -q1.x;
 	q1.y = -q1.y;
@@ -362,12 +362,12 @@ inline SYQuatn& operator - (SYQuatn& q1)
 	return q1;
 }
 
-inline SYQuatn operator + (const SYQuatn& q1,const SYQuatn& q2)
+inline BaseGraphQuatn operator + (const BaseGraphQuatn& q1,const BaseGraphQuatn& q2)
 {
-	SYQuatn qre;
+	BaseGraphQuatn qre;
 
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_Add(&qre, &q1, &q2);
+	BaseGraphQuatn_Add(&qre, &q1, &q2);
 #else
 	qre.x = q1.x + q2.x;
 	qre.y = q1.y + q2.y;
@@ -378,10 +378,10 @@ inline SYQuatn operator + (const SYQuatn& q1,const SYQuatn& q2)
 	return qre;
 }
 
-inline SYQuatn& operator += (SYQuatn& q1,const SYQuatn& q2)
+inline BaseGraphQuatn& operator += (BaseGraphQuatn& q1,const BaseGraphQuatn& q2)
 {
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_Add(&q1, &q1, &q2);
+	BaseGraphQuatn_Add(&q1, &q1, &q2);
 #else
 	q1.x += q2.x;
 	q1.y += q2.y;
@@ -392,12 +392,12 @@ inline SYQuatn& operator += (SYQuatn& q1,const SYQuatn& q2)
 	return q1;
 }
 
-inline SYQuatn operator - (const SYQuatn& q1, const SYQuatn& q2)
+inline BaseGraphQuatn operator - (const BaseGraphQuatn& q1, const BaseGraphQuatn& q2)
 {
-	SYQuatn qre;
+	BaseGraphQuatn qre;
 
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_Minus(&qre, &q1, &q2);
+	BaseGraphQuatn_Minus(&qre, &q1, &q2);
 #else
 	qre.x = q1.x - q2.x;
 	qre.y = q1.y - q2.y;
@@ -408,10 +408,10 @@ inline SYQuatn operator - (const SYQuatn& q1, const SYQuatn& q2)
 	return qre;
 }
 
-inline SYQuatn& operator -= (SYQuatn& q1,const SYQuatn& q2)
+inline BaseGraphQuatn& operator -= (BaseGraphQuatn& q1,const BaseGraphQuatn& q2)
 {
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_Minus(&q1, &q1, &q2);
+	BaseGraphQuatn_Minus(&q1, &q1, &q2);
 #else
 	q1.x -= q2.x;
 	q1.y -= q2.y;
@@ -422,12 +422,12 @@ inline SYQuatn& operator -= (SYQuatn& q1,const SYQuatn& q2)
 	return q1;
 }
 
-inline SYQuatn operator * (const SYQuatn& q1, float f)
+inline BaseGraphQuatn operator * (const BaseGraphQuatn& q1, float f)
 {
-	SYQuatn qre;
+	BaseGraphQuatn qre;
 
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_MulNum(&qre, &q1, f);
+	BaseGraphQuatn_MulNum(&qre, &q1, f);
 #else
 	qre.x = q1.x * f;
 	qre.y = q1.y * f;
@@ -438,10 +438,10 @@ inline SYQuatn operator * (const SYQuatn& q1, float f)
 	return qre;
 }
 
-inline SYQuatn& operator *= (SYQuatn& q1, float f)
+inline BaseGraphQuatn& operator *= (BaseGraphQuatn& q1, float f)
 {
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_Scale(&q1, f);
+	BaseGraphQuatn_Scale(&q1, f);
 #else
 	q1.x *= f;
 	q1.y *= f;
@@ -452,12 +452,12 @@ inline SYQuatn& operator *= (SYQuatn& q1, float f)
 	return q1;
 }
 
-inline SYQuatn operator / (const SYQuatn& q1, float f)
+inline BaseGraphQuatn operator / (const BaseGraphQuatn& q1, float f)
 {
-	SYQuatn qre;
+	BaseGraphQuatn qre;
 
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_MulNum(&qre, &q1, 1.f / f);
+	BaseGraphQuatn_MulNum(&qre, &q1, 1.f / f);
 #else
 	float fTmp = 1.f / f;
 
@@ -470,10 +470,10 @@ inline SYQuatn operator / (const SYQuatn& q1, float f)
 	return qre;
 }
 
-inline SYQuatn& operator /= (SYQuatn& q1, float f)
+inline BaseGraphQuatn& operator /= (BaseGraphQuatn& q1, float f)
 {
 #ifdef USE_QUATN_C_FUNC
-	SYQuatn_Scale(&q1, 1.f / f);
+	BaseGraphQuatn_Scale(&q1, 1.f / f);
 #else
 	float fTmp = 1.f / f;
 	q1.x *= fTmp;
@@ -485,44 +485,44 @@ inline SYQuatn& operator /= (SYQuatn& q1, float f)
 	return q1;
 }
 
-inline SYQuatn operator * (const SYQuatn& q,const matrix4f& m)
+inline BaseGraphQuatn operator * (const BaseGraphQuatn& q,const matrix4f& m)
 {
-	SYQuatn qre;
+	BaseGraphQuatn qre;
 
-	SYQuatn_MulMatQ(&qre, &q, &m);
+	BaseGraphQuatn_MulMatQ(&qre, &q, &m);
 
 	return qre;
 }
 
-inline SYQuatn& operator *= (SYQuatn& q,const matrix4f& m)
+inline BaseGraphQuatn& operator *= (BaseGraphQuatn& q,const matrix4f& m)
 {
 #ifdef _USE_SSE_OPTIMAL_
-	SYQuatn_MulMatQ(&q, &q, &m);
+	BaseGraphQuatn_MulMatQ(&q, &q, &m);
 #else
-	SYQuatn qre;
+	BaseGraphQuatn qre;
 	
-	SYQuatn_MulMatQ(&qre, &q, &m);
-	memcpy(&q, &qre, sizeof(SYQuatn));
+	BaseGraphQuatn_MulMatQ(&qre, &q, &m);
+	memcpy(&q, &qre, sizeof(BaseGraphQuatn));
 #endif
 
 	return q;
 }
 
-inline SYQuatn operator * (const SYQuatn& q1,const SYQuatn& q2)
+inline BaseGraphQuatn operator * (const BaseGraphQuatn& q1,const BaseGraphQuatn& q2)
 {
-	SYQuatn qre;
+	BaseGraphQuatn qre;
 
-	SYQuatn_CustomMul(&qre, &q1, &q2);
+	BaseGraphQuatn_CustomMul(&qre, &q1, &q2);
 
 	return qre;
 }
 
-inline SYQuatn& operator *= (SYQuatn& q1,const SYQuatn& q2)
+inline BaseGraphQuatn& operator *= (BaseGraphQuatn& q1,const BaseGraphQuatn& q2)
 {
-	SYQuatn qre;
+	BaseGraphQuatn qre;
 
-	SYQuatn_CustomMul(&qre, &q1, &q2);
-	memcpy(&q1, &qre, sizeof(SYQuatn));
+	BaseGraphQuatn_CustomMul(&qre, &q1, &q2);
+	memcpy(&q1, &qre, sizeof(BaseGraphQuatn));
 
 	return q1;
 }

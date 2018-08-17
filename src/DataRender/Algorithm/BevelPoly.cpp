@@ -28,7 +28,7 @@ void BevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN flo
 	BaseARray ptrPolyNorm;
 	BaseAR_Init(&ptrPoly);
 	BaseAR_Init(&ptrPolyNorm);
-	SYOC_Cell2PtfPoly(pCurveCell, &ptrPoly, &ptrPolyNorm,NULL);
+	BaseGraphOC_Cell2PtfPoly(pCurveCell, &ptrPoly, &ptrPolyNorm,NULL);
 	int nSize = (int)BaseAR_GetSize(&ptrPoly);
 	if (nSize<3) 
 	{

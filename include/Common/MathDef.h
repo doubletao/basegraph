@@ -12,8 +12,8 @@ const float Common_ABS_DOUBLE_0 = 1.1e-8f;		// float 精度为 6 到 7 位
 #define RADIAN_HALF_PI	1.5707963267948966192313216916398f 
 #define ABS_FLOAT_0		5.0e-5f
 #define ABS_DOUBLE_0	1.0e-3f
-#define SYMAXUINT		((UINT)~((UINT)0))
-#define SYMAXINT		((INT)(SYMAXUINT >> 1))
+#define BaseGraphMAXUINT		((UINT)~((UINT)0))
+#define SYMAXINT		((INT)(BaseGraphMAXUINT >> 1))
 #define MBaseARAMMAX		65535
 #define MBaseARAMMIN		-65535
 											// 数据类型取值范围、精度等

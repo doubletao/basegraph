@@ -62,8 +62,8 @@ unsigned int g_uCRC32Table[256] =
 };
 
 //////////////////////////////////////////////////////////////////////////
-// SYText
- void SYText_Init(LPCommonText pText)
+// BaseGraphText
+ void BaseGraphText_Init(LPCommonText pText)
 {
 	if (pText != NULL)
 	{
@@ -86,7 +86,7 @@ unsigned int g_uCRC32Table[256] =
 		pText->bSmallFontCalcBorder = FALSE;
 
 		BaseAR_Init(&pText->arParagraph);
-		SYTextProp_Init(&pText->stuTextProp);
+		BaseGraphTextProp_Init(&pText->stuTextProp);
 		BaseAR_Init(&pText->ar2DUnit);
 		BaseAR_Init(&pText->ar3DUnit);
 
@@ -113,12 +113,12 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_Create(LPCommonText pText, 
+ void BaseGraphText_Create(LPCommonText pText, 
 	LPCTSTR szText, 
 	rectf rtBorder,
 	LPCommonFont pFont, 
 	LPCommonStaticEffect pFillColor, 
-	SYMaterial* p3DColor, 
+	BaseGraphMaterial* p3DColor, 
 	LPCommonUnderLine pUnderLine, 
 	E_TextAlignHorizontal alignH, 
 	E_TextAlignVeritical alignV, 
@@ -154,11 +154,11 @@ unsigned int g_uCRC32Table[256] =
 	pText->bFixedFrame = bFixedFrame;
 	pText->eAlignVertical = alignV;
 
-	SYTextProp_Create(nTextLen, &pText->stuTextProp, pFont, pFillColor, p3DColor, pUnderLine);
-	SYText_InitParagraphArray(pText, alignH);
+	BaseGraphTextProp_Create(nTextLen, &pText->stuTextProp, pFont, pFillColor, p3DColor, pUnderLine);
+	BaseGraphText_InitParagraphArray(pText, alignH);
 }
 
- void SYText_Release(LPCommonText pText)
+ void BaseGraphText_Release(LPCommonText pText)
 {
 	if (pText == NULL)
 		return;
@@ -169,13 +169,13 @@ unsigned int g_uCRC32Table[256] =
 		pText->szText = NULL;
 	}
 
-	SYTextProp_Release(&pText->stuTextProp);
+	BaseGraphTextProp_Release(&pText->stuTextProp);
 
 	int nParaCnt = BaseAR_GetCount(&pText->arParagraph);
 	for (int i = 0; i < nParaCnt; ++i)
 	{
 		LPCommonTextParagraph pParagraph = (LPCommonTextParagraph)BaseAR_GetAt(&pText->arParagraph, i);
-		SYText_ReleaseParagraph(pParagraph);
+		BaseGraphText_ReleaseParagraph(pParagraph);
 		delete pParagraph;
 	}
 	BaseAR_RemoveAll(&pText->arParagraph);
@@ -183,7 +183,7 @@ unsigned int g_uCRC32Table[256] =
 	int n2DUnitCnt = BaseAR_GetCount(&pText->ar2DUnit);
 	for (int i = 0; i < n2DUnitCnt; ++i)
 	{
-		SYUnit* p2DUnit = (SYUnit*)BaseAR_GetAt(&pText->ar2DUnit, i);
+		BaseGraphUnit* p2DUnit = (BaseGraphUnit*)BaseAR_GetAt(&pText->ar2DUnit, i);
 		sy_release_unit(p2DUnit);
 		delete p2DUnit;
 	}
@@ -192,7 +192,7 @@ unsigned int g_uCRC32Table[256] =
 	int n3DUnitCnt = BaseAR_GetCount(&pText->ar3DUnit);
 	for (int i = 0; i < n3DUnitCnt; ++i)
 	{
-		SYUnit* p3DUnit = (SYUnit*)BaseAR_GetAt(&pText->ar3DUnit, i);
+		BaseGraphUnit* p3DUnit = (BaseGraphUnit*)BaseAR_GetAt(&pText->ar3DUnit, i);
 		sy_release_unit(p3DUnit);
 		delete p3DUnit;
 	}
@@ -208,7 +208,7 @@ unsigned int g_uCRC32Table[256] =
 
 	if (pText->pTypesetPrivate != NULL)
 	{
-		SYTypesetPrivateData_Release((LPCommonTypesetPrivate)(pText->pTypesetPrivate));
+		BaseGraphTypesetPrivateData_Release((LPCommonTypesetPrivate)(pText->pTypesetPrivate));
 		delete pText->pTypesetPrivate;
 		pText->pTypesetPrivate = NULL;
 	}
@@ -229,12 +229,12 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_Copy(LPCommonText pDes, LPCBaseText pSrc, BOOL bCopyNullText)
+ void BaseGraphText_Copy(LPCommonText pDes, LPCBaseText pSrc, BOOL bCopyNullText)
 {
 	if (pDes == NULL || pSrc == NULL || pSrc == pDes)
 		return;
 
-	SYText_Release(pDes);
+	BaseGraphText_Release(pDes);
 
 	//没有文字时的处理
 	if (pSrc->szText != NULL)
@@ -277,22 +277,22 @@ unsigned int g_uCRC32Table[256] =
 
 		if (pSrc->pStretch != NULL)
 		{
-			pDes->pStretch = new SYStretchParam;
-			memcpy(pDes->pStretch, pSrc->pStretch, sizeof(SYStretchParam));
+			pDes->pStretch = new BaseGraphStretchParam;
+			memcpy(pDes->pStretch, pSrc->pStretch, sizeof(BaseGraphStretchParam));
 		}
 
 		//特殊效果
 		sy_special_effect_copy(pDes->pSpecialEffect, pSrc->pSpecialEffect);
 
-		SYTextProp_Copy(&pDes->stuTextProp, &pSrc->stuTextProp);
+		BaseGraphTextProp_Copy(&pDes->stuTextProp, &pSrc->stuTextProp);
 
 		int nParaCnt = BaseAR_GetCount(&pSrc->arParagraph);
 		for (int i = 0; i < nParaCnt; i++)
 		{
 			LPCommonTextParagraph pParaSrc = (LPCommonTextParagraph)BaseAR_GetAt(&pSrc->arParagraph, i);
-			LPCommonTextParagraph pParaDes = new SYTextParagraph;
-			SYText_InitParagraph(pParaDes);
-			SYText_CopyParagraph(pParaDes, pParaSrc);
+			LPCommonTextParagraph pParaDes = new BaseGraphTextParagraph;
+			BaseGraphText_InitParagraph(pParaDes);
+			BaseGraphText_CopyParagraph(pParaDes, pParaSrc);
 			BaseAR_Add(&pDes->arParagraph, pParaDes);
 		}
 
@@ -317,7 +317,7 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- BOOL SYText_Compare(LPCBaseText pText1, LPCBaseText pText2, BOOL bNullTextEq)
+ BOOL BaseGraphText_Compare(LPCBaseText pText1, LPCBaseText pText2, BOOL bNullTextEq)
 {
 	if (pText1 == NULL || pText2 == NULL)
 		return FALSE;
@@ -363,12 +363,12 @@ unsigned int g_uCRC32Table[256] =
 		{
 			LPCommonTextParagraph pPara1 = (LPCommonTextParagraph)BaseAR_GetAt(&pText1->arParagraph, i);
 			LPCommonTextParagraph pPara2 = (LPCommonTextParagraph)BaseAR_GetAt(&pText2->arParagraph, i);
-			if (!SYText_CompareParagraph(pPara1, pPara2))
+			if (!BaseGraphText_CompareParagraph(pPara1, pPara2))
 				return FALSE;
 		}
 
 		//属性比较
-		if (!SYTextProp_Compare(&pText1->stuTextProp, &pText2->stuTextProp))
+		if (!BaseGraphTextProp_Compare(&pText1->stuTextProp, &pText2->stuTextProp))
 		{
 			return FALSE;
 		}
@@ -389,17 +389,17 @@ unsigned int g_uCRC32Table[256] =
 	return TRUE;
 }
 
- void SYText_CopyProp(LPCommonTextProp& pDesProp, LPCBaseText pSrcText, int nDesLen/* = -1*/)
+ void BaseGraphText_CopyProp(LPCommonTextProp& pDesProp, LPCBaseText pSrcText, int nDesLen/* = -1*/)
 {
 	if (pDesProp == NULL)
 	{
-		pDesProp = new SYTextProp;
-		SYTextProp_Init(pDesProp);
+		pDesProp = new BaseGraphTextProp;
+		BaseGraphTextProp_Init(pDesProp);
 	}
-	SYTextProp_Copy(pDesProp, &pSrcText->stuTextProp, nDesLen);
+	BaseGraphTextProp_Copy(pDesProp, &pSrcText->stuTextProp, nDesLen);
 }
 
- void SYText_UpdateStretchParam(LPCommonText pText, LPCommonStretchParam pStretch)
+ void BaseGraphText_UpdateStretchParam(LPCommonText pText, LPCommonStretchParam pStretch)
 {
 	if (pText != NULL && pStretch != NULL)
 	{
@@ -407,9 +407,9 @@ unsigned int g_uCRC32Table[256] =
 		{
 			if (pText->pStretch == NULL)
 			{
-				pText->pStretch = new SYStretchParam;
+				pText->pStretch = new BaseGraphStretchParam;
 			}
-			memcpy(pText->pStretch, pStretch, sizeof(SYStretchParam));
+			memcpy(pText->pStretch, pStretch, sizeof(BaseGraphStretchParam));
 		}
 		else
 		{
@@ -417,7 +417,7 @@ unsigned int g_uCRC32Table[256] =
 		}
 
 		LPCommonTextPropIndex pPropIdx;
-		SYMaterial* p3DColor;
+		BaseGraphMaterial* p3DColor;
 
 		LPCommonTextProp pTextProp = &pText->stuTextProp;
 		BaseARray* paryIndex = &pTextProp->arIndex;
@@ -435,11 +435,11 @@ unsigned int g_uCRC32Table[256] =
 					{
 						//用2D色转3D色
 						assert(false);
-						DWORD faceColor = 0;//SYColor_GetRGBColor(&(p2DColor->face.color));
-						p3DColor = new SYMaterial;
-						SYMaterial_Init(p3DColor, faceColor);
+						DWORD faceColor = 0;//BaseGraphColor_GetRGBColor(&(p2DColor->face.color));
+						p3DColor = new BaseGraphMaterial;
+						BaseGraphMaterial_Init(p3DColor, faceColor);
 						LPVOID pSame;
-						int nSameID = SYTextProp_FindSame3DColor(&pTextProp->ar3DColor, p3DColor, &pSame);
+						int nSameID = BaseGraphTextProp_FindSame3DColor(&pTextProp->ar3DColor, p3DColor, &pSame);
 						if (nSameID < 0)
 						{
 							BaseAR_Add(&pTextProp->ar3DColor, p3DColor);
@@ -447,12 +447,12 @@ unsigned int g_uCRC32Table[256] =
 						else
 						{
 							// 相同配置只用一个即可
-							SYMaterial_Release(p3DColor);
+							BaseGraphMaterial_Release(p3DColor);
 							SAFE_DELETE(p3DColor);
-							p3DColor = (SYMaterial*)pSame;
+							p3DColor = (BaseGraphMaterial*)pSame;
 						}
 
-						for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+						for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 							pPropIdx->p3DColor[n3D] = p3DColor;
 					}
 				}
@@ -464,15 +464,15 @@ unsigned int g_uCRC32Table[256] =
 			for (int i = 0; i < nPropCnt; ++i)
 			{
 				pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, i);
-				for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+				for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 					pPropIdx->p3DColor[n3D] = NULL;
 			}
 
 			int nColorCnt = BaseAR_GetCount(&pTextProp->ar3DColor);
 			for (int i = 0; i < nColorCnt; ++i)
 			{
-				p3DColor = (SYMaterial*)BaseAR_GetAt(&pTextProp->ar3DColor, i);
-				SYMaterial_Release(p3DColor);
+				p3DColor = (BaseGraphMaterial*)BaseAR_GetAt(&pTextProp->ar3DColor, i);
+				BaseGraphMaterial_Release(p3DColor);
 				delete p3DColor;
 			}
 			BaseAR_RemoveAll(&pTextProp->ar3DColor);
@@ -480,20 +480,20 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_SetWholeRender(LPCommonText pText, BOOL bWholeRender)
+ void BaseGraphText_SetWholeRender(LPCommonText pText, BOOL bWholeRender)
 {
 	if (bWholeRender)
-		pText->wTempFlag |= SYTEXT_TEMPFLAG_WHOLERENDER;
+		pText->wTempFlag |= BaseGraphTEXT_TEMPFLAG_WHOLERENDER;
 	else
-		pText->wTempFlag &= ~SYTEXT_TEMPFLAG_WHOLERENDER;
+		pText->wTempFlag &= ~BaseGraphTEXT_TEMPFLAG_WHOLERENDER;
 }
 
- BOOL SYText_IsWholeRender(LPCommonText pText)
+ BOOL BaseGraphText_IsWholeRender(LPCommonText pText)
 {
-	return ((pText->wTempFlag & SYTEXT_TEMPFLAG_WHOLERENDER) == SYTEXT_TEMPFLAG_WHOLERENDER);
+	return ((pText->wTempFlag & BaseGraphTEXT_TEMPFLAG_WHOLERENDER) == BaseGraphTEXT_TEMPFLAG_WHOLERENDER);
 }
 
- void SYText_SplitStringToParagraphArray(std::vector<int>& vParaIndex, LPCTSTR szText)
+ void BaseGraphText_SplitStringToParagraphArray(std::vector<int>& vParaIndex, LPCTSTR szText)
 {
 	//根据字符串拆分段落
 	if (szText != NULL)
@@ -502,7 +502,7 @@ unsigned int g_uCRC32Table[256] =
 		int nTextLength = (int)_tcslen(szText);
 		for (int i = 0; i < nTextLength; i++)
 		{
-			if (SYISCRLF(szText, i, nTextLength))
+			if (BaseGraphISCRLF(szText, i, nTextLength))
 			{
 				vParaIndex.push_back(i+2);
 				++i;
@@ -511,7 +511,7 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_GetStaticEffectProperty(void* pProp, LPCommonStaticEffect pFillColor, int nIndex)
+ void BaseGraphText_GetStaticEffectProperty(void* pProp, LPCommonStaticEffect pFillColor, int nIndex)
 {
 	if (pProp != NULL && pFillColor != NULL)
 	{
@@ -525,12 +525,12 @@ unsigned int g_uCRC32Table[256] =
 
 		if (pPropIdx != NULL && pPropIdx->p2DColor != NULL)
 		{
-			SYStaticEffect_Copy(pFillColor, (LPCommonStaticEffect)pPropIdx->p2DColor);
+			BaseGraphStaticEffect_Copy(pFillColor, (LPCommonStaticEffect)pPropIdx->p2DColor);
 		}
 	}
 }
 
- void SYText_GetFontProperty(void* pProp, LPCommonFont pFont, int nIndex)
+ void BaseGraphText_GetFontProperty(void* pProp, LPCommonFont pFont, int nIndex)
 {
 	if (pProp != NULL && pFont != NULL)
 	{
@@ -544,11 +544,11 @@ unsigned int g_uCRC32Table[256] =
 
 		if (pPropIdx != NULL && pPropIdx->pFont != NULL)
 		{
-			SYFont_Copy(pFont, (LPCommonFont)pPropIdx->pFont);
+			BaseGraphFont_Copy(pFont, (LPCommonFont)pPropIdx->pFont);
 		}
 	}
 }
- unsigned long SYCRC32Cal(unsigned long ulCRC32, unsigned char *pBuf, unsigned long ulLen)
+ unsigned long BaseGraphCRC32Cal(unsigned long ulCRC32, unsigned char *pBuf, unsigned long ulLen)
  {
 	 if (ulLen > 0)
 	 {
@@ -561,7 +561,7 @@ unsigned int g_uCRC32Table[256] =
 	 }
 	 return ulCRC32;
  }
- void SYText_SetParagraphParam(LPCommonText pTex, 
+ void BaseGraphText_SetParagraphParam(LPCommonText pTex, 
 	int nStart, 
 	int nCount, 
 	E_TextPropertyType eType,
@@ -593,9 +593,9 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_ModifyTypesetBorderBySize(LPCommonText pText, SYSizef& szRectSize)
+ void BaseGraphText_ModifyTypesetBorderBySize(LPCommonText pText, BaseGraphSizef& szRectSize)
 {
-	if (pText == NULL || (szRectSize.cx < SYTEXT_DIMENSION_MIN && szRectSize.cy < SYTEXT_DIMENSION_MIN))
+	if (pText == NULL || (szRectSize.cx < BaseGraphTEXT_DIMENSION_MIN && szRectSize.cy < BaseGraphTEXT_DIMENSION_MIN))
 		return;
 
 	E_TextAlignHorizontal eAlignH = TEXT_ALIGN_H_LEFT;
@@ -686,16 +686,16 @@ unsigned int g_uCRC32Table[256] =
 	}
 
 	// X方向
-	if (szRectSize.cx >= SYTEXT_DIMENSION_MIN)
+	if (szRectSize.cx >= BaseGraphTEXT_DIMENSION_MIN)
 	{
 		switch (nAlignX)
 		{
 		case 0:
 			{
 				fTemp1 = prtBorder->left + szRectSize.cx;
-				if (fTemp1 - prtBorder->left < SYTEXT_DIMENSION_MIN)
+				if (fTemp1 - prtBorder->left < BaseGraphTEXT_DIMENSION_MIN)
 				{
-					fTemp1 = pText->rtBorder.left + SYTEXT_DIMENSION_MIN;
+					fTemp1 = pText->rtBorder.left + BaseGraphTEXT_DIMENSION_MIN;
 				}
 				prtBorder->right = fTemp1;
 			}
@@ -703,9 +703,9 @@ unsigned int g_uCRC32Table[256] =
 		case 1:
 			{
 				fTemp2 = prtBorder->right - szRectSize.cx;
-				if (prtBorder->right - fTemp2 < SYTEXT_DIMENSION_MIN)
+				if (prtBorder->right - fTemp2 < BaseGraphTEXT_DIMENSION_MIN)
 				{
-					fTemp2 = prtBorder->right - SYTEXT_DIMENSION_MIN;
+					fTemp2 = prtBorder->right - BaseGraphTEXT_DIMENSION_MIN;
 				}
 				prtBorder->left = fTemp2;
 			}
@@ -716,14 +716,14 @@ unsigned int g_uCRC32Table[256] =
 				fAdjust = (szRectSize.cx - (prtBorder->right - prtBorder->left)) / 2;
 				fTemp1 = prtBorder->left - fAdjust;
 				fTemp2 = prtBorder->right + fAdjust;
-				if (fCenter - fTemp1 < SYTEXT_DIMENSION_MIN / 2)
+				if (fCenter - fTemp1 < BaseGraphTEXT_DIMENSION_MIN / 2)
 				{
-					fTemp1 = fCenter - SYTEXT_DIMENSION_MIN / 2;
+					fTemp1 = fCenter - BaseGraphTEXT_DIMENSION_MIN / 2;
 				}
 				prtBorder->left = fTemp1;
-				if (fTemp2 - fCenter < SYTEXT_DIMENSION_MIN / 2)
+				if (fTemp2 - fCenter < BaseGraphTEXT_DIMENSION_MIN / 2)
 				{
-					fTemp2 = fCenter + SYTEXT_DIMENSION_MIN / 2;
+					fTemp2 = fCenter + BaseGraphTEXT_DIMENSION_MIN / 2;
 				}
 				prtBorder->right = fTemp2;
 			}
@@ -732,16 +732,16 @@ unsigned int g_uCRC32Table[256] =
 	}
 
 	// Y方向
-	if (szRectSize.cy >= SYTEXT_DIMENSION_MIN)
+	if (szRectSize.cy >= BaseGraphTEXT_DIMENSION_MIN)
 	{
 		switch (nAlignY)
 		{
 		case 0:
 			{
 				fTemp1 = prtBorder->top + szRectSize.cy;
-				if (fTemp1 - prtBorder->top < SYTEXT_DIMENSION_MIN)
+				if (fTemp1 - prtBorder->top < BaseGraphTEXT_DIMENSION_MIN)
 				{
-					fTemp1 = prtBorder->top + SYTEXT_DIMENSION_MIN;
+					fTemp1 = prtBorder->top + BaseGraphTEXT_DIMENSION_MIN;
 				}
 				prtBorder->bottom = fTemp1;
 			}
@@ -749,9 +749,9 @@ unsigned int g_uCRC32Table[256] =
 		case 1:
 			{
 				fTemp1 = prtBorder->bottom - szRectSize.cy;
-				if (prtBorder->bottom - fTemp1 < SYTEXT_DIMENSION_MIN)
+				if (prtBorder->bottom - fTemp1 < BaseGraphTEXT_DIMENSION_MIN)
 				{
-					fTemp1 = prtBorder->bottom - SYTEXT_DIMENSION_MIN;
+					fTemp1 = prtBorder->bottom - BaseGraphTEXT_DIMENSION_MIN;
 				}
 				prtBorder->top = fTemp1;
 			}
@@ -762,14 +762,14 @@ unsigned int g_uCRC32Table[256] =
 				fAdjust = (szRectSize.cy - (prtBorder->bottom - prtBorder->top)) / 2;
 				fTemp1 = prtBorder->top - fAdjust;
 				fTemp2 = prtBorder->bottom + fAdjust;
-				if (fCenter - fTemp1 < SYTEXT_DIMENSION_MIN / 2)
+				if (fCenter - fTemp1 < BaseGraphTEXT_DIMENSION_MIN / 2)
 				{
-					fTemp1 = fCenter - SYTEXT_DIMENSION_MIN / 2;
+					fTemp1 = fCenter - BaseGraphTEXT_DIMENSION_MIN / 2;
 				}
 				prtBorder->top = fTemp1;
-				if (fTemp2 - fCenter < SYTEXT_DIMENSION_MIN / 2)
+				if (fTemp2 - fCenter < BaseGraphTEXT_DIMENSION_MIN / 2)
 				{
-					fTemp2 = fCenter + SYTEXT_DIMENSION_MIN / 2;
+					fTemp2 = fCenter + BaseGraphTEXT_DIMENSION_MIN / 2;
 				}
 				prtBorder->bottom = fTemp2;
 			}
@@ -778,7 +778,7 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_SetFixedFrame(LPCommonText pText, BOOL bFixedFrame)
+ void BaseGraphText_SetFixedFrame(LPCommonText pText, BOOL bFixedFrame)
 {
 	//原先非固定字框且原先不使用排版矩形，
 	//则将实际排版矩形赋给排版矩形。
@@ -797,15 +797,15 @@ unsigned int g_uCRC32Table[256] =
 
 
 //////////////////////////////////////////////////////////////////////////
-// SYTypesetPrivateData
- void SYTypesetPrivateData_Init(LPCommonTypesetPrivate pData)
+// BaseGraphTypesetPrivateData
+ void BaseGraphTypesetPrivateData_Init(LPCommonTypesetPrivate pData)
 {
 	BaseAR_Init(&pData->m_arParagraph);
 	pData->lpParam = NULL;
 	memset(&pData->rtTypesetBorder, 0, sizeof(rectf));
 }
 
- void SYTypesetPrivateData_Release(LPCommonTypesetPrivate pData)
+ void BaseGraphTypesetPrivateData_Release(LPCommonTypesetPrivate pData)
 {
 	int nParagraphCnt = BaseAR_GetCount(&pData->m_arParagraph);
 	for (int i = 0; i < nParagraphCnt; ++i)
@@ -820,10 +820,10 @@ unsigned int g_uCRC32Table[256] =
 
 
 //////////////////////////////////////////////////////////////////////////
-// SYFont
-void SYFont_Init(LPCommonFont pFont)
+// BaseGraphFont
+void BaseGraphFont_Init(LPCommonFont pFont)
 {
-	memset(pFont, 0, sizeof(SYFont));
+	memset(pFont, 0, sizeof(BaseGraphFont));
 	pFont->lfHeight = 30;
 	_tcscpy_s(pFont->lfFaceNameEng, LF_FACESIZE, _T("Arial"));
 	_tcscpy_s(pFont->lfFaceName, LF_FACESIZE, _T("宋体"));
@@ -831,11 +831,11 @@ void SYFont_Init(LPCommonFont pFont)
 	pFont->dwVersion = 1;
 }
 
-void SYFont_Release(LPCommonFont pFont)
+void BaseGraphFont_Release(LPCommonFont pFont)
 {
 }
 
- int SYFont_Save(LPCBaseFont pFont, LPBYTE pBuffer, int nLen)
+ int BaseGraphFont_Save(LPCBaseFont pFont, LPBYTE pBuffer, int nLen)
 {
 	int nSize = 0;
 	LPBYTE pCurBuf = pBuffer;
@@ -1041,7 +1041,7 @@ void SYFont_Release(LPCommonFont pFont)
 	return nSize;
 }
 
- int SYFont_Load(LPCommonFont pFont, LPBYTE pBuffer, int nLen)
+ int BaseGraphFont_Load(LPCommonFont pFont, LPBYTE pBuffer, int nLen)
 {
 	int nSize = 0;
 	LPBYTE pCurBuf = pBuffer;
@@ -1167,12 +1167,12 @@ void SYFont_Release(LPCommonFont pFont)
 	return nSize;
 }
 
-void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
+void BaseGraphFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 {
-	memcpy(pDes, pSrc, sizeof(SYFont));
+	memcpy(pDes, pSrc, sizeof(BaseGraphFont));
 }
 
- BOOL SYFont_Compare(LPCBaseFont pFont1, LPCBaseFont pFont2)
+ BOOL BaseGraphFont_Compare(LPCBaseFont pFont1, LPCBaseFont pFont2)
 {
 	if (pFont1 == pFont2)
 		return TRUE;
@@ -1200,43 +1200,43 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return TRUE;
 }
 
- void SYFont_SetValue(LPCommonFont pDesFont, const LPVOID lpSrcData, const LPVOID lp2ndSrcData, DWORD dwMask)
+ void BaseGraphFont_SetValue(LPCommonFont pDesFont, const LPVOID lpSrcData, const LPVOID lp2ndSrcData, DWORD dwMask)
 {
 	//参数有效性由调用者检查
 	switch (dwMask)
 	{
-	case SYTEXTFONTMASK_HEIGHT:
+	case BaseGraphTEXTFONTMASK_HEIGHT:
 		pDesFont->lfHeight = *(float*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_WIDTH:
+	case BaseGraphTEXTFONTMASK_WIDTH:
 		pDesFont->lfWidth = *(float*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_FONTSIZE:
-		pDesFont->lfWidth = ((SYSizef*)lpSrcData)->cx;
-		pDesFont->lfHeight = ((SYSizef*)lpSrcData)->cy;
+	case BaseGraphTEXTFONTMASK_FONTSIZE:
+		pDesFont->lfWidth = ((BaseGraphSizef*)lpSrcData)->cx;
+		pDesFont->lfHeight = ((BaseGraphSizef*)lpSrcData)->cy;
 		break;
-	case SYTEXTFONTMASK_BOLD:
+	case BaseGraphTEXTFONTMASK_BOLD:
 		pDesFont->bBold = *(BYTE*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_ITALIC:
+	case BaseGraphTEXTFONTMASK_ITALIC:
 		pDesFont->lfItalic = *(BYTE*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_FACENAME:
+	case BaseGraphTEXTFONTMASK_FACENAME:
 		memcpy(pDesFont->lfFaceName, lpSrcData, sizeof(TCHAR) * LF_FACESIZE);
 		break;
-	case SYTEXTFONTMASK_FACENAMEENG:
+	case BaseGraphTEXTFONTMASK_FACENAMEENG:
 		memcpy(pDesFont->lfFaceNameEng, lpSrcData, sizeof(TCHAR) * LF_FACESIZE);
 		break;
-	case SYTEXTFONTMASK_DISTANCE:
+	case BaseGraphTEXTFONTMASK_DISTANCE:
 		pDesFont->lfDistance = *(float*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_ESCAPEMENT:
+	case BaseGraphTEXTFONTMASK_ESCAPEMENT:
 		pDesFont->lfEscapement = *(LONG*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_VGROTATE:
+	case BaseGraphTEXTFONTMASK_VGROTATE:
 		pDesFont->lfVGRotate = *(BYTE*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_SCRIPT:
+	case BaseGraphTEXTFONTMASK_SCRIPT:
 		pDesFont->lfScript = *(BYTE*)lpSrcData;
 		//第二个参数
 		if (lp2ndSrcData != NULL)
@@ -1245,46 +1245,46 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYFont_CopyValue(LPCommonFont pDesFont, LPCBaseFont pSrcFont, DWORD dwMask)
+ void BaseGraphFont_CopyValue(LPCommonFont pDesFont, LPCBaseFont pSrcFont, DWORD dwMask)
 {
 	//参数有效性由调用者检查
-	if (dwMask & SYTEXTFONTMASK_HEIGHT)
+	if (dwMask & BaseGraphTEXTFONTMASK_HEIGHT)
 	{
 		pDesFont->lfHeight = pSrcFont->lfHeight;
 	}
-	if (dwMask & SYTEXTFONTMASK_WIDTH)
+	if (dwMask & BaseGraphTEXTFONTMASK_WIDTH)
 	{
 		pDesFont->lfWidth = pSrcFont->lfWidth;
 	}
-	if (dwMask & SYTEXTFONTMASK_BOLD)
+	if (dwMask & BaseGraphTEXTFONTMASK_BOLD)
 	{
 		pDesFont->bBold = pSrcFont->bBold;
 	}
-	if (dwMask & SYTEXTFONTMASK_ITALIC)
+	if (dwMask & BaseGraphTEXTFONTMASK_ITALIC)
 	{
 		pDesFont->lfItalic = pSrcFont->lfItalic;
 	}
-	if (dwMask & SYTEXTFONTMASK_FACENAME)
+	if (dwMask & BaseGraphTEXTFONTMASK_FACENAME)
 	{
 		memcpy(pDesFont->lfFaceName, pSrcFont->lfFaceName, sizeof(TCHAR) * LF_FACESIZE);
 	}
-	if (dwMask & SYTEXTFONTMASK_FACENAMEENG)
+	if (dwMask & BaseGraphTEXTFONTMASK_FACENAMEENG)
 	{
 		memcpy(pDesFont->lfFaceNameEng, pSrcFont->lfFaceNameEng, sizeof(TCHAR) * LF_FACESIZE);
 	}
-	if (dwMask & SYTEXTFONTMASK_DISTANCE)
+	if (dwMask & BaseGraphTEXTFONTMASK_DISTANCE)
 	{
 		pDesFont->lfDistance = pSrcFont->lfDistance;
 	}
-	if (dwMask & SYTEXTFONTMASK_ESCAPEMENT)
+	if (dwMask & BaseGraphTEXTFONTMASK_ESCAPEMENT)
 	{
 		pDesFont->lfEscapement = pSrcFont->lfEscapement;
 	}
-	if (dwMask & SYTEXTFONTMASK_VGROTATE)
+	if (dwMask & BaseGraphTEXTFONTMASK_VGROTATE)
 	{
 		pDesFont->lfVGRotate = pSrcFont->lfVGRotate;
 	}
-	if (dwMask & SYTEXTFONTMASK_SCRIPT)
+	if (dwMask & BaseGraphTEXTFONTMASK_SCRIPT)
 	{
 		pDesFont->lfScript = pSrcFont->lfScript;
 		pDesFont->lfScriptOffset = pSrcFont->lfScriptOffset;
@@ -1293,8 +1293,8 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 
 //////////////////////////////////////////////////////////////////////////
-// SYUnderLine
- void SYUnderLine_Init(LPCommonUnderLine pUnderLine)
+// BaseGraphUnderLine
+ void BaseGraphUnderLine_Init(LPCommonUnderLine pUnderLine)
 {
 	if (pUnderLine != NULL)
 	{
@@ -1302,11 +1302,11 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		pUnderLine->eType = UNDERLINE_SOLID;
 		pUnderLine->fDistance = 0;
 		pUnderLine->fHeight = 0;
-		SYStaticEffect_Init(&pUnderLine->se2DColor);
+		BaseGraphStaticEffect_Init(&pUnderLine->se2DColor);
 	}
 }
 
- void SYUnderLine_Create(LPCommonUnderLine pUnderLine,
+ void BaseGraphUnderLine_Create(LPCommonUnderLine pUnderLine,
 	E_TextUnderLine eType, 
 	float fDistance,
 	float fLineHeight,
@@ -1319,38 +1319,38 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		pUnderLine->fHeight = fLineHeight;
 		if (p2DColor != NULL)
 		{
-			SYStaticEffect_Copy(&pUnderLine->se2DColor, p2DColor);
+			BaseGraphStaticEffect_Copy(&pUnderLine->se2DColor, p2DColor);
 		}
 		else
 		{
-			SYStaticEffect_Init(&pUnderLine->se2DColor);
+			BaseGraphStaticEffect_Init(&pUnderLine->se2DColor);
 		}
 	}
 }
 
- void SYUnderLine_Release(LPCommonUnderLine pUnderLine)
+ void BaseGraphUnderLine_Release(LPCommonUnderLine pUnderLine)
 {
 	if (pUnderLine != NULL)
 	{
-		SYStaticEffect_Release(&pUnderLine->se2DColor);
+		BaseGraphStaticEffect_Release(&pUnderLine->se2DColor);
 	}
 }
 
- void SYUnderLine_Copy(LPCommonUnderLine pDes, LPCBaseUnderLine pSrc)
+ void BaseGraphUnderLine_Copy(LPCommonUnderLine pDes, LPCBaseUnderLine pSrc)
 {
 	if (pDes != NULL && pSrc != NULL)
 	{
-		SYUnderLine_Release(pDes);
+		BaseGraphUnderLine_Release(pDes);
 
 		pDes->dwVersion = pSrc->dwVersion;
 		pDes->eType = pSrc->eType;
 		pDes->fDistance = pSrc->fDistance;
 		pDes->fHeight = pSrc->fHeight;
-		SYStaticEffect_Copy(&pDes->se2DColor, &pSrc->se2DColor);
+		BaseGraphStaticEffect_Copy(&pDes->se2DColor, &pSrc->se2DColor);
 	}
 }
 
- BOOL SYUnderLine_Compare(LPCBaseUnderLine pUnderLine1, LPCBaseUnderLine pUnderLine2)
+ BOOL BaseGraphUnderLine_Compare(LPCBaseUnderLine pUnderLine1, LPCBaseUnderLine pUnderLine2)
 {
 	if (pUnderLine1 == pUnderLine2)
 		return TRUE;
@@ -1372,49 +1372,49 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return TRUE;
 }
 
- void SYUnderLine_SetValue(LPCommonUnderLine pDesUnderLine, const LPVOID lpSrcData, DWORD dwMask)
+ void BaseGraphUnderLine_SetValue(LPCommonUnderLine pDesUnderLine, const LPVOID lpSrcData, DWORD dwMask)
 {
 	switch (dwMask)
 	{
-	case SYTEXTFONTMASK_UNDERLINE_TYPE:
+	case BaseGraphTEXTFONTMASK_UNDERLINE_TYPE:
 		pDesUnderLine->eType = *(E_TextUnderLine*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_UNDERLINE_HEIGHT:
+	case BaseGraphTEXTFONTMASK_UNDERLINE_HEIGHT:
 		pDesUnderLine->fHeight = *(float*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_UNDERLINE_DISTANCE:
+	case BaseGraphTEXTFONTMASK_UNDERLINE_DISTANCE:
 		pDesUnderLine->fDistance = *(float*)lpSrcData;
 		break;
-	case SYTEXTFONTMASK_UNDERLINE_2DCOLOR:
-		SYStaticEffect_Copy(&pDesUnderLine->se2DColor, (LPCommonStaticEffect)lpSrcData);
+	case BaseGraphTEXTFONTMASK_UNDERLINE_2DCOLOR:
+		BaseGraphStaticEffect_Copy(&pDesUnderLine->se2DColor, (LPCommonStaticEffect)lpSrcData);
 		break;
 	}
 }
 
- void SYUnderLine_CopyValue(LPCommonUnderLine pDesUnderLine, LPCBaseUnderLine pSrcUnderLine, DWORD dwMask)
+ void BaseGraphUnderLine_CopyValue(LPCommonUnderLine pDesUnderLine, LPCBaseUnderLine pSrcUnderLine, DWORD dwMask)
 {
-	if (dwMask & SYTEXTFONTMASK_UNDERLINE_TYPE)
+	if (dwMask & BaseGraphTEXTFONTMASK_UNDERLINE_TYPE)
 	{
 		pDesUnderLine->eType = pSrcUnderLine->eType;
 	}
-	if (dwMask & SYTEXTFONTMASK_UNDERLINE_HEIGHT)
+	if (dwMask & BaseGraphTEXTFONTMASK_UNDERLINE_HEIGHT)
 	{
 		pDesUnderLine->fHeight = pSrcUnderLine->fHeight;
 	}
-	if (dwMask & SYTEXTFONTMASK_UNDERLINE_DISTANCE)
+	if (dwMask & BaseGraphTEXTFONTMASK_UNDERLINE_DISTANCE)
 	{
 		pDesUnderLine->fDistance = pSrcUnderLine->fDistance;
 	}
-	if (dwMask & SYTEXTFONTMASK_UNDERLINE_2DCOLOR)
+	if (dwMask & BaseGraphTEXTFONTMASK_UNDERLINE_2DCOLOR)
 	{
-		SYStaticEffect_Copy(&pDesUnderLine->se2DColor, &pSrcUnderLine->se2DColor);
+		BaseGraphStaticEffect_Copy(&pDesUnderLine->se2DColor, &pSrcUnderLine->se2DColor);
 	}
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-// SYTextProp
- void SYTextProp_Init(LPCommonTextProp pProp)
+// BaseGraphTextProp
+ void BaseGraphTextProp_Init(LPCommonTextProp pProp)
 {
 	if (pProp != NULL)
 	{
@@ -1427,40 +1427,40 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_Create(int nTextLen,
+ void BaseGraphTextProp_Create(int nTextLen,
 	LPCommonTextProp pProp,
 	LPCommonFont pFont, 
 	LPCommonStaticEffect p2DColor,
-	SYMaterial* p3DColor,
+	BaseGraphMaterial* p3DColor,
 	LPCommonUnderLine pUnderLine)
 {
 	if (pProp != NULL)
 	{
 		//字体
-		LPCommonFont pNewFont = new SYFont;
-		SYFont_Init(pNewFont);
+		LPCommonFont pNewFont = new BaseGraphFont;
+		BaseGraphFont_Init(pNewFont);
 		if (pFont != NULL)
 		{
-			SYFont_Copy(pNewFont, pFont);
+			BaseGraphFont_Copy(pNewFont, pFont);
 		}
 		BaseAR_Add(&pProp->arFont, pNewFont);
 
 		//2D Color
-		LPCommonStaticEffect pNew2DColor = new SYStaticEffect;
-		SYStaticEffect_Init(pNew2DColor);
+		LPCommonStaticEffect pNew2DColor = new BaseGraphStaticEffect;
+		BaseGraphStaticEffect_Init(pNew2DColor);
 		if (p2DColor != NULL)
 		{
-			SYStaticEffect_Copy(pNew2DColor, p2DColor);
+			BaseGraphStaticEffect_Copy(pNew2DColor, p2DColor);
 		}
 		BaseAR_Add(&pProp->ar2DColor, pNew2DColor);
 
 		//3D Color（允许没有）
-		SYMaterial* pNew3DColor = NULL;
+		BaseGraphMaterial* pNew3DColor = NULL;
 		if (p3DColor != NULL)
 		{
-			pNew3DColor = new SYMaterial;
-			SYMaterial_Init(pNew3DColor);
-			SYMaterial_Copy(pNew3DColor, p3DColor);
+			pNew3DColor = new BaseGraphMaterial;
+			BaseGraphMaterial_Init(pNew3DColor);
+			BaseGraphMaterial_Copy(pNew3DColor, p3DColor);
 			BaseAR_Add(&pProp->ar3DColor, pNew3DColor);
 		}
 
@@ -1468,9 +1468,9 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		LPCommonUnderLine pNewUnderLine = NULL;
 		if (pUnderLine != NULL)
 		{
-			pNewUnderLine = new SYUnderLine;
-			SYUnderLine_Init(pNewUnderLine);
-			SYUnderLine_Copy(pNewUnderLine, pUnderLine);
+			pNewUnderLine = new BaseGraphUnderLine;
+			BaseGraphUnderLine_Init(pNewUnderLine);
+			BaseGraphUnderLine_Copy(pNewUnderLine, pUnderLine);
 			BaseAR_Add(&pProp->arUnderLine, pNewUnderLine);
 		}
 
@@ -1479,10 +1479,10 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 			nTextLen = 1;
 		for (int i = 0; i < nTextLen; ++i)
 		{
-			LPCommonTextPropIndex pPropIdx = new SYTextPropIndex;
+			LPCommonTextPropIndex pPropIdx = new BaseGraphTextPropIndex;
 			pPropIdx->pFont = pNewFont;
 			pPropIdx->p2DColor = pNew2DColor;
-			for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+			for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 				pPropIdx->p3DColor[n3D] = pNew3DColor;
 			pPropIdx->pUnderLine = pNewUnderLine;
 			BaseAR_Add(&pProp->arIndex, pPropIdx);
@@ -1490,7 +1490,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_Release(LPCommonTextProp pProp)
+ void BaseGraphTextProp_Release(LPCommonTextProp pProp)
 {
 	if (pProp != NULL)
 	{
@@ -1500,7 +1500,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		for (i=0; i<nCnt; ++i)
 		{
 			LPCommonFont pFont = (LPCommonFont)BaseAR_GetAt(&pProp->arFont, i);
-			SYFont_Release(pFont);
+			BaseGraphFont_Release(pFont);
 			delete pFont;
 		}
 		BaseAR_RemoveAll(&pProp->arFont);
@@ -1510,7 +1510,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		for (i=0; i<nCnt; ++i)
 		{
 			LPCommonStaticEffect p2DColor = (LPCommonStaticEffect)BaseAR_GetAt(&pProp->ar2DColor, i);
-			SYStaticEffect_Release(p2DColor);
+			BaseGraphStaticEffect_Release(p2DColor);
 			delete p2DColor;
 		}
 		BaseAR_RemoveAll(&pProp->ar2DColor);
@@ -1519,8 +1519,8 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		nCnt = BaseAR_GetCount(&pProp->ar3DColor);
 		for (i=0; i<nCnt; ++i)
 		{
-			SYMaterial* p3DColor = (SYMaterial*)BaseAR_GetAt(&pProp->ar3DColor, i);
-			SYMaterial_Release(p3DColor);
+			BaseGraphMaterial* p3DColor = (BaseGraphMaterial*)BaseAR_GetAt(&pProp->ar3DColor, i);
+			BaseGraphMaterial_Release(p3DColor);
 			delete p3DColor;
 		}
 		BaseAR_RemoveAll(&pProp->ar3DColor);
@@ -1530,7 +1530,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		for (i=0; i<nCnt; ++i)
 		{
 			LPCommonUnderLine pUnderLine = (LPCommonUnderLine)BaseAR_GetAt(&pProp->arUnderLine, i);
-			SYUnderLine_Release(pUnderLine);
+			BaseGraphUnderLine_Release(pUnderLine);
 			delete pUnderLine;
 		}
 		BaseAR_RemoveAll(&pProp->arUnderLine);
@@ -1540,27 +1540,27 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		for (i=0; i<nCnt; ++i)
 		{
 			LPCommonTextPropIndex pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, i);
-			SYTextPropIndex_Release(pPropIdx);
+			BaseGraphTextPropIndex_Release(pPropIdx);
 			delete pPropIdx;
 		}
 		BaseAR_RemoveAll(&pProp->arIndex);
 	}
 }
 
- void SYTextProp_Copy(LPCommonTextProp pDes, LPCBaseTextProp pSrc, int nDesLen/* = -1*/)
+ void BaseGraphTextProp_Copy(LPCommonTextProp pDes, LPCBaseTextProp pSrc, int nDesLen/* = -1*/)
 {
 	if (pDes == NULL || pSrc == NULL || pSrc == pDes)
 		return;
 
-	SYTextProp_Release(pDes);
+	BaseGraphTextProp_Release(pDes);
 
 	int nAryCnt;
 	nAryCnt = BaseAR_GetCount(&pSrc->arFont);
 	for (int i = 0; i < nAryCnt; ++i)
 	{
 		LPCommonFont pSrcFont = (LPCommonFont)BaseAR_GetAt(&pSrc->arFont, i);
-		LPCommonFont pNewFont = new SYFont;
-		SYFont_Copy(pNewFont, pSrcFont);
+		LPCommonFont pNewFont = new BaseGraphFont;
+		BaseGraphFont_Copy(pNewFont, pSrcFont);
 		BaseAR_Add(&pDes->arFont, pNewFont);
 	}
 
@@ -1568,19 +1568,19 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	for (int i = 0; i < nAryCnt; ++i)
 	{
 		LPCommonStaticEffect pSrc2DColor = (LPCommonStaticEffect)BaseAR_GetAt(&pSrc->ar2DColor, i);
-		LPCommonStaticEffect pNew2DColor = new SYStaticEffect;
-		SYStaticEffect_Init(pNew2DColor);
-		SYStaticEffect_Copy(pNew2DColor, pSrc2DColor);
+		LPCommonStaticEffect pNew2DColor = new BaseGraphStaticEffect;
+		BaseGraphStaticEffect_Init(pNew2DColor);
+		BaseGraphStaticEffect_Copy(pNew2DColor, pSrc2DColor);
 		BaseAR_Add(&pDes->ar2DColor, pNew2DColor);
 	}
 
 	nAryCnt = BaseAR_GetCount(&pSrc->ar3DColor);
 	for (int i = 0; i < nAryCnt; ++i)
 	{
-		SYMaterial* pSrc3DColor = (SYMaterial*)BaseAR_GetAt(&pSrc->ar3DColor, i);
-		SYMaterial* pNew3DColor = new SYMaterial;
-		SYMaterial_Init(pNew3DColor);
-		SYMaterial_Copy(pNew3DColor, pSrc3DColor);
+		BaseGraphMaterial* pSrc3DColor = (BaseGraphMaterial*)BaseAR_GetAt(&pSrc->ar3DColor, i);
+		BaseGraphMaterial* pNew3DColor = new BaseGraphMaterial;
+		BaseGraphMaterial_Init(pNew3DColor);
+		BaseGraphMaterial_Copy(pNew3DColor, pSrc3DColor);
 		BaseAR_Add(&pDes->ar3DColor, pNew3DColor);
 	}
 
@@ -1588,9 +1588,9 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	for (int i = 0; i < nAryCnt; ++i)
 	{
 		LPCommonUnderLine pSrcUnderLine = (LPCommonUnderLine)BaseAR_GetAt(&pSrc->arUnderLine, i);
-		LPCommonUnderLine pNewUnderLine = new SYUnderLine;
-		SYUnderLine_Init(pNewUnderLine);
-		SYUnderLine_Copy(pNewUnderLine, pSrcUnderLine);
+		LPCommonUnderLine pNewUnderLine = new BaseGraphUnderLine;
+		BaseGraphUnderLine_Init(pNewUnderLine);
+		BaseGraphUnderLine_Copy(pNewUnderLine, pSrcUnderLine);
 		BaseAR_Add(&pDes->arUnderLine, pNewUnderLine);
 	}
 
@@ -1599,7 +1599,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	for (int i = 0; i < nAryCnt; ++i)
 	{
 		pSrcPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(&pSrc->arIndex, i);
-		pNewPropIdx = new SYTextPropIndex;
+		pNewPropIdx = new BaseGraphTextPropIndex;
 
 		int nID;
 		nID = BaseAR_GetIndexByPtr(&pSrc->arFont, pSrcPropIdx->pFont);
@@ -1608,7 +1608,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		nID = BaseAR_GetIndexByPtr(&pSrc->ar2DColor, pSrcPropIdx->p2DColor);
 		pNewPropIdx->p2DColor = BaseAR_GetAt(&pDes->ar2DColor, nID);
 
-		for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+		for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 		{
 			nID = BaseAR_GetIndexByPtr(&pSrc->ar3DColor, pSrcPropIdx->p3DColor[n3D]);
 			pNewPropIdx->p3DColor[n3D] = BaseAR_GetAt(&pDes->ar3DColor, nID);
@@ -1623,16 +1623,16 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	//调整目标属性个数
 	if (nDesLen >= 0)
 	{
-		SYTextProp_ResizePropIndexArray(pDes, nDesLen, TRUE);
+		BaseGraphTextProp_ResizePropIndexArray(pDes, nDesLen, TRUE);
 	}
 }
 
- BOOL SYTextProp_Compare(LPCBaseTextProp pProp1, LPCBaseTextProp pProp2)
+ BOOL BaseGraphTextProp_Compare(LPCBaseTextProp pProp1, LPCBaseTextProp pProp2)
 {
 	return FALSE;
 }
 
- void SYTextProp_DeleteString(LPCommonTextProp pProp, int nCharIdx, int nDelCnt, int nTextLen, BOOL bWholeRender)
+ void BaseGraphTextProp_DeleteString(LPCommonTextProp pProp, int nCharIdx, int nDelCnt, int nTextLen, BOOL bWholeRender)
 {
 	if (nDelCnt <= 0 || nCharIdx < 0)
 		return;
@@ -1652,7 +1652,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	{
 		LPCommonTextPropIndex pTempIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 		b1StWholeRender = (bWholeRender && nP == 0);
-		if (SYTextProp_EmptyPropIndex(pProp, pTempIdx, b1StWholeRender))
+		if (BaseGraphTextProp_EmptyPropIndex(pProp, pTempIdx, b1StWholeRender))
 		{
 			if (b1StWholeRender)
 			{
@@ -1661,14 +1661,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				if (pNextIdx != NULL && pTempIdx->p2DColor)
 					pNextIdx->p2DColor = pTempIdx->p2DColor;
 			}
-			SYTextPropIndex_Release(pTempIdx);
+			BaseGraphTextPropIndex_Release(pTempIdx);
 			delete pTempIdx;
 			BaseAR_RemoveAt(paryIndex, nP, 1);
 		}
 	}
 }
 
- void SYTextProp_InsertString(LPCommonTextProp pProp, int nCharIdx, int nInsCnt, int nTextLen)
+ void BaseGraphTextProp_InsertString(LPCommonTextProp pProp, int nCharIdx, int nInsCnt, int nTextLen)
 {
 	if (nInsCnt > 0)
 	{
@@ -1695,8 +1695,8 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 			{
 				for (int i = 0; i < nInsCnt; ++i)
 				{
-					LPCommonTextPropIndex pNewIdx = new SYTextPropIndex;
-					SYTextPropIndex_Copy(pNewIdx, pSrcIdx);
+					LPCommonTextPropIndex pNewIdx = new BaseGraphTextPropIndex;
+					BaseGraphTextPropIndex_Copy(pNewIdx, pSrcIdx);
 					BaseAR_InsertAt(paryIndex, nCharIdx, pNewIdx, 1);
 				}
 			}
@@ -1704,7 +1704,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- LPVOID SYTextProp_GetProp(LPCommonTextProp pProp, int nCharIdx, E_TextPropType eType)
+ LPVOID BaseGraphTextProp_GetProp(LPCommonTextProp pProp, int nCharIdx, E_TextPropType eType)
 {
 	LPCommonTextPropIndex pIndex = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
 	if (pIndex != NULL)
@@ -1724,7 +1724,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return NULL;
 }
 
- LPCommonTextPropIndex	SYTextProp_GetPropIndex(BaseARray* paryIndex, int nCharIdx)
+ LPCommonTextPropIndex	BaseGraphTextProp_GetPropIndex(BaseARray* paryIndex, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(paryIndex);
 	if (nCharIdx >= nCnt)
@@ -1735,7 +1735,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nCharIdx);
 }
 
- BOOL SYTextProp_EmptyPropIndex(LPCommonTextProp pProp, LPCommonTextPropIndex pPropIdx, BOOL bReserve2DClr)
+ BOOL BaseGraphTextProp_EmptyPropIndex(LPCommonTextProp pProp, LPCommonTextPropIndex pPropIdx, BOOL bReserve2DClr)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	int nPropCnt = BaseAR_GetCount(paryIndex);
@@ -1743,7 +1743,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	{
 		//删除没有被引用的属性
 		WORD wLogic = 0x00;
-		WORD w3DLogic[SYTEXT_SUBFACE_CNT] = {0x10, 0x20, 0x40};
+		WORD w3DLogic[BaseGraphTEXT_SUBFACE_CNT] = {0x10, 0x20, 0x40};
 
 		for (int i = 0; i < nPropCnt; ++i)
 		{
@@ -1757,12 +1757,12 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				if (pTempIdx->pUnderLine == pPropIdx->pUnderLine)
 					wLogic |= 0x04;
 
-				for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+				for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 				{
 					LPVOID pTemp3DClr = pTempIdx->p3DColor[n3D];
 					if (pTemp3DClr != NULL)
 					{
-						for (int i3 = 0; i3 < SYTEXT_SUBFACE_CNT; ++i3)
+						for (int i3 = 0; i3 < BaseGraphTEXT_SUBFACE_CNT; ++i3)
 						{
 							LPVOID pProp3DClr = pPropIdx->p3DColor[i3];
 							if (pTemp3DClr == pProp3DClr)
@@ -1782,29 +1782,29 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		{
 			//禁止空表
 			if (BaseAR_GetCount(&pProp->arFont) > 1)
-				SYTextProp_RemoveFont(&pProp->arFont, (LPCommonFont)pPropIdx->pFont);
+				BaseGraphTextProp_RemoveFont(&pProp->arFont, (LPCommonFont)pPropIdx->pFont);
 		}
 		if (!bReserve2DClr && (wLogic & 0x02) == 0x00)
 		{
 			//禁止空表
 			if (BaseAR_GetCount(&pProp->ar2DColor) > 1)
-				SYTextProp_Remove2DColor(&pProp->ar2DColor, (LPCommonStaticEffect)pPropIdx->p2DColor);
+				BaseGraphTextProp_Remove2DColor(&pProp->ar2DColor, (LPCommonStaticEffect)pPropIdx->p2DColor);
 		}
 		if ((wLogic & 0x04) == 0x00)
 		{
 			//允许空表
 			if (BaseAR_GetCount(&pProp->arUnderLine) > 0)
-				SYTextProp_RemoveUnderLine(&pProp->arUnderLine, (LPCommonUnderLine)pPropIdx->pUnderLine);
+				BaseGraphTextProp_RemoveUnderLine(&pProp->arUnderLine, (LPCommonUnderLine)pPropIdx->pUnderLine);
 		}
 
 		//允许空表
 		if (BaseAR_GetCount(&pProp->ar3DColor) > 0)
 		{
-			for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+			for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 			{
 				if ((wLogic & w3DLogic[n3D]) == 0x00)
 				{
-					SYTextProp_Remove3DColor(&pProp->ar3DColor, (SYMaterial*)(pPropIdx->p3DColor[n3D]));
+					BaseGraphTextProp_Remove3DColor(&pProp->ar3DColor, (BaseGraphMaterial*)(pPropIdx->p3DColor[n3D]));
 				}
 			}
 		}
@@ -1814,7 +1814,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- void SYTextProp_ResizePropIndexArray(LPCommonTextProp pProp, int nSize, BOOL bKeepProperty)
+ void BaseGraphTextProp_ResizePropIndexArray(LPCommonTextProp pProp, int nSize, BOOL bKeepProperty)
 {
 	LPCommonTextPropIndex pSrcIdx, pTempIdx;
 	int nNewPropCnt = nSize;
@@ -1829,8 +1829,8 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 			{
 				while (nNewPropCnt > nOldPropCnt)
 				{
-					pTempIdx = new SYTextPropIndex;
-					SYTextPropIndex_Copy(pTempIdx, pSrcIdx);
+					pTempIdx = new BaseGraphTextPropIndex;
+					BaseGraphTextPropIndex_Copy(pTempIdx, pSrcIdx);
 					BaseAR_Add(paryIndex, pTempIdx);
 					++nOldPropCnt;
 				}
@@ -1847,16 +1847,16 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	{
 		--nOldPropCnt;
 		pSrcIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nOldPropCnt);
-		if (SYTextProp_EmptyPropIndex(pProp, pSrcIdx, FALSE))
+		if (BaseGraphTextProp_EmptyPropIndex(pProp, pSrcIdx, FALSE))
 		{
-			SYTextPropIndex_Release(pSrcIdx);
+			BaseGraphTextPropIndex_Release(pSrcIdx);
 			delete pSrcIdx;
 			BaseAR_RemoveAt(paryIndex, nOldPropCnt, 1);
 		}
 	}
 }
 
- LPCommonFont SYTextProp_GetFont(LPCommonTextProp pProp, int nCharIdx)
+ LPCommonFont BaseGraphTextProp_GetFont(LPCommonTextProp pProp, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1877,7 +1877,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return (LPCommonFont)BaseAR_GetAt(&pProp->arFont, 0);
 }
 
- LPCommonStaticEffect SYTextProp_GetStaticEffect(LPCommonTextProp pProp, int nCharIdx)
+ LPCommonStaticEffect BaseGraphTextProp_GetStaticEffect(LPCommonTextProp pProp, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1893,7 +1893,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return (LPCommonStaticEffect)BaseAR_GetAt(&pProp->ar2DColor, 0);
 }
 
- SYMaterial* SYTextProp_Get3DColor(LPCommonTextProp pProp, int nCharIdx, int nSubFace)
+ BaseGraphMaterial* BaseGraphTextProp_Get3DColor(LPCommonTextProp pProp, int nCharIdx, int nSubFace)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1904,14 +1904,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	LPCommonTextPropIndex pIndex = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
 	if (pIndex != NULL)
 	{
-		if (nSubFace < 0 || nSubFace > SYTEXT_SUBFACE_CNT - 1)
+		if (nSubFace < 0 || nSubFace > BaseGraphTEXT_SUBFACE_CNT - 1)
 			nSubFace = 0;
-		return (SYMaterial*)(pIndex->p3DColor[nSubFace]);
+		return (BaseGraphMaterial*)(pIndex->p3DColor[nSubFace]);
 	}
-	return (SYMaterial*)BaseAR_GetAt(&pProp->ar3DColor, 0);
+	return (BaseGraphMaterial*)BaseAR_GetAt(&pProp->ar3DColor, 0);
 }
 
- LPVOID* SYTextProp_Get3DColorArray(LPCommonTextProp pProp, int nCharIdx)
+ LPVOID* BaseGraphTextProp_Get3DColorArray(LPCommonTextProp pProp, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1927,7 +1927,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return NULL;
 }
 
- LPCommonUnderLine SYTextProp_GetUnderLine(LPCommonTextProp pProp, int nCharIdx)
+ LPCommonUnderLine BaseGraphTextProp_GetUnderLine(LPCommonTextProp pProp, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1943,7 +1943,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return NULL;
 }
 
- void SYTextProp_SetFont(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseFont lpFont, DWORD dwMask)
+ void BaseGraphTextProp_SetFont(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseFont lpFont, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryFont = &pProp->arFont;
@@ -1963,7 +1963,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
 		//查找当前字符的字体属性索引
-		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = BaseGraphTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
 			pCurFont = (LPCommonFont)pCurIndex->pFont;
@@ -1982,13 +1982,13 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 			if (bRef)
 			{
-				pTempFont = new SYFont;
-				SYFont_Init(pTempFont);
-				SYFont_Copy(pTempFont, pCurFont);
-				SYFont_CopyValue(pTempFont, lpFont, dwMask);
+				pTempFont = new BaseGraphFont;
+				BaseGraphFont_Init(pTempFont);
+				BaseGraphFont_Copy(pTempFont, pCurFont);
+				BaseGraphFont_CopyValue(pTempFont, lpFont, dwMask);
 
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSameFont(paryFont, pTempFont, &pSame);
+				int nSameID = BaseGraphTextProp_FindSameFont(paryFont, pTempFont, &pSame);
 				//无相同字体，则在字体表尾追加。
 				if (nSameID < 0)
 				{
@@ -1999,15 +1999,15 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				else
 				{
 					pCurIndex->pFont = pSame;
-					SYFont_Release(pTempFont);
+					BaseGraphFont_Release(pTempFont);
 					delete pTempFont;
 				}
 			}
 			else
 			{
-				SYFont_CopyValue(pCurFont, lpFont, dwMask);
+				BaseGraphFont_CopyValue(pCurFont, lpFont, dwMask);
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSameFont(paryFont, pCurFont, &pSame);
+				int nSameID = BaseGraphTextProp_FindSameFont(paryFont, pCurFont, &pSame);
 				if (nSameID >= 0)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
@@ -2016,14 +2016,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 						if (pTempPropIdx->pFont == pSame)
 							pTempPropIdx->pFont = pCurFont;
 					}
-					SYTextProp_RemoveFont(paryFont, nSameID);
+					BaseGraphTextProp_RemoveFont(paryFont, nSameID);
 				}
 			}
 		}
 	}
 }
 
- void SYTextProp_FontProperty(LPCommonTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, const LPVOID lp2ndPropData, DWORD dwMask)
+ void BaseGraphTextProp_FontProperty(LPCommonTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, const LPVOID lp2ndPropData, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryFont = &pProp->arFont;
@@ -2043,7 +2043,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
 		//查找当前字符的字体属性索引
-		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = BaseGraphTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
 			pCurFont = (LPCommonFont)pCurIndex->pFont;
@@ -2062,13 +2062,13 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 			if (bRef)
 			{
-				pTempFont = new SYFont;
-				SYFont_Init(pTempFont);
-				SYFont_Copy(pTempFont, pCurFont);
-				SYFont_SetValue(pTempFont, lpPropData, lp2ndPropData, dwMask);
+				pTempFont = new BaseGraphFont;
+				BaseGraphFont_Init(pTempFont);
+				BaseGraphFont_Copy(pTempFont, pCurFont);
+				BaseGraphFont_SetValue(pTempFont, lpPropData, lp2ndPropData, dwMask);
 
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSameFont(paryFont, pTempFont, &pSame);
+				int nSameID = BaseGraphTextProp_FindSameFont(paryFont, pTempFont, &pSame);
 				//无相同字体，则在字体表尾追加。
 				if (nSameID < 0)
 				{
@@ -2079,15 +2079,15 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				else
 				{
 					pCurIndex->pFont = pSame;
-					SYFont_Release(pTempFont);
+					BaseGraphFont_Release(pTempFont);
 					delete pTempFont;
 				}
 			}
 			else
 			{
-				SYFont_SetValue(pCurFont, lpPropData, lp2ndPropData, dwMask);
+				BaseGraphFont_SetValue(pCurFont, lpPropData, lp2ndPropData, dwMask);
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSameFont(paryFont, pCurFont, &pSame);
+				int nSameID = BaseGraphTextProp_FindSameFont(paryFont, pCurFont, &pSame);
 				if (nSameID >= 0)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
@@ -2096,14 +2096,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 						if (pTempPropIdx->pFont == pSame)
 							pTempPropIdx->pFont = pCurFont;
 					}
-					SYTextProp_RemoveFont(paryFont, nSameID);
+					BaseGraphTextProp_RemoveFont(paryFont, nSameID);
 				}
 			}
 		}
 	}
 }
 
- void SYTextProp_SetStaticEffect(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseStaticEffect lpFillColor, DWORD dwMask)
+ void BaseGraphTextProp_SetStaticEffect(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseStaticEffect lpFillColor, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryColor = &pProp->ar2DColor;
@@ -2122,7 +2122,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = BaseGraphTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
 			pCurColor = (LPCommonStaticEffect)pCurIndex->p2DColor;
@@ -2140,13 +2140,13 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 			if (bRef)
 			{
-				pTempColor = new SYStaticEffect;
-				SYStaticEffect_Init(pTempColor);
-				SYStaticEffect_Copy(pTempColor, pCurColor);
-				SYText2DColor_CopyValue(pTempColor, lpFillColor, dwMask);
+				pTempColor = new BaseGraphStaticEffect;
+				BaseGraphStaticEffect_Init(pTempColor);
+				BaseGraphStaticEffect_Copy(pTempColor, pCurColor);
+				BaseGraphText2DColor_CopyValue(pTempColor, lpFillColor, dwMask);
 
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSame2DColor(paryColor, pTempColor, &pSame);
+				int nSameID = BaseGraphTextProp_FindSame2DColor(paryColor, pTempColor, &pSame);
 				if (nSameID < 0)
 				{
 					BaseAR_Add(paryColor, pTempColor);
@@ -2155,15 +2155,15 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				else
 				{
 					pCurIndex->p2DColor = pSame;
-					SYStaticEffect_Release(pTempColor);
+					BaseGraphStaticEffect_Release(pTempColor);
 					delete pTempColor;
 				}
 			}
 			else
 			{
-				SYText2DColor_CopyValue(pCurColor, lpFillColor, dwMask);
+				BaseGraphText2DColor_CopyValue(pCurColor, lpFillColor, dwMask);
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSame2DColor(paryColor, pCurColor, &pSame);
+				int nSameID = BaseGraphTextProp_FindSame2DColor(paryColor, pCurColor, &pSame);
 				if (nSameID >= 0)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
@@ -2172,14 +2172,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 						if (pTempPropIdx->p2DColor == pSame)
 							pTempPropIdx->p2DColor = pCurColor;
 					}
-					SYTextProp_Remove2DColor(paryColor, nSameID);
+					BaseGraphTextProp_Remove2DColor(paryColor, nSameID);
 				}
 			}
 		}
 	}
 }
 
- void SYTextProp_Set3DColor(LPCommonTextProp pProp, int nCharIdx, int nCount, SYMaterial* p3DColor)
+ void BaseGraphTextProp_Set3DColor(LPCommonTextProp pProp, int nCharIdx, int nCount, BaseGraphMaterial* p3DColor)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryColor = &pProp->ar3DColor;
@@ -2193,28 +2193,28 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		return;
 
 	LPCommonTextPropIndex pTempPropIdx;
-	SYMaterial* pNewColor = NULL;
+	BaseGraphMaterial* pNewColor = NULL;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = BaseGraphTextProp_GetPropIndex(paryIndex, nC);
 
 		LPVOID pSame;
-		int nSameID = SYTextProp_FindSame3DColor(paryColor, p3DColor, &pSame);
+		int nSameID = BaseGraphTextProp_FindSame3DColor(paryColor, p3DColor, &pSame);
 		if (nSameID < 0)
 		{
-			pNewColor = new SYMaterial;
-			SYMaterial_Init(pNewColor);
-			SYMaterial_Copy(pNewColor, p3DColor);
+			pNewColor = new BaseGraphMaterial;
+			BaseGraphMaterial_Init(pNewColor);
+			BaseGraphMaterial_Copy(pNewColor, p3DColor);
 			BaseAR_Add(paryColor, pNewColor);
 		}
 		else
 		{
-			pNewColor = (SYMaterial*)pSame;
+			pNewColor = (BaseGraphMaterial*)pSame;
 		}
 
-		LPVOID pRemoved[SYTEXT_SUBFACE_CNT] = {NULL};
-		for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+		LPVOID pRemoved[BaseGraphTEXT_SUBFACE_CNT] = {NULL};
+		for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 		{
 			LPVOID p3DColorSrc = pCurIndex->p3DColor[n3D];
 			if (p3DColorSrc == NULL)
@@ -2224,7 +2224,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 			}
 
 			BOOL bDeal = FALSE;
-			for (int i3 = 0; i3 < SYTEXT_SUBFACE_CNT; ++i3)
+			for (int i3 = 0; i3 < BaseGraphTEXT_SUBFACE_CNT; ++i3)
 			{
 				if (pRemoved[i3] == p3DColorSrc)
 				{
@@ -2244,7 +2244,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 				if (pTempPropIdx != pCurIndex)
 				{
-					for (int i3 = 0; i3 < SYTEXT_SUBFACE_CNT; ++i3)
+					for (int i3 = 0; i3 < BaseGraphTEXT_SUBFACE_CNT; ++i3)
 					{
 						if (pTempPropIdx->p3DColor[i3] == p3DColorSrc)
 						{
@@ -2260,14 +2260,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 			if (!bRef)
 			{
 				pRemoved[n3D] = p3DColorSrc;
-				SYTextProp_Remove3DColor(paryColor, (SYMaterial*)p3DColorSrc);
+				BaseGraphTextProp_Remove3DColor(paryColor, (BaseGraphMaterial*)p3DColorSrc);
 			}
 			pCurIndex->p3DColor[n3D] = pNewColor;
 		}
 	}
 }
 
- void SYTextProp_SetSubFace3DColor(LPCommonTextProp pProp, int nCharIdx, int nCount, int nSubFace, SYMaterial* p3DColor)
+ void BaseGraphTextProp_SetSubFace3DColor(LPCommonTextProp pProp, int nCharIdx, int nCount, int nSubFace, BaseGraphMaterial* p3DColor)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryColor = &pProp->ar3DColor;
@@ -2279,28 +2279,28 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	}
 	if (nCount <= 0)
 		return;
-	if (nSubFace < 0 || nSubFace > SYTEXT_SUBFACE_CNT - 1)
+	if (nSubFace < 0 || nSubFace > BaseGraphTEXT_SUBFACE_CNT - 1)
 		nSubFace = 0;
 
 	LPCommonTextPropIndex pTempPropIdx;
-	SYMaterial* pNewColor = NULL;
+	BaseGraphMaterial* pNewColor = NULL;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = BaseGraphTextProp_GetPropIndex(paryIndex, nC);
 
 		LPVOID pSame;
-		int nSameID = SYTextProp_FindSame3DColor(paryColor, p3DColor, &pSame);
+		int nSameID = BaseGraphTextProp_FindSame3DColor(paryColor, p3DColor, &pSame);
 		if (nSameID < 0)
 		{
-			pNewColor = new SYMaterial;
-			SYMaterial_Init(pNewColor);
-			SYMaterial_Copy(pNewColor, p3DColor);
+			pNewColor = new BaseGraphMaterial;
+			BaseGraphMaterial_Init(pNewColor);
+			BaseGraphMaterial_Copy(pNewColor, p3DColor);
 			BaseAR_Add(paryColor, pNewColor);
 		}
 		else
 		{
-			pNewColor = (SYMaterial*)pSame;
+			pNewColor = (BaseGraphMaterial*)pSame;
 		}
 
 		LPVOID p3DColorSrc = pCurIndex->p3DColor[nSubFace];
@@ -2316,7 +2316,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 			pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 			if (pTempPropIdx != pCurIndex)
 			{
-				for (int i3 = 0; i3 < SYTEXT_SUBFACE_CNT; ++i3)
+				for (int i3 = 0; i3 < BaseGraphTEXT_SUBFACE_CNT; ++i3)
 				{
 					if (pTempPropIdx->p3DColor[i3] == p3DColorSrc)
 					{
@@ -2327,7 +2327,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 			}
 			else
 			{
-				for (int i3 = 0; i3 < SYTEXT_SUBFACE_CNT; ++i3)
+				for (int i3 = 0; i3 < BaseGraphTEXT_SUBFACE_CNT; ++i3)
 				{
 					if (i3 != nSubFace && pTempPropIdx->p3DColor[i3] == p3DColorSrc)
 					{
@@ -2342,13 +2342,13 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 		if (!bRef)
 		{
-			SYTextProp_Remove3DColor(paryColor, (SYMaterial*)p3DColorSrc);
+			BaseGraphTextProp_Remove3DColor(paryColor, (BaseGraphMaterial*)p3DColorSrc);
 		}
 		pCurIndex->p3DColor[nSubFace] = pNewColor;
 	}
 }
 
- void SYTextProp_SetUnderLine(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseUnderLine lpUnderLine, DWORD dwMask)
+ void BaseGraphTextProp_SetUnderLine(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseUnderLine lpUnderLine, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryUL = &pProp->arUnderLine;
@@ -2367,7 +2367,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = BaseGraphTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
 			pCurUL = (LPCommonUnderLine)pCurIndex->pUnderLine;
@@ -2393,14 +2393,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 			if (bRef)
 			{
-				pTempUL = new SYUnderLine;
-				SYUnderLine_Init(pTempUL);
+				pTempUL = new BaseGraphUnderLine;
+				BaseGraphUnderLine_Init(pTempUL);
 				if (pCurUL != NULL)
-					SYUnderLine_Copy(pTempUL, pCurUL);
-				SYUnderLine_CopyValue(pTempUL, lpUnderLine, dwMask);
+					BaseGraphUnderLine_Copy(pTempUL, pCurUL);
+				BaseGraphUnderLine_CopyValue(pTempUL, lpUnderLine, dwMask);
 
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSameUnderLine(paryUL, pTempUL, &pSame);
+				int nSameID = BaseGraphTextProp_FindSameUnderLine(paryUL, pTempUL, &pSame);
 				//无相同字体，则在字体表尾追加。
 				if (nSameID < 0)
 				{
@@ -2411,15 +2411,15 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				else
 				{
 					pCurIndex->pUnderLine = pSame;
-					SYUnderLine_Release(pTempUL);
+					BaseGraphUnderLine_Release(pTempUL);
 					delete pTempUL;
 				}
 			}
 			else
 			{
-				SYUnderLine_CopyValue(pCurUL, lpUnderLine, dwMask);
+				BaseGraphUnderLine_CopyValue(pCurUL, lpUnderLine, dwMask);
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSameUnderLine(paryUL, pCurUL, &pSame);
+				int nSameID = BaseGraphTextProp_FindSameUnderLine(paryUL, pCurUL, &pSame);
 				if (nSameID >= 0)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
@@ -2428,14 +2428,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 						if (pTempPropIdx->pUnderLine == pSame)
 							pTempPropIdx->pUnderLine = pCurUL;
 					}
-					SYTextProp_RemoveUnderLine(paryUL, nSameID);
+					BaseGraphTextProp_RemoveUnderLine(paryUL, nSameID);
 				}
 			}
 		}
 	}
 }
 
- void SYTextProp_SetUnderLineProperty(LPCommonTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, DWORD dwMask)
+ void BaseGraphTextProp_SetUnderLineProperty(LPCommonTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryUL = &pProp->arUnderLine;
@@ -2454,7 +2454,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = BaseGraphTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
 			pCurUL = (LPCommonUnderLine)pCurIndex->pUnderLine;
@@ -2480,14 +2480,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 			if (bRef)
 			{
-				pTempUL = new SYUnderLine;
-				SYUnderLine_Init(pTempUL);
+				pTempUL = new BaseGraphUnderLine;
+				BaseGraphUnderLine_Init(pTempUL);
 				if (pCurUL != NULL)
-					SYUnderLine_Copy(pTempUL, pCurUL);
-				SYUnderLine_SetValue(pTempUL, lpPropData, dwMask);
+					BaseGraphUnderLine_Copy(pTempUL, pCurUL);
+				BaseGraphUnderLine_SetValue(pTempUL, lpPropData, dwMask);
 
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSameUnderLine(paryUL, pTempUL, &pSame);
+				int nSameID = BaseGraphTextProp_FindSameUnderLine(paryUL, pTempUL, &pSame);
 				//无相同字体，则在字体表尾追加。
 				if (nSameID < 0)
 				{
@@ -2498,15 +2498,15 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				else
 				{
 					pCurIndex->pUnderLine = pSame;
-					SYUnderLine_Release(pTempUL);
+					BaseGraphUnderLine_Release(pTempUL);
 					delete pTempUL;
 				}
 			}
 			else
 			{
-				SYUnderLine_SetValue(pCurUL, lpPropData, dwMask);
+				BaseGraphUnderLine_SetValue(pCurUL, lpPropData, dwMask);
 				LPVOID pSame;
-				int nSameID = SYTextProp_FindSameUnderLine(paryUL, pCurUL, &pSame);
+				int nSameID = BaseGraphTextProp_FindSameUnderLine(paryUL, pCurUL, &pSame);
 				if (nSameID >= 0)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
@@ -2515,21 +2515,21 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 						if (pTempPropIdx->pUnderLine == pSame)
 							pTempPropIdx->pUnderLine = pCurUL;
 					}
-					SYTextProp_RemoveUnderLine(paryUL, nSameID);
+					BaseGraphTextProp_RemoveUnderLine(paryUL, nSameID);
 				}
 			}
 		}
 	}
 }
 
- int SYTextProp_FindSameFont(BaseARray* paryFont, LPCBaseFont pCompFont, LPVOID* pSame)
+ int BaseGraphTextProp_FindSameFont(BaseARray* paryFont, LPCBaseFont pCompFont, LPVOID* pSame)
 {
 	int nFontCnt = BaseAR_GetCount(paryFont);
 	for (int i = 0; i < nFontCnt; ++i)
 	{
 		LPCommonFont pFont = (LPCommonFont)BaseAR_GetAt(paryFont, i);
 		//查找相同者
-		if (pCompFont != pFont && SYFont_Compare(pFont, pCompFont))
+		if (pCompFont != pFont && BaseGraphFont_Compare(pFont, pCompFont))
 		{
 			if (pSame != NULL)
 				*pSame = pFont;
@@ -2541,7 +2541,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return -1;
 }
 
- int SYTextProp_FindSame2DColor(BaseARray* paryColor, LPCBaseStaticEffect pCompColor, LPVOID* pSame)
+ int BaseGraphTextProp_FindSame2DColor(BaseARray* paryColor, LPCBaseStaticEffect pCompColor, LPVOID* pSame)
 {
 	int nFontCnt = BaseAR_GetCount(paryColor);
 	for (int i = 0; i < nFontCnt; ++i)
@@ -2560,14 +2560,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return -1;
 }
 
- int SYTextProp_FindSame3DColor(BaseARray* paryColor, const SYMaterial* pCompColor, LPVOID* pSame)
+ int BaseGraphTextProp_FindSame3DColor(BaseARray* paryColor, const BaseGraphMaterial* pCompColor, LPVOID* pSame)
 {
 	int nFontCnt = BaseAR_GetCount(paryColor);
 	for (int i = 0; i < nFontCnt; ++i)
 	{
-		SYMaterial* pColor = (SYMaterial*)BaseAR_GetAt(paryColor, i);
+		BaseGraphMaterial* pColor = (BaseGraphMaterial*)BaseAR_GetAt(paryColor, i);
 		//查找相同者
-		if (pCompColor != pColor && SYMaterial_Compare(pCompColor, pColor))
+		if (pCompColor != pColor && BaseGraphMaterial_Compare(pCompColor, pColor))
 		{
 			if (pSame != NULL)
 				*pSame = pColor;
@@ -2579,14 +2579,14 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return -1;
 }
 
- int SYTextProp_FindSameUnderLine(BaseARray* paryUnderLine, LPCBaseUnderLine pCompUnderLine, LPVOID* pSame)
+ int BaseGraphTextProp_FindSameUnderLine(BaseARray* paryUnderLine, LPCBaseUnderLine pCompUnderLine, LPVOID* pSame)
 {
 	int nUnderLineCnt = BaseAR_GetCount(paryUnderLine);
 	for (int i = 0; i < nUnderLineCnt; ++i)
 	{
 		LPCommonUnderLine pUnderLine = (LPCommonUnderLine)BaseAR_GetAt(paryUnderLine, i);
 		//查找相同者
-		if (pCompUnderLine != pUnderLine && SYUnderLine_Compare(pCompUnderLine, pUnderLine))
+		if (pCompUnderLine != pUnderLine && BaseGraphUnderLine_Compare(pCompUnderLine, pUnderLine))
 		{
 			if (pSame != NULL)
 				*pSame = pUnderLine;
@@ -2598,106 +2598,106 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return -1;
 }
 
- void SYText2DColor_CopyValue(LPCommonStaticEffect pDesColor, LPCBaseStaticEffect pSrcColor, DWORD dwMask)
+ void BaseGraphText2DColor_CopyValue(LPCommonStaticEffect pDesColor, LPCBaseStaticEffect pSrcColor, DWORD dwMask)
 {
 	//参数有效性由调用者检查
-	if (dwMask & SYTEXTCOLORMASK_FACE)
+	if (dwMask & BaseGraphTEXTCOLORMASK_FACE)
 	{
 		memcpy(&pDesColor->face, &pSrcColor->face, sizeof(BaseGraph_DataBase::faceinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_BORDER)
+	if (dwMask & BaseGraphTEXTCOLORMASK_BORDER)
 	{
 		memcpy(&pDesColor->border, &pSrcColor->border, sizeof(BaseGraph_DataBase::borderinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_SHADOW)
+	if (dwMask & BaseGraphTEXTCOLORMASK_SHADOW)
 	{
 		memcpy(&pDesColor->shadow, &pSrcColor->shadow, sizeof(BaseGraph_DataBase::shadowinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_CUBE)
+	if (dwMask & BaseGraphTEXTCOLORMASK_CUBE)
 	{
 		memcpy(&pDesColor->cube, &pSrcColor->cube, sizeof(BaseGraph_DataBase::cubeinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_BORDERCUBE)
+	if (dwMask & BaseGraphTEXTCOLORMASK_BORDERCUBE)
 	{
 		memcpy(&pDesColor->bordercube, &pSrcColor->bordercube, sizeof(BaseGraph_DataBase::cubeinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_BORDERSHADOW)
+	if (dwMask & BaseGraphTEXTCOLORMASK_BORDERSHADOW)
 	{
 		memcpy(&pDesColor->bordershadow, &pSrcColor->bordershadow, sizeof(BaseGraph_DataBase::shadowinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_FACELIGHT)
+	if (dwMask & BaseGraphTEXTCOLORMASK_FACELIGHT)
 	{
 		memcpy(&pDesColor->facelight, &pSrcColor->facelight, sizeof(BaseGraph_DataBase::lightinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_CUBELIGHT)
+	if (dwMask & BaseGraphTEXTCOLORMASK_CUBELIGHT)
 	{
 		memcpy(&pDesColor->cubelight, &pSrcColor->cubelight, sizeof(BaseGraph_DataBase::lightinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_CHANNEL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_CHANNEL)
 	{
 		memcpy(&pDesColor->channel, &pSrcColor->channel, sizeof(BaseGraph_DataBase::channelinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_MATERIAL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_MATERIAL)
 	{
 		memcpy(&pDesColor->material, &pSrcColor->material, sizeof(BaseGraph_DataBase::materialinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_APPENDMATERIAL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_APPENDMATERIAL)
 	{
 		memcpy(&pDesColor->appendmaterial, &pSrcColor->appendmaterial, sizeof(BaseGraph_DataBase::materialinfo));
 	}
-	if (dwMask & SYTEXTCOLORMASK_RENDERLINE)
+	if (dwMask & BaseGraphTEXTCOLORMASK_RENDERLINE)
 	{
 		pDesColor->renderline = pSrcColor->renderline;
 	}
-	if (dwMask & SYTEXTCOLORMASK_WIDTH)
+	if (dwMask & BaseGraphTEXTCOLORMASK_WIDTH)
 	{
 		pDesColor->fwidth = pSrcColor->fwidth;
 	}
-	if (dwMask & SYTEXTCOLORMASK_INDEX)
+	if (dwMask & BaseGraphTEXTCOLORMASK_INDEX)
 	{
 		pDesColor->index = pSrcColor->index;
 	}
 
-	if (dwMask & SYTEXTCOLORMASK_FACELIGHTCHANNEL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_FACELIGHTCHANNEL)
 	{
 		sy_lightinfo_copy(&pDesColor->facelight, &pSrcColor->facelight);
 	}
-	if (dwMask & SYTEXTCOLORMASK_CUBELIGHTCHANNEL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_CUBELIGHTCHANNEL)
 	{
 		sy_lightinfo_copy(&pDesColor->cubelight, &pSrcColor->cubelight);
 	}
-	if (dwMask & SYTEXTCOLORMASK_ACTIVEATTRIBLE)
+	if (dwMask & BaseGraphTEXTCOLORMASK_ACTIVEATTRIBLE)
 	{
 		sy_dynamictexture_copy(&pDesColor->dyntex, &pSrcColor->dyntex);
 	}
-	if (dwMask & SYTEXTCOLORMASK_FACEADORNCHANNEL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_FACEADORNCHANNEL)
 	{
 		sy_lightinfo_copy(&pDesColor->facelight, &pSrcColor->facelight);
 	}
-	if (dwMask & SYTEXTCOLORMASK_CUBEADORNCHANNEL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_CUBEADORNCHANNEL)
 	{
 		sy_lightinfo_copy(&pDesColor->cubelight, &pSrcColor->cubelight);
 	}
-	if (dwMask & SYTEXTCOLORMASK_MASKADORNCHANNEL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_MASKADORNCHANNEL)
 	{
 		sy_channelinfo_copy(&pDesColor->channel, &pSrcColor->channel);
 	}
-	if (dwMask & SYTEXTCOLORMASK_PATTANADORNCHANNEL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_PATTANADORNCHANNEL)
 	{
 		sy_materialinfo_copy(&pDesColor->material, &pSrcColor->material);
 	}
-	if (dwMask & SYTEXTCOLORMASK_APPENDADORNCHANNEL)
+	if (dwMask & BaseGraphTEXTCOLORMASK_APPENDADORNCHANNEL)
 	{
 		sy_materialinfo_copy(&pDesColor->appendmaterial, &pSrcColor->appendmaterial);
 	}
 }
 
- BOOL SYTextProp_RemoveFont(BaseARray* paryFont, int nIndex)
+ BOOL BaseGraphTextProp_RemoveFont(BaseARray* paryFont, int nIndex)
 {
 	LPCommonFont pFont = (LPCommonFont)BaseAR_GetAt(paryFont, nIndex);
 	if (pFont != NULL)
 	{
-		SYFont_Release(pFont);
+		BaseGraphFont_Release(pFont);
 		delete pFont;
 		BaseAR_RemoveAt(paryFont, nIndex, 1);
 		return TRUE;
@@ -2705,7 +2705,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_RemoveFont(BaseARray* paryFont, LPCommonFont pFont)
+ BOOL BaseGraphTextProp_RemoveFont(BaseARray* paryFont, LPCommonFont pFont)
 {
 	if (pFont != NULL)
 	{
@@ -2714,7 +2714,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		{
 			if (BaseAR_GetAt(paryFont, i) == pFont)
 			{
-				SYFont_Release(pFont);
+				BaseGraphFont_Release(pFont);
 				delete pFont;
 				BaseAR_RemoveAt(paryFont, i, 1);
 				return TRUE;
@@ -2724,12 +2724,12 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_Remove2DColor(BaseARray* pary2DColor, int nIndex)
+ BOOL BaseGraphTextProp_Remove2DColor(BaseARray* pary2DColor, int nIndex)
 {
 	LPCommonStaticEffect p2DColor = (LPCommonStaticEffect)BaseAR_GetAt(pary2DColor, nIndex);
 	if (p2DColor != NULL)
 	{
-		SYStaticEffect_Release(p2DColor);
+		BaseGraphStaticEffect_Release(p2DColor);
 		delete p2DColor;
 		BaseAR_RemoveAt(pary2DColor, nIndex, 1);
 		return TRUE;
@@ -2737,7 +2737,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_Remove2DColor(BaseARray* pary2DColor, LPCommonStaticEffect p2DColor)
+ BOOL BaseGraphTextProp_Remove2DColor(BaseARray* pary2DColor, LPCommonStaticEffect p2DColor)
 {
 	if (p2DColor != NULL)
 	{
@@ -2746,7 +2746,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		{
 			if (BaseAR_GetAt(pary2DColor, i) == p2DColor)
 			{
-				SYStaticEffect_Release(p2DColor);
+				BaseGraphStaticEffect_Release(p2DColor);
 				delete p2DColor;
 				BaseAR_RemoveAt(pary2DColor, i, 1);
 				return TRUE;
@@ -2756,12 +2756,12 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_Remove3DColor(BaseARray* pary3DColor, int nIndex)
+ BOOL BaseGraphTextProp_Remove3DColor(BaseARray* pary3DColor, int nIndex)
 {
-	SYMaterial* p3DColor = (SYMaterial*)BaseAR_GetAt(pary3DColor, nIndex);
+	BaseGraphMaterial* p3DColor = (BaseGraphMaterial*)BaseAR_GetAt(pary3DColor, nIndex);
 	if (p3DColor != NULL)
 	{
-		SYMaterial_Release(p3DColor);
+		BaseGraphMaterial_Release(p3DColor);
 		delete p3DColor;
 		BaseAR_RemoveAt(pary3DColor, nIndex, 1);
 		return TRUE;
@@ -2769,7 +2769,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_Remove3DColor(BaseARray* pary3DColor, SYMaterial* p3DColor)
+ BOOL BaseGraphTextProp_Remove3DColor(BaseARray* pary3DColor, BaseGraphMaterial* p3DColor)
 {
 	if (p3DColor != NULL)
 	{
@@ -2778,7 +2778,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		{
 			if (BaseAR_GetAt(pary3DColor, i) == p3DColor)
 			{
-				SYMaterial_Release(p3DColor);
+				BaseGraphMaterial_Release(p3DColor);
 				delete p3DColor;
 				BaseAR_RemoveAt(pary3DColor, i, 1);
 				return TRUE;
@@ -2788,12 +2788,12 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_RemoveUnderLine(BaseARray* paryUnderLine, int nIndex)
+ BOOL BaseGraphTextProp_RemoveUnderLine(BaseARray* paryUnderLine, int nIndex)
 {
 	LPCommonUnderLine pUnderLine = (LPCommonUnderLine)BaseAR_GetAt(paryUnderLine, nIndex);
 	if (pUnderLine != NULL)
 	{
-		SYUnderLine_Release(pUnderLine);
+		BaseGraphUnderLine_Release(pUnderLine);
 		delete pUnderLine;
 		BaseAR_RemoveAt(paryUnderLine, nIndex, 1);
 		return TRUE;
@@ -2801,7 +2801,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_RemoveUnderLine(BaseARray* paryUnderLine, LPCommonUnderLine pUnderLine)
+ BOOL BaseGraphTextProp_RemoveUnderLine(BaseARray* paryUnderLine, LPCommonUnderLine pUnderLine)
 {
 	if (pUnderLine != NULL)
 	{
@@ -2810,7 +2810,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		{
 			if (BaseAR_GetAt(paryUnderLine, i) == pUnderLine)
 			{
-				SYUnderLine_Release(pUnderLine);
+				BaseGraphUnderLine_Release(pUnderLine);
 				delete pUnderLine;
 				BaseAR_RemoveAt(paryUnderLine, i, 1);
 				return TRUE;
@@ -2822,30 +2822,30 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 
 //////////////////////////////////////////////////////////////////////////
-// SYTextPropIndex
- void SYTextPropIndex_Init(LPCommonTextPropIndex pPropIdx)
+// BaseGraphTextPropIndex
+ void BaseGraphTextPropIndex_Init(LPCommonTextPropIndex pPropIdx)
 {
 	pPropIdx->pFont = NULL;
 	pPropIdx->p2DColor = NULL;
-	for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+	for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 		pPropIdx->p3DColor[n3D] = NULL;
 	pPropIdx->pUnderLine = NULL;
 }
 
- void SYTextPropIndex_Release(LPCommonTextPropIndex pPropIdx)
+ void BaseGraphTextPropIndex_Release(LPCommonTextPropIndex pPropIdx)
 {
 }
 
- void SYTextPropIndex_Copy(LPCommonTextPropIndex pDes, LPCBaseTextPropIndex pSrc)
+ void BaseGraphTextPropIndex_Copy(LPCommonTextPropIndex pDes, LPCBaseTextPropIndex pSrc)
 {
 	pDes->pFont = pSrc->pFont;
 	pDes->p2DColor = pSrc->p2DColor;
-	for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+	for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 		pDes->p3DColor[n3D] = pSrc->p3DColor[n3D];
 	pDes->pUnderLine = pSrc->pUnderLine;
 }
 
- BOOL SYTextPropIndex_Compare(LPCBaseTextPropIndex pPropIdx1, LPCBaseTextPropIndex pPropIdx2)
+ BOOL BaseGraphTextPropIndex_Compare(LPCBaseTextPropIndex pPropIdx1, LPCBaseTextPropIndex pPropIdx2)
 {
 	if (pPropIdx1 == pPropIdx2)
 		return TRUE;
@@ -2858,7 +2858,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	{
 		return FALSE;
 	}
-	for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
+	for (int n3D = 0; n3D < BaseGraphTEXT_SUBFACE_CNT; ++n3D)
 	{
 		if (pPropIdx1->p3DColor[n3D] != pPropIdx2->p3DColor[n3D])
 			return FALSE;
@@ -2874,7 +2874,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	if (pArtWord != NULL)
 	{
 		pArtWord->dwVersion = 1;
-		pArtWord->ePath = SYPATH_NULL;
+		pArtWord->ePath = BaseGraphPATH_NULL;
 		pArtWord->bRotate = TRUE;
 		pArtWord->fPitch = 0.08f;
 		BaseAR_Init(&pArtWord->arHandlePointUp);
@@ -2908,7 +2908,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		LPCommonMaskHandle pHandle;
 		switch (ePath)
 		{
-		case SYPATH_ARC:
+		case BaseGraphPATH_ARC:
 			{
 				ptCtrl.x = -0.5;
 				ptCtrl.y = 0/*0.5*/;
@@ -2924,7 +2924,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				BaseAR_Add(parPoint[ptIndex], pHandle);
 				break;
 			}
-		case SYPATH_BEZIER:
+		case BaseGraphPATH_BEZIER:
 			{
 				ptCtrl.x = -0.5;
 				ptCtrl.y = 0/*0.5*/;
@@ -2936,7 +2936,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				BaseAR_Add(parPoint[ptIndex], pHandle);
 				break;
 			}
-		case SYPATH_FLAT:
+		case BaseGraphPATH_FLAT:
 			{
 				int iPos = 1;
 				if (ptIndex == 1)
@@ -2964,7 +2964,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				BaseAR_Add(parPoint[ptIndex], pHandle);
 				break;
 			}
-		case SYPATH_UPBEZIER:
+		case BaseGraphPATH_UPBEZIER:
 			{
 				// 上曲线下直线
 				if (ptIndex == 0)
@@ -3011,7 +3011,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				}
 				break;
 			}
-		case SYPATH_DOWNBEZIER:
+		case BaseGraphPATH_DOWNBEZIER:
 			{
 				//上直线下曲线
 				if (ptIndex == 0)
@@ -3058,7 +3058,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				}
 				break;
 			}
-		case SYPATH_SYMMETRYBEZIER:
+		case BaseGraphPATH_BaseGraphMMETRYBEZIER:
 			{
 				int iPos = 1;
 				if (ptIndex == 1)
@@ -3086,7 +3086,7 @@ void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 				BaseAR_Add(parPoint[ptIndex], pHandle);
 				break;
 			}
-		case SYPATH_SAMEBEZIER:
+		case BaseGraphPATH_SAMEBEZIER:
 			{
 				int iPos = 0;
 				if (ptIndex == 1)
@@ -3241,8 +3241,8 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 
 
 //////////////////////////////////////////////////////////////////////////
-// SYGlyphSpace
- void SYGlyphSpace_ReleaseAll(BaseARray& artGlyphSpace)
+// BaseGraphGlyphSpace
+ void BaseGraphGlyphSpace_ReleaseAll(BaseARray& artGlyphSpace)
 {
 	int nCount = BaseAR_GetCount(&artGlyphSpace);
 	for(int i = 0; i < nCount; ++i)
@@ -3255,7 +3255,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 
 
 //////////////////////////////////////////////////////////////////////////
- void SYStr_SplitByCRLF(LPCTSTR szString, CBaseStrArray& arString)
+ void BaseGraphStr_SplitByCRLF(LPCTSTR szString, CBaseStrArray& arString)
 {
 	if (szString != NULL)
 	{
@@ -3266,7 +3266,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 
 		for (int nC = 0; nC < nLen; ++nC)
 		{
-			if (SYISCRLF(szString, nC, nLen))
+			if (BaseGraphISCRLF(szString, nC, nLen))
 			{
 				nCharCnt = nC - nLastCRLF;
 				szText = new TCHAR[nCharCnt + 1];
@@ -3290,7 +3290,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 	}
 }
 
- void SYStr_SplitByChar(LPCTSTR szString, TCHAR cSplit, CBaseStrArray& arString)
+ void BaseGraphStr_SplitByChar(LPCTSTR szString, TCHAR cSplit, CBaseStrArray& arString)
 {
 	if (szString != NULL)
 	{
@@ -3330,8 +3330,8 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 									double dScale)
 {
 	assert(szText && pFont && pColor);
-	SYText text;
-	SYText_Init(&text);
+	BaseGraphText text;
+	BaseGraphText_Init(&text);
 	rectf rtBorder;
 	rtBorder.left = 0;
 	rtBorder.right = 10;
@@ -3341,7 +3341,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 	float fFontWidth = pFont->lfWidth;
 	pFont->lfHeight = (float)(pFont->lfHeight * dScale);
 	pFont->lfWidth = pFont->lfHeight / 2;
-	SYText_Create(&text, 
+	BaseGraphText_Create(&text, 
 		szText, 
 		rtBorder, 
 		pFont, 
@@ -3375,7 +3375,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 		int nCount = BaseAR_GetCount(&text.ar2DUnit);
 		for (int i = 0; i < nCount; i++)
 		{
-			SYUnit *pUnit = (SYUnit *)BaseAR_GetAt(&text.ar2DUnit, i);
+			BaseGraphUnit *pUnit = (BaseGraphUnit *)BaseAR_GetAt(&text.ar2DUnit, i);
 
 			CCommonBuffer *pOutBuffer = NULL;
 			RECT rtOutBound;
@@ -3384,7 +3384,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 			int nOutPitch;
 			pointf ptOutOrg;
 
-			SYRenderGraphToOpBuff(&pUnit->u.u2d.graph, pColor, pOutBuffer, rtOutBound, nOutWidth, nOutHeight, nOutPitch, 1, ptOutOrg, 0);
+			BaseGraphRenderGraphToOpBuff(&pUnit->u.u2d.graph, pColor, pOutBuffer, rtOutBound, nOutWidth, nOutHeight, nOutPitch, 1, ptOutOrg, 0);
 
 			if (!pOutBuffer)
 			{
@@ -3417,24 +3417,24 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 		}
 	}
 
-	SYText_Release(&text);
+	BaseGraphText_Release(&text);
 	//Common_WriteBimap(_T("D:\\1234.bmp"), nWidth, nHeight, 32, (BYTE *)pdwBuffer);
 	return TRUE;
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-void SYText_InitParagraphArray(LPCommonText pText, E_TextAlignHorizontal eAlignHorizontal)
+void BaseGraphText_InitParagraphArray(LPCommonText pText, E_TextAlignHorizontal eAlignHorizontal)
 {
 	assert(pText && pText->szText);
 	std::vector<int> vParaIndex;
-	SYText_SplitStringToParagraphArray(vParaIndex, pText->szText);
+	BaseGraphText_SplitStringToParagraphArray(vParaIndex, pText->szText);
 
 	LPCommonTextParagraph pParagraph = NULL;
 	int nParaCnt = (int)vParaIndex.size();
 	for (int i = 0; i < nParaCnt; ++i)
 	{
-		pParagraph = new SYTextParagraph;
+		pParagraph = new BaseGraphTextParagraph;
 		pParagraph->dwVersion = 1;
 		pParagraph->nBeginIndex = vParaIndex[i];
 		pParagraph->eAlignHorizontal = eAlignHorizontal;
@@ -3443,15 +3443,15 @@ void SYText_InitParagraphArray(LPCommonText pText, E_TextAlignHorizontal eAlignH
 		pParagraph->fAfterDistance = 0;
 		pParagraph->nLevel = 0;
 		pParagraph->fIndent = 0;
-		pParagraph->lpSymbol = new SYTextSymbol;
-		SYText_InitSymbol(pParagraph->lpSymbol);
+		pParagraph->lpSymbol = new BaseGraphTextSymbol;
+		BaseGraphText_InitSymbol(pParagraph->lpSymbol);
 		pParagraph->hHandle = NULL;
 		pParagraph->lpParam = NULL;
 		BaseAR_Add(&pText->arParagraph, pParagraph);
 	}
 }
 
-void SYText_InitParagraph(LPCommonTextParagraph pParagraph)
+void BaseGraphText_InitParagraph(LPCommonTextParagraph pParagraph)
 {
 	assert(pParagraph);
 	pParagraph->dwVersion = 1;
@@ -3462,25 +3462,25 @@ void SYText_InitParagraph(LPCommonTextParagraph pParagraph)
 	pParagraph->fAfterDistance = 0;
 	pParagraph->nLevel = 0;
 	pParagraph->fIndent = 0;
-	pParagraph->lpSymbol = new SYTextSymbol;
-	SYText_InitSymbol(pParagraph->lpSymbol);
+	pParagraph->lpSymbol = new BaseGraphTextSymbol;
+	BaseGraphText_InitSymbol(pParagraph->lpSymbol);
 
 	pParagraph->hHandle = NULL;
 	pParagraph->lpParam = NULL;
 }
 
-void SYText_ReleaseParagraph(LPCommonTextParagraph pParagraph)
+void BaseGraphText_ReleaseParagraph(LPCommonTextParagraph pParagraph)
 {
 	assert(pParagraph);
 	if (pParagraph->lpSymbol)
 	{
-		SYText_ReleaseSymbol(pParagraph->lpSymbol);
+		BaseGraphText_ReleaseSymbol(pParagraph->lpSymbol);
 		delete pParagraph->lpSymbol;
 		pParagraph->lpSymbol = NULL;
 	}
 }
 
-int SYText_SaveParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
+int BaseGraphText_SaveParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
 {
 	assert(pParagraph);
 
@@ -3546,7 +3546,7 @@ int SYText_SaveParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int n
 
 	if (bHasSymbol)
 	{
-		nBufferSize += SYText_SaveSymbol(pParagraph->lpSymbol, pCurBuf, nLen - nBufferSize);
+		nBufferSize += BaseGraphText_SaveSymbol(pParagraph->lpSymbol, pCurBuf, nLen - nBufferSize);
 		if (pBuffer)
 			pCurBuf = pBuffer + nBufferSize;
 	}
@@ -3554,7 +3554,7 @@ int SYText_SaveParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int n
 	return nBufferSize;
 }
 
-int SYText_LoadParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
+int BaseGraphText_LoadParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
 {
 	assert(pParagraph && pBuffer);
 
@@ -3596,30 +3596,30 @@ int SYText_LoadParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int n
 	if (bHasSymbol)
 	{
 		SAFE_DELETE(pParagraph->lpSymbol);
-		pParagraph->lpSymbol = new SYTextSymbol;
-		SYText_InitSymbol(pParagraph->lpSymbol);
-		nBufferSize += SYText_LoadSymbol(pParagraph->lpSymbol, pCurBuf, nLen - nBufferSize);
+		pParagraph->lpSymbol = new BaseGraphTextSymbol;
+		BaseGraphText_InitSymbol(pParagraph->lpSymbol);
+		nBufferSize += BaseGraphText_LoadSymbol(pParagraph->lpSymbol, pCurBuf, nLen - nBufferSize);
 		pCurBuf = pBuffer + nBufferSize;
 	}
 
 	return nBufferSize;
 }
 
-void SYText_CopyParagraph(LPCommonTextParagraph pDes, LPCommonTextParagraph pSrc)
+void BaseGraphText_CopyParagraph(LPCommonTextParagraph pDes, LPCommonTextParagraph pSrc)
 {
 	if (pDes->lpSymbol != NULL)
 	{
-		SYText_ReleaseSymbol(pDes->lpSymbol);
+		BaseGraphText_ReleaseSymbol(pDes->lpSymbol);
 		delete pDes->lpSymbol;
 		pDes->lpSymbol = NULL;
 	}
-	memcpy(pDes, pSrc, sizeof(SYTextParagraph));
-	pDes->lpSymbol = new SYTextSymbol;
-	SYText_InitSymbol(pDes->lpSymbol);
-	SYText_CopySymbol(pDes->lpSymbol, pSrc->lpSymbol);
+	memcpy(pDes, pSrc, sizeof(BaseGraphTextParagraph));
+	pDes->lpSymbol = new BaseGraphTextSymbol;
+	BaseGraphText_InitSymbol(pDes->lpSymbol);
+	BaseGraphText_CopySymbol(pDes->lpSymbol, pSrc->lpSymbol);
 }
 
-BOOL SYText_CompareParagraph(LPCommonTextParagraph pParagraph1, LPCommonTextParagraph pParagraph2)
+BOOL BaseGraphText_CompareParagraph(LPCommonTextParagraph pParagraph1, LPCommonTextParagraph pParagraph2)
 {
 	if (pParagraph1->dwVersion != pParagraph2->dwVersion
 		|| pParagraph1->nBeginIndex != pParagraph2->nBeginIndex
@@ -3633,11 +3633,11 @@ BOOL SYText_CompareParagraph(LPCommonTextParagraph pParagraph1, LPCommonTextPara
 	return TRUE;
 }
 
-void SYText_InitSymbol(LPCommonTextSymbol pSymbol)
+void BaseGraphText_InitSymbol(LPCommonTextSymbol pSymbol)
 {
 	assert(pSymbol);
 	pSymbol->dwVersion = 1;
-	SYStaticEffect_Init(&pSymbol->seFillColor);
+	BaseGraphStaticEffect_Init(&pSymbol->seFillColor);
 	pSymbol->rtSize.left = 0;
 	pSymbol->rtSize.top = 0;
 	pSymbol->rtSize.right = 0;
@@ -3648,13 +3648,13 @@ void SYText_InitSymbol(LPCommonTextSymbol pSymbol)
 	pSymbol->lpParam = NULL;
 }
 
-void SYText_ReleaseSymbol(LPCommonTextSymbol pSymbol)
+void BaseGraphText_ReleaseSymbol(LPCommonTextSymbol pSymbol)
 {
 	assert(pSymbol);
-	SYStaticEffect_Release(&pSymbol->seFillColor);
+	BaseGraphStaticEffect_Release(&pSymbol->seFillColor);
 }
 
-int SYText_SaveSymbol(LPCommonTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
+int BaseGraphText_SaveSymbol(LPCommonTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
 {
 	assert(pSymbol);
 
@@ -3692,7 +3692,7 @@ int SYText_SaveSymbol(LPCommonTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
 	return nBufferSize;
 }
 
-int SYText_LoadSymbol(LPCommonTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
+int BaseGraphText_LoadSymbol(LPCommonTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
 {
 	assert(pSymbol && pBuffer);
 
@@ -3777,10 +3777,10 @@ int SYText_LoadSymbol(LPCommonTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
 	return nBufferSize;
 }
 
-void SYText_CopySymbol(LPCommonTextSymbol pDes, LPCommonTextSymbol pSrc)
+void BaseGraphText_CopySymbol(LPCommonTextSymbol pDes, LPCommonTextSymbol pSrc)
 {
 	pDes->dwVersion = pSrc->dwVersion;
-	SYStaticEffect_Copy(&pDes->seFillColor, &pSrc->seFillColor);
+	BaseGraphStaticEffect_Copy(&pDes->seFillColor, &pSrc->seFillColor);
 	pDes->rtSize = pSrc->rtSize;
 	pDes->fScale = pSrc->fScale;
 
@@ -3814,22 +3814,22 @@ void TypesetInterface_OnAddUnit(BOOL bKeepBalance, LPVOID pInterfaceParam)
 		pTitleCalc->Lock();
 
 		LPCommonText pText = pTitleCalc->GetText();
-		SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
+		BaseGraphItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
 		BaseAR_Add(pTitleCalc->Get2DTextUnitArray(), pRenderUnit);
 
 		if (pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0)
 		{
 			assert(false);
 			//djt 3D先不管
-			//SYItemRenderUnit* pRenderUnit = CreateRenderUnit(TRUE);
+			//BaseGraphItemRenderUnit* pRenderUnit = CreateRenderUnit(TRUE);
 			//int nIndex = pItem->Get3DTextUnitCount(pEnv) - 1;
 			//if (nIndex >= 0)
 			//{
-			//	SYUnit* pTextUnit = pItem->Get3DTextUnit(nIndex, pEnv);
-			//	pRenderUnit->m_pUnit = new SYUnit;
-			//	memset(pRenderUnit->m_pUnit,0,sizeof(SYUnit));
+			//	BaseGraphUnit* pTextUnit = pItem->Get3DTextUnit(nIndex, pEnv);
+			//	pRenderUnit->m_pUnit = new BaseGraphUnit;
+			//	memset(pRenderUnit->m_pUnit,0,sizeof(BaseGraphUnit));
 			//	sy_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
-			//	CopyVertexFromItemToEnv(&pRenderUnit->unit3D, pEnv->GetDevice(), sizeof(SYVertex3D), pTextUnit->u.u3d.pmod, pEnv->GetChangedLevel());
+			//	CopyVertexFromItemToEnv(&pRenderUnit->unit3D, pEnv->GetDevice(), sizeof(BaseGraphVertex3D), pTextUnit->u.u3d.pmod, pEnv->GetChangedLevel());
 
 			//	BaseAR_Add(pEnv->Get3DTextRenderUnitArray(), pRenderUnit);
 			//	RefreshUnitMaterial(pRenderUnit, pEnv->GetDevice(), pEnv, pEnv->m_dCurFrame, nIndex, FALSE);
@@ -3864,13 +3864,13 @@ void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 			{
 				CBaseCGActor* pActor = (CBaseCGActor*)BaseAR_GetAt(paryActor, i);
 				int nActSize = pActor->GetActionCount();
-				SYList* pactList = &(pActor->GetActorData()->actions);
+				BaseGraphList* pactList = &(pActor->GetActorData()->actions);
 
-				LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
+				LISTPOSITION cur_pos = BaseGraphList_GetHeadPosition(pactList);
 				while(cur_pos)
 				{
-					CBaseAction* pAction = (CBaseAction*)SYList_GetNext(pactList, &cur_pos);
-					SYUnitParam* pPreUnitParam = pAction->GetUnitParam(nPreIndex);
+					CBaseAction* pAction = (CBaseAction*)BaseGraphList_GetNext(pactList, &cur_pos);
+					BaseGraphUnitParam* pPreUnitParam = pAction->GetUnitParam(nPreIndex);
 					//如何区分这个Unit是属于哪种Unit的？
 					//插入位置的Unit有关键帧
 					if (pPreUnitParam != NULL)
@@ -3881,10 +3881,10 @@ void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 							BaseARray* pary3DText = pItem->Get3DTextUnitArray();
 							for (int j=0; j<nCount; ++j)
 							{
-								SYUnitParam* param = new SYUnitParam;
+								BaseGraphUnitParam* param = new BaseGraphUnitParam;
 								pAction->CopyUnitParam(param, pPreUnitParam);
-								SYUnit* pTextUnit = (SYUnit*)BaseAR_GetAt(pary3DText, nIndex + j);
-								SYGuid_To_Str(param->UnitID, pTextUnit->UnitID);
+								BaseGraphUnit* pTextUnit = (BaseGraphUnit*)BaseAR_GetAt(pary3DText, nIndex + j);
+								BaseGraphGuid_To_Str(param->UnitID, pTextUnit->UnitID);
 								pAction->AddUnitParam(param, nIndex + j);
 							}
 						}
@@ -3893,10 +3893,10 @@ void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 							BaseARray* pary2DText = pItem->Get2DTextUnitArray();
 							for (int j=0; j<nCount; ++j)
 							{
-								SYUnitParam* param = new SYUnitParam;
+								BaseGraphUnitParam* param = new BaseGraphUnitParam;
 								pAction->CopyUnitParam(param, pPreUnitParam);
-								SYUnit* pTextUnit = (SYUnit*)BaseAR_GetAt(pary2DText, nIndex + j);
-								SYGuid_To_Str(param->UnitID, pTextUnit->UnitID);
+								BaseGraphUnit* pTextUnit = (BaseGraphUnit*)BaseAR_GetAt(pary2DText, nIndex + j);
+								BaseGraphGuid_To_Str(param->UnitID, pTextUnit->UnitID);
 								pAction->AddUnitParam(param, nIndex + j);
 							}
 						}
@@ -3909,7 +3909,7 @@ void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 		BaseARray* pary2DTextRenderUnit = pTitleCalc->Get2DTextUnitArray();
 		for (i = 0; i < nCount; i++)
 		{
-			SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
+			BaseGraphItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
 			pRenderUnit->m_bChanged = TRUE;
 			BaseAR_InsertAt(pary2DTextRenderUnit, nIndex + i, pRenderUnit, 1);
 		}
@@ -3923,14 +3923,14 @@ void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 			BaseARray* pary3DTextRenderUnit = pEnv->Get3DTextRenderUnitArray();
 			for (i = 0; i < nCount; i++)
 			{
-				SYItemRenderUnit* pRenderUnit = CreateRenderUnit(TRUE);
-				SYUnit* pTextUnit = pItem->Get3DTextUnit(nIndex + i, pEnv);
+				BaseGraphItemRenderUnit* pRenderUnit = CreateRenderUnit(TRUE);
+				BaseGraphUnit* pTextUnit = pItem->Get3DTextUnit(nIndex + i, pEnv);
 				if (pTextUnit != NULL)
 				{
-					pRenderUnit->m_pUnit = new SYUnit;
+					pRenderUnit->m_pUnit = new BaseGraphUnit;
 					sy_init_unit(pRenderUnit->m_pUnit,TRUE);
 					sy_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
-					CopyVertexFromItemToEnv(&pRenderUnit->unit3D, nDevice, sizeof(SYVertex3D), pTextUnit->u.u3d.pmod, nEnvChgLevel);
+					CopyVertexFromItemToEnv(&pRenderUnit->unit3D, nDevice, sizeof(BaseGraphVertex3D), pTextUnit->u.u3d.pmod, nEnvChgLevel);
 
 					BaseAR_InsertAt(pary3DTextRenderUnit, nIndex + i, pRenderUnit, 1);
 					RefreshUnitMaterial(pRenderUnit, nDevice, pEnv, pEnv->m_dCurFrame, nIndex + i, FALSE);
@@ -3959,12 +3959,12 @@ void TypesetInterface_OnDeleteUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 		{
 			CBaseCGActor* pActor = (CBaseCGActor*)BaseAR_GetAt(paryActor, i);
 			int nActSize = pActor->GetActionCount();
-			SYList* pactList = &(pActor->GetActorData()->actions);
+			BaseGraphList* pactList = &(pActor->GetActorData()->actions);
 
-			LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
+			LISTPOSITION cur_pos = BaseGraphList_GetHeadPosition(pactList);
 			while(cur_pos)
 			{
-				CBaseAction* pAction = (CBaseAction*)SYList_GetNext(pactList, &cur_pos);
+				CBaseAction* pAction = (CBaseAction*)BaseGraphList_GetNext(pactList, &cur_pos);
 				//删除Action
 				for (j = nCount-1; j >= 0; --j)
 				{
@@ -3978,7 +3978,7 @@ void TypesetInterface_OnDeleteUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 		BaseARray* paryRenderUnit = pTitleCalc->Get2DTextUnitArray();
 		for (int i = 0; i < nCount; i++)
 		{
-			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, nIndex + i);
+			BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, nIndex + i);
 			if (pRenderUnit)
 			{
 				ReleaseRenderUnit(pRenderUnit, FALSE, DX3DEngine_GetMainDevice(), pTitleCalc);
@@ -3995,7 +3995,7 @@ void TypesetInterface_OnDeleteUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 			paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
 			for (i = 0; i < nCount; i++)
 			{
-				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, nIndex + i);
+				BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, nIndex + i);
 				ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(), pEnv);
 				delete pRenderUnit;
 			}
@@ -4024,12 +4024,12 @@ void TypesetInterface_OnDeleteAllUnit(LPVOID pInterfaceParam)
 		{
 			CBaseCGActor* pActor = (CBaseCGActor*)BaseAR_GetAt(paryActor, i);
 			int nActSize = pActor->GetActionCount();
-			SYList* pactList = &(pActor->GetActorData()->actions);
+			BaseGraphList* pactList = &(pActor->GetActorData()->actions);
 
-			LISTPOSITION cur_pos = SYList_GetHeadPosition(pactList);
+			LISTPOSITION cur_pos = BaseGraphList_GetHeadPosition(pactList);
 			while(cur_pos)
 			{
-				CBaseAction* pAction = (CBaseAction*)SYList_GetNext(pactList, &cur_pos);
+				CBaseAction* pAction = (CBaseAction*)BaseGraphList_GetNext(pactList, &cur_pos);
 				//删除Action
 				pAction->DelAllUnitParam();
 			}
@@ -4041,7 +4041,7 @@ void TypesetInterface_OnDeleteAllUnit(LPVOID pInterfaceParam)
 		int nRenderUnitCount = BaseAR_GetCount(paryRenderUnit);
 		for (i = 0; i < nRenderUnitCount; i++)
 		{
-			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
+			BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
 			ReleaseRenderUnit(pRenderUnit, FALSE, DX3DEngine_GetMainDevice(), pTitleCalc);
 			delete pRenderUnit;
 		}
@@ -4056,7 +4056,7 @@ void TypesetInterface_OnDeleteAllUnit(LPVOID pInterfaceParam)
 			nRenderUnitCount = BaseAR_GetCount(paryRenderUnit);
 			for (i = 0; i < nRenderUnitCount; i++)
 			{
-				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
+				BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
 				ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(), pEnv);
 				delete pRenderUnit;
 			}
@@ -4080,7 +4080,7 @@ void TypesetInterface_OnRefreshUnit(int nIndex, int nCount, LPVOID pInterfacePar
 		BaseARray* paryRenderUnit = pTitleCalc->Get2DTextUnitArray();
 		for (int i = nIndex; i < nEndIdx; ++i)
 		{
-			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
+			BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
 			if (pRenderUnit != NULL)
 				pRenderUnit->m_bChanged = TRUE;
 		}
@@ -4093,7 +4093,7 @@ void TypesetInterface_OnRefreshUnit(int nIndex, int nCount, LPVOID pInterfacePar
 			paryRenderUnit = pEnv->Get3DTextRenderUnitArray();
 			for (int i = nIndex; i < nEndIdx; ++i)
 			{
-				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
+				BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
 				if (pRenderUnit != NULL)
 				{
 					pRenderUnit->m_bChanged = TRUE;
@@ -4101,8 +4101,8 @@ void TypesetInterface_OnRefreshUnit(int nIndex, int nCount, LPVOID pInterfacePar
 					int nModelCnt = pRenderUnit->unit3D.nSubModelCount;
 					for(int nSub = 0; nSub < nModelCnt; nSub++)
 					{
-						SYVideoMaterial* pVideoMat = (SYVideoMaterial*)pRenderUnit->unit3D.pSubModel[nSub].pVideoMaterial;
-						SYMaterial_SetChangeType(pVideoMat, SYMaterial_PhyDataChange);
+						BaseGraphVideoMaterial* pVideoMat = (BaseGraphVideoMaterial*)pRenderUnit->unit3D.pSubModel[nSub].pVideoMaterial;
+						BaseGraphMaterial_SetChangeType(pVideoMat, BaseGraphMaterial_PhyDataChange);
 					}
 				}
 			}
@@ -4126,7 +4126,7 @@ void TypesetInterface_OnRefreshAllUnit(LPVOID pInterfaceParam, int nLevel)
 
 		for (int i = 0; i < nRenderUnitCount; i++)
 		{
-			SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
+			BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
 			if (pRenderUnit != NULL)
 			{
 				pRenderUnit->m_bChanged = TRUE;
@@ -4143,7 +4143,7 @@ void TypesetInterface_OnRefreshAllUnit(LPVOID pInterfaceParam, int nLevel)
 			nRenderUnitCount = BaseAR_GetCount(paryRenderUnit);
 			for (int i = 0; i < nRenderUnitCount; i++)
 			{
-				SYItemRenderUnit* pRenderUnit = (SYItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
+				BaseGraphItemRenderUnit* pRenderUnit = (BaseGraphItemRenderUnit*)BaseAR_GetAt(paryRenderUnit, i);
 				ReleaseRenderUnit(pRenderUnit, TRUE, pEnv->GetDevice(),pEnv);
 				pRenderUnit->m_bChanged = TRUE;
 			}
@@ -4154,7 +4154,7 @@ void TypesetInterface_OnRefreshAllUnit(LPVOID pInterfaceParam, int nLevel)
 	}
 }
 
-void SYTypesetInterface_InitItemInterface()
+void BaseGraphTypesetInterface_InitItemInterface()
 {
 	g_TypesetInterface.Lock = TypesetInterface_Lock;
 	g_TypesetInterface.UnLock = TypesetInterface_UnLock;
@@ -4170,10 +4170,10 @@ void SYTypesetInterface_InitItemInterface()
 	g_TypesetInterface.bInitialized = TRUE;
 }
 
-void SYTypeset_InitInterfaceEnv()
+void BaseGraphTypeset_InitInterfaceEnv()
 {
 	//USP初始化
-	CBaseUsp::Initialize(LOCALE_USER_DEFAULT, SYIsEnableFeedBackFont());
+	CBaseUsp::Initialize(LOCALE_USER_DEFAULT, BaseGraphIsEnableFeedBackFont());
 	//Item类的接口
-	SYTypesetInterface_InitItemInterface();
+	BaseGraphTypesetInterface_InitItemInterface();
 }

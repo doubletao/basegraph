@@ -12,12 +12,12 @@
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
-#define		SYLINE_SOLID					0
-#define		SYLINE_DASH						1
-#define		SYLINE_DASHDOT					2
-#define		SYLINE_LDASH					3
-#define		SYLINE_LDASHDOT					4
-#define		SYLINE_RIPPLE					5
+#define		BaseGraphLINE_SOLID					0
+#define		BaseGraphLINE_DASH						1
+#define		BaseGraphLINE_DASHDOT					2
+#define		BaseGraphLINE_LDASH					3
+#define		BaseGraphLINE_LDASHDOT					4
+#define		BaseGraphLINE_RIPPLE					5
 
 #define		CHANNEL_ALPHA					0
 #define		CHANNEL_COUNT					5
@@ -35,7 +35,7 @@ typedef CBaseARray<CBasePoint2fPtrArray*> CPtfArrArr; // pointf二维数组
 LPBaseARRAY calc_midderbuf_array = NULL;
 int maxsize = 0;
 
-BASEGRAPH_DATARENDER_API int sy_release_unit(SYUnit * punit)
+BASEGRAPH_DATARENDER_API int sy_release_unit(BaseGraphUnit * punit)
 {
 	if (!punit)
 		return 0;
@@ -56,9 +56,9 @@ BASEGRAPH_DATARENDER_API int sy_release_unit(SYUnit * punit)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int sy_init_unit(SYUnit * punit, BOOL dwtype)
+BASEGRAPH_DATARENDER_API int sy_init_unit(BaseGraphUnit * punit, BOOL dwtype)
 {
-	memset(punit, 0, sizeof(SYUnit));
+	memset(punit, 0, sizeof(BaseGraphUnit));
 	matrix4f_identity(&punit->MatVToItem);
 	//matrix4f_identity(&punit->MatNToItem);
 	if (dwtype)
@@ -68,7 +68,7 @@ BASEGRAPH_DATARENDER_API int sy_init_unit(SYUnit * punit, BOOL dwtype)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int sy_copy_unit(SYUnit * pdesunit, SYUnit * psrcunit)
+BASEGRAPH_DATARENDER_API int sy_copy_unit(BaseGraphUnit * pdesunit, BaseGraphUnit * psrcunit)
 {
 	if (!psrcunit)
 		return 0;
@@ -91,7 +91,7 @@ BASEGRAPH_DATARENDER_API int sy_copy_unit(SYUnit * pdesunit, SYUnit * psrcunit)
 	{
 		if (!pdesunit->u.u3d.pmod)
 		{
-			pdesunit->u.u3d.pmod = new SYModel;
+			pdesunit->u.u3d.pmod = new BaseGraphModel;
 			sy_init_moddef(pdesunit->u.u3d.pmod);
 		}
 		sy_copy_moddef(pdesunit->u.u3d.pmod, psrcunit->u.u3d.pmod);
@@ -99,9 +99,9 @@ BASEGRAPH_DATARENDER_API int sy_copy_unit(SYUnit * pdesunit, SYUnit * psrcunit)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API void sy_set_unit_material(SYUnit * p3DUnit, int nSubModelIndex, void * pMaterial)
+BASEGRAPH_DATARENDER_API void sy_set_unit_material(BaseGraphUnit * p3DUnit, int nSubModelIndex, void * pMaterial)
 {
-	SYModel* pmod = p3DUnit->u.u3d.pmod;
+	BaseGraphModel* pmod = p3DUnit->u.u3d.pmod;
 	if (!pmod)
 		return;
 	if (nSubModelIndex >= pmod->nviewsub)
@@ -111,9 +111,9 @@ BASEGRAPH_DATARENDER_API void sy_set_unit_material(SYUnit * p3DUnit, int nSubMod
 	pmod->viewsub[nSubModelIndex].pMaterial = pMaterial;
 }
 
-BASEGRAPH_DATARENDER_API void * sy_get_unit_material(SYUnit * p3DUnit, int nSubModelIndex)
+BASEGRAPH_DATARENDER_API void * sy_get_unit_material(BaseGraphUnit * p3DUnit, int nSubModelIndex)
 {
-	SYModel* pmod = p3DUnit->u.u3d.pmod;
+	BaseGraphModel* pmod = p3DUnit->u.u3d.pmod;
 	if (!pmod)
 		return NULL;
 	if (nSubModelIndex >= pmod->nviewsub)
@@ -123,27 +123,27 @@ BASEGRAPH_DATARENDER_API void * sy_get_unit_material(SYUnit * p3DUnit, int nSubM
 	return pmod->viewsub[nSubModelIndex].pMaterial;
 }
 
-BASEGRAPH_DATARENDER_API void sy_release_unit_material(SYUnit * p3DUnit)
+BASEGRAPH_DATARENDER_API void sy_release_unit_material(BaseGraphUnit * p3DUnit)
 {
-	SYModel* pMod = p3DUnit->u.u3d.pmod;
+	BaseGraphModel* pMod = p3DUnit->u.u3d.pmod;
 	if (pMod != NULL)
 	{
 		for (int m = 0; m < pMod->nviewsub; ++m)
 		{
-			SYMaterial_Release((SYMaterial*)pMod->viewsub[m].pMaterial);
+			BaseGraphMaterial_Release((BaseGraphMaterial*)pMod->viewsub[m].pMaterial);
 			pMod->viewsub[m].pMaterial = NULL;
 		}
 	}
 }
 
-BASEGRAPH_DATARENDER_API void sy_set_unit_material_diffuse(SYUnit * p3DUnit, DWORD dwColor)
+BASEGRAPH_DATARENDER_API void sy_set_unit_material_diffuse(BaseGraphUnit * p3DUnit, DWORD dwColor)
 {
-	SYModel* pMod = p3DUnit->u.u3d.pmod;
+	BaseGraphModel* pMod = p3DUnit->u.u3d.pmod;
 	if (pMod != NULL)
 	{
 		for (int i = 0; i < pMod->nviewsub; ++i)
 		{
-			SYMaterial* pMaterial = (SYMaterial*)pMod->viewsub[i].pMaterial;
+			BaseGraphMaterial* pMaterial = (BaseGraphMaterial*)pMod->viewsub[i].pMaterial;
 			if (pMaterial != NULL)
 			{
 				pMaterial->m_PhyData.Diffuse = dwColor;
@@ -152,11 +152,11 @@ BASEGRAPH_DATARENDER_API void sy_set_unit_material_diffuse(SYUnit * p3DUnit, DWO
 	}
 }
 
-BASEGRAPH_DATARENDER_API SYUnit * sy_create_3dunit_from_2dunit(SYUnit * punit2d, SYUnit * pUnit3D)
+BASEGRAPH_DATARENDER_API BaseGraphUnit * sy_create_3dunit_from_2dunit(BaseGraphUnit * punit2d, BaseGraphUnit * pUnit3D)
 {
 	if (pUnit3D == NULL)
 	{
-		pUnit3D = new SYUnit;
+		pUnit3D = new BaseGraphUnit;
 	}
 	sy_init_unit(pUnit3D, TRUE);
 	pUnit3D->MatVToItem = punit2d->MatVToItem;
@@ -164,10 +164,10 @@ BASEGRAPH_DATARENDER_API SYUnit * sy_create_3dunit_from_2dunit(SYUnit * punit2d,
 	return pUnit3D;
 }
 
-BASEGRAPH_DATARENDER_API SYItemRenderUnit * CreateRenderUnit(BOOL b3dtype)
+BASEGRAPH_DATARENDER_API BaseGraphItemRenderUnit * CreateRenderUnit(BOOL b3dtype)
 {
-	SYItemRenderUnit* pRenderUnit = new SYItemRenderUnit;
-	memset(pRenderUnit, 0, sizeof(SYItemRenderUnit));
+	BaseGraphItemRenderUnit* pRenderUnit = new BaseGraphItemRenderUnit;
+	memset(pRenderUnit, 0, sizeof(BaseGraphItemRenderUnit));
 	pRenderUnit->m_bChanged = TRUE;
 	pRenderUnit->m_bNotRender = FALSE;
 	matrix4f_identity(&pRenderUnit->m_VSelfMatrix);
@@ -181,7 +181,7 @@ BASEGRAPH_DATARENDER_API SYItemRenderUnit * CreateRenderUnit(BOOL b3dtype)
 	return pRenderUnit;
 }
 
-BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(SYItemRenderUnit * pRenderUnit, BOOL b3dType, int hDevice, void * lpCalc)
+BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(BaseGraphItemRenderUnit * pRenderUnit, BOOL b3dType, int hDevice, void * lpCalc)
 {
 	CalculatorTitleword * pCalc = (CalculatorTitleword *)lpCalc;
 	//djt 暂时不引入renderview
@@ -210,40 +210,40 @@ BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(SYItemRenderUnit * pRenderUnit, 
 	SAFE_DELETE(pRenderUnit->m_pUnit);
 }
 
-BASEGRAPH_DATARENDER_API void SYStaticEffect_Init(static_effect * pEffect)
+BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_Init(static_effect * pEffect)
 {
 	if (pEffect == NULL)
 		return;
 	pEffect->Reset();
 }
 
-BASEGRAPH_DATARENDER_API void SYStaticEffect_Release(static_effect * pEffect)
+BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_Release(static_effect * pEffect)
 {
 	if (pEffect == NULL)
 		return;
 	memset(pEffect, 0, sizeof(static_effect));
 }
 
-BASEGRAPH_DATARENDER_API void SYStaticEffect_Copy(static_effect * pDstEffect, const static_effect * pSrcEffect)
+BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_Copy(static_effect * pDstEffect, const static_effect * pSrcEffect)
 {
 	if (pDstEffect == NULL || pSrcEffect == NULL)
 		return;
-	SYStaticEffect_Release(pDstEffect);
+	BaseGraphStaticEffect_Release(pDstEffect);
 	memcpy(pDstEffect, pSrcEffect, sizeof(static_effect));
 }
 
-BASEGRAPH_DATARENDER_API void SYStaticEffect_SetSolidFaceColor(static_effect * pEffect, COLORREF color)
+BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_SetSolidFaceColor(static_effect * pEffect, COLORREF color)
 {
 	//目前效果中的颜色是GBRA格式，所以此处先进行转换RGBA
 	const unsigned char red = color & 0xff;
 	const unsigned char blue = (color >> 16) & 0xff;
 	color &= 0xff00ff00;
 	color |= (red << 16) | blue;
-	pEffect->face.color.type = SYCOLOR_HOMO;
+	pEffect->face.color.type = BaseGraphCOLOR_HOMO;
 	pEffect->face.color.color = color;
 }
 
-BASEGRAPH_DATARENDER_API void SYStaticEffect_SetDefaultSolidColor(static_effect * pEffect, COLORREF color)
+BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_SetDefaultSolidColor(static_effect * pEffect, COLORREF color)
 {
 	//目前效果中的颜色是GBRA格式，所以此处先进行转换RGBA
 	const unsigned char red = color & 0xff;
@@ -251,7 +251,7 @@ BASEGRAPH_DATARENDER_API void SYStaticEffect_SetDefaultSolidColor(static_effect 
 	color &= 0xff00ff00;
 	color |= (red << 16) | blue;
 
-	memset(&pEffect->face.color, 0, sizeof(SYColor));
+	memset(&pEffect->face.color, 0, sizeof(BaseGraphColor));
 	pEffect->face.color.color = color;
 	pEffect->face.art.color = 0xffffffffff;
 	pEffect->face.art.metal.highlight = 0xff000000;
@@ -325,14 +325,14 @@ BASEGRAPH_DATARENDER_API void sy_staticeffect_copy(static_effect * pDstEffect, c
 	memcpy(pDstEffect, pSrcEffect, sizeof(static_effect));
 }
 
-BASEGRAPH_DATARENDER_API void sy_special_effect_copy(syspecial_effect * pDstEffect, const syspecial_effect * pSrcEffect)
+BASEGRAPH_DATARENDER_API void sy_special_effect_copy(common_special_effect * pDstEffect, const common_special_effect * pSrcEffect)
 {
 	if (pDstEffect == NULL || pSrcEffect == NULL)
 		return;
 
 	if (pSrcEffect->m_GraphType == FIRE_GRAPH)
 	{
-		memcpy(&pDstEffect->m_FireColor, &pSrcEffect->m_FireColor, sizeof(SYColor));
+		memcpy(&pDstEffect->m_FireColor, &pSrcEffect->m_FireColor, sizeof(BaseGraphColor));
 		pDstEffect->m_nFireType = pSrcEffect->m_nFireType;
 		pDstEffect->m_nAngle = pSrcEffect->m_nAngle;
 		pDstEffect->m_nDegree = pSrcEffect->m_nDegree;
@@ -349,11 +349,11 @@ BASEGRAPH_DATARENDER_API void sy_special_effect_copy(syspecial_effect * pDstEffe
 	}
 }
 
-BASEGRAPH_DATARENDER_API void sy_special_effect_release(syspecial_effect * pEffect)
+BASEGRAPH_DATARENDER_API void sy_special_effect_release(common_special_effect * pEffect)
 {
 	if (pEffect->m_GraphType == FIRE_GRAPH)
 	{
-		memset(&pEffect->m_FireColor, 0, sizeof(SYColor));
+		memset(&pEffect->m_FireColor, 0, sizeof(BaseGraphColor));
 	}
 	else
 	{
@@ -456,7 +456,7 @@ BASEGRAPH_DATARENDER_API void CopyVectorGraph(vectorgraph * pDesGraph, const vec
 	}
 }
 
-BASEGRAPH_DATARENDER_API void SYVectorGraph_Offset(vectorgraph * pGraph, float nOffsetX, float nOffsetY)
+BASEGRAPH_DATARENDER_API void BaseGraphVectorGraph_Offset(vectorgraph * pGraph, float nOffsetX, float nOffsetY)
 {
 	if (pGraph == NULL)
 		return;
@@ -485,13 +485,13 @@ BASEGRAPH_DATARENDER_API void SYVectorGraph_Offset(vectorgraph * pGraph, float n
 	pGraph->bound.bottom += nOffsetY;
 }
 
-BASEGRAPH_DATARENDER_API void SYVectorGraph_Release(vectorgraph * pGraph)
+BASEGRAPH_DATARENDER_API void BaseGraphVectorGraph_Release(vectorgraph * pGraph)
 {
 	if (pGraph == NULL)
 		return;
 	for (int i = 0; i < pGraph->ncell; ++i)
 	{
-		SYCurveCell_Release(&pGraph->cell[i]);
+		BaseGraphCurveCell_Release(&pGraph->cell[i]);
 	}
 	delete[] pGraph->cell;
 	memset(pGraph, 0, sizeof(vectorgraph));
@@ -537,8 +537,8 @@ BASEGRAPH_DATARENDER_API BOOL CreateRegionVectorGraphFromPoints(vectorgraph * pG
 }
 
 // 把windows的TTPOLYGONHEADER结构转换成vectorgraph结构
-#define SYTTPDENOMINATOR ( double(1.0 / 65536.0) )
-BASEGRAPH_DATARENDER_API void SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph * pGraph, TTPOLYGONHEADER * pSrcOutline, int nSize)
+#define BaseGraphTTPDENOMINATOR ( double(1.0 / 65536.0) )
+BASEGRAPH_DATARENDER_API void BaseGraphVectorGraph_AssignTTPOLYGONHEADER(vectorgraph * pGraph, TTPOLYGONHEADER * pSrcOutline, int nSize)
 {
 	if (pGraph == NULL || pSrcOutline == NULL)
 		return;
@@ -594,8 +594,8 @@ BASEGRAPH_DATARENDER_API void SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph * 
 		pCelln->pttype = new unsigned long[nPointCount];
 
 		point2f*& pCellPt = pCelln->point;
-		pCellPt[0].x = (float)(*((long*)&pTempTT->pfxStart.x) * SYTTPDENOMINATOR);
-		pCellPt[0].y = -(float)(*((long*)&pTempTT->pfxStart.y) * SYTTPDENOMINATOR);
+		pCellPt[0].x = (float)(*((long*)&pTempTT->pfxStart.x) * BaseGraphTTPDENOMINATOR);
+		pCellPt[0].y = -(float)(*((long*)&pTempTT->pfxStart.y) * BaseGraphTTPDENOMINATOR);
 		pCelln->pttype[0] = 0;
 
 		rectf* pCellRt = &pCelln->bound;
@@ -614,8 +614,8 @@ BASEGRAPH_DATARENDER_API void SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph * 
 			case TT_PRIM_LINE:
 				for (int i = 0; i<pSrcCurve->cpfx; i++)
 				{
-					pCellPt[nIndex].x = (float)(*((long*)&pSrcCurve->apfx[i].x) * SYTTPDENOMINATOR);
-					pCellPt[nIndex].y = -(float)(*((long*)&pSrcCurve->apfx[i].y) * SYTTPDENOMINATOR);
+					pCellPt[nIndex].x = (float)(*((long*)&pSrcCurve->apfx[i].x) * BaseGraphTTPDENOMINATOR);
+					pCellPt[nIndex].y = -(float)(*((long*)&pSrcCurve->apfx[i].y) * BaseGraphTTPDENOMINATOR);
 					pCelln->pttype[nIndex - 1] = point_line;
 					pCelln->pttype[nIndex] = point_line;
 					pCellRt->left = min(pCellRt->left, pCellPt[nIndex].x);
@@ -629,8 +629,8 @@ BASEGRAPH_DATARENDER_API void SYVectorGraph_AssignTTPOLYGONHEADER(vectorgraph * 
 			case TT_PRIM_QSPLINE:
 				for (int i = 0; i<pSrcCurve->cpfx; i++)
 				{
-					pCellPt[nIndex].x = (float)(*((long*)&pSrcCurve->apfx[i].x) * SYTTPDENOMINATOR);
-					pCellPt[nIndex].y = -(float)(*((long*)&pSrcCurve->apfx[i].y) * SYTTPDENOMINATOR);
+					pCellPt[nIndex].x = (float)(*((long*)&pSrcCurve->apfx[i].x) * BaseGraphTTPDENOMINATOR);
+					pCellPt[nIndex].y = -(float)(*((long*)&pSrcCurve->apfx[i].y) * BaseGraphTTPDENOMINATOR);
 					if (i == 0)
 						pCelln->pttype[nIndex - 1] = point_conic_start;
 					else
@@ -715,7 +715,7 @@ BASEGRAPH_DATARENDER_API void ReverseVectorGraph(vectorgraph * pDesGraph)
 	}
 }
 
-BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel * pmod)
+BASEGRAPH_DATARENDER_API int sy_release_moddef(BaseGraphModel * pmod)
 {
 	for (int i = 0; i < pmod->nviewsub; i++)
 		sy_release_viewsub(1, &pmod->viewsub[i]);
@@ -743,10 +743,10 @@ BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel * pmod)
 			delete[] pmod->pdwBoneWeight;
 			pmod->pdwBoneWeight = NULL;
 		}
-		SYBoneDef* pBone = NULL;
+		BoneDef* pBone = NULL;
 		for (int i = 0; i < bcount; i++)
 		{
-			pBone = (SYBoneDef*)BaseAR_RemoveAt(&pmod->bonearray, 0, 1);
+			pBone = (BoneDef*)BaseAR_RemoveAt(&pmod->bonearray, 0, 1);
 			sy_release_bonedef(pBone);
 			SAFE_DELETE(pBone);
 		}
@@ -756,18 +756,18 @@ BASEGRAPH_DATARENDER_API int sy_release_moddef(SYModel * pmod)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int sy_release_viewsub(int hDevice, SYSubModel * pSubModel)
+BASEGRAPH_DATARENDER_API int sy_release_viewsub(int hDevice, BaseGraphSubModel * pSubModel)
 {
 	if (pSubModel->pMaterial)
 	{
-		SYMaterial_Release((SYMaterial*)pSubModel->pMaterial);
-		delete (SYMaterial*)pSubModel->pMaterial;
+		BaseGraphMaterial_Release((BaseGraphMaterial*)pSubModel->pMaterial);
+		delete (BaseGraphMaterial*)pSubModel->pMaterial;
 		pSubModel->pMaterial = NULL;
 	}
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API void sy_copy_mod_viewsub(SYModel * pDst, const SYModel * pSrc)
+BASEGRAPH_DATARENDER_API void sy_copy_mod_viewsub(BaseGraphModel * pDst, const BaseGraphModel * pSrc)
 {
 	if (pDst->nviewsub != pSrc->nviewsub)
 	{
@@ -777,15 +777,15 @@ BASEGRAPH_DATARENDER_API void sy_copy_mod_viewsub(SYModel * pDst, const SYModel 
 		pDst->nviewsub = pSrc->nviewsub;
 		if (pDst->nviewsub > 0)
 		{
-			pDst->viewsub = new SYSubModel[pDst->nviewsub];
-			memset(pDst->viewsub, 0, pDst->nviewsub * sizeof(SYSubModel));
+			pDst->viewsub = new BaseGraphSubModel[pDst->nviewsub];
+			memset(pDst->viewsub, 0, pDst->nviewsub * sizeof(BaseGraphSubModel));
 		}
 	}
 
 	for (int i = 0; i < pDst->nviewsub; i++)
 	{
-		SYSubModel* pDstSubModel = &pDst->viewsub[i];
-		SYSubModel* pSrcSubModel = &pSrc->viewsub[i];
+		BaseGraphSubModel* pDstSubModel = &pDst->viewsub[i];
+		BaseGraphSubModel* pSrcSubModel = &pSrc->viewsub[i];
 
 		pDstSubModel->icount = pSrcSubModel->icount;
 		pDstSubModel->vstart = pSrcSubModel->vstart;
@@ -795,19 +795,19 @@ BASEGRAPH_DATARENDER_API void sy_copy_mod_viewsub(SYModel * pDst, const SYModel 
 		pDstSubModel->nTri_Num = pSrcSubModel->nTri_Num;
 		if (!pDstSubModel->pMaterial)
 		{
-			pDstSubModel->pMaterial = new SYMaterial;
-			SYMaterial_Init((SYMaterial*)pDstSubModel->pMaterial);
+			pDstSubModel->pMaterial = new BaseGraphMaterial;
+			BaseGraphMaterial_Init((BaseGraphMaterial*)pDstSubModel->pMaterial);
 		}
-		SYMaterial_Copy((SYMaterial*)pDstSubModel->pMaterial, (SYMaterial*)pSrcSubModel->pMaterial);
+		BaseGraphMaterial_Copy((BaseGraphMaterial*)pDstSubModel->pMaterial, (BaseGraphMaterial*)pSrcSubModel->pMaterial);
 	}
 }
 
-BASEGRAPH_DATARENDER_API void sy_init_moddef(SYModel * pmod)
+BASEGRAPH_DATARENDER_API void sy_init_moddef(BaseGraphModel * pmod)
 {
-	memset(pmod, 0, sizeof(SYModel));
+	memset(pmod, 0, sizeof(BaseGraphModel));
 }
 
-BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel * pDst, const SYModel * pSrc)
+BASEGRAPH_DATARENDER_API void sy_copy_moddef(BaseGraphModel * pDst, const BaseGraphModel * pSrc)
 {
 	pDst->logicvcount = pSrc->logicvcount;
 	pDst->logiclcount = pSrc->logiclcount;
@@ -822,14 +822,14 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel * pDst, const SYModel * pSr
 		pDst->vcount = pSrc->vcount;
 		if (pDst->vcount > 0)
 		{
-			pDst->v = new SYVertex3D[pDst->vcount];
+			pDst->v = new BaseGraphVertex3D[pDst->vcount];
 			if (pSrc->pdwBoneWeight)
 				pDst->pdwBoneWeight = new DWORD[pDst->vcount];	// weight indexes for each vertexes, the array size is "vcount"
 			if (pSrc->pdwBoneIndex)
 				pDst->pdwBoneIndex = new DWORD[pDst->vcount];
 		}
 	}
-	memcpy(pDst->v, pSrc->v, pDst->vcount * sizeof(SYVertex3D));
+	memcpy(pDst->v, pSrc->v, pDst->vcount * sizeof(BaseGraphVertex3D));
 	if (pSrc->pdwBoneWeight)
 		memcpy(pDst->pdwBoneWeight, pSrc->pdwBoneWeight, pSrc->vcount * sizeof(DWORD));
 	if (pSrc->pdwBoneIndex)//当boneindexcount==0时，有地址
@@ -849,9 +849,9 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel * pDst, const SYModel * pSr
 		SAFEDELETE_ARRAY(pDst->pInstance);
 		pDst->nInstanceCount = pSrc->nInstanceCount;		// triangle surfaces indexes
 															//if(pDst->nInstanceCount > 1)
-		pDst->pInstance = new SYModelInstance[pDst->nInstanceCount];
+		pDst->pInstance = new BaseGraphModelInstance[pDst->nInstanceCount];
 	}
-	memcpy(pDst->pInstance, pSrc->pInstance, pDst->nInstanceCount * sizeof(SYModelInstance));
+	memcpy(pDst->pInstance, pSrc->pInstance, pDst->nInstanceCount * sizeof(BaseGraphModelInstance));
 
 	if (pDst->nSeqCount != pSrc->nSeqCount)		// global sequences
 	{
@@ -866,7 +866,7 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel * pDst, const SYModel * pSr
 	int nDstBoneSize = (int)BaseAR_GetSize(&pDst->bonearray);
 	for (int i = 0; i < nDstBoneSize; i++)
 	{
-		SYBoneDef* pDstBone = (SYBoneDef*)BaseAR_GetAt(&pDst->bonearray, i);
+		BoneDef* pDstBone = (BoneDef*)BaseAR_GetAt(&pDst->bonearray, i);
 		sy_release_bonedef(pDstBone);
 		SAFE_DELETE(pDstBone);
 	}
@@ -876,8 +876,8 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel * pDst, const SYModel * pSr
 	for (int i = 0; i < nBoneSize; i++)
 	{
 		//bone array
-		SYBoneDef* pScrBone = (SYBoneDef*)BaseAR_GetAt(&pSrc->bonearray, i);
-		SYBoneDef* pBone = new SYBoneDef;
+		BoneDef* pScrBone = (BoneDef*)BaseAR_GetAt(&pSrc->bonearray, i);
+		BoneDef* pBone = new BoneDef;
 		sy_copy_bone(pBone, pScrBone);
 		BaseAR_Add(&pDst->bonearray, pBone);
 	}
@@ -902,30 +902,30 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(SYModel * pDst, const SYModel * pSr
 	if (pDst->logicvcount > 0)
 	{
 		SAFEDELETE_ARRAY(pDst->logicvertex);
-		pDst->logicvertex = new sylogic_vertex[pDst->logicvcount];
-		memcpy(pDst->logicvertex, pSrc->logicvertex, pDst->logicvcount * sizeof(sylogic_vertex));
+		pDst->logicvertex = new common_logic_vertex[pDst->logicvcount];
+		memcpy(pDst->logicvertex, pSrc->logicvertex, pDst->logicvcount * sizeof(common_logic_vertex));
 	}
 	//逻辑线
 	if (pDst->logiclcount > 0)
 	{
 		SAFEDELETE_ARRAY(pDst->logicline);
-		pDst->logicline = new sylogic_line[pDst->logiclcount];
-		memcpy(pDst->logicline, pSrc->logicline, pDst->logiclcount * sizeof(sylogic_line));
+		pDst->logicline = new common_logic_line[pDst->logiclcount];
+		memcpy(pDst->logicline, pSrc->logicline, pDst->logiclcount * sizeof(common_logic_line));
 	}
 	//逻辑面
 	if (pDst->logicfcount > 0)
 	{
 		SAFEDELETE_ARRAY(pDst->logicface);
-		pDst->logicface = new sylogic_face[pDst->logicfcount];
-		memcpy(pDst->logicface, pSrc->logicface, pDst->logicfcount * sizeof(sylogic_face));
+		pDst->logicface = new common_logic_face[pDst->logicfcount];
+		memcpy(pDst->logicface, pSrc->logicface, pDst->logicfcount * sizeof(common_logic_face));
 	}
 
 	//逻辑体
 	if (pDst->logicccount > 0)
 	{
 		SAFEDELETE_ARRAY(pDst->logiccube);
-		pDst->logiccube = new sylogic_cube[pDst->logicccount];
-		memcpy(&pDst->logiccube, &pSrc->logiccube, pDst->logicccount * sizeof(sylogic_cube));
+		pDst->logiccube = new common_logic_cube[pDst->logicccount];
+		memcpy(&pDst->logiccube, &pSrc->logiccube, pDst->logicccount * sizeof(common_logic_cube));
 	}
 }
 
@@ -941,16 +941,16 @@ BASEGRAPH_DATARENDER_API int sy_release_cell(vectorcell * pcell)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int sy_release_bonedef(SYBoneDef * pbone)
+BASEGRAPH_DATARENDER_API int sy_release_bonedef(BoneDef * pbone)
 {
 	if (!pbone)
 		return 0;
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API void sy_copy_bone(SYBoneDef * pDesBone, SYBoneDef * pSrcBone)
+BASEGRAPH_DATARENDER_API void sy_copy_bone(BoneDef * pDesBone, BoneDef * pSrcBone)
 {
-	memset(pDesBone, 0, sizeof(SYBoneDef));
+	memset(pDesBone, 0, sizeof(BoneDef));
 	pDesBone->nAnimID = pSrcBone->nAnimID;
 	pDesBone->geoid = pSrcBone->geoid;
 	pDesBone->flags = pSrcBone->flags;
@@ -1008,7 +1008,7 @@ BASEGRAPH_DATARENDER_API void sy_materialinfo_copy(BaseGraph_DataBase::materiali
 	pDes->dwReverse2 = pSrc->dwReverse2;
 }
 
-BASEGRAPH_DATARENDER_API void SYRender_GetGraph_RenderInfo(vectorgraph * pGraph, float fscale, int & w, int & h, RECT & rtBound)
+BASEGRAPH_DATARENDER_API void BaseGraphRender_GetGraph_RenderInfo(vectorgraph * pGraph, float fscale, int & w, int & h, RECT & rtBound)
 {
 	rectf rtff;
 	rtff = pGraph->bound;
@@ -1023,7 +1023,7 @@ BASEGRAPH_DATARENDER_API void SYRender_GetGraph_RenderInfo(vectorgraph * pGraph,
 	h = abs(rtBound.bottom - rtBound.top);
 }
 
-BOOL SYRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChannel)
+BOOL BaseGraphRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChannel)
 {
 	TCHAR szRealPath[MAX_PATH];
 	//if (_tcslen(peffect->facelight.szPath))
@@ -1032,7 +1032,7 @@ BOOL SYRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChanne
 	//	GetFileManager()->TagPathTrans(peffect->facelight.szPath, szRealPath, GetFileManager()->lpParam);
 	//	BOOL bResult = FALSE;
 	//	if (peffect->facelight.dwReverse2 != 1)
-	//		bResult = _SYRender_ReadChannel_Mask(szRealPath, pChannel);
+	//		bResult = _BaseGraphRender_ReadChannel_Mask(szRealPath, pChannel);
 	//	if (!bResult)
 	//	{
 	//		delete pChannel;
@@ -1053,7 +1053,7 @@ BOOL SYRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChanne
 	//	BOOL bResult = FALSE;
 
 	//	if (peffect->cubelight.dwReverse2 != 1)
-	//		bResult = _SYRender_ReadChannel_Mask(szRealPath, pChannel);
+	//		bResult = _BaseGraphRender_ReadChannel_Mask(szRealPath, pChannel);
 	//	if (!bResult)
 	//	{
 	//		delete pChannel;
@@ -1075,7 +1075,7 @@ BOOL SYRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChanne
 	//	BOOL bResult = FALSE;
 
 	//	if (peffect->material.dwReverse2 != 1)
-	//		bResult = _SYRender_ReadChannel_Mask(szRealPath, pChannel);
+	//		bResult = _BaseGraphRender_ReadChannel_Mask(szRealPath, pChannel);
 	//	if (!bResult)
 	//	{
 	//		delete pChannel;
@@ -1095,7 +1095,7 @@ BOOL SYRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChanne
 	//	BOOL bResult = FALSE;
 	//	//set dwReverse2 to disable mask channel
 	//	if (peffect->channel.dwReverse2 != 1)
-	//		bResult = _SYRender_ReadChannel_Mask(szRealPath, pChannel, &peffect->channel);
+	//		bResult = _BaseGraphRender_ReadChannel_Mask(szRealPath, pChannel, &peffect->channel);
 	//	if (!bResult)
 	//	{
 	//		delete pChannel;
@@ -1113,7 +1113,7 @@ BOOL SYRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChanne
 
 	//	BOOL bResult = FALSE;
 	//	if (peffect->appendmaterial.dwReverse2 != 1)
-	//		bResult = _SYRender_ReadChannel_Mask(szRealPath, pChannel);
+	//		bResult = _BaseGraphRender_ReadChannel_Mask(szRealPath, pChannel);
 	//	if (!bResult)
 	//	{
 	//		delete pChannel;
@@ -1692,7 +1692,7 @@ void effect_convex(unsigned char* pmask,
 	popermask = NULL;
 }
 
-BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
+BOOL BaseGraphRender_DrawShadow(CCommonBuffer* pSrcPool,
 	CCommonBuffer* pSrcMaskPool,
 	RECT* rtSrc,
 	RECT* rtDes,
@@ -1703,7 +1703,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 	IN  float fscale,
 	IN  int nFrame, BOOL bBaseline, BOOL bSubSrc)
 {
-	if (pinfo->color.type == SYCOLOR_NONE)
+	if (pinfo->color.type == BaseGraphCOLOR_NONE)
 		return FALSE;
 
 	int nWidth = rtDes->right - rtDes->left;
@@ -1716,7 +1716,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 
 	RECT rtFill = { 0,0,nWidth,nHeight };
 
-	SYColor_FillColor(&pinfo->color,
+	BaseGraphColor_FillColor(&pinfo->color,
 		pBuffer,
 		nWidth,
 		nHeight,
@@ -1767,7 +1767,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 		memset(pDesMask, 0xff, nWidth * nHeight);
 	else
 		memset(pDesMask, 00, nWidth * nHeight);
-	SYKey_ProcBuffer(pDesMask,			// 目标键
+	BaseGraphKey_ProcBuffer(pDesMask,			// 目标键
 		rtSrc->left - rtDes->left + nOffsetX * fscale,				// 操作区域
 		rtSrc->top - rtDes->top + nOffsetY * fscale,
 		rtSrc->right - rtSrc->left,
@@ -1857,7 +1857,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 
 	if (bSubSrc && pinfo->effect_style != SHADOW_INSERT)
 	{
-		SYKey_ProcBuffer(pDesMask,			// 目标
+		BaseGraphKey_ProcBuffer(pDesMask,			// 目标
 			rtSrc->left - rtDes->left,				// 操作区域
 			rtSrc->top - rtDes->top,
 			rtSrc->right - rtSrc->left,
@@ -2011,7 +2011,7 @@ BOOL SYRender_DrawShadow(CCommonBuffer* pSrcPool,
 	return 1;
 }
 
-int  _SYRender_GetCubeChannel(sy_render_channel** pDesChannel, sy_render_channel** pSrcChannel)
+int  _BaseGraphRender_GetCubeChannel(sy_render_channel** pDesChannel, sy_render_channel** pSrcChannel)
 {
 	int nCount = 0;
 	if (pSrcChannel[CHANNEL_MATERIAL])
@@ -2027,7 +2027,7 @@ int  _SYRender_GetCubeChannel(sy_render_channel** pDesChannel, sy_render_channel
 
 }
 
-BOOL _SYRender_MakeTable(sy_render_channel** pChannels, int nCount, LPLONG* &pContrastTable, LPLONG* &ppXTable, LPLONG* &ppYTable, int nDesWidth, int nDesHeight)
+BOOL _BaseGraphRender_MakeTable(sy_render_channel** pChannels, int nCount, LPLONG* &pContrastTable, LPLONG* &ppXTable, LPLONG* &ppYTable, int nDesWidth, int nDesHeight)
 {
 	if (nCount <= 0)
 		return TRUE;
@@ -2131,7 +2131,7 @@ BOOL LightColor(DWORD &dwColor,
 }
 
 //在buffer上加入光效
-BOOL SYRenderLightToOpBuff(IN OUT	CCommonBuffer*& pResultPool,
+BOOL BaseGraphRenderLightToOpBuff(IN OUT	CCommonBuffer*& pResultPool,
 	IN 		RECT rtOutBound,
 	IN		RECT rtInValid,
 	IN		sy_render_channel** pChannelPool,
@@ -2198,7 +2198,7 @@ BOOL SYRenderLightToOpBuff(IN OUT	CCommonBuffer*& pResultPool,
 	return 1;
 }
 
-int _SYRender_GetFaceChannel(sy_render_channel** pDesChannel, sy_render_channel** pSrcChannel)
+int _BaseGraphRender_GetFaceChannel(sy_render_channel** pDesChannel, sy_render_channel** pSrcChannel)
 {
 	int nCount = 0;
 
@@ -2218,7 +2218,7 @@ int _SYRender_GetFaceChannel(sy_render_channel** pDesChannel, sy_render_channel*
 	return nCount;
 }
 
-BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN static_effect * effect, OUT CCommonBuffer *& pResultPool, OUT RECT & rtOutBound, OUT int & nWidth, OUT int & nHeight, OUT int & nPitch, IN float fscale, OUT pointf & ptOrg, IN double dFrame, IN BOOL bShadowBaseline, IN sy_render_channel ** pChannelPool)
+BASEGRAPH_DATARENDER_API BOOL BaseGraphRenderGraphToOpBuff(IN vectorgraph * pGraph, IN static_effect * effect, OUT CCommonBuffer *& pResultPool, OUT RECT & rtOutBound, OUT int & nWidth, OUT int & nHeight, OUT int & nPitch, IN float fscale, OUT pointf & ptOrg, IN double dFrame, IN BOOL bShadowBaseline, IN sy_render_channel ** pChannelPool)
 {
 	int facew = 0, faceh = 0;
 	RECT rtFaceBound = { 0 };
@@ -2229,7 +2229,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 	RECT rtAllFaceBound = { 0 };
 	if (pGraph->ncell <= 0)
 		return FALSE;
-	SYRender_GetGraph_RenderInfo(pGraph, fscale, facew, faceh, rtFaceBound);
+	BaseGraphRender_GetGraph_RenderInfo(pGraph, fscale, facew, faceh, rtFaceBound);
 	if (facew == 0 || faceh == 0 || IsRectEmpty(&rtFaceBound))
 		return FALSE;
 
@@ -2244,7 +2244,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		memset(pMaskPool, 0, sizeof(sy_render_channel*) * CHANNEL_COUNT);
 	}
 
-	SYRender_LoadChannel(effect, pMaskPool);
+	BaseGraphRender_LoadChannel(effect, pMaskPool);
 
 	vectorgraph BorderOut;
 	vectorgraph CubeOut, AroundCubeOut;
@@ -2264,14 +2264,14 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 	effect->bordershadow.effect_fxtitle = 0;
 
 	//面
-	if (TRUE/*!effect->face.disable && effect->face.color.type != SYCOLOR_NONE*/)
+	if (TRUE/*!effect->face.disable && effect->face.color.type != BaseGraphCOLOR_NONE*/)
 	{
 		//生成立体边轮廓
-		if (pFaceGraph && !effect->cube.disable && effect->cube.color.type != SYCOLOR_NONE && !effect->cube.disable && abs(effect->cube.width)>ABS_FLOAT_0)
+		if (pFaceGraph && !effect->cube.disable && effect->cube.color.type != BaseGraphCOLOR_NONE && !effect->cube.disable && abs(effect->cube.width)>ABS_FLOAT_0)
 		{
 			memset(&CubeOut, 0, sizeof(vectorgraph));
-			SYRender_GenCubeGraph(&CubeOut, pGraph, NULL, &effect->cube);
-			SYRender_GetGraph_RenderInfo(&CubeOut, fscale, nWidth, nHeight, rtCubeBound);
+			BaseGraphRender_GenCubeGraph(&CubeOut, pGraph, NULL, &effect->cube);
+			BaseGraphRender_GetGraph_RenderInfo(&CubeOut, fscale, nWidth, nHeight, rtCubeBound);
 			UnionRect(&rtOutBound, &rtOutBound, &rtCubeBound);
 
 			vborderOffset.x += effect->cube.width * cos(effect->cube.angle);// * fscale;
@@ -2280,13 +2280,13 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			UnionRect(&rtAllFaceBound, &rtAllFaceBound, &rtCubeBound);
 		}
 		//影信息
-		if (effect->shadow.color.type != SYCOLOR_NONE
+		if (effect->shadow.color.type != BaseGraphCOLOR_NONE
 			&& !effect->shadow.disable
 			&& (effect->shadow.effect_fyscale != 0 || effect->shadow.effect_fxtitle != 0 || effect->shadow.soft > 0 || effect->shadow.offsetx != 0 || effect->shadow.offsety != 0))
 		{
 			rtShadowBound = rtFaceBound;
 			//memset(&BorderShadow,0,sizeof(vectorgraph));
-			//SYRender_GenBorderGraph(&BorderShadow,pGraph,&vborderOffset,effect->shadow.soft/2, &effect->border.linestyle,FALSE);
+			//BaseGraphRender_GenBorderGraph(&BorderShadow,pGraph,&vborderOffset,effect->shadow.soft/2, &effect->border.linestyle,FALSE);
 
 			OffsetRect(&rtShadowBound, effect->shadow.offsetx * fscale, effect->shadow.offsety * fscale);
 			OffsetRect(&rtShadowBound, vborderOffset.x * fscale, vborderOffset.y * fscale);
@@ -2302,7 +2302,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 	}
 
 	//生成边轮廓
-	if (!effect->border.disable&&effect->border.color.type != SYCOLOR_NONE)
+	if (!effect->border.disable&&effect->border.color.type != BaseGraphCOLOR_NONE)
 	{
 		//生成边轮廓
 		memset(&BorderOut, 0, sizeof(vectorgraph));
@@ -2311,19 +2311,19 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			CommonCopy_VectorGraph(&BorderOut, pGraph);
 		}
 		else
-			SYRender_GenBorderGraph(&BorderOut, pGraph, &vborderOffset, effect->border.width, effect->border.interval, effect->border.linestyle, FALSE);
+			BaseGraphRender_GenBorderGraph(&BorderOut, pGraph, &vborderOffset, effect->border.width, effect->border.interval, effect->border.linestyle, FALSE);
 
-		SYRender_GetGraph_RenderInfo(&BorderOut, fscale, nWidth, nHeight, rtBorderBound);
+		BaseGraphRender_GetGraph_RenderInfo(&BorderOut, fscale, nWidth, nHeight, rtBorderBound);
 
 		UnionRect(&rtOutBound, &rtOutBound, &rtBorderBound);
 
 		rtBorderCubeBound = rtOutBound;
 		//生成边的立体轮廓
-		if (!effect->bordercube.disable && effect->bordercube.color.type != SYCOLOR_NONE && abs(effect->bordercube.width)>ABS_FLOAT_0)
+		if (!effect->bordercube.disable && effect->bordercube.color.type != BaseGraphCOLOR_NONE && abs(effect->bordercube.width)>ABS_FLOAT_0)
 		{
 			memset(&AroundCubeOut, 0, sizeof(vectorgraph));
-			SYRender_GenCubeGraph(&AroundCubeOut, &BorderOut, NULL, &effect->bordercube);
-			SYRender_GetGraph_RenderInfo(&AroundCubeOut, fscale, nWidth, nHeight, rtBorderCubeBound);
+			BaseGraphRender_GenCubeGraph(&AroundCubeOut, &BorderOut, NULL, &effect->bordercube);
+			BaseGraphRender_GetGraph_RenderInfo(&AroundCubeOut, fscale, nWidth, nHeight, rtBorderCubeBound);
 			//graph_release(&AroundCubeOut);
 			OffsetRect(&rtBorderCubeBound, vborderOffset.x * fscale, vborderOffset.y * fscale);
 
@@ -2332,7 +2332,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 
 			UnionRect(&rtOutBound, &rtOutBound, &rtBorderCubeBound);
 		}
-		if (effect->bordershadow.color.type != SYCOLOR_NONE
+		if (effect->bordershadow.color.type != BaseGraphCOLOR_NONE
 			&& !effect->bordershadow.disable
 			&& (effect->bordershadow.effect_fyscale != 0
 				|| effect->bordershadow.effect_fxtitle != 0
@@ -2381,11 +2381,11 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		pFaceBuffer = pFacePool->m_dwBuffer;
 		//绘制面
 		Common_DMemSet(pFaceBuffer, 0, nFWidth * nFHeight);
-		if (effect->face.disable || effect->face.color.type == SYCOLOR_NONE)
+		if (effect->face.disable || effect->face.color.type == BaseGraphCOLOR_NONE)
 		{
-			sycolor color;
-			SYColor_CreateHomo(&color, 0xffffffff);
-			SYRender_DrawGraph(pFaceGraph,
+			common_color color;
+			BaseGraphColor_CreateHomo(&color, 0xffffffff);
+			BaseGraphRender_DrawGraph(pFaceGraph,
 				pFaceBuffer,
 				nFWidth,
 				nFHeight,
@@ -2404,7 +2404,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		}
 		else
 		{
-			SYRender_DrawGraph(pFaceGraph,
+			BaseGraphRender_DrawGraph(pFaceGraph,
 				pFaceBuffer,
 				nFWidth,
 				nFHeight,
@@ -2441,13 +2441,13 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			);
 		bDrawFace = TRUE;
 
-		if (!effect->shadow.disable && effect->shadow.color.type != SYCOLOR_NONE
+		if (!effect->shadow.disable && effect->shadow.color.type != BaseGraphCOLOR_NONE
 			&& (effect->shadow.effect_fyscale != 0 || effect->shadow.effect_fxtitle != 0 || effect->shadow.soft > 0 || effect->shadow.offsetx != 0 || effect->shadow.offsety != 0))
 		{
 			int nOffsetX = effect->shadow.offsetx + vborderOffset.x;
 			int nOffsetY = effect->shadow.offsety + vborderOffset.y;
 
-			SYRender_DrawShadow(pFacePool,
+			BaseGraphRender_DrawShadow(pFacePool,
 				pFaceMask,
 				&rtFaceBound,
 				&rtAllFaceBound,
@@ -2465,7 +2465,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			}
 		}
 
-		if (!effect->cube.disable && effect->cube.color.type != SYCOLOR_NONE && abs(effect->cube.width)>ABS_FLOAT_0)
+		if (!effect->cube.disable && effect->cube.color.type != BaseGraphCOLOR_NONE && abs(effect->cube.width)>ABS_FLOAT_0)
 		{
 			int nCubeWidth = rtCubeBound.right - rtCubeBound.left;
 			int nCubebHeight = rtCubeBound.bottom - rtCubeBound.top;
@@ -2478,7 +2478,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			}
 
 			CCommonBuffer* pCubePool = Data_QueryCalcBuffer(nCubeWidth * nCubebHeight, TRUE);
-			SYRender_DrawGraph(
+			BaseGraphRender_DrawGraph(
 				&CubeOut,
 				pCubePool->m_dwBuffer,
 				nCubeWidth,
@@ -2511,13 +2511,13 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 				BUFFER_PARITY_BOTH,	// 奇偶场类型
 				NULL);	// 裁剪区域（可选项）
 
-			int nMaskCount = _SYRender_GetCubeChannel(pDesMaskPool, pMaskPool);
+			int nMaskCount = _BaseGraphRender_GetCubeChannel(pDesMaskPool, pMaskPool);
 			LPLONG* pContrastTable = NULL, *ppXTable = NULL, *ppYTable = NULL;
-			// MakeTable的缓存大小为当前颜色种类（周边，边。。。）大小，比面的大小要大，否则SYRenderLightToOpBuff内存溢出
-			//_SYRender_MakeTable(pDesMaskPool,nMaskCount,pContrastTable,ppXTable,ppYTable,nFWidth,nFHeight);
-			_SYRender_MakeTable(pDesMaskPool, nMaskCount, pContrastTable, ppXTable, ppYTable, rtCubeBound.right - rtCubeBound.left, rtCubeBound.bottom - rtCubeBound.top);
+			// MakeTable的缓存大小为当前颜色种类（周边，边。。。）大小，比面的大小要大，否则BaseGraphRenderLightToOpBuff内存溢出
+			//_BaseGraphRender_MakeTable(pDesMaskPool,nMaskCount,pContrastTable,ppXTable,ppYTable,nFWidth,nFHeight);
+			_BaseGraphRender_MakeTable(pDesMaskPool, nMaskCount, pContrastTable, ppXTable, ppYTable, rtCubeBound.right - rtCubeBound.left, rtCubeBound.bottom - rtCubeBound.top);
 
-			SYRenderLightToOpBuff(
+			BaseGraphRenderLightToOpBuff(
 				pCubePool,
 				rtIn,
 				rtCubeBound,
@@ -2558,7 +2558,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		}
 		if (pFaceSystemBuffer)
 		{
-			if (!effect->face.disable&& effect->face.color.type != SYCOLOR_NONE && !(!effect->shadow.disable && effect->shadow.effect_style == SHADOW_INSERT))
+			if (!effect->face.disable&& effect->face.color.type != BaseGraphCOLOR_NONE && !(!effect->shadow.disable && effect->shadow.effect_style == SHADOW_INSERT))
 			{
 				Common_BitBlt(pFaceSystemBuffer->m_dwBuffer,
 					rtFaceBound.left - rtAllFaceBound.left,
@@ -2589,7 +2589,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		}
 	}
 	//边系操作
-	if (!effect->border.disable && effect->border.color.type != SYCOLOR_NONE)
+	if (!effect->border.disable && effect->border.color.type != BaseGraphCOLOR_NONE)
 	{
 		CCommonBuffer* pBorderMaskPool = NULL;
 		int nBorderMaskWidth = 0;
@@ -2608,7 +2608,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 
 		pBorderBuffer = pBorderPool->m_dwBuffer;
 		memset(pBorderPool->m_dwBuffer, 0, nBorderWidth * nBorderHeight * sizeof(DWORD));
-		SYRender_DrawGraph(
+		BaseGraphRender_DrawGraph(
 			&BorderOut,
 			pBorderBuffer,
 			nBorderWidth,
@@ -2633,11 +2633,11 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			BufferFunction::WriteBitmap(_T("E:\\2.tga"), nBorderWidth, nBorderHeight, 32, (BYTE*)pBorderBuffer);
 		}
 
-		int nMaskCount = _SYRender_GetFaceChannel(pDesMaskPool, pMaskPool);
+		int nMaskCount = _BaseGraphRender_GetFaceChannel(pDesMaskPool, pMaskPool);
 		LPLONG* pContrastTable = NULL, *ppXTable = NULL, *ppYTable = NULL;
-		_SYRender_MakeTable(pDesMaskPool, nMaskCount, pContrastTable, ppXTable, ppYTable, rtBorderBound.right - rtBorderBound.left, rtBorderBound.bottom - rtBorderBound.top);
+		_BaseGraphRender_MakeTable(pDesMaskPool, nMaskCount, pContrastTable, ppXTable, ppYTable, rtBorderBound.right - rtBorderBound.left, rtBorderBound.bottom - rtBorderBound.top);
 
-		SYRenderLightToOpBuff(
+		BaseGraphRenderLightToOpBuff(
 			pBorderPool,
 			rtOutBound,
 			rtBorderBound,
@@ -2662,7 +2662,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		{
 			BufferFunction::WriteBitmap(_T("E:\\2.bmp"), nBorderWidth, nBorderHeight, 32, (BYTE*)pBorderBuffer);
 		}
-		if (!effect->bordershadow.disable && effect->bordershadow.color.type != SYCOLOR_NONE
+		if (!effect->bordershadow.disable && effect->bordershadow.color.type != BaseGraphCOLOR_NONE
 			&& (effect->bordershadow.effect_fyscale != 0
 				|| effect->bordershadow.effect_fxtitle != 0
 				|| effect->bordershadow.soft > 0
@@ -2673,10 +2673,10 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			int nOffsetX = effect->bordershadow.offsetx + vcubeborderOffset.x;
 			int nOffsetY = effect->bordershadow.offsety + vcubeborderOffset.y;
 
-			SYRender_DrawShadow(pBorderPool, pBorderMaskPool, &rtOutBound, &rtOutBound, nOffsetX, nOffsetY, &effect->bordershadow, pResultPool, fscale, dFrame, bShadowBaseline, !effect->border.disable);
+			BaseGraphRender_DrawShadow(pBorderPool, pBorderMaskPool, &rtOutBound, &rtOutBound, nOffsetX, nOffsetY, &effect->bordershadow, pResultPool, fscale, dFrame, bShadowBaseline, !effect->border.disable);
 		}
 
-		if (!effect->bordercube.disable && effect->bordercube.color.type != SYCOLOR_NONE && abs(effect->bordercube.width)>ABS_FLOAT_0)
+		if (!effect->bordercube.disable && effect->bordercube.color.type != BaseGraphCOLOR_NONE && abs(effect->bordercube.width)>ABS_FLOAT_0)
 		{
 			int nBCubeWidth = rtOutBound.right - rtOutBound.left;
 			int nBCubeHeight = rtOutBound.bottom - rtOutBound.top;
@@ -2687,7 +2687,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 			pCubePool->m_nHeight = nBCubeHeight;
 			pCubePool->m_rtBound = rtOutBound;
 
-			SYRender_DrawGraph(
+			BaseGraphRender_DrawGraph(
 				&AroundCubeOut,
 				pCubePool->m_dwBuffer,
 				nBCubeWidth,
@@ -2703,11 +2703,11 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 				dFrame);
 			graph_release(&AroundCubeOut);
 
-			int nMaskCount = _SYRender_GetCubeChannel(pDesMaskPool, pMaskPool);
+			int nMaskCount = _BaseGraphRender_GetCubeChannel(pDesMaskPool, pMaskPool);
 			LPLONG* pContrastTable = NULL, *ppXTable = NULL, *ppYTable = NULL;
-			_SYRender_MakeTable(pDesMaskPool, nMaskCount, pContrastTable, ppXTable, ppYTable, rtBorderCubeBound.right - rtBorderCubeBound.left, rtBorderCubeBound.bottom - rtBorderCubeBound.top);
+			_BaseGraphRender_MakeTable(pDesMaskPool, nMaskCount, pContrastTable, ppXTable, ppYTable, rtBorderCubeBound.right - rtBorderCubeBound.left, rtBorderCubeBound.bottom - rtBorderCubeBound.top);
 
-			SYRenderLightToOpBuff(
+			BaseGraphRenderLightToOpBuff(
 				pCubePool,
 				rtIn,
 				rtBorderCubeBound,
@@ -2818,14 +2818,14 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		pFaceMask = NULL;
 	}
 
-	int nMaskCount = _SYRender_GetFaceChannel(pDesMaskPool, pMaskPool);
+	int nMaskCount = _BaseGraphRender_GetFaceChannel(pDesMaskPool, pMaskPool);
 	LPLONG* pContrastTable = NULL, *ppXTable = NULL, *ppYTable = NULL;
 	int nResultWidth = rtOutBound.right - rtOutBound.left, nResultHeight = rtOutBound.bottom - rtOutBound.top;
-	_SYRender_MakeTable(pDesMaskPool, nMaskCount, pContrastTable, ppXTable, ppYTable, nResultWidth, nResultHeight);
+	_BaseGraphRender_MakeTable(pDesMaskPool, nMaskCount, pContrastTable, ppXTable, ppYTable, nResultWidth, nResultHeight);
 
 	if (pResultPool && nMaskCount > 0)
 	{
-		SYRenderLightToOpBuff(
+		BaseGraphRenderLightToOpBuff(
 			pResultPool,
 			rtOutBound,
 			rtOutBound,
@@ -2882,7 +2882,7 @@ BASEGRAPH_DATARENDER_API void Data_ReleaseCalcBuffer(CCommonBuffer * pBuffer)
 	m_Buffer_Ref--;
 }
 
-BASEGRAPH_DATARENDER_API void SYRender_GenCubeGraph(vectorgraph * des, vectorgraph * src, vector2f * voffset, BaseGraph_DataBase::cubeinfo * pinfo)
+BASEGRAPH_DATARENDER_API void BaseGraphRender_GenCubeGraph(vectorgraph * des, vectorgraph * src, vector2f * voffset, BaseGraph_DataBase::cubeinfo * pinfo)
 {
 	figure_cube_extend(des, src, voffset, pinfo->width, pinfo->angle, 0);
 }
@@ -3605,27 +3605,27 @@ void GetImagPointsByStyle(IN const CBasePoint2fPtrArray& pptfArr1, IN const int 
 {
 	switch (nStyle)
 	{
-	case SYLINE_DASH:
+	case BaseGraphLINE_DASH:
 	{
 		float fIntervalAr[] = { fLineInterval * 4.0f,fLineInterval * 2.0f };
 		GetImagPointsDASH(pptfArr1, fLineWidth, nCell, pptfArrArr, fIntervalAr, 2);
 	}
 	break;
-	case SYLINE_DASHDOT:
+	case BaseGraphLINE_DASHDOT:
 	{
 		float fIntervalAr[] = { fLineInterval * 4.0f,fLineInterval * 2.0f,fLineInterval * 1.0f,fLineInterval * 2.0f };
 		GetImagPointsDASH(pptfArr1, fLineWidth, nCell, pptfArrArr, fIntervalAr, 4);
 		//GetImagPointsDASHDOT(pptfArr1, fLineWidth, nCell, pptfArrArr);
 	}
 	break;
-	case SYLINE_LDASH:
+	case BaseGraphLINE_LDASH:
 	{
 		float fIntervalAr[] = { fLineInterval * 8.0f,fLineInterval * 2.0f };
 		GetImagPointsDASH(pptfArr1, fLineWidth, nCell, pptfArrArr, fIntervalAr, 2);
 		//GetImagPointsLDASH(pptfArr1, fLineWidth, nCell, pptfArrArr);
 	}
 	break;
-	case SYLINE_LDASHDOT:
+	case BaseGraphLINE_LDASHDOT:
 	{
 		float fIntervalAr[] = { fLineInterval * 8.0f,fLineInterval * 2.0f,fLineInterval * 1.0f,fLineInterval * 2.0f };
 		GetImagPointsDASH(pptfArr1, fLineWidth, nCell, pptfArrArr, fIntervalAr, 4);
@@ -3633,7 +3633,7 @@ void GetImagPointsByStyle(IN const CBasePoint2fPtrArray& pptfArr1, IN const int 
 	}
 	//GetImagPointsLDASHDOT(pptfArr1, fLineWidth, nCell, pptfArrArr);
 	break;
-	case SYLINE_RIPPLE:
+	case BaseGraphLINE_RIPPLE:
 		GetPointsRIPPLE(pptfArr1, fLineWidth, nCell, pptfArrArr);
 		break;
 	default:
@@ -3693,7 +3693,7 @@ void GetImageBorderGraph(vectorgraph* des, vectorgraph* src, vector2f* vOffset, 
 			CBasePoint2fPtrArray* ptfArrTemp = (CBasePoint2fPtrArray*)pptfArrArrTemp.GetAt(m);
 
 			pCurveCell->npoint = ptfArrTemp->GetSize();
-			if (nLineStyle == SYLINE_RIPPLE)
+			if (nLineStyle == BaseGraphLINE_RIPPLE)
 			{
 				ptType = point_curve;
 			}
@@ -3806,11 +3806,11 @@ void GetImageBorderGraph(vectorgraph* des, vectorgraph* src, vector2f* vOffset, 
 	numCell = NULL;
 }
 
-BASEGRAPH_DATARENDER_API void SYRender_GenBorderGraph(vectorgraph * des, vectorgraph * src, vector2f * voffset, float fwidth, float finterval, int nLineStyle, BOOL bSingleLine)
+BASEGRAPH_DATARENDER_API void BaseGraphRender_GenBorderGraph(vectorgraph * des, vectorgraph * src, vector2f * voffset, float fwidth, float finterval, int nLineStyle, BOOL bSingleLine)
 {
 	////////////////////////////////////////////////////////////////////////// begin
 	// 根据描边类型生成Graph
-	if (nLineStyle == SYLINE_SOLID || abs(finterval) <= ABS_FLOAT_0)
+	if (nLineStyle == BaseGraphLINE_SOLID || abs(finterval) <= ABS_FLOAT_0)
 	{
 		if (bSingleLine)
 			figure_extend_Single(des, src, voffset, fwidth, 0, FALSE);
@@ -3893,7 +3893,7 @@ start:
 	return NULL;
 }
 
-BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph * pGraph, DWORD * pBuffer, int w, int h, float fscale, RECT rtBorderBound, sycolor * pcolor, DWORD effect_type, DWORD effect_width, DWORD effect_soft, float effect_angle, DWORD effect_color, int nframe, CCommonBuffer ** pRetMaskPool, int * nRetMaskWidth, int * nRetMaskHeight)
+BASEGRAPH_DATARENDER_API BOOL BaseGraphRender_DrawGraph(vectorgraph * pGraph, DWORD * pBuffer, int w, int h, float fscale, RECT rtBorderBound, common_color * pcolor, DWORD effect_type, DWORD effect_width, DWORD effect_soft, float effect_angle, DWORD effect_color, int nframe, CCommonBuffer ** pRetMaskPool, int * nRetMaskWidth, int * nRetMaskHeight)
 {
 	//LARGE_INTEGER t_freqency;
 	//LARGE_INTEGER t_start;
@@ -3934,7 +3934,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRender_DrawGraph(vectorgraph * pGraph, DWORD * p
 	//如果颜色存在，就渲染颜色
 	if (pcolor)
 	{
-		SYColor_FillColor(pcolor, pBuffer, w, h, 0, 0, w, h, fscale, nframe);
+		BaseGraphColor_FillColor(pcolor, pBuffer, w, h, 0, 0, w, h, fscale, nframe);
 	}
 
 	render_merge_bufalpha(pBuffer, pMask, w, h);
@@ -4723,19 +4723,19 @@ BASEGRAPH_DATARENDER_API void GetImagPointsByStyle(IN const BaseARray & pptfArr1
 {
 	switch (nStyle)
 	{
-	case SYLINE_DASH:
+	case BaseGraphLINE_DASH:
 		GetImagPointsDASH(pptfArr1, fLineWidth, nCell, pptfArr);
 		break;
-	case SYLINE_DASHDOT:
+	case BaseGraphLINE_DASHDOT:
 		GetImagPointsDASHDOT(pptfArr1, fLineWidth, nCell, pptfArr);
 		break;
-	case SYLINE_LDASH:
+	case BaseGraphLINE_LDASH:
 		GetImagPointsLDASH(pptfArr1, fLineWidth, nCell, pptfArr);
 		break;
-	case SYLINE_LDASHDOT:
+	case BaseGraphLINE_LDASHDOT:
 		GetImagPointsLDASHDOT(pptfArr1, fLineWidth, nCell, pptfArr);
 		break;
-	case SYLINE_RIPPLE:
+	case BaseGraphLINE_RIPPLE:
 		GetPointsRIPPLE(pptfArr1, fLineWidth, nCell, pptfArr);
 		break;
 	default:
@@ -5237,14 +5237,14 @@ BASEGRAPH_DATARENDER_API void CopyCell(vectorcell * pdescell, vectorcell * psrcc
 	}
 }
 
-void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3dcolor, int nSubFace, LPCommonStretchParam pStretchParam)
+void Modify3DUnitFrom2DUnit(BaseGraphUnit * punit3d, BaseGraphUnit * punit2d, BaseGraphMaterial ** p3dcolor, int nSubFace, LPCommonStretchParam pStretchParam)
 {
 	if (pStretchParam == NULL)
 		return;
 
 	LPCommonStretchParam pStretch = (LPCommonStretchParam)pStretchParam;
 	float3Set(&punit3d->pos, punit2d->pos.x, punit2d->pos.y, 0);
-	SYModel* pMod = new SYModel;
+	BaseGraphModel* pMod = new BaseGraphModel;
 	sy_init_moddef(pMod);
 	vectorgraph* pFigure = &punit2d->u.u2d.graph;
 	vectorgraph NewFigure;
@@ -5253,23 +5253,23 @@ void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3
 	if (NewFigure.ncell == 0)
 	{
 		pMod->nviewsub = 1;
-		pMod->viewsub = new SYSubModel[pMod->nviewsub];
-		memset(pMod->viewsub, 0, pMod->nviewsub * sizeof(SYSubModel));
+		pMod->viewsub = new BaseGraphSubModel[pMod->nviewsub];
+		memset(pMod->viewsub, 0, pMod->nviewsub * sizeof(BaseGraphSubModel));
 	}
 	else
 	{
 		Common_BEVEL_TYPE eBevelType = pStretch->eBevelType;
 		float fRealHeaght = eBevelType == Common_BEVEL_NONE ? pStretch->fThick : pStretch->fThick - pStretch->fBevelThick * 2;
-		SYModel_CreateBevel(pMod, &NewFigure, max(0, fRealHeaght), pStretch->fBevelThick, pStretch->fBevelLen, eBevelType);
+		BaseGraphModel_CreateBevel(pMod, &NewFigure, max(0, fRealHeaght), pStretch->fBevelThick, pStretch->fBevelLen, eBevelType);
 	}
 	//未指定3D色时，使用2D颜色创建材质。
-	SYMaterial* pMaterial;
+	BaseGraphMaterial* pMaterial;
 	if (p3dcolor == NULL)
 	{
-		DWORD faceColor = SYColor_GetRGBColor(&punit2d->u.u2d.staticeffect.face.color);
+		DWORD faceColor = BaseGraphColor_GetRGBColor(&punit2d->u.u2d.staticeffect.face.color);
 		for (int i = 0; i < pMod->nviewsub; ++i)
 		{
-			pMaterial = (SYMaterial*)sy_get_unit_material(punit3d, i);
+			pMaterial = (BaseGraphMaterial*)sy_get_unit_material(punit3d, i);
 			if (pMaterial != NULL)
 			{
 				pMod->viewsub[i].pMaterial = pMaterial;
@@ -5277,32 +5277,32 @@ void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3
 			}
 			else
 			{
-				pMaterial = new SYMaterial;
-				SYMaterial_Init(pMaterial, faceColor);
+				pMaterial = new BaseGraphMaterial;
+				BaseGraphMaterial_Init(pMaterial, faceColor);
 				pMod->viewsub[i].pMaterial = pMaterial;
 			}
 		}
 	}
 	else
 	{
-		SYMaterial** pSrcMaterial = p3dcolor;
+		BaseGraphMaterial** pSrcMaterial = p3dcolor;
 		//Copy Material
 		for (int i = 0; i < pMod->nviewsub; ++i)
 		{
-			pMaterial = (SYMaterial*)pMod->viewsub[i].pMaterial;
+			pMaterial = (BaseGraphMaterial*)pMod->viewsub[i].pMaterial;
 			if (pMaterial == NULL)
 			{
-				pMaterial = new SYMaterial;
-				memset(pMaterial, 0, sizeof(SYMaterial));
+				pMaterial = new BaseGraphMaterial;
+				memset(pMaterial, 0, sizeof(BaseGraphMaterial));
 			}
 			else
 			{
-				SYMaterial_Release(pMaterial);
+				BaseGraphMaterial_Release(pMaterial);
 			}
 			if (i < nSubFace)
-				SYMaterial_Copy(pMaterial, pSrcMaterial[i]);
+				BaseGraphMaterial_Copy(pMaterial, pSrcMaterial[i]);
 			else
-				SYMaterial_Copy(pMaterial, pSrcMaterial[0]);
+				BaseGraphMaterial_Copy(pMaterial, pSrcMaterial[0]);
 			pMod->viewsub[i].pMaterial = pMaterial;
 		}
 	}
@@ -5367,7 +5367,7 @@ BASEGRAPH_DATARENDER_API void CalcPointProject(vector4f * pV4D, matrix4f * pTran
 	*pV4D = vDes;
 }
 
-BASEGRAPH_DATARENDER_API void calc_trans_group_tovector(OUT vector3f * pvpos, OUT vector3f * pvscale, OUT SYQuatn * pTcb, OUT vector3f * pEur, OUT vector3f * pcenter, IN double dframe, IN vector3f * pamendpos, IN vector3f * pamendscale, IN vector3f * pamendrotate)
+BASEGRAPH_DATARENDER_API void calc_trans_group_tovector(OUT vector3f * pvpos, OUT vector3f * pvscale, OUT BaseGraphQuatn * pTcb, OUT vector3f * pEur, OUT vector3f * pcenter, IN double dframe, IN vector3f * pamendpos, IN vector3f * pamendscale, IN vector3f * pamendrotate)
 {
 	return;
 }
@@ -5763,14 +5763,14 @@ BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT BaseARray * ptarray, OUT BaseAR
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API void SYCurveCell_Init(vectorcell * pCell)
+BASEGRAPH_DATARENDER_API void BaseGraphCurveCell_Init(vectorcell * pCell)
 {
 	if (pCell == NULL)
 		return;
 	memset(pCell, 0, sizeof(vectorcell));
 }
 
-BASEGRAPH_DATARENDER_API void SYCurveCell_Release(vectorcell * pCell)
+BASEGRAPH_DATARENDER_API void BaseGraphCurveCell_Release(vectorcell * pCell)
 {
 	if (pCell == NULL)
 		return;
@@ -5784,5 +5784,5 @@ BASEGRAPH_DATARENDER_API void SYCurveCell_Release(vectorcell * pCell)
 		delete[] pCell->pttype;
 		pCell->pttype = NULL;
 	}
-	SYCurveCell_Init(pCell);
+	BaseGraphCurveCell_Init(pCell);
 }

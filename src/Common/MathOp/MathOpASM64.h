@@ -1,5 +1,5 @@
-#ifndef __SYCOMMON_ASM_64_H__
-#define __SYCOMMON_ASM_64_H__
+#ifndef __BaseGraphCOMMON_ASM_64_H__
+#define __BaseGraphCOMMON_ASM_64_H__
 
 #include "Common\MatrixDef.h"
 #include "Common\PlaneDef.h"
@@ -11,47 +11,47 @@ extern "C" void matrix4_mulnum_x64(pmatrix4f pDesM, pmatrix4f pSrcM, float k);
 extern "C" void matrix4_add_x64(pmatrix4f pDesM, pmatrix4f pSrcML, pmatrix4f pSrcMR);
 extern "C" void matrix4_minus_x64(pmatrix4f pDesM, pmatrix4f pSrcML, pmatrix4f pSrcMR);
 extern "C" void matrix4_mul_x64(pmatrix4f pDesM, const matrix4f* pSrcML, const matrix4f*  pSrcMR);
-extern "C" void matrix4_fromquatn_x64(pmatrix4f pDesM, const SYQuatn* pSrcQ, float fOne);
+extern "C" void matrix4_fromquatn_x64(pmatrix4f pDesM, const BaseGraphQuatn* pSrcQ, float fOne);
 extern "C" void matrix4_fromrotvector_x64(pmatrix4f pDesM, const float3* pSrcV, float fAngle, float fCoefCos, float fCoefSin, float fOne);
 extern "C" void matrix4_fromeuler_lyxz_x64(pmatrix4f pDesM,  float fCosX, float fSinX, float fCosY, float fSinY, float fCosZ, float fSinZ, float fOne);
 extern "C" void  matrix4_transpose_x64(pmatrix4f pDesM, const matrix4f* pSrcM);
 
 //quatn
-extern "C" void			_quatnNegtive_x64(SYQuatn* pQ);
-extern "C" void			_quatnAdd_x64(SYQuatn* pDesQ,	
-						 const SYQuatn* pSrcQL,	
-						 const SYQuatn* pSrcQR);
-extern "C" void _quatnMinus_x64(SYQuatn* pDesQ,		
-						   const SYQuatn* pSrcQL,	
-						   const SYQuatn* pSrcQR);		
+extern "C" void			_quatnNegtive_x64(BaseGraphQuatn* pQ);
+extern "C" void			_quatnAdd_x64(BaseGraphQuatn* pDesQ,	
+						 const BaseGraphQuatn* pSrcQL,	
+						 const BaseGraphQuatn* pSrcQR);
+extern "C" void _quatnMinus_x64(BaseGraphQuatn* pDesQ,		
+						   const BaseGraphQuatn* pSrcQL,	
+						   const BaseGraphQuatn* pSrcQR);		
 
-extern "C" void _quatnStandardMul_x64(SYQuatn* pDesQ,		
-								 const SYQuatn* pSrcQL,	
-								 const SYQuatn* pSrcQR);
-extern "C" void _quatnCustomMul_x64(SYQuatn* pDesQ,		
-							   const SYQuatn* pSrcQL,	
-							   const SYQuatn* pSrcQR);	
-extern "C" void _quatnNormalize_x64(SYQuatn* pDesQ,	
-							   const SYQuatn* pSrcQ);	
-extern "C" void _quatnScale_x64(SYQuatn* pQ,	
+extern "C" void _quatnStandardMul_x64(BaseGraphQuatn* pDesQ,		
+								 const BaseGraphQuatn* pSrcQL,	
+								 const BaseGraphQuatn* pSrcQR);
+extern "C" void _quatnCustomMul_x64(BaseGraphQuatn* pDesQ,		
+							   const BaseGraphQuatn* pSrcQL,	
+							   const BaseGraphQuatn* pSrcQR);	
+extern "C" void _quatnNormalize_x64(BaseGraphQuatn* pDesQ,	
+							   const BaseGraphQuatn* pSrcQ);	
+extern "C" void _quatnScale_x64(BaseGraphQuatn* pQ,	
 						   float k);		
-extern "C" void _quatnMulNum_x64(SYQuatn* pDesQ,		
-							const SYQuatn* pSrcQ,			
+extern "C" void _quatnMulNum_x64(BaseGraphQuatn* pDesQ,		
+							const BaseGraphQuatn* pSrcQ,			
 							float k);				
-extern "C" void _quatnMode_x64(float* pfRes,const SYQuatn* pQ);			
-extern "C" void _quatnDotProduct_x64(float* pfRes, const SYQuatn* pQ1,	
-								 const SYQuatn* pQ2);	
-extern "C" void _quatnSlerp_x64(SYQuatn* pDesQ,const SYQuatn* pSrcQ0,const SYQuatn* pSrcQ1,float k0,float k1);	
-extern "C" void _quatnFromAngleAxis_x64(SYQuatn* pDesQ, const float3* pSrcV, float fCosCoef,float fSinCoef);
-extern "C" void _quatnFromEuler_LYXZ_x64(SYQuatn* pDesQ,
+extern "C" void _quatnMode_x64(float* pfRes,const BaseGraphQuatn* pQ);			
+extern "C" void _quatnDotProduct_x64(float* pfRes, const BaseGraphQuatn* pQ1,	
+								 const BaseGraphQuatn* pQ2);	
+extern "C" void _quatnSlerp_x64(BaseGraphQuatn* pDesQ,const BaseGraphQuatn* pSrcQ0,const BaseGraphQuatn* pSrcQ1,float k0,float k1);	
+extern "C" void _quatnFromAngleAxis_x64(BaseGraphQuatn* pDesQ, const float3* pSrcV, float fCosCoef,float fSinCoef);
+extern "C" void _quatnFromEuler_LYXZ_x64(BaseGraphQuatn* pDesQ,
 									float fCosX,
 									float fSinX,
 									float fCosY,
 									float fSinY,
 									float fCosZ,
 									float fSinZ);
-extern "C" void _quatnMulMatQ_x64(SYQuatn* pDesQ,
-							 const SYQuatn* pSrcQ,
+extern "C" void _quatnMulMatQ_x64(BaseGraphQuatn* pDesQ,
+							 const BaseGraphQuatn* pSrcQ,
 							 const matrix4f* pSrcM);
 extern "C" void			float2MulMatQ_x64(float2* pDesV,			// 目标向量指针
 										  const float2* pSrcV,			// 源向量指针

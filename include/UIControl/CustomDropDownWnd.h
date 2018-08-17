@@ -1,5 +1,5 @@
-#ifndef	__INC_SYDROPDOWNWND__
-#define	__INC_SYDROPDOWNWND__
+#ifndef	__INC_BaseGraphDROPDOWNWND__
+#define	__INC_BaseGraphDROPDOWNWND__
 
 #include "UIControl/CustomScrollBar.h"
 

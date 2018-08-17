@@ -7,7 +7,7 @@
 #define DEFAULT_LINE_NUM	10
 #include "SceneRender\DXEngineDataDef.h"
 
-struct SYEasyVertex
+struct BaseGraphEasyVertex
 {
 	float3	pos;
 	DWORD	color;
@@ -74,8 +74,8 @@ public:
 	void BeginRender();
 	void clearLine();
 protected:
-	SYEasyVertex*	m_pLineVertex;
-	SYEasyVertex*	m_pNowVertex;
+	BaseGraphEasyVertex*	m_pLineVertex;
+	BaseGraphEasyVertex*	m_pNowVertex;
 	DWORD	m_dColor;
 	int		m_hLineVertex;
 	int		m_NumVertex;
