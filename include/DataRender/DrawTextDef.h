@@ -195,10 +195,10 @@ typedef struct tag_common_specialeffect
 		};
 	};
 }common_special_effect;
-typedef  common_special_effect SYSpecialEffect, *LPCommonSpecialEffect;
+typedef  common_special_effect BaseGraphSpecialEffect, *LPCommonSpecialEffect;
 typedef  const LPCommonSpecialEffect *LPCBaseSpecialEffect;
 //拉伸数据结构
-typedef struct sy_stretch_param
+typedef struct common_stretch_param
 {
 	BOOL				bEnable;		//拉伸标识
 	float				fThick;			//拉伸厚度
@@ -206,7 +206,7 @@ typedef struct sy_stretch_param
 	float				fBevelThick;	//导角厚度
 	float				fBevelLen;		//导角长度
 	float				fBevelPrecision;//导角精度
-	sy_stretch_param()
+	common_stretch_param()
 	{
 		bEnable = FALSE;
 		fThick = 0;
@@ -219,7 +219,7 @@ typedef struct sy_stretch_param
 
 
 //扩充的字体数据结构
-struct sy_font_def
+struct common_font_def
 {
 	//仿照LOGFONT
 	float		lfHeight;
@@ -252,11 +252,11 @@ struct sy_font_def
 	BYTE		lfVGRotate;					//竖排旋转字形
 	BYTE		lfScript;					//脚注
 	float		lfScriptOffset;				//自定义脚注偏移
-	sy_font_def() { Reset(); }
+	common_font_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 };
 
-typedef sy_font_def BaseGraphFont, *LPCommonFont;
+typedef common_font_def BaseGraphFont, *LPCommonFont;
 typedef const LPCommonFont LPCBaseFont;
 
 //横向对齐方式
@@ -293,7 +293,7 @@ enum  eBaseARtTypesetPath
 };
 
 //文字属性结构体
-typedef struct sy_text_prop_def
+typedef struct common_text_prop_def
 {
 	DWORD		dwVersion;			//版本号
 	BaseARray		arFont;				//字体表
@@ -301,7 +301,7 @@ typedef struct sy_text_prop_def
 	BaseARray		ar3DColor;			//3D颜色表
 	BaseARray		arUnderLine;		//下划线表
 	BaseARray		arIndex;			//属性检索表
-	sy_text_prop_def() { Reset(); }
+	common_text_prop_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }BaseGraphTextProp, *LPCommonTextProp;
 typedef const BaseGraphTextProp* LPCBaseTextProp;
@@ -318,7 +318,7 @@ typedef enum e_text_under_line
 }E_TextUnderLine;
 
 //艺术排版数据结构
-typedef struct sy_art_typeset_def
+typedef struct common_art_typeset_def
 {
 	DWORD				dwVersion;			//版本号
 	eBaseARtTypesetPath	ePath;				//排版路径曲线类型
@@ -327,13 +327,13 @@ typedef struct sy_art_typeset_def
 	BaseARray				arHandlePointUp;		//关键点位置数组
 	BaseARray				arHandlePointDown;		//关键点位置数组
 	LPVOID				pTitleCurve;			// 曲线文字，专用
-	sy_art_typeset_def() { Reset(); }
+	common_art_typeset_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }BaseARtTypeset, *LPBaseARtTypeset;
 typedef const BaseARtTypeset* LPCBaseARtTypeset;
 
 //文本排版原始数据结构
-typedef struct sy_text_def
+typedef struct common_text_def
 {
 	/**********存档数据**********/
 	DWORD				dwVersion;			//版本号
@@ -369,8 +369,8 @@ typedef struct sy_text_def
 	BOOL				bHideBorderCrosserL;	//隐藏行方向越出边框者
 
 												//艺术属性
-	sy_art_typeset_def*	pArtWord;			//非空时，才为艺术字。
-	sy_art_typeset_def*	pTypesetPath;		//非空时，才有排版路径。
+	common_art_typeset_def*	pArtWord;			//非空时，才为艺术字。
+	common_art_typeset_def*	pTypesetPath;		//非空时，才有排版路径。
 	BOOL				bCurveFlow;			// 文字是否流动
 	double				dEndTime;			// 从流入到结束的时间（总时长的比例）
 	double				dCurTime;			// 当前位置的时间（总时长比例）
@@ -391,13 +391,13 @@ typedef struct sy_text_def
 	LPVOID				pTypesetPrivate;	//排版器的私有数据
 	LPVOID				hHandle;			//操纵句柄（存本结构指针）
 	LPVOID				lpParam;			//预留数据
-	sy_text_def() { Reset(); }
+	common_text_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }BaseGraphText, *LPCommonText;
 typedef const BaseGraphText* LPCBaseText;
 
 //项目符号的原始数据定义
-typedef struct sy_textsymbol_def
+typedef struct common_textsymbol_def
 {
 	/**********存档数据**********/
 	DWORD				dwVersion;			//版本号
@@ -407,12 +407,12 @@ typedef struct sy_textsymbol_def
 											/**********临时数据**********/
 	LPVOID				hHandle;			//操纵句柄（存本结构指针）
 	LPVOID				lpParam;			//预留数据
-	sy_textsymbol_def() { Reset(); }
+	common_textsymbol_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }BaseGraphTextSymbol, *LPCommonTextSymbol;
 
 //段落的原始数据定义
-typedef struct sy_textparagraph_def
+typedef struct common_textparagraph_def
 {
 	/**********存档数据**********/
 	DWORD					dwVersion;		//版本号
@@ -428,7 +428,7 @@ typedef struct sy_textparagraph_def
 											/**********临时数据**********/
 	LPVOID					hHandle;		//操作句柄（存本结构指针）
 	LPVOID					lpParam;		//预留数据
-	sy_textparagraph_def() { Reset(); }
+	common_textparagraph_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 }BaseGraphTextParagraph, *LPCommonTextParagraph;
 typedef struct  tag_BaseGraphTypesetPrivate
@@ -439,17 +439,17 @@ typedef struct  tag_BaseGraphTypesetPrivate
 }BaseGraphTypesetPrivate, *LPCommonTypesetPrivate;
 
 //扩充的字体数据结构
-struct sy_under_line_def
+struct common_under_line_def
 {
 	DWORD			dwVersion;				//版本号
 	E_TextUnderLine	eType;					//线类型
 	float			fDistance;				//线相对于基线的偏移
 	float			fHeight;				//线高
 	static_effect	se2DColor;				//2D颜色
-	sy_under_line_def() { Reset(); }
+	common_under_line_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 };
-typedef sy_under_line_def BaseGraphUnderLine, *LPCommonUnderLine;
+typedef common_under_line_def BaseGraphUnderLine, *LPCommonUnderLine;
 typedef const LPCommonUnderLine LPCBaseUnderLine;
 //文字属性数据块类别定义
 typedef enum e_text_property_type
@@ -507,7 +507,7 @@ typedef enum e_text_prop_type
 	TEXT_PROP_TYPE_UNDERLINE,
 }E_TextPropType;
 //文字属性索引
-typedef struct sy_text_prop_index_def
+typedef struct common_text_prop_index_def
 {
 	LPVOID					pFont;		//字体属性索引
 	LPVOID					p2DColor;	//2D颜色属性索引

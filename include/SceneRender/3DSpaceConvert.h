@@ -35,11 +35,11 @@ enum BaseGraphPROJTYPE
 
 enum Common_SPACE_CONVERT
 {
-	SY2DVEC_TO_3D_VIEWPLANE,//将屏幕座标转换为与近平面平行的平面上在VIEW空间下座标
-	SY2DVEC_TO_3D_WORLD,	//将屏幕座标转换为近平面的物理座标（若给定的矩阵为自身矩阵，则转换到自身座标系下，若为单位阵，则转换到世界座标系下）
-	SY2DVEC_TO_3D_PLANE,	//将屏幕座标转换为近平面的物理座标（若给定的矩阵为自身矩阵，则转换到自身座标系下，若为单位阵，则转换到世界座标系下）
-	SY3DVEC_TO_2D,			//将3D投影到2D平面上
-	SY3DVEC_TO_VIEWPLANE,	//将3D坐标转换到指定z值的同一条射线上，输出顶点为物件空间，输出顶点与输入顶点在二维的投影面相同
+	BaseGraph2DVEC_TO_3D_VIEWPLANE,//将屏幕座标转换为与近平面平行的平面上在VIEW空间下座标
+	BaseGraph2DVEC_TO_3D_WORLD,	//将屏幕座标转换为近平面的物理座标（若给定的矩阵为自身矩阵，则转换到自身座标系下，若为单位阵，则转换到世界座标系下）
+	BaseGraph2DVEC_TO_3D_PLANE,	//将屏幕座标转换为近平面的物理座标（若给定的矩阵为自身矩阵，则转换到自身座标系下，若为单位阵，则转换到世界座标系下）
+	BaseGraph3DVEC_TO_2D,			//将3D投影到2D平面上
+	BaseGraph3DVEC_TO_VIEWPLANE,	//将3D坐标转换到指定z值的同一条射线上，输出顶点为物件空间，输出顶点与输入顶点在二维的投影面相同
 };
 
 void BASEGRAPH_SCENE_RENDER_API ChangeZPos(float3* pPos,const matrix4f* pWorldPos,const matrix4f* pViewMat,float fZValue);
@@ -71,6 +71,6 @@ void BASEGRAPH_SCENE_RENDER_API Cal2DViewProjMat(matrix4f* pOutViewMat,int nScen
 void BASEGRAPH_SCENE_RENDER_API CalBillboardMatrix(matrix4f* pSrcMatrix, const matrix4f* pViewMat,const matrix4f* AdditionRotate = NULL);
 void BASEGRAPH_SCENE_RENDER_API CalBillboardMatrix(matrix4f* pSrcMatrix, int nCount,size_t nOffset,const matrix4f* pWorldMat, const matrix4f* pViewMat);
 
-void BASEGRAPH_SCENE_RENDER_API SYConvertBoxTo2DRect(rectf* pRect,const BaseGraphSpaceConvertParam* param,const float3* vMin,const float3* vMax);
-void BASEGRAPH_SCENE_RENDER_API SYCalBoxNearFar(float* pNear,float* pFar,const matrix4f& matWorldView, const float3& vMin,const float3& vMax);
+void BASEGRAPH_SCENE_RENDER_API BaseGraphConvertBoxTo2DRect(rectf* pRect,const BaseGraphSpaceConvertParam* param,const float3* vMin,const float3* vMax);
+void BASEGRAPH_SCENE_RENDER_API BaseGraphCalBoxNearFar(float* pNear,float* pFar,const matrix4f& matWorldView, const float3& vMin,const float3& vMax);
 

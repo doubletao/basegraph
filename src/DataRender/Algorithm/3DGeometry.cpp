@@ -29,9 +29,9 @@ struct BaseGraphTriangle
 };
 enum BaseGraphModel_PLANE_VERTEX_TYPE
 {
-	SY3DPLANE_XY = 0,
-	SY3DPLANE_XZ,
-	SY3DPLANE_YZ,
+	BaseGraph3DPLANE_XY = 0,
+	BaseGraph3DPLANE_XZ,
+	BaseGraph3DPLANE_YZ,
 };
 class Autolock;
 class ArrayVer
@@ -346,7 +346,7 @@ void SetPlaneIndexAndUV( IN OUT BaseGraphModel* pMod, IN int nIndexSt, IN int nV
 	int nTriIndex = 0;
 	//01
 	//23
-	if ( nType == SY3DPLANE_ROW_FIRST )
+	if ( nType == BaseGraph3DPLANE_ROW_FIRST )
 	{
 		for ( int i = 1; i < nRowNum; i++ )
 		{
@@ -375,7 +375,7 @@ void SetPlaneIndexAndUV( IN OUT BaseGraphModel* pMod, IN int nIndexSt, IN int nV
 	}
 	//02
 	//13
-	else if ( nType == SY3DPLANE_COLUMN_FIRST )
+	else if ( nType == BaseGraph3DPLANE_COLUMN_FIRST )
 	{
 		for ( int j = 1; j < nColumnNum; j++ )
 		{
@@ -410,7 +410,7 @@ BOOL BaseGraphInitialSegment(IN OUT BaseGraphModel* pMod)
 	{
 		NewVertexIndex( pMod, BaseGraphModelRENDER_SEGMENT );
 		SetPlaneIndexAndUV( pMod, g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].istart, g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].vstart, Common_SEGMENT_ROW_NUM, Common_SEGMENT_COLUMN_NUM, 
-			SY3DPLANE_ROW_FIRST );
+			BaseGraph3DPLANE_ROW_FIRST );
 	}
 	return TRUE;
 }
@@ -462,14 +462,14 @@ BOOL BaseGraphInitialSphere(IN OUT BaseGraphModel* pMod, int nLevel /* = 1*/)
 	else
 		NewVertexIndex( pMod, BaseGraphModelRENDER_SPHERE ,nLevel);
 	SetPlaneIndexAndUV( pMod, g_stuSphereSubs[SPHERE_MATERIAL_PARAMCHG].istart, g_stuSphereSubs[SPHERE_MATERIAL_PARAMCHG].vstart, 
-		g_nSphere_Circle_Num * nLevel, (Common_SPHERE_CIRCLE_SEGMENT + 1) * nLevel, SY3DPLANE_ROW_FIRST );
+		g_nSphere_Circle_Num * nLevel, (Common_SPHERE_CIRCLE_SEGMENT + 1) * nLevel, BaseGraph3DPLANE_ROW_FIRST );
 
 	return TRUE;
 }
 
 void SetSegmentPoint( IN OUT BaseGraphVertex3D* pPlanePt, IN int nRowNum, IN int nColumnNum, IN float fLeftWidth, IN float fWidth, IN float fTopHeight, IN float fHeight, IN vector3f* pvNorm, IN float fValue, IN int nType )
 {
-	if ( nType == SY3DPLANE_XY )//行优先
+	if ( nType == BaseGraph3DPLANE_XY )//行优先
 	{
 		for( int i = 0; i < nRowNum; i++ )//第i行
 		{
@@ -481,7 +481,7 @@ void SetSegmentPoint( IN OUT BaseGraphVertex3D* pPlanePt, IN int nRowNum, IN int
 			}
 		}
 	}
-	else if ( nType == SY3DPLANE_XZ )
+	else if ( nType == BaseGraph3DPLANE_XZ )
 	{
 		for( int i = 0; i < nRowNum; i++ )
 		{
@@ -508,10 +508,10 @@ BOOL BaseGraphCreateSegmentGraph( IN OUT BaseGraphModel* pMod, IN float fLeftWid
 {
 	float fWidth = fRightWidth - fLeftWidth, fHeight = fTopHeight - fBottomHeight;
 	vector3f vNorm = { 0.f, 0.f, -1.f };
-	SetSegmentPoint( &pMod->v[g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].vstart], Common_SEGMENT_ROW_NUM, Common_SEGMENT_COLUMN_NUM, fLeftWidth, fWidth, fTopHeight, fHeight, &vNorm, 0.f, SY3DPLANE_XY );
+	SetSegmentPoint( &pMod->v[g_stuSegmentSubs[SEGMENT_MATERIAL_PARAMCHG].vstart], Common_SEGMENT_ROW_NUM, Common_SEGMENT_COLUMN_NUM, fLeftWidth, fWidth, fTopHeight, fHeight, &vNorm, 0.f, BaseGraph3DPLANE_XY );
 	return TRUE;
 }
-void SY2DCoordTo3D(pointf* p2DCoordPt,point3f* p3DCoordPt,point3f* pOffset)
+void BaseGraph2DCoordTo3D(pointf* p2DCoordPt,point3f* p3DCoordPt,point3f* pOffset)
 {
 	float3 v2DPt = {p2DCoordPt->x,-p2DCoordPt->y,0};
 	*p3DCoordPt = v2DPt - *pOffset; 
@@ -1672,7 +1672,7 @@ BOOL BaseGraphCreateBevelGraph( IN OUT BaseGraphModel* pMod, IN vectorgraph* p2D
 		vectorcell* pCurveCell = &p2DGraph->cell[k];
 		for ( int j = 0; j < pCurveCell->npoint; j++ )
 		{
-			SY2DCoordTo3D(&pCurveCell->point[j],&v3DPoint,&vOffset);
+			BaseGraph2DCoordTo3D(&pCurveCell->point[j],&v3DPoint,&vOffset);
 			pCurveCell->point[j].x = v3DPoint.x;
 			pCurveCell->point[j].y = v3DPoint.y;
 
@@ -1681,14 +1681,14 @@ BOOL BaseGraphCreateBevelGraph( IN OUT BaseGraphModel* pMod, IN vectorgraph* p2D
 		pointf vLT,vRB;
 		vLT.x = pCurveCell->bound.left;
 		vLT.y = pCurveCell->bound.top;
-		SY2DCoordTo3D(&vLT,&v3DPoint,&vOffset);
+		BaseGraph2DCoordTo3D(&vLT,&v3DPoint,&vOffset);
 
 		pCurveCell->bound.left = v3DPoint.x;
 		pCurveCell->bound.top = v3DPoint.y;
 
 		vRB.x = pCurveCell->bound.right;
 		vRB.y = pCurveCell->bound.bottom;
-		SY2DCoordTo3D(&vRB,&v3DPoint,&vOffset);
+		BaseGraph2DCoordTo3D(&vRB,&v3DPoint,&vOffset);
 
 		pCurveCell->bound.right = v3DPoint.x;
 		pCurveCell->bound.bottom = v3DPoint.y;
@@ -1700,13 +1700,13 @@ BOOL BaseGraphCreateBevelGraph( IN OUT BaseGraphModel* pMod, IN vectorgraph* p2D
 		pointf vLT,vRB;
 		vLT.x = p2DGraph->bound.left;
 		vLT.y = p2DGraph->bound.top;
-		SY2DCoordTo3D(&vLT,&v3DPoint,&vOffset);
+		BaseGraph2DCoordTo3D(&vLT,&v3DPoint,&vOffset);
 		p2DGraph->bound.left = v3DPoint.x;
 		p2DGraph->bound.top = v3DPoint.y;
 
 		vRB.x = p2DGraph->bound.right;
 		vRB.y = p2DGraph->bound.bottom;
-		SY2DCoordTo3D(&vRB,&v3DPoint,&vOffset);
+		BaseGraph2DCoordTo3D(&vRB,&v3DPoint,&vOffset);
 		p2DGraph->bound.right = v3DPoint.x;
 		p2DGraph->bound.bottom = v3DPoint.y;
 	}
@@ -1894,8 +1894,8 @@ BOOL BaseGraphModel_CreateWidthLine(IN OUT vector3f* pFourVertex, const vector3f
 	vector3f screenStart,screenEnd, viewStart = *pStart, viewEnd = *pEnd;
 	vector3f screenPoint[4];
 	BaseGraphSpaceConvertParam newProj = *pProj;
-	SpaceConvert(&screenStart,pStart,&newProj,SY3DVEC_TO_2D);
-	SpaceConvert(&screenEnd,pEnd,&newProj,SY3DVEC_TO_2D);
+	SpaceConvert(&screenStart,pStart,&newProj,BaseGraph3DVEC_TO_2D);
+	SpaceConvert(&screenEnd,pEnd,&newProj,BaseGraph3DVEC_TO_2D);
 	float deltX = screenEnd.x - screenStart.x;
 	float deltY = screenEnd.y - screenStart.y;
 	float c = sqrt(deltX * deltX + deltY * deltY);
@@ -1924,15 +1924,15 @@ BOOL BaseGraphModel_CreateWidthLine(IN OUT vector3f* pFourVertex, const vector3f
 	viewStart *= *newProj.pWorldMat * *newProj.pViewMat;
 	viewEnd *= *newProj.pWorldMat * *newProj.pViewMat;
 
-	SpaceConvert(pFourVertex,screenPoint,&newProj,SY2DVEC_TO_3D_VIEWPLANE,&viewStart.z);
+	SpaceConvert(pFourVertex,screenPoint,&newProj,BaseGraph2DVEC_TO_3D_VIEWPLANE,&viewStart.z);
 	*(pFourVertex) *= viewInv ;
 	*(pFourVertex) *= world_Inv;
-	SpaceConvert(pFourVertex + 2, screenPoint + 2, &newProj,SY2DVEC_TO_3D_VIEWPLANE,&viewStart.z);
+	SpaceConvert(pFourVertex + 2, screenPoint + 2, &newProj,BaseGraph2DVEC_TO_3D_VIEWPLANE,&viewStart.z);
 	*(pFourVertex + 2) *= viewInv * world_Inv;
 
-	SpaceConvert(pFourVertex + 1, screenPoint + 1, &newProj,SY2DVEC_TO_3D_VIEWPLANE,&viewEnd.z );
+	SpaceConvert(pFourVertex + 1, screenPoint + 1, &newProj,BaseGraph2DVEC_TO_3D_VIEWPLANE,&viewEnd.z );
 	*(pFourVertex + 1) *= viewInv * world_Inv;
-	SpaceConvert(pFourVertex + 3, screenPoint + 3, &newProj,SY2DVEC_TO_3D_VIEWPLANE,&viewEnd.z );
+	SpaceConvert(pFourVertex + 3, screenPoint + 3, &newProj,BaseGraph2DVEC_TO_3D_VIEWPLANE,&viewEnd.z );
 	*(pFourVertex + 3) *= viewInv * world_Inv;
 
 	return TRUE;
@@ -11053,20 +11053,20 @@ BOOL  BaseGraphModel_CreateCubeLineModel(BaseGraphModel* pMod,float width,float 
 #define OBJ_SUBSET					_T("s ")
 #define OBJ_FACE						_T("f ")
 
-#define SYL_MATRIAL				_T("newmtl ")
-#define SYL_ALAPH					_T("d ")
-#define SYL_ALAPH2				_T("Tr ")
-#define SYL_POWER				_T("illum ")
-#define SYL_AMBIENT				_T("Ka ")
-#define SYL_DIFFUSE				_T("Kd ")
-#define SYL_SPECULAR			_T("Ks ")
-#define SYL_USE_SPECULAR	_T("illum ")
-#define SYL_EMISSIVE				_T("Ke ")
-#define SYL_AMBIENT_MAP	_T("map_Ka ")
-#define SYL_DIFFUSE_MAP		_T("map_Kd ")
-#define SYL_SPECULAR_MAP	_T("map_Ks ")
-#define SYL_EMISSIVE_MAP	_T("map_Ke ")
-#define SYL_BUMP_MAP			_T("map_Bump ")
+#define KEYL_MATRIAL				_T("newmtl ")
+#define KEYL_ALAPH					_T("d ")
+#define KEYL_ALAPH2				_T("Tr ")
+#define KEYL_POWER				_T("illum ")
+#define KEYL_AMBIENT				_T("Ka ")
+#define KEYL_DIFFUSE				_T("Kd ")
+#define KEYL_SPECULAR			_T("Ks ")
+#define KEYL_USE_SPECULAR	_T("illum ")
+#define KEYL_EMISSIVE				_T("Ke ")
+#define KEYL_AMBIENT_MAP	_T("map_Ka ")
+#define KEYL_DIFFUSE_MAP		_T("map_Kd ")
+#define KEYL_SPECULAR_MAP	_T("map_Ks ")
+#define KEYL_EMISSIVE_MAP	_T("map_Ke ")
+#define KEYL_BUMP_MAP			_T("map_Bump ")
 
 struct OBJMATLIB
 {
@@ -11288,9 +11288,9 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 		CString szText(szLine);
 		szText.Trim();
 
-		if(IsKey(szText,SYL_MATRIAL))
+		if(IsKey(szText,KEYL_MATRIAL))
 		{
-			GetKey(szText,SYL_MATRIAL);
+			GetKey(szText,KEYL_MATRIAL);
 
 			pLastMATLIB = NULL;
 			for(int i=0;i<m_pMatLibList.size();i++)
@@ -11308,23 +11308,23 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 		if(!pLastMATLIB)
 			continue;
 
-		if(IsKey(szText,SYL_ALAPH))
+		if(IsKey(szText,KEYL_ALAPH))
 		{
-			GetKey(szText,SYL_ALAPH);
+			GetKey(szText,KEYL_ALAPH);
 			pLastMATLIB->Diffuse.w = _tstof(szText);
 			continue;
 		}
 
-		if(IsKey(szText,SYL_POWER))
+		if(IsKey(szText,KEYL_POWER))
 		{
-			GetKey(szText,SYL_POWER);
+			GetKey(szText,KEYL_POWER);
 			pLastMATLIB->Power = _tstof(szText);
 			continue;
 		}
 
-		if(IsKey(szText,SYL_AMBIENT))
+		if(IsKey(szText,KEYL_AMBIENT))
 		{
-			GetKey(szText,SYL_AMBIENT,ArgList);
+			GetKey(szText,KEYL_AMBIENT,ArgList);
 			if(ArgList.size() > 0)
 				pLastMATLIB->Ambient.x = _tstof(ArgList[0]);
 			if(ArgList.size() > 1)
@@ -11334,9 +11334,9 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 			continue;
 		}
 
-		if(IsKey(szText,SYL_DIFFUSE))
+		if(IsKey(szText,KEYL_DIFFUSE))
 		{
-			GetKey(szText,SYL_DIFFUSE,ArgList);
+			GetKey(szText,KEYL_DIFFUSE,ArgList);
 			if(ArgList.size() > 0)
 				pLastMATLIB->Diffuse.x = _tstof(ArgList[0]);
 			if(ArgList.size() > 1)
@@ -11346,9 +11346,9 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 			continue;
 		}
 
-		if(IsKey(szText,SYL_SPECULAR))
+		if(IsKey(szText,KEYL_SPECULAR))
 		{
-			GetKey(szText,SYL_SPECULAR,ArgList);
+			GetKey(szText,KEYL_SPECULAR,ArgList);
 			if(ArgList.size() > 0)
 				pLastMATLIB->Specular.x = _tstof(ArgList[0]);
 			if(ArgList.size() > 1)
@@ -11358,16 +11358,16 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 			continue;
 		}
 
-		if(IsKey(szText,SYL_USE_SPECULAR))
+		if(IsKey(szText,KEYL_USE_SPECULAR))
 		{
-			GetKey(szText,SYL_USE_SPECULAR);
+			GetKey(szText,KEYL_USE_SPECULAR);
 			bUseSpecular = _tstof(szText) == 2;
 			continue;
 		}
 
-		if(IsKey(szText,SYL_EMISSIVE))
+		if(IsKey(szText,KEYL_EMISSIVE))
 		{
-			GetKey(szText,SYL_EMISSIVE,ArgList);
+			GetKey(szText,KEYL_EMISSIVE,ArgList);
 			if(ArgList.size() > 0)
 				pLastMATLIB->Emissive.x = _tstof(ArgList[0]);
 			if(ArgList.size() > 1)
@@ -11377,9 +11377,9 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 			continue;
 		}
 
-		if(IsKey(szText,SYL_AMBIENT_MAP))
+		if(IsKey(szText,KEYL_AMBIENT_MAP))
 		{
-			GetKey(szText,SYL_AMBIENT_MAP);
+			GetKey(szText,KEYL_AMBIENT_MAP);
 			if(!szText.IsEmpty())
 			{
 				if(szText.Mid(1,1) != _T(":") && szText.Left(2) != _T("\\\\"))
@@ -11389,9 +11389,9 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 			continue;
 		}
 
-		if(IsKey(szText,SYL_DIFFUSE_MAP))
+		if(IsKey(szText,KEYL_DIFFUSE_MAP))
 		{
-			GetKey(szText,SYL_DIFFUSE_MAP);
+			GetKey(szText,KEYL_DIFFUSE_MAP);
 			if(!szText.IsEmpty())
 			{
 				if(szText.Mid(1,1) != _T(":") && szText.Left(2) != _T("\\\\"))
@@ -11401,9 +11401,9 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 			continue;
 		}
 
-		if(IsKey(szText,SYL_SPECULAR_MAP))
+		if(IsKey(szText,KEYL_SPECULAR_MAP))
 		{
-			GetKey(szText,SYL_SPECULAR_MAP);
+			GetKey(szText,KEYL_SPECULAR_MAP);
 			if(!szText.IsEmpty())
 			{
 				if(szText.Mid(1,1) != _T(":") && szText.Left(2) != _T("\\\\"))
@@ -11413,9 +11413,9 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 			continue;
 		}
 
-		if(IsKey(szText,SYL_EMISSIVE_MAP))
+		if(IsKey(szText,KEYL_EMISSIVE_MAP))
 		{
-			GetKey(szText,SYL_EMISSIVE_MAP);
+			GetKey(szText,KEYL_EMISSIVE_MAP);
 			if(!szText.IsEmpty())
 			{
 				if(szText.Mid(1,1) != _T(":") && szText.Left(2) != _T("\\\\"))
@@ -11424,9 +11424,9 @@ BOOL ReadMatLib(CString& szLibFile,vector<OBJMATLIB>& m_pMatLibList)
 			}
 			continue;
 		}
-		if(IsKey(szText,SYL_BUMP_MAP))
+		if(IsKey(szText,KEYL_BUMP_MAP))
 		{
-			GetKey(szText,SYL_BUMP_MAP);
+			GetKey(szText,KEYL_BUMP_MAP);
 			if(!szText.IsEmpty())
 			{
 				if(szText.Mid(1,1) != _T(":") && szText.Left(2) != _T("\\\\"))
@@ -11450,7 +11450,7 @@ BaseGraphModel* MakeModel( BaseGraphModel* pNewModel,
 	BOOL bCalcNormal)
 {
 	//BaseGraphModel* pNewModel = new BaseGraphModel;
-	//sy_init_moddef(pNewModel);
+	//common_init_moddef(pNewModel);
 	pNewModel->vcount = nV;
 	pNewModel->v = new BaseGraphVertex3D[nV];
 	memcpy(pNewModel->v,pVB,sizeof(BaseGraphVertex3D) * nV);

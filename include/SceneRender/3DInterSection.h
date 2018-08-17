@@ -115,14 +115,14 @@ BASEGRAPH_SCENE_RENDER_API int GetRayBoxInt( const BaseGraphRay* pRay,const floa
 
 BASEGRAPH_SCENE_RENDER_API BOOL GetTriangleInt( const BaseGraphRay* pRay, const float3*  v0, const float3*  v1, const float3*  v2, BaseGraphHitPoint* pHitPoint );
 BASEGRAPH_SCENE_RENDER_API BOOL GetRaySegment(const BaseGraphRay* pRay,const float3& v1,const float3& v2,const float3& v3,const float3& v4,BaseGraphHitPoint* pHitPoint);//顺时针
-BASEGRAPH_SCENE_RENDER_API int SY3DModelHitTest( int nSubModel,
+BASEGRAPH_SCENE_RENDER_API int BaseGraph3DModelHitTest( int nSubModel,
 					  const DXRenderSubModel* pSubModelDes,
 					  const DWORD* pIndex,
 					  const DXVertex3D* pVertex,          //物件顶点
 					  const float3* pvScreenPt,	//屏幕坐标
 					  const BaseGraphSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 					  float3* pOutPt = NULL,BOOL isHitReturn = TRUE);
-BASEGRAPH_SCENE_RENDER_API int SY3DRayHitModel( int nSubModel,
+BASEGRAPH_SCENE_RENDER_API int BaseGraph3DRayHitModel( int nSubModel,
 									const DXRenderSubModel* pSubModelDes,
 									const DWORD* pIndex,
 									const DXVertex3D* pVertex,          //物件顶点
@@ -130,12 +130,12 @@ BASEGRAPH_SCENE_RENDER_API int SY3DRayHitModel( int nSubModel,
 									const BaseGraphSpaceConvertParam* pParam,//其中的WORLDMatrix应为物件的世界矩阵
 									float3* pOutPt = NULL,BOOL isHitReturn = TRUE);
 //二维向量在三维方向上的投影长度
-BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const BaseGraphSpaceConvertParam* pSpaceParam,
+BASEGRAPH_SCENE_RENDER_API float BaseGraphMouseMoveProjToDir( IN const BaseGraphSpaceConvertParam* pSpaceParam,
 											IN const float3* p2DStart, IN const float3* p2DEnd, 
 											const BaseGraphLine* pLine,const float3* pNormal = NULL);
 
 //2D平面上两个点在指定三维平面上的夹角
-BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle(const BaseGraphSpaceConvertParam* pSpaceParam,
+BASEGRAPH_SCENE_RENDER_API float BaseGraph3DProjAngle(const BaseGraphSpaceConvertParam* pSpaceParam,
 					  IN const float3* p2DStart, //2D平面起始点
 					  IN const float3* p2DEnd, //2D平面结束点
 					  const float3* pCenter,const float3* pNormal);//3D平面

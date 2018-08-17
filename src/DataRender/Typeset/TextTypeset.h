@@ -19,7 +19,7 @@ const int TYPESET_TABLEN = 20;
 //////////////////////////////////////////////////////////////////////////
 //排版器接口函数
 extern  BaseGraphTypesetInterface g_TypesetInterface;
-struct  sy_font_def;
+struct  common_font_def;
 //图形空间信息
 #define BaseGraphGLYPHSPACEPTs			4				//图形占据位置描述点数
 #define BaseGraphGLYPHSPACEPTs_EX		6				//图形占据扩展位置描述点数

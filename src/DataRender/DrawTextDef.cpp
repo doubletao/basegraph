@@ -42,12 +42,12 @@ void	SetPredefineSample(LPCTSTR szSample)
 	memcpy(g_strPredefSample, szSample, sizeof(TCHAR) * 2);
 }
 
-BASEGRAPH_DATARENDER_API void sy_text_prop_def::Reset()
+BASEGRAPH_DATARENDER_API void common_text_prop_def::Reset()
 {
-	memset(this, 0, sizeof(sy_text_prop_def));
+	memset(this, 0, sizeof(common_text_prop_def));
 }
 
-BASEGRAPH_DATARENDER_API void sy_font_def::Reset()
+BASEGRAPH_DATARENDER_API void common_font_def::Reset()
 {
 	lfHeight = 0;
 	lfWidth = 0;
@@ -77,30 +77,30 @@ BASEGRAPH_DATARENDER_API void sy_font_def::Reset()
 	lfScriptOffset = 0;				//自定义脚注偏移
 }
 
-BASEGRAPH_DATARENDER_API void sy_art_typeset_def::Reset()
+BASEGRAPH_DATARENDER_API void common_art_typeset_def::Reset()
 {
-	memset(this, 0, sizeof(sy_art_typeset_def));
+	memset(this, 0, sizeof(common_art_typeset_def));
 }
 
-BASEGRAPH_DATARENDER_API void sy_text_def::Reset()
+BASEGRAPH_DATARENDER_API void common_text_def::Reset()
 {
-	memset(this, 0, sizeof(sy_text_def));
+	memset(this, 0, sizeof(common_text_def));
 	dEndTime = 1;
 }
 
-BASEGRAPH_DATARENDER_API void sy_textsymbol_def::Reset()
+BASEGRAPH_DATARENDER_API void common_textsymbol_def::Reset()
 {
 	memset(&seFillColor, 0, sizeof(static_effect));
 	memset(&rtSize, 0, sizeof(rectf));
 	fScale = 0;
 }
 
-BASEGRAPH_DATARENDER_API void sy_textparagraph_def::Reset()
+BASEGRAPH_DATARENDER_API void common_textparagraph_def::Reset()
 {
-	memset(this, 0, sizeof(sy_textparagraph_def));
+	memset(this, 0, sizeof(common_textparagraph_def));
 }
 
-BASEGRAPH_DATARENDER_API void sy_under_line_def::Reset()
+BASEGRAPH_DATARENDER_API void common_under_line_def::Reset()
 {
 	eType = UNDERLINE_NULL;					//线类型
 	fDistance = 0;				//线相对于基线的偏移

@@ -961,7 +961,7 @@ void CBaseTypeset::Update2DUnitArray(int nLevel, BOOL bAllUnit/* = TRUE*/)
 					for (int nL = 0; nL<m_chgCnt; ++nL)
 					{
 						pUnit = (BaseGraphUnit*)BaseAR_GetAt(paryUnitTemp, m_chgIndex+nL);
-						sy_release_unit(pUnit);
+						common_release_unit(pUnit);
 						SAFE_DELETE(pUnit);
 					}
 					BaseAR_RemoveAt(paryUnitTemp, m_chgIndex, m_chgCnt);
@@ -972,7 +972,7 @@ void CBaseTypeset::Update2DUnitArray(int nLevel, BOOL bAllUnit/* = TRUE*/)
 					for (int nL = 0; nL<m_chgCnt; ++nL)
 					{
 						pUnit = (BaseGraphUnit*)BaseAR_GetAt(paryUnit, m_chgIndex+nL);
-						sy_release_unit(pUnit);
+						common_release_unit(pUnit);
 						SAFE_DELETE(pUnit);
 					}
 					BaseAR_RemoveAt(paryUnit, m_chgIndex, m_chgCnt);
@@ -1045,7 +1045,7 @@ void CBaseTypeset::Update2DUnitArray(int nLevel, BOOL bAllUnit/* = TRUE*/)
 					{
 						LPCBaseStaticEffect pFillColor = GetTextStaticEffect(pParagObj->nBeginIndex + pWordInfo->nCharIndex);
 						pUnit = new BaseGraphUnit;
-						sy_init_unit(pUnit, FALSE);
+						common_init_unit(pUnit, FALSE);
 						CreateUnit(pUnit, pWordInfo, pFillColor);
 						if (bGraphScale)
 							vg_zoom(&(pUnit->u.u2d.graph), fGraphScaleX, fGraphScaleY, 1, 0, 0, 0);
@@ -1147,7 +1147,7 @@ void CBaseTypeset::Update3DUnitArray(int nLevel, BOOL bAllUnit/* = TRUE*/)
 					for (int nL = 0; nL<m_chgCnt; ++nL)
 					{
 						p3DUnit = (BaseGraphUnit*)BaseAR_GetAt(pary3DUnit, m_chgIndex+nL);
-						sy_release_unit(p3DUnit);
+						common_release_unit(p3DUnit);
 						SAFE_DELETE(p3DUnit);
 					}
 					BaseAR_RemoveAt(pary3DUnit, m_chgIndex, m_chgCnt);
@@ -1253,7 +1253,7 @@ void CBaseTypeset::Update3DUnitArray(int nLevel, BOOL bAllUnit/* = TRUE*/)
 				if (i < n3DUnitCnt)
 				{
 					p3DUnit = (BaseGraphUnit*)BaseAR_GetAt(pary3DUnit, i);
-					sy_release_unit_material(p3DUnit);
+					common_release_unit_material(p3DUnit);
 					Modify2DUnitTo3DUnit(p2DUnit, p3DUnit, NULL);
 				}
 				else
@@ -1275,7 +1275,7 @@ void CBaseTypeset::Update3DUnitArray(int nLevel, BOOL bAllUnit/* = TRUE*/)
 				if (i < n3DUnitCnt)
 				{
 					p3DUnit = (BaseGraphUnit*)BaseAR_GetAt(pary3DUnit, i);
-					sy_release_unit_material(p3DUnit);
+					common_release_unit_material(p3DUnit);
 					Modify2DUnitTo3DUnit(p2DUnit, p3DUnit, NULL);
 				}
 				else
@@ -1284,7 +1284,7 @@ void CBaseTypeset::Update3DUnitArray(int nLevel, BOOL bAllUnit/* = TRUE*/)
 					BaseAR_Add(pary3DUnit, p3DUnit);
 				}
 				p3DUnit->pos= p2DUnit->pos;
-				sy_set_unit_material_diffuse(p3DUnit, 0);
+				common_set_unit_material_diffuse(p3DUnit, 0);
 			}
 			nAll3DUnitCnt += m_pTextObj->nSpecialUnitCnt;
 		}
@@ -1327,7 +1327,7 @@ void CBaseTypeset::CreateUnit(BaseGraphUnit* pUnit, LPCommonWordInfo pWordInfo, 
 
 BaseGraphUnit* CBaseTypeset::Create3DUnitUse2DUnit(BaseGraphUnit* p2DUnit, BaseGraphUnit* pTempl3DUnit)
 {
-	BaseGraphUnit* pNew3DUnit = sy_create_3dunit_from_2dunit(p2DUnit, NULL);
+	BaseGraphUnit* pNew3DUnit = common_create_3dunit_from_2dunit(p2DUnit, NULL);
 	if (pTempl3DUnit == NULL)
 		g_TypesetInterface.Modify2DUnitTo3DUnit(pNew3DUnit, p2DUnit, NULL, BaseGraphTEXT_SUBFACE_CNT, m_pTextObj->pStretch);
 	else
@@ -1338,7 +1338,7 @@ BaseGraphUnit* CBaseTypeset::Create3DUnitUse2DUnit(BaseGraphUnit* p2DUnit, BaseG
 
 BaseGraphUnit* CBaseTypeset::Create3DUnitUse2DUnit(BaseGraphUnit* p2DUnit, BaseGraphMaterial** p3DColor)
 {
-	BaseGraphUnit* pNew3DUnit = sy_create_3dunit_from_2dunit(p2DUnit, NULL);
+	BaseGraphUnit* pNew3DUnit = common_create_3dunit_from_2dunit(p2DUnit, NULL);
 	g_TypesetInterface.Modify2DUnitTo3DUnit(pNew3DUnit, p2DUnit, p3DColor, BaseGraphTEXT_SUBFACE_CNT, m_pTextObj->pStretch);
 
 	return pNew3DUnit;
@@ -1384,7 +1384,7 @@ void CBaseTypeset::DeleteUnit(int nIndex, int nCount)
 		for (int i = 0; i < nCount; i++)
 		{
 			BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar2DUnit, nIndex + i);
-			sy_release_unit(pUnit);
+			common_release_unit(pUnit);
 			delete pUnit;
 		}
 		BaseAR_RemoveAt(&m_pTextObj->ar2DUnit, nIndex, nCount);
@@ -1398,7 +1398,7 @@ void CBaseTypeset::DeleteUnit(int nIndex, int nCount)
 		for (int i = 0; i < nCount; i++)
 		{
 			BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar3DUnit, nIndex + i);
-			sy_release_unit(pUnit);
+			common_release_unit(pUnit);
 			delete pUnit;
 		}
 		BaseAR_RemoveAt(&m_pTextObj->ar3DUnit, nIndex, nCount);
@@ -1416,7 +1416,7 @@ void CBaseTypeset::DeleteAllUnit(WORD wdUnitType)
 			for (int i = 0; i < nUnitCount; i++)
 			{
 				BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar2DUnitTemp, i);
-				sy_release_unit(pUnit);
+				common_release_unit(pUnit);
 				SAFE_DELETE(pUnit);
 			}
 		}
@@ -1426,7 +1426,7 @@ void CBaseTypeset::DeleteAllUnit(WORD wdUnitType)
 			for (int i = 0; i < nUnitCount; i++)
 			{
 				BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar2DUnit, i);
-				sy_release_unit(pUnit);
+				common_release_unit(pUnit);
 				SAFE_DELETE(pUnit);
 			}
 		}
@@ -1440,7 +1440,7 @@ void CBaseTypeset::DeleteAllUnit(WORD wdUnitType)
 		for (int i = 0; i < nUnitCount; i++)
 		{
 			BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar3DUnit, i);
-			sy_release_unit(pUnit);
+			common_release_unit(pUnit);
 			delete pUnit;
 		}
 		BaseAR_RemoveAll(&m_pTextObj->ar3DUnit);
@@ -1458,7 +1458,7 @@ void CBaseTypeset::ReleaseUnit(int nIndex, int nCount)
 	for (int i = 0; i < nCount; i++)
 	{
 		BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar2DUnit, i);
-		sy_release_unit(pUnit);
+		common_release_unit(pUnit);
 	}
 
 	int n3DUnitCnt = BaseAR_GetCount(&m_pTextObj->ar3DUnit);
@@ -1467,7 +1467,7 @@ void CBaseTypeset::ReleaseUnit(int nIndex, int nCount)
 	for (int i = 0; i < nCount; i++)
 	{
 		BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar3DUnit, i);
-		sy_release_unit(pUnit);
+		common_release_unit(pUnit);
 	}
 }
 
@@ -1477,14 +1477,14 @@ void CBaseTypeset::ReleaseAllUnit()
 	for (int i = 0; i < nUnitCount; i++)
 	{
 		BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar2DUnit, i);
-		sy_release_unit(pUnit);
+		common_release_unit(pUnit);
 	}
 
 	nUnitCount = BaseAR_GetCount(&m_pTextObj->ar3DUnit);
 	for (int i = 0; i < nUnitCount; i++)
 	{
 		BaseGraphUnit* pUnit = (BaseGraphUnit*)BaseAR_GetAt(&m_pTextObj->ar3DUnit, i);
-		sy_release_unit(pUnit);
+		common_release_unit(pUnit);
 	}
 }
 
@@ -2701,7 +2701,7 @@ void CBaseTypeset::GenerateWordInfo(LPCommonWordInfo pWordInfo, TCHAR ch, int nF
 		if (pWordInfo->wChar == VK_TAB)
 		{
 			// Tab只占空位置，没有字形
-			sy_release_vectorgraph(&pWordInfo->vgGraph);
+			common_release_vectorgraph(&pWordInfo->vgGraph);
 		}
 	}
 }
@@ -2745,7 +2745,7 @@ LPCommonWordInfo CBaseTypeset::CreateDefaultWordInfo(TCHAR ch)
 	if (pDefWordInf->wChar == VK_TAB)
 	{
 		// Tab只占空位置，没有字形
-		sy_release_vectorgraph(&pDefWordInf->vgGraph);
+		common_release_vectorgraph(&pDefWordInf->vgGraph);
 	}
 
 	if (bReleaseFont)
@@ -3335,7 +3335,7 @@ void CBaseTypeset::GenerateWordInfo()
 					if (pWordInfo->wChar == VK_TAB)
 					{
 						// Tab只占空位置，没有字形
-						sy_release_vectorgraph(&pWordInfo->vgGraph);
+						common_release_vectorgraph(&pWordInfo->vgGraph);
 					}
 				}
 
@@ -3836,7 +3836,7 @@ void  CBaseTypeset::UpdateUnderLineUnit(int nUnderLineCnt, BOOL bAllUnit)
 					if (pCreateUL != NULL)
 					{
 						BaseGraphUnit* pUnit = new BaseGraphUnit;
-						sy_init_unit(pUnit, FALSE);
+						common_init_unit(pUnit, FALSE);
 						pUnit->dwUserID = BaseGraphUNIT_USERID_UNDERLINE;
 
 						point2f pt[4];
@@ -4348,7 +4348,7 @@ int CBaseTypeset::MakeSpecialEffect()
 			//自绘背景
 			BaseARray* paryUnit = &m_pTextObj->ar2DUnit;
 			BaseGraphUnit* pUnit = new BaseGraphUnit;
-			sy_init_unit(pUnit, FALSE);
+			common_init_unit(pUnit, FALSE);
 			pUnit->dwUserID = BaseGraphUNIT_USERID_SPECIAL;
 
 			rectf rtRect, rtUnit;
@@ -5488,7 +5488,7 @@ void BaseGraphTypeset_GenerateWordInfo(LPCommonText pTextObj, LPCommonWordInfo p
 		if (pWordInfo->wChar == VK_TAB)
 		{
 			// Tab只占空位置，没有字形
-			sy_release_vectorgraph(&pWordInfo->vgGraph);
+			common_release_vectorgraph(&pWordInfo->vgGraph);
 		}
 	}
 }

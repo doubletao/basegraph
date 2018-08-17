@@ -345,18 +345,18 @@ protected :
 	ResourcePool<CTechUnit, BaseGraphTechCreateParam*>	m_TechPool;
 };
 
-class SYD3DEffectManager
+class BaseGraphD3DEffectManager
 {
 private:
-	SYD3DEffectManager(void);
+	BaseGraphD3DEffectManager(void);
 	int	CreateQuadVB();
 	ResourcePool<CEffectUnit,BaseGraphEffectCreateParam*> m_EffectPool;
 	ID3D10Device*	m_d3d_device;
 	TCHAR		m_fx_path[MAX_PATH] ;	
 	int			m_hQuadVB;
 public:
-	SYD3DEffectManager(ID3D10Device* device);
-	~SYD3DEffectManager(void);
+	BaseGraphD3DEffectManager(ID3D10Device* device);
+	~BaseGraphD3DEffectManager(void);
 	CEffectUnit*	CreateEffectUnit(BaseGraphEffectCreateParam* pCreateParam);	
 	void			ReleaseEffectUnit(LPCTSTR strEffectName);
 	CTechUnit*	GetTechUnit(LPCTSTR strEffectName,LPCTSTR strTechName);	

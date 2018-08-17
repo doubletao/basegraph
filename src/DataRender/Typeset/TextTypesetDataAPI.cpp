@@ -184,7 +184,7 @@ unsigned int g_uCRC32Table[256] =
 	for (int i = 0; i < n2DUnitCnt; ++i)
 	{
 		BaseGraphUnit* p2DUnit = (BaseGraphUnit*)BaseAR_GetAt(&pText->ar2DUnit, i);
-		sy_release_unit(p2DUnit);
+		common_release_unit(p2DUnit);
 		delete p2DUnit;
 	}
 	BaseAR_RemoveAll(&pText->ar2DUnit);
@@ -193,7 +193,7 @@ unsigned int g_uCRC32Table[256] =
 	for (int i = 0; i < n3DUnitCnt; ++i)
 	{
 		BaseGraphUnit* p3DUnit = (BaseGraphUnit*)BaseAR_GetAt(&pText->ar3DUnit, i);
-		sy_release_unit(p3DUnit);
+		common_release_unit(p3DUnit);
 		delete p3DUnit;
 	}
 	BaseAR_RemoveAll(&pText->ar3DUnit);
@@ -282,7 +282,7 @@ unsigned int g_uCRC32Table[256] =
 		}
 
 		//特殊效果
-		sy_special_effect_copy(pDes->pSpecialEffect, pSrc->pSpecialEffect);
+		common_special_effect_copy(pDes->pSpecialEffect, pSrc->pSpecialEffect);
 
 		BaseGraphTextProp_Copy(&pDes->stuTextProp, &pSrc->stuTextProp);
 
@@ -1364,7 +1364,7 @@ void BaseGraphFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 		return FALSE;
 	}
 
-	if (!sy_staticeffect_compare(&pUnderLine1->se2DColor, &pUnderLine2->se2DColor))
+	if (!common_staticeffect_compare(&pUnderLine1->se2DColor, &pUnderLine2->se2DColor))
 	{
 		return FALSE;
 	}
@@ -2548,7 +2548,7 @@ void BaseGraphFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 	{
 		LPCommonStaticEffect pColor = (LPCommonStaticEffect)BaseAR_GetAt(paryColor, i);
 		//查找相同者
-		if (pCompColor != pColor && sy_staticeffect_compare(pCompColor, pColor))
+		if (pCompColor != pColor && common_staticeffect_compare(pCompColor, pColor))
 		{
 			if (pSame != NULL)
 				*pSame = pColor;
@@ -2660,35 +2660,35 @@ void BaseGraphFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 
 	if (dwMask & BaseGraphTEXTCOLORMASK_FACELIGHTCHANNEL)
 	{
-		sy_lightinfo_copy(&pDesColor->facelight, &pSrcColor->facelight);
+		common_lightinfo_copy(&pDesColor->facelight, &pSrcColor->facelight);
 	}
 	if (dwMask & BaseGraphTEXTCOLORMASK_CUBELIGHTCHANNEL)
 	{
-		sy_lightinfo_copy(&pDesColor->cubelight, &pSrcColor->cubelight);
+		common_lightinfo_copy(&pDesColor->cubelight, &pSrcColor->cubelight);
 	}
 	if (dwMask & BaseGraphTEXTCOLORMASK_ACTIVEATTRIBLE)
 	{
-		sy_dynamictexture_copy(&pDesColor->dyntex, &pSrcColor->dyntex);
+		common_dynamictexture_copy(&pDesColor->dyntex, &pSrcColor->dyntex);
 	}
 	if (dwMask & BaseGraphTEXTCOLORMASK_FACEADORNCHANNEL)
 	{
-		sy_lightinfo_copy(&pDesColor->facelight, &pSrcColor->facelight);
+		common_lightinfo_copy(&pDesColor->facelight, &pSrcColor->facelight);
 	}
 	if (dwMask & BaseGraphTEXTCOLORMASK_CUBEADORNCHANNEL)
 	{
-		sy_lightinfo_copy(&pDesColor->cubelight, &pSrcColor->cubelight);
+		common_lightinfo_copy(&pDesColor->cubelight, &pSrcColor->cubelight);
 	}
 	if (dwMask & BaseGraphTEXTCOLORMASK_MASKADORNCHANNEL)
 	{
-		sy_channelinfo_copy(&pDesColor->channel, &pSrcColor->channel);
+		common_channelinfo_copy(&pDesColor->channel, &pSrcColor->channel);
 	}
 	if (dwMask & BaseGraphTEXTCOLORMASK_PATTANADORNCHANNEL)
 	{
-		sy_materialinfo_copy(&pDesColor->material, &pSrcColor->material);
+		common_materialinfo_copy(&pDesColor->material, &pSrcColor->material);
 	}
 	if (dwMask & BaseGraphTEXTCOLORMASK_APPENDADORNCHANNEL)
 	{
-		sy_materialinfo_copy(&pDesColor->appendmaterial, &pSrcColor->appendmaterial);
+		common_materialinfo_copy(&pDesColor->appendmaterial, &pSrcColor->appendmaterial);
 	}
 }
 
@@ -3828,7 +3828,7 @@ void TypesetInterface_OnAddUnit(BOOL bKeepBalance, LPVOID pInterfaceParam)
 			//	BaseGraphUnit* pTextUnit = pItem->Get3DTextUnit(nIndex, pEnv);
 			//	pRenderUnit->m_pUnit = new BaseGraphUnit;
 			//	memset(pRenderUnit->m_pUnit,0,sizeof(BaseGraphUnit));
-			//	sy_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
+			//	common_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
 			//	CopyVertexFromItemToEnv(&pRenderUnit->unit3D, pEnv->GetDevice(), sizeof(BaseGraphVertex3D), pTextUnit->u.u3d.pmod, pEnv->GetChangedLevel());
 
 			//	BaseAR_Add(pEnv->Get3DTextRenderUnitArray(), pRenderUnit);
@@ -3928,8 +3928,8 @@ void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 				if (pTextUnit != NULL)
 				{
 					pRenderUnit->m_pUnit = new BaseGraphUnit;
-					sy_init_unit(pRenderUnit->m_pUnit,TRUE);
-					sy_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
+					common_init_unit(pRenderUnit->m_pUnit,TRUE);
+					common_copy_unit(pRenderUnit->m_pUnit, pTextUnit);
 					CopyVertexFromItemToEnv(&pRenderUnit->unit3D, nDevice, sizeof(BaseGraphVertex3D), pTextUnit->u.u3d.pmod, nEnvChgLevel);
 
 					BaseAR_InsertAt(pary3DTextRenderUnit, nIndex + i, pRenderUnit, 1);

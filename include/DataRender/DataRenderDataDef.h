@@ -21,7 +21,7 @@ enum EmCtrlPointIndex
 	CtrlPoint_MiddelLeft,		//中左
 };
 
-typedef struct tag_sy_render_submodel
+typedef struct tag_common_render_submodel
 {
 	DWORD	vstart;
 	DWORD	vcount;
@@ -100,7 +100,7 @@ typedef struct tag_common_logic_cube
 	int*	iface;
 	int		ncount;
 }common_logic_cube;
-typedef struct tag_symodel
+typedef struct tag_common_model
 {
 	int				vcount;		// vertex
 	LPCommonVERTEX3D	v;          // 点坐标 法向量
@@ -144,30 +144,30 @@ typedef struct tag_symodel
 	//逻辑体
 	int				logicccount;
 	common_logic_cube*	logiccube;
-	tag_symodel() { Reset(); }
+	tag_common_model() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 } BaseGraphModel, *LPCommonMODEL;
 
 //二维形体
-typedef struct tag_sy2dunit
+typedef struct tag_common_2dunit
 {
 	vectorgraph		graph;//轮廓
 	static_effect		staticeffect;	//静态效果
-	tag_sy2dunit() { Reset(); }
+	tag_common_2dunit() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SY2DUnit;
+}BaseGraph2DUnit;
 enum	eunittype
 {
 	UNIT_2D = 0,
 	UNIT_3D,
 };
-typedef struct tag_sy3dunit
+typedef struct tag_common_3dunit
 {
 	//单元定义,mod,和整体关系
 	BaseGraphModel*	pmod;//模型顶点
-	tag_sy3dunit() { Reset(); }
+	tag_common_3dunit() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SY3DUnit;
+}BaseGraph3DUnit;
 //物件中的一个单元
 typedef struct tag_common_unit
 {
@@ -175,8 +175,8 @@ typedef struct tag_common_unit
 	DWORD	dwUserID;//用户自定义标识
 	struct
 	{
-		SY2DUnit 	u2d;
-		SY3DUnit 	u3d;
+		BaseGraph2DUnit 	u2d;
+		BaseGraph3DUnit 	u3d;
 	}u;
 	struct tag_common_unit* parent;//父节点
 	int				parentbone;//绑定在父的那个节点上
@@ -273,7 +273,7 @@ typedef struct tga_common_renderchannel
 	unsigned long	reflectcolor;
 	unsigned long	ambience;
 	unsigned long	ambience_degree;
-}sy_render_channel;
+}common_render_channel;
 
 enum GRAPH_ART_PROC_TYPE
 {
@@ -512,8 +512,8 @@ enum SEGMENT_PART
 };
 enum BaseGraphModel_PLANE_INDEX_TYPE
 {
-	SY3DPLANE_ROW_FIRST = 0,
-	SY3DPLANE_COLUMN_FIRST,
+	BaseGraph3DPLANE_ROW_FIRST = 0,
+	BaseGraph3DPLANE_COLUMN_FIRST,
 };
 #define		Common_SEGMENT_ROW_NUM				2
 #define		Common_SEGMENT_COLUMN_NUM			2

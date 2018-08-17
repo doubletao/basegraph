@@ -720,7 +720,7 @@ BASEGRAPH_SCENE_RENDER_API int GetRaySphereInt( const BaseGraphRay* pRay,float f
 	return ret;
 }
 
-int SY3DModelHitTest( int nSubModel,
+int BaseGraph3DModelHitTest( int nSubModel,
 					  const DXRenderSubModel* pSubModelDes,
 					  const DWORD* pIndex,
 					  const DXVertex3D* pVertex,          //物件顶点
@@ -731,11 +731,11 @@ int SY3DModelHitTest( int nSubModel,
 	//float3 desVector,eyeDir;
 	BaseGraphRay ray;
 	GetRayDirection(&ray,pvScreenPt,pParam);
-	return SY3DRayHitModel( nSubModel, pSubModelDes, pIndex, pVertex, &ray, pParam, pOutPt, isHitReturn );
+	return BaseGraph3DRayHitModel( nSubModel, pSubModelDes, pIndex, pVertex, &ray, pParam, pOutPt, isHitReturn );
 }
 
 
- BASEGRAPH_SCENE_RENDER_API int SY3DRayHitModel( int nSubModel,
+ BASEGRAPH_SCENE_RENDER_API int BaseGraph3DRayHitModel( int nSubModel,
 						  const DXRenderSubModel* pSubModelDes,
 						  const DWORD* pIndex,
 						  const DXVertex3D* pVertex,          //物件顶点
@@ -841,7 +841,7 @@ BASEGRAPH_SCENE_RENDER_API void GetRayDirection(BaseGraphRay* pRay,const float3*
 
 	if(pParam->nProjType == Common_PERSPECTIVE_PROJ)
 	{
-		SpaceConvert(&pRay->vStart,pScreenPoint,pParam,SY2DVEC_TO_3D_WORLD);
+		SpaceConvert(&pRay->vStart,pScreenPoint,pParam,BaseGraph2DVEC_TO_3D_WORLD);
 		//vec3DPoint -= *pParam->m_pEyePos;
 		pRay->vDir = pRay->vStart - *pParam->pEyePos * worldInv;
 	}
@@ -850,21 +850,21 @@ BASEGRAPH_SCENE_RENDER_API void GetRayDirection(BaseGraphRay* pRay,const float3*
 		vec3DPoint.x = 0;
 		vec3DPoint.y = 0;
 		vec3DPoint.z = 1;
-		SpaceConvert(&pRay->vStart,pScreenPoint,pParam,SY2DVEC_TO_3D_WORLD);
+		SpaceConvert(&pRay->vStart,pScreenPoint,pParam,BaseGraph2DVEC_TO_3D_WORLD);
 		pRay->vDir = vec3DPoint * viewInv * worldInv;
 		pRay->vDir = pRay->vDir - *pParam->pEyePos * worldInv;
 	}
 	float3Normalize(&pRay->vDir,&pRay->vDir);
 }
 
-BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const BaseGraphSpaceConvertParam* pSpaceParam,IN const float3* p2DStart, IN const float3* p2DEnd, const BaseGraphLine* pLine,const float3* pNormal)
+BASEGRAPH_SCENE_RENDER_API float BaseGraphMouseMoveProjToDir( IN const BaseGraphSpaceConvertParam* pSpaceParam,IN const float3* p2DStart, IN const float3* p2DEnd, const BaseGraphLine* pLine,const float3* pNormal)
 {
 	if(!pNormal)
 	{
 		float3 vecSt2DPt, vecEnd2DPt;
 		float3 vecLineEndPt = pLine->vStart + pLine->vDir;
-		SpaceConvert(&vecSt2DPt,&pLine->vStart,pSpaceParam,SY3DVEC_TO_2D);
-		SpaceConvert(&vecEnd2DPt,&vecLineEndPt,pSpaceParam,SY3DVEC_TO_2D);
+		SpaceConvert(&vecSt2DPt,&pLine->vStart,pSpaceParam,BaseGraph3DVEC_TO_2D);
+		SpaceConvert(&vecEnd2DPt,&vecLineEndPt,pSpaceParam,BaseGraph3DVEC_TO_2D);
 		float3 vecProjToDir = vecEnd2DPt - vecSt2DPt, vecMouseMoveDis = *p2DEnd - *p2DStart;
 		if(float3Mode(&vecProjToDir) <= ABS_FLOAT_0)
 		{
@@ -878,8 +878,8 @@ BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const BaseGraphSpaceCo
 		float3 vecSt3DPt, vecEnd3DPt;
 		float3 vecLineEndPt = pLine->vStart + pLine->vDir;
 		BOOL bHIT = TRUE;
-		bHIT &= SpaceConvert(&vecSt3DPt,p2DStart,pSpaceParam,SY2DVEC_TO_3D_PLANE,NULL,pNormal,&pLine->vStart);
-		bHIT &= SpaceConvert(&vecEnd3DPt,p2DEnd,pSpaceParam,SY2DVEC_TO_3D_PLANE,NULL,pNormal,&pLine->vStart);
+		bHIT &= SpaceConvert(&vecSt3DPt,p2DStart,pSpaceParam,BaseGraph2DVEC_TO_3D_PLANE,NULL,pNormal,&pLine->vStart);
+		bHIT &= SpaceConvert(&vecEnd3DPt,p2DEnd,pSpaceParam,BaseGraph2DVEC_TO_3D_PLANE,NULL,pNormal,&pLine->vStart);
 		if (!bHIT)
 			return 0;
 		float3 vecProjToDir, vecMouseMoveDis = vecEnd3DPt - vecSt3DPt;
@@ -889,7 +889,7 @@ BASEGRAPH_SCENE_RENDER_API float SYMouseMoveProjToDir( IN const BaseGraphSpaceCo
 	return 0;
 }
 
-BASEGRAPH_SCENE_RENDER_API float SY3DProjAngle( const BaseGraphSpaceConvertParam* pSpaceParam,
+BASEGRAPH_SCENE_RENDER_API float BaseGraph3DProjAngle( const BaseGraphSpaceConvertParam* pSpaceParam,
 									  IN const float3* p2DStart, /*2D平面起始点 */ 
 									  IN const float3* p2DEnd, /*2D平面结束点 */ 
 									  const float3* pCenter,

@@ -95,7 +95,7 @@ CSimpleSpaceConvert::CSimpleSpaceConvert( ObjectCalculator *pCalculator, BOOL bF
 void CSimpleSpaceConvert::Convert3DPtTo2D( const float3 *ptSrc, float3 *pDest )
 {
 	float3 vNewPt;
-	SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, SY3DVEC_TO_2D);
+	SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, BaseGraph3DVEC_TO_2D);
 
 	matrix4f *pAdjust2D = m_pConvertMatrix->getAdjust();
 	if( pAdjust2D )
@@ -185,7 +185,7 @@ void CSimpleSpaceConvert::Convert2DPtTo3D_ZViewPlane( const float3 *ptSrc, float
 	{
 		ptReal *= *pAdjust2DInv;
 	}
-	SpaceConvert(ptDest, &ptReal, &m_ConvertParam, SY2DVEC_TO_3D_VIEWPLANE, &fZValue );
+	SpaceConvert(ptDest, &ptReal, &m_ConvertParam, BaseGraph2DVEC_TO_3D_VIEWPLANE, &fZValue );
 }
 void CSimpleSpaceConvert::Convert2DPtTo3D_NearWorldPlane( const float3 *ptSrc, float3 *ptDest )
 {
@@ -199,7 +199,7 @@ void CSimpleSpaceConvert::Convert2DPtTo3D_NearWorldPlane( const float3 *ptSrc, f
 	{
 		ptReal *= *pAdjust2DInv;
 	}
-	SpaceConvert(ptDest, &ptReal, &m_ConvertParam, SY2DVEC_TO_3D_WORLD );
+	SpaceConvert(ptDest, &ptReal, &m_ConvertParam, BaseGraph2DVEC_TO_3D_WORLD );
 }
 BOOL CSimpleSpaceConvert::Convert2DPtTo3D_Plane( const float3 *ptSrc, float3 *ptDest, float3 *vPlaneCenter, float3 *vPlaneNormal )
 {
@@ -213,7 +213,7 @@ BOOL CSimpleSpaceConvert::Convert2DPtTo3D_Plane( const float3 *ptSrc, float3 *pt
 	{
 		ptReal *= *pAdjust2DInv;
 	}
-	return SpaceConvert(ptDest, &ptReal, &m_ConvertParam, SY2DVEC_TO_3D_PLANE, NULL, vPlaneNormal, vPlaneCenter );
+	return SpaceConvert(ptDest, &ptReal, &m_ConvertParam, BaseGraph2DVEC_TO_3D_PLANE, NULL, vPlaneNormal, vPlaneCenter );
 }
 matrix4f CSimpleSpaceConvert::getWorldMatrix()
 {
@@ -305,7 +305,7 @@ float CSimpleSpaceConvert::GetViewWorkPlaneDis()
 
 void CSimpleSpaceConvert::ComputeNew3DptToViewPlan( const float3 *ptSrc, float3 *ptDest, float fZValue )
 {
-	SpaceConvert(ptDest, ptSrc, &m_ConvertParam, SY3DVEC_TO_VIEWPLANE, &fZValue );
+	SpaceConvert(ptDest, ptSrc, &m_ConvertParam, BaseGraph3DVEC_TO_VIEWPLANE, &fZValue );
 }
 
 BOOL CSimpleSpaceConvert::CheckPtInView( const float3* vPt,int nCount )
@@ -399,7 +399,7 @@ CSimpleSpaceConvert2D::~CSimpleSpaceConvert2D()
 void CSimpleSpaceConvert2D::Convert3DPtTo2D( const float3 *ptSrc, float3 *pDest )
 {
 	float3 vNewPt;
-	//SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, SY3DVEC_TO_2D);
+	//SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, BaseGraph3DVEC_TO_2D);
 	matrix4f matWorld = *m_pConvertMatrix->getWorld();
 	float3 pos = { matWorld._41, matWorld._42, 0 };
 	matWorld._41 = matWorld._42 = matWorld._43 = 0;
@@ -688,7 +688,7 @@ void CSimpleSpaceConvert3DIn2D::Convert3DPtTo2D( const float3 *ptSrc, float3 *pD
 
 	BaseGraphSpaceConvertParam param = m_ConvertParam;
 	param.pWorldMat = &matWorld;
-	SpaceConvert( &vNewPt, ptSrc, &param, SY3DVEC_TO_2D );
+	SpaceConvert( &vNewPt, ptSrc, &param, BaseGraph3DVEC_TO_2D );
 
 	vNewPt.x += pos.x;
 	vNewPt.y += -pos.y;
@@ -716,7 +716,7 @@ void CSimpleSpaceConvert3DIn2D::Convert2DPtTo3D_ZViewPlane( const float3 *ptSrc,
 	ptReal.y -= -pos.y;
 
 	float3 vNewPt = ptReal;
-	//SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, SY3DVEC_TO_2D);
+	//SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, BaseGraph3DVEC_TO_2D);
 	vNewPt.z = fZValue;
 	vNewPt.x -= m_vSceneCenter.x;
 	vNewPt.y = m_vSceneCenter.y - vNewPt.y;
@@ -764,7 +764,7 @@ BOOL CSimpleSpaceConvert3DIn2D::Convert2DPtTo3D_Plane( const float3 *ptSrc, floa
 	ptReal.y -= -pos.y;
 
 	float3 vNewPt = ptReal;
-	//SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, SY3DVEC_TO_2D);
+	//SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, BaseGraph3DVEC_TO_2D);
 	vNewPt.z = 0;
 	vNewPt.x -= m_vSceneCenter.x;
 	vNewPt.y = m_vSceneCenter.y - vNewPt.y;
@@ -825,7 +825,7 @@ void CSimpleSpaceConvert2DRenderBy3D::Convert3DPtTo2D( const float3 *ptSrc, floa
 
 	BaseGraphSpaceConvertParam param = m_ConvertParam;
 	param.pWorldMat = &matWorld;
-	SpaceConvert( &vNewPt, ptSrc, &param, SY3DVEC_TO_2D );
+	SpaceConvert( &vNewPt, ptSrc, &param, BaseGraph3DVEC_TO_2D );
 
 	vNewPt.x += pos.x;
 	vNewPt.y += -pos.y;
@@ -853,7 +853,7 @@ void CSimpleSpaceConvert2DRenderBy3D::Convert2DPtTo3D_ZViewPlane( const float3 *
 	ptReal.y -= -pos.y;
 
 	float3 vNewPt = ptReal;
-	//SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, SY3DVEC_TO_2D);
+	//SpaceConvert(&vNewPt,ptSrc, &m_ConvertParam, BaseGraph3DVEC_TO_2D);
 	vNewPt.z = fZValue;
 	vNewPt.x -= m_vSceneCenter.x;
 	vNewPt.y = m_vSceneCenter.y - vNewPt.y;
@@ -901,7 +901,7 @@ BOOL CSimpleSpaceConvert2DRenderBy3D::Convert2DPtTo3D_Plane( const float3 *ptSrc
 	BaseGraphSpaceConvertParam param = m_ConvertParam;
 	param.pWorldMat = &matWorld;
 
-	return SpaceConvert(ptDest, &ptReal, &param, SY2DVEC_TO_3D_PLANE, NULL, vPlaneNormal, vPlaneCenter );
+	return SpaceConvert(ptDest, &ptReal, &param, BaseGraph2DVEC_TO_3D_PLANE, NULL, vPlaneNormal, vPlaneCenter );
 }
 void CSimpleSpaceConvert2DRenderBy3D::GetRayDirection( OUT BaseGraphRay *pRay, IN float3 *ptHit )
 {

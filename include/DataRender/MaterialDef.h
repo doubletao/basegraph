@@ -402,7 +402,7 @@ BASEGRAPH_DATARENDER_API int		BaseGraphMaterial_SetTexPrivateData(BaseGraphMater
 BASEGRAPH_DATARENDER_API int		BaseGraphMaterial_SetPhyColor(BaseGraphMaterial* pMat,DWORD color);
 BASEGRAPH_DATARENDER_API int		BaseGraphMaterial_SetPhyParam(BaseGraphMaterial* pMat,const BaseGraphPhyData* pData);
 BASEGRAPH_DATARENDER_API int		BaseGraphMaterial_SetPhyParam(BaseGraphMaterial* pMat,const BaseGraphPhyRenderData* pData);
-BASEGRAPH_DATARENDER_API int		SYUpdateDynamicTex(double dTotalFrame,int hDevice,BaseGraphMatVideoTex* pVideoTex,BaseGraphMatTex* pTex);//负责准备计算数据
+BASEGRAPH_DATARENDER_API int		BaseGraphUpdateDynamicTex(double dTotalFrame,int hDevice,BaseGraphMatVideoTex* pVideoTex,BaseGraphMatTex* pTex);//负责准备计算数据
 
 //材质显存数据处理
 BASEGRAPH_DATARENDER_API void		BaseGraphMaterial_CreateVideoMat( BaseGraphVideoMaterial* pVideoMat,BaseGraphMaterial* pMaterial ,int hDevice,BOOL bEdit /*= FALSE*/);

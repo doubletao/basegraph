@@ -88,7 +88,7 @@ struct Common_DeviceDX10
 	int			hRenderTexCB5;
 
 	htable				htEffectUnit;
-	SYD3DEffectManager*	pEffectMan;
+	BaseGraphD3DEffectManager*	pEffectMan;
 
 	CRITICAL_SECTION	EngineLock;
 	CRITICAL_SECTION	RenderLock;

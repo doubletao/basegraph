@@ -16,7 +16,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 									const float3* pPlaneNormal ,	//投影到平面上时，表示平面的法向量
 									const float3* pPlaneCenter )	//投影到平面上时，表示平面的中心位置			
 {
-	if (nType == SY2DVEC_TO_3D_VIEWPLANE || nType == SY2DVEC_TO_3D_WORLD)
+	if (nType == BaseGraph2DVEC_TO_3D_VIEWPLANE || nType == BaseGraph2DVEC_TO_3D_WORLD)
 	{
 		D3DXVec3Unproject( (D3DXVECTOR3*)pOutVec, (D3DXVECTOR3*)pInVec, (D3D10_VIEWPORT *)pParam->pViewPort, (D3DXMATRIXA16*)pParam->pProjMat, (D3DXMATRIXA16*)pParam->pViewMat, (D3DXMATRIXA16*)pParam->pWorldMat );
 #ifdef _DEBUG
@@ -35,7 +35,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 		//////////////////////////////////////////////////////////////////////////
 #endif // _DEBUG
 
-		if (nType == SY2DVEC_TO_3D_VIEWPLANE)
+		if (nType == BaseGraph2DVEC_TO_3D_VIEWPLANE)
 		{
 			*pOutVec *= *pParam->pWorldMat;
 			*pOutVec *= *pParam->pViewMat;
@@ -52,7 +52,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 			}
 		}
 	}
-	else if (nType == SY2DVEC_TO_3D_PLANE)
+	else if (nType == BaseGraph2DVEC_TO_3D_PLANE)
 	{
 		if(!pPlaneCenter || !pPlaneNormal)		
 			return false;
@@ -80,7 +80,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 			return FALSE;
 		*pOutVec = hitPoint[0];
 	}
-	else if (nType == SY3DVEC_TO_2D)
+	else if (nType == BaseGraph3DVEC_TO_2D)
 	{
 		float4 outVec,inVec;
 		float4Set(&inVec,pInVec->x,pInVec->y,pInVec->z,1);
@@ -95,7 +95,7 @@ BOOL BASEGRAPH_SCENE_RENDER_API SpaceConvert( float3* pOutVec, /*目的向量 */
 		float4Set(&outVec,pOutVec->x,pOutVec->y,pOutVec->z,outVec.w);
 		pOutVec->z = 0;
 	}
-	else if(nType == SY3DVEC_TO_VIEWPLANE)
+	else if(nType == BaseGraph3DVEC_TO_VIEWPLANE)
 	{
 		if(0)
 		{
@@ -198,7 +198,7 @@ void BASEGRAPH_SCENE_RENDER_API CalViewMat( matrix4f* pOutViewMat,const float3* 
 	D3DXMatrixLookAtLH((D3DXMATRIX*)pOutViewMat,(D3DXVECTOR3*)pEyePos,(D3DXVECTOR3*)pLookAt,(D3DXVECTOR3*)pUp);
 }
 
-void BASEGRAPH_SCENE_RENDER_API SYConvertBoxTo2DRect(rectf* pRect,const BaseGraphSpaceConvertParam* param,const float3* vMin,const float3* vMax)
+void BASEGRAPH_SCENE_RENDER_API BaseGraphConvertBoxTo2DRect(rectf* pRect,const BaseGraphSpaceConvertParam* param,const float3* vMin,const float3* vMax)
 {
 	float3 vPoint[8];
 
@@ -235,12 +235,12 @@ void BASEGRAPH_SCENE_RENDER_API SYConvertBoxTo2DRect(rectf* pRect,const BaseGrap
 	vPoint[7].z = vMin->z ;
 
 	float3 v2DPoint;
-	SpaceConvert(&v2DPoint,&vPoint[0],param,SY3DVEC_TO_2D);
+	SpaceConvert(&v2DPoint,&vPoint[0],param,BaseGraph3DVEC_TO_2D);
 	pRect->left = pRect->right = v2DPoint.x;
 	pRect->top = pRect->bottom = v2DPoint.y;
 	for ( int j = 1; j < 8; j++ )
 	{
-		SpaceConvert(&v2DPoint,&vPoint[j],param,SY3DVEC_TO_2D);
+		SpaceConvert(&v2DPoint,&vPoint[j],param,BaseGraph3DVEC_TO_2D);
 		pRect->bottom = max( pRect->bottom, v2DPoint.y );
 		pRect->top    = min( pRect->top,    v2DPoint.y );
 		pRect->right  = max( pRect->right,  v2DPoint.x );
@@ -352,7 +352,7 @@ void BASEGRAPH_SCENE_RENDER_API KeepModelSize( matrix4f* pMat,int nCount,size_t 
 	}
 }
 
-void SYCalBoxNearFar( float* pNear,float* pFar,const matrix4f& matWorldView, const float3& vMin,const float3& vMax )
+void BaseGraphCalBoxNearFar( float* pNear,float* pFar,const matrix4f& matWorldView, const float3& vMin,const float3& vMax )
 {
 	float3 ptBound[8];
 	CreateBox(ptBound,vMin,vMax);

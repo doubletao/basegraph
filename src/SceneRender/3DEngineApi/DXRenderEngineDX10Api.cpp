@@ -1560,7 +1560,7 @@ UINT createFlag=D3D10_CREATE_DEVICE_SINGLETHREADED;
 	*(int*)paramout = hNewDevice;
 
 	//play effect support
-	pNewDevice->pEffectMan = new SYD3DEffectManager(pNewDevice->pDevice);
+	pNewDevice->pEffectMan = new BaseGraphD3DEffectManager(pNewDevice->pDevice);
 	BseeHTable_Init(&pNewDevice->htEffectUnit);
 	return true;
 }

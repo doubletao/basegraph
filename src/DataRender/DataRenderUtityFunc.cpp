@@ -35,20 +35,20 @@ typedef CBaseARray<CBasePoint2fPtrArray*> CPtfArrArr; // pointf二维数组
 LPBaseARRAY calc_midderbuf_array = NULL;
 int maxsize = 0;
 
-BASEGRAPH_DATARENDER_API int sy_release_unit(BaseGraphUnit * punit)
+BASEGRAPH_DATARENDER_API int common_release_unit(BaseGraphUnit * punit)
 {
 	if (!punit)
 		return 0;
 
 	if (punit->type == UNIT_2D)
 	{
-		int nloadlen = sy_release_vectorgraph(&punit->u.u2d.graph);
+		int nloadlen = common_release_vectorgraph(&punit->u.u2d.graph);
 	}
 	else
 	{
 		if (punit->u.u3d.pmod)
 		{
-			int nloadlen = sy_release_moddef(punit->u.u3d.pmod);
+			int nloadlen = common_release_moddef(punit->u.u3d.pmod);
 			SAFE_DELETE(punit->u.u3d.pmod);
 		}
 	}
@@ -56,7 +56,7 @@ BASEGRAPH_DATARENDER_API int sy_release_unit(BaseGraphUnit * punit)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int sy_init_unit(BaseGraphUnit * punit, BOOL dwtype)
+BASEGRAPH_DATARENDER_API int common_init_unit(BaseGraphUnit * punit, BOOL dwtype)
 {
 	memset(punit, 0, sizeof(BaseGraphUnit));
 	matrix4f_identity(&punit->MatVToItem);
@@ -68,12 +68,12 @@ BASEGRAPH_DATARENDER_API int sy_init_unit(BaseGraphUnit * punit, BOOL dwtype)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int sy_copy_unit(BaseGraphUnit * pdesunit, BaseGraphUnit * psrcunit)
+BASEGRAPH_DATARENDER_API int common_copy_unit(BaseGraphUnit * pdesunit, BaseGraphUnit * psrcunit)
 {
 	if (!psrcunit)
 		return 0;
 	//先释放
-	sy_release_unit(pdesunit);
+	common_release_unit(pdesunit);
 	pdesunit->type = psrcunit->type;
 	pdesunit->dwUserID = psrcunit->dwUserID;
 	pdesunit->parentbone = psrcunit->parentbone;
@@ -83,7 +83,7 @@ BASEGRAPH_DATARENDER_API int sy_copy_unit(BaseGraphUnit * pdesunit, BaseGraphUni
 
 	if (pdesunit->type == UNIT_2D)
 	{
-		sy_release_vectorgraph(&pdesunit->u.u2d.graph);
+		common_release_vectorgraph(&pdesunit->u.u2d.graph);
 		CommonCopy_VectorGraph(&pdesunit->u.u2d.graph, &psrcunit->u.u2d.graph);
 		memcpy(&pdesunit->u.u2d.staticeffect, &psrcunit->u.u2d.staticeffect, sizeof(static_effect));
 	}
@@ -92,14 +92,14 @@ BASEGRAPH_DATARENDER_API int sy_copy_unit(BaseGraphUnit * pdesunit, BaseGraphUni
 		if (!pdesunit->u.u3d.pmod)
 		{
 			pdesunit->u.u3d.pmod = new BaseGraphModel;
-			sy_init_moddef(pdesunit->u.u3d.pmod);
+			common_init_moddef(pdesunit->u.u3d.pmod);
 		}
-		sy_copy_moddef(pdesunit->u.u3d.pmod, psrcunit->u.u3d.pmod);
+		common_copy_moddef(pdesunit->u.u3d.pmod, psrcunit->u.u3d.pmod);
 	}
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API void sy_set_unit_material(BaseGraphUnit * p3DUnit, int nSubModelIndex, void * pMaterial)
+BASEGRAPH_DATARENDER_API void common_set_unit_material(BaseGraphUnit * p3DUnit, int nSubModelIndex, void * pMaterial)
 {
 	BaseGraphModel* pmod = p3DUnit->u.u3d.pmod;
 	if (!pmod)
@@ -111,7 +111,7 @@ BASEGRAPH_DATARENDER_API void sy_set_unit_material(BaseGraphUnit * p3DUnit, int 
 	pmod->viewsub[nSubModelIndex].pMaterial = pMaterial;
 }
 
-BASEGRAPH_DATARENDER_API void * sy_get_unit_material(BaseGraphUnit * p3DUnit, int nSubModelIndex)
+BASEGRAPH_DATARENDER_API void * common_get_unit_material(BaseGraphUnit * p3DUnit, int nSubModelIndex)
 {
 	BaseGraphModel* pmod = p3DUnit->u.u3d.pmod;
 	if (!pmod)
@@ -123,7 +123,7 @@ BASEGRAPH_DATARENDER_API void * sy_get_unit_material(BaseGraphUnit * p3DUnit, in
 	return pmod->viewsub[nSubModelIndex].pMaterial;
 }
 
-BASEGRAPH_DATARENDER_API void sy_release_unit_material(BaseGraphUnit * p3DUnit)
+BASEGRAPH_DATARENDER_API void common_release_unit_material(BaseGraphUnit * p3DUnit)
 {
 	BaseGraphModel* pMod = p3DUnit->u.u3d.pmod;
 	if (pMod != NULL)
@@ -136,7 +136,7 @@ BASEGRAPH_DATARENDER_API void sy_release_unit_material(BaseGraphUnit * p3DUnit)
 	}
 }
 
-BASEGRAPH_DATARENDER_API void sy_set_unit_material_diffuse(BaseGraphUnit * p3DUnit, DWORD dwColor)
+BASEGRAPH_DATARENDER_API void common_set_unit_material_diffuse(BaseGraphUnit * p3DUnit, DWORD dwColor)
 {
 	BaseGraphModel* pMod = p3DUnit->u.u3d.pmod;
 	if (pMod != NULL)
@@ -152,13 +152,13 @@ BASEGRAPH_DATARENDER_API void sy_set_unit_material_diffuse(BaseGraphUnit * p3DUn
 	}
 }
 
-BASEGRAPH_DATARENDER_API BaseGraphUnit * sy_create_3dunit_from_2dunit(BaseGraphUnit * punit2d, BaseGraphUnit * pUnit3D)
+BASEGRAPH_DATARENDER_API BaseGraphUnit * common_create_3dunit_from_2dunit(BaseGraphUnit * punit2d, BaseGraphUnit * pUnit3D)
 {
 	if (pUnit3D == NULL)
 	{
 		pUnit3D = new BaseGraphUnit;
 	}
-	sy_init_unit(pUnit3D, TRUE);
+	common_init_unit(pUnit3D, TRUE);
 	pUnit3D->MatVToItem = punit2d->MatVToItem;
 	pUnit3D->dwUserID = punit2d->dwUserID;
 	return pUnit3D;
@@ -196,7 +196,7 @@ BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(BaseGraphItemRenderUnit * pRende
 	{
 		if (pRenderUnit->graph)
 		{
-			sy_release_vectorgraph(pRenderUnit->graph);
+			common_release_vectorgraph(pRenderUnit->graph);
 			delete pRenderUnit->graph;
 			pRenderUnit->graph = NULL;
 		}
@@ -206,7 +206,7 @@ BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(BaseGraphItemRenderUnit * pRende
 			pRenderUnit->unit2D.buffer = NULL;
 		}
 	}
-	sy_release_unit(pRenderUnit->m_pUnit);
+	common_release_unit(pRenderUnit->m_pUnit);
 	SAFE_DELETE(pRenderUnit->m_pUnit);
 }
 
@@ -297,14 +297,14 @@ BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_SetDefaultSolidColor(static_
 	pEffect->appendmaterial.dwReverse2 = 1;
 }
 
-BASEGRAPH_DATARENDER_API void sy_staticeffect_release(static_effect * pEffect)
+BASEGRAPH_DATARENDER_API void common_staticeffect_release(static_effect * pEffect)
 {
 	if (pEffect == NULL)
 		return;
 	memset(pEffect, 0, sizeof(static_effect));
 }
 
-BASEGRAPH_DATARENDER_API BOOL sy_staticeffect_compare(const static_effect * pEffect1, const static_effect * pEffect2)
+BASEGRAPH_DATARENDER_API BOOL common_staticeffect_compare(const static_effect * pEffect1, const static_effect * pEffect2)
 {
 	if (pEffect1 == NULL || pEffect2 == NULL)
 		return FALSE;
@@ -317,15 +317,15 @@ BASEGRAPH_DATARENDER_API BOOL sy_staticeffect_compare(const static_effect * pEff
 	return FALSE;
 }
 
-BASEGRAPH_DATARENDER_API void sy_staticeffect_copy(static_effect * pDstEffect, const static_effect * pSrcEffect)
+BASEGRAPH_DATARENDER_API void common_staticeffect_copy(static_effect * pDstEffect, const static_effect * pSrcEffect)
 {
 	if (pDstEffect == NULL || pSrcEffect == NULL)
 		return;
-	sy_staticeffect_release(pDstEffect);
+	common_staticeffect_release(pDstEffect);
 	memcpy(pDstEffect, pSrcEffect, sizeof(static_effect));
 }
 
-BASEGRAPH_DATARENDER_API void sy_special_effect_copy(common_special_effect * pDstEffect, const common_special_effect * pSrcEffect)
+BASEGRAPH_DATARENDER_API void common_special_effect_copy(common_special_effect * pDstEffect, const common_special_effect * pSrcEffect)
 {
 	if (pDstEffect == NULL || pSrcEffect == NULL)
 		return;
@@ -339,17 +339,17 @@ BASEGRAPH_DATARENDER_API void sy_special_effect_copy(common_special_effect * pDs
 	}
 	else
 	{
-		sy_special_effect_release(pDstEffect);
+		common_special_effect_release(pDstEffect);
 		pDstEffect->m_nVersion = pSrcEffect->m_nVersion;
 		pDstEffect->m_GraphType = pSrcEffect->m_GraphType;
-		sy_staticeffect_copy(&pDstEffect->m_BKPublicAttr, &pSrcEffect->m_BKPublicAttr);
+		common_staticeffect_copy(&pDstEffect->m_BKPublicAttr, &pSrcEffect->m_BKPublicAttr);
 		pDstEffect->m_BKRect = pSrcEffect->m_BKRect;
 		pDstEffect->m_bUnitary = pSrcEffect->m_bUnitary;
 		pDstEffect->m_nAlignMode = pSrcEffect->m_nAlignMode;
 	}
 }
 
-BASEGRAPH_DATARENDER_API void sy_special_effect_release(common_special_effect * pEffect)
+BASEGRAPH_DATARENDER_API void common_special_effect_release(common_special_effect * pEffect)
 {
 	if (pEffect->m_GraphType == FIRE_GRAPH)
 	{
@@ -357,18 +357,18 @@ BASEGRAPH_DATARENDER_API void sy_special_effect_release(common_special_effect * 
 	}
 	else
 	{
-		sy_staticeffect_release(&pEffect->m_BKPublicAttr);
+		common_staticeffect_release(&pEffect->m_BKPublicAttr);
 		memset(&pEffect->m_BKRect, 0, sizeof(rectf));
 	}
 }
 
-BASEGRAPH_DATARENDER_API int sy_release_vectorgraph(vectorgraph * pgraph)
+BASEGRAPH_DATARENDER_API int common_release_vectorgraph(vectorgraph * pgraph)
 {
 	if (pgraph != NULL)
 	{
 		for (int i = 0; i < pgraph->ncell; i++)
 		{
-			sy_release_cell(&pgraph->cell[i]);
+			common_release_cell(&pgraph->cell[i]);
 		}
 		if (pgraph->cell)
 		{
@@ -715,10 +715,10 @@ BASEGRAPH_DATARENDER_API void ReverseVectorGraph(vectorgraph * pDesGraph)
 	}
 }
 
-BASEGRAPH_DATARENDER_API int sy_release_moddef(BaseGraphModel * pmod)
+BASEGRAPH_DATARENDER_API int common_release_moddef(BaseGraphModel * pmod)
 {
 	for (int i = 0; i < pmod->nviewsub; i++)
-		sy_release_viewsub(1, &pmod->viewsub[i]);
+		common_release_viewsub(1, &pmod->viewsub[i]);
 
 	SAFEDELETE_ARRAY(pmod->v);
 	SAFEDELETE_ARRAY(pmod->indecs);
@@ -747,7 +747,7 @@ BASEGRAPH_DATARENDER_API int sy_release_moddef(BaseGraphModel * pmod)
 		for (int i = 0; i < bcount; i++)
 		{
 			pBone = (BoneDef*)BaseAR_RemoveAt(&pmod->bonearray, 0, 1);
-			sy_release_bonedef(pBone);
+			common_release_bonedef(pBone);
 			SAFE_DELETE(pBone);
 		}
 		BaseAR_RemoveAll(&pmod->bonearray);
@@ -756,7 +756,7 @@ BASEGRAPH_DATARENDER_API int sy_release_moddef(BaseGraphModel * pmod)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int sy_release_viewsub(int hDevice, BaseGraphSubModel * pSubModel)
+BASEGRAPH_DATARENDER_API int common_release_viewsub(int hDevice, BaseGraphSubModel * pSubModel)
 {
 	if (pSubModel->pMaterial)
 	{
@@ -767,12 +767,12 @@ BASEGRAPH_DATARENDER_API int sy_release_viewsub(int hDevice, BaseGraphSubModel *
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API void sy_copy_mod_viewsub(BaseGraphModel * pDst, const BaseGraphModel * pSrc)
+BASEGRAPH_DATARENDER_API void common_copy_mod_viewsub(BaseGraphModel * pDst, const BaseGraphModel * pSrc)
 {
 	if (pDst->nviewsub != pSrc->nviewsub)
 	{
 		for (int i = 0; i < pDst->nviewsub; i++)
-			sy_release_viewsub(1, &pDst->viewsub[i]);
+			common_release_viewsub(1, &pDst->viewsub[i]);
 		SAFEDELETE_ARRAY(pDst->viewsub);
 		pDst->nviewsub = pSrc->nviewsub;
 		if (pDst->nviewsub > 0)
@@ -802,12 +802,12 @@ BASEGRAPH_DATARENDER_API void sy_copy_mod_viewsub(BaseGraphModel * pDst, const B
 	}
 }
 
-BASEGRAPH_DATARENDER_API void sy_init_moddef(BaseGraphModel * pmod)
+BASEGRAPH_DATARENDER_API void common_init_moddef(BaseGraphModel * pmod)
 {
 	memset(pmod, 0, sizeof(BaseGraphModel));
 }
 
-BASEGRAPH_DATARENDER_API void sy_copy_moddef(BaseGraphModel * pDst, const BaseGraphModel * pSrc)
+BASEGRAPH_DATARENDER_API void common_copy_moddef(BaseGraphModel * pDst, const BaseGraphModel * pSrc)
 {
 	pDst->logicvcount = pSrc->logicvcount;
 	pDst->logiclcount = pSrc->logiclcount;
@@ -861,13 +861,13 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(BaseGraphModel * pDst, const BaseGr
 	}
 	memcpy(pDst->pnSeq, pSrc->pnSeq, pSrc->nSeqCount * sizeof(int));
 	//Copy View Sub
-	sy_copy_mod_viewsub(pDst, pSrc);
+	common_copy_mod_viewsub(pDst, pSrc);
 
 	int nDstBoneSize = (int)BaseAR_GetSize(&pDst->bonearray);
 	for (int i = 0; i < nDstBoneSize; i++)
 	{
 		BoneDef* pDstBone = (BoneDef*)BaseAR_GetAt(&pDst->bonearray, i);
-		sy_release_bonedef(pDstBone);
+		common_release_bonedef(pDstBone);
 		SAFE_DELETE(pDstBone);
 	}
 	BaseAR_Clear(&pDst->bonearray);
@@ -878,7 +878,7 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(BaseGraphModel * pDst, const BaseGr
 		//bone array
 		BoneDef* pScrBone = (BoneDef*)BaseAR_GetAt(&pSrc->bonearray, i);
 		BoneDef* pBone = new BoneDef;
-		sy_copy_bone(pBone, pScrBone);
+		common_copy_bone(pBone, pScrBone);
 		BaseAR_Add(&pDst->bonearray, pBone);
 	}
 
@@ -929,7 +929,7 @@ BASEGRAPH_DATARENDER_API void sy_copy_moddef(BaseGraphModel * pDst, const BaseGr
 	}
 }
 
-BASEGRAPH_DATARENDER_API int sy_release_cell(vectorcell * pcell)
+BASEGRAPH_DATARENDER_API int common_release_cell(vectorcell * pcell)
 {
 	if (pcell&&pcell->npoint)
 	{
@@ -941,14 +941,14 @@ BASEGRAPH_DATARENDER_API int sy_release_cell(vectorcell * pcell)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int sy_release_bonedef(BoneDef * pbone)
+BASEGRAPH_DATARENDER_API int common_release_bonedef(BoneDef * pbone)
 {
 	if (!pbone)
 		return 0;
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API void sy_copy_bone(BoneDef * pDesBone, BoneDef * pSrcBone)
+BASEGRAPH_DATARENDER_API void common_copy_bone(BoneDef * pDesBone, BoneDef * pSrcBone)
 {
 	memset(pDesBone, 0, sizeof(BoneDef));
 	pDesBone->nAnimID = pSrcBone->nAnimID;
@@ -963,7 +963,7 @@ BASEGRAPH_DATARENDER_API void sy_copy_bone(BoneDef * pDesBone, BoneDef * pSrcBon
 	_tcscpy_s(pDesBone->name, pSrcBone->name);
 }
 
-BASEGRAPH_DATARENDER_API void sy_lightinfo_copy(BaseGraph_DataBase::lightinfo * pDes, const BaseGraph_DataBase::lightinfo * pSrc)
+BASEGRAPH_DATARENDER_API void common_lightinfo_copy(BaseGraph_DataBase::lightinfo * pDes, const BaseGraph_DataBase::lightinfo * pSrc)
 {
 	pDes->ambience = pSrc->ambience;
 	pDes->ambience_degree = pSrc->ambience_degree;
@@ -973,7 +973,7 @@ BASEGRAPH_DATARENDER_API void sy_lightinfo_copy(BaseGraph_DataBase::lightinfo * 
 	_tcscpy_s(pDes->szPath, pSrc->szPath);
 }
 
-BASEGRAPH_DATARENDER_API void sy_dynamictexture_copy(BaseGraph_DataBase::dynamictexture * pDes, const BaseGraph_DataBase::dynamictexture * pSrc)
+BASEGRAPH_DATARENDER_API void common_dynamictexture_copy(BaseGraph_DataBase::dynamictexture * pDes, const BaseGraph_DataBase::dynamictexture * pSrc)
 {
 	pDes->disable = pSrc->disable;
 	_tcscpy_s(pDes->szPath, pSrc->szPath);
@@ -992,7 +992,7 @@ BASEGRAPH_DATARENDER_API void sy_dynamictexture_copy(BaseGraph_DataBase::dynamic
 	pDes->bUseAlpha = pSrc->bUseAlpha;
 }
 
-BASEGRAPH_DATARENDER_API void sy_channelinfo_copy(BaseGraph_DataBase::channelinfo * pDes, const BaseGraph_DataBase::channelinfo * pSrc)
+BASEGRAPH_DATARENDER_API void common_channelinfo_copy(BaseGraph_DataBase::channelinfo * pDes, const BaseGraph_DataBase::channelinfo * pSrc)
 {
 	_tcscpy_s(pDes->szPath, pSrc->szPath);
 	pDes->weight = pSrc->weight;
@@ -1001,7 +1001,7 @@ BASEGRAPH_DATARENDER_API void sy_channelinfo_copy(BaseGraph_DataBase::channelinf
 	pDes->dwReverse2 = pSrc->dwReverse2;
 }
 
-BASEGRAPH_DATARENDER_API void sy_materialinfo_copy(BaseGraph_DataBase::materialinfo * pDes, const BaseGraph_DataBase::materialinfo * pSrc)
+BASEGRAPH_DATARENDER_API void common_materialinfo_copy(BaseGraph_DataBase::materialinfo * pDes, const BaseGraph_DataBase::materialinfo * pSrc)
 {
 	_tcscpy_s(pDes->szPath, pSrc->szPath);
 	pDes->dwReverse1 = pSrc->dwReverse1;
@@ -1023,12 +1023,12 @@ BASEGRAPH_DATARENDER_API void BaseGraphRender_GetGraph_RenderInfo(vectorgraph * 
 	h = abs(rtBound.bottom - rtBound.top);
 }
 
-BOOL BaseGraphRender_LoadChannel(static_effect* peffect, sy_render_channel** pDesChannel)
+BOOL BaseGraphRender_LoadChannel(static_effect* peffect, common_render_channel** pDesChannel)
 {
 	TCHAR szRealPath[MAX_PATH];
 	//if (_tcslen(peffect->facelight.szPath))
 	//{
-	//	sy_render_channel* pChannel = new sy_render_channel;
+	//	common_render_channel* pChannel = new common_render_channel;
 	//	GetFileManager()->TagPathTrans(peffect->facelight.szPath, szRealPath, GetFileManager()->lpParam);
 	//	BOOL bResult = FALSE;
 	//	if (peffect->facelight.dwReverse2 != 1)
@@ -1048,7 +1048,7 @@ BOOL BaseGraphRender_LoadChannel(static_effect* peffect, sy_render_channel** pDe
 	//}
 	//if (_tcslen(peffect->cubelight.szPath))
 	//{
-	//	sy_render_channel* pChannel = new sy_render_channel;
+	//	common_render_channel* pChannel = new common_render_channel;
 	//	GetFileManager()->TagPathTrans(peffect->cubelight.szPath, szRealPath, GetFileManager()->lpParam);
 	//	BOOL bResult = FALSE;
 
@@ -1070,7 +1070,7 @@ BOOL BaseGraphRender_LoadChannel(static_effect* peffect, sy_render_channel** pDe
 	//}
 	//if (_tcslen(peffect->material.szPath))
 	//{
-	//	sy_render_channel* pChannel = new sy_render_channel;
+	//	common_render_channel* pChannel = new common_render_channel;
 	//	GetFileManager()->TagPathTrans(peffect->material.szPath, szRealPath, GetFileManager()->lpParam);
 	//	BOOL bResult = FALSE;
 
@@ -1089,7 +1089,7 @@ BOOL BaseGraphRender_LoadChannel(static_effect* peffect, sy_render_channel** pDe
 	//}
 	//if (_tcslen(peffect->channel.szPath))
 	//{
-	//	sy_render_channel* pChannel = new sy_render_channel;
+	//	common_render_channel* pChannel = new common_render_channel;
 	//	GetFileManager()->TagPathTrans(peffect->channel.szPath, szRealPath, GetFileManager()->lpParam);
 
 	//	BOOL bResult = FALSE;
@@ -1108,7 +1108,7 @@ BOOL BaseGraphRender_LoadChannel(static_effect* peffect, sy_render_channel** pDe
 	//}
 	//if (_tcslen(peffect->appendmaterial.szPath))
 	//{
-	//	sy_render_channel* pChannel = new sy_render_channel;
+	//	common_render_channel* pChannel = new common_render_channel;
 	//	GetFileManager()->TagPathTrans(peffect->appendmaterial.szPath, szRealPath, GetFileManager()->lpParam);
 
 	//	BOOL bResult = FALSE;
@@ -2011,7 +2011,7 @@ BOOL BaseGraphRender_DrawShadow(CCommonBuffer* pSrcPool,
 	return 1;
 }
 
-int  _BaseGraphRender_GetCubeChannel(sy_render_channel** pDesChannel, sy_render_channel** pSrcChannel)
+int  _BaseGraphRender_GetCubeChannel(common_render_channel** pDesChannel, common_render_channel** pSrcChannel)
 {
 	int nCount = 0;
 	if (pSrcChannel[CHANNEL_MATERIAL])
@@ -2027,7 +2027,7 @@ int  _BaseGraphRender_GetCubeChannel(sy_render_channel** pDesChannel, sy_render_
 
 }
 
-BOOL _BaseGraphRender_MakeTable(sy_render_channel** pChannels, int nCount, LPLONG* &pContrastTable, LPLONG* &ppXTable, LPLONG* &ppYTable, int nDesWidth, int nDesHeight)
+BOOL _BaseGraphRender_MakeTable(common_render_channel** pChannels, int nCount, LPLONG* &pContrastTable, LPLONG* &ppXTable, LPLONG* &ppYTable, int nDesWidth, int nDesHeight)
 {
 	if (nCount <= 0)
 		return TRUE;
@@ -2051,7 +2051,7 @@ BOOL _BaseGraphRender_MakeTable(sy_render_channel** pChannels, int nCount, LPLON
 	}
 	for (int nIndex = 0; nIndex < nCount; nIndex++)
 	{
-		const sy_render_channel*	pThisChannel = pChannels[nIndex];
+		const common_render_channel*	pThisChannel = pChannels[nIndex];
 
 		LPLONG	pXTable = ppXTable[nIndex];
 		LPLONG	pYTable = ppYTable[nIndex];
@@ -2134,7 +2134,7 @@ BOOL LightColor(DWORD &dwColor,
 BOOL BaseGraphRenderLightToOpBuff(IN OUT	CCommonBuffer*& pResultPool,
 	IN 		RECT rtOutBound,
 	IN		RECT rtInValid,
-	IN		sy_render_channel** pChannelPool,
+	IN		common_render_channel** pChannelPool,
 	IN		int nCount,
 	IN		LPLONG* lpXTable,
 	IN		LPLONG* lpYTable
@@ -2159,7 +2159,7 @@ BOOL BaseGraphRenderLightToOpBuff(IN OUT	CCommonBuffer*& pResultPool,
 			{
 				LPLONG	pXStart = *(lpXTable + n);
 				LPLONG	pYStart = *(lpYTable + n);
-				const sy_render_channel*	thisChannel = pChannelPool[n];
+				const common_render_channel*	thisChannel = pChannelPool[n];
 				int nPos = *(pYStart + i) + *(pXStart + k);
 				int ndegree = *(thisChannel->buffer + nPos);
 
@@ -2198,7 +2198,7 @@ BOOL BaseGraphRenderLightToOpBuff(IN OUT	CCommonBuffer*& pResultPool,
 	return 1;
 }
 
-int _BaseGraphRender_GetFaceChannel(sy_render_channel** pDesChannel, sy_render_channel** pSrcChannel)
+int _BaseGraphRender_GetFaceChannel(common_render_channel** pDesChannel, common_render_channel** pSrcChannel)
 {
 	int nCount = 0;
 
@@ -2218,7 +2218,7 @@ int _BaseGraphRender_GetFaceChannel(sy_render_channel** pDesChannel, sy_render_c
 	return nCount;
 }
 
-BASEGRAPH_DATARENDER_API BOOL BaseGraphRenderGraphToOpBuff(IN vectorgraph * pGraph, IN static_effect * effect, OUT CCommonBuffer *& pResultPool, OUT RECT & rtOutBound, OUT int & nWidth, OUT int & nHeight, OUT int & nPitch, IN float fscale, OUT pointf & ptOrg, IN double dFrame, IN BOOL bShadowBaseline, IN sy_render_channel ** pChannelPool)
+BASEGRAPH_DATARENDER_API BOOL BaseGraphRenderGraphToOpBuff(IN vectorgraph * pGraph, IN static_effect * effect, OUT CCommonBuffer *& pResultPool, OUT RECT & rtOutBound, OUT int & nWidth, OUT int & nHeight, OUT int & nPitch, IN float fscale, OUT pointf & ptOrg, IN double dFrame, IN BOOL bShadowBaseline, IN common_render_channel ** pChannelPool)
 {
 	int facew = 0, faceh = 0;
 	RECT rtFaceBound = { 0 };
@@ -2233,15 +2233,15 @@ BASEGRAPH_DATARENDER_API BOOL BaseGraphRenderGraphToOpBuff(IN vectorgraph * pGra
 	if (facew == 0 || faceh == 0 || IsRectEmpty(&rtFaceBound))
 		return FALSE;
 
-	sy_render_channel** pMaskPool = pChannelPool;
+	common_render_channel** pMaskPool = pChannelPool;
 
-	sy_render_channel** pDesMaskPool = new sy_render_channel*[CHANNEL_COUNT];
-	memset(pDesMaskPool, 0, sizeof(sy_render_channel*) * CHANNEL_COUNT);
+	common_render_channel** pDesMaskPool = new common_render_channel*[CHANNEL_COUNT];
+	memset(pDesMaskPool, 0, sizeof(common_render_channel*) * CHANNEL_COUNT);
 
 	if (!pChannelPool)
 	{
-		pMaskPool = new sy_render_channel*[CHANNEL_COUNT];
-		memset(pMaskPool, 0, sizeof(sy_render_channel*) * CHANNEL_COUNT);
+		pMaskPool = new common_render_channel*[CHANNEL_COUNT];
+		memset(pMaskPool, 0, sizeof(common_render_channel*) * CHANNEL_COUNT);
 	}
 
 	BaseGraphRender_LoadChannel(effect, pMaskPool);
@@ -5245,7 +5245,7 @@ void Modify3DUnitFrom2DUnit(BaseGraphUnit * punit3d, BaseGraphUnit * punit2d, Ba
 	LPCommonStretchParam pStretch = (LPCommonStretchParam)pStretchParam;
 	float3Set(&punit3d->pos, punit2d->pos.x, punit2d->pos.y, 0);
 	BaseGraphModel* pMod = new BaseGraphModel;
-	sy_init_moddef(pMod);
+	common_init_moddef(pMod);
 	vectorgraph* pFigure = &punit2d->u.u2d.graph;
 	vectorgraph NewFigure;
 	memset(&NewFigure, 0, sizeof(vectorgraph));
@@ -5269,11 +5269,11 @@ void Modify3DUnitFrom2DUnit(BaseGraphUnit * punit3d, BaseGraphUnit * punit2d, Ba
 		DWORD faceColor = BaseGraphColor_GetRGBColor(&punit2d->u.u2d.staticeffect.face.color);
 		for (int i = 0; i < pMod->nviewsub; ++i)
 		{
-			pMaterial = (BaseGraphMaterial*)sy_get_unit_material(punit3d, i);
+			pMaterial = (BaseGraphMaterial*)common_get_unit_material(punit3d, i);
 			if (pMaterial != NULL)
 			{
 				pMod->viewsub[i].pMaterial = pMaterial;
-				sy_set_unit_material(punit3d, i, NULL);
+				common_set_unit_material(punit3d, i, NULL);
 			}
 			else
 			{
@@ -5309,7 +5309,7 @@ void Modify3DUnitFrom2DUnit(BaseGraphUnit * punit3d, BaseGraphUnit * punit2d, Ba
 
 	if (punit3d->u.u3d.pmod)
 	{
-		sy_release_moddef(punit3d->u.u3d.pmod);
+		common_release_moddef(punit3d->u.u3d.pmod);
 		delete punit3d->u.u3d.pmod;
 	}
 	punit3d->u.u3d.pmod = pMod;

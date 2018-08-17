@@ -893,7 +893,7 @@ BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesB
 	memset_dword_line(pnLinePixels, 0, (pDesBuf->m_nHeight >> 2), ((pDesBuf->m_nHeight & 0x03) << 2));
 	memset_dword_line(ppdwSrcStart, (DWORD)(pSrcBuf->m_dwBuffer + pSrcBuf->m_nOriginX + pSrcBuf->m_rtBound.left + (pSrcBuf->m_nOriginY + pSrcBuf->m_rtBound.top) * pSrcBuf->m_nWidth), 1, 0);
 	// 求解按行扫描的左右边界，以及边界上的 u/w、v/w、1/w、delta等。
-	//if (!SYTrans_CalcBorder(pDesBuf, nOffsetLeft, nOffsetTop, (LPCommonINNERVERTEX)pvfXYZW, pvLeftEdgeUVW,
+	//if (!BaseGraphTrans_CalcBorder(pDesBuf, nOffsetLeft, nOffsetTop, (LPCommonINNERVERTEX)pvfXYZW, pvLeftEdgeUVW,
 	//						pvDeltaUVW, ppdwDesLeftEdge, pnLinePixels, &nMaxLinePixels))
 	//	return FALSE;
 	// 申请临时缓存

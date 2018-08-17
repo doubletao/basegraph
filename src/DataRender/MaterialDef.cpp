@@ -684,7 +684,7 @@ BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinSh
 //	if(nTexType == BaseGraphMaterial_SpecTex)
 //	{
 //		param_def* pparamdefFactor = new param_def;
-//		sy_init_paramdef(pparamdefFactor,sizeof(float),NULL);
+//		common_init_paramdef(pparamdefFactor,sizeof(float),NULL);
 //		pparamdefFactor->interpolate.nRange             = 1;
 //		pparamdefFactor->interpolate.pRanges            = new PAIR[1];
 //		pparamdefFactor->interpolate.pRanges[0].fFirst  = 0.f;
@@ -694,7 +694,7 @@ BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinSh
 //	else if(nTexType == BaseGraphMaterial_EnvMapTex)
 //	{
 //		param_def* pparamdefFactor = new param_def;
-//		sy_init_paramdef(pparamdefFactor,sizeof(float),NULL);
+//		common_init_paramdef(pparamdefFactor,sizeof(float),NULL);
 //		pparamdefFactor->interpolate.nRange             = 1;
 //		pparamdefFactor->interpolate.pRanges            = new PAIR[1];
 //		pparamdefFactor->interpolate.pRanges[0].fFirst  = 0.f;
@@ -704,7 +704,7 @@ BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinSh
 //	else if(nTexType == BaseGraphMaterial_EmissiveTex)
 //	{
 //		param_def* pparamdefFactor = new param_def;
-//		sy_init_paramdef(pparamdefFactor,sizeof(float),NULL);
+//		common_init_paramdef(pparamdefFactor,sizeof(float),NULL);
 //		pparamdefFactor->interpolate.nRange             = 1;
 //		pparamdefFactor->interpolate.pRanges            = new PAIR[1];
 //		pparamdefFactor->interpolate.pRanges[0].fFirst  = 0.f;
@@ -714,7 +714,7 @@ BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinSh
 //	else if(nTexType == BaseGraphMaterial_BumpTex)
 //	{
 //		param_def* pparamdefFactor = new param_def;
-//		sy_init_paramdef(pparamdefFactor,sizeof(float),NULL);
+//		common_init_paramdef(pparamdefFactor,sizeof(float),NULL);
 //		pparamdefFactor->interpolate.nRange             = 1;
 //		pparamdefFactor->interpolate.pRanges            = new PAIR[1];
 //		pparamdefFactor->interpolate.pRanges[0].fFirst  = 0.f;
@@ -726,7 +726,7 @@ BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinSh
 //{
 //	static const float2 vec = {0,0},vec1 = {1,1};
 //	param_def* pparamdef_offset = new param_def;
-//	sy_init_paramdef(pparamdef_offset,sizeof(float2),NULL);
+//	common_init_paramdef(pparamdef_offset,sizeof(float2),NULL);
 //	pparamdef_offset->interpolate.nRange             = 2;
 //	pparamdef_offset->interpolate.pRanges            = new PAIR[2];
 //	pparamdef_offset->interpolate.pRanges[0].fFirst  = 0.f;
@@ -736,7 +736,7 @@ BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinSh
 //	BaseAR_Add( pArTexParam, pparamdef_offset );
 //
 //	param_def* pparamdef_scale = new param_def;
-//	sy_init_paramdef(pparamdef_scale,sizeof(float2),(void*)&vec1);
+//	common_init_paramdef(pparamdef_scale,sizeof(float2),(void*)&vec1);
 //	pparamdef_scale->interpolate.nRange             = 2;
 //	pparamdef_scale->interpolate.pRanges            = new PAIR[2];
 //	pparamdef_scale->interpolate.pRanges[0].fFirst  = 0.f;
@@ -746,7 +746,7 @@ BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinSh
 //	BaseAR_Add( pArTexParam, pparamdef_scale );
 //
 //	param_def* pparamdef_center = new param_def;
-//	sy_init_paramdef(pparamdef_center,sizeof(float2),(void*)&vec);
+//	common_init_paramdef(pparamdef_center,sizeof(float2),(void*)&vec);
 //	pparamdef_center->interpolate.nRange             = 2;
 //	pparamdef_center->interpolate.pRanges            = new PAIR[2];
 //	pparamdef_center->interpolate.pRanges[0].fFirst  = 0.f;
@@ -756,7 +756,7 @@ BASEGRAPH_DATARENDER_API BOOL	BaseGraphJoinShader_Compare( const BaseGraphJoinSh
 //	BaseAR_Add( pArTexParam, pparamdef_center );
 //
 //	param_def* pparamdefrotate = new param_def;
-//	sy_init_paramdef(pparamdefrotate,sizeof(float),NULL);
+//	common_init_paramdef(pparamdefrotate,sizeof(float),NULL);
 //	pparamdefrotate->interpolate.nRange             = 1;
 //	pparamdefrotate->interpolate.pRanges            = new PAIR[1];
 //	pparamdefrotate->interpolate.pRanges[0].fFirst  = 0.f;
@@ -1353,7 +1353,7 @@ BOOL UpdateTexParam(double dTotalFrame,double dFrame,int hDevice,BaseGraphMateri
 	return bChange;
 }
 
-BASEGRAPH_DATARENDER_API int SYUpdateDynamicTex(double dTotalFrame,int hDevice,BaseGraphMatVideoTex* pVideoTex,BaseGraphMatTex* pTex)
+BASEGRAPH_DATARENDER_API int BaseGraphUpdateDynamicTex(double dTotalFrame,int hDevice,BaseGraphMatVideoTex* pVideoTex,BaseGraphMatTex* pTex)
 {
 	return UpdateTexParam(dTotalFrame,dTotalFrame,hDevice,NULL,pVideoTex,pTex);
 }
@@ -1874,7 +1874,7 @@ BASEGRAPH_DATARENDER_API BOOL BaseGraphMaterial_UpdateTex( CommonBufferDef32* pS
 
 //void InitColorParamdef(param_def* pParam)
 //{
-//	sy_init_paramdef(pParam,sizeof(float4),NULL);
+//	common_init_paramdef(pParam,sizeof(float4),NULL);
 //	pParam->interpolate.nRange             = 4;
 //	pParam->interpolate.pRanges            = new PAIR[4];
 //	for(int i = 0; i < 4; i++)
@@ -1897,7 +1897,7 @@ BASEGRAPH_DATARENDER_API void BaseGraphMaterial_CreateParam(BaseGraphMaterialPar
 	//InitColorParamdef(&pMatParam->common.Specular);
 	//InitColorParamdef(&pMatParam->common.Emissive);
 
-	//sy_init_paramdef(&pMatParam->common.fAlpha,sizeof(float),NULL);
+	//common_init_paramdef(&pMatParam->common.fAlpha,sizeof(float),NULL);
 	//pMatParam->common.fAlpha.interpolate.nRange   = 1;
 	//pMatParam->common.fAlpha.interpolate.pRanges  = new PAIR[1];
 	//pMatParam->common.fAlpha.interpolate.pRanges[0].fFirst  = 0.f;
@@ -1912,16 +1912,16 @@ BASEGRAPH_DATARENDER_API void BaseGraphMaterial_ReleaseParam( BaseGraphMaterialP
 	//	for(int j = 0; j < nParamCount; j++)
 	//	{
 	//		param_def* param = (param_def*)BaseAR_GetAt(&pMatParam->texParam[i],j);
-	//		sy_release_paramdef(param);
+	//		common_release_paramdef(param);
 	//		SAFE_DELETE(param);
 	//	}
 	//}
 	////pMatParam->diffuse
-	//sy_release_paramdef(&pMatParam->common.Diffuse);
-	//sy_release_paramdef(&pMatParam->common.Ambient);
-	//sy_release_paramdef(&pMatParam->common.Specular);
-	//sy_release_paramdef(&pMatParam->common.Emissive);
-	//sy_release_paramdef(&pMatParam->common.fAlpha);
+	//common_release_paramdef(&pMatParam->common.Diffuse);
+	//common_release_paramdef(&pMatParam->common.Ambient);
+	//common_release_paramdef(&pMatParam->common.Specular);
+	//common_release_paramdef(&pMatParam->common.Emissive);
+	//common_release_paramdef(&pMatParam->common.fAlpha);
 }
 
 BASEGRAPH_DATARENDER_API int BaseGraphMaterial_AddKeyValue( double dFrame,BaseGraphMaterialParam* pMatParam, BaseGraphMaterial* pMaterial,void* pValue,int nParamType )
@@ -2118,16 +2118,16 @@ BASEGRAPH_DATARENDER_API void		BaseGraphMaterial_CopyParam(BaseGraphMaterialPara
 	//		param_def* pSrc = (param_def*)BaseAR_GetAt(&pSrcMatParam->texParam[i],j);
 	//		param_def* pDst = new param_def;
 	//		memset(pDst,0,sizeof(param_def));
-	//		sy_copy_paramdef(pDst,pSrc);
+	//		common_copy_paramdef(pDst,pSrc);
 	//		BaseAR_Add(&pDestMatParam->texParam[i],pDst);
 	//	}
 	//}
 	////pMatParam->diffuse
-	//sy_copy_paramdef(&pDestMatParam->common.Diffuse,&pSrcMatParam->common.Diffuse);
-	//sy_copy_paramdef(&pDestMatParam->common.Ambient,&pSrcMatParam->common.Ambient);
-	//sy_copy_paramdef(&pDestMatParam->common.Specular,&pSrcMatParam->common.Specular);
-	//sy_copy_paramdef(&pDestMatParam->common.Emissive,&pSrcMatParam->common.Emissive);
-	//sy_copy_paramdef(&pDestMatParam->common.fAlpha,&pSrcMatParam->common.fAlpha);
+	//common_copy_paramdef(&pDestMatParam->common.Diffuse,&pSrcMatParam->common.Diffuse);
+	//common_copy_paramdef(&pDestMatParam->common.Ambient,&pSrcMatParam->common.Ambient);
+	//common_copy_paramdef(&pDestMatParam->common.Specular,&pSrcMatParam->common.Specular);
+	//common_copy_paramdef(&pDestMatParam->common.Emissive,&pSrcMatParam->common.Emissive);
+	//common_copy_paramdef(&pDestMatParam->common.fAlpha,&pSrcMatParam->common.fAlpha);
 }
 
 BASEGRAPH_DATARENDER_API size_t BaseGraphMaterial_GetVideoMemSize( BaseGraphVideoMaterial* pVideoMat )

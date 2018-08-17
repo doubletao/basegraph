@@ -99,31 +99,31 @@ CTechUnit*	CEffectUnit::GetTechnique(LPCTSTR strTechName)
 	return m_TechPool.GetResource(strTechName);
 }
 
-SYD3DEffectManager::SYD3DEffectManager(void)
+BaseGraphD3DEffectManager::BaseGraphD3DEffectManager(void)
 {
 }
 
-SYD3DEffectManager::~SYD3DEffectManager(void)
+BaseGraphD3DEffectManager::~BaseGraphD3DEffectManager(void)
 {
 	m_EffectPool.ReleaseAll();
 }
 
-SYD3DEffectManager::SYD3DEffectManager(ID3D10Device* device):m_d3d_device(device),m_hQuadVB(0)
+BaseGraphD3DEffectManager::BaseGraphD3DEffectManager(ID3D10Device* device):m_d3d_device(device),m_hQuadVB(0)
 {
 	
 }
 
-CEffectUnit*	SYD3DEffectManager::CreateEffectUnit(BaseGraphEffectCreateParam* pParam)
+CEffectUnit*	BaseGraphD3DEffectManager::CreateEffectUnit(BaseGraphEffectCreateParam* pParam)
 {
 	return m_EffectPool.CreateResource(pParam->pEffectName,pParam);
 }
 
-void		SYD3DEffectManager::ReleaseEffectUnit(LPCTSTR strEffectName)
+void		BaseGraphD3DEffectManager::ReleaseEffectUnit(LPCTSTR strEffectName)
 {
 	return m_EffectPool.ReleaseResource(strEffectName);
 }
 
-CTechUnit*	SYD3DEffectManager::GetTechUnit(LPCTSTR strEffectName,LPCTSTR strTechName)
+CTechUnit*	BaseGraphD3DEffectManager::GetTechUnit(LPCTSTR strEffectName,LPCTSTR strTechName)
 {
 	CEffectUnit* pEu = m_EffectPool.GetResource(strEffectName);
 	if(!pEu)

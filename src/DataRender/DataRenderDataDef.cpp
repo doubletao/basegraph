@@ -7,17 +7,17 @@
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
-BASEGRAPH_DATARENDER_API void tag_sy2dunit::Reset()
+BASEGRAPH_DATARENDER_API void tag_common_2dunit::Reset()
 {
-	memset(this, 0, sizeof(tag_sy2dunit));
+	memset(this, 0, sizeof(tag_common_2dunit));
 	staticeffect.renderline = 0;
 	staticeffect.fwidth = 0;
 	staticeffect.index = 0;
 }
 
-BASEGRAPH_DATARENDER_API void tag_sy3dunit::Reset()
+BASEGRAPH_DATARENDER_API void tag_common_3dunit::Reset()
 {
-	memset(this, 0, sizeof(tag_sy3dunit));
+	memset(this, 0, sizeof(tag_common_3dunit));
 }
 
 BASEGRAPH_DATARENDER_API void tag_common_unit::Reset()
@@ -38,7 +38,7 @@ BASEGRAPH_DATARENDER_API void tag_common_bonedef::Reset()
 	memset(&pboneoffVMatrix, 0, sizeof(matrix4f));
 }
 
-BASEGRAPH_DATARENDER_API void tag_symodel::Reset()
+BASEGRAPH_DATARENDER_API void tag_common_model::Reset()
 {
 	memset(this, 0, sizeof(BaseGraphModel));
 }

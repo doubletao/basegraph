@@ -330,10 +330,10 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 				{
 
 					pRenderUnit->m_pUnit = new BaseGraphUnit;
-					sy_init_unit(pRenderUnit->m_pUnit, pUnit->type);
+					common_init_unit(pRenderUnit->m_pUnit, pUnit->type);
 					pRenderUnit->m_bChanged = TRUE;
 				}
-				sy_copy_unit(pRenderUnit->m_pUnit, pUnit);
+				common_copy_unit(pRenderUnit->m_pUnit, pUnit);
 			}
 			else
 			{
@@ -370,8 +370,8 @@ bool CalculatorTitleword::RefreshRenderUnit(int nFrame, BOOL bInherit)
 				figure_extend(&desfigure2, &punitin->u.u2d.graph, NULL, fwidth*0.5f, 1);
 				ReverseVectorGraph(&desfigure2);
 				MergeVectorGraph(pRenderUnit->graph, &desfigure1, &desfigure2);
-				sy_release_vectorgraph(&desfigure2);
-				sy_release_vectorgraph(&desfigure1);
+				common_release_vectorgraph(&desfigure2);
+				common_release_vectorgraph(&desfigure1);
 				bChanged = TRUE;
 
 			}
@@ -525,7 +525,7 @@ BOOL CalculatorTitleword::_trans_calcunit_matrix(matrix4f * pVMatrix, int * pdwM
 	//添加逐字形变
 	if (IsPerUnit(pEnv, dwUnitType))
 	{
-		double dPerUnitFrame = sy_get_real_frame(pAction->GetPerUnitInfo(), pAction->GetLength(), dFrame, nOrderIndex, GetUnitCount(dwUnitType, pEnv));
+		double dPerUnitFrame = common_get_real_frame(pAction->GetPerUnitInfo(), pAction->GetLength(), dFrame, nOrderIndex, GetUnitCount(dwUnitType, pEnv));
 		////////////////////////1.计算路径/////////////////
 		//
 		matrix4f matpivotR;//因路径引起的旋转

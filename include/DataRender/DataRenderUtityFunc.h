@@ -3,14 +3,14 @@
 #include "DataRender\MaterialDef.h"
 
 //uint
-BASEGRAPH_DATARENDER_API int sy_release_unit(BaseGraphUnit* punit);
-BASEGRAPH_DATARENDER_API int sy_init_unit(BaseGraphUnit* punit, BOOL  b3D);
-BASEGRAPH_DATARENDER_API int sy_copy_unit(BaseGraphUnit* pdes, BaseGraphUnit* psrc);
-BASEGRAPH_DATARENDER_API void		sy_set_unit_material(BaseGraphUnit* p3DUnit, int nSubModelIndex, void* pMaterial);
-BASEGRAPH_DATARENDER_API void*	sy_get_unit_material(BaseGraphUnit* p3DUnit, int nSubModelIndex);
-BASEGRAPH_DATARENDER_API void		sy_release_unit_material(BaseGraphUnit* p3DUnit);
-BASEGRAPH_DATARENDER_API void		sy_set_unit_material_diffuse(BaseGraphUnit* p3DUnit, DWORD dwColor);
-BASEGRAPH_DATARENDER_API BaseGraphUnit*	sy_create_3dunit_from_2dunit(BaseGraphUnit* punit2d, BaseGraphUnit* pUnit3D);
+BASEGRAPH_DATARENDER_API int common_release_unit(BaseGraphUnit* punit);
+BASEGRAPH_DATARENDER_API int common_init_unit(BaseGraphUnit* punit, BOOL  b3D);
+BASEGRAPH_DATARENDER_API int common_copy_unit(BaseGraphUnit* pdes, BaseGraphUnit* psrc);
+BASEGRAPH_DATARENDER_API void		common_set_unit_material(BaseGraphUnit* p3DUnit, int nSubModelIndex, void* pMaterial);
+BASEGRAPH_DATARENDER_API void*	common_get_unit_material(BaseGraphUnit* p3DUnit, int nSubModelIndex);
+BASEGRAPH_DATARENDER_API void		common_release_unit_material(BaseGraphUnit* p3DUnit);
+BASEGRAPH_DATARENDER_API void		common_set_unit_material_diffuse(BaseGraphUnit* p3DUnit, DWORD dwColor);
+BASEGRAPH_DATARENDER_API BaseGraphUnit*	common_create_3dunit_from_2dunit(BaseGraphUnit* punit2d, BaseGraphUnit* pUnit3D);
 BASEGRAPH_DATARENDER_API BaseGraphItemRenderUnit * CreateRenderUnit(BOOL b3dtype);
 BASEGRAPH_DATARENDER_API void ReleaseRenderUnit(BaseGraphItemRenderUnit* pRenderUnit, BOOL b3dType, int hDevice, void* lpCalc);
 //Effect
@@ -19,13 +19,13 @@ BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_Release(static_effect* pEffe
 BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_Copy(static_effect* pDstEffect, const static_effect* pSrcEffect);
 BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_SetSolidFaceColor(static_effect* pEffect, COLORREF color);
 BASEGRAPH_DATARENDER_API void BaseGraphStaticEffect_SetDefaultSolidColor(static_effect* pEffect, COLORREF color);
-BASEGRAPH_DATARENDER_API void sy_staticeffect_release(static_effect* pEffect);
-BASEGRAPH_DATARENDER_API BOOL sy_staticeffect_compare(const static_effect* pEffect1, const static_effect* pEffect2);
-BASEGRAPH_DATARENDER_API void sy_staticeffect_copy(static_effect* pDstEffect, const static_effect* pSrcEffect);
-BASEGRAPH_DATARENDER_API void sy_special_effect_copy(common_special_effect* pDstEffect, const common_special_effect* pSrcEffect);
-BASEGRAPH_DATARENDER_API void sy_special_effect_release(common_special_effect* pEffect);
+BASEGRAPH_DATARENDER_API void common_staticeffect_release(static_effect* pEffect);
+BASEGRAPH_DATARENDER_API BOOL common_staticeffect_compare(const static_effect* pEffect1, const static_effect* pEffect2);
+BASEGRAPH_DATARENDER_API void common_staticeffect_copy(static_effect* pDstEffect, const static_effect* pSrcEffect);
+BASEGRAPH_DATARENDER_API void common_special_effect_copy(common_special_effect* pDstEffect, const common_special_effect* pSrcEffect);
+BASEGRAPH_DATARENDER_API void common_special_effect_release(common_special_effect* pEffect);
 //vectorgraph
-BASEGRAPH_DATARENDER_API int sy_release_vectorgraph(vectorgraph* pgraph);
+BASEGRAPH_DATARENDER_API int common_release_vectorgraph(vectorgraph* pgraph);
 BASEGRAPH_DATARENDER_API int  CommonCopy_VectorGraph(vectorgraph* pdesgraph, vectorgraph* psrcgraph);
 BASEGRAPH_DATARENDER_API void graph_release(vectorgraph* graph);
 BASEGRAPH_DATARENDER_API void CopyVectorGraph(vectorgraph* pDesGraph, const vectorgraph* pSrcGraph);
@@ -36,28 +36,28 @@ BASEGRAPH_DATARENDER_API void BaseGraphVectorGraph_AssignTTPOLYGONHEADER(vectorg
 BASEGRAPH_DATARENDER_API void MergeVectorGraph(vectorgraph* pDesGraph, const vectorgraph* pSrcGraph1, vectorgraph* pSrcGraph2);
 BASEGRAPH_DATARENDER_API void ReverseVectorGraph(vectorgraph* pDesGraph);
 //model
-BASEGRAPH_DATARENDER_API int sy_release_moddef(BaseGraphModel* pmod);
-BASEGRAPH_DATARENDER_API int sy_release_viewsub(int hDevice, BaseGraphSubModel* pSubModel);
-BASEGRAPH_DATARENDER_API void sy_copy_mod_viewsub(BaseGraphModel* pDst, const BaseGraphModel* pSrc);
-BASEGRAPH_DATARENDER_API void sy_init_moddef(BaseGraphModel* pmod);
-BASEGRAPH_DATARENDER_API void sy_copy_moddef(BaseGraphModel* pDst, const BaseGraphModel* pSrc);
+BASEGRAPH_DATARENDER_API int common_release_moddef(BaseGraphModel* pmod);
+BASEGRAPH_DATARENDER_API int common_release_viewsub(int hDevice, BaseGraphSubModel* pSubModel);
+BASEGRAPH_DATARENDER_API void common_copy_mod_viewsub(BaseGraphModel* pDst, const BaseGraphModel* pSrc);
+BASEGRAPH_DATARENDER_API void common_init_moddef(BaseGraphModel* pmod);
+BASEGRAPH_DATARENDER_API void common_copy_moddef(BaseGraphModel* pDst, const BaseGraphModel* pSrc);
 //cell
-BASEGRAPH_DATARENDER_API int sy_release_cell(vectorcell* pcell);
+BASEGRAPH_DATARENDER_API int common_release_cell(vectorcell* pcell);
 BASEGRAPH_DATARENDER_API int cell_line_extend_close(OUT vectorcell* descell1, OUT vectorcell* descell2, IN vectorcell*	srccell, vector2f* vOffset, IN int ndirect, IN float fwidth);
 BASEGRAPH_DATARENDER_API int cell_extend_tri(OUT BaseARray*	ptarray, OUT BaseARray*	lenarray, IN  vectorcell*	srccell, IN  int ndirect, IN  float fwidth);
 BASEGRAPH_DATARENDER_API void BaseGraphCurveCell_Init(vectorcell* pCell);
 BASEGRAPH_DATARENDER_API void BaseGraphCurveCell_Release(vectorcell* pCell);
 //bone
-BASEGRAPH_DATARENDER_API int sy_release_bonedef(BoneDef* pbone);
-BASEGRAPH_DATARENDER_API void sy_copy_bone(BoneDef*	pDesBone, BoneDef*	pSrcBone);
+BASEGRAPH_DATARENDER_API int common_release_bonedef(BoneDef* pbone);
+BASEGRAPH_DATARENDER_API void common_copy_bone(BoneDef*	pDesBone, BoneDef*	pSrcBone);
 //color
-BASEGRAPH_DATARENDER_API void sy_lightinfo_copy(BaseGraph_DataBase::lightinfo* pDes, const BaseGraph_DataBase::lightinfo* pSrc);
-BASEGRAPH_DATARENDER_API void sy_dynamictexture_copy(BaseGraph_DataBase::dynamictexture* pDes, const BaseGraph_DataBase::dynamictexture* pSrc);
-BASEGRAPH_DATARENDER_API void sy_channelinfo_copy(BaseGraph_DataBase::channelinfo* pDes, const BaseGraph_DataBase::channelinfo* pSrc);
-BASEGRAPH_DATARENDER_API void sy_materialinfo_copy(BaseGraph_DataBase::materialinfo* pDes, const BaseGraph_DataBase::materialinfo* pSrc);
+BASEGRAPH_DATARENDER_API void common_lightinfo_copy(BaseGraph_DataBase::lightinfo* pDes, const BaseGraph_DataBase::lightinfo* pSrc);
+BASEGRAPH_DATARENDER_API void common_dynamictexture_copy(BaseGraph_DataBase::dynamictexture* pDes, const BaseGraph_DataBase::dynamictexture* pSrc);
+BASEGRAPH_DATARENDER_API void common_channelinfo_copy(BaseGraph_DataBase::channelinfo* pDes, const BaseGraph_DataBase::channelinfo* pSrc);
+BASEGRAPH_DATARENDER_API void common_materialinfo_copy(BaseGraph_DataBase::materialinfo* pDes, const BaseGraph_DataBase::materialinfo* pSrc);
 //draw
 BASEGRAPH_DATARENDER_API void BaseGraphRender_GetGraph_RenderInfo(vectorgraph* pGraph, float fscale, int& w, int& h, RECT& rtBound);
-BASEGRAPH_DATARENDER_API BOOL BaseGraphRenderGraphToOpBuff(IN vectorgraph* pGraph, IN static_effect* effect, OUT CCommonBuffer*& pResultPool, OUT RECT &rtOutBound, OUT int &nWidth, OUT int &nHeight, OUT int &nPitch, IN float fscale, OUT pointf& ptOrg, IN double dFrame, IN BOOL bShadowBaseline = FALSE, IN sy_render_channel** pChannelPool = FALSE);
+BASEGRAPH_DATARENDER_API BOOL BaseGraphRenderGraphToOpBuff(IN vectorgraph* pGraph, IN static_effect* effect, OUT CCommonBuffer*& pResultPool, OUT RECT &rtOutBound, OUT int &nWidth, OUT int &nHeight, OUT int &nPitch, IN float fscale, OUT pointf& ptOrg, IN double dFrame, IN BOOL bShadowBaseline = FALSE, IN common_render_channel** pChannelPool = FALSE);
 BASEGRAPH_DATARENDER_API void Data_ReleaseCalcBuffer(CCommonBuffer* pBuffer);
 BASEGRAPH_DATARENDER_API void BaseGraphRender_GenCubeGraph(vectorgraph* des, vectorgraph* src, vector2f* voffset, BaseGraph_DataBase::cubeinfo* pinfo);
 BASEGRAPH_DATARENDER_API void BaseGraphRender_GenBorderGraph(vectorgraph* des, vectorgraph* src, vector2f* voffset, float fwidth, float finterval, int nLineStyle, BOOL bSingleLine);
