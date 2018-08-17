@@ -26,5 +26,5 @@ public:
 
 BASEGRAPH_INTERFACE_API bool Interface_InitialEnv();
 BASEGRAPH_INTERFACE_API bool Interface_ReleaseEnv();
-BASEGRAPH_INTERFACE_API bool Interface_CreateDecoder();
-BASEGRAPH_INTERFACE_API bool Interface_ReleaseDecoder();
+BASEGRAPH_INTERFACE_API bool Interface_CreateDecoder(IBaseGraphDecoder *& pDecoder);
+BASEGRAPH_INTERFACE_API bool Interface_ReleaseDecoder(IBaseGraphDecoder *& pDecoder);
