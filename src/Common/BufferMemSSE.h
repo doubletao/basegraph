@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 typedef struct tag_tpinnervertex {
 	float	x, y, z;// w;
-} SYInnerVertex, *LPSYINNERVERTEX;
+} SYInnerVertex, *LPCommonINNERVERTEX;
 
 class BufferMemSSE
 {
@@ -259,15 +259,15 @@ public:
 	static BOOL Buffer_Trans_CalcBorder(IN CommonBufferDef32* pDesBuf,			// 目标缓存
 		IN int nOffsetLeft,					// 目标缓存在投影平面坐标系下的位置
 		IN int nOffsetTop,
-		IN LPSYINNERVERTEX pvVertexes,		// 投影顶点组（顺时针：(0,0),(1,0),(1,1),(0,1)）
-		OUT LPSYINNERVERTEX pvLeftEdgeUVW,	// 边界左边缘的 UVW 值
-		OUT LPSYINNERVERTEX pvDeltaUVW,		// 每行内的 UVW 增量
+		IN LPCommonINNERVERTEX pvVertexes,		// 投影顶点组（顺时针：(0,0),(1,0),(1,1),(0,1)）
+		OUT LPCommonINNERVERTEX pvLeftEdgeUVW,	// 边界左边缘的 UVW 值
+		OUT LPCommonINNERVERTEX pvDeltaUVW,		// 每行内的 UVW 增量
 		OUT DWORD* *ppdwDesLeftEdge,		// 目标缓存中左边界的起始位置
 		OUT int* pnLinePixels,				// 每行拥有的像素个数
 		OUT int* pnMaxLinePixels);			// 最长行的像素个数
 
-	static void Buffer_Trans_CalcPowerAndIndex_BL(IN LPSYINNERVERTEX pvLeftEdgeUVW,	// 行左边缘的 UVW 值
-		IN LPSYINNERVERTEX pvDeltaUVW,	// 行内的 UVW 增量
+	static void Buffer_Trans_CalcPowerAndIndex_BL(IN LPCommonINNERVERTEX pvLeftEdgeUVW,	// 行左边缘的 UVW 值
+		IN LPCommonINNERVERTEX pvDeltaUVW,	// 行内的 UVW 增量
 		IN int nLinePixels,				// 一行要处理的像素个数
 		IN int nSrcWidth,					// 源的大小
 		IN int nSrcHeight,

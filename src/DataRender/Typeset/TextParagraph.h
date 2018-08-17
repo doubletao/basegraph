@@ -12,8 +12,8 @@ public:
 	~CBaseTextLine();
 	//////////////////////////////////////////////////////////////////////////
 	// 属性存取
-	LPSYText		GetTextObj();
-	LPSYTextParagraph	GetParagraphObj();
+	LPCommonText		GetTextObj();
+	LPCommonTextParagraph	GetParagraphObj();
 	inline int	GetWordInfoCount() { return m_nWordInfoCount; }
 	inline int	GetWordInfoBeginIndex() { return m_nBeginIndex; }
 	inline void	SetWordInfoBeginIndex(int nBeginIndex) { m_nBeginIndex = nBeginIndex; }
@@ -25,15 +25,15 @@ public:
 	void		SetLineDistance(float fDistance);
 	//////////////////////////////////////////////////////////////////////////
 	// 排版
-	LPSYGlyphSpace	AddWordHorizontal(LPSYWordInfo pWordInfo,		//当前WordInfo
-		LPSYWordInfo pLastWordInfo,									//上一次WordInfo
+	LPCommonGlyphSpace	AddWordHorizontal(LPCommonWordInfo pWordInfo,		//当前WordInfo
+		LPCommonWordInfo pLastWordInfo,									//上一次WordInfo
 		point2f* pvGraphScale,										//放缩系数
 		BOOL bAutoWrap												//自动折行
 		);
 	void	ResetHorizontal();
-	LPSYGlyphSpace	AddWordVertical(LPSYWordInfo pWordInfo,LPSYWordInfo pLastWordInfo, point2f* pvGraphScale, BOOL bAutoWrap);
+	LPCommonGlyphSpace	AddWordVertical(LPCommonWordInfo pWordInfo,LPCommonWordInfo pLastWordInfo, point2f* pvGraphScale, BOOL bAutoWrap);
 	void	ResetVertical();
-	LPSYGlyphSpace	AddNullWord(LPSYWordInfo pWordInfo);
+	LPCommonGlyphSpace	AddNullWord(LPCommonWordInfo pWordInfo);
 	void	ScaleNullLineGraph(float fGraphScaleX, float fGraphScaleY);
 	void	ZoomUnitAndDistance(float fScaleW, float fScaleH);
 	void	CalWordsAndLinePos();
@@ -50,12 +50,12 @@ public:
 	int		GetWordInfoPosFromPointEx(BOOL& bIsLineEndPos, point2f& pt, 
 						WORD wTestLogic			//测试逻辑尺（同上）
 						);
-	BOOL	GetCaretInfoByGlyphIndex(LPSYGlyphSpace pCaretInfo, 
+	BOOL	GetCaretInfoByGlyphIndex(LPCommonGlyphSpace pCaretInfo, 
 						int nIndex, BOOL bIsLineEndPos, BOOL bLinearTypeset,
 						float fCaretHalfWidth	//光标半宽
 						);
 	BOOL	GetSelSpaceInfoByGlyphIndex(int nBeginIndex, int nEndIndex,BaseARray* pArInfo, BOOL bLinearTypeset);
-	BOOL	GetGlyphSpaceInfo(int nIndex, LPSYGlyphSpace pSpaceInfo);
+	BOOL	GetGlyphSpaceInfo(int nIndex, LPCommonGlyphSpace pSpaceInfo);
 	BOOL	IsGlyphIndexAtLineEnd(int nIndex);
 	BOOL	IsGlyphIndexInLine(int nIndex, BOOL bIsLineEndPos);
 public:
@@ -79,20 +79,20 @@ private:
 class  BASEGRAPH_DATARENDER_API CBaseTextParagraph
 {
 public:
-	CBaseTextParagraph(LPSYText pTextObj, int nParaIndex);
+	CBaseTextParagraph(LPCommonText pTextObj, int nParaIndex);
 	~CBaseTextParagraph();
 	//////////////////////////////////////////////////////////////////////////
 	// 属性存取
 	inline void		SetParagraphIndex(int nParaIndex) { m_nParaIndex = nParaIndex; }
 	inline int		GetParagraphIndex() { return m_nParaIndex; }
-	inline void		SetParagraphInfo(LPSYText pTextObj, int nParaIndex)
+	inline void		SetParagraphInfo(LPCommonText pTextObj, int nParaIndex)
 					{
 							m_pTextObj = pTextObj;
 							m_nParaIndex = nParaIndex;
 					}
-	inline void		SetTextObj(LPSYText pTextObj) { m_pTextObj = pTextObj; }
-	LPSYText			GetTextObj();
-	LPSYTextParagraph	GetParagraphObj();
+	inline void		SetTextObj(LPCommonText pTextObj) { m_pTextObj = pTextObj; }
+	LPCommonText			GetTextObj();
+	LPCommonTextParagraph	GetParagraphObj();
 	BaseARray*			GetLineArray() { return &m_arLine; }
 	int				GetLineCount() { return BaseAR_GetCount(&m_arLine); }
 
@@ -116,14 +116,14 @@ public:
 
 	int			GetCharCount();
 	int			GetWordInfoCount();
-	LPSYWordInfo	GetWordInfo(int nIndex);
+	LPCommonWordInfo	GetWordInfo(int nIndex);
 	int			GetLineWordInfoCount(int nLineIdx);
 	int			GetTrailLineWordInfoBeginIndex();
 	SYUnit*		GetUnit(int nWordInfoIdx);
 	//////////////////////////////////////////////////////////////////////////
 	// 排版
 	void	Typeset(BOOL bIsHorizontal);
-	void	UpdateWordInfoArray(LPSYText pTextObj);
+	void	UpdateWordInfoArray(LPCommonText pTextObj);
 	void	ZoomUnitAndDistance(float fScaleW, float fScaleH);
 	void	OffsetCal(vector3f* pOffset);
 	//////////////////////////////////////////////////////////////////////////
@@ -133,13 +133,13 @@ public:
 	BOOL	IsHitTextByPoint(point2f& pt, BOOL bCaptureMouse, BOOL bLinearTypeset);
 	int		GetCharPosFromPoint(BOOL& bIsLineEndPos, point2f& pt, BOOL bCaptureMouse, BOOL bLinearTypeset);
 	int		GetCharPosFromPoint(BOOL& bIsLineEndPos, point2f& pt, int nLineIdx,BOOL bCaptureMouse, BOOL bLinearTypeset);
-	BOOL	GetCaretInfoByCharPos(LPSYGlyphSpace pCaretInfo, int nCharIndex, 
+	BOOL	GetCaretInfoByCharPos(LPCommonGlyphSpace pCaretInfo, int nCharIndex, 
 						BOOL bIsLineEndPos, 
 						BOOL bFullHeight,
 						BOOL bLinearTypeset,		//是否线性编辑
 						float fCaretHalfWidth		//光标半宽
 						);
-	BOOL	GetCaretInfoByGlyphIndex(LPSYGlyphSpace pCaretInfo, 
+	BOOL	GetCaretInfoByGlyphIndex(LPCommonGlyphSpace pCaretInfo, 
 						int nGlyphIndex, 
 						BOOL bIsLineEndPos, 
 						BOOL bFullHeight, 
@@ -147,7 +147,7 @@ public:
 						float fCaretHalfWidth		//光标半宽
 						);
 	BOOL	GetSelSpaceInfoByCharPos(int nBeginIndex, int nEndIndex, BaseARray* pArInfo, BOOL bLinearTypeset);
-	BOOL	GetCharPosSpaceInfo(int nCharIndex, LPSYGlyphSpace pSpaceInfo);
+	BOOL	GetCharPosSpaceInfo(int nCharIndex, LPCommonGlyphSpace pSpaceInfo);
 private:
 	void	ReleaseTempData();
 	void	TypesetHorizontal();
@@ -159,7 +159,7 @@ public:
 	int				m_nPreAllWordInfoCnt;	//本段之前所有WordInfo元素个数（便于推算Unit）
 	int				m_nChgLevel;			//修改等级
 private:
-	LPSYText		m_pTextObj;			//段所属的SYText
+	LPCommonText		m_pTextObj;			//段所属的SYText
 	int				m_nParaIndex;			//段索引
 	float			m_fWidth;			//占位符宽度
 	float			m_fHeight;

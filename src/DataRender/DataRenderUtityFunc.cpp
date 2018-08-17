@@ -5237,12 +5237,12 @@ BASEGRAPH_DATARENDER_API void CopyCell(vectorcell * pdescell, vectorcell * psrcc
 	}
 }
 
-void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3dcolor, int nSubFace, LPSYStretchParam pStretchParam)
+void Modify3DUnitFrom2DUnit(SYUnit * punit3d, SYUnit * punit2d, SYMaterial ** p3dcolor, int nSubFace, LPCommonStretchParam pStretchParam)
 {
 	if (pStretchParam == NULL)
 		return;
 
-	LPSYStretchParam pStretch = (LPSYStretchParam)pStretchParam;
+	LPCommonStretchParam pStretch = (LPCommonStretchParam)pStretchParam;
 	float3Set(&punit3d->pos, punit2d->pos.x, punit2d->pos.y, 0);
 	SYModel* pMod = new SYModel;
 	sy_init_moddef(pMod);

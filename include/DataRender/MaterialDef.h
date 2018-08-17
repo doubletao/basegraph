@@ -244,12 +244,12 @@ typedef struct tag_SYMaterialParam
 	//	param_def	fAlpha;
 	//}common;
 	BaseARray texParam[SYMATERIAL_TEX_COUNT];//曲线数组
-}SYMaterialParam,*LPSYMaterialParam;
+}SYMaterialParam,*LPCommonMaterialParam;
 typedef struct tag_SYSubModelParam
 {
 	int nSubModel;
 	SYMaterialParam param;
-}SYSubModelParam,*LPSYSubModelParam;
+}SYSubModelParam,*LPCommonSubModelParam;
 struct SYMovieResource
 {
 	//IVideoSource*	pVideoSource;
@@ -277,13 +277,13 @@ typedef struct  tag_SYTypesetInterface
 	void (*OnRefreshUnit)(int nIndex, int nCount, LPVOID pInterfaceParam);
 	void (*OnRefreshAllUnit)(LPVOID pInterfaceParam, int nLevel);
 	//2DUnit转3DUnit
-	void (*Modify2DUnitTo3DUnit)(SYUnit* punit3d, SYUnit* punit2d,SYMaterial** p3dcolor,int nSubFace,LPSYStretchParam pStretch);
+	void (*Modify2DUnitTo3DUnit)(SYUnit* punit3d, SYUnit* punit2d,SYMaterial** p3dcolor,int nSubFace,LPCommonStretchParam pStretch);
 	//从属性页取属性，参数为空的属性不取。
 	SYTypesetInterface_GetPropFromPropPage GetPropFromPropPage;
 
 	//Item类的接口是否已经初始化
 	BOOL bInitialized;
-}SYTypesetInterface, *LPSYTypesetInterface;
+}SYTypesetInterface, *LPCommonTypesetInterface;
 struct SYMovieSeekData
 {
 	LPVOID			pVideoSeekData;

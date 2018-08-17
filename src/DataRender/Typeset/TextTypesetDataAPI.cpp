@@ -63,7 +63,7 @@ unsigned int g_uCRC32Table[256] =
 
 //////////////////////////////////////////////////////////////////////////
 // SYText
- void SYText_Init(LPSYText pText)
+ void SYText_Init(LPCommonText pText)
 {
 	if (pText != NULL)
 	{
@@ -113,13 +113,13 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_Create(LPSYText pText, 
+ void SYText_Create(LPCommonText pText, 
 	LPCTSTR szText, 
 	rectf rtBorder,
-	LPSYFont pFont, 
-	LPSYStaticEffect pFillColor, 
+	LPCommonFont pFont, 
+	LPCommonStaticEffect pFillColor, 
 	SYMaterial* p3DColor, 
-	LPSYUnderLine pUnderLine, 
+	LPCommonUnderLine pUnderLine, 
 	E_TextAlignHorizontal alignH, 
 	E_TextAlignVeritical alignV, 
 	BOOL bHorizontal, 
@@ -158,7 +158,7 @@ unsigned int g_uCRC32Table[256] =
 	SYText_InitParagraphArray(pText, alignH);
 }
 
- void SYText_Release(LPSYText pText)
+ void SYText_Release(LPCommonText pText)
 {
 	if (pText == NULL)
 		return;
@@ -174,7 +174,7 @@ unsigned int g_uCRC32Table[256] =
 	int nParaCnt = BaseAR_GetCount(&pText->arParagraph);
 	for (int i = 0; i < nParaCnt; ++i)
 	{
-		LPSYTextParagraph pParagraph = (LPSYTextParagraph)BaseAR_GetAt(&pText->arParagraph, i);
+		LPCommonTextParagraph pParagraph = (LPCommonTextParagraph)BaseAR_GetAt(&pText->arParagraph, i);
 		SYText_ReleaseParagraph(pParagraph);
 		delete pParagraph;
 	}
@@ -208,7 +208,7 @@ unsigned int g_uCRC32Table[256] =
 
 	if (pText->pTypesetPrivate != NULL)
 	{
-		SYTypesetPrivateData_Release((LPSYTypesetPrivate)(pText->pTypesetPrivate));
+		SYTypesetPrivateData_Release((LPCommonTypesetPrivate)(pText->pTypesetPrivate));
 		delete pText->pTypesetPrivate;
 		pText->pTypesetPrivate = NULL;
 	}
@@ -229,7 +229,7 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_Copy(LPSYText pDes, LPCBaseText pSrc, BOOL bCopyNullText)
+ void SYText_Copy(LPCommonText pDes, LPCBaseText pSrc, BOOL bCopyNullText)
 {
 	if (pDes == NULL || pSrc == NULL || pSrc == pDes)
 		return;
@@ -289,8 +289,8 @@ unsigned int g_uCRC32Table[256] =
 		int nParaCnt = BaseAR_GetCount(&pSrc->arParagraph);
 		for (int i = 0; i < nParaCnt; i++)
 		{
-			LPSYTextParagraph pParaSrc = (LPSYTextParagraph)BaseAR_GetAt(&pSrc->arParagraph, i);
-			LPSYTextParagraph pParaDes = new SYTextParagraph;
+			LPCommonTextParagraph pParaSrc = (LPCommonTextParagraph)BaseAR_GetAt(&pSrc->arParagraph, i);
+			LPCommonTextParagraph pParaDes = new SYTextParagraph;
 			SYText_InitParagraph(pParaDes);
 			SYText_CopyParagraph(pParaDes, pParaSrc);
 			BaseAR_Add(&pDes->arParagraph, pParaDes);
@@ -361,8 +361,8 @@ unsigned int g_uCRC32Table[256] =
 			return FALSE;
 		for (int i = 0; i < nParaCnt1; i++)
 		{
-			LPSYTextParagraph pPara1 = (LPSYTextParagraph)BaseAR_GetAt(&pText1->arParagraph, i);
-			LPSYTextParagraph pPara2 = (LPSYTextParagraph)BaseAR_GetAt(&pText2->arParagraph, i);
+			LPCommonTextParagraph pPara1 = (LPCommonTextParagraph)BaseAR_GetAt(&pText1->arParagraph, i);
+			LPCommonTextParagraph pPara2 = (LPCommonTextParagraph)BaseAR_GetAt(&pText2->arParagraph, i);
 			if (!SYText_CompareParagraph(pPara1, pPara2))
 				return FALSE;
 		}
@@ -389,7 +389,7 @@ unsigned int g_uCRC32Table[256] =
 	return TRUE;
 }
 
- void SYText_CopyProp(LPSYTextProp& pDesProp, LPCBaseText pSrcText, int nDesLen/* = -1*/)
+ void SYText_CopyProp(LPCommonTextProp& pDesProp, LPCBaseText pSrcText, int nDesLen/* = -1*/)
 {
 	if (pDesProp == NULL)
 	{
@@ -399,7 +399,7 @@ unsigned int g_uCRC32Table[256] =
 	SYTextProp_Copy(pDesProp, &pSrcText->stuTextProp, nDesLen);
 }
 
- void SYText_UpdateStretchParam(LPSYText pText, LPSYStretchParam pStretch)
+ void SYText_UpdateStretchParam(LPCommonText pText, LPCommonStretchParam pStretch)
 {
 	if (pText != NULL && pStretch != NULL)
 	{
@@ -416,10 +416,10 @@ unsigned int g_uCRC32Table[256] =
 			SAFE_DELETE(pText->pStretch);
 		}
 
-		LPSYTextPropIndex pPropIdx;
+		LPCommonTextPropIndex pPropIdx;
 		SYMaterial* p3DColor;
 
-		LPSYTextProp pTextProp = &pText->stuTextProp;
+		LPCommonTextProp pTextProp = &pText->stuTextProp;
 		BaseARray* paryIndex = &pTextProp->arIndex;
 		int nPropCnt = BaseAR_GetCount(paryIndex);
 		if (pStretch != NULL && pStretch->bEnable && pStretch->fThick > ABS_FLOAT_0)
@@ -427,10 +427,10 @@ unsigned int g_uCRC32Table[256] =
 			//3D拉伸
 			for (int i = 0; i < nPropCnt; ++i)
 			{
-				pPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, i);
+				pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, i);
 				if (pPropIdx->p3DColor[0] == NULL)
 				{
-					LPSYStaticEffect p2DColor = (LPSYStaticEffect)pPropIdx->p2DColor;
+					LPCommonStaticEffect p2DColor = (LPCommonStaticEffect)pPropIdx->p2DColor;
 					if (p2DColor != NULL)
 					{
 						//用2D色转3D色
@@ -463,7 +463,7 @@ unsigned int g_uCRC32Table[256] =
 			//非拉伸，取消3D属性。
 			for (int i = 0; i < nPropCnt; ++i)
 			{
-				pPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, i);
+				pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, i);
 				for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
 					pPropIdx->p3DColor[n3D] = NULL;
 			}
@@ -480,7 +480,7 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_SetWholeRender(LPSYText pText, BOOL bWholeRender)
+ void SYText_SetWholeRender(LPCommonText pText, BOOL bWholeRender)
 {
 	if (bWholeRender)
 		pText->wTempFlag |= SYTEXT_TEMPFLAG_WHOLERENDER;
@@ -488,7 +488,7 @@ unsigned int g_uCRC32Table[256] =
 		pText->wTempFlag &= ~SYTEXT_TEMPFLAG_WHOLERENDER;
 }
 
- BOOL SYText_IsWholeRender(LPSYText pText)
+ BOOL SYText_IsWholeRender(LPCommonText pText)
 {
 	return ((pText->wTempFlag & SYTEXT_TEMPFLAG_WHOLERENDER) == SYTEXT_TEMPFLAG_WHOLERENDER);
 }
@@ -511,40 +511,40 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_GetStaticEffectProperty(void* pProp, LPSYStaticEffect pFillColor, int nIndex)
+ void SYText_GetStaticEffectProperty(void* pProp, LPCommonStaticEffect pFillColor, int nIndex)
 {
 	if (pProp != NULL && pFillColor != NULL)
 	{
-		LPSYTextProp pTextProp = (LPSYTextProp)pProp;
-		LPSYTextPropIndex pPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(&pTextProp->arIndex, nIndex);
+		LPCommonTextProp pTextProp = (LPCommonTextProp)pProp;
+		LPCommonTextPropIndex pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(&pTextProp->arIndex, nIndex);
 		if (pPropIdx == NULL)
 		{
 			int nIdxCnt = BaseAR_GetCount(&pTextProp->arIndex);
-			pPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(&pTextProp->arIndex, nIdxCnt - 1);
+			pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(&pTextProp->arIndex, nIdxCnt - 1);
 		}
 
 		if (pPropIdx != NULL && pPropIdx->p2DColor != NULL)
 		{
-			SYStaticEffect_Copy(pFillColor, (LPSYStaticEffect)pPropIdx->p2DColor);
+			SYStaticEffect_Copy(pFillColor, (LPCommonStaticEffect)pPropIdx->p2DColor);
 		}
 	}
 }
 
- void SYText_GetFontProperty(void* pProp, LPSYFont pFont, int nIndex)
+ void SYText_GetFontProperty(void* pProp, LPCommonFont pFont, int nIndex)
 {
 	if (pProp != NULL && pFont != NULL)
 	{
-		LPSYTextProp pTextProp = (LPSYTextProp)pProp;
-		LPSYTextPropIndex pPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(&pTextProp->arIndex, nIndex);
+		LPCommonTextProp pTextProp = (LPCommonTextProp)pProp;
+		LPCommonTextPropIndex pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(&pTextProp->arIndex, nIndex);
 		if (pPropIdx == NULL)
 		{
 			int nIdxCnt = BaseAR_GetCount(&pTextProp->arIndex);
-			pPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(&pTextProp->arIndex, nIdxCnt - 1);
+			pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(&pTextProp->arIndex, nIdxCnt - 1);
 		}
 
 		if (pPropIdx != NULL && pPropIdx->pFont != NULL)
 		{
-			SYFont_Copy(pFont, (LPSYFont)pPropIdx->pFont);
+			SYFont_Copy(pFont, (LPCommonFont)pPropIdx->pFont);
 		}
 	}
 }
@@ -561,7 +561,7 @@ unsigned int g_uCRC32Table[256] =
 	 }
 	 return ulCRC32;
  }
- void SYText_SetParagraphParam(LPSYText pTex, 
+ void SYText_SetParagraphParam(LPCommonText pTex, 
 	int nStart, 
 	int nCount, 
 	E_TextPropertyType eType,
@@ -584,7 +584,7 @@ unsigned int g_uCRC32Table[256] =
 			{
 				for (int i=nStart; i<=nEndIdx; ++i)
 				{
-					LPSYTextParagraph pParaObj = (LPSYTextParagraph)BaseAR_GetAt(&pTex->arParagraph, i);
+					LPCommonTextParagraph pParaObj = (LPCommonTextParagraph)BaseAR_GetAt(&pTex->arParagraph, i);
 					pParaObj->fLineDistance = *((float*)pPropertyData);
 				}
 			}
@@ -593,13 +593,13 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_ModifyTypesetBorderBySize(LPSYText pText, SYSizef& szRectSize)
+ void SYText_ModifyTypesetBorderBySize(LPCommonText pText, SYSizef& szRectSize)
 {
 	if (pText == NULL || (szRectSize.cx < SYTEXT_DIMENSION_MIN && szRectSize.cy < SYTEXT_DIMENSION_MIN))
 		return;
 
 	E_TextAlignHorizontal eAlignH = TEXT_ALIGN_H_LEFT;
-	LPSYTextParagraph pPara = (LPSYTextParagraph)BaseAR_GetAt(&pText->arParagraph, 0);
+	LPCommonTextParagraph pPara = (LPCommonTextParagraph)BaseAR_GetAt(&pText->arParagraph, 0);
 	if (pPara != NULL)
 		eAlignH = pPara->eAlignHorizontal;
 
@@ -778,7 +778,7 @@ unsigned int g_uCRC32Table[256] =
 	}
 }
 
- void SYText_SetFixedFrame(LPSYText pText, BOOL bFixedFrame)
+ void SYText_SetFixedFrame(LPCommonText pText, BOOL bFixedFrame)
 {
 	//原先非固定字框且原先不使用排版矩形，
 	//则将实际排版矩形赋给排版矩形。
@@ -798,14 +798,14 @@ unsigned int g_uCRC32Table[256] =
 
 //////////////////////////////////////////////////////////////////////////
 // SYTypesetPrivateData
- void SYTypesetPrivateData_Init(LPSYTypesetPrivate pData)
+ void SYTypesetPrivateData_Init(LPCommonTypesetPrivate pData)
 {
 	BaseAR_Init(&pData->m_arParagraph);
 	pData->lpParam = NULL;
 	memset(&pData->rtTypesetBorder, 0, sizeof(rectf));
 }
 
- void SYTypesetPrivateData_Release(LPSYTypesetPrivate pData)
+ void SYTypesetPrivateData_Release(LPCommonTypesetPrivate pData)
 {
 	int nParagraphCnt = BaseAR_GetCount(&pData->m_arParagraph);
 	for (int i = 0; i < nParagraphCnt; ++i)
@@ -821,7 +821,7 @@ unsigned int g_uCRC32Table[256] =
 
 //////////////////////////////////////////////////////////////////////////
 // SYFont
-void SYFont_Init(LPSYFont pFont)
+void SYFont_Init(LPCommonFont pFont)
 {
 	memset(pFont, 0, sizeof(SYFont));
 	pFont->lfHeight = 30;
@@ -831,7 +831,7 @@ void SYFont_Init(LPSYFont pFont)
 	pFont->dwVersion = 1;
 }
 
-void SYFont_Release(LPSYFont pFont)
+void SYFont_Release(LPCommonFont pFont)
 {
 }
 
@@ -1041,7 +1041,7 @@ void SYFont_Release(LPSYFont pFont)
 	return nSize;
 }
 
- int SYFont_Load(LPSYFont pFont, LPBYTE pBuffer, int nLen)
+ int SYFont_Load(LPCommonFont pFont, LPBYTE pBuffer, int nLen)
 {
 	int nSize = 0;
 	LPBYTE pCurBuf = pBuffer;
@@ -1167,7 +1167,7 @@ void SYFont_Release(LPSYFont pFont)
 	return nSize;
 }
 
-void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
+void SYFont_Copy(LPCommonFont pDes, LPCBaseFont pSrc)
 {
 	memcpy(pDes, pSrc, sizeof(SYFont));
 }
@@ -1200,7 +1200,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return TRUE;
 }
 
- void SYFont_SetValue(LPSYFont pDesFont, const LPVOID lpSrcData, const LPVOID lp2ndSrcData, DWORD dwMask)
+ void SYFont_SetValue(LPCommonFont pDesFont, const LPVOID lpSrcData, const LPVOID lp2ndSrcData, DWORD dwMask)
 {
 	//参数有效性由调用者检查
 	switch (dwMask)
@@ -1245,7 +1245,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYFont_CopyValue(LPSYFont pDesFont, LPCBaseFont pSrcFont, DWORD dwMask)
+ void SYFont_CopyValue(LPCommonFont pDesFont, LPCBaseFont pSrcFont, DWORD dwMask)
 {
 	//参数有效性由调用者检查
 	if (dwMask & SYTEXTFONTMASK_HEIGHT)
@@ -1294,7 +1294,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 
 //////////////////////////////////////////////////////////////////////////
 // SYUnderLine
- void SYUnderLine_Init(LPSYUnderLine pUnderLine)
+ void SYUnderLine_Init(LPCommonUnderLine pUnderLine)
 {
 	if (pUnderLine != NULL)
 	{
@@ -1306,11 +1306,11 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYUnderLine_Create(LPSYUnderLine pUnderLine,
+ void SYUnderLine_Create(LPCommonUnderLine pUnderLine,
 	E_TextUnderLine eType, 
 	float fDistance,
 	float fLineHeight,
-	LPSYStaticEffect p2DColor)
+	LPCommonStaticEffect p2DColor)
 {
 	if (pUnderLine != NULL)
 	{
@@ -1328,7 +1328,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYUnderLine_Release(LPSYUnderLine pUnderLine)
+ void SYUnderLine_Release(LPCommonUnderLine pUnderLine)
 {
 	if (pUnderLine != NULL)
 	{
@@ -1336,7 +1336,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYUnderLine_Copy(LPSYUnderLine pDes, LPCBaseUnderLine pSrc)
+ void SYUnderLine_Copy(LPCommonUnderLine pDes, LPCBaseUnderLine pSrc)
 {
 	if (pDes != NULL && pSrc != NULL)
 	{
@@ -1372,7 +1372,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return TRUE;
 }
 
- void SYUnderLine_SetValue(LPSYUnderLine pDesUnderLine, const LPVOID lpSrcData, DWORD dwMask)
+ void SYUnderLine_SetValue(LPCommonUnderLine pDesUnderLine, const LPVOID lpSrcData, DWORD dwMask)
 {
 	switch (dwMask)
 	{
@@ -1386,12 +1386,12 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		pDesUnderLine->fDistance = *(float*)lpSrcData;
 		break;
 	case SYTEXTFONTMASK_UNDERLINE_2DCOLOR:
-		SYStaticEffect_Copy(&pDesUnderLine->se2DColor, (LPSYStaticEffect)lpSrcData);
+		SYStaticEffect_Copy(&pDesUnderLine->se2DColor, (LPCommonStaticEffect)lpSrcData);
 		break;
 	}
 }
 
- void SYUnderLine_CopyValue(LPSYUnderLine pDesUnderLine, LPCBaseUnderLine pSrcUnderLine, DWORD dwMask)
+ void SYUnderLine_CopyValue(LPCommonUnderLine pDesUnderLine, LPCBaseUnderLine pSrcUnderLine, DWORD dwMask)
 {
 	if (dwMask & SYTEXTFONTMASK_UNDERLINE_TYPE)
 	{
@@ -1414,7 +1414,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 
 //////////////////////////////////////////////////////////////////////////
 // SYTextProp
- void SYTextProp_Init(LPSYTextProp pProp)
+ void SYTextProp_Init(LPCommonTextProp pProp)
 {
 	if (pProp != NULL)
 	{
@@ -1428,16 +1428,16 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 }
 
  void SYTextProp_Create(int nTextLen,
-	LPSYTextProp pProp,
-	LPSYFont pFont, 
-	LPSYStaticEffect p2DColor,
+	LPCommonTextProp pProp,
+	LPCommonFont pFont, 
+	LPCommonStaticEffect p2DColor,
 	SYMaterial* p3DColor,
-	LPSYUnderLine pUnderLine)
+	LPCommonUnderLine pUnderLine)
 {
 	if (pProp != NULL)
 	{
 		//字体
-		LPSYFont pNewFont = new SYFont;
+		LPCommonFont pNewFont = new SYFont;
 		SYFont_Init(pNewFont);
 		if (pFont != NULL)
 		{
@@ -1446,7 +1446,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		BaseAR_Add(&pProp->arFont, pNewFont);
 
 		//2D Color
-		LPSYStaticEffect pNew2DColor = new SYStaticEffect;
+		LPCommonStaticEffect pNew2DColor = new SYStaticEffect;
 		SYStaticEffect_Init(pNew2DColor);
 		if (p2DColor != NULL)
 		{
@@ -1465,7 +1465,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		}
 
 		//下划线（允许没有）
-		LPSYUnderLine pNewUnderLine = NULL;
+		LPCommonUnderLine pNewUnderLine = NULL;
 		if (pUnderLine != NULL)
 		{
 			pNewUnderLine = new SYUnderLine;
@@ -1479,7 +1479,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 			nTextLen = 1;
 		for (int i = 0; i < nTextLen; ++i)
 		{
-			LPSYTextPropIndex pPropIdx = new SYTextPropIndex;
+			LPCommonTextPropIndex pPropIdx = new SYTextPropIndex;
 			pPropIdx->pFont = pNewFont;
 			pPropIdx->p2DColor = pNew2DColor;
 			for (int n3D = 0; n3D < SYTEXT_SUBFACE_CNT; ++n3D)
@@ -1490,7 +1490,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_Release(LPSYTextProp pProp)
+ void SYTextProp_Release(LPCommonTextProp pProp)
 {
 	if (pProp != NULL)
 	{
@@ -1499,7 +1499,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		nCnt = BaseAR_GetCount(&pProp->arFont);
 		for (i=0; i<nCnt; ++i)
 		{
-			LPSYFont pFont = (LPSYFont)BaseAR_GetAt(&pProp->arFont, i);
+			LPCommonFont pFont = (LPCommonFont)BaseAR_GetAt(&pProp->arFont, i);
 			SYFont_Release(pFont);
 			delete pFont;
 		}
@@ -1509,7 +1509,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		nCnt = BaseAR_GetCount(&pProp->ar2DColor);
 		for (i=0; i<nCnt; ++i)
 		{
-			LPSYStaticEffect p2DColor = (LPSYStaticEffect)BaseAR_GetAt(&pProp->ar2DColor, i);
+			LPCommonStaticEffect p2DColor = (LPCommonStaticEffect)BaseAR_GetAt(&pProp->ar2DColor, i);
 			SYStaticEffect_Release(p2DColor);
 			delete p2DColor;
 		}
@@ -1529,7 +1529,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		nCnt = BaseAR_GetCount(&pProp->arUnderLine);
 		for (i=0; i<nCnt; ++i)
 		{
-			LPSYUnderLine pUnderLine = (LPSYUnderLine)BaseAR_GetAt(&pProp->arUnderLine, i);
+			LPCommonUnderLine pUnderLine = (LPCommonUnderLine)BaseAR_GetAt(&pProp->arUnderLine, i);
 			SYUnderLine_Release(pUnderLine);
 			delete pUnderLine;
 		}
@@ -1539,7 +1539,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		nCnt = BaseAR_GetCount(&pProp->arIndex);
 		for (i=0; i<nCnt; ++i)
 		{
-			LPSYTextPropIndex pPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(&pProp->arIndex, i);
+			LPCommonTextPropIndex pPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, i);
 			SYTextPropIndex_Release(pPropIdx);
 			delete pPropIdx;
 		}
@@ -1547,7 +1547,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_Copy(LPSYTextProp pDes, LPCBaseTextProp pSrc, int nDesLen/* = -1*/)
+ void SYTextProp_Copy(LPCommonTextProp pDes, LPCBaseTextProp pSrc, int nDesLen/* = -1*/)
 {
 	if (pDes == NULL || pSrc == NULL || pSrc == pDes)
 		return;
@@ -1558,8 +1558,8 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	nAryCnt = BaseAR_GetCount(&pSrc->arFont);
 	for (int i = 0; i < nAryCnt; ++i)
 	{
-		LPSYFont pSrcFont = (LPSYFont)BaseAR_GetAt(&pSrc->arFont, i);
-		LPSYFont pNewFont = new SYFont;
+		LPCommonFont pSrcFont = (LPCommonFont)BaseAR_GetAt(&pSrc->arFont, i);
+		LPCommonFont pNewFont = new SYFont;
 		SYFont_Copy(pNewFont, pSrcFont);
 		BaseAR_Add(&pDes->arFont, pNewFont);
 	}
@@ -1567,8 +1567,8 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	nAryCnt = BaseAR_GetCount(&pSrc->ar2DColor);
 	for (int i = 0; i < nAryCnt; ++i)
 	{
-		LPSYStaticEffect pSrc2DColor = (LPSYStaticEffect)BaseAR_GetAt(&pSrc->ar2DColor, i);
-		LPSYStaticEffect pNew2DColor = new SYStaticEffect;
+		LPCommonStaticEffect pSrc2DColor = (LPCommonStaticEffect)BaseAR_GetAt(&pSrc->ar2DColor, i);
+		LPCommonStaticEffect pNew2DColor = new SYStaticEffect;
 		SYStaticEffect_Init(pNew2DColor);
 		SYStaticEffect_Copy(pNew2DColor, pSrc2DColor);
 		BaseAR_Add(&pDes->ar2DColor, pNew2DColor);
@@ -1587,18 +1587,18 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	nAryCnt = BaseAR_GetCount(&pSrc->arUnderLine);
 	for (int i = 0; i < nAryCnt; ++i)
 	{
-		LPSYUnderLine pSrcUnderLine = (LPSYUnderLine)BaseAR_GetAt(&pSrc->arUnderLine, i);
-		LPSYUnderLine pNewUnderLine = new SYUnderLine;
+		LPCommonUnderLine pSrcUnderLine = (LPCommonUnderLine)BaseAR_GetAt(&pSrc->arUnderLine, i);
+		LPCommonUnderLine pNewUnderLine = new SYUnderLine;
 		SYUnderLine_Init(pNewUnderLine);
 		SYUnderLine_Copy(pNewUnderLine, pSrcUnderLine);
 		BaseAR_Add(&pDes->arUnderLine, pNewUnderLine);
 	}
 
-	LPSYTextPropIndex pSrcPropIdx, pNewPropIdx;
+	LPCommonTextPropIndex pSrcPropIdx, pNewPropIdx;
 	nAryCnt = BaseAR_GetCount(&pSrc->arIndex);
 	for (int i = 0; i < nAryCnt; ++i)
 	{
-		pSrcPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(&pSrc->arIndex, i);
+		pSrcPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(&pSrc->arIndex, i);
 		pNewPropIdx = new SYTextPropIndex;
 
 		int nID;
@@ -1632,7 +1632,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- void SYTextProp_DeleteString(LPSYTextProp pProp, int nCharIdx, int nDelCnt, int nTextLen, BOOL bWholeRender)
+ void SYTextProp_DeleteString(LPCommonTextProp pProp, int nCharIdx, int nDelCnt, int nTextLen, BOOL bWholeRender)
 {
 	if (nDelCnt <= 0 || nCharIdx < 0)
 		return;
@@ -1650,14 +1650,14 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	BOOL b1StWholeRender;
 	for (int nP = nCharIdx + nDelCnt - 1; nP >= nCharIdx; --nP)
 	{
-		LPSYTextPropIndex pTempIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+		LPCommonTextPropIndex pTempIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 		b1StWholeRender = (bWholeRender && nP == 0);
 		if (SYTextProp_EmptyPropIndex(pProp, pTempIdx, b1StWholeRender))
 		{
 			if (b1StWholeRender)
 			{
 				//转移2D颜色索引
-				LPSYTextPropIndex pNextIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP + 1);
+				LPCommonTextPropIndex pNextIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP + 1);
 				if (pNextIdx != NULL && pTempIdx->p2DColor)
 					pNextIdx->p2DColor = pTempIdx->p2DColor;
 			}
@@ -1668,7 +1668,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_InsertString(LPSYTextProp pProp, int nCharIdx, int nInsCnt, int nTextLen)
+ void SYTextProp_InsertString(LPCommonTextProp pProp, int nCharIdx, int nInsCnt, int nTextLen)
 {
 	if (nInsCnt > 0)
 	{
@@ -1690,12 +1690,12 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		if (nInsCnt > 0)
 		{
 			//复制
-			LPSYTextPropIndex pSrcIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nSrc);
+			LPCommonTextPropIndex pSrcIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nSrc);
 			if (pSrcIdx != NULL)
 			{
 				for (int i = 0; i < nInsCnt; ++i)
 				{
-					LPSYTextPropIndex pNewIdx = new SYTextPropIndex;
+					LPCommonTextPropIndex pNewIdx = new SYTextPropIndex;
 					SYTextPropIndex_Copy(pNewIdx, pSrcIdx);
 					BaseAR_InsertAt(paryIndex, nCharIdx, pNewIdx, 1);
 				}
@@ -1704,9 +1704,9 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- LPVOID SYTextProp_GetProp(LPSYTextProp pProp, int nCharIdx, E_TextPropType eType)
+ LPVOID SYTextProp_GetProp(LPCommonTextProp pProp, int nCharIdx, E_TextPropType eType)
 {
-	LPSYTextPropIndex pIndex = (LPSYTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
+	LPCommonTextPropIndex pIndex = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
 	if (pIndex != NULL)
 	{
 		switch (eType)
@@ -1724,7 +1724,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return NULL;
 }
 
- LPSYTextPropIndex	SYTextProp_GetPropIndex(BaseARray* paryIndex, int nCharIdx)
+ LPCommonTextPropIndex	SYTextProp_GetPropIndex(BaseARray* paryIndex, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(paryIndex);
 	if (nCharIdx >= nCnt)
@@ -1732,10 +1732,10 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	else if (nCharIdx < 0)
 		nCharIdx = 0;
 
-	return (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nCharIdx);
+	return (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nCharIdx);
 }
 
- BOOL SYTextProp_EmptyPropIndex(LPSYTextProp pProp, LPSYTextPropIndex pPropIdx, BOOL bReserve2DClr)
+ BOOL SYTextProp_EmptyPropIndex(LPCommonTextProp pProp, LPCommonTextPropIndex pPropIdx, BOOL bReserve2DClr)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	int nPropCnt = BaseAR_GetCount(paryIndex);
@@ -1747,7 +1747,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 
 		for (int i = 0; i < nPropCnt; ++i)
 		{
-			LPSYTextPropIndex pTempIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, i);
+			LPCommonTextPropIndex pTempIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, i);
 			if (pTempIdx != pPropIdx)
 			{
 				if (pTempIdx->pFont == pPropIdx->pFont)
@@ -1782,19 +1782,19 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		{
 			//禁止空表
 			if (BaseAR_GetCount(&pProp->arFont) > 1)
-				SYTextProp_RemoveFont(&pProp->arFont, (LPSYFont)pPropIdx->pFont);
+				SYTextProp_RemoveFont(&pProp->arFont, (LPCommonFont)pPropIdx->pFont);
 		}
 		if (!bReserve2DClr && (wLogic & 0x02) == 0x00)
 		{
 			//禁止空表
 			if (BaseAR_GetCount(&pProp->ar2DColor) > 1)
-				SYTextProp_Remove2DColor(&pProp->ar2DColor, (LPSYStaticEffect)pPropIdx->p2DColor);
+				SYTextProp_Remove2DColor(&pProp->ar2DColor, (LPCommonStaticEffect)pPropIdx->p2DColor);
 		}
 		if ((wLogic & 0x04) == 0x00)
 		{
 			//允许空表
 			if (BaseAR_GetCount(&pProp->arUnderLine) > 0)
-				SYTextProp_RemoveUnderLine(&pProp->arUnderLine, (LPSYUnderLine)pPropIdx->pUnderLine);
+				SYTextProp_RemoveUnderLine(&pProp->arUnderLine, (LPCommonUnderLine)pPropIdx->pUnderLine);
 		}
 
 		//允许空表
@@ -1814,9 +1814,9 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- void SYTextProp_ResizePropIndexArray(LPSYTextProp pProp, int nSize, BOOL bKeepProperty)
+ void SYTextProp_ResizePropIndexArray(LPCommonTextProp pProp, int nSize, BOOL bKeepProperty)
 {
-	LPSYTextPropIndex pSrcIdx, pTempIdx;
+	LPCommonTextPropIndex pSrcIdx, pTempIdx;
 	int nNewPropCnt = nSize;
 	BaseARray* paryIndex = &pProp->arIndex;
 	int nOldPropCnt = BaseAR_GetCount(paryIndex);
@@ -1824,7 +1824,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	{
 		if (nNewPropCnt >= nOldPropCnt)
 		{
-			pSrcIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nOldPropCnt - 1);
+			pSrcIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nOldPropCnt - 1);
 			if (pSrcIdx != NULL)
 			{
 				while (nNewPropCnt > nOldPropCnt)
@@ -1846,7 +1846,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	while (nNewPropCnt < nOldPropCnt)
 	{
 		--nOldPropCnt;
-		pSrcIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nOldPropCnt);
+		pSrcIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nOldPropCnt);
 		if (SYTextProp_EmptyPropIndex(pProp, pSrcIdx, FALSE))
 		{
 			SYTextPropIndex_Release(pSrcIdx);
@@ -1856,7 +1856,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- LPSYFont SYTextProp_GetFont(LPSYTextProp pProp, int nCharIdx)
+ LPCommonFont SYTextProp_GetFont(LPCommonTextProp pProp, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1866,18 +1866,18 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 
 	if (nCharIdx < 0)
 	{
-		return (LPSYFont)BaseAR_GetAt(&pProp->arFont, 0);
+		return (LPCommonFont)BaseAR_GetAt(&pProp->arFont, 0);
 	}
 
-	LPSYTextPropIndex pIndex = (LPSYTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
+	LPCommonTextPropIndex pIndex = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
 	if (pIndex != NULL)
 	{
-		return (LPSYFont)pIndex->pFont;
+		return (LPCommonFont)pIndex->pFont;
 	}
-	return (LPSYFont)BaseAR_GetAt(&pProp->arFont, 0);
+	return (LPCommonFont)BaseAR_GetAt(&pProp->arFont, 0);
 }
 
- LPSYStaticEffect SYTextProp_GetStaticEffect(LPSYTextProp pProp, int nCharIdx)
+ LPCommonStaticEffect SYTextProp_GetStaticEffect(LPCommonTextProp pProp, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1885,15 +1885,15 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	else if (nCharIdx < 0)
 		nCharIdx = 0;
 
-	LPSYTextPropIndex pIndex = (LPSYTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
+	LPCommonTextPropIndex pIndex = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
 	if (pIndex != NULL)
 	{
-		return (LPSYStaticEffect)pIndex->p2DColor;
+		return (LPCommonStaticEffect)pIndex->p2DColor;
 	}
-	return (LPSYStaticEffect)BaseAR_GetAt(&pProp->ar2DColor, 0);
+	return (LPCommonStaticEffect)BaseAR_GetAt(&pProp->ar2DColor, 0);
 }
 
- SYMaterial* SYTextProp_Get3DColor(LPSYTextProp pProp, int nCharIdx, int nSubFace)
+ SYMaterial* SYTextProp_Get3DColor(LPCommonTextProp pProp, int nCharIdx, int nSubFace)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1901,7 +1901,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	else if (nCharIdx < 0)
 		nCharIdx = 0;
 
-	LPSYTextPropIndex pIndex = (LPSYTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
+	LPCommonTextPropIndex pIndex = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
 	if (pIndex != NULL)
 	{
 		if (nSubFace < 0 || nSubFace > SYTEXT_SUBFACE_CNT - 1)
@@ -1911,7 +1911,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return (SYMaterial*)BaseAR_GetAt(&pProp->ar3DColor, 0);
 }
 
- LPVOID* SYTextProp_Get3DColorArray(LPSYTextProp pProp, int nCharIdx)
+ LPVOID* SYTextProp_Get3DColorArray(LPCommonTextProp pProp, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1919,7 +1919,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	else if (nCharIdx < 0)
 		nCharIdx = 0;
 
-	LPSYTextPropIndex pIndex = (LPSYTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
+	LPCommonTextPropIndex pIndex = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
 	if (pIndex != NULL)
 	{
 		return &(pIndex->p3DColor[0]);
@@ -1927,7 +1927,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return NULL;
 }
 
- LPSYUnderLine SYTextProp_GetUnderLine(LPSYTextProp pProp, int nCharIdx)
+ LPCommonUnderLine SYTextProp_GetUnderLine(LPCommonTextProp pProp, int nCharIdx)
 {
 	int nCnt = BaseAR_GetCount(&pProp->arIndex);
 	if (nCharIdx >= nCnt)
@@ -1935,15 +1935,15 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	else if (nCharIdx < 0)
 		nCharIdx = 0;
 
-	LPSYTextPropIndex pIndex = (LPSYTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
+	LPCommonTextPropIndex pIndex = (LPCommonTextPropIndex)BaseAR_GetAt(&pProp->arIndex, nCharIdx);
 	if (pIndex != NULL)
 	{
-		return (LPSYUnderLine)pIndex->pUnderLine;
+		return (LPCommonUnderLine)pIndex->pUnderLine;
 	}
 	return NULL;
 }
 
- void SYTextProp_SetFont(LPSYTextProp pProp, int nCharIdx, int nCount, LPCBaseFont lpFont, DWORD dwMask)
+ void SYTextProp_SetFont(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseFont lpFont, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryFont = &pProp->arFont;
@@ -1956,23 +1956,23 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	if (nCount <= 0)
 		return;
 
-	LPSYTextPropIndex pTempPropIdx;
-	LPSYFont pCurFont;
-	LPSYFont pTempFont;
+	LPCommonTextPropIndex pTempPropIdx;
+	LPCommonFont pCurFont;
+	LPCommonFont pTempFont;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
 		//查找当前字符的字体属性索引
-		LPSYTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
-			pCurFont = (LPSYFont)pCurIndex->pFont;
+			pCurFont = (LPCommonFont)pCurIndex->pFont;
 
 			//是否还使用该字体者
 			BOOL bRef = FALSE;
 			for (int nP = 0; nP < nPropCnt; ++nP)
 			{
-				pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+				pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 				if (pTempPropIdx != pCurIndex && pTempPropIdx->pFont == pCurFont)
 				{
 					bRef = TRUE;
@@ -2012,7 +2012,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
 					{
-						pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+						pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 						if (pTempPropIdx->pFont == pSame)
 							pTempPropIdx->pFont = pCurFont;
 					}
@@ -2023,7 +2023,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_FontProperty(LPSYTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, const LPVOID lp2ndPropData, DWORD dwMask)
+ void SYTextProp_FontProperty(LPCommonTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, const LPVOID lp2ndPropData, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryFont = &pProp->arFont;
@@ -2036,23 +2036,23 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	if (nCount <= 0)
 		return;
 
-	LPSYTextPropIndex pTempPropIdx;
-	LPSYFont pCurFont;
-	LPSYFont pTempFont;
+	LPCommonTextPropIndex pTempPropIdx;
+	LPCommonFont pCurFont;
+	LPCommonFont pTempFont;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
 		//查找当前字符的字体属性索引
-		LPSYTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
-			pCurFont = (LPSYFont)pCurIndex->pFont;
+			pCurFont = (LPCommonFont)pCurIndex->pFont;
 
 			//是否还使用该字体者
 			BOOL bRef = FALSE;
 			for (int nP = 0; nP < nPropCnt; ++nP)
 			{
-				pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+				pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 				if (pTempPropIdx != pCurIndex && pTempPropIdx->pFont == pCurFont)
 				{
 					bRef = TRUE;
@@ -2092,7 +2092,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
 					{
-						pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+						pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 						if (pTempPropIdx->pFont == pSame)
 							pTempPropIdx->pFont = pCurFont;
 					}
@@ -2103,7 +2103,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_SetStaticEffect(LPSYTextProp pProp, int nCharIdx, int nCount, LPCBaseStaticEffect lpFillColor, DWORD dwMask)
+ void SYTextProp_SetStaticEffect(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseStaticEffect lpFillColor, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryColor = &pProp->ar2DColor;
@@ -2116,21 +2116,21 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	if (nCount <= 0)
 		return;
 
-	LPSYTextPropIndex pTempPropIdx;
-	LPSYStaticEffect pCurColor;
-	LPSYStaticEffect pTempColor;
+	LPCommonTextPropIndex pTempPropIdx;
+	LPCommonStaticEffect pCurColor;
+	LPCommonStaticEffect pTempColor;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPSYTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
-			pCurColor = (LPSYStaticEffect)pCurIndex->p2DColor;
+			pCurColor = (LPCommonStaticEffect)pCurIndex->p2DColor;
 
 			BOOL bRef = FALSE;
 			for (int nP = 0; nP < nPropCnt; ++nP)
 			{
-				pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+				pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 				if (pTempPropIdx != pCurIndex && pTempPropIdx->p2DColor == pCurColor)
 				{
 					bRef = TRUE;
@@ -2168,7 +2168,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
 					{
-						pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+						pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 						if (pTempPropIdx->p2DColor == pSame)
 							pTempPropIdx->p2DColor = pCurColor;
 					}
@@ -2179,7 +2179,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_Set3DColor(LPSYTextProp pProp, int nCharIdx, int nCount, SYMaterial* p3DColor)
+ void SYTextProp_Set3DColor(LPCommonTextProp pProp, int nCharIdx, int nCount, SYMaterial* p3DColor)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryColor = &pProp->ar3DColor;
@@ -2192,12 +2192,12 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	if (nCount <= 0)
 		return;
 
-	LPSYTextPropIndex pTempPropIdx;
+	LPCommonTextPropIndex pTempPropIdx;
 	SYMaterial* pNewColor = NULL;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPSYTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
 
 		LPVOID pSame;
 		int nSameID = SYTextProp_FindSame3DColor(paryColor, p3DColor, &pSame);
@@ -2241,7 +2241,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 			BOOL bRef = FALSE;
 			for (int nP = 0; nP < nPropCnt; ++nP)
 			{
-				pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+				pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 				if (pTempPropIdx != pCurIndex)
 				{
 					for (int i3 = 0; i3 < SYTEXT_SUBFACE_CNT; ++i3)
@@ -2267,7 +2267,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_SetSubFace3DColor(LPSYTextProp pProp, int nCharIdx, int nCount, int nSubFace, SYMaterial* p3DColor)
+ void SYTextProp_SetSubFace3DColor(LPCommonTextProp pProp, int nCharIdx, int nCount, int nSubFace, SYMaterial* p3DColor)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryColor = &pProp->ar3DColor;
@@ -2282,12 +2282,12 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	if (nSubFace < 0 || nSubFace > SYTEXT_SUBFACE_CNT - 1)
 		nSubFace = 0;
 
-	LPSYTextPropIndex pTempPropIdx;
+	LPCommonTextPropIndex pTempPropIdx;
 	SYMaterial* pNewColor = NULL;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPSYTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
 
 		LPVOID pSame;
 		int nSameID = SYTextProp_FindSame3DColor(paryColor, p3DColor, &pSame);
@@ -2313,7 +2313,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		BOOL bRef = FALSE;
 		for (int nP = 0; nP < nPropCnt; ++nP)
 		{
-			pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+			pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 			if (pTempPropIdx != pCurIndex)
 			{
 				for (int i3 = 0; i3 < SYTEXT_SUBFACE_CNT; ++i3)
@@ -2348,7 +2348,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_SetUnderLine(LPSYTextProp pProp, int nCharIdx, int nCount, LPCBaseUnderLine lpUnderLine, DWORD dwMask)
+ void SYTextProp_SetUnderLine(LPCommonTextProp pProp, int nCharIdx, int nCount, LPCBaseUnderLine lpUnderLine, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryUL = &pProp->arUnderLine;
@@ -2361,16 +2361,16 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	if (nCount <= 0)
 		return;
 
-	LPSYTextPropIndex pTempPropIdx;
-	LPSYUnderLine pCurUL;
-	LPSYUnderLine pTempUL;
+	LPCommonTextPropIndex pTempPropIdx;
+	LPCommonUnderLine pCurUL;
+	LPCommonUnderLine pTempUL;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPSYTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
-			pCurUL = (LPSYUnderLine)pCurIndex->pUnderLine;
+			pCurUL = (LPCommonUnderLine)pCurIndex->pUnderLine;
 
 			BOOL bRef;
 			if (pCurUL != NULL)
@@ -2378,7 +2378,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 				bRef = FALSE;
 				for (int nP = 0; nP < nPropCnt; ++nP)
 				{
-					pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+					pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 					if (pTempPropIdx != pCurIndex && pTempPropIdx->pUnderLine == pCurUL)
 					{
 						bRef = TRUE;
@@ -2424,7 +2424,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
 					{
-						pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+						pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 						if (pTempPropIdx->pUnderLine == pSame)
 							pTempPropIdx->pUnderLine = pCurUL;
 					}
@@ -2435,7 +2435,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	}
 }
 
- void SYTextProp_SetUnderLineProperty(LPSYTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, DWORD dwMask)
+ void SYTextProp_SetUnderLineProperty(LPCommonTextProp pProp, int nCharIdx, int nCount, const LPVOID lpPropData, DWORD dwMask)
 {
 	BaseARray* paryIndex = &pProp->arIndex;
 	BaseARray* paryUL = &pProp->arUnderLine;
@@ -2448,16 +2448,16 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	if (nCount <= 0)
 		return;
 
-	LPSYTextPropIndex pTempPropIdx;
-	LPSYUnderLine pCurUL;
-	LPSYUnderLine pTempUL;
+	LPCommonTextPropIndex pTempPropIdx;
+	LPCommonUnderLine pCurUL;
+	LPCommonUnderLine pTempUL;
 
 	for (int nC = nCharIdx; nC < nCharIdx + nCount; ++nC)
 	{
-		LPSYTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
+		LPCommonTextPropIndex pCurIndex = SYTextProp_GetPropIndex(paryIndex, nC);
 		if (pCurIndex != NULL)
 		{
-			pCurUL = (LPSYUnderLine)pCurIndex->pUnderLine;
+			pCurUL = (LPCommonUnderLine)pCurIndex->pUnderLine;
 
 			BOOL bRef;
 			if (pCurUL != NULL)
@@ -2465,7 +2465,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 				bRef = FALSE;
 				for (int nP = 0; nP < nPropCnt; ++nP)
 				{
-					pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+					pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 					if (pTempPropIdx != pCurIndex && pTempPropIdx->pUnderLine == pCurUL)
 					{
 						bRef = TRUE;
@@ -2511,7 +2511,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 				{
 					for (int nP = 0; nP < nPropCnt; ++nP)
 					{
-						pTempPropIdx = (LPSYTextPropIndex)BaseAR_GetAt(paryIndex, nP);
+						pTempPropIdx = (LPCommonTextPropIndex)BaseAR_GetAt(paryIndex, nP);
 						if (pTempPropIdx->pUnderLine == pSame)
 							pTempPropIdx->pUnderLine = pCurUL;
 					}
@@ -2527,7 +2527,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	int nFontCnt = BaseAR_GetCount(paryFont);
 	for (int i = 0; i < nFontCnt; ++i)
 	{
-		LPSYFont pFont = (LPSYFont)BaseAR_GetAt(paryFont, i);
+		LPCommonFont pFont = (LPCommonFont)BaseAR_GetAt(paryFont, i);
 		//查找相同者
 		if (pCompFont != pFont && SYFont_Compare(pFont, pCompFont))
 		{
@@ -2546,7 +2546,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	int nFontCnt = BaseAR_GetCount(paryColor);
 	for (int i = 0; i < nFontCnt; ++i)
 	{
-		LPSYStaticEffect pColor = (LPSYStaticEffect)BaseAR_GetAt(paryColor, i);
+		LPCommonStaticEffect pColor = (LPCommonStaticEffect)BaseAR_GetAt(paryColor, i);
 		//查找相同者
 		if (pCompColor != pColor && sy_staticeffect_compare(pCompColor, pColor))
 		{
@@ -2584,7 +2584,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	int nUnderLineCnt = BaseAR_GetCount(paryUnderLine);
 	for (int i = 0; i < nUnderLineCnt; ++i)
 	{
-		LPSYUnderLine pUnderLine = (LPSYUnderLine)BaseAR_GetAt(paryUnderLine, i);
+		LPCommonUnderLine pUnderLine = (LPCommonUnderLine)BaseAR_GetAt(paryUnderLine, i);
 		//查找相同者
 		if (pCompUnderLine != pUnderLine && SYUnderLine_Compare(pCompUnderLine, pUnderLine))
 		{
@@ -2598,7 +2598,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return -1;
 }
 
- void SYText2DColor_CopyValue(LPSYStaticEffect pDesColor, LPCBaseStaticEffect pSrcColor, DWORD dwMask)
+ void SYText2DColor_CopyValue(LPCommonStaticEffect pDesColor, LPCBaseStaticEffect pSrcColor, DWORD dwMask)
 {
 	//参数有效性由调用者检查
 	if (dwMask & SYTEXTCOLORMASK_FACE)
@@ -2694,7 +2694,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 
  BOOL SYTextProp_RemoveFont(BaseARray* paryFont, int nIndex)
 {
-	LPSYFont pFont = (LPSYFont)BaseAR_GetAt(paryFont, nIndex);
+	LPCommonFont pFont = (LPCommonFont)BaseAR_GetAt(paryFont, nIndex);
 	if (pFont != NULL)
 	{
 		SYFont_Release(pFont);
@@ -2705,7 +2705,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_RemoveFont(BaseARray* paryFont, LPSYFont pFont)
+ BOOL SYTextProp_RemoveFont(BaseARray* paryFont, LPCommonFont pFont)
 {
 	if (pFont != NULL)
 	{
@@ -2726,7 +2726,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 
  BOOL SYTextProp_Remove2DColor(BaseARray* pary2DColor, int nIndex)
 {
-	LPSYStaticEffect p2DColor = (LPSYStaticEffect)BaseAR_GetAt(pary2DColor, nIndex);
+	LPCommonStaticEffect p2DColor = (LPCommonStaticEffect)BaseAR_GetAt(pary2DColor, nIndex);
 	if (p2DColor != NULL)
 	{
 		SYStaticEffect_Release(p2DColor);
@@ -2737,7 +2737,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_Remove2DColor(BaseARray* pary2DColor, LPSYStaticEffect p2DColor)
+ BOOL SYTextProp_Remove2DColor(BaseARray* pary2DColor, LPCommonStaticEffect p2DColor)
 {
 	if (p2DColor != NULL)
 	{
@@ -2790,7 +2790,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 
  BOOL SYTextProp_RemoveUnderLine(BaseARray* paryUnderLine, int nIndex)
 {
-	LPSYUnderLine pUnderLine = (LPSYUnderLine)BaseAR_GetAt(paryUnderLine, nIndex);
+	LPCommonUnderLine pUnderLine = (LPCommonUnderLine)BaseAR_GetAt(paryUnderLine, nIndex);
 	if (pUnderLine != NULL)
 	{
 		SYUnderLine_Release(pUnderLine);
@@ -2801,7 +2801,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	return FALSE;
 }
 
- BOOL SYTextProp_RemoveUnderLine(BaseARray* paryUnderLine, LPSYUnderLine pUnderLine)
+ BOOL SYTextProp_RemoveUnderLine(BaseARray* paryUnderLine, LPCommonUnderLine pUnderLine)
 {
 	if (pUnderLine != NULL)
 	{
@@ -2823,7 +2823,7 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 
 //////////////////////////////////////////////////////////////////////////
 // SYTextPropIndex
- void SYTextPropIndex_Init(LPSYTextPropIndex pPropIdx)
+ void SYTextPropIndex_Init(LPCommonTextPropIndex pPropIdx)
 {
 	pPropIdx->pFont = NULL;
 	pPropIdx->p2DColor = NULL;
@@ -2832,11 +2832,11 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 	pPropIdx->pUnderLine = NULL;
 }
 
- void SYTextPropIndex_Release(LPSYTextPropIndex pPropIdx)
+ void SYTextPropIndex_Release(LPCommonTextPropIndex pPropIdx)
 {
 }
 
- void SYTextPropIndex_Copy(LPSYTextPropIndex pDes, LPCBaseTextPropIndex pSrc)
+ void SYTextPropIndex_Copy(LPCommonTextPropIndex pDes, LPCBaseTextPropIndex pSrc)
 {
 	pDes->pFont = pSrc->pFont;
 	pDes->p2DColor = pSrc->p2DColor;
@@ -2898,14 +2898,14 @@ void SYFont_Copy(LPSYFont pDes, LPCBaseFont pSrc)
 		int nPointCnt = BaseAR_GetCount(parPoint[ptIndex]);
 		for (int i = 0; i < nPointCnt; ++i)
 		{
-			LPSYMaskHandle pHP = (LPSYMaskHandle)BaseAR_GetAt(parPoint[ptIndex], i);
+			LPCommonMaskHandle pHP = (LPCommonMaskHandle)BaseAR_GetAt(parPoint[ptIndex], i);
 			delete pHP;
 		}
 		BaseAR_RemoveAll(parPoint[ptIndex]);
 
 		point2f ptCtrl;
 		point2f ptCtrl_L, ptCtrl_R;
-		LPSYMaskHandle pHandle;
+		LPCommonMaskHandle pHandle;
 		switch (ePath)
 		{
 		case SYPATH_ARC:
@@ -3131,7 +3131,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 	int nPointCnt = BaseAR_GetCount(parPoint);
 	for (int i = 0; i < nPointCnt; ++i)
 	{
-		LPSYMaskHandle pHP = (LPSYMaskHandle)BaseAR_GetAt(parPoint, i);
+		LPCommonMaskHandle pHP = (LPCommonMaskHandle)BaseAR_GetAt(parPoint, i);
 		SAFE_DELETE(pHP);
 	}
 	BaseAR_RemoveAll(parPoint);
@@ -3140,7 +3140,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 	for (int i=0; i<nCurvePtCnt; i++)
 	{
 		curCtrl* pCtrl = pCurveAry->GetAt(i);
-		LPSYMaskHandle pHandle = new CBaseMaskHandle(pCtrl->basePt);
+		LPCommonMaskHandle pHandle = new CBaseMaskHandle(pCtrl->basePt);
 		pHandle->m_HelpPt[0] = pCtrl->LeftPt;
 		pHandle->m_HelpPt[1] = pCtrl->RightPt;
 		pHandle->m_Pt.y = -pHandle->m_Pt.y;
@@ -3162,7 +3162,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 		int nPointCnt = BaseAR_GetCount(parPoint[ptIndex]);
 		for (int i = 0; i < nPointCnt; ++i)
 		{
-			LPSYMaskHandle pHP = (LPSYMaskHandle)BaseAR_GetAt(parPoint[ptIndex], i);
+			LPCommonMaskHandle pHP = (LPCommonMaskHandle)BaseAR_GetAt(parPoint[ptIndex], i);
 			delete pHP;
 		}
 		BaseAR_RemoveAll(parPoint[ptIndex]);
@@ -3191,8 +3191,8 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 		int nHandleCnt = BaseAR_GetCount(parPointSrc[ptIndex] );
 		for (int i = 0; i < nHandleCnt; ++i)
 		{
-			LPSYMaskHandle pSrcHandle = (LPSYMaskHandle)BaseAR_GetAt(parPointSrc[ptIndex], i);
-			LPSYMaskHandle pDesHandle = new CBaseMaskHandle(*pSrcHandle);
+			LPCommonMaskHandle pSrcHandle = (LPCommonMaskHandle)BaseAR_GetAt(parPointSrc[ptIndex], i);
+			LPCommonMaskHandle pDesHandle = new CBaseMaskHandle(*pSrcHandle);
 			BaseAR_Add(parPointDes[ptIndex], pDesHandle);
 		}
 	}
@@ -3227,8 +3227,8 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 			return FALSE;
 		for (int i = 0; i < nHandleCnt1; ++i)
 		{
-			LPSYMaskHandle pSrcHandle = (LPSYMaskHandle)BaseAR_GetAt(parPoint1[ptIndex], i);
-			LPSYMaskHandle pDesHandle = (LPSYMaskHandle)BaseAR_GetAt(parPoint2[ptIndex], i);
+			LPCommonMaskHandle pSrcHandle = (LPCommonMaskHandle)BaseAR_GetAt(parPoint1[ptIndex], i);
+			LPCommonMaskHandle pDesHandle = (LPCommonMaskHandle)BaseAR_GetAt(parPoint2[ptIndex], i);
 			if (*pSrcHandle != *pDesHandle)
 			{
 				return FALSE;
@@ -3247,7 +3247,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 	int nCount = BaseAR_GetCount(&artGlyphSpace);
 	for(int i = 0; i < nCount; ++i)
 	{
-		LPSYGlyphSpace pSpace = (LPSYGlyphSpace)BaseAR_GetAt(&artGlyphSpace, i);
+		LPCommonGlyphSpace pSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&artGlyphSpace, i);
 		delete pSpace;
 	}
 	BaseAR_RemoveAll(&artGlyphSpace);
@@ -3326,7 +3326,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 
 //创建颜色字体Buffer
  BOOL SYCreateTextBuffer(LPDWORD pdwBuffer, int* pnWidth, int* pnHeight, 
-									LPCTSTR szText, LPSYFont pFont, LPSYStaticEffect pColor, 
+									LPCTSTR szText, LPCommonFont pFont, LPCommonStaticEffect pColor, 
 									double dScale)
 {
 	assert(szText && pFont && pColor);
@@ -3424,13 +3424,13 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 
 
 //////////////////////////////////////////////////////////////////////////
-void SYText_InitParagraphArray(LPSYText pText, E_TextAlignHorizontal eAlignHorizontal)
+void SYText_InitParagraphArray(LPCommonText pText, E_TextAlignHorizontal eAlignHorizontal)
 {
 	assert(pText && pText->szText);
 	std::vector<int> vParaIndex;
 	SYText_SplitStringToParagraphArray(vParaIndex, pText->szText);
 
-	LPSYTextParagraph pParagraph = NULL;
+	LPCommonTextParagraph pParagraph = NULL;
 	int nParaCnt = (int)vParaIndex.size();
 	for (int i = 0; i < nParaCnt; ++i)
 	{
@@ -3451,7 +3451,7 @@ void SYText_InitParagraphArray(LPSYText pText, E_TextAlignHorizontal eAlignHoriz
 	}
 }
 
-void SYText_InitParagraph(LPSYTextParagraph pParagraph)
+void SYText_InitParagraph(LPCommonTextParagraph pParagraph)
 {
 	assert(pParagraph);
 	pParagraph->dwVersion = 1;
@@ -3469,7 +3469,7 @@ void SYText_InitParagraph(LPSYTextParagraph pParagraph)
 	pParagraph->lpParam = NULL;
 }
 
-void SYText_ReleaseParagraph(LPSYTextParagraph pParagraph)
+void SYText_ReleaseParagraph(LPCommonTextParagraph pParagraph)
 {
 	assert(pParagraph);
 	if (pParagraph->lpSymbol)
@@ -3480,7 +3480,7 @@ void SYText_ReleaseParagraph(LPSYTextParagraph pParagraph)
 	}
 }
 
-int SYText_SaveParagraph(LPSYTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
+int SYText_SaveParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
 {
 	assert(pParagraph);
 
@@ -3554,7 +3554,7 @@ int SYText_SaveParagraph(LPSYTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
 	return nBufferSize;
 }
 
-int SYText_LoadParagraph(LPSYTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
+int SYText_LoadParagraph(LPCommonTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
 {
 	assert(pParagraph && pBuffer);
 
@@ -3605,7 +3605,7 @@ int SYText_LoadParagraph(LPSYTextParagraph pParagraph, LPBYTE pBuffer, int nLen)
 	return nBufferSize;
 }
 
-void SYText_CopyParagraph(LPSYTextParagraph pDes, LPSYTextParagraph pSrc)
+void SYText_CopyParagraph(LPCommonTextParagraph pDes, LPCommonTextParagraph pSrc)
 {
 	if (pDes->lpSymbol != NULL)
 	{
@@ -3619,7 +3619,7 @@ void SYText_CopyParagraph(LPSYTextParagraph pDes, LPSYTextParagraph pSrc)
 	SYText_CopySymbol(pDes->lpSymbol, pSrc->lpSymbol);
 }
 
-BOOL SYText_CompareParagraph(LPSYTextParagraph pParagraph1, LPSYTextParagraph pParagraph2)
+BOOL SYText_CompareParagraph(LPCommonTextParagraph pParagraph1, LPCommonTextParagraph pParagraph2)
 {
 	if (pParagraph1->dwVersion != pParagraph2->dwVersion
 		|| pParagraph1->nBeginIndex != pParagraph2->nBeginIndex
@@ -3633,7 +3633,7 @@ BOOL SYText_CompareParagraph(LPSYTextParagraph pParagraph1, LPSYTextParagraph pP
 	return TRUE;
 }
 
-void SYText_InitSymbol(LPSYTextSymbol pSymbol)
+void SYText_InitSymbol(LPCommonTextSymbol pSymbol)
 {
 	assert(pSymbol);
 	pSymbol->dwVersion = 1;
@@ -3648,13 +3648,13 @@ void SYText_InitSymbol(LPSYTextSymbol pSymbol)
 	pSymbol->lpParam = NULL;
 }
 
-void SYText_ReleaseSymbol(LPSYTextSymbol pSymbol)
+void SYText_ReleaseSymbol(LPCommonTextSymbol pSymbol)
 {
 	assert(pSymbol);
 	SYStaticEffect_Release(&pSymbol->seFillColor);
 }
 
-int SYText_SaveSymbol(LPSYTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
+int SYText_SaveSymbol(LPCommonTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
 {
 	assert(pSymbol);
 
@@ -3692,7 +3692,7 @@ int SYText_SaveSymbol(LPSYTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
 	return nBufferSize;
 }
 
-int SYText_LoadSymbol(LPSYTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
+int SYText_LoadSymbol(LPCommonTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
 {
 	assert(pSymbol && pBuffer);
 
@@ -3777,7 +3777,7 @@ int SYText_LoadSymbol(LPSYTextSymbol pSymbol, LPBYTE pBuffer, int nLen)
 	return nBufferSize;
 }
 
-void SYText_CopySymbol(LPSYTextSymbol pDes, LPSYTextSymbol pSrc)
+void SYText_CopySymbol(LPCommonTextSymbol pDes, LPCommonTextSymbol pSrc)
 {
 	pDes->dwVersion = pSrc->dwVersion;
 	SYStaticEffect_Copy(&pDes->seFillColor, &pSrc->seFillColor);
@@ -3813,7 +3813,7 @@ void TypesetInterface_OnAddUnit(BOOL bKeepBalance, LPVOID pInterfaceParam)
 		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
 		pTitleCalc->Lock();
 
-		LPSYText pText = pTitleCalc->GetText();
+		LPCommonText pText = pTitleCalc->GetText();
 		SYItemRenderUnit* pRenderUnit = CreateRenderUnit(FALSE);
 		BaseAR_Add(pTitleCalc->Get2DTextUnitArray(), pRenderUnit);
 
@@ -3850,7 +3850,7 @@ void TypesetInterface_OnInsertUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 
 		int i;
 		int nPreIndex = nIndex - 1;
-		LPSYText pText = pTitleCalc->GetText();
+		LPCommonText pText = pTitleCalc->GetText();
 		BOOL bStretch = pText->pStretch != NULL && pText->pStretch->bEnable && pText->pStretch->fThick > ABS_FLOAT_0;
 
 #if 0
@@ -3974,7 +3974,7 @@ void TypesetInterface_OnDeleteUnit(int nIndex, int nCount, BOOL bKeepBalance, LP
 		}
 #endif
 
-		LPSYText pText = pTitleCalc->GetText();
+		LPCommonText pText = pTitleCalc->GetText();
 		BaseARray* paryRenderUnit = pTitleCalc->Get2DTextUnitArray();
 		for (int i = 0; i < nCount; i++)
 		{
@@ -4036,7 +4036,7 @@ void TypesetInterface_OnDeleteAllUnit(LPVOID pInterfaceParam)
 		}
 #endif
 
-		LPSYText pText = pTitleCalc->GetText();
+		LPCommonText pText = pTitleCalc->GetText();
 		BaseARray* paryRenderUnit = pTitleCalc->Get2DTextUnitArray();
 		int nRenderUnitCount = BaseAR_GetCount(paryRenderUnit);
 		for (i = 0; i < nRenderUnitCount; i++)
@@ -4076,7 +4076,7 @@ void TypesetInterface_OnRefreshUnit(int nIndex, int nCount, LPVOID pInterfacePar
 		pTitleCalc->Lock();
 
 		int nEndIdx = nIndex + nCount;
-		LPSYText pText = pTitleCalc->GetText();
+		LPCommonText pText = pTitleCalc->GetText();
 		BaseARray* paryRenderUnit = pTitleCalc->Get2DTextUnitArray();
 		for (int i = nIndex; i < nEndIdx; ++i)
 		{
@@ -4120,7 +4120,7 @@ void TypesetInterface_OnRefreshAllUnit(LPVOID pInterfaceParam, int nLevel)
 		CalculatorTitleword* pTitleCalc = (CalculatorTitleword*)pInterfaceParam;
 		pTitleCalc->Lock();
 
-		LPSYText pText = pTitleCalc->GetText();
+		LPCommonText pText = pTitleCalc->GetText();
 		BaseARray* paryRenderUnit = pTitleCalc->Get2DTextUnitArray();
 		int nRenderUnitCount = BaseAR_GetCount(paryRenderUnit);
 

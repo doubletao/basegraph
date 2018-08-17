@@ -122,7 +122,7 @@ struct CBaseMaskHandle
 		m_fHelpZ[1] = 0;
 	}
 };
-typedef CBaseMaskHandle*   LPSYMaskHandle;
+typedef CBaseMaskHandle*   LPCommonMaskHandle;
 typedef CBaseARray<CBaseMaskHandle, CBaseMaskHandle>  CBaseMaskHandleArray;
 
 

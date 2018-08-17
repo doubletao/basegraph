@@ -8,18 +8,18 @@ typedef struct tag_matrixf4x4 matrix4f;
 typedef struct tag_long2{		// 整型
 	long	x;
 	long	y;
-}long2,point2,vector2,SYPoint, *LPSYPOINTL;
+}long2,point2,vector2,SYPoint, *LPCommonPOINTL;
 
 typedef struct tag_float2{		// 浮点型
 	float	x;
 	float	y;
-}float2,pointf,point2f,vector2f,SYPoint2f, *LPSYPOINTF;
+}float2,pointf,point2f,vector2f,SYPoint2f, *LPCommonPOINTF;
 
 
 typedef struct tag_double2{		// 双精度型
 	double	x;
 	double	y;
-}double2,point2lf,vector2lf,SYPoint2lf, *LPSYPOINTD;
+}double2,point2lf,vector2lf,SYPoint2lf, *LPCommonPOINTD;
 
 
 ///////////////////////////////////////////////////////////////////////////////

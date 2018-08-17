@@ -52,7 +52,7 @@ typedef struct tag_syvertex3d		// 3d vertex declaration
 
 	vector3f tangent;
 	vector3f binormal;
-} syvertex3d, SYVertex3D, *LPSYVERTEX3D;
+} syvertex3d, SYVertex3D, *LPCommonVERTEX3D;
 //triangle type
 enum SYTriType
 {
@@ -70,7 +70,7 @@ typedef struct tag_sysubmodel		// sub model definition
 	SYTriType 	nTri_Type;
 	int     	nTri_Num;
 	void*   	pMaterial;
-} SYSubModel, *LPSYSUBMODEL;
+} SYSubModel, *LPCommonSUBMODEL;
 struct SYModelInstance
 {
 	matrix4f	matInstance;
@@ -103,7 +103,7 @@ typedef struct tag_sylogic_cube
 typedef struct tag_symodel
 {
 	int				vcount;		// vertex
-	LPSYVERTEX3D	v;          // 点坐标 法向量
+	LPCommonVERTEX3D	v;          // 点坐标 法向量
 	int			    icount;		// triangle surfaces indexes
 	DWORD*		    indecs;
 
@@ -122,7 +122,7 @@ typedef struct tag_symodel
 	WORD*		    pwBoneIndex;
 
 	int				nviewsub;
-	LPSYSUBMODEL	viewsub;
+	LPCommonSUBMODEL	viewsub;
 
 
 	//多实例渲染
@@ -146,7 +146,7 @@ typedef struct tag_symodel
 	sylogic_cube*	logiccube;
 	tag_symodel() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-} SYModel, *LPSYMODEL;
+} SYModel, *LPCommonMODEL;
 
 //二维形体
 typedef struct tag_sy2dunit
@@ -203,7 +203,7 @@ typedef struct tag_sybonedef
 	matrix4f		pboneoffVMatrix;//boneMatrix
 	tag_sybonedef() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-} SYBoneDef, *LPSYBONEDEF;
+} SYBoneDef, *LPCommonBONEDEF;
 struct SYRenderStaticEffect
 {
 	matrix4f DynamicMat;
@@ -223,7 +223,7 @@ struct SYRender2DUnit
 };
 typedef struct tag_syrender3dunit
 {
-	LPSYVERTEX3D	pVertex;
+	LPCommonVERTEX3D	pVertex;
 	int				nVertexCount;
 	DWORD*		    pIndex;
 	int				nIndexCount;
@@ -243,7 +243,7 @@ typedef struct tag_syrender3dunit
 	vector3f		vUnitMaxVertex;
 	RECT			unitBound;
 	matrix4f		Mat_RenderV;//从unit到最顶层的矩阵
-} SYRender3DUnit, *LPSYRENDER3DUNIT;
+} SYRender3DUnit, *LPCommonRENDER3DUNIT;
 struct SYItemRenderUnit
 {
 	SYUnit*	m_pUnit;

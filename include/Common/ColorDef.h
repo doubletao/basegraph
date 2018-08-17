@@ -312,7 +312,7 @@ typedef   struct tag_sycolor : public BaseGraph_Common::ValueAbleInterface
 	BASEGRAPH_COMMON_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 }sycolor;
 
-typedef sycolor SYColor, *LPSYCOLOR;
+typedef sycolor SYColor, *LPCommonCOLOR;
 
 // SYRGBA 联合定义
 union SYRGBA

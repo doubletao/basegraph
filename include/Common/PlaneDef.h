@@ -42,15 +42,15 @@
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYPoint_SetPoint(LPSYPOINTL pP,			// µ„÷∏’Î
+void __cdecl SYPoint_SetPoint(LPCommonPOINTL pP,			// µ„÷∏’Î
 							   LONG x,					// x÷µ
 							   LONG y);					// y÷µ
 
-void __cdecl SYPoint2f_SetPoint(LPSYPOINTF pP,			// µ„÷∏’Î
+void __cdecl SYPoint2f_SetPoint(LPCommonPOINTF pP,			// µ„÷∏’Î
 							   float x,					// x÷µ
 							   float y);				// y÷µ
 
-void __cdecl SYPoint2lf_SetPoint(LPSYPOINTD pP,			// µ„÷∏’Î
+void __cdecl SYPoint2lf_SetPoint(LPCommonPOINTD pP,			// µ„÷∏’Î
 							   double x,				// x÷µ
 							   double y);				// y÷µ
 
@@ -59,15 +59,15 @@ void __cdecl SYPoint2lf_SetPoint(LPSYPOINTD pP,			// µ„÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYPoint_Offset(LPSYPOINTL pP,			// µ„÷∏’Î
+void __cdecl SYPoint_Offset(LPCommonPOINTL pP,			// µ„÷∏’Î
 							 LONG xOffset,			// x∆´“∆¡ø
 							 LONG yOffset);			// y∆´“∆¡ø
 
-void __cdecl SYPoint2f_Offset(LPSYPOINTF pP,			// µ„÷∏’Î
+void __cdecl SYPoint2f_Offset(LPCommonPOINTF pP,			// µ„÷∏’Î
 							 float xOffset,			// x∆´“∆¡ø
 							 float yOffset);		// y∆´“∆¡ø
 
-void __cdecl SYPoint2lf_Offset(LPSYPOINTD pP,			// µ„÷∏’Î
+void __cdecl SYPoint2lf_Offset(LPCommonPOINTD pP,			// µ„÷∏’Î
 							 double xOffset,		// x∆´“∆¡ø
 							 double yOffset);		// y∆´“∆¡ø
 
@@ -82,32 +82,32 @@ void __cdecl SYPoint2lf_Offset(LPSYPOINTD pP,			// µ„÷∏’Î
 typedef struct tag_SYSizeL{		// ’˚–Õ
 	LONG	cx;
 	LONG	cy;
-}SYSizeL, *LPSYSIZE;
+}SYSizeL, *LPCommonSIZE;
 
 typedef struct tag_SYSizef{		// ∏°µ„–Õ
 	float	cx;
 	float	cy;
-}SYSizef, *LPSYSIZEF;
+}SYSizef, *LPCommonSIZEF;
 
 typedef struct tag_SYSizelf{		// À´æ´∂»–Õ
 	double	cx;
 	double	cy;
-}SYSizelf, *LPSYSIZELF;
+}SYSizelf, *LPCommonSIZELF;
 
 ///////////////////////////////////////////////////////////////////////////////
 // √Ë ˆ£∫	…Ë÷√size÷µ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYSize_SetSize(LPSYSIZE pS,			// size÷∏’Î
+void __cdecl SYSize_SetSize(LPCommonSIZE pS,			// size÷∏’Î
 							 LONG cx,				// cx÷µ
 							 LONG cy);				// cy÷µ
 
-void __cdecl SYSizef_SetSize(LPSYSIZEF pS,			// size÷∏’Î
+void __cdecl SYSizef_SetSize(LPCommonSIZEF pS,			// size÷∏’Î
 							 float cx,					// cx÷µ
 							 float cy);				// cy÷µ
 
-void __cdecl SYSizelf_SetSize(LPSYSIZELF pS,			// size÷∏’Î
+void __cdecl SYSizelf_SetSize(LPCommonSIZELF pS,			// size÷∏’Î
 							 double cx,				// cx÷µ
 							 double cy);			// cy÷µ
 
@@ -322,7 +322,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_OffsetRect3(LPBaseRect pR,			// æÿ–Œ÷
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRect_Size(LPSYSIZE pDesSz,			// ƒø±ÍSize
+BASEGRAPH_COMMON_API void __cdecl BaseRect_Size(LPCommonSIZE pDesSz,			// ƒø±ÍSize
 						  LPBaseRect pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -330,7 +330,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_Size(LPSYSIZE pDesSz,			// ƒø±ÍSize
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRect_TopLeft(LPSYPOINTL pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRect_TopLeft(LPCommonPOINTL pDesP,			// ƒø±Íµ„
 							 LPBaseRect pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -338,7 +338,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_TopLeft(LPSYPOINTL pDesP,			// ƒø±Íµ„
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRect_BottomRight(LPSYPOINTL pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRect_BottomRight(LPCommonPOINTL pDesP,			// ƒø±Íµ„
 								 LPBaseRect pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -346,7 +346,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRect_BottomRight(LPSYPOINTL pDesP,			// ƒø
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRect_CenterPoint(LPSYPOINTL pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRect_CenterPoint(LPCommonPOINTL pDesP,			// ƒø±Íµ„
 								 LPBaseRect pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -541,7 +541,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_OffsetRect3(rectf* pR,			// æÿ–Œ÷∏’Î
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRectf_Size(LPSYSIZEF pDesSz,			// ƒø±ÍSize
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_Size(LPCommonSIZEF pDesSz,			// ƒø±ÍSize
 						  rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -549,7 +549,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_Size(LPSYSIZEF pDesSz,			// ƒø±ÍSize
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRectf_TopLeft(LPSYPOINTF pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_TopLeft(LPCommonPOINTF pDesP,			// ƒø±Íµ„
 							 rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -557,7 +557,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_TopLeft(LPSYPOINTF pDesP,			// ƒø±Íµ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRectf_BottomRight(LPSYPOINTF pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_BottomRight(LPCommonPOINTF pDesP,			// ƒø±Íµ„
 								 rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -565,7 +565,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectf_BottomRight(LPSYPOINTF pDesP,			// ƒ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRectf_CenterPoint(LPSYPOINTF pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectf_CenterPoint(LPCommonPOINTF pDesP,			// ƒø±Íµ„
 								 rectf* pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -765,7 +765,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_OffsetRect3(LPBaseRectLF pR,			// æ
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRectlf_Size(LPSYSIZELF pDesSz,			// ƒø±ÍSize
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_Size(LPCommonSIZELF pDesSz,			// ƒø±ÍSize
 						  LPBaseRectLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -773,7 +773,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_Size(LPSYSIZELF pDesSz,			// ƒø±ÍSi
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRectlf_TopLeft(LPSYPOINTD pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_TopLeft(LPCommonPOINTD pDesP,			// ƒø±Íµ„
 							 LPBaseRectLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -781,7 +781,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_TopLeft(LPSYPOINTD pDesP,			// ƒø±Í
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRectlf_BottomRight(LPSYPOINTD pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_BottomRight(LPCommonPOINTD pDesP,			// ƒø±Íµ„
 								 LPBaseRectLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -789,7 +789,7 @@ BASEGRAPH_COMMON_API void __cdecl BaseRectlf_BottomRight(LPSYPOINTD pDesP,			// 
 //
 // ∑µªÿ÷µ:	Œﬁ
 ///////////////////////////////////////////////////////////////////////////////
-BASEGRAPH_COMMON_API void __cdecl BaseRectlf_CenterPoint(LPSYPOINTD pDesP,			// ƒø±Íµ„
+BASEGRAPH_COMMON_API void __cdecl BaseRectlf_CenterPoint(LPCommonPOINTD pDesP,			// ƒø±Íµ„
 								 LPBaseRectLF pSrcR);			// ‘¥æÿ–Œ÷∏’Î
 
 ///////////////////////////////////////////////////////////////////////////////

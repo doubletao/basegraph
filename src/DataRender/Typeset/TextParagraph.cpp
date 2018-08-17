@@ -39,18 +39,18 @@ CBaseTextLine::~CBaseTextLine()
 	nCnt = BaseAR_GetCount(&m_arULInfo);
 	for (int i = 0; i < nCnt; ++i)
 	{
-		LPSYUnderLineInfo pULInfo = (LPSYUnderLineInfo)BaseAR_GetAt(&m_arULInfo, i);
+		LPCommonUnderLineInfo pULInfo = (LPCommonUnderLineInfo)BaseAR_GetAt(&m_arULInfo, i);
 		delete pULInfo;
 	}
 	BaseAR_RemoveAll(&m_arULInfo);
 }
 
-LPSYText CBaseTextLine::GetTextObj()
+LPCommonText CBaseTextLine::GetTextObj()
 {
 	return m_pTextParagraph->GetTextObj();
 }
 
-LPSYTextParagraph CBaseTextLine::GetParagraphObj()
+LPCommonTextParagraph CBaseTextLine::GetParagraphObj()
 {
 	return m_pTextParagraph->GetParagraphObj();
 }
@@ -85,8 +85,8 @@ void CBaseTextLine::SetLineDistance(float fDistance)
 	m_fLineDistance = fDistance;
 }
 
-LPSYGlyphSpace CBaseTextLine::AddWordHorizontal(LPSYWordInfo pWordInfo, 
-											  LPSYWordInfo pLastWordInfo, 
+LPCommonGlyphSpace CBaseTextLine::AddWordHorizontal(LPCommonWordInfo pWordInfo, 
+											  LPCommonWordInfo pLastWordInfo, 
 											  point2f* pvGraphScale, 
 											  BOOL bAutoWrap)
 {
@@ -136,7 +136,7 @@ LPSYGlyphSpace CBaseTextLine::AddWordHorizontal(LPSYWordInfo pWordInfo,
 		fIncrement = 0;
 	}
 
-	LPSYGlyphSpace pSpaceInfo;
+	LPCommonGlyphSpace pSpaceInfo;
 	//当前实际行宽
 	float fLineRealW = m_RealSize.cx;
 	//试算的新行宽（试算值可能不合理，所有不一定使用。）
@@ -221,8 +221,8 @@ void CBaseTextLine::ResetHorizontal()
 	}
 }
 
-LPSYGlyphSpace CBaseTextLine::AddWordVertical(LPSYWordInfo pWordInfo, 
-											LPSYWordInfo pLastWordInfo, 
+LPCommonGlyphSpace CBaseTextLine::AddWordVertical(LPCommonWordInfo pWordInfo, 
+											LPCommonWordInfo pLastWordInfo, 
 											point2f* pvGraphScale, 
 											BOOL bAutoWrap)
 {
@@ -266,7 +266,7 @@ LPSYGlyphSpace CBaseTextLine::AddWordVertical(LPSYWordInfo pWordInfo,
 		fIncrement = 0;
 	}
 
-	LPSYGlyphSpace pSpaceInfo;
+	LPCommonGlyphSpace pSpaceInfo;
 	float fLineRealW = m_RealSize.cy;
 	float fLineNewW = fLineRealW + fIncrement;
 	float fTemp;
@@ -352,10 +352,10 @@ void CBaseTextLine::ResetVertical()
 	}
 }
 
-LPSYGlyphSpace CBaseTextLine::AddNullWord(LPSYWordInfo pWordInfo)
+LPCommonGlyphSpace CBaseTextLine::AddNullWord(LPCommonWordInfo pWordInfo)
 {
 	//添加“空字”，只是记录字的参数信息。
-	LPSYGlyphSpace pSpaceInfo = new SYGlyphSpace;
+	LPCommonGlyphSpace pSpaceInfo = new SYGlyphSpace;
 	memset(pSpaceInfo, 0, sizeof(SYGlyphSpace));
 	BaseAR_Add(&m_arGlyphSpace, pSpaceInfo);
 	float fTempAD;
@@ -379,7 +379,7 @@ LPSYGlyphSpace CBaseTextLine::AddNullWord(LPSYWordInfo pWordInfo)
 void CBaseTextLine::ScaleNullLineGraph(float fGraphScaleX, float fGraphScaleY)
 {
 	//缩放带来的调整
-	LPSYGlyphSpace pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, 0);
+	LPCommonGlyphSpace pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, 0);
 	float fTemp;
 	if (m_pTextParagraph->IsHorizontal())
 	{
@@ -416,7 +416,7 @@ void CBaseTextLine::ZoomUnitAndDistance(float fScaleW, float fScaleH)
 		m_fBaseLineOffset = m_fMaxAscent;
 	}
 
-	LPSYGlyphSpace pSpaceInfo;
+	LPCommonGlyphSpace pSpaceInfo;
 	for (int i = 0; i < m_nWordInfoCount; ++i)
 	{
 		//缩放图形
@@ -424,7 +424,7 @@ void CBaseTextLine::ZoomUnitAndDistance(float fScaleW, float fScaleH)
 		vg_zoom(&(pUnit->u.u2d.graph), fScaleW, fScaleH, 1, 0, 0, 0);
 
 		//位置
-		pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+		pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 		pSpaceInfo->ptPos.x *= fScaleW;
 		pSpaceInfo->ptPos.y *= fScaleH;
 		pSpaceInfo->ptPosOffset.x *= fScaleW;
@@ -437,7 +437,7 @@ void CBaseTextLine::ZoomUnitAndDistance(float fScaleW, float fScaleH)
 	}
 
 	//最后一个
-	pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, m_nWordInfoCount);
+	pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, m_nWordInfoCount);
 	pSpaceInfo->ptPos.x *= fScaleW;
 	pSpaceInfo->ptPos.y *= fScaleH;
 	pSpaceInfo->ptPosOffset.x *= fScaleW;
@@ -459,7 +459,7 @@ void CBaseTextLine::CalWordsAndLinePos()
 	if (nSpaceCnt < 1)
 		return;
 
-	LPSYText pTextObj = GetTextObj();
+	LPCommonText pTextObj = GetTextObj();
 	BOOL bHorizontal = m_pTextParagraph->IsHorizontal();
 	float fGraphScale = bHorizontal ? pTextObj->vGraphScale.x : pTextObj->vGraphScale.y;
 
@@ -483,19 +483,19 @@ void CBaseTextLine::CalWordsAndLinePos()
 	//基线偏移
 	m_fBaseLineOffset = m_fMaxAscent;
 
-	LPSYGlyphSpace pSrcSpaceInfo;
-	LPSYGlyphSpace pDesSpaceInfo;
-	LPSYWordInfo pWordInfo;
+	LPCommonGlyphSpace pSrcSpaceInfo;
+	LPCommonGlyphSpace pDesSpaceInfo;
+	LPCommonWordInfo pWordInfo;
 	if (bHorizontal)
 	{
 		for (int i = 0; i < m_nWordInfoCount; ++i)
 		{
-			pDesSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+			pDesSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 			pDesSpaceInfo->ptPos.y = m_fBaseLineOffset;
 			//扩展位置取下一字形的左侧
 			if (i+1 < nSpaceCnt)
 			{
-				pSrcSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i+1);
+				pSrcSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i+1);
 				pDesSpaceInfo->ptBound[4].x = pSrcSpaceInfo->ptBound[0].x;
 				pDesSpaceInfo->ptBound[5].x = pSrcSpaceInfo->ptBound[3].x;
 			}
@@ -515,7 +515,7 @@ void CBaseTextLine::CalWordsAndLinePos()
 		for (int i = 0; i < m_nWordInfoCount; ++i)
 		{
 			pWordInfo = m_pTextParagraph->GetWordInfo(m_nBeginIndex + i);
-			pDesSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+			pDesSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 			pDesSpaceInfo->ptPos.x = fLineH - m_fBaseLineOffset;
 
 			//非旋转Y方向偏移增量
@@ -527,7 +527,7 @@ void CBaseTextLine::CalWordsAndLinePos()
 			//扩展位置取下一字形的上侧
 			if (i+1 < nSpaceCnt)
 			{
-				pSrcSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i+1);
+				pSrcSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i+1);
 				pDesSpaceInfo->ptBound[4].y = pSrcSpaceInfo->ptBound[1].y;
 				pDesSpaceInfo->ptBound[5].y = pSrcSpaceInfo->ptBound[0].y;
 			}
@@ -544,7 +544,7 @@ void CBaseTextLine::CalWordsAndLinePos()
 	}
 
 	//在尾部追加一个
-	pSrcSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nSpaceCnt-1);
+	pSrcSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nSpaceCnt-1);
 	pDesSpaceInfo = new SYGlyphSpace;
 	memcpy(pDesSpaceInfo, pSrcSpaceInfo, sizeof(SYGlyphSpace));
 	BaseAR_Add(&m_arGlyphSpace, pDesSpaceInfo);
@@ -581,16 +581,16 @@ void CBaseTextLine::EndAlign(point2f* pvGraphScale)
 	float fLastCharABC = 0.f;
 	int nSearchI = -1;
 
-	LPSYGlyphSpace pGlyphSpace;
+	LPCommonGlyphSpace pGlyphSpace;
 	BOOL bHorizontal = m_pTextParagraph->IsHorizontal();
 	if (bHorizontal)
 	{
 		for (int i=m_nWordInfoCount-1; i>=0; --i)
 		{
-			LPSYWordInfo pWordInfo = m_pTextParagraph->GetWordInfo(m_nBeginIndex+i);
+			LPCommonWordInfo pWordInfo = m_pTextParagraph->GetWordInfo(m_nBeginIndex+i);
 			if (pWordInfo->bVisible)
 			{
-				pGlyphSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+				pGlyphSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 				fRealLength = pGlyphSpace->ptPos.x;
 				fLastCharABC = pWordInfo->rtCell.right - pWordInfo->rtCell.left;
 				fLastCharABC *= pvGraphScale->x;
@@ -603,10 +603,10 @@ void CBaseTextLine::EndAlign(point2f* pvGraphScale)
 	{
 		for (int i=m_nWordInfoCount-1; i>=0; --i)
 		{
-			LPSYWordInfo pWordInfo = m_pTextParagraph->GetWordInfo(m_nBeginIndex+i);
+			LPCommonWordInfo pWordInfo = m_pTextParagraph->GetWordInfo(m_nBeginIndex+i);
 			if (pWordInfo->bVisible)
 			{
-				pGlyphSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+				pGlyphSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 				fRealLength = pGlyphSpace->ptPos.y;
 				fLastCharABC = pWordInfo->rtCell.bottom - pWordInfo->rtCell.top;
 				fLastCharABC *= pvGraphScale->y;
@@ -627,7 +627,7 @@ void CBaseTextLine::EndAlign(point2f* pvGraphScale)
 	{
 		for (int i = 0; i <= nSearchI; i++)
 		{
-			pGlyphSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+			pGlyphSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 			fPosOffset = pGlyphSpace->ptPos.x;
 			pGlyphSpace->ptPos.x *= fScale;
 			fPosOffset = pGlyphSpace->ptPos.x - fPosOffset;
@@ -637,10 +637,10 @@ void CBaseTextLine::EndAlign(point2f* pvGraphScale)
 			}
 		}
 		//尾部的不可见字符没有比例关系
-		LPSYGlyphSpace pSearchGS = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nSearchI);
+		LPCommonGlyphSpace pSearchGS = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nSearchI);
 		for (int i = nSearchI+1; i <= m_nWordInfoCount; i++)
 		{
-			pGlyphSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+			pGlyphSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 			pGlyphSpace->ptPos.x = pSearchGS->ptPos.x + fLastCharABC;
 			pGlyphSpace->ptBound[0].x = pSearchGS->ptBound[1].x;
 			pGlyphSpace->ptBound[3].x = pSearchGS->ptBound[2].x;
@@ -651,14 +651,14 @@ void CBaseTextLine::EndAlign(point2f* pvGraphScale)
 		}
 
 		//修正行实际尺寸
-		pSearchGS = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, m_nWordInfoCount);
+		pSearchGS = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, m_nWordInfoCount);
 		m_RealSize.cx = pSearchGS->ptPos.x;
 	}
 	else
 	{
 		for (int i = 0; i <= nSearchI; i++)
 		{
-			pGlyphSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+			pGlyphSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 			fPosOffset = pGlyphSpace->ptPos.y;
 			pGlyphSpace->ptPos.y *= fScale;
 			fPosOffset = pGlyphSpace->ptPos.y - fPosOffset;
@@ -668,10 +668,10 @@ void CBaseTextLine::EndAlign(point2f* pvGraphScale)
 			}
 		}
 
-		LPSYGlyphSpace pSearchGS = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nSearchI);
+		LPCommonGlyphSpace pSearchGS = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nSearchI);
 		for (int i = nSearchI+1; i <= m_nWordInfoCount; i++)
 		{
-			pGlyphSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+			pGlyphSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 			pGlyphSpace->ptPos.y = pSearchGS->ptPos.y + fLastCharABC;
 			pGlyphSpace->ptBound[0].y = pSearchGS->ptBound[3].y;
 			pGlyphSpace->ptBound[1].y = pSearchGS->ptBound[2].y;
@@ -681,7 +681,7 @@ void CBaseTextLine::EndAlign(point2f* pvGraphScale)
 			pGlyphSpace->ptBound[4].y = pGlyphSpace->ptBound[2].y;
 		}
 
-		pSearchGS = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, m_nWordInfoCount);
+		pSearchGS = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, m_nWordInfoCount);
 		m_RealSize.cy = pSearchGS->ptPos.y;
 	}
 }
@@ -691,7 +691,7 @@ BOOL CBaseTextLine::IsHitTextByPoint(point2f& pt, BOOL bCaptureMouse, BOOL b2DTe
 	rectf rtLine;
 	float fLength;
 
-	LPSYText pTextObj = m_pTextParagraph->GetTextObj();
+	LPCommonText pTextObj = m_pTextParagraph->GetTextObj();
 	BOOL bOtherCor;		//另一个坐标是否已经满足条件
 	if (pTextObj->bHorizontal)
 	{
@@ -752,7 +752,7 @@ BOOL CBaseTextLine::IsHitTextByPoint(point2f& pt, BOOL bCaptureMouse, BOOL b2DTe
 
 BOOL CBaseTextLine::IsReturnLine()
 {
-	LPSYTextParagraph pParagObj = (LPSYTextParagraph)BaseAR_GetAt(&m_pTextParagraph->GetTextObj()->arParagraph, m_pTextParagraph->GetParagraphIndex());
+	LPCommonTextParagraph pParagObj = (LPCommonTextParagraph)BaseAR_GetAt(&m_pTextParagraph->GetTextObj()->arParagraph, m_pTextParagraph->GetParagraphIndex());
 	int startPos = pParagObj->nBeginIndex + m_nBeginIndex;
 	CString strText = m_pTextParagraph->GetTextObj()->szText;
 	strText = strText.Mid(startPos, m_nWordInfoCount);
@@ -775,7 +775,7 @@ int CBaseTextLine::GetWordInfoPosFromPoint(BOOL& bIsLineEndPos,
 	int nHitI = -1;
 	float fLength;
 
-	LPSYText pTextObj = m_pTextParagraph->GetTextObj();
+	LPCommonText pTextObj = m_pTextParagraph->GetTextObj();
 	BOOL b2DTest = wTestLogic & 0x0002;
 	BOOL bCheckLength = wTestLogic & 0x0004;
 	BOOL bOtherCor;		//另一个坐标是否已经满足条件
@@ -809,12 +809,12 @@ int CBaseTextLine::GetWordInfoPosFromPoint(BOOL& bIsLineEndPos,
 
 			for (int i = 0; i <= m_nWordInfoCount; i++)
 			{
-				LPSYGlyphSpace pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+				LPCommonGlyphSpace pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 				float fWordOffset = pSpaceInfo->ptBound[0].x;
 				fCenter = m_ptLineOffset.x + fWordOffset;
 				if (i > 0)
 				{
-					pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i-1);
+					pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i-1);
 					fLeft = fCenter - (fWordOffset - pSpaceInfo->ptBound[0].x) / 2;
 				}
 				else
@@ -824,7 +824,7 @@ int CBaseTextLine::GetWordInfoPosFromPoint(BOOL& bIsLineEndPos,
 
 				if (i < m_nWordInfoCount)
 				{
-					pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i+1);
+					pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i+1);
 					fRight = fCenter + (pSpaceInfo->ptBound[0].x - fWordOffset) / 2;
 				}
 				else
@@ -901,12 +901,12 @@ int CBaseTextLine::GetWordInfoPosFromPoint(BOOL& bIsLineEndPos,
 			//左打排版
 			for (int i = 0; i <= m_nWordInfoCount; i++)
 			{
-				LPSYGlyphSpace pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+				LPCommonGlyphSpace pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 				float fWordOffset = pSpaceInfo->ptBound[0].y;
 				fCenter = m_ptLineOffset.y + fWordOffset;
 				if (i > 0)
 				{
-					pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i-1);
+					pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i-1);
 					fTop = fCenter - (fWordOffset - pSpaceInfo->ptBound[0].y) / 2;
 				}
 				else
@@ -914,7 +914,7 @@ int CBaseTextLine::GetWordInfoPosFromPoint(BOOL& bIsLineEndPos,
 
 				if (i < m_nWordInfoCount)
 				{
-					pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i+1);
+					pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i+1);
 					fBottom = fCenter + (pSpaceInfo->ptBound[0].y - fWordOffset) / 2;
 				}
 				else
@@ -976,20 +976,20 @@ int CBaseTextLine::GetWordInfoPosFromPointEx(BOOL& bIsLineEndPos,
 	// (3)--(2)
 
 	BOOL b2DTest = wTestLogic & 0x0002;
-	LPSYGlyphSpace pCurSpace;
-	LPSYGlyphSpace pPreSpace;
+	LPCommonGlyphSpace pCurSpace;
+	LPCommonGlyphSpace pPreSpace;
 	ptTest.x -= m_ptLineOffset.x;
 	ptTest.y -= m_ptLineOffset.y;
 
-	LPSYText pTextObj = m_pTextParagraph->GetTextObj();
+	LPCommonText pTextObj = m_pTextParagraph->GetTextObj();
 	if (pTextObj->bHorizontal)
 	{
 		for (int i = 0; i <= m_nWordInfoCount; ++i)
 		{
-			pCurSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+			pCurSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 			if (i > 0)
 			{
-				pPreSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i-1);
+				pPreSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i-1);
 				ptSpace[0].x = (pPreSpace->ptBound[0].x + pPreSpace->ptBound[1].x) / 2.0f;
 				ptSpace[0].y = (pPreSpace->ptBound[0].y + pPreSpace->ptBound[1].y) / 2.0f;
 				ptSpace[3].x = (pPreSpace->ptBound[2].x + pPreSpace->ptBound[3].x) / 2.0f;
@@ -1043,10 +1043,10 @@ int CBaseTextLine::GetWordInfoPosFromPointEx(BOOL& bIsLineEndPos,
 	{
 		for (int i = 0; i <= m_nWordInfoCount; ++i)
 		{
-			pCurSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+			pCurSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 			if (i > 0)
 			{
-				pPreSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i-1);
+				pPreSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i-1);
 				ptSpace[0].x = (pPreSpace->ptBound[0].x + pPreSpace->ptBound[3].x) / 2.0f;
 				ptSpace[0].y = (pPreSpace->ptBound[0].y + pPreSpace->ptBound[3].y) / 2.0f;
 				ptSpace[1].x = (pPreSpace->ptBound[1].x + pPreSpace->ptBound[2].x) / 2.0f;
@@ -1101,7 +1101,7 @@ int CBaseTextLine::GetWordInfoPosFromPointEx(BOOL& bIsLineEndPos,
 	return nHitI;
 }
 
-BOOL CBaseTextLine::GetCaretInfoByGlyphIndex(LPSYGlyphSpace pCaretInfo, 
+BOOL CBaseTextLine::GetCaretInfoByGlyphIndex(LPCommonGlyphSpace pCaretInfo, 
 											int nIndex,
 											BOOL bIsLineEndPos,
 											BOOL bLinearTypeset,
@@ -1121,9 +1121,9 @@ BOOL CBaseTextLine::GetCaretInfoByGlyphIndex(LPSYGlyphSpace pCaretInfo,
 		|| (nInnerIdx == m_nWordInfoCount && (bIsLineEndPos || m_nWordInfoCount == 0))
 		)
 	{
-		LPSYText pTextObj = GetTextObj();
-		LPSYGlyphSpace pSpaceInfo;
-		pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerIdx);
+		LPCommonText pTextObj = GetTextObj();
+		LPCommonGlyphSpace pSpaceInfo;
+		pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerIdx);
 		if (pSpaceInfo == NULL)
 		{
 			return FALSE;
@@ -1169,7 +1169,7 @@ BOOL CBaseTextLine::GetCaretInfoByGlyphIndex(LPSYGlyphSpace pCaretInfo,
 			if (nInnerIdx == m_nWordInfoCount && nInnerIdx != 0)
 			{
 				// 最后一个，回车没有大小，按照前一个字特殊处理下
-				pSpaceInfo = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerIdx-1);
+				pSpaceInfo = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerIdx-1);
 				if (pSpaceInfo == NULL)
 				{
 					return FALSE;
@@ -1255,17 +1255,17 @@ BOOL CBaseTextLine::GetSelSpaceInfoByGlyphIndex(int nBeginIndex,
 		if (nInnerEndIdx > nInnerBeginIdx)
 		{
 			float fLeft, fRight, fTop, fBottom;
-			LPSYGlyphSpace pNewGlyphSpace;
-			LPSYGlyphSpace pBeginSpace;
-			LPSYGlyphSpace pEndSpace;
-			LPSYText pTextObj = GetTextObj();
+			LPCommonGlyphSpace pNewGlyphSpace;
+			LPCommonGlyphSpace pBeginSpace;
+			LPCommonGlyphSpace pEndSpace;
+			LPCommonText pTextObj = GetTextObj();
 
 			//非线性排版时逐个Glyph处理
 			if (bLinearTypeset)
 			{
 				pNewGlyphSpace = NULL;
-				pBeginSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerBeginIdx);
-				pEndSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerEndIdx);
+				pBeginSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerBeginIdx);
+				pEndSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerEndIdx);
 				if (pTextObj->bHorizontal)
 				{
 					fLeft   = pBeginSpace->ptBound[0].x;
@@ -1320,7 +1320,7 @@ BOOL CBaseTextLine::GetSelSpaceInfoByGlyphIndex(int nBeginIndex,
 				for (int i=nInnerBeginIdx; i<nInnerEndIdx; ++i)
 				{
 					pNewGlyphSpace = NULL;
-					pBeginSpace = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
+					pBeginSpace = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, i);
 					pNewGlyphSpace = new SYGlyphSpace;
 					memcpy(pNewGlyphSpace, pBeginSpace, sizeof(SYGlyphSpace));
 
@@ -1345,7 +1345,7 @@ BOOL CBaseTextLine::GetSelSpaceInfoByGlyphIndex(int nBeginIndex,
 	return FALSE;
 }
 
-BOOL CBaseTextLine::GetGlyphSpaceInfo(int nIndex, LPSYGlyphSpace pSpaceInfo)
+BOOL CBaseTextLine::GetGlyphSpaceInfo(int nIndex, LPCommonGlyphSpace pSpaceInfo)
 {
 	int nInnerIdx = nIndex - m_nBeginIndex;
 	if (!m_pTextParagraph->IsLeftInput())
@@ -1359,8 +1359,8 @@ BOOL CBaseTextLine::GetGlyphSpaceInfo(int nIndex, LPSYGlyphSpace pSpaceInfo)
 	}
 	if (nInnerIdx < m_nWordInfoCount || m_nWordInfoCount == 0)
 	{
-		LPSYGlyphSpace pSpaceInfoSrc;
-		pSpaceInfoSrc = (LPSYGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerIdx);
+		LPCommonGlyphSpace pSpaceInfoSrc;
+		pSpaceInfoSrc = (LPCommonGlyphSpace)BaseAR_GetAt(&m_arGlyphSpace, nInnerIdx);
 		memcpy(pSpaceInfo, pSpaceInfoSrc, sizeof(SYGlyphSpace));
 
 		point2f ptfOffset = m_pTextParagraph->GetOffset();
@@ -1381,7 +1381,7 @@ BOOL CBaseTextLine::GetGlyphSpaceInfo(int nIndex, LPSYGlyphSpace pSpaceInfo)
 
 BOOL CBaseTextLine::IsGlyphIndexInLine(int nIndex, BOOL bIsLineEndPos)
 {
-	LPSYText pTextObj = GetTextObj();
+	LPCommonText pTextObj = GetTextObj();
 	int nInnerIdx = nIndex - m_nBeginIndex;
 	if (nInnerIdx < m_nWordInfoCount 
 		|| (nInnerIdx == m_nWordInfoCount && (bIsLineEndPos || m_nWordInfoCount == 0))
@@ -1406,7 +1406,7 @@ BOOL CBaseTextLine::IsGlyphIndexAtLineEnd(int nIndex)
 //////////////////////////////////////////////////////////////////////////
 // CBaseTextParagraph
 
-CBaseTextParagraph::CBaseTextParagraph(LPSYText pTextObj, int nParaIndex)
+CBaseTextParagraph::CBaseTextParagraph(LPCommonText pTextObj, int nParaIndex)
 {
 	m_pTextObj            = pTextObj;
 	m_nPreAllWordInfoCnt  = 0;
@@ -1429,21 +1429,21 @@ CBaseTextParagraph::~CBaseTextParagraph()
 	int nWordInfoCnt = BaseAR_GetCount(&m_arWordInfo);
 	for (int i = 0; i < nWordInfoCnt; ++i)
 	{
-		LPSYWordInfo pWordInfo = (LPSYWordInfo)BaseAR_GetAt(&m_arWordInfo, i);
+		LPCommonWordInfo pWordInfo = (LPCommonWordInfo)BaseAR_GetAt(&m_arWordInfo, i);
 		SYWordInfoRelease(pWordInfo);
 		delete pWordInfo;
 	}
 	BaseAR_RemoveAll(&m_arWordInfo);
 }
 
-LPSYText CBaseTextParagraph::GetTextObj()
+LPCommonText CBaseTextParagraph::GetTextObj()
 {
 	return m_pTextObj;
 }
 
-LPSYTextParagraph CBaseTextParagraph::GetParagraphObj()
+LPCommonTextParagraph CBaseTextParagraph::GetParagraphObj()
 {
-	return (LPSYTextParagraph)BaseAR_GetAt(&GetTextObj()->arParagraph, m_nParaIndex);
+	return (LPCommonTextParagraph)BaseAR_GetAt(&GetTextObj()->arParagraph, m_nParaIndex);
 }
 
 
@@ -1529,9 +1529,9 @@ int CBaseTextParagraph::GetWordInfoCount()
 	return BaseAR_GetCount(&m_arWordInfo);
 }
 
-LPSYWordInfo CBaseTextParagraph::GetWordInfo(int nIndex)
+LPCommonWordInfo CBaseTextParagraph::GetWordInfo(int nIndex)
 {
-	return (LPSYWordInfo)BaseAR_GetAt(&m_arWordInfo, nIndex);
+	return (LPCommonWordInfo)BaseAR_GetAt(&m_arWordInfo, nIndex);
 }
 
 int CBaseTextParagraph::GetLineWordInfoCount(int nLineIdx)
@@ -1581,14 +1581,14 @@ void CBaseTextParagraph::Typeset(BOOL bIsHorizontal)
 	}
 }
 
-void CBaseTextParagraph::UpdateWordInfoArray(LPSYText pTextObj)
+void CBaseTextParagraph::UpdateWordInfoArray(LPCommonText pTextObj)
 {
-	LPSYWordInfo pWordInfo = NULL;
-	LPSYTextParagraph pParaObj = (LPSYTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex);
+	LPCommonWordInfo pWordInfo = NULL;
+	LPCommonTextParagraph pParaObj = (LPCommonTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex);
 
 	int nParaCharCnt = 0;
 	if (m_nParaIndex < BaseAR_GetCount(&pTextObj->arParagraph)-1)
-		nParaCharCnt = ((LPSYTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex+1))->nBeginIndex;
+		nParaCharCnt = ((LPCommonTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex+1))->nBeginIndex;
 	else
 		nParaCharCnt = (int)_tcslen(m_pTextObj->szText);
 	nParaCharCnt -= pParaObj->nBeginIndex;
@@ -1646,7 +1646,7 @@ void CBaseTextParagraph::UpdateWordInfoArray(LPSYText pTextObj)
 		//一个Run
 		for (int k=0; k<nRunGlyphCnt; ++k, ++j)
 		{
-			pWordInfo = (LPSYWordInfo)BaseAR_GetAt(&m_arWordInfo, j);
+			pWordInfo = (LPCommonWordInfo)BaseAR_GetAt(&m_arWordInfo, j);
 
 			//实际使用的字体
 			memcpy(pWordInfo->szFontName, psrRunInfo->m_szFontName, sizeof(TCHAR) * LF_FACESIZE);
@@ -1676,7 +1676,7 @@ void CBaseTextParagraph::UpdateWordInfoArray(LPSYText pTextObj)
 	{
 		for (int n = nGlyphCnt; n < nOldGlyphCnt; ++n)
 		{
-			pWordInfo = (LPSYWordInfo)BaseAR_GetAt(&m_arWordInfo, n);
+			pWordInfo = (LPCommonWordInfo)BaseAR_GetAt(&m_arWordInfo, n);
 			SYWordInfoRelease(pWordInfo);
 			SAFE_DELETE(pWordInfo) ;
 		}
@@ -1686,8 +1686,8 @@ void CBaseTextParagraph::UpdateWordInfoArray(LPSYText pTextObj)
 
 void CBaseTextParagraph::ZoomUnitAndDistance(float fScaleW, float fScaleH)
 {
-	LPSYText pTextObj = m_pTextObj;
-	LPSYTextParagraph pParaObj = (LPSYTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex);
+	LPCommonText pTextObj = m_pTextObj;
+	LPCommonTextParagraph pParaObj = (LPCommonTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex);
 
 	m_fRealHeight *= fScaleH;
 	m_fRealWidth *= fScaleW;
@@ -1743,7 +1743,7 @@ void CBaseTextParagraph::OffsetCal(vector3f* pOffset)
 
 void CBaseTextParagraph::ConvertCharPosToLineIdx(int& nLineIdx, int nCharIndex, BOOL bIsLineEndPos)
 {
-	LPSYTextParagraph pParaObj = GetParagraphObj();
+	LPCommonTextParagraph pParaObj = GetParagraphObj();
 	int nParaCharIdx = nCharIndex - pParaObj->nBeginIndex;
 	int nWordInfoPos = CBaseUsp::ScriptCPToGX(m_uspResult, nParaCharIdx, -1);
 
@@ -1763,7 +1763,7 @@ void CBaseTextParagraph::ConvertCharPosToLineIdx(int& nLineIdx, int nCharIndex, 
 
 BOOL CBaseTextParagraph::IsCharPosAtLineEnd(BOOL nCharIndex)
 {
-	LPSYTextParagraph pParaObj = GetParagraphObj();
+	LPCommonTextParagraph pParaObj = GetParagraphObj();
 	int nParaCharIdx = nCharIndex - pParaObj->nBeginIndex;
 	int nWordInfoPos = CBaseUsp::ScriptCPToGX(m_uspResult, nParaCharIdx, -1);
 
@@ -1802,7 +1802,7 @@ BOOL CBaseTextParagraph::IsHitTextByPoint(point2f& pt,
 	ptPara.x -= ptParaOffset.x;
 	ptPara.y -= ptParaOffset.y;
 
-	LPSYTextParagraph pParaObj;
+	LPCommonTextParagraph pParaObj;
 	CBaseTextLine* pLine;
 	int nLineCnt;
 
@@ -1868,7 +1868,7 @@ int CBaseTextParagraph::GetCharPosFromPoint(BOOL& bIsLineEndPos,
 	ptPara.x -= ptParaOffset.x;
 	ptPara.y -= ptParaOffset.y;
 
-	LPSYTextParagraph pParaObj;
+	LPCommonTextParagraph pParaObj;
 	CBaseTextLine* pLine;
 	int nLineCnt;
 	WORD wTestLogic = bCaptureMouse ? 0x0007 : 0x0006;
@@ -1939,7 +1939,7 @@ int CBaseTextParagraph::GetCharPosFromPoint(BOOL& bIsLineEndPos,
 		ptPara.x -= ptParaOffset.x;
 		ptPara.y -= ptParaOffset.y;
 
-		LPSYTextParagraph pParaObj = GetParagraphObj();
+		LPCommonTextParagraph pParaObj = GetParagraphObj();
 		CBaseTextLine* pLine = (CBaseTextLine*)BaseAR_GetAt(&m_arLine, nLineIdx);
 		//单向坐标测试
 		WORD wTestLogic = bCaptureMouse ? 0x0001 : 0x0000;
@@ -1961,7 +1961,7 @@ int CBaseTextParagraph::GetCharPosFromPoint(BOOL& bIsLineEndPos,
 	return -1;
 }
 
-BOOL CBaseTextParagraph::GetCaretInfoByCharPos(LPSYGlyphSpace pCaretInfo, 
+BOOL CBaseTextParagraph::GetCaretInfoByCharPos(LPCommonGlyphSpace pCaretInfo, 
 											 int nCharIndex, 
 											 BOOL bIsLineEndPos, 
 											 BOOL bFullHeight,
@@ -1969,7 +1969,7 @@ BOOL CBaseTextParagraph::GetCaretInfoByCharPos(LPSYGlyphSpace pCaretInfo,
 											 float fCaretHalfWidth)
 {
 	//S1、先获得在行内的字符位置索引。
-	LPSYTextParagraph pParaObj = GetParagraphObj();
+	LPCommonTextParagraph pParaObj = GetParagraphObj();
 	int nParaCharIdx = nCharIndex - pParaObj->nBeginIndex;
 	//S2、然后转换成段内字形位置。
 	int nWordInfoPos = CBaseUsp::ScriptCPToGX(m_uspResult, nParaCharIdx, -1);
@@ -1978,7 +1978,7 @@ BOOL CBaseTextParagraph::GetCaretInfoByCharPos(LPSYGlyphSpace pCaretInfo,
 	return GetCaretInfoByGlyphIndex(pCaretInfo, nWordInfoPos, bIsLineEndPos, bFullHeight, bLinearTypeset, fCaretHalfWidth);
 }
 
-BOOL CBaseTextParagraph::GetCaretInfoByGlyphIndex(LPSYGlyphSpace pCaretInfo, 
+BOOL CBaseTextParagraph::GetCaretInfoByGlyphIndex(LPCommonGlyphSpace pCaretInfo, 
 												int nGlyphIndex, 
 												BOOL bIsLineEndPos, 
 												BOOL bFullHeight, 
@@ -1994,7 +1994,7 @@ BOOL CBaseTextParagraph::GetCaretInfoByGlyphIndex(LPSYGlyphSpace pCaretInfo,
 			//取全高（包含行距等附加高度）。
 			if (bFullHeight)
 			{
-				LPSYText pTextObj = m_pTextObj;
+				LPCommonText pTextObj = m_pTextObj;
 
 				float fLineDistance = pLine->GetLineDistance();
 				if (pTextObj->bHorizontal)
@@ -2035,7 +2035,7 @@ BOOL CBaseTextParagraph::GetSelSpaceInfoByCharPos(int nBeginIndex,
 	nBeginIndex = nTemp;
 
 	//S1、先转换成段落字符索引
-	LPSYTextParagraph pParaObj = GetParagraphObj();
+	LPCommonTextParagraph pParaObj = GetParagraphObj();
 	int nInnerBeginIdx = nBeginIndex - pParaObj->nBeginIndex;
 	int nInnerEndIdx   = nEndIndex - pParaObj->nBeginIndex;
 	if (nInnerEndIdx < 0 || nInnerBeginIdx >= nInnerEndIdx)
@@ -2079,12 +2079,12 @@ BOOL CBaseTextParagraph::GetSelSpaceInfoByCharPos(int nBeginIndex,
 	return TRUE;
 }
 
-BOOL CBaseTextParagraph::GetCharPosSpaceInfo(int nCharIndex, LPSYGlyphSpace pSpaceInfo)
+BOOL CBaseTextParagraph::GetCharPosSpaceInfo(int nCharIndex, LPCommonGlyphSpace pSpaceInfo)
 {
 	//暂时仅作简单处理
 
 	//先转换成Glyph索引
-	LPSYTextParagraph pParaObj = GetParagraphObj();
+	LPCommonTextParagraph pParaObj = GetParagraphObj();
 	int nParaCharIdx = nCharIndex - pParaObj->nBeginIndex;
 	int nWordInfoPos = CBaseUsp::ScriptCPToGX(m_uspResult, nParaCharIdx, -1);
 
@@ -2120,9 +2120,9 @@ void CBaseTextParagraph::TypesetHorizontal()
 	//段落偏移参考点在左上角，偏移量相对于排版矩形中心。
 	//行参考点在左上角，偏移量相对于所在段落参考点。
 
-	LPSYText pTextObj = m_pTextObj;
+	LPCommonText pTextObj = m_pTextObj;
 	int nParaCnt = BaseAR_GetCount(&pTextObj->arParagraph);
-	LPSYTextParagraph pParaObj = (LPSYTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex);
+	LPCommonTextParagraph pParaObj = (LPCommonTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex);
 	int nWordInfoCnt = BaseAR_GetCount(&m_arWordInfo);
 
 	point2f* pvGraphScale = &pTextObj->vGraphScale;
@@ -2144,13 +2144,13 @@ void CBaseTextParagraph::TypesetHorizontal()
 	}
 
 	BOOL bAddWordWrap = pTextObj->bLineWrap && !pTextObj->bFixedFrame;
-	LPSYWordInfo pLastWordInfo = NULL;
+	LPCommonWordInfo pLastWordInfo = NULL;
 	if (bAddWordWrap)
 	{
 		//自动换行
 		for (int i = 0; i < nWordInfoCnt; ++i)
 		{
-			LPSYWordInfo pWordInfo = (LPSYWordInfo)BaseAR_GetAt(&m_arWordInfo, i);
+			LPCommonWordInfo pWordInfo = (LPCommonWordInfo)BaseAR_GetAt(&m_arWordInfo, i);
 			if (pTextLine->AddWordHorizontal(pWordInfo, pLastWordInfo, pvGraphScale, bAddWordWrap) == NULL)
 			{
 				//行已满，不能再添加字符，则添加一个新行
@@ -2181,7 +2181,7 @@ void CBaseTextParagraph::TypesetHorizontal()
 		//非自动折行
 		for (int i = 0; i < nWordInfoCnt; ++i)
 		{
-			LPSYWordInfo pWordInfo = (LPSYWordInfo)BaseAR_GetAt(&m_arWordInfo, i);
+			LPCommonWordInfo pWordInfo = (LPCommonWordInfo)BaseAR_GetAt(&m_arWordInfo, i);
 			pTextLine->AddWordHorizontal(pWordInfo, pLastWordInfo, pvGraphScale, bAddWordWrap);
 			pLastWordInfo = pWordInfo;
 		}
@@ -2257,9 +2257,9 @@ void CBaseTextParagraph::TypesetHorizontal()
 
 void CBaseTextParagraph::TypesetVertical()
 {
-	LPSYText pTextObj = m_pTextObj;
+	LPCommonText pTextObj = m_pTextObj;
 	int nParaCnt = BaseAR_GetCount(&pTextObj->arParagraph);
-	LPSYTextParagraph pParaObj = (LPSYTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex);
+	LPCommonTextParagraph pParaObj = (LPCommonTextParagraph)BaseAR_GetAt(&pTextObj->arParagraph, m_nParaIndex);
 	int nWordInfoCnt = BaseAR_GetCount(&m_arWordInfo);
 
 	point2f* pvGraphScale = &pTextObj->vGraphScale;
@@ -2281,13 +2281,13 @@ void CBaseTextParagraph::TypesetVertical()
 	}
 
 	BOOL bAddWordWrap = pTextObj->bLineWrap && !pTextObj->bFixedFrame;
-	LPSYWordInfo pLastWordInfo = NULL;
+	LPCommonWordInfo pLastWordInfo = NULL;
 	if (bAddWordWrap)
 	{
 		//自动换行
 		for (int i = 0; i < nWordInfoCnt; ++i)
 		{
-			LPSYWordInfo pWordInfo = GetWordInfo(i);
+			LPCommonWordInfo pWordInfo = GetWordInfo(i);
 			if (pTextLine->AddWordVertical(pWordInfo, pLastWordInfo, pvGraphScale, bAddWordWrap) == NULL)
 			{
 				//行已满，不能再添加字符，则添加一个新行
@@ -2318,7 +2318,7 @@ void CBaseTextParagraph::TypesetVertical()
 	{
 		for (int i = 0; i < nWordInfoCnt; ++i)
 		{
-			LPSYWordInfo pWordInfo = GetWordInfo(i);
+			LPCommonWordInfo pWordInfo = GetWordInfo(i);
 			pTextLine->AddWordVertical(pWordInfo, pLastWordInfo, pvGraphScale, bAddWordWrap);
 			pLastWordInfo = pWordInfo;
 		}
@@ -2422,7 +2422,7 @@ void CBaseTextParagraph::AddBlankLine(CBaseTextLine* pLine)
 {
 	//添加一个空行，pLine由主调者申请。
 
-	LPSYText pTextObj = m_pTextObj;
+	LPCommonText pTextObj = m_pTextObj;
 	int nLastParaIdx = m_nParaIndex - 1;
 	if (nLastParaIdx >= 0)
 	{
@@ -2430,14 +2430,14 @@ void CBaseTextParagraph::AddBlankLine(CBaseTextLine* pLine)
 		BaseARray* pParaArray = SYTypeset_GetTextParagraphArray(m_pTextObj);
 		CBaseTextParagraph* pLastPara = (CBaseTextParagraph*)BaseAR_GetAt(pParaArray, nLastParaIdx);
 		int nWordInfoCnt = pLastPara->GetWordInfoCount();
-		LPSYWordInfo pWordInfo = pLastPara->GetWordInfo(nWordInfoCnt - 1);
+		LPCommonWordInfo pWordInfo = pLastPara->GetWordInfo(nWordInfoCnt - 1);
 		if(pWordInfo)
 			pLine->AddNullWord(pWordInfo);
 	}
 	else
 	{
 		//生成一个“\0”字符
-		LPSYWordInfo pWordInfo = new SYWordInfo;
+		LPCommonWordInfo pWordInfo = new SYWordInfo;
 		SYTypeset_GenerateWordInfo(m_pTextObj, pWordInfo, ' ', 0);
 		pWordInfo->wChar = '\0';
 		pLine->AddNullWord(pWordInfo);

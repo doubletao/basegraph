@@ -37,10 +37,10 @@ point2f* SYMaskHandleGetControlPt(
 		point2f* pCtrl    = new point2f[nCount];
 		point2f* pCurCtrl = pCtrl;
 
-		LPSYMaskHandle pHandle;
+		LPCommonMaskHandle pHandle;
 		for(int nIndex =0;nIndex<nHandleC;nIndex++)
 		{
-			pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, nIndex);
+			pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, nIndex);
 			pCurCtrl->x = pHandle->m_Pt.x;
 			pCurCtrl->y = pHandle->m_Pt.y;
 			pCurCtrl++;
@@ -48,19 +48,19 @@ point2f* SYMaskHandleGetControlPt(
 			pCurCtrl->y = pHandle->m_HelpPt[1].y;
 			pCurCtrl++;
 
-			pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, (nIndex+1)%nHandleCount);
+			pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, (nIndex+1)%nHandleCount);
 			pCurCtrl->x = pHandle->m_HelpPt[0].x;
 			pCurCtrl->y = pHandle->m_HelpPt[0].y;
 			pCurCtrl++;
 		}
 		if(bClose)
 		{
-			pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, 0);
+			pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, 0);
 			pCurCtrl->x = pHandle->m_Pt.x;
 			pCurCtrl->y = pHandle->m_Pt.y;
 		}else
 		{
-			pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, nHandleCount-1);
+			pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, nHandleCount-1);
 			pCurCtrl->x = pHandle->m_Pt.x;
 			pCurCtrl->y = pHandle->m_Pt.y;
 		}
@@ -378,7 +378,7 @@ float SYBezierPtIn(const point2f &pt0,	//In
 
 void  SYBezierGetPtArray(BaseARray &HandleArray,int nIndex,point2f CtrlPt[4])
 {
-	LPSYMaskHandle pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, nIndex);
+	LPCommonMaskHandle pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, nIndex);
 	int nVer=0;
 	CtrlPt[nVer].x = pHandle->m_Pt.x;
 	CtrlPt[nVer].y = pHandle->m_Pt.y;
@@ -387,7 +387,7 @@ void  SYBezierGetPtArray(BaseARray &HandleArray,int nIndex,point2f CtrlPt[4])
 	CtrlPt[nVer].y = pHandle->m_HelpPt[1].y;
 	nVer++;
 
-	pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, nIndex+1);
+	pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, nIndex+1);
 	CtrlPt[nVer].x = pHandle->m_HelpPt[0].x;
 	CtrlPt[nVer].y = pHandle->m_HelpPt[0].y;
 	nVer++;
@@ -407,10 +407,10 @@ point2f* SYBezierGetPtList(BaseARray &HandleArray)
 		int nCount = (nHandleCount-1)*3+1;
 		point2f* pCtrl    = new point2f[nCount];
 		point2f* pCurCtrl = pCtrl;
-		LPSYMaskHandle pHandle;
+		LPCommonMaskHandle pHandle;
 		for(int nIndex =0;nIndex<nHandleCount-1;nIndex++)
 		{
-			pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, nIndex);
+			pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, nIndex);
 			pCurCtrl->x = pHandle->m_Pt.x;
 			pCurCtrl->y = pHandle->m_Pt.y;
 			pCurCtrl++;
@@ -418,12 +418,12 @@ point2f* SYBezierGetPtList(BaseARray &HandleArray)
 			pCurCtrl->y = pHandle->m_HelpPt[1].y;
 			pCurCtrl++;
 
-			pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, nIndex+1);
+			pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, nIndex+1);
 			pCurCtrl->x = pHandle->m_HelpPt[0].x;
 			pCurCtrl->y = pHandle->m_HelpPt[0].y;
 			pCurCtrl++;
 		}
-		pHandle = (LPSYMaskHandle)BaseAR_GetAt(&HandleArray, nHandleCount-1);
+		pHandle = (LPCommonMaskHandle)BaseAR_GetAt(&HandleArray, nHandleCount-1);
 		pCurCtrl->x = pHandle->m_Pt.x;
 		pCurCtrl->y = pHandle->m_Pt.y;
 		return pCtrl;

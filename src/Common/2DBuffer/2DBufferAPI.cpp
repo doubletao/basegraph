@@ -868,7 +868,7 @@ BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesB
 		return FALSE;
 
 	//检测是否没有做斜切形变，如果没有则使用快速的线性变换算法
-	LPSYINNERVERTEX t_pvfXYZW =  (LPSYINNERVERTEX)pvfXYZW;
+	LPCommonINNERVERTEX t_pvfXYZW =  (LPCommonINNERVERTEX)pvfXYZW;
 	//if (t_pvfXYZW[0].w == 1 && t_pvfXYZW[1].w == 1 && t_pvfXYZW[2].w == 1 && t_pvfXYZW[3].w == 1)
 	{
 		BOOL bResult = Common_BufferTransformLinear(pDesBuf,nOffsetLeft,nOffsetTop,pSrcBuf,nSrcWidth,nSrcHeight,(vector4f*)pvfXYZW,pMaskBuf);
@@ -885,7 +885,7 @@ BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesB
 	float *pfPowerX = NULL, *pfPowerY = NULL, *pfPowerXY = NULL;
 	DWORD* pdwSrcIndex = NULL;				// 双线性插值所需要的索引（四个像素 00  01  10  11）
 	// 临时指针
-	LPSYINNERVERTEX pvTmpLeftEdgeUVW = pvLeftEdgeUVW, pvTmpDeltaUVW = pvDeltaUVW;
+	LPCommonINNERVERTEX pvTmpLeftEdgeUVW = pvLeftEdgeUVW, pvTmpDeltaUVW = pvDeltaUVW;
 	DWORD* *ppdwTmpDesLeftEdge = ppdwDesLeftEdge;
 	int *pnTmpLinePixels = pnLinePixels;
 
@@ -893,7 +893,7 @@ BASEGRAPH_COMMON_API BOOL Common_BufferTransform(IN OUT CommonBufferDef32* pDesB
 	memset_dword_line(pnLinePixels, 0, (pDesBuf->m_nHeight >> 2), ((pDesBuf->m_nHeight & 0x03) << 2));
 	memset_dword_line(ppdwSrcStart, (DWORD)(pSrcBuf->m_dwBuffer + pSrcBuf->m_nOriginX + pSrcBuf->m_rtBound.left + (pSrcBuf->m_nOriginY + pSrcBuf->m_rtBound.top) * pSrcBuf->m_nWidth), 1, 0);
 	// 求解按行扫描的左右边界，以及边界上的 u/w、v/w、1/w、delta等。
-	//if (!SYTrans_CalcBorder(pDesBuf, nOffsetLeft, nOffsetTop, (LPSYINNERVERTEX)pvfXYZW, pvLeftEdgeUVW,
+	//if (!SYTrans_CalcBorder(pDesBuf, nOffsetLeft, nOffsetTop, (LPCommonINNERVERTEX)pvfXYZW, pvLeftEdgeUVW,
 	//						pvDeltaUVW, ppdwDesLeftEdge, pnLinePixels, &nMaxLinePixels))
 	//	return FALSE;
 	// 申请临时缓存
@@ -1377,7 +1377,7 @@ void Test_FillDstBound(CommonBufferDef32* pDesBuf)
 	memset(dst_head, -1, sizeof(DWORD)*width);
 }
 
-void CalcMinBoundingBox(LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, CommonBufferDef32* pSrcBuf, CommonBufferDef32* pDesBuf, int nOffsetLeft, int nOffsetTop)
+void CalcMinBoundingBox(LPCommonINNERVERTEX &t_pvfXYZW, STU_Rect &box, CommonBufferDef32* pSrcBuf, CommonBufferDef32* pDesBuf, int nOffsetLeft, int nOffsetTop)
 {
 	//------------------------------------------------------------------------
 	// 计算四个目标点的最小包围矩形box的左上角点坐标和长宽
@@ -1464,7 +1464,7 @@ void Test_FillDstWithSrc(DWORD* t_pSrc, DWORD* t_pDst, CommonBufferDef32* pSrcBu
 
 //------------------------------------------------------------------------
 //计算最小包围矩形box的左上角点的U,V和全局的dU,dV（因为是线性变换，所以全局dUdV是相同的）
-void CalcDeltaUV(CommonBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv)
+void CalcDeltaUV(CommonBufferDef32* pSrcBuf, LPCommonINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv)
 {
 	/* mathematica中求解得到的符号解
 	x0\x1\x3\y0\y1\y3是变换后四个角点的坐标
@@ -1521,7 +1521,7 @@ void CalcDeltaUV(CommonBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rec
 
 //------------------------------------------------------------------------
 //计算最小包围矩形box的左上角点的U,V和全局的dU,dV（因为是线性变换，所以全局dUdV是相同的）,采用[0,1)区间规范化的结果
-void CalcDeltaUVandLTUV(CommonBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv, float& ult, float& vlt)
+void CalcDeltaUVandLTUV(CommonBufferDef32* pSrcBuf, LPCommonINNERVERTEX &t_pvfXYZW, STU_Rect &box, STU_deltaUV &duv, float& ult, float& vlt)
 {
 	const int max_x = pSrcBuf->m_nWidth - 1;
 	const int max_y = pSrcBuf->m_nHeight - 1;
@@ -1551,7 +1551,7 @@ void CalcDeltaUVandLTUV(CommonBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, 
 //完全点：指其UV映射的坐标在源buffer中都是有效的坐标，不会超出边界
 //之所以没有使用之前的行扫描并根据u和v的取值范围反算出完全点区间，是由于
 //这个反算过程中有除法，相当影响效率的
-void CalcEdge(Edge_info* edge_info, STU_Rect &box, CommonBufferDef32* pSrcBuf, LPSYINNERVERTEX &t_pvfXYZW, STU_deltaUV &duv)
+void CalcEdge(Edge_info* edge_info, STU_Rect &box, CommonBufferDef32* pSrcBuf, LPCommonINNERVERTEX &t_pvfXYZW, STU_deltaUV &duv)
 {
 	memset(edge_info, 0, sizeof(Edge_info)*box.height);
 
@@ -1939,7 +1939,7 @@ DWORD* CalcDstHead(CommonBufferDef32* pDesBuf, STU_Rect &box, int nOffsetTop, in
 
 //------------------------------------------------------------------------
 //计算是否是不放大并且足够小的buffer，如果是则可以不使用双线性插值并且不渲染边界
-bool JudgeSimpleTrans(STU_Rect &box, LPSYINNERVERTEX &t_pvfXYZW, CommonBufferDef32* pSrcBuf)
+bool JudgeSimpleTrans(STU_Rect &box, LPCommonINNERVERTEX &t_pvfXYZW, CommonBufferDef32* pSrcBuf)
 {
 	bool bSimpleTrans = false;
 	if (box.width < 55 && box.height < 55)
@@ -1968,7 +1968,7 @@ BASEGRAPH_COMMON_API BOOL Common_BufferTransformLinear(IN OUT CommonBufferDef32 
 
 	//Test_FillDstBound(pDesBuf); //测试：填充目标区域的边界方便观察
 
-	LPSYINNERVERTEX t_pvfXYZW = (LPSYINNERVERTEX)pvfXYZW;
+	LPCommonINNERVERTEX t_pvfXYZW = (LPCommonINNERVERTEX)pvfXYZW;
 
 	// 计算需要渲染的最小包围盒
 	STU_Rect box = { 0,0,0,0 };

@@ -158,7 +158,7 @@ struct  tagSYSCRIPTRESULT
 		m_aryLogAttr.clear();
 	}
 };
-typedef tagSYSCRIPTRESULT SYSCRIPTRESULT, *LPSYSCRIPTRESULT;
+typedef tagSYSCRIPTRESULT SYSCRIPTRESULT, *LPCommonSCRIPTRESULT;
 //////////////////////////////////////////////////////////////////////////
 // CBaseUsp - ∂‡”Ô—‘¥¶¿Ì∆˜
 class  CBaseUsp

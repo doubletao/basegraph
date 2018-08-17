@@ -1567,12 +1567,12 @@ BOOL BufferMemSSE::Buffer_Key_BLStretch_SSE(IN OUT LPBYTE pbyDes, IN int nDesX, 
 	return TRUE;
 }
 
-BOOL BufferMemSSE::Buffer_Trans_CalcBorder(IN CommonBufferDef32 * pDesBuf, IN int nOffsetLeft, IN int nOffsetTop, IN LPSYINNERVERTEX pvVertexes, OUT LPSYINNERVERTEX pvLeftEdgeUVW, OUT LPSYINNERVERTEX pvDeltaUVW, OUT DWORD ** ppdwDesLeftEdge, OUT int * pnLinePixels, OUT int * pnMaxLinePixels)
+BOOL BufferMemSSE::Buffer_Trans_CalcBorder(IN CommonBufferDef32 * pDesBuf, IN int nOffsetLeft, IN int nOffsetTop, IN LPCommonINNERVERTEX pvVertexes, OUT LPCommonINNERVERTEX pvLeftEdgeUVW, OUT LPCommonINNERVERTEX pvDeltaUVW, OUT DWORD ** ppdwDesLeftEdge, OUT int * pnLinePixels, OUT int * pnMaxLinePixels)
 {
 	return FALSE;
 }
 
-void BufferMemSSE::Buffer_Trans_CalcPowerAndIndex_BL(IN LPSYINNERVERTEX pvLeftEdgeUVW, IN LPSYINNERVERTEX pvDeltaUVW, IN int nLinePixels, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, OUT DWORD * pdwSrcIndex, OUT float * pfPowerX, OUT float * pfPowerY, OUT float * pfPowerXY)
+void BufferMemSSE::Buffer_Trans_CalcPowerAndIndex_BL(IN LPCommonINNERVERTEX pvLeftEdgeUVW, IN LPCommonINNERVERTEX pvDeltaUVW, IN int nLinePixels, IN int nSrcWidth, IN int nSrcHeight, IN int nSrcBufWidth, OUT DWORD * pdwSrcIndex, OUT float * pfPowerX, OUT float * pfPowerY, OUT float * pfPowerXY)
 {
 	float fU = pvLeftEdgeUVW->x, fV = pvLeftEdgeUVW->y, fW = pvLeftEdgeUVW->z;
 	float fDU = pvDeltaUVW->x, fDV = pvDeltaUVW->y, fDW = pvDeltaUVW->z;

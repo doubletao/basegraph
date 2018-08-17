@@ -16,7 +16,7 @@ static char THIS_FILE[] = __FILE__;
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYPoint_SetPoint(LPSYPOINTL pP,			// 点指针
+void __cdecl SYPoint_SetPoint(LPCommonPOINTL pP,			// 点指针
 							   LONG x,					// x值
 							   LONG y)					// y值
 {
@@ -26,7 +26,7 @@ void __cdecl SYPoint_SetPoint(LPSYPOINTL pP,			// 点指针
 	pP->y = y;
 }
 
-void __cdecl SYPoint2f_SetPoint(LPSYPOINTF pP,			// 点指针
+void __cdecl SYPoint2f_SetPoint(LPCommonPOINTF pP,			// 点指针
 							   float x,					// x值
 							   float y)					// y值
 {
@@ -36,7 +36,7 @@ void __cdecl SYPoint2f_SetPoint(LPSYPOINTF pP,			// 点指针
 	pP->y = y;
 }
 
-void __cdecl SYPoint2lf_SetPoint(LPSYPOINTD pP,			// 点指针
+void __cdecl SYPoint2lf_SetPoint(LPCommonPOINTD pP,			// 点指针
 							   double x,				// x值
 							   double y)				// y值
 {
@@ -51,7 +51,7 @@ void __cdecl SYPoint2lf_SetPoint(LPSYPOINTD pP,			// 点指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYPoint_Offset(LPSYPOINTL pP,			// 点指针
+void __cdecl SYPoint_Offset(LPCommonPOINTL pP,			// 点指针
 							 LONG xOffset,			// x偏移量
 							 LONG yOffset)			// y偏移量
 {
@@ -61,7 +61,7 @@ void __cdecl SYPoint_Offset(LPSYPOINTL pP,			// 点指针
 	pP->y += yOffset;
 }
 
-void __cdecl SYPoint2f_Offset(LPSYPOINTF pP,			// 点指针
+void __cdecl SYPoint2f_Offset(LPCommonPOINTF pP,			// 点指针
 							 float xOffset,			// x偏移量
 							 float yOffset)			// y偏移量
 {
@@ -71,7 +71,7 @@ void __cdecl SYPoint2f_Offset(LPSYPOINTF pP,			// 点指针
 	pP->y += yOffset;
 }
 
-void __cdecl SYPoint2lf_Offset(LPSYPOINTD pP,			// 点指针
+void __cdecl SYPoint2lf_Offset(LPCommonPOINTD pP,			// 点指针
 							 double xOffset,		// x偏移量
 							 double yOffset)		// y偏移量
 {
@@ -92,7 +92,7 @@ void __cdecl SYPoint2lf_Offset(LPSYPOINTD pP,			// 点指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl SYSize_SetSize(LPSYSIZE pS,			// size指针
+void __cdecl SYSize_SetSize(LPCommonSIZE pS,			// size指针
 							 LONG cx,				// cx值
 							 LONG cy)				// cy值
 {
@@ -102,7 +102,7 @@ void __cdecl SYSize_SetSize(LPSYSIZE pS,			// size指针
 	pS->cy = cy;
 }
 
-void __cdecl SYSizef_SetSize(LPSYSIZEF pS,			// size指针
+void __cdecl SYSizef_SetSize(LPCommonSIZEF pS,			// size指针
 							 float cx,				// cx值
 							 float cy)				// cy值
 {
@@ -112,7 +112,7 @@ void __cdecl SYSizef_SetSize(LPSYSIZEF pS,			// size指针
 	pS->cy = cy;
 }
 
-void __cdecl SYSizelf_SetSize(LPSYSIZELF pS,			// size指针
+void __cdecl SYSizelf_SetSize(LPCommonSIZELF pS,			// size指针
 							 double cx,				// cx值
 							 double cy)				// cy值
 {
@@ -465,7 +465,7 @@ void __cdecl BaseRect_OffsetRect3(LPBaseRect pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRect_Size(LPSYSIZE pDesSz,			// 目标Size
+void __cdecl BaseRect_Size(LPCommonSIZE pDesSz,			// 目标Size
 						  LPBaseRect pSrcR)			// 源矩形指针
 
 {
@@ -480,7 +480,7 @@ void __cdecl BaseRect_Size(LPSYSIZE pDesSz,			// 目标Size
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRect_TopLeft(LPSYPOINTL pDesP,			// 目标点
+void __cdecl BaseRect_TopLeft(LPCommonPOINTL pDesP,			// 目标点
 							 LPBaseRect pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
@@ -494,7 +494,7 @@ void __cdecl BaseRect_TopLeft(LPSYPOINTL pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRect_BottomRight(LPSYPOINTL pDesP,			// 目标点
+void __cdecl BaseRect_BottomRight(LPCommonPOINTL pDesP,			// 目标点
 								 LPBaseRect pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
@@ -508,7 +508,7 @@ void __cdecl BaseRect_BottomRight(LPSYPOINTL pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRect_CenterPoint(LPSYPOINTL pDesP,			// 目标点
+void __cdecl BaseRect_CenterPoint(LPCommonPOINTL pDesP,			// 目标点
 								 LPBaseRect pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
@@ -938,7 +938,7 @@ void __cdecl BaseRectf_OffsetRect3(LPBaseRectF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRectf_Size(LPSYSIZEF pDesSz,			// 目标Size
+void __cdecl BaseRectf_Size(LPCommonSIZEF pDesSz,			// 目标Size
 						  LPBaseRectF pSrcR)			// 源矩形指针
 
 {
@@ -953,7 +953,7 @@ void __cdecl BaseRectf_Size(LPSYSIZEF pDesSz,			// 目标Size
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRectf_TopLeft(LPSYPOINTF pDesP,			// 目标点
+void __cdecl BaseRectf_TopLeft(LPCommonPOINTF pDesP,			// 目标点
 							 LPBaseRectF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
@@ -967,7 +967,7 @@ void __cdecl BaseRectf_TopLeft(LPSYPOINTF pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRectf_BottomRight(LPSYPOINTF pDesP,			// 目标点
+void __cdecl BaseRectf_BottomRight(LPCommonPOINTF pDesP,			// 目标点
 								 LPBaseRectF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
@@ -981,7 +981,7 @@ void __cdecl BaseRectf_BottomRight(LPSYPOINTF pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRectf_CenterPoint(LPSYPOINTF pDesP,			// 目标点
+void __cdecl BaseRectf_CenterPoint(LPCommonPOINTF pDesP,			// 目标点
 								 LPBaseRectF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
@@ -1408,7 +1408,7 @@ void __cdecl BaseRectlf_OffsetRect3(LPBaseRectLF pR,			// 矩形指针
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRectlf_Size(LPSYSIZELF pDesSz,			// 目标Size
+void __cdecl BaseRectlf_Size(LPCommonSIZELF pDesSz,			// 目标Size
 						  LPBaseRectLF pSrcR)			// 源矩形指针
 
 {
@@ -1423,7 +1423,7 @@ void __cdecl BaseRectlf_Size(LPSYSIZELF pDesSz,			// 目标Size
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRectlf_TopLeft(LPSYPOINTD pDesP,			// 目标点
+void __cdecl BaseRectlf_TopLeft(LPCommonPOINTD pDesP,			// 目标点
 							 LPBaseRectLF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
@@ -1437,7 +1437,7 @@ void __cdecl BaseRectlf_TopLeft(LPSYPOINTD pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRectlf_BottomRight(LPSYPOINTD pDesP,			// 目标点
+void __cdecl BaseRectlf_BottomRight(LPCommonPOINTD pDesP,			// 目标点
 								 LPBaseRectLF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));
@@ -1451,7 +1451,7 @@ void __cdecl BaseRectlf_BottomRight(LPSYPOINTD pDesP,			// 目标点
 //
 // 返回值:	无
 ///////////////////////////////////////////////////////////////////////////////
-void __cdecl BaseRectlf_CenterPoint(LPSYPOINTD pDesP,			// 目标点
+void __cdecl BaseRectlf_CenterPoint(LPCommonPOINTD pDesP,			// 目标点
 								 LPBaseRectLF pSrcR)			// 源矩形指针
 {
 	assert((pDesP != NULL) && (pSrcR != NULL));

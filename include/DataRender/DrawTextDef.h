@@ -140,8 +140,8 @@ typedef struct tag_staticeffect
 		index = 0;
 	}
 }static_effect;
-typedef static_effect SYStaticEffect, *LPSYStaticEffect;
-typedef const LPSYStaticEffect LPCBaseStaticEffect;
+typedef static_effect SYStaticEffect, *LPCommonStaticEffect;
+typedef const LPCommonStaticEffect LPCBaseStaticEffect;
 
 enum Common_BEVEL_TYPE
 {
@@ -195,8 +195,8 @@ typedef struct tag_syspecialeffect
 		};
 	};
 }syspecial_effect;
-typedef  syspecial_effect SYSpecialEffect, *LPSYSpecialEffect;
-typedef  const LPSYSpecialEffect *LPCBaseSpecialEffect;
+typedef  syspecial_effect SYSpecialEffect, *LPCommonSpecialEffect;
+typedef  const LPCommonSpecialEffect *LPCBaseSpecialEffect;
 //拉伸数据结构
 typedef struct sy_stretch_param
 {
@@ -215,7 +215,7 @@ typedef struct sy_stretch_param
 		fBevelLen = 0;
 		fBevelPrecision = 0;
 	}
-}SYStretchParam, *LPSYStretchParam;
+}SYStretchParam, *LPCommonStretchParam;
 
 
 //扩充的字体数据结构
@@ -256,8 +256,8 @@ struct sy_font_def
 	BASEGRAPH_DATARENDER_API void Reset();
 };
 
-typedef sy_font_def SYFont, *LPSYFont;
-typedef const LPSYFont LPCBaseFont;
+typedef sy_font_def SYFont, *LPCommonFont;
+typedef const LPCommonFont LPCBaseFont;
 
 //横向对齐方式
 typedef enum e_text_align_horizontal
@@ -303,7 +303,7 @@ typedef struct sy_text_prop_def
 	BaseARray		arIndex;			//属性检索表
 	sy_text_prop_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYTextProp, *LPSYTextProp;
+}SYTextProp, *LPCommonTextProp;
 typedef const SYTextProp* LPCBaseTextProp;
 
 //下划线类型
@@ -376,8 +376,8 @@ typedef struct sy_text_def
 	double				dCurTime;			// 当前位置的时间（总时长比例）
 
 											/**********临时数据**********/
-	LPSYStretchParam	pStretch;			//3D拉伸属性
-	LPSYSpecialEffect	pSpecialEffect;		//特殊效果（引用）
+	LPCommonStretchParam	pStretch;			//3D拉伸属性
+	LPCommonSpecialEffect	pSpecialEffect;		//特殊效果（引用）
 
 	BaseARray				ar2DUnit;			//2d unit数组，Unit序列：文字的，下划线的，其它的。
 	BaseARray				ar2DUnitTemp;		//临时数组，公告板专用
@@ -393,7 +393,7 @@ typedef struct sy_text_def
 	LPVOID				lpParam;			//预留数据
 	sy_text_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYText, *LPSYText;
+}SYText, *LPCommonText;
 typedef const SYText* LPCBaseText;
 
 //项目符号的原始数据定义
@@ -409,7 +409,7 @@ typedef struct sy_textsymbol_def
 	LPVOID				lpParam;			//预留数据
 	sy_textsymbol_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYTextSymbol, *LPSYTextSymbol;
+}SYTextSymbol, *LPCommonTextSymbol;
 
 //段落的原始数据定义
 typedef struct sy_textparagraph_def
@@ -423,20 +423,20 @@ typedef struct sy_textparagraph_def
 	float					fAfterDistance;	//段后间距
 	int						nLevel;			//级别
 	float					fIndent;		//缩进量
-	LPSYTextSymbol			lpSymbol;		//项目符号
+	LPCommonTextSymbol			lpSymbol;		//项目符号
 
 											/**********临时数据**********/
 	LPVOID					hHandle;		//操作句柄（存本结构指针）
 	LPVOID					lpParam;		//预留数据
 	sy_textparagraph_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
-}SYTextParagraph, *LPSYTextParagraph;
+}SYTextParagraph, *LPCommonTextParagraph;
 typedef struct  tag_SYTypesetPrivate
 {
 	BaseARray				m_arParagraph;		//段落
 	LPVOID				lpParam;			//需要做同步的Env
 	rectf				rtTypesetBorder;	//排版实际使用的矩形
-}SYTypesetPrivate, *LPSYTypesetPrivate;
+}SYTypesetPrivate, *LPCommonTypesetPrivate;
 
 //扩充的字体数据结构
 struct sy_under_line_def
@@ -449,8 +449,8 @@ struct sy_under_line_def
 	sy_under_line_def() { Reset(); }
 	BASEGRAPH_DATARENDER_API void Reset();
 };
-typedef sy_under_line_def SYUnderLine, *LPSYUnderLine;
-typedef const LPSYUnderLine LPCBaseUnderLine;
+typedef sy_under_line_def SYUnderLine, *LPCommonUnderLine;
+typedef const LPCommonUnderLine LPCBaseUnderLine;
 //文字属性数据块类别定义
 typedef enum e_text_property_type
 {
@@ -513,5 +513,5 @@ typedef struct sy_text_prop_index_def
 	LPVOID					p2DColor;	//2D颜色属性索引
 	LPVOID					p3DColor[SYTEXT_SUBFACE_CNT];	//3D颜色属性索引
 	LPVOID					pUnderLine;	//下划线属性索引
-}SYTextPropIndex, *LPSYTextPropIndex;
+}SYTextPropIndex, *LPCommonTextPropIndex;
 typedef const SYTextPropIndex* LPCBaseTextPropIndex;

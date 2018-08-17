@@ -67,8 +67,8 @@ typedef struct tag_SYWordInfo
 	int					nChgFlag;				//变化标记（见SYGlyphChg_X定义）
 	unsigned long long	uCheckCode;				//校验码（64位，暂时仅使用32位。）
 	vectorgraph			vgGraph;				//原始字模图形
-}SYWordInfo, *LPSYWordInfo;
-typedef tag_SYWordInfo SYWordInfo, *LPSYWordInfo;
+}SYWordInfo, *LPCommonWordInfo;
+typedef tag_SYWordInfo SYWordInfo, *LPCommonWordInfo;
 
 //查询字符是否需要旋转
 BASEGRAPH_DATARENDER_API BOOL	SYIsNeedRollInVDisplay(TCHAR szCharName);
@@ -79,16 +79,16 @@ BASEGRAPH_DATARENDER_API bool	SYIsVisibleChar(TCHAR ch);
 //字符ch是否使用本地字体
 BASEGRAPH_DATARENDER_API BOOL	SYIsUseLocalFont(TCHAR ch);
 //由SYFont创建HFONT
-BASEGRAPH_DATARENDER_API HFONT 	SYFont_CreateFont(LPSYFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint);
-BASEGRAPH_DATARENDER_API HFONT	SYFont_CreateScaleFont(LPSYFont pFont, TCHAR ch, LPCTSTR szFont, int nScaleW, int nScaleH);
+BASEGRAPH_DATARENDER_API HFONT 	SYFont_CreateFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint);
+BASEGRAPH_DATARENDER_API HFONT	SYFont_CreateScaleFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, int nScaleW, int nScaleH);
 
-BASEGRAPH_DATARENDER_API void	SYWordInfoInit(LPSYWordInfo pWordInfo);
-BASEGRAPH_DATARENDER_API void	SYWordInfoRelease(LPSYWordInfo pWordInfo);
+BASEGRAPH_DATARENDER_API void	SYWordInfoInit(LPCommonWordInfo pWordInfo);
+BASEGRAPH_DATARENDER_API void	SYWordInfoRelease(LPCommonWordInfo pWordInfo);
 
 BASEGRAPH_DATARENDER_API BOOL	SYWordInfoFill(HDC hDC,					//如果NULL则函数内部申请
-									   LPSYWordInfo pWordInfo,		//WordInfo不持有任何未释放的空间
+									   LPCommonWordInfo pWordInfo,		//WordInfo不持有任何未释放的空间
 									   TCHAR* pChar,				//非空时强制使用该Char取字模
-									   LPSYFont pFont, 
+									   LPCommonFont pFont, 
 									   BOOL bHorizontal);
 
 

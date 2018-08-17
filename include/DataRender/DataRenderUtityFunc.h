@@ -99,7 +99,7 @@ BASEGRAPH_DATARENDER_API void  effect_convex(unsigned char* pmask,
 	int ntype,
 	float fangle,
 	unsigned long color);
-void	Modify3DUnitFrom2DUnit(SYUnit* punit3d, SYUnit* punit2d, SYMaterial** p3dcolor, int nSubFace, LPSYStretchParam pStretch);
+void	Modify3DUnitFrom2DUnit(SYUnit* punit3d, SYUnit* punit2d, SYMaterial** p3dcolor, int nSubFace, LPCommonStretchParam pStretch);
 
 /************************************************************************/
 /*rectf& rtDesÄ¿±ê¾ØÐÎ                                                  */

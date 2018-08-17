@@ -15,8 +15,8 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 //Ç°ÖÃÉùÃ÷
-void		SYFont_Init(LPSYFont pFont);
-void		SYText_GetFontProperty(void* pTextProp, LPSYFont pFont, int nIndex);
+void		SYFont_Init(LPCommonFont pFont);
+void		SYText_GetFontProperty(void* pTextProp, LPCommonFont pFont, int nIndex);
 unsigned long	 SYCRC32Cal(unsigned long ulCRC32, unsigned char *pBuf, unsigned long ulLen);
 //////////////////////////////////////////////////////////////////////////
 // class CBaseUsp

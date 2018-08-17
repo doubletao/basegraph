@@ -607,7 +607,7 @@ BOOL SYIsUseLocalFont(TCHAR ch)
 	return TRUE;
 }
 
-HFONT SYFont_CreateFont(LPSYFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint)
+HFONT SYFont_CreateFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint)
 {
 	//逻辑字高与字号转换关系
 	//LONG lFontSize = pFont->lfHeight * 72.0 / GetDeviceCaps(hDC, LOGPIXELSY) + 0.5 ;
@@ -670,7 +670,7 @@ HFONT SYFont_CreateFont(LPSYFont pFont, TCHAR ch, LPCTSTR szFont, BOOL bHint)
 	return hFont;
 }
 
-HFONT SYFont_CreateScaleFont(LPSYFont pFont, TCHAR ch, LPCTSTR szFont, int nScaleW, int nScaleH)
+HFONT SYFont_CreateScaleFont(LPCommonFont pFont, TCHAR ch, LPCTSTR szFont, int nScaleW, int nScaleH)
 {
 	HFONT hFont = NULL;
 	int nWidth = (int)(pFont->lfWidth);
@@ -836,21 +836,21 @@ static BOOL AdjustCharWidth(HDC hDC,
 	return TRUE;
 }
 
-void SYWordInfoInit(LPSYWordInfo pWordInfo)
+void SYWordInfoInit(LPCommonWordInfo pWordInfo)
 {
 	memset(pWordInfo, 0, sizeof(SYWordInfo));
 	pWordInfo->bVisible = true;
 }
 
-void SYWordInfoRelease(LPSYWordInfo pWordInfo)
+void SYWordInfoRelease(LPCommonWordInfo pWordInfo)
 {
 	graph_release(&pWordInfo->vgGraph);
 }
 
 BOOL SYWordInfoFill(HDC hDC, 
-					LPSYWordInfo pWordInfo, 
+					LPCommonWordInfo pWordInfo, 
 					TCHAR* pChar, 
-					LPSYFont pFont, 
+					LPCommonFont pFont, 
 					BOOL bHorizontal)
 {
 	//1、复杂文字排版时，A、B、C、Ascent以及Descent这些信息是不足以作为排版依据的，
