@@ -583,7 +583,7 @@ void ReleaseSimpleSpaceConvert( CSimpleSpaceConvert *pConvert )
 	}
 }
 
-void SYCaclTransMatrixFromTwoPointInReal(matrix4f *dest, rectf *rtBound, const float3 *pt0, const float3 *pt1, ObjectCalculator *pParentCalculator)
+void CaclTransMatrixFromTwoPointInReal(matrix4f *dest, rectf *rtBound, const float3 *pt0, const float3 *pt1, ObjectCalculator *pParentCalculator)
 {
 	CSimpleSpaceConvert *pSpaceConvert = CreateSimpleSpaceConvert( pParentCalculator, TRUE, TRUE );
 	float fWorkPlaneDis = pSpaceConvert->GetViewWorkPlaneDis();
@@ -653,12 +653,12 @@ void SYCaclTransMatrixFromTwoPointInReal(matrix4f *dest, rectf *rtBound, const f
 	ReleaseSimpleSpaceConvert( pSpaceConvert );
 }
 
-void BASEGRAPH_DATARENDER_API SYCaclTransMatrixFromTwoPointInReal(matrix4f * dest, rectf * rtBound, const float3 * pt0, const float3 * pt1, CString strParentID)
+void BASEGRAPH_DATARENDER_API CaclTransMatrixFromTwoPointInReal(matrix4f * dest, rectf * rtBound, const float3 * pt0, const float3 * pt1, CString strParentID)
 {
 	ObjectCalculator * pCalculator = CalculatorManager::Instance().GetObjCalculator(strParentID);
 	if (nullptr != pCalculator)
 	{
-		SYCaclTransMatrixFromTwoPointInReal(dest, rtBound, pt0, pt1, pCalculator);
+		CaclTransMatrixFromTwoPointInReal(dest, rtBound, pt0, pt1, pCalculator);
 	}
 	else
 	{

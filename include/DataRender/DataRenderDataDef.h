@@ -409,7 +409,7 @@ enum CONE_ITEM_PART
 #define		SYCURVE_NAME_LEN				16	
 #define		Common_NAMELENGTH					128
 #define		SIMPSHAPE_NAME_MAXLEN			32
-#define		SYACTION_RESERVED_DWORD			6
+#define		BaseGraphACTION_RESERVED_DWORD			6
 #define		EVEN_TASK_MAXSIZE				2
 //物件尺寸最小值
 //一般用于标题字、滚屏等，曲线等物件不受此限制。

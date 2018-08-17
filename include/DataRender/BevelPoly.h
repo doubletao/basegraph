@@ -22,11 +22,11 @@ typedef struct tag_ResultNode
 typedef CBaseARray<Index3*> CBaseIndex3Array;
 typedef CBaseARray<IntersectNode*> CBaseIntersectNodeArray;
 typedef CBaseARray<ResultNode*> CBaseResultNodeArray;
-class SYBevelPoly
+class BevelPoly
 {
 public:
-	SYBevelPoly(void);
-	~SYBevelPoly(void);
+	BevelPoly(void);
+	~BevelPoly(void);
 	void BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN float fHeight, OUT point3f* &ptf3DRet, OUT int &nTriPtSize, IN BOOL bAntiClockwise ) ;
 protected:
 	BOOL NearLine(IN pointf* ptf ) ;

@@ -10,15 +10,15 @@ static char THIS_FILE[] = __FILE__;
 #endif
 const float g_fScaleAAA = 1.01f;
 
-SYBevelPoly::SYBevelPoly(void)
+BevelPoly::BevelPoly(void)
 {
 }
 
-SYBevelPoly::~SYBevelPoly(void)
+BevelPoly::~BevelPoly(void)
 {
 }
 
-void SYBevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN float fHeight, OUT point3f* &ptf3DRet, OUT int &nTriPtSize, IN BOOL bAntiClockwise ) 
+void BevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN float fHeight, OUT point3f* &ptf3DRet, OUT int &nTriPtSize, IN BOOL bAntiClockwise ) 
 {
 	if (pCurveCell->type == uncloss_line || pCurveCell->npoint < 3 ) 
 	{
@@ -107,7 +107,7 @@ void SYBevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN f
 //		double rudemillisecond = (t_GenerateRudeBevelEnd.QuadPart - t_start.QuadPart)*double(1000)/(t_freqency.QuadPart);
 //		double cutmillisecond = (t_CutEnd.QuadPart - t_start.QuadPart)*double(1000)/(t_freqency.QuadPart);
 //		
-//		printf("SYBevelPoly: 粗切: %.3gms, 细切: %.3gms\n",rudemillisecond,cutmillisecond);
+//		printf("BevelPoly: 粗切: %.3gms, 细切: %.3gms\n",rudemillisecond,cutmillisecond);
 //#endif // _DEBUG
 
 	//转换成数组
@@ -186,7 +186,7 @@ void SYBevelPoly::BevelPolyAPI(IN vectorcell * pCurveCell, IN float fWidth, IN f
 //输入：
 //输出：
 //------------------------------------------------------------------
-BOOL SYBevelPoly::NearLine(IN pointf* ptf ) 
+BOOL BevelPoly::NearLine(IN pointf* ptf ) 
 {
 	float FDIST = 0.1f;
 	float d0 = (float)sqrt( (double)( (ptf[3].x - ptf[0].x)*(ptf[3].x - ptf[0].x) + (ptf[3].y - ptf[0].y)*(ptf[3].y - ptf[0].y) ) );
@@ -235,7 +235,7 @@ BOOL SYBevelPoly::NearLine(IN pointf* ptf )
 //输入：
 //输出：
 //------------------------------------------------------------------
-void SYBevelPoly::AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBasePoint2fPtrArray * pptrPolyNorm, IN pointf * ctrlPoints)
+void BevelPoly::AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBasePoint2fPtrArray * pptrPolyNorm, IN pointf * ctrlPoints)
 {
 	// 接近直线，则直接加入
 	// 否则分成两段，递归调用
@@ -301,7 +301,7 @@ void SYBevelPoly::AddCurve2PtfPoly(OUT CBasePoint2fPtrArray * pptrPoly, OUT CBas
 	}
 } // END OF AddCurve2PtfPoly
 
-void SYBevelPoly::GenerateRudeBevel4(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
+void BevelPoly::GenerateRudeBevel4(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
 								 OUT CBasePoint3fPtrArray * pptrArrRude4/*, OUT CPtrArray * pptrArrBox4*/ )
 {
 	int nSize = (int)BaseAR_GetSize(pptrPoly);
@@ -372,7 +372,7 @@ void SYBevelPoly::GenerateRudeBevel4(IN BaseARray * pptrPoly, IN float fWidth, I
 	}
 } // END OF GenerateRudeBevel4
 
-void SYBevelPoly::GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
+void BevelPoly::GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, IN float fHeight, 
 								 OUT CBasePoint3fPtrArray * pptrArrRude3, /*OUT CPtrArray * pptrArrBox3, */OUT CBaseIndex3Array *pptrArrIndex3 )
 {
 	int nSize = (int)BaseAR_GetSize(pptrPoly);
@@ -452,7 +452,7 @@ void SYBevelPoly::GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, I
 
 ////////////////////////////////////////////////////////////////////////////
 //// 三个pointf型顶点的外包矩形
-//void SYBevelPoly::GetRectEnvelop(IN pointf ptf0, IN pointf ptf1, IN pointf ptf2, rectf * pRectf )
+//void BevelPoly::GetRectEnvelop(IN pointf ptf0, IN pointf ptf1, IN pointf ptf2, rectf * pRectf )
 //{
 //	pRectf->left = ptf0.x;
 //	pRectf->right = ptf0.x;
@@ -502,7 +502,7 @@ void SYBevelPoly::GenerateRudeBevel3(IN BaseARray * pptrPoly, IN float fWidth, I
 //输出：pt2
 //注意！鉴于只是供本程序内部使用时的特点,程序中没有考虑没有交点和两个交点时的情况
 //------------------------------------------------------------------
-int SYBevelPoly::MakeASlope(OUT CBasePoint3fPtrArray *pptArr,
+int BevelPoly::MakeASlope(OUT CBasePoint3fPtrArray *pptArr,
 						IN pointf* pCenter,
 						IN pointf* pStartPt,
 						IN pointf* pEndPt,  
@@ -551,7 +551,7 @@ int SYBevelPoly::MakeASlope(OUT CBasePoint3fPtrArray *pptArr,
 } // END OF MakeASlope
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::CutUnSeenByOne(IN point3f* ptfFish, IN point3f* ptfKnife, IN int nFishSize, IN int nKnifeSize,
+void BevelPoly::CutUnSeenByOne(IN point3f* ptfFish, IN point3f* ptfKnife, IN int nFishSize, IN int nKnifeSize,
 							 IN OUT CBasePoint2fPtrArray * pptrCutLineSegArr)
 {
 	int i;
@@ -709,7 +709,7 @@ void SYBevelPoly::CutUnSeenByOne(IN point3f* ptfFish, IN point3f* ptfKnife, IN i
 } // END OF CutUnSeenByOne
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CBasePoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+void BevelPoly::CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CBasePoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
 						IN CBasePoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CBaseIndex3Array *pptrArrIndex3,
 						IN float fWidth, IN float fHeight, OUT CBasePoint3fPtrArray * pptrTri ) 
 {
@@ -837,7 +837,7 @@ void SYBevelPoly::CutToTri4(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm
 } // END OF CutToTri4
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CBasePoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
+void BevelPoly::CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm, IN  CBasePoint3fPtrArray * pptrArrRude4, /*IN CPtrArray * pptrArrBox4,*/
 						IN CBasePoint3fPtrArray * pptrArrRude3, /*IN CPtrArray * pptrArrBox3, */IN CBaseIndex3Array *pptrArrIndex3,
 						IN float fWidth, IN float fHeight, OUT CBasePoint3fPtrArray * pptrTri ) 
 {
@@ -1035,7 +1035,7 @@ void SYBevelPoly::CutToTri3(IN BaseARray * pptrPoly, IN BaseARray * pptrPolyNorm
 //线段组求交
 // 求交的结果放在一个Array中：
 // pointf 点坐标
-void SYBevelPoly::IntersectEachOther(IN CBasePoint2fPtrArray * pptrLineSegArr,  // 输入线段顶点Array
+void BevelPoly::IntersectEachOther(IN CBasePoint2fPtrArray * pptrLineSegArr,  // 输入线段顶点Array
 								 OUT CBaseIntersectNodeArray * pptrIntersectPtArr ) // 交点Array
 {
 	int i, j;
@@ -1075,7 +1075,7 @@ void SYBevelPoly::IntersectEachOther(IN CBasePoint2fPtrArray * pptrLineSegArr,  
 	} // end of outer-for 
 } // END OF IntersectEachOther
 
-void SYBevelPoly::GetResultTri4(IN pointf ptfFormer0, IN pointf ptfFormer1,  
+void BevelPoly::GetResultTri4(IN pointf ptfFormer0, IN pointf ptfFormer1,  
 							IN pointf ptfConeHeadNorm0,  
 							IN pointf ptfConeHeadNorm1,  
 							IN CBasePoint2fPtrArray *pptrCutLineSegArr,  
@@ -1383,7 +1383,7 @@ void SYBevelPoly::GetResultTri4(IN pointf ptfFormer0, IN pointf ptfFormer1,
 } // END OF GetResultTri4
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::GetResultTri3(IN pointf ptfConeHead,  
+void BevelPoly::GetResultTri3(IN pointf ptfConeHead,  
 							IN pointf ptfConeHeadNorm,  
 							IN pointf ptfFormer0, IN pointf ptfFormer1,  
 							IN CBasePoint2fPtrArray *pptrCutLineSegArr,  
@@ -1648,14 +1648,14 @@ void SYBevelPoly::GetResultTri3(IN pointf ptfConeHead,
 ////////////////////////////////////////////////////////////
 //// 求点p到线段l所在直线的距离 
 ////////////////////////////////////////////////////////////
-//double SYBevelPoly::PToLDist(IN pointf ptf, IN pointf ptfLS, IN pointf ptfLE) 
+//double BevelPoly::PToLDist(IN pointf ptf, IN pointf ptfLS, IN pointf ptfLE) 
 //{ 
 //	float dMultiply = (ptf.x - ptfLS.x)*(ptfLE.y - ptfLS.y) - (ptfLE.x - ptfLS.x)*(ptf.y - ptfLS.y);
 //	return abs(dMultiply) / sqrt((float)( (ptfLE.x - ptfLS.x)*(ptfLE.x - ptfLS.x) + (ptfLE.y - ptfLS.y)*(ptfLE.y - ptfLS.y) ));
 //} // End of PToLDist
 //
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::Perpendicular(IN pointf  a, IN pointf b, IN pointf c, OUT pointf &ptfP, OUT float & fParam )
+void BevelPoly::Perpendicular(IN pointf  a, IN pointf b, IN pointf c, OUT pointf &ptfP, OUT float & fParam )
 {
 	pointf  ab;
 	ab.x = b.x - a.x;
@@ -1676,7 +1676,7 @@ void SYBevelPoly::Perpendicular(IN pointf  a, IN pointf b, IN pointf c, OUT poin
 } // END OF Perpendicular
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::InsertNode(IN OUT CBaseResultNodeArray *pptrResultNodeArr, IN ResultNode * pNode)
+void BevelPoly::InsertNode(IN OUT CBaseResultNodeArray *pptrResultNodeArr, IN ResultNode * pNode)
 {
 	const float fZero = 0.0001f;
 	int i;
@@ -1707,7 +1707,7 @@ void SYBevelPoly::InsertNode(IN OUT CBaseResultNodeArray *pptrResultNodeArr, IN 
 
 //////////////////////////////////////////////////////////////////////////
 // 功能: 求外包矩形
-void SYBevelPoly::GetEnvelop(IN pointf *ptf, IN int nSize, OUT rectf &rt)
+void BevelPoly::GetEnvelop(IN pointf *ptf, IN int nSize, OUT rectf &rt)
 {
 	rt.left = 65535;
 	rt.top = 65535;
@@ -1737,7 +1737,7 @@ void SYBevelPoly::GetEnvelop(IN pointf *ptf, IN int nSize, OUT rectf &rt)
 
 //////////////////////////////////////////////////////////////////////////
 // 矩形相交
-BOOL SYBevelPoly::RectOverlap(IN rectf rt1, IN rectf rt2)
+BOOL BevelPoly::RectOverlap(IN rectf rt1, IN rectf rt2)
 {
 	//先判断是否合法矩形
 #ifdef DEBUG
@@ -1761,7 +1761,7 @@ BOOL SYBevelPoly::RectOverlap(IN rectf rt1, IN rectf rt2)
 } // END OF RectOverlap
 
 //////////////////////////////////////////////////////////////////////////
-void SYBevelPoly::ProjCrossLine(IN point3f ptf1, IN point3f ptf2, IN point3f ptf3, 
+void BevelPoly::ProjCrossLine(IN point3f ptf1, IN point3f ptf2, IN point3f ptf3, 
 				   IN point3f ptf4, IN point3f ptf5, IN point3f ptf6,
 				   OUT float &fA, OUT float &fB, OUT float &fC)
 {
@@ -1800,7 +1800,7 @@ void SYBevelPoly::ProjCrossLine(IN point3f ptf1, IN point3f ptf2, IN point3f ptf
 } // END OF ProjCrossLine
 
 //////////////////////////////////////////////////////////////////////////
-BOOL SYBevelPoly::CutLine(IN float fA, IN float fB, IN float fC,
+BOOL BevelPoly::CutLine(IN float fA, IN float fB, IN float fC,
 			 IN pointf* ptf, IN int nSize,
 			 OUT pointf &ptfS, OUT pointf &ptfE )
 {
@@ -1846,7 +1846,7 @@ BOOL SYBevelPoly::CutLine(IN float fA, IN float fB, IN float fC,
 // 输出：若有交点，则输出交点
 // 返回：若有交点，返回ＴＲＵＥ；否则返回ＦＡＬＳＥ
 //
-BOOL SYBevelPoly::LineCrossLineSeg(IN float fA, IN float fB, IN float fC,
+BOOL BevelPoly::LineCrossLineSeg(IN float fA, IN float fB, IN float fC,
 					  IN pointf ptfS, IN pointf ptfE, 
 					  OUT pointf & ptfCross )
 {
@@ -1872,7 +1872,7 @@ BOOL SYBevelPoly::LineCrossLineSeg(IN float fA, IN float fB, IN float fC,
 	return FALSE;
 } // END OF LineCrossLineSeg
 
-void SYBevelPoly::GetMinMaxXY(OUT float &fMinX, OUT float &fMaxX, OUT float &fMinY, OUT float &fMaxY,
+void BevelPoly::GetMinMaxXY(OUT float &fMinX, OUT float &fMaxX, OUT float &fMinY, OUT float &fMaxY,
 						  IN pointf ptfInS, IN pointf ptfInE, IN pointf ptfS, IN pointf ptfE)
 {
 	fMinX = fMaxX = ptfInS.x;
@@ -1894,7 +1894,7 @@ void SYBevelPoly::GetMinMaxXY(OUT float &fMinX, OUT float &fMaxX, OUT float &fMi
 	if (ptfE.y > fMaxY) fMaxY = ptfE.y;
 } // END OF GetMinMaxXY
 
-BOOL SYBevelPoly::SamePtf(pointf ptf1, pointf ptf2)
+BOOL BevelPoly::SamePtf(pointf ptf1, pointf ptf2)
 {
 	float fD = (ptf1.x - ptf2.x) * (ptf1.x - ptf2.x) + (ptf1.y - ptf2.y) * (ptf1.y - ptf2.y);
 	if (fD < 0.1*g_fScaleAAA) 
@@ -1907,7 +1907,7 @@ BOOL SYBevelPoly::SamePtf(pointf ptf1, pointf ptf2)
 	}
 } // end of SamePtf
 
-BOOL SYBevelPoly::SingleLineIntersection(
+BOOL BevelPoly::SingleLineIntersection(
 									 IN pointf startPt1, 
 									 IN pointf endPt1, 
 									 IN pointf startPt2, 
@@ -1974,7 +1974,7 @@ BOOL SYBevelPoly::SingleLineIntersection(
 
 }//End of SingleLineIntersection
 
-void SYBevelPoly::GetAngle(IN pointf a, IN pointf b, OUT float & angle)
+void BevelPoly::GetAngle(IN pointf a, IN pointf b, OUT float & angle)
 {
 	float fZero = 0.00001f;
 	float ra = sqrtf(a.x * a.x + a.y * a.y);

@@ -199,7 +199,7 @@ void CreateNormalPrimitive(SYVertex3D* pVertex,SYVertex3D** ppVB,LPDWORD* ppIB,U
 
 void CreateBevelSphere(UINT uiPrecision,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode);
 void CreateBevelCylinder(UINT uiPrecision,UINT uiSegments,SYVertex3D** ppVB,LPDWORD* ppIB,UINT& nF,UINT& nV,BOOL bCenterSplitMode);
-BOOL  SYCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int nVStart,SYTriType nType)
+BOOL  BaseGraphCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int nVStart,SYTriType nType)
 {
 	// 防止多个物体同时操作时冲突
 	Autolock lock(&g_csLock);
@@ -504,7 +504,7 @@ void SetSegmentPoint( IN OUT SYVertex3D* pPlanePt, IN int nRowNum, IN int nColum
 		}
 	}
 }
-BOOL SYCreateSegmentGraph( IN OUT SYModel* pMod, IN float fLeftWidth, IN float fRightWidth, IN float fTopHeight, IN float fBottomHeight )
+BOOL BaseGraphCreateSegmentGraph( IN OUT SYModel* pMod, IN float fLeftWidth, IN float fRightWidth, IN float fTopHeight, IN float fBottomHeight )
 {
 	float fWidth = fRightWidth - fLeftWidth, fHeight = fTopHeight - fBottomHeight;
 	vector3f vNorm = { 0.f, 0.f, -1.f };
@@ -1408,7 +1408,7 @@ void GenerateBevel( IN vectorgraph * pFigure,
 	vectorcell* pCurveCell = NULL;
 	point3f* lpPtf3D = NULL, *lpPtf3DNew = NULL, *ptf3DRet = NULL, *pTriPoint0 = NULL, *pTriPoint1 = NULL, 
 		*pTriPoint2 = NULL;
-	SYBevelPoly tpBevelPoly;
+	BevelPoly tpBevelPoly;
 
 	float fMaxCellWidth = 0.0f;
 	float fCurCellWidth = 0.0f;
@@ -1654,7 +1654,7 @@ void GetBoundRt( CBasePoint3fPtrArray *pptrTri, rectf &rt )
 		}
 	}
 }
-BOOL SYCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN int nBevelType)
+BOOL BaseGraphCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN int nBevelType)
 {
 	if(fBevelWidth == 0 || fBevelHeight == 0)
 		nBevelType = Common_BEVEL_NONE;
@@ -1823,13 +1823,13 @@ BOOL SYCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN floa
 	return TRUE;
 }
 
-void SYCreateModelTangent(SYModel* pMod)
+void BaseGraphCreateModelTangent(SYModel* pMod)
 {
 	for(int i = 0;i < pMod->nviewsub;i++)
 	{
 		DWORD* pIndex = pMod->indecs + pMod->viewsub[i].istart;
 		SYVertex3D* pVertex = pMod->v + pMod->viewsub[i].vstart;
-		SYCreateTangent(pVertex ,pMod->viewsub[i].vcount,pIndex,pMod->viewsub[i].icount,pMod->viewsub[i].vstart,pMod->viewsub[i].nTri_Type);
+		BaseGraphCreateTangent(pVertex ,pMod->viewsub[i].vcount,pIndex,pMod->viewsub[i].icount,pMod->viewsub[i].vstart,pMod->viewsub[i].nTri_Type);
 	}
 }
 
@@ -1838,16 +1838,16 @@ BOOL SYModel_CreateSegment( IN OUT SYModel* pMod, IN float fLeftWidth, IN float 
 	if(pMod==NULL)
 		return FALSE;
 	SYInitialSegment(pMod);
-	SYCreateSegmentGraph( pMod, fLeftWidth, fRightWidth, fTopHeight, fBottomHeight );
-	SYCreateModelTangent(pMod);
+	BaseGraphCreateSegmentGraph( pMod, fLeftWidth, fRightWidth, fTopHeight, fBottomHeight );
+	BaseGraphCreateModelTangent(pMod);
 	return TRUE;
 }
 
 BOOL SYModel_CreateBevel( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN const int nBevelType) 
 {
 	SYInitialBevel(pMod);
-	SYCreateBevelGraph( pMod, p2DGraph, fHeight, fBevelWidth, fBevelHeight, nBevelType);
-	SYCreateModelTangent(pMod);
+	BaseGraphCreateBevelGraph( pMod, p2DGraph, fHeight, fBevelWidth, fBevelHeight, nBevelType);
+	BaseGraphCreateModelTangent(pMod);
 	return TRUE;
 }
 void SetSpherePoint( IN OUT SYVertex3D* pSpherePt, IN float fRadius, IN int nSphereCircleNum, IN int nSphere_Per_Circle_VertexNum, IN BOOL bFinished )
@@ -1877,7 +1877,7 @@ void SetSpherePoint( IN OUT SYVertex3D* pSpherePt, IN float fRadius, IN int nSph
 		}
 	}
 }
-BOOL SYCreateSphereGraph(IN OUT SYModel* pMod, IN float fRad ,BOOL bSphereTex, IN int nLevel /* = 1 */){
+BOOL BaseGraphCreateSphereGraph(IN OUT SYModel* pMod, IN float fRad ,BOOL bSphereTex, IN int nLevel /* = 1 */){
 	SetSpherePoint( &pMod->v[g_stuSphereSubs[SPHERE_MATERIAL_PARAMCHG].vstart], fRad, g_nSphere_Circle_Num * nLevel, g_nSphere_Per_Circle_VertexNum * nLevel, FALSE );
 	if(!bSphereTex)
 	{
@@ -5498,8 +5498,8 @@ void _CalcuLineNormal(vector3f* pOut,vector3f* pIn1,vector3f* pIn2)
 // 球
 BOOL SYModel_CreateSphere(IN OUT SYModel* pMod, IN float fRad ,BOOL bShpereTex,IN int nLevel /* = 1 */){
 	SYInitialSphere(pMod,nLevel);
-	SYCreateSphereGraph( pMod, fRad ,bShpereTex,nLevel);	
-	SYCreateModelTangent(pMod);
+	BaseGraphCreateSphereGraph( pMod, fRad ,bShpereTex,nLevel);	
+	BaseGraphCreateModelTangent(pMod);
 	return TRUE;
 }
 
@@ -5537,7 +5537,7 @@ BOOL SYModel_CreateBevelBox(SYModel* pMod,float fLength,float fHeight,float fThi
 		CreatePlaneBevelBox(pMod, fLength, fHeight, fThick, nDivision, 2, fTransitionLen, fTransitionHeight,FALSE);
 	}
 
-	SYCreateModelTangent(pMod);
+	BaseGraphCreateModelTangent(pMod);
 	return TRUE;
 }
 
@@ -6204,7 +6204,7 @@ BOOL SYModel_CreateCylinder(SYModel* pMod, BOOL bPrism,float fHeight,
 		}
 	}
 
-	SYCreateModelTangent(pMod);
+	BaseGraphCreateModelTangent(pMod);
 	return TRUE;
 }
 
@@ -11487,6 +11487,6 @@ SYModel* MakeModel( SYModel* pNewModel,
 		pNewModel->indecs[nOffset + 2] = pIB[i * 3 + 1];
 		pNewModel->viewsub[pAB[i]].nTri_Num++;
 	}
-	//SYCreateTangent(pNewModel->v,nV,pNewModel->indecs,pNewModel->icount,0,Common_TRIANGLE_LIST);
+	//BaseGraphCreateTangent(pNewModel->v,nV,pNewModel->indecs,pNewModel->icount,0,Common_TRIANGLE_LIST);
 	return pNewModel;
 }

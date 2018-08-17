@@ -165,7 +165,7 @@ typedef CBaseARray<curCtrl*,curCtrl*> CurveAr;
 //字符串按指定字符拆分
  void	SYStr_SplitByChar(LPCTSTR szString, TCHAR cSplit, CBaseStrArray& arString);
 //创建颜色字体Buffer
- BOOL	SYCreateTextBuffer(LPDWORD pdwBuffer, int* pnWidth, int* pnHeight, 
+ BOOL	BaseGraphCreateTextBuffer(LPDWORD pdwBuffer, int* pnWidth, int* pnHeight, 
 						LPCTSTR szText, LPCommonFont pFont, LPCommonStaticEffect pColor,double dScale);
 
 /*************************************************************/

@@ -488,7 +488,7 @@ BOOL bInLine(point2f &pt0,point2f &pt1,point2f &pt2)
 	return FALSE;
 }
 
-rectf  SYCacArcRect(point2f& pt0,point2f& pt1, point2f& pt2,float* pfR,point2f* pOrg)
+rectf  CacArcRect(point2f& pt0,point2f& pt1, point2f& pt2,float* pfR,point2f* pOrg)
 {
 	rectf Rt;
 	memset(&Rt, 0, sizeof(rectf));

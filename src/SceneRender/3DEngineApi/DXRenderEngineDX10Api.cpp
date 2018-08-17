@@ -569,7 +569,7 @@ void CreateBlendState(Common_DeviceDX10* pDevice)
 	D3D10_BLEND_DESC blendDesc;
 	memset(&blendDesc,0,sizeof(blendDesc));
 	//////////////////////////////////////////////////////////////////////////
-	//SYBlendDisable
+	//BlendDisable
 	for (int i = 0; i < 8;i++)
 	{
 		blendDesc.BlendEnable[i] = 0;
@@ -578,7 +578,7 @@ void CreateBlendState(Common_DeviceDX10* pDevice)
 	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlendDisable]);
 	
 	//////////////////////////////////////////////////////////////////////////
-	//SYBlendEnable,
+	//BlendEnable,
 	for (int i = 0; i < 8;i++)
 	{
 		blendDesc.BlendEnable[i] = 1;
@@ -594,12 +594,12 @@ void CreateBlendState(Common_DeviceDX10* pDevice)
 	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Mix]);
 
 	//////////////////////////////////////////////////////////////////////////
-	//SYBlend_Trans_Mix,
+	//Blend_Trans_Mix,
 	blendDesc.AlphaToCoverageEnable = FALSE;
 	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Trans_Mix]);
 
 	//////////////////////////////////////////////////////////////////////////
-	//SYBlend_Enhance,
+	//Blend_Enhance,
 	blendDesc.SrcBlend =D3D10_BLEND_ONE ;
 	blendDesc.DestBlend = D3D10_BLEND_INV_SRC_ALPHA ;
 	blendDesc.BlendOp = D3D10_BLEND_OP_ADD;
@@ -608,7 +608,7 @@ void CreateBlendState(Common_DeviceDX10* pDevice)
 	blendDesc.DestBlendAlpha = D3D10_BLEND_INV_SRC_ALPHA;
 	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Enhance]);
 	//////////////////////////////////////////////////////////////////////////
-	//SYBlend_Add
+	//Blend_Add
 	blendDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
 	blendDesc.DestBlend = D3D10_BLEND_DEST_ALPHA;
 	blendDesc.BlendOp = D3D10_BLEND_OP_ADD;
@@ -618,7 +618,7 @@ void CreateBlendState(Common_DeviceDX10* pDevice)
 	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Add]);
 
 
-	//SYBlend_Effect_Fire1
+	//Blend_Effect_Fire1
 	blendDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
 	blendDesc.DestBlend = D3D10_BLEND_ONE;
 	blendDesc.BlendOp = D3D10_BLEND_OP_ADD;
@@ -627,7 +627,7 @@ void CreateBlendState(Common_DeviceDX10* pDevice)
 	blendDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
 	pDevice->pDevice->CreateBlendState(&blendDesc,&pDevice->pBlendState[DXBlend_Effect_Fire1]);
 
-	//SYBlend_Effect_Fire2
+	//Blend_Effect_Fire2
 	blendDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
 	blendDesc.DestBlend = D3D10_BLEND_INV_SRC_ALPHA;
 	blendDesc.BlendOp = D3D10_BLEND_OP_ADD;
@@ -3051,7 +3051,7 @@ void TexProcessSetPixShader(Common_DeviceDX10* pDevice,DXTexProcessIn* param,int
 		SetConstBuffer(pDevice,DXShaderType_PixelShader,0,pDevice->hRenderTexCB);
 		SetShader(pDevice,DXShaderType_PixelShader,pDevice->hUYVYBrightPS);
 		SetSamplerState(pDevice,DXSample_Point_Clamp,DXShaderType_PixelShader,0);
-		//SetBlendState(pDevice,SYBlendDisable);
+		//SetBlendState(pDevice,BlendDisable);
 	}
 }
 bool Render_TexProcess(int hDevice,void* paramin,void* paramout)

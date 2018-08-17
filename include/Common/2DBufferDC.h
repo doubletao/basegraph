@@ -35,10 +35,10 @@ public:
 	CCommonBufferDC(void);
 	virtual ~CCommonBufferDC(void);
 
-	enum SYBORDER_STYLE		// 边框类型
+	enum CommonBORDER_STYLE		// 边框类型
 	{
-		SYBORDER_RAISED = 0,		// 凸起
-		SYBORDER_SUCKEN,			// 凹陷
+		CommonBORDER_RAISED = 0,		// 凸起
+		CommonBORDER_SUCKEN,			// 凹陷
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -228,12 +228,12 @@ public:
 					   IN float b,
 					   IN DWORD dwShadowColor,		// 暗色
                        IN DWORD dwLightColor,		// 亮色
-					   IN SYBORDER_STYLE eStyle,	// 风格
+					   IN CommonBORDER_STYLE eStyle,	// 风格
 					   IN int nBorderWidth = 1);	// 边框宽度
 	void	DrawBorder(IN const rectf &rcDest,	// 目标区域
 					   IN DWORD dwShadowColor,		// 暗色
 					   IN DWORD dwLightColor,		// 亮色
-					   IN SYBORDER_STYLE eStyle,	// 风格
+					   IN CommonBORDER_STYLE eStyle,	// 风格
 					   IN int nBorderWidth = 1);	// 边框宽度
 	void	DrawBorder(IN int l,					// 目标区域
 					   IN int t,
@@ -241,12 +241,12 @@ public:
 					   IN int b,
 					   IN DWORD dwShadowColor,		// 暗色
 					   IN DWORD dwLightColor,		// 亮色
-					   IN SYBORDER_STYLE eStyle,	// 风格
+					   IN CommonBORDER_STYLE eStyle,	// 风格
 					   IN int nBorderWidth = 1);	// 边框宽度
 	void	DrawBorder(IN const RECT &rcDest,		// 目标区域
 					   IN DWORD dwShadowColor,		// 暗色
 					   IN DWORD dwLightColor,		// 亮色
-					   IN SYBORDER_STYLE eStyle,	// 风格
+					   IN CommonBORDER_STYLE eStyle,	// 风格
 					   IN int nBorderWidth = 1);	// 边框宽度
 	// 如果成功则返回文本高度，否则返回0。
 	int		DrawText(IN LPCTSTR lpszString,		// 文本
@@ -318,7 +318,7 @@ public:
 						IN int b,
 						IN DWORD dwShadowColor,		// 暗色
 						IN DWORD dwLightColor,		// 亮色
-						IN SYBORDER_STYLE eStyle,	// 风格
+						IN CommonBORDER_STYLE eStyle,	// 风格
 						IN int nBorderWidth);		// 边框宽度
 	// 如果成功则返回文本高度，否则返回0。
 	int		_DrawText(IN LPCTSTR lpszString,	// 文本
@@ -1200,7 +1200,7 @@ inline void CCommonBufferDC::DrawBorder(IN float l,						// 目标区域
 									IN float b,
 									IN DWORD dwShadowColor,			// 暗色
 									IN DWORD dwLightColor,			// 亮色
-									IN SYBORDER_STYLE eStyle,		// 风格
+									IN CommonBORDER_STYLE eStyle,		// 风格
 									IN int nBorderWidth/* = 1*/)	// 边框宽度
 {
 	ClientToScreen(l, t);
@@ -1210,7 +1210,7 @@ inline void CCommonBufferDC::DrawBorder(IN float l,						// 目标区域
 inline void CCommonBufferDC::DrawBorder(IN const rectf &rcDest,		// 目标区域
 									IN DWORD dwShadowColor,			// 暗色
 									IN DWORD dwLightColor,			// 亮色
-									IN SYBORDER_STYLE eStyle,		// 风格
+									IN CommonBORDER_STYLE eStyle,		// 风格
 									IN int nBorderWidth/* = 1*/)	// 边框宽度
 {
 	DrawBorder(rcDest.left, rcDest.top, rcDest.top, rcDest.bottom, dwShadowColor, dwLightColor, eStyle, nBorderWidth);
@@ -1221,7 +1221,7 @@ inline void CCommonBufferDC::DrawBorder(IN int l,					// 目标区域
 									IN int b,
 									IN DWORD dwShadowColor,			// 暗色
 									IN DWORD dwLightColor,			// 亮色
-									IN SYBORDER_STYLE eStyle,		// 风格
+									IN CommonBORDER_STYLE eStyle,		// 风格
 									IN int nBorderWidth/* = 1*/)	// 边框宽度
 {
 	ClientToScreen(l, t);
@@ -1231,7 +1231,7 @@ inline void CCommonBufferDC::DrawBorder(IN int l,					// 目标区域
 inline void CCommonBufferDC::DrawBorder(IN const RECT &rcDest,			// 目标区域
 									IN DWORD dwShadowColor,			// 暗色
 									IN DWORD dwLightColor,			// 亮色
-									IN SYBORDER_STYLE eStyle,		// 风格
+									IN CommonBORDER_STYLE eStyle,		// 风格
 									IN int nBorderWidth/* = 1*/)	// 边框宽度
 {
 	DrawBorder((int)rcDest.left, (int)rcDest.top, (int)rcDest.right, (int)rcDest.bottom,	\

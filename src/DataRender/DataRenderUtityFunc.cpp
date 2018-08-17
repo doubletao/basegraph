@@ -84,7 +84,7 @@ BASEGRAPH_DATARENDER_API int sy_copy_unit(SYUnit * pdesunit, SYUnit * psrcunit)
 	if (pdesunit->type == UNIT_2D)
 	{
 		sy_release_vectorgraph(&pdesunit->u.u2d.graph);
-		SYCopy_VectorGraph(&pdesunit->u.u2d.graph, &psrcunit->u.u2d.graph);
+		CommonCopy_VectorGraph(&pdesunit->u.u2d.graph, &psrcunit->u.u2d.graph);
 		memcpy(&pdesunit->u.u2d.staticeffect, &psrcunit->u.u2d.staticeffect, sizeof(static_effect));
 	}
 	else
@@ -380,7 +380,7 @@ BASEGRAPH_DATARENDER_API int sy_release_vectorgraph(vectorgraph * pgraph)
 	return 1;
 }
 
-BASEGRAPH_DATARENDER_API int SYCopy_VectorGraph(vectorgraph * pdesgraph, vectorgraph * psrcgraph)
+BASEGRAPH_DATARENDER_API int CommonCopy_VectorGraph(vectorgraph * pdesgraph, vectorgraph * psrcgraph)
 {
 	graph_release(pdesgraph);
 
@@ -2308,7 +2308,7 @@ BASEGRAPH_DATARENDER_API BOOL SYRenderGraphToOpBuff(IN vectorgraph * pGraph, IN 
 		memset(&BorderOut, 0, sizeof(vectorgraph));
 		if (effect->border.width == 0)
 		{
-			SYCopy_VectorGraph(&BorderOut, pGraph);
+			CommonCopy_VectorGraph(&BorderOut, pGraph);
 		}
 		else
 			SYRender_GenBorderGraph(&BorderOut, pGraph, &vborderOffset, effect->border.width, effect->border.interval, effect->border.linestyle, FALSE);

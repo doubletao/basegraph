@@ -999,7 +999,7 @@ BOOL SYWordInfoFill(HDC hDC,
 	return TRUE;
 }
 
-LPWSTR SYCopyToWChar(LPWSTR lpwsz,LPCTSTR str,UINT CodePage)
+LPWSTR CommonCopyToWChar(LPWSTR lpwsz,LPCTSTR str,UINT CodePage)
 {
 #ifdef _UNICODE
 	rsize_t n = (rsize_t)wcslen(str);
@@ -1013,7 +1013,7 @@ LPWSTR SYCopyToWChar(LPWSTR lpwsz,LPCTSTR str,UINT CodePage)
 #endif
 }
 
-LPSTR SYCopyToChar(LPSTR lpsz,LPCTSTR str,UINT CodePage)
+LPSTR CommonCopyToChar(LPSTR lpsz,LPCTSTR str,UINT CodePage)
 {
 #ifdef _UNICODE
 	int n=(int)wcslen(str);

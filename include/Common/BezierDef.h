@@ -182,7 +182,7 @@ point2f*			CommonBezierGetPtList(BaseARray &HandleArray);
 BASEGRAPH_COMMON_API float	__cdecl		CommonBezierGetYValueFromX(point2f CtrlPt[], float fX);
 
 BOOL				bInLine(point2f &pt0, point2f &pt1, point2f &pt2);
-BASEGRAPH_COMMON_API rectf	__cdecl		SYCacArcRect(point2f& pt0, point2f& pt1, point2f& pt2, float* pfR=NULL, point2f* pOrg=NULL);
+BASEGRAPH_COMMON_API rectf	__cdecl		CacArcRect(point2f& pt0, point2f& pt1, point2f& pt2, float* pfR=NULL, point2f* pOrg=NULL);
 
 BASEGRAPH_COMMON_API BOOL	__cdecl		SYGetTwoLineInterPt(const point2f &Pt1,const point2f &Pt2,const point2f &Pt3,const point2f &Pt4,point2f &InterPt);
 

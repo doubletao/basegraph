@@ -26,7 +26,7 @@ BASEGRAPH_DATARENDER_API void sy_special_effect_copy(syspecial_effect* pDstEffec
 BASEGRAPH_DATARENDER_API void sy_special_effect_release(syspecial_effect* pEffect);
 //vectorgraph
 BASEGRAPH_DATARENDER_API int sy_release_vectorgraph(vectorgraph* pgraph);
-BASEGRAPH_DATARENDER_API int  SYCopy_VectorGraph(vectorgraph* pdesgraph, vectorgraph* psrcgraph);
+BASEGRAPH_DATARENDER_API int  CommonCopy_VectorGraph(vectorgraph* pdesgraph, vectorgraph* psrcgraph);
 BASEGRAPH_DATARENDER_API void graph_release(vectorgraph* graph);
 BASEGRAPH_DATARENDER_API void CopyVectorGraph(vectorgraph* pDesGraph, const vectorgraph* pSrcGraph);
 BASEGRAPH_DATARENDER_API void SYVectorGraph_Offset(vectorgraph* pGraph, float nOffsetX, float nOffsetY);

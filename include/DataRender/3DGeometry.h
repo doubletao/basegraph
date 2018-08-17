@@ -6,13 +6,13 @@
 #define FLOAT_PI 3.14159265358979323846
 //for Bevel
 class CSCGFileReader;
-BASEGRAPH_DATARENDER_API void  SYCreateModelTangent(SYModel* pMod);
-BASEGRAPH_DATARENDER_API BOOL  SYCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int nStart,SYTriType nType);
+BASEGRAPH_DATARENDER_API void  BaseGraphCreateModelTangent(SYModel* pMod);
+BASEGRAPH_DATARENDER_API BOOL  BaseGraphCreateTangent(SYVertex3D* pVertex,int nVNum,DWORD* pIndex,int nINum,int nStart,SYTriType nType);
 BASEGRAPH_DATARENDER_API BOOL  SYInitialBevel(IN OUT SYModel* pMod);
 BASEGRAPH_DATARENDER_API BOOL  SYInitialSphere(IN OUT SYModel* pMod, int nLevel = 1);
-BASEGRAPH_DATARENDER_API BOOL  SYCreateSegmentGraph( IN OUT SYModel* pMod, IN float fLeftWidth, IN float fRightWidth, IN float fTopHeight, IN float fBottomHeight );
-BASEGRAPH_DATARENDER_API BOOL  SYCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN int nBevelType);
-BASEGRAPH_DATARENDER_API BOOL  SYCreateSphereGraph( IN OUT SYModel* pMod, IN float fRad ,BOOL bSphereTex, IN int nLevel );
+BASEGRAPH_DATARENDER_API BOOL  BaseGraphCreateSegmentGraph( IN OUT SYModel* pMod, IN float fLeftWidth, IN float fRightWidth, IN float fTopHeight, IN float fBottomHeight );
+BASEGRAPH_DATARENDER_API BOOL  BaseGraphCreateBevelGraph( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph, IN float fHeight, IN float fBevelWidth, IN float fBevelHeight, IN int nBevelType);
+BASEGRAPH_DATARENDER_API BOOL  BaseGraphCreateSphereGraph( IN OUT SYModel* pMod, IN float fRad ,BOOL bSphereTex, IN int nLevel );
 BASEGRAPH_DATARENDER_API BOOL  SYInitialSegment(IN OUT SYModel* pMod);
 BASEGRAPH_DATARENDER_API BOOL  SYModel_CreateSegment( IN OUT SYModel* pMod, IN float fLeftWidth = 0.f, IN float fRightWidth = 0.f, IN float fTopHeight = 0.f, IN float fBottomHeight = 0.f );
 BASEGRAPH_DATARENDER_API BOOL  SYModel_CreateBevel( IN OUT SYModel* pMod, IN vectorgraph* p2DGraph = NULL, IN float fHeight = NULL, IN float fBevelWidth = NULL, IN float fBevelHeight = NULL, IN const int nBevelType = NULL);

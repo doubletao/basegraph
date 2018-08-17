@@ -1669,7 +1669,7 @@ BASEGRAPH_COMMON_API int SYColor_LoadColor(IN SYColor* pColor,void* pBuffer,int 
 
 void SYColor_CreateLinearDefault(OUT SYColor* pColor)	// Ä¿±ê
 {
-	//_SYASSERT(pColor != NULL);
+	//_ASSERT(pColor != NULL);
 	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
 	pColor->type = SYCOLOR_GRAD_LINEAR;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
@@ -1684,7 +1684,7 @@ void SYColor_CreateLinearDefault(OUT SYColor* pColor)	// Ä¿±ê
 }
 void SYColor_CreateCenterRoundDefault(OUT SYColor* pColor)	// Ä¿±ê
 {
-	//_SYASSERT(pColor != NULL);
+	//_ASSERT(pColor != NULL);
 	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
 	pColor->type = SYCOLOR_GRAD_CENTER_ROUND;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
@@ -1701,7 +1701,7 @@ void SYColor_CreateCenterRoundDefault(OUT SYColor* pColor)	// Ä¿±ê
 }
 void SYColor_CreateCenterPolygonDefault(OUT SYColor* pColor)
 {
-	//_SYASSERT(pColor != NULL);
+	//_ASSERT(pColor != NULL);
 	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
 	pColor->type = SYCOLOR_GRAD_CENTER_POLYGON;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
@@ -1726,7 +1726,7 @@ void SYColor_CreateCenterPolygonDefault(OUT SYColor* pColor)
 }
 void SYColor_CreateOutlineCircleDefault(OUT SYColor* pColor)
 {
-	//_SYASSERT(pColor != NULL);
+	//_ASSERT(pColor != NULL);
 	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
 	pColor->type = SYCOLOR_GRAD_OUTLINE_CIRCLE;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
@@ -1742,7 +1742,7 @@ void SYColor_CreateOutlineCircleDefault(OUT SYColor* pColor)
 }
 void SYColor_CreateOutlinePolygonDefault(OUT SYColor* pColor)
 {
-	//_SYASSERT(pColor != NULL);
+	//_ASSERT(pColor != NULL);
 	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
 	pColor->type = SYCOLOR_GRAD_OUTLINE_POLYGON;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
@@ -1770,7 +1770,7 @@ void SYColor_CreateOutlinePolygonDefault(OUT SYColor* pColor)
 }
 void SYColor_CreateMultiPtDefault(OUT SYColor* pColor, IN DWORD dwType)			// ¶àµã½¥±äÉ«µÄÄÇ¼¸¸öÖÖÀà
 {
-	//_SYASSERT(pColor != NULL);
+	//_ASSERT(pColor != NULL);
 	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
 	pColor->type = dwType;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
@@ -1796,7 +1796,7 @@ void SYColor_CreateMultiPtDefault(OUT SYColor* pColor, IN DWORD dwType)			// ¶àµ
 }
 void SYColor_CreateTempletDefault(OUT SYColor* pColor)
 {
-	//_SYASSERT(pColor != NULL);
+	//_ASSERT(pColor != NULL);
 	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
 	pColor->type = SYCOLOR_GRAD_TEMPLET;
 	pColor->gradual.color[0] = DEFAULT_GRAD_START_COLOR;
@@ -1809,7 +1809,7 @@ void SYColor_CreateTempletDefault(OUT SYColor* pColor)
 }
 void SYColor_CreateTexImgDefault(OUT SYColor* pColor)
 {
-	//_SYASSERT(pColor != NULL);
+	//_ASSERT(pColor != NULL);
 	SYMemset_LineChar(pColor, 0, sizeof(SYColor));
 	pColor->type = SYCOLOR_TEX_IMG;
 	pColor->imgtex.name[0] = 0;
@@ -1851,6 +1851,6 @@ BASEGRAPH_COMMON_API void SYColor_CreateDefault(OUT SYColor* pColor, IN DWORD dw
 		break;
 	default:
 		break;
-		//_SYASSERT(FALSE);
+		//_ASSERT(FALSE);
 	}
 }

@@ -906,7 +906,7 @@ void CCommonBufferDC::_DrawBorder(IN int l,					// 目标区域
 							  IN int b,
 							  IN DWORD dwShadowColor,	// 暗色
 							  IN DWORD dwLightColor,	// 亮色
-							  IN SYBORDER_STYLE eStyle,	// 风格
+							  IN CommonBORDER_STYLE eStyle,	// 风格
 							  IN int nBorderWidth)		// 边框宽度
 {
 	if (!m_bAttached || nBorderWidth <= 0 || l == r || t == b)
@@ -918,8 +918,8 @@ void CCommonBufferDC::_DrawBorder(IN int l,					// 目标区域
 	// 根据风格确定左上边与右下边的颜色
 	switch (eStyle)
 	{
-	case SYBORDER_RAISED:	crLT = dwLightColor; crRB = dwShadowColor; break;
-	case SYBORDER_SUCKEN:	crLT = dwShadowColor; crRB = dwLightColor; break;
+	case CommonBORDER_RAISED:	crLT = dwLightColor; crRB = dwShadowColor; break;
+	case CommonBORDER_SUCKEN:	crLT = dwShadowColor; crRB = dwLightColor; break;
 	default:				break;//assert(FALSE);
 	}
 	// 规则化矩形（buffer 中的坐标与屏幕坐标相同）

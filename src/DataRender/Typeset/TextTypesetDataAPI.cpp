@@ -3325,7 +3325,7 @@ void BaseARtTypeset_Create(LPBaseARtTypeset pPath, CurveAr* pCurveAry, BOOL bRot
 }
 
 //创建颜色字体Buffer
- BOOL SYCreateTextBuffer(LPDWORD pdwBuffer, int* pnWidth, int* pnHeight, 
+ BOOL BaseGraphCreateTextBuffer(LPDWORD pdwBuffer, int* pnWidth, int* pnHeight, 
 									LPCTSTR szText, LPCommonFont pFont, LPCommonStaticEffect pColor, 
 									double dScale)
 {
