@@ -19,7 +19,6 @@ CalculatorTitleword::CalculatorTitleword(CString strObjID)
 	//»ù±¾ÊôÐÔ
 	m_strText = _T("");
 	m_strFontName = _T("");
-	m_bUnderline = FALSE;
 	m_nFontDistance = 0;
 	m_bHorizontal = FALSE;
 	m_bLineWrap = FALSE;
@@ -28,6 +27,8 @@ CalculatorTitleword::CalculatorTitleword(CString strObjID)
 	m_bLeftInput = TRUE;
 	m_bVLeftTypeset = FALSE;
 	m_bFixedFrame = FALSE;
+	m_bBold = FALSE;
+	m_bItalic = FALSE;
 }
 
 CalculatorTitleword::~CalculatorTitleword()
@@ -94,25 +95,29 @@ bool CalculatorTitleword::GetCurrentParam()
 		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontName_Str, stuValue))
 		{
 			m_strFontName = stuValue.ToCString();
-			if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_UnderLine_Bool, stuValue))
+			if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontDistance_Int, stuValue))
 			{
-				m_bUnderline = stuValue.ToBOOL();
-				if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontDistance_Int, stuValue))
+				m_nFontDistance = stuValue.ToInt();
+				if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_Horizontal_Bool, stuValue))
 				{
-					m_nFontDistance = stuValue.ToInt();
-					if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_Horizontal_Bool, stuValue))
+					m_bHorizontal = stuValue.ToBOOL();
+					if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_LineWrap_Bool, stuValue))
 					{
-						m_bHorizontal = stuValue.ToBOOL();
-						if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_LineWrap_Bool, stuValue))
+						m_bLineWrap = stuValue.ToBOOL();
+						if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontWidth_Int, stuValue))
 						{
-							m_bLineWrap = stuValue.ToBOOL();
-							if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontWidth_Int, stuValue))
+							m_nFontWidth = stuValue.ToInt();
+							if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontHeight_Int, stuValue))
 							{
-								m_nFontWidth = stuValue.ToInt();
-								if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontHeight_Int, stuValue))
+								m_nFontHeight = stuValue.ToInt();
+								if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontBold_Bool, stuValue))
 								{
-									m_nFontHeight = stuValue.ToInt();
-									return true;
+									m_bBold = stuValue.ToBOOL();
+									if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Titleword_FontItalic_Bool, stuValue))
+									{
+										m_bItalic = stuValue.ToBOOL();
+										return true;
+									}
 								}
 							}
 						}
@@ -136,6 +141,8 @@ bool CalculatorTitleword::Update2DUnit()
 	newFont.lfWidth = m_nFontWidth;
 	newFont.lfHeight = m_nFontHeight;
 	newFont.lfDistance = m_nFontDistance;
+	newFont.bBold = m_bBold;
+	newFont.lfItalic = m_bItalic;
 	_tcscpy_s(newFont.lfFaceName, LF_FACESIZE, m_strFontName.GetBuffer());
 	m_strFontName.ReleaseBuffer();
 

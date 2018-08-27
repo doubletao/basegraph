@@ -64,12 +64,13 @@ namespace BaseGraph_DataBase
 		TitlewordParam = 1000,
 		Titleword_Text_Str,
 		Titleword_FontName_Str,
-		Titleword_UnderLine_Bool,
 		Titleword_LineWrap_Bool,
 		Titleword_FontWidth_Int,
 		Titleword_FontHeight_Int,
 		Titleword_FontDistance_Int,
 		Titleword_Horizontal_Bool,
+		Titleword_FontBold_Bool,
+		Titleword_FontItalic_Bool,
 		TitlewordParam_End,
 
 		ScrollParam = 2000,
@@ -386,12 +387,6 @@ inline BaseGraph_DataBase::ValueDescriptor BaseGraph_DataBase::GetValueDescripto
 		valueDesc.emDispType = PropertyDisp_FontNameCombo;
 		valueDesc.stuDefault.SetValue(_T("宋体"));
 		break;
-	case Titleword_UnderLine_Bool:
-		valueDesc.nDispIndex = 0;
-		valueDesc.fStep = 0.0f;
-		valueDesc.strDispName = _T("下划线");
-		valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
-		break;
 	case Titleword_LineWrap_Bool:
 		valueDesc.nDispIndex = 0;
 		valueDesc.fStep = 0.0f;
@@ -419,6 +414,18 @@ inline BaseGraph_DataBase::ValueDescriptor BaseGraph_DataBase::GetValueDescripto
 		valueDesc.fStep = 1.0f;
 		valueDesc.strDispName = _T("字间距");
 		valueDesc.stuDefault.SetValue(0);
+		break;
+	case Titleword_FontBold_Bool:
+		valueDesc.nDispIndex = 0;
+		valueDesc.fStep = 0.0f;
+		valueDesc.strDispName = _T("加粗");
+		valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+		break;
+	case Titleword_FontItalic_Bool:
+		valueDesc.nDispIndex = 0;
+		valueDesc.fStep = 0.0f;
+		valueDesc.strDispName = _T("斜体");
+		valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
 		break;
 	case Titleword_Horizontal_Bool:
 		valueDesc.nDispIndex = 0;

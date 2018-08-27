@@ -15,11 +15,10 @@ protected:
 	BaseARray m_2DTextRenderUnitArray;
 	BaseARray m_arWholeRenderTextGraph;	//文字整体渲染时的临时Graph（可以从零散Graph重建得到）
 protected:
-	///文字属性
+	//文字属性
 	//基本属性
 	CString m_strText;
 	CString m_strFontName;
-	BOOL m_bUnderline;
 	int m_nFontDistance;
 	BOOL m_bHorizontal;
 	BOOL m_bLineWrap;
@@ -30,6 +29,8 @@ protected:
 	BOOL m_bLeftInput;
 	BOOL m_bVLeftTypeset;
 	BOOL m_bFixedFrame;
+	BOOL m_bBold;
+	BOOL m_bItalic;
 	//字色
 	BaseGraphStaticEffect m_TextStaitcEffect;
 	//下划线

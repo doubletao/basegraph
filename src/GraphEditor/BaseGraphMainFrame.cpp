@@ -441,6 +441,8 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		mapParam[BaseGraph_DataBase::SpaceRotate_Z_Float].SetValue(fZRorate);
 		mapParam[BaseGraph_DataBase::Titleword_FontWidth_Int].SetValue(nFontWidth);
 		mapParam[BaseGraph_DataBase::Titleword_FontHeight_Int].SetValue(nFontHeight);
+		mapParam[BaseGraph_DataBase::Titleword_FontBold_Bool].SetValue(TRUE);
+		mapParam[BaseGraph_DataBase::Titleword_FontItalic_Bool].SetValue(TRUE);
 		BaseGraph_DataBase::faceinfo face;
 		face.disable = 0;
 		face.color.type = 0;

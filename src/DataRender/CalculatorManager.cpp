@@ -524,13 +524,19 @@ EmObjectChgLevel CalculatorManager::GetPropertyChanegLevel(IN BaseGraph_DataBase
 		return ChgLevel_Figure;
 	case BaseGraph_DataBase::Titleword_FontName_Str:
 		return ChgLevel_Figure;
-	case BaseGraph_DataBase::Titleword_UnderLine_Bool:
-		return ChgLevel_Figure;
 	case BaseGraph_DataBase::Titleword_LineWrap_Bool:
 		return ChgLevel_Figure;
 	case BaseGraph_DataBase::Titleword_FontDistance_Int:
 		return ChgLevel_Figure;
 	case BaseGraph_DataBase::Titleword_Horizontal_Bool:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontWidth_Int:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontHeight_Int:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontBold_Bool:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontItalic_Bool:
 		return ChgLevel_Figure;
 	case BaseGraph_DataBase::TitlewordParam_End:
 		return ChgLevel_NULL;
