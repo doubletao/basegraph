@@ -24,7 +24,7 @@ bool CalculatorImage::UpdateRenderBuffer()
 	if (NeedUpdateBuffer())
 	{
 		BaseGraph_Common::Value stuValue;
-		if (DataBase_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_Path_Str, stuValue))
+		if (DataRender_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_Path_Str, stuValue))
 		{
 			//创建物件buf
 			if (PrepareObjBuffer())
@@ -86,8 +86,24 @@ bool CalculatorImage::UpdateImage(CString &strImgPath)
 				{
 					if (BaseCodec_ReadImage(strImgPath, nImageWidth, nImageHeight, pImgBuf->GetBuffer()))
 					{
-						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcWidth_Int, nImageWidth);
-						DataBase_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcHeight_Int, nImageHeight);
+						DataRender_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcWidth_Int, nImageWidth);
+						DataRender_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcHeight_Int, nImageHeight);
+						BOOL bUpDownChange = FALSE;
+						BOOL bLeftRightChange = FALSE;
+						BOOL bFlagChange = FALSE;
+						BaseGraph_Common::Value stuParam;
+						if (DataRender_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_UpDownChange_Bool, stuParam))
+						{
+							bUpDownChange = stuParam.ToBOOL();
+							if (DataRender_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_LeftRightChange_Bool, stuParam))
+							{
+								bLeftRightChange = stuParam.ToBOOL();
+								if (DataRender_GetItemProperty(m_strObjID, BaseGraph_DataBase::Image_FlagChange_Bool, stuParam))
+								{
+									bFlagChange = stuParam.ToBOOL();
+								}
+							}
+						}
 						if (false)
 						{
 							pImgBuf->DebugWriteImage(_T("e:\\2.bmp"));
@@ -142,7 +158,7 @@ bool CalculatorImage::PrepareObjBuffer()
 	auto GetPropertyValue = [](CString strObjID, BaseGraph_DataBase::ParamValueDef emValueDef)->BaseGraph_Common::Value
 	{
 		BaseGraph_Common::Value stuValue;
-		if (DataBase_GetItemProperty(strObjID, emValueDef, stuValue))
+		if (DataRender_GetItemProperty(strObjID, emValueDef, stuValue))
 		{
 			return stuValue;
 		}

@@ -80,6 +80,9 @@ namespace BaseGraph_DataBase
 		Image_Path_Str,
 		Image_SrcWidth_Int,
 		Image_SrcHeight_Int,
+		Image_UpDownChange_Bool,//上下反转
+		Image_LeftRightChange_Bool,//左右反转
+		Image_FlagChange_Bool,//旗飘变换
 		ImageParam_End,
 	};
 
