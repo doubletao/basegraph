@@ -552,6 +552,12 @@ EmObjectChgLevel CalculatorManager::GetPropertyChanegLevel(IN BaseGraph_DataBase
 		return ChgLevel_Buffer;
 	case BaseGraph_DataBase::Image_SrcHeight_Int:
 		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::Image_UpDownChange_Bool:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::Image_LeftRightChange_Bool:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::Image_FlagChange_Bool:
+		return ChgLevel_Buffer;
 	case BaseGraph_DataBase::ImageParam_End:
 		return ChgLevel_NULL;
 	default:

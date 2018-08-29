@@ -88,6 +88,7 @@ bool CalculatorImage::UpdateImage(CString &strImgPath)
 					{
 						DataRender_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcWidth_Int, nImageWidth);
 						DataRender_SetItemProperty(m_strObjID, BaseGraph_DataBase::Image_SrcHeight_Int, nImageHeight);
+						//处理反转及旗飘
 						BOOL bUpDownChange = FALSE;
 						BOOL bLeftRightChange = FALSE;
 						BOOL bFlagChange = FALSE;
@@ -103,6 +104,53 @@ bool CalculatorImage::UpdateImage(CString &strImgPath)
 									bFlagChange = stuParam.ToBOOL();
 								}
 							}
+						}
+						//上下反转
+						if (false)
+						{
+							int nLoop = nImageHeight / 2;
+							LPDWORD pSrc = NULL;
+							LPDWORD pDes = NULL;
+							DWORD dwTemp = 0;
+							for (int i = 0; i<nLoop; i++)
+							{
+								pSrc = (DWORD *)pImgBuf->GetBuffer() + i * nImageWidth;
+								pDes = (DWORD *)pImgBuf->GetBuffer() + (nImageHeight - 1 - i) * nImageWidth;
+								for (int j = 0; j < nImageWidth; j++)
+								{
+									dwTemp = *pSrc;
+									*pSrc = *pDes;
+									*pDes = dwTemp;
+									pSrc++;
+									pDes++;
+								}
+							}
+						}
+						//左右反转
+						if (false)
+						{
+							LPDWORD pSrc = NULL;
+							LPDWORD pDes = NULL;
+							DWORD dwTemp = 0;
+							for (int i = 0; i < nImageHeight; i++)
+							{
+								pSrc = (DWORD *)pImgBuf->GetBuffer() + i * nImageWidth;
+								pDes = pSrc + nImageWidth - 1;
+								int nLoop = nImageWidth / 2;
+								for (int j = 0; j<nLoop; j++)
+								{
+									dwTemp = *pSrc;
+									*pSrc = *pDes;
+									*pDes = dwTemp;
+									pSrc++;
+									pDes--;
+								}
+							}
+						}
+						//旗飘
+						if (true)
+						{
+							MakeStaticFlag(&(envdata->m_ImageSrcBuffer));
 						}
 						if (false)
 						{

@@ -459,6 +459,24 @@ inline BaseGraph_DataBase::ValueDescriptor BaseGraph_DataBase::GetValueDescripto
 		valueDesc.vecValueLimit.push_back(std::make_pair(0, _T("最小值")));
 		valueDesc.vecValueLimit.push_back(std::make_pair(8192, _T("最大值")));
 		break;
+	case Image_UpDownChange_Bool:
+		valueDesc.nDispIndex = 0;
+		valueDesc.fStep = 0.0f;
+		valueDesc.strDispName = _T("垂直反转");
+		valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+		break;
+	case Image_LeftRightChange_Bool:
+		valueDesc.nDispIndex = 0;
+		valueDesc.fStep = 0.0f;
+		valueDesc.strDispName = _T("水平反转");
+		valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+		break;
+	case Image_FlagChange_Bool:
+		valueDesc.nDispIndex = 0;
+		valueDesc.fStep = 0.0f;
+		valueDesc.strDispName = _T("旗飘变换");
+		valueDesc.stuDefault.SetValue(FALSE, BaseGraph_Common::ValueType_BOOL);
+		break;
 	case Obj_Width_Int:
 		valueDesc.nDispIndex = 0;
 		valueDesc.fStep = 1.0f;

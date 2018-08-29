@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "Common\BufferFunction.h"
 #include "BufferMemSSE.h"
+#include "Common\2DBuffer.h"
+#include <vector>
 
+const float PI = 3.1415926;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -416,5 +419,114 @@ COLORREF BufferFunction::PixelAlpha(COLORREF clrSrc, double src_darken, COLORREF
 	return RGB(GetRValue(clrSrc) * src_darken + GetRValue(clrDest) * dest_darken,
 		GetGValue(clrSrc) * src_darken + GetGValue(clrDest) * dest_darken,
 		GetBValue(clrSrc) * src_darken + GetBValue(clrDest) * dest_darken);
+}
+
+void BufferFunction::MakeStaticFlag(DWORD * pdwDesBuffer, int nWidth, int nHeight)
+{
+	CCommonBuffer * pBuffer = new CCommonBuffer(nWidth, nHeight, pdwDesBuffer);
+
+	/***********************************/
+	/*	1.加光影效果
+	/*	2.用多条sin曲线模拟旗帜形状
+	/*	3.对上下边缘做反走样(加权平均)
+	/***********************************/
+
+	if (pBuffer == NULL || pBuffer->m_nWidth <= 0 || pBuffer->m_nHeight <= 0)
+		return;
+
+	int Width = pBuffer->m_nWidth;
+	int Height = pBuffer->m_nHeight;
+	CCommonBuffer DesBuffer(pBuffer);
+	//2.用多条sin曲线模拟旗帜形状
+	double dbX;
+	double dbY;
+	CCommonBuffer mtBuffer;
+	mtBuffer.Create(Width, Height + Height / 4);
+	memset(mtBuffer.m_dwBuffer, 0, sizeof(DWORD)*mtBuffer.m_nWidth*mtBuffer.m_nHeight);
+
+	std::vector<int> arCurveHigh;
+	std::vector<int> arCurveLow;
+	DWORD dwAntiColor;
+	int x = 0;
+	for (x = 0; x < Width * 39 / 109 - 1; x++)
+	{
+		dbX = x*2.5 / (Width * 5 / 9);
+		dbY = sin(dbX / 1.28 + PI / 3.5);
+		dbY *= Height / 4;
+
+		RECT r, r1;
+		SetRect(&r, x, (long)(Height / 4 - dbY + 10), 1 + x, (Height / 4 - dbY + 10) + DesBuffer.m_nHeight);
+		SetRect(&r1, x, 0, x + 1, Height);
+
+		mtBuffer.BitBlt(&r, &DesBuffer, &r1, BUFFER_COPY, BUFFER_PARITY_BOTH, NULL);
+		arCurveHigh.push_back(int(Height / 4 - dbY + 10));
+
+		dwAntiColor = *(DesBuffer.m_dwBuffer + x);
+		dwAntiColor &= 0x00ffffff;
+		SetRect(&r, x, 0, x + 1, int(Height / 4 - dbY + 10) - 1);
+		mtBuffer.ClearAll(dwAntiColor, &r);
+
+		dwAntiColor = *(DesBuffer.m_dwBuffer + (Height - 1)*DesBuffer.m_nWidth + x);
+		dwAntiColor &= 0x00ffffff;
+		SetRect(&r, x, int((Height / 4 - dbY + 10) - 1 + DesBuffer.m_nHeight), x + 1, mtBuffer.m_nHeight);
+		mtBuffer.ClearAll(dwAntiColor, &r);
+		arCurveLow.push_back(int(Height / 4 - dbY + 10) - 1 + DesBuffer.m_nHeight);
+	}
+	for (; x < (Width * 39 / 109 - 1) * 2; x++)
+	{
+		dbX = x * 1 / (Width * 1 / 4.5);
+		dbY = sin(dbX / 2 + PI / 1.1) + 1.345;
+		dbY *= Height / 4;
+
+		RECT r, r1;
+		SetRect(&r, x, (long)(Height / 4 - dbY + 10), x + 1, (long)(Height / 4 - dbY + 10) + Height);
+		SetRect(&r1, x, 0, x + 1, Height);
+		mtBuffer.BitBlt(&r, &DesBuffer, &r1, BUFFER_COPY, BUFFER_PARITY_BOTH, NULL);
+		arCurveHigh.push_back(int(Height / 4 - dbY + 10));
+
+		dwAntiColor = *(DesBuffer.m_dwBuffer + x);
+		dwAntiColor &= 0x00ffffff;
+		SetRect(&r, x, 0, x + 1, int(Height / 4 - dbY + 10) - 1);
+		mtBuffer.ClearAll(dwAntiColor, &r);
+
+		dwAntiColor = *(DesBuffer.m_dwBuffer + (Height - 1)*DesBuffer.m_nWidth + x);
+		dwAntiColor &= 0x00ffffff;
+		SetRect(&r, x, int((Height / 4 - dbY + 10) - 1 + DesBuffer.m_nHeight), x + 1, mtBuffer.m_nHeight);
+		mtBuffer.ClearAll(dwAntiColor, &r);
+		arCurveLow.push_back(int(Height / 4 - dbY + 10) - 1 + DesBuffer.m_nHeight);
+	}
+
+	for (; x < Width; x++)
+	{
+		dbX = x * 1 / (Width * 1 / 4.5);
+		dbY = sin(dbX / 1000) + 0.38;
+		dbY *= Height / 4;
+		RECT r, r1;
+		SetRect(&r, x, (long)(Height / 4 - dbY + 10), x + 1, (long)(Height / 4 - dbY + 10) + Height);
+		SetRect(&r1, x, 0, x + 1, Height);
+		mtBuffer.BitBlt(&r, &DesBuffer, &r1, BUFFER_COPY, BUFFER_PARITY_BOTH, NULL);
+		arCurveHigh.push_back(int(Height / 4 - dbY + 10));
+
+		dwAntiColor = *(DesBuffer.m_dwBuffer + x);
+		dwAntiColor &= 0x00ffffff;
+		SetRect(&r, x, 0, x + 1, int(Height / 4 - dbY + 10) - 1);
+		mtBuffer.ClearAll(dwAntiColor, &r);
+
+		dwAntiColor = *(DesBuffer.m_dwBuffer + (Height - 1)*DesBuffer.m_nWidth + x);
+		dwAntiColor &= 0x00ffffff;
+		SetRect(&r, x, int((Height / 4 - dbY + 10) - 1 + DesBuffer.m_nHeight), x + 1, mtBuffer.m_nHeight);
+		mtBuffer.ClearAll(dwAntiColor, &r);
+		arCurveLow.push_back(int(Height / 4 - dbY + 10) - 1 + DesBuffer.m_nHeight);
+	}
+	//3.对上下边缘做反走样(加权平均)
+	RECT r;
+	SetRect(&r, 0, 0, mtBuffer.m_nWidth, mtBuffer.m_nHeight);
+	pBuffer->Create(mtBuffer.m_nWidth, mtBuffer.m_nHeight);
+	memset(pBuffer->m_dwBuffer, 0xff000000, sizeof(DWORD)*pBuffer->m_nHeight*pBuffer->m_nWidth);
+	pBuffer->BitBlt(&r, &mtBuffer, &r, BUFFER_COPY, BUFFER_PARITY_BOTH, NULL);
+	AntiAliasingBuffer(pBuffer, arCurveHigh, arCurveLow);
+
+	delete pBuffer;
+	pBuffer = nullptr;
 }
 

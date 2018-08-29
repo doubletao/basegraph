@@ -43,5 +43,7 @@ public:
 		int nSrcX, int nSrcY, int wSrc, int hSrc, BLENDFUNCTION ftn);
 
 	static COLORREF PixelAlpha(COLORREF clrSrc, double src_darken, COLORREF clrDest, double dest_darken);
+
+	static void MakeStaticFlag(DWORD* pdwDesBuffer, int nWidth, int nHeight);
 };
 

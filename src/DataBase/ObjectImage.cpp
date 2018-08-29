@@ -33,6 +33,9 @@ void ObjectImage::InitialObjectParam()
 	AddDefaultParam(Image_Path_Str);
 	AddDefaultParam(Image_SrcWidth_Int);
 	AddDefaultParam(Image_SrcHeight_Int);
+	AddDefaultParam(Image_UpDownChange_Bool);
+	AddDefaultParam(Image_LeftRightChange_Bool);
+	AddDefaultParam(Image_FlagChange_Bool);
 }
 
 std::map<BaseGraph_DataBase::ParamValueDef, Value> ObjectImage::GetProperty()
