@@ -1,6 +1,8 @@
 #pragma once
 #include "Common\BufferCommonDef.h"
 #include <atlimage.h>
+#include <vector>
+#include "Common\2DBuffer.h"
 
 class BASEGRAPH_COMMON_API BufferFunction
 {
@@ -44,6 +46,7 @@ public:
 
 	static COLORREF PixelAlpha(COLORREF clrSrc, double src_darken, COLORREF clrDest, double dest_darken);
 
-	static void MakeStaticFlag(DWORD* pdwDesBuffer, int nWidth, int nHeight);
+	static void MakeStaticFlag(CCommonBuffer * pBuffer);
+	static void	AntiAliasingBuffer(CCommonBuffer * pSrcBuf, std::vector<int>& arCurveHigh, std::vector<int>& arCurveLow);
 };
 

@@ -150,7 +150,12 @@ bool CalculatorImage::UpdateImage(CString &strImgPath)
 						//ÆìÆ®
 						if (true)
 						{
-							MakeStaticFlag(&(envdata->m_ImageSrcBuffer));
+							//pImgBuf->GetBuffer(), pImgBuf->GetWidth(), pImgBuf->GetHeight()
+							CCommonBuffer buffer;
+							buffer.Create(pImgBuf->GetWidth(), pImgBuf->GetHeight());
+							memcpy(buffer.m_dwBuffer, pImgBuf->GetBuffer(), pImgBuf->GetWidth() * pImgBuf->GetHeight() * sizeof(DWORD));
+							BufferFunction::MakeStaticFlag(&buffer);
+							memcpy(pImgBuf->GetBuffer(), buffer.m_dwBuffer, pImgBuf->GetWidth() * pImgBuf->GetHeight() * sizeof(DWORD));
 						}
 						if (false)
 						{

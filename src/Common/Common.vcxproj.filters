@@ -1025,6 +1025,9 @@
     <ClInclude Include="..\..\include\Common\ThreadPool.h">
       <Filter>ThreadPool</Filter>
     </ClInclude>
+    <ClInclude Include="CommonFastMemAsm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Common.def">
@@ -1045,6 +1048,9 @@
     </CustomBuild>
     <CustomBuild Include="MathOp\MathOpASM64.asm">
       <Filter>MathOp</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CommonFastMemAsm.asm">
+      <Filter>源文件</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

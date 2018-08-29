@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Common\BufferFunction.h"
 #include "BufferMemSSE.h"
-#include "Common\2DBuffer.h"
-#include <vector>
+#include "CommonFastMemAsm.h"
 
 const float PI = 3.1415926;
+LPDWORD	lpdwColorMixCalTable = NULL;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -421,10 +421,8 @@ COLORREF BufferFunction::PixelAlpha(COLORREF clrSrc, double src_darken, COLORREF
 		GetBValue(clrSrc) * src_darken + GetBValue(clrDest) * dest_darken);
 }
 
-void BufferFunction::MakeStaticFlag(DWORD * pdwDesBuffer, int nWidth, int nHeight)
+void BufferFunction::MakeStaticFlag(CCommonBuffer * pBuffer)
 {
-	CCommonBuffer * pBuffer = new CCommonBuffer(nWidth, nHeight, pdwDesBuffer);
-
 	/***********************************/
 	/*	1.加光影效果
 	/*	2.用多条sin曲线模拟旗帜形状
@@ -525,8 +523,134 @@ void BufferFunction::MakeStaticFlag(DWORD * pdwDesBuffer, int nWidth, int nHeigh
 	memset(pBuffer->m_dwBuffer, 0xff000000, sizeof(DWORD)*pBuffer->m_nHeight*pBuffer->m_nWidth);
 	pBuffer->BitBlt(&r, &mtBuffer, &r, BUFFER_COPY, BUFFER_PARITY_BOTH, NULL);
 	AntiAliasingBuffer(pBuffer, arCurveHigh, arCurveLow);
+}
 
-	delete pBuffer;
-	pBuffer = nullptr;
+//反走样加权平均Filter
+float  Filter[3][3] =
+{
+	{ 1, 2, 1 },
+	{ 2, 4, 2 },
+	{ 1, 2, 1 }
+};
+DWORD btEqColor(DWORD dwPoint[3][3])
+{
+	DWORD btRed = 0;
+	DWORD btGreen = 0;
+	DWORD btBlue = 0;
+	DWORD btAlpha = 0;
+
+	for (int i = 0; i<3; i++)
+	{
+		for (int j = 0; j<3; j++)
+		{
+			btRed += long(((dwPoint[i][j] & 0x00ff0000) >> 16) * Filter[i][j]);
+			btGreen += long(((dwPoint[i][j] & 0x0000ff00) >> 8) * Filter[i][j]);
+			btBlue += long((dwPoint[i][j] & 0x000000ff) * Filter[i][j]);
+			btAlpha += long(((dwPoint[i][j] & 0xff000000) >> 24) * Filter[i][j]);
+		}
+	}
+	btRed /= 16;
+	btGreen /= 16;
+	btBlue /= 16;
+	btAlpha /= 16;
+	return (btAlpha << 24 | (btRed << 16) | (btGreen << 8) | (btBlue));
+}
+void Attach(CommonBufferDef32 * DestBuffer, CommonBufferDef32 *SrcBuffer)
+{
+	if (SrcBuffer) {
+		DestBuffer->m_nWidth = SrcBuffer->m_nWidth;
+		DestBuffer->m_nHeight = SrcBuffer->m_nHeight;
+		DestBuffer->m_nPitch = SrcBuffer->m_nPitch;
+		DestBuffer->m_dwBuffer = SrcBuffer->m_dwBuffer;
+	}
+}
+
+void BufferFunction::AntiAliasingBuffer(CCommonBuffer * pSrcBuf, std::vector<int>& arCurveHigh, std::vector<int>& arCurveLow)
+{
+	CCommonBuffer OKBuffer;
+	Attach(&OKBuffer, pSrcBuf);
+	int nSize = (int)arCurveHigh.size();
+	for (int nCol = 0; nCol < nSize; nCol++)
+	{
+		int nHiEndRow = arCurveHigh[nCol];
+		int nLowEndRow = arCurveLow[nCol];
+		int nRow = 0;
+		for (nRow = 0; nRow <= nHiEndRow + 10; nRow++)
+		{
+
+			DWORD dwPoint[3][3];
+			DWORD dwOriginClr = *(OKBuffer.m_dwBuffer + nRow * pSrcBuf->m_nWidth + nCol);
+			dmemset(dwPoint, dwOriginClr, 9);
+
+			if (nRow >= 1) {
+
+				if (nCol >= 1)
+					dwPoint[0][0] = *(pSrcBuf->m_dwBuffer + (nRow - 1) * pSrcBuf->m_nWidth + nCol - 1);
+
+				dwPoint[0][1] = *(pSrcBuf->m_dwBuffer + (nRow - 1) * pSrcBuf->m_nWidth + nCol);
+
+				if (nCol <= (OKBuffer.m_nWidth - 1) - 1)
+					dwPoint[0][2] = *(pSrcBuf->m_dwBuffer + (nRow - 1) * pSrcBuf->m_nWidth + nCol + 1);
+
+			}
+			if (nCol >= 1)
+				dwPoint[1][0] = *(pSrcBuf->m_dwBuffer + (nRow)* pSrcBuf->m_nWidth + nCol - 1);
+
+			dwPoint[1][1] = *(pSrcBuf->m_dwBuffer + (nRow)* pSrcBuf->m_nWidth + nCol);
+
+			if (nCol <= (OKBuffer.m_nWidth - 1) - 1)
+				dwPoint[1][2] = *(pSrcBuf->m_dwBuffer + (nRow)* pSrcBuf->m_nWidth + nCol + 1);
+
+			if (nRow <= (pSrcBuf->m_nHeight - 1) - 1) {
+
+				if (nCol >= 1)
+					dwPoint[2][0] = *(pSrcBuf->m_dwBuffer + (nRow + 1) * pSrcBuf->m_nWidth + nCol - 1);
+
+				dwPoint[2][1] = *(pSrcBuf->m_dwBuffer + (nRow + 1) * pSrcBuf->m_nWidth + nCol);
+
+				if (nCol <= (OKBuffer.m_nWidth - 1) - 1)
+					dwPoint[2][2] = *(pSrcBuf->m_dwBuffer + (nRow + 1) * pSrcBuf->m_nWidth + nCol + 1);
+			}
+			*(OKBuffer.m_dwBuffer + nRow * pSrcBuf->m_nWidth + nCol) = btEqColor(dwPoint);
+		}
+		for (nRow = nLowEndRow - 10; nRow< OKBuffer.m_nHeight; nRow++)
+		{
+			DWORD dwPoint[3][3];
+			DWORD dwOriginClr = *(OKBuffer.m_dwBuffer + nRow * pSrcBuf->m_nWidth + nCol);
+			dmemset(dwPoint, dwOriginClr, 9);
+
+			if (nRow >= 1) {
+
+				if (nCol >= 1)
+					dwPoint[0][0] = *(pSrcBuf->m_dwBuffer + (nRow - 1) * pSrcBuf->m_nWidth + nCol - 1);
+
+				dwPoint[0][1] = *(pSrcBuf->m_dwBuffer + (nRow - 1) * pSrcBuf->m_nWidth + nCol);
+
+				if (nCol <= (OKBuffer.m_nWidth - 1) - 1)
+					dwPoint[0][2] = *(pSrcBuf->m_dwBuffer + (nRow - 1) * pSrcBuf->m_nWidth + nCol + 1);
+
+			}
+			if (nCol >= 1)
+				dwPoint[1][0] = *(pSrcBuf->m_dwBuffer + (nRow)* pSrcBuf->m_nWidth + nCol - 1);
+
+			dwPoint[1][1] = *(pSrcBuf->m_dwBuffer + (nRow)* pSrcBuf->m_nWidth + nCol);
+
+			if (nCol <= (OKBuffer.m_nWidth - 1) - 1)
+				dwPoint[1][2] = *(pSrcBuf->m_dwBuffer + (nRow)* pSrcBuf->m_nWidth + nCol + 1);
+
+			if (nRow <= (pSrcBuf->m_nHeight - 1) - 1) {
+
+				if (nCol >= 1)
+					dwPoint[2][0] = *(pSrcBuf->m_dwBuffer + (nRow + 1) * pSrcBuf->m_nWidth + nCol - 1);
+
+				dwPoint[2][1] = *(pSrcBuf->m_dwBuffer + (nRow + 1) * pSrcBuf->m_nWidth + nCol);
+
+				if (nCol <= (OKBuffer.m_nWidth - 1) - 1)
+					dwPoint[2][2] = *(pSrcBuf->m_dwBuffer + (nRow + 1) * pSrcBuf->m_nWidth + nCol + 1);
+			}
+
+			*(OKBuffer.m_dwBuffer + nRow * pSrcBuf->m_nWidth + nCol) = btEqColor(dwPoint);
+		}
+	}
 }
 
