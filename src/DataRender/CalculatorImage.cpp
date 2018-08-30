@@ -106,7 +106,7 @@ bool CalculatorImage::UpdateImage(CString &strImgPath)
 							}
 						}
 						//上下反转
-						if (false)
+						if (bUpDownChange)
 						{
 							int nLoop = nImageHeight / 2;
 							LPDWORD pSrc = NULL;
@@ -127,7 +127,7 @@ bool CalculatorImage::UpdateImage(CString &strImgPath)
 							}
 						}
 						//左右反转
-						if (false)
+						if (bLeftRightChange)
 						{
 							LPDWORD pSrc = NULL;
 							LPDWORD pDes = NULL;
@@ -148,14 +148,10 @@ bool CalculatorImage::UpdateImage(CString &strImgPath)
 							}
 						}
 						//旗飘
-						if (true)
+						if (bFlagChange)
 						{
-							//pImgBuf->GetBuffer(), pImgBuf->GetWidth(), pImgBuf->GetHeight()
-							CCommonBuffer buffer;
-							buffer.Create(pImgBuf->GetWidth(), pImgBuf->GetHeight());
-							memcpy(buffer.m_dwBuffer, pImgBuf->GetBuffer(), pImgBuf->GetWidth() * pImgBuf->GetHeight() * sizeof(DWORD));
+							CCommonBuffer buffer(pImgBuf->GetWidth(), pImgBuf->GetHeight(), (DWORD *)pImgBuf->GetBuffer());
 							BufferFunction::MakeStaticFlag(&buffer);
-							memcpy(pImgBuf->GetBuffer(), buffer.m_dwBuffer, pImgBuf->GetWidth() * pImgBuf->GetHeight() * sizeof(DWORD));
 						}
 						if (false)
 						{

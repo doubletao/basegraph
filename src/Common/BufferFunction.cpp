@@ -517,11 +517,11 @@ void BufferFunction::MakeStaticFlag(CCommonBuffer * pBuffer)
 		arCurveLow.push_back(int(Height / 4 - dbY + 10) - 1 + DesBuffer.m_nHeight);
 	}
 	//3.对上下边缘做反走样(加权平均)
-	RECT r;
-	SetRect(&r, 0, 0, mtBuffer.m_nWidth, mtBuffer.m_nHeight);
-	pBuffer->Create(mtBuffer.m_nWidth, mtBuffer.m_nHeight);
-	memset(pBuffer->m_dwBuffer, 0xff000000, sizeof(DWORD)*pBuffer->m_nHeight*pBuffer->m_nWidth);
-	pBuffer->BitBlt(&r, &mtBuffer, &r, BUFFER_COPY, BUFFER_PARITY_BOTH, NULL);
+	RECT rtSrc;
+	SetRect(&rtSrc, 0, 0, mtBuffer.m_nWidth, mtBuffer.m_nHeight);
+	RECT rtDes;
+	SetRect(&rtDes, 0, 0, pBuffer->m_nWidth, pBuffer->m_nHeight);
+	pBuffer->BitBlt(&rtDes, &mtBuffer, &rtSrc, BUFFER_COPY, BUFFER_PARITY_BOTH, NULL);
 	AntiAliasingBuffer(pBuffer, arCurveHigh, arCurveLow);
 }
 
