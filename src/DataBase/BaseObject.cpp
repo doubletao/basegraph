@@ -22,50 +22,31 @@ BaseGraph_DataBase::BaseObject::~BaseObject()
 
 void BaseGraph_DataBase::BaseObject::InitialObjectParam()
 {
-	auto AddDefaultParam = [this](ParamValueDef emParamValueDef)
-	{
-		if (m_mapParam.count(emParamValueDef) < 1)
-		{
-			m_mapParam[emParamValueDef] = GetValueDescriptor(emParamValueDef).stuDefault;
-		}
-	};
-	
 	//物件属性
-	AddDefaultParam(Obj_Name_Str);
-	AddDefaultParam(Obj_Width_Int);
-	AddDefaultParam(Obj_Height_Int);
-	AddDefaultParam(Obj_ActionBegin_Int);
-	AddDefaultParam(Obj_ActionEnd_Int);
+	for (int i = ObjParam + 1; i < ObjParam_End; i++)
+	{
+		AddDefaultParam((ParamValueDef)i);
+	}
+
 	//空间值
-	AddDefaultParam(SpacePosition_X_Float);
-	AddDefaultParam(SpacePosition_Y_Float);
-	AddDefaultParam(SpacePosition_Z_Float);
-	AddDefaultParam(SpaceRotate_X_Float);
-	AddDefaultParam(SpaceRotate_Y_Float);
-	AddDefaultParam(SpaceRotate_Z_Float);
-	AddDefaultParam(SpaceScale_X_Float);
-	AddDefaultParam(SpaceScale_Y_Float);
-	AddDefaultParam(SpaceScale_Z_Float);
-	AddDefaultParam(SpaceCenter_X_Float);
-	AddDefaultParam(SpaceCenter_Y_Float);
-	AddDefaultParam(SpaceCenter_Z_Float);
+	for (int i = SpaceParam + 1; i < SpaceParam_End; i++)
+	{
+		AddDefaultParam((ParamValueDef)i);
+	}
 
 	//颜色值
-	AddDefaultParam(ColorParam_Face_Stu);
-	AddDefaultParam(ColorParam_Border_Stu);
-	AddDefaultParam(ColorParam_Shadow_Stu);
-	AddDefaultParam(ColorParam_Cube_Stu);
-	AddDefaultParam(ColorParam_Bordercube_Stu);
-	AddDefaultParam(ColorParam_Bordershadow_Stu);
-	AddDefaultParam(ColorParam_Facelight_Stu);
-	AddDefaultParam(ColorParam_Cubelight_Stu);
-	AddDefaultParam(ColorParam_Channel_Stu);
-	AddDefaultParam(ColorParam_Material_Stu);
-	AddDefaultParam(ColorParam_Appendmaterial_Stu);
-	AddDefaultParam(ColorParam_Dyntex_Stu);
-	AddDefaultParam(ColorParam_Renderline_Int);
-	AddDefaultParam(ColorParam_Width_Float);
-	AddDefaultParam(ColorParam_Index_Int);
+	for (int i = ColorParam + 1; i < ColorParam_End; i++)
+	{
+		AddDefaultParam((ParamValueDef)i);
+	}
+}
+
+void BaseGraph_DataBase::BaseObject::AddDefaultParam(ParamValueDef emParamValueDef)
+{
+	if (m_mapParam.count(emParamValueDef) < 1)
+	{
+		m_mapParam[emParamValueDef] = GetValueDescriptor(emParamValueDef).stuDefault;
+	}
 }
 
 bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
