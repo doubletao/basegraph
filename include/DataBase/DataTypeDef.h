@@ -107,7 +107,7 @@ namespace BaseGraph_DataBase
 		int nDispIndex;//属性界面上的显示顺序
 		PropertyDispType emDispType;//属性界面的控件形式
 		float fStep;//步长（仅对SpinEdit类型有效）
-		int nPrecision;
+		int nPrecision;//精度（小数点后位数，仅对SpinEdit类型有效）
 		Value stuDefault;//默认值;对于editpath类型，为filter
 		std::vector<std::pair<int, CString>> vecValueLimit;//值限定，可为空，对于数值类型，意义为最大值最小值，对于枚举类型，意义为可选项以及显示名称，对于字符串类型，意义为最大长度
 		ValueDescriptor()
