@@ -24,6 +24,8 @@ namespace BaseGraph_Common
 		ValueType_STRUCT,
 	};
 
+	extern inline CString GetValueTypeStr(ValueType emValuleType);
+
 	class Value
 	{
 	private:
@@ -70,6 +72,8 @@ namespace BaseGraph_Common
 		inline bool ToStruct(ValueAbleInterface & stuValue);
 
 		inline bool Serialize(CArchive & archive);
+		
+		inline CString GetValueStr();//给一个可以填入xml的字符串
 	};
 };
 
@@ -182,58 +186,7 @@ void BaseGraph_Common::Value::Reset()
 CString BaseGraph_Common::Value::ToDebugString()
 {
 	CString strRet = _T("");
-	switch (m_emType)
-	{
-	case BaseGraph_Common::ValueType_ERR:
-	{
-		strRet.Format(_T("error"));
-	}
-	break;
-	case BaseGraph_Common::ValueType_INT:
-	{
-		strRet.Format(_T("int:%d"), ToInt());
-	}
-	break;
-	case BaseGraph_Common::ValueType_DWORD:
-	{
-		strRet.Format(_T("dword:%d"), ToDWORD());
-	}
-	break;
-	case BaseGraph_Common::ValueType_ENUM:
-	{
-		strRet.Format(_T("enum:%d"), ToInt());
-	}
-	break;
-	case BaseGraph_Common::ValueType_BOOL:
-	{
-		strRet.Format(_T("BOOL:%d"), ToBOOL());
-	}
-	break;
-	case BaseGraph_Common::ValueType_FLOAT:
-	{
-		strRet.Format(_T("float:%f"), ToFloat());
-	}
-	break;
-	case BaseGraph_Common::ValueType_ANGLE:
-	{
-		strRet.Format(_T("angle:%d"), ToInt());
-	}
-	break;
-	case BaseGraph_Common::ValueType_TIME:
-	{
-		int nTmp = ToInt();
-		strRet.Format(_T("frame:%d"), nTmp);
-	}
-	break;
-	case BaseGraph_Common::ValueType_TEXT:
-	{
-		strRet = _T("CString:%s");
-		strRet.Append(ToCString());
-	}
-	break;
-	default:
-		break;
-	}
+	strRet.Format(_T("%s:%s"), GetValueTypeStr(m_emType), GetValueStr());
 	return strRet;
 }
 
@@ -423,6 +376,85 @@ bool BaseGraph_Common::Value::Serialize(CArchive & archive)
 	return true;
 }
 
+inline CString BaseGraph_Common::Value::GetValueStr()
+{
+	CString strRet = _T("error");
+	switch (m_emType)
+	{
+	case BaseGraph_Common::ValueType_ERR:
+		break;
+	case BaseGraph_Common::ValueType_INT:
+		strRet.Format(_T("%d"), ToInt());
+		break;
+	case BaseGraph_Common::ValueType_DWORD:
+		strRet.Format(_T("%d"), ToDWORD());
+		break;
+	case BaseGraph_Common::ValueType_ENUM:
+		strRet.Format(_T("%d"), ToInt());
+		break;
+	case BaseGraph_Common::ValueType_BOOL:
+		strRet.Format(_T("%d"), ToBOOL());
+		break;
+	case BaseGraph_Common::ValueType_FLOAT:
+		strRet.Format(_T("%d"), ToFloat());
+		break;
+	case BaseGraph_Common::ValueType_ANGLE:
+		strRet.Format(_T("%d"), ToInt());
+		break;
+	case BaseGraph_Common::ValueType_TIME:
+		strRet.Format(_T("%d"), ToInt());
+		break;
+	case BaseGraph_Common::ValueType_TEXT:
+		strRet.Format(_T("%d"), ToCString());
+		break;
+	case BaseGraph_Common::ValueType_STRUCT:
+		assert(false);
+		//strRet.Format(_T("%d"), ToInt());
+		break;
+	default:
+		break;
+	}
+	return strRet;
+}
+
+inline CString BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType emValuleType)
+{
+	switch (emValuleType)
+	{
+	case BaseGraph_Common::ValueType_ERR:
+		break;
+	case BaseGraph_Common::ValueType_INT:
+		return _T("int");
+		break;
+	case BaseGraph_Common::ValueType_DWORD:
+		return _T("dword");
+		break;
+	case BaseGraph_Common::ValueType_ENUM:
+		return _T("enum");
+		break;
+	case BaseGraph_Common::ValueType_BOOL:
+		return _T("bool");
+		break;
+	case BaseGraph_Common::ValueType_FLOAT:
+		return _T("float");
+		break;
+	case BaseGraph_Common::ValueType_ANGLE:
+		return _T("angle");
+		break;
+	case BaseGraph_Common::ValueType_TIME:
+		return _T("frame");
+		break;
+	case BaseGraph_Common::ValueType_TEXT:
+		return _T("text");
+		break;
+	case BaseGraph_Common::ValueType_STRUCT:
+		return _T("struct");
+		break;
+	default:
+		break;
+	}
+	return _T("ErrorType");
+}
 
 //宏函数，方便串入串出
 #define SERIALIZE_PARAM_GET_SIZE(size, param) \

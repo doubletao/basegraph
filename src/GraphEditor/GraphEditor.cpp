@@ -64,9 +64,17 @@ BOOL CGraphEditorApp::InitInstance()
 	//初始化材质
 	BaseGraphMaterialModuleInit(strBinPath + _T("\\FX\\"));
 	//初始化主device
-	//DX3DEngine_Initialize3DDevice(DataBase_GetSceneWidth(), DataBase_GetSceneHeight());
 	int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 	int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+	//创建的宽高也不能太小
+	if (nScreenWidth < 1440)
+	{
+		nScreenWidth = 1440;
+	}
+	if (nScreenHeight < 900)
+	{
+		nScreenHeight = 900;
+	}
 	DX3DEngine_Initialize3DDevice(nScreenWidth, nScreenHeight);
 
 	if (nullptr != m_pMainFrame)
