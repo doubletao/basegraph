@@ -20,4 +20,11 @@ ObjectScroll::~ObjectScroll()
 
 void ObjectScroll::InitialObjectParam()
 {
+	//先初始化基础的
+	BaseObject::InitialObjectParam();
+
+	for (int i = ScrollParam + 1; i < ScrollParam_End; i++)
+	{
+		AddDefaultParam((ParamValueDef)i);
+	}
 }

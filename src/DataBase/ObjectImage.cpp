@@ -22,20 +22,11 @@ void ObjectImage::InitialObjectParam()
 {
 	//先初始化基础的
 	BaseObject::InitialObjectParam();
-	auto AddDefaultParam = [this](ParamValueDef emParamValueDef)
-	{
-		if (m_mapParam.count(emParamValueDef) < 1)
-		{
-			m_mapParam[emParamValueDef] = GetValueDescriptor(emParamValueDef).stuDefault;
-		}
-	};
 
-	AddDefaultParam(Image_Path_Str);
-	AddDefaultParam(Image_SrcWidth_Int);
-	AddDefaultParam(Image_SrcHeight_Int);
-	AddDefaultParam(Image_UpDownChange_Bool);
-	AddDefaultParam(Image_LeftRightChange_Bool);
-	AddDefaultParam(Image_FlagChange_Bool);
+	for (int i = ImageParam + 1; i < ImageParam_End; i++)
+	{
+		AddDefaultParam((ParamValueDef)i);
+	}
 }
 
 std::map<BaseGraph_DataBase::ParamValueDef, Value> ObjectImage::GetProperty()
