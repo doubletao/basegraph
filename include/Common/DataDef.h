@@ -74,6 +74,7 @@ namespace BaseGraph_Common
 		inline bool Serialize(CArchive & archive);
 		
 		inline CString GetValueStr();//给一个可以填入xml的字符串
+		inline bool RecoverFromCString(CString strType, CString strValue);
 	};
 };
 
@@ -396,7 +397,7 @@ inline CString BaseGraph_Common::Value::GetValueStr()
 		strRet.Format(_T("%d"), ToBOOL());
 		break;
 	case BaseGraph_Common::ValueType_FLOAT:
-		strRet.Format(_T("%d"), ToFloat());
+		strRet.Format(_T("%f"), ToFloat());
 		break;
 	case BaseGraph_Common::ValueType_ANGLE:
 		strRet.Format(_T("%d"), ToInt());
@@ -405,9 +406,10 @@ inline CString BaseGraph_Common::Value::GetValueStr()
 		strRet.Format(_T("%d"), ToInt());
 		break;
 	case BaseGraph_Common::ValueType_TEXT:
-		strRet.Format(_T("%d"), ToCString());
+		strRet.Format(_T("%s"), ToCString());
 		break;
 	case BaseGraph_Common::ValueType_STRUCT:
+		//结构体的实现方式暂时没有想好
 		assert(false);
 		//strRet.Format(_T("%d"), ToInt());
 		break;
@@ -415,6 +417,39 @@ inline CString BaseGraph_Common::Value::GetValueStr()
 		break;
 	}
 	return strRet;
+}
+
+inline bool BaseGraph_Common::Value::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (GetValueTypeStr(ValueType_INT) == strType)
+	{
+	}
+	else if (GetValueTypeStr(ValueType_DWORD) == strType)
+	{
+	}
+	else if (GetValueTypeStr(ValueType_ENUM) == strType)
+	{
+	}
+	else if (GetValueTypeStr(ValueType_BOOL) == strType)
+	{
+	}
+	else if (GetValueTypeStr(ValueType_FLOAT) == strType)
+	{
+	}
+	else if (GetValueTypeStr(ValueType_ANGLE) == strType)
+	{
+	}
+	else if (GetValueTypeStr(ValueType_TIME) == strType)
+	{
+	}
+	else if (GetValueTypeStr(ValueType_TEXT) == strType)
+	{
+	}
+	else if (GetValueTypeStr(ValueType_STRUCT) == strType)
+	{
+	}
+	return bRet;
 }
 
 inline CString BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType emValuleType)
