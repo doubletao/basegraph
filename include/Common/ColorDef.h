@@ -225,12 +225,14 @@ typedef   struct tag_common_color : public BaseGraph_Common::ValueAbleInterface
 			float			mid[7];		// 中间点百分比（最多使用 n - 1 个中间点）
 										// 按内部子类定义
 			struct {
-				struct {		// 线性渐变
+				struct 
+				{		// 线性渐变
 					float			frad;		// 角度
 					unsigned long	repeat;		// 重复次数
 					unsigned long	style;		// 方式：对称、顺序
 				}linear;
-				struct {		// 中心渐变
+				struct 
+				{		// 中心渐变
 					float			centerx;	// 中心坐标
 					float			centery;
 					unsigned long	repeat;		// 重复次数
@@ -241,7 +243,8 @@ typedef   struct tag_common_color : public BaseGraph_Common::ValueAbleInterface
 					float			xpt[8];		// 目前只支持 8 个点
 					float			ypt[8];
 				}center;
-				struct {		// 轮廓渐变
+				struct 
+				{		// 轮廓渐变
 					float			centerx;	// 中心坐标
 					float			centery;
 					// 圆周渐变的参数
@@ -252,11 +255,13 @@ typedef   struct tag_common_color : public BaseGraph_Common::ValueAbleInterface
 					float			xpt[8];		// 目前只支持 8 个点
 					float			ypt[8];
 				}outline;
-				struct {		// 多点渐变，与节点绑定
+				struct 
+				{		// 多点渐变，与节点绑定
 					float			xpt[8];		// 顶点位置
 					float			ypt[8];
 				}multipt;
-				struct {		// 模板渐变
+				struct 
+				{		// 模板渐变
 					TCHAR	name[32];	// 固定位置下的模板名称（8 位位图文件）
 				}templet;
 			};
@@ -310,6 +315,8 @@ typedef   struct tag_common_color : public BaseGraph_Common::ValueAbleInterface
 	BASEGRAPH_COMMON_API virtual int GetSerializeSize() const;
 	BASEGRAPH_COMMON_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 	BASEGRAPH_COMMON_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+	BASEGRAPH_COMMON_API virtual CString GetValueStr();
+	BASEGRAPH_COMMON_API virtual bool RecoverFromCString(CString strType, CString strValue);
 }common_color;
 
 typedef common_color BaseGraphColor, *LPCommonCOLOR;

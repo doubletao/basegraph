@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Common\ColorDef.h"
 #include <assert.h>
-
+#include "Common\tinyxml.h"
+#include "Common\CommonFunction.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -53,4 +54,26 @@ bool tag_common_color::RecoverFromBuf(byte * pBuf, int nBufSize)
 	}
 	memcpy(this, pBuf, nSize);
 	return false;
+}
+
+CString tag_common_color::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument xmlDoc;
+	TiXmlHandle xmlDocHandle(&xmlDoc);
+
+	int nXMLSize = xmlDoc.SaveToString(NULL, 0);
+	char * szXMLValue = new char[nXMLSize + 1];
+	memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+	nXMLSize = xmlDoc.SaveToString(szXMLValue, 0);
+	strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+	delete szXMLValue;
+	szXMLValue = nullptr;
+	return strRet;
+}
+
+bool tag_common_color::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	return bRet;
 }

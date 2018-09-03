@@ -26,6 +26,9 @@
 #define SAFEDELETE_ARRAY(p)						{ if(p) delete []p; p = NULL;}
 #endif
 
+//开启tinyxml的stl支持
+#define TIXML_USE_STL
+#include <string>
 #include "Common\DataDef.h"
 #include "Common\CommonDataContainer.h"
 #include "Common\CommonFunction.h"

@@ -36,6 +36,10 @@
 #include <afxcmn.h>                     // MFC 对 Windows 公共控件的支持
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+//开启tinyxml的stl支持
+#define TIXML_USE_STL
+#include <string>
+
 #ifndef SAFERELEASE
 #define SAFERELEASE(p)                            { if(p) p->Release(); p = NULL; }
 #endif

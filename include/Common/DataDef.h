@@ -8,6 +8,8 @@ namespace BaseGraph_Common
 		virtual int GetSerializeSize() const = 0;
 		virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const = 0;
 		virtual bool RecoverFromBuf(byte * pBuf, int nBufSize) = 0;
+		virtual CString GetValueStr() = 0;
+		virtual bool RecoverFromCString(CString strType, CString strValue) = 0;
 	};
 
 	enum ValueType
@@ -73,8 +75,9 @@ namespace BaseGraph_Common
 
 		inline bool Serialize(CArchive & archive);
 		
-		inline CString GetValueStr();//给一个可以填入xml的字符串
-		inline bool RecoverFromCString(CString strType, CString strValue);
+		//对于普通类型，ValueAbleInterface给空就行，对于stu类型，ValueAbleInterface应当给出原类型结构体指针，以调用到正确的恢复还原接口
+		inline CString GetValueStr(ValueAbleInterface * pStu = nullptr);//给一个可以当作值填入xml的字符串
+		inline bool RecoverFromCString(CString strType, CString strValue, ValueAbleInterface * pStu = nullptr);//从值类型和值内容将value还原出来
 	};
 };
 
@@ -377,7 +380,7 @@ bool BaseGraph_Common::Value::Serialize(CArchive & archive)
 	return true;
 }
 
-inline CString BaseGraph_Common::Value::GetValueStr()
+inline CString BaseGraph_Common::Value::GetValueStr(ValueAbleInterface * pStu/* = nullptr*/)
 {
 	CString strRet = _T("error");
 	switch (m_emType)
@@ -409,9 +412,15 @@ inline CString BaseGraph_Common::Value::GetValueStr()
 		strRet.Format(_T("%s"), ToCString());
 		break;
 	case BaseGraph_Common::ValueType_STRUCT:
-		//结构体的实现方式暂时没有想好
-		assert(false);
-		//strRet.Format(_T("%d"), ToInt());
+		if (pStu)
+		{
+			ToStruct(*pStu);
+			strRet = pStu->GetValueStr();
+		}
+		else
+		{
+			assert(false);
+		}
 		break;
 	default:
 		break;
@@ -419,35 +428,60 @@ inline CString BaseGraph_Common::Value::GetValueStr()
 	return strRet;
 }
 
-inline bool BaseGraph_Common::Value::RecoverFromCString(CString strType, CString strValue)
+inline bool BaseGraph_Common::Value::RecoverFromCString(CString strType, CString strValue, ValueAbleInterface * pStu/* = nullptr*/)
 {
 	bool bRet = false;
 	if (GetValueTypeStr(ValueType_INT) == strType)
 	{
+		int nValue = _ttoi(strValue);
+		SetValue(nValue, BaseGraph_Common::ValueType_INT);
 	}
 	else if (GetValueTypeStr(ValueType_DWORD) == strType)
 	{
+		DWORD dwValue = _ttoi(strValue);
+		SetValue(dwValue, BaseGraph_Common::ValueType_DWORD);
 	}
 	else if (GetValueTypeStr(ValueType_ENUM) == strType)
 	{
+		int nValue = _ttoi(strValue);
+		SetValue(nValue, BaseGraph_Common::ValueType_ENUM);
 	}
 	else if (GetValueTypeStr(ValueType_BOOL) == strType)
 	{
+		int nValue = _ttoi(strValue);
+		SetValue(nValue, BaseGraph_Common::ValueType_BOOL);
 	}
 	else if (GetValueTypeStr(ValueType_FLOAT) == strType)
 	{
+		int fValue = _ttof(strValue);
+		SetValue(fValue);
 	}
 	else if (GetValueTypeStr(ValueType_ANGLE) == strType)
 	{
+		int nValue = _ttoi(strValue);
+		SetValue(nValue, BaseGraph_Common::ValueType_INT);
 	}
 	else if (GetValueTypeStr(ValueType_TIME) == strType)
 	{
+		int nValue = _ttoi(strValue);
+		SetValue(nValue, BaseGraph_Common::ValueType_TIME);
 	}
 	else if (GetValueTypeStr(ValueType_TEXT) == strType)
 	{
+		int nValue = _ttoi(strValue);
+		SetValue(nValue, BaseGraph_Common::ValueType_TIME);
 	}
 	else if (GetValueTypeStr(ValueType_STRUCT) == strType)
 	{
+		if (pStu)
+		{
+			pStu->RecoverFromCString(strType, strValue);
+			SetValue(*pStu);
+		}
+		else
+		{
+			assert(false);
+		}
 	}
 	return bRet;
 }

@@ -19,4 +19,7 @@ public:
 	static int ConvertCStringToInt(CString strValue);//转换cstring到整数
 	static float ConvertCStringToFloat(CString strValue);//转换cstring到浮点数
 	static double ConvertCStringToDouble(CString strValue);//转换cstring到双精度小数
+	static std::string ConverCStringToStdString(CString & cstrValue);//CString与string之间的转换
+	static std::string ConverCStringToStdString(CString & cstrValue, DWORD dwFormatW);//CString与string之间的转换
+	static CString ConvertStdStringToCString(const std::string & strValue);//CString与string之间的转换
 };
