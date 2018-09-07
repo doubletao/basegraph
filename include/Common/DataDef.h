@@ -8,8 +8,8 @@ namespace BaseGraph_Common
 		virtual int GetSerializeSize() const = 0;
 		virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const = 0;
 		virtual bool RecoverFromBuf(byte * pBuf, int nBufSize) = 0;
-		virtual CString GetValueStr() = 0;
-		virtual bool RecoverFromCString(CString strType, CString strValue) = 0;
+		virtual CString GetValueStr() { return _T(""); }
+		virtual bool RecoverFromCString(CString strType, CString strValue) { return false; }
 	};
 
 	enum ValueType

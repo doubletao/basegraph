@@ -377,6 +377,9 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	//≤‚ ‘¥˙¬Î
+	common_color colorTest;
+	CString strColorXml = colorTest.GetValueStr();
+
 	auto CreateTestImgObj = [](CString strName, CString strImgPath, CString strDebugPath, int nBegin, int nEnd)
 	{
 		CString strObjID = _T("");
