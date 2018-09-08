@@ -379,8 +379,8 @@ bool tag_common_color::RecoverFromCString(CString strType, CString strValue)
 						theme = nIntValue;
 						eleCommon_color->Attribute("subtheme", &nIntValue);
 						subtheme = nIntValue;
-						bRet = true;
 					}
+					bRet = true;
 				}
 				delete xmlDoc;
 				xmlDoc = nullptr;

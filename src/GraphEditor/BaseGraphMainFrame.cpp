@@ -377,10 +377,20 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	//≤‚ ‘¥˙¬Î
-	common_color colorTest;
-	CString strColorXml = colorTest.GetValueStr();
-	CString strType = BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT);
-	colorTest.RecoverFromCString(strType, strColorXml);
+	if (true)
+	{
+		common_color colorTest;
+		CString strColorXml = colorTest.GetValueStr();
+		CString strType = BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT);
+		colorTest.RecoverFromCString(strType, strColorXml);
+
+		BaseGraph_DataBase::faceinfo face;
+		face.disable = 0;
+		face.color.type = 0;
+		face.color.color = ARGBColor(255, 0, 255, 0);
+		CString strFaceXML = face.GetValueStr();
+		face.RecoverFromCString(strType, strFaceXML);
+	}
 
 	auto CreateTestImgObj = [](CString strName, CString strImgPath, CString strDebugPath, int nBegin, int nEnd)
 	{

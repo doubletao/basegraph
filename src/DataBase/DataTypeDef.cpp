@@ -1,3 +1,11 @@
+#include "..\..\include\DataBase\DataTypeDefDetail.h"
+#include "..\..\include\DataBase\DataTypeDefDetail.h"
+#include "..\..\include\DataBase\DataTypeDefDetail.h"
+#include "..\..\include\DataBase\DataTypeDefDetail.h"
+#include "..\..\include\DataBase\DataTypeDefDetail.h"
+#include "..\..\include\DataBase\DataTypeDefDetail.h"
+#include "..\..\include\DataBase\DataTypeDefDetail.h"
+#include "..\..\include\DataBase\DataTypeDefDetail.h"
 #include "stdafx.h"
 #include "DataBase\DataTypeDefDetail.h"
 #include "DataBase\DataTypeDef.h"
@@ -75,6 +83,79 @@ bool BaseGraph_DataBase::artinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	return true;
 }
 
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::artinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleArtinfo = new TiXmlElement("artinfo");
+		if (eleArtinfo)
+		{
+			xmlDoc->LinkEndChild(eleArtinfo);
+			eleArtinfo->SetAttribute("type", type);
+			eleArtinfo->SetAttribute("cv_height", cv_height);
+			eleArtinfo->SetAttribute("cu_angle", cu_angle);
+			eleArtinfo->SetAttribute("soft", soft);
+			eleArtinfo->SetAttribute("color", color);
+			eleArtinfo->SetAttribute("metal", CommonFunction::ConverCStringToStdString(metal.GetValueStr()).c_str());
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::artinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleArtinfo = xmlDoc->FirstChildElement("artinfo");
+					if (eleArtinfo)
+					{
+						eleArtinfo->Attribute("type", &nIntValue);
+						type = (GRAPH_ART_PROC_TYPE)nIntValue;
+						eleArtinfo->Attribute("cv_height", &nIntValue);
+						cv_height = nIntValue;
+						eleArtinfo->Attribute("cu_angle", &dDoubleValue);
+						cu_angle = dDoubleValue;
+						eleArtinfo->Attribute("soft", &soft);
+						eleArtinfo->Attribute("color", &nIntValue);
+						color = nIntValue;
+						std::string cstrValue = eleArtinfo->Attribute("metal");
+						metal.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
+}
+
 BaseGraph_DataBase::faceinfo::faceinfo()
 {
 	Reset();
@@ -142,6 +223,79 @@ bool BaseGraph_DataBase::faceinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	SERIALIZE_BUF_TO_PARAM_STU(pBuf, nSize, art);
 	SERIALIZE_BUF_TO_PARAM_STU(pBuf, nSize, color);
 	return true;
+}
+
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::faceinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleFaceinfo = new TiXmlElement("faceinfo");
+		if (eleFaceinfo)
+		{
+			xmlDoc->LinkEndChild(eleFaceinfo);
+			eleFaceinfo->SetAttribute("disable", disable);
+			eleFaceinfo->SetAttribute("soft", soft);
+			eleFaceinfo->SetAttribute("effect_type", effect_type);
+			eleFaceinfo->SetAttribute("effect_width", effect_width);
+			eleFaceinfo->SetAttribute("avcolor", avcolor);
+			eleFaceinfo->SetAttribute("art", CommonFunction::ConverCStringToStdString(art.GetValueStr()).c_str());
+			eleFaceinfo->SetAttribute("color", CommonFunction::ConverCStringToStdString(color.GetValueStr()).c_str());
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::faceinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleFaceinfo = xmlDoc->FirstChildElement("faceinfo");
+					if (eleFaceinfo)
+					{
+						eleFaceinfo->Attribute("disable", &disable);
+						eleFaceinfo->Attribute("soft", &soft);
+						eleFaceinfo->Attribute("effect_type", &effect_type);
+						eleFaceinfo->Attribute("effect_width", &effect_width);
+						eleFaceinfo->Attribute("avcolor", &nIntValue);
+						avcolor = nIntValue;
+						std::string cstrArt = eleFaceinfo->Attribute("art");
+						art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrArt));
+						std::string cstrColor = eleFaceinfo->Attribute("color");
+						color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrColor));
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
 }
 
 BaseGraph_DataBase::borderinfo::borderinfo()
@@ -722,6 +876,87 @@ bool BaseGraph_DataBase::metallight::RecoverFromBuf(byte * pBuf, int nBufSize)
 	return true;
 }
 
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::metallight::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleMetallight = new TiXmlElement("metallight");
+		if (eleMetallight)
+		{
+			xmlDoc->LinkEndChild(eleMetallight);
+			eleMetallight->SetAttribute("enable", enable);
+			eleMetallight->SetAttribute("pos_x", pos.x);
+			eleMetallight->SetAttribute("pos_y", pos.y);
+			eleMetallight->SetAttribute("pos_z", pos.z);
+			for (size_t i = 0; i < 3; i++)
+			{
+				memset(szName, 0, MAX_PATH);
+				sprintf_s(szName, 256, "strength%d", i);
+				eleMetallight->SetAttribute(szName, strength[i]);
+			}
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metallight::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleMetallight = xmlDoc->FirstChildElement("metallight");
+					if (eleMetallight)
+					{
+						eleMetallight->Attribute("highlight", &nIntValue);
+						enable = nIntValue;
+						eleMetallight->Attribute("pos_x", &dDoubleValue);
+						pos.x = dDoubleValue;
+						eleMetallight->Attribute("pos_y", &dDoubleValue);
+						pos.y = dDoubleValue;
+						eleMetallight->Attribute("pos_z", &dDoubleValue);
+						pos.z = dDoubleValue;
+						for (size_t i = 0; i < 3; i++)
+						{
+							memset(szName, 0, MAX_PATH);
+							sprintf_s(szName, 256, "strength%d", i);
+							eleMetallight->Attribute(szName, &dDoubleValue);
+							strength[i] = dDoubleValue;
+						}
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
+}
+
 BaseGraph_DataBase::metalinfo::metalinfo()
 {
 	Reset();
@@ -791,4 +1026,97 @@ bool BaseGraph_DataBase::metalinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	SERIALIZE_BUF_TO_PARAM_STU_ARR(pBuf, nSize, light, 3);
 	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, eyepos);
 	return true;
+}
+
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::metalinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleMetalinfo = new TiXmlElement("metalinfo");
+		if (eleMetalinfo)
+		{
+			xmlDoc->LinkEndChild(eleMetalinfo);
+			eleMetalinfo->SetAttribute("highlight", highlight);
+			eleMetalinfo->SetAttribute("barc", barc);
+			eleMetalinfo->SetAttribute("specular", specular);
+			eleMetalinfo->SetAttribute("width", width);
+			eleMetalinfo->SetAttribute("height", height);
+			for (size_t i = 0; i < 3; i++)
+			{
+				memset(szName, 0, MAX_PATH);
+				sprintf_s(szName, 256, "light%d", i);
+				eleMetalinfo->SetAttribute(szName, CommonFunction::ConverCStringToStdString(light[i].GetValueStr()).c_str());
+			}
+			eleMetalinfo->SetAttribute("eyepos_x", eyepos.x);
+			eleMetalinfo->SetAttribute("eyepos_y", eyepos.y);
+			eleMetalinfo->SetAttribute("eyepos_z", eyepos.z);
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleMetalinfo = xmlDoc->FirstChildElement("metalinfo");
+					if (eleMetalinfo)
+					{
+						eleMetalinfo->Attribute("highlight", &nIntValue);
+						highlight = nIntValue;
+						eleMetalinfo->Attribute("barc", &nIntValue);
+						barc = nIntValue;
+						eleMetalinfo->Attribute("specular", &dDoubleValue);
+						specular = dDoubleValue;
+						eleMetalinfo->Attribute("width", &nIntValue);
+						width = nIntValue;
+						eleMetalinfo->Attribute("height", &nIntValue);
+						height = nIntValue;
+						for (size_t i = 0; i < 3; i++)
+						{
+							memset(szName, 0, MAX_PATH);
+							sprintf_s(szName, 256, "light%d", i);
+							std::string cstrVlue = eleMetalinfo->Attribute(szName);
+							light[i].RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrVlue));
+						}
+						eleMetalinfo->Attribute("eyepos_x", &dDoubleValue);
+						eyepos.x = dDoubleValue;
+						eleMetalinfo->Attribute("eyepos_y", &dDoubleValue);
+						eyepos.y = dDoubleValue;
+						eleMetalinfo->Attribute("eyepos_z", &dDoubleValue);
+						eyepos.z = dDoubleValue;
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
 }
