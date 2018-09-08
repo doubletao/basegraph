@@ -212,5 +212,180 @@ CString tag_common_color::GetValueStr()
 bool tag_common_color::RecoverFromCString(CString strType, CString strValue)
 {
 	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					TiXmlElement * eleCommon_color = docHandle.FirstChild("common_color").ToElement();
+					if (eleCommon_color)
+					{
+						eleCommon_color->Attribute("type", &nIntValue);
+						type = nIntValue;
+						TiXmlElement * eleStruct = eleCommon_color->FirstChildElement("struct");
+						if (eleStruct)
+						{
+							eleStruct->Attribute("color", &nIntValue);
+							color = nIntValue;
+							TiXmlElement * eleImgtex = eleStruct->FirstChildElement("imgtex");
+							if (eleImgtex)
+							{
+								std::string cstrName = eleImgtex->Attribute("name");
+								CString strName = CommonFunction::ConvertStdStringToCString(cstrName);
+								memcpy(imgtex.name, strName.GetBuffer(), strName.GetLength() * sizeof(TCHAR));
+								imgtex.name[strName.GetLength()] = _T('\0');
+								eleImgtex->Attribute("fill", &nIntValue);
+								imgtex.fill = nIntValue;
+								eleImgtex->Attribute("align", &nIntValue);
+								imgtex.align = nIntValue;
+							}
+							TiXmlElement * eleGradual = eleStruct->FirstChildElement("gradual");
+							if (eleGradual)
+							{
+								char szName[MAX_PATH];
+								for (size_t i = 0; i < 8; i++)
+								{
+									memset(szName, 0, MAX_PATH);
+									sprintf_s(szName, 256, "color%d", i);
+									eleGradual->Attribute(szName, &nIntValue);
+									gradual.color[i] = nIntValue;
+								}
+								eleGradual->Attribute("ncount", &gradual.ncount);
+								for (size_t i = 0; i < 8; i++)
+								{
+									memset(szName, 0, MAX_PATH);
+									sprintf_s(szName, 256, "pos%d", i);
+									eleGradual->Attribute(szName, &dDoubleValue);
+									gradual.pos[i] = dDoubleValue;
+								}
+								for (size_t i = 0; i < 7; i++)
+								{
+									memset(szName, 0, MAX_PATH);
+									sprintf_s(szName, 256, "mid%d", i);
+									eleGradual->Attribute(szName, &dDoubleValue);
+									gradual.mid[i] = dDoubleValue;
+								}
+								TiXmlElement * eleStruct = eleGradual->FirstChildElement("struct");
+								if (eleStruct)
+								{
+									TiXmlElement * eleLinear = eleStruct->FirstChildElement("linear");
+									if (eleLinear)
+									{
+										eleLinear->Attribute("frad", &dDoubleValue);
+										gradual.linear.frad = dDoubleValue;
+										eleLinear->Attribute("repeat", &nIntValue);
+										gradual.linear.repeat = nIntValue;
+										eleLinear->Attribute("style", &nIntValue);
+										gradual.linear.style = nIntValue;
+									}
+									TiXmlElement * eleCenter = eleStruct->FirstChildElement("center");
+									if (eleCenter)
+									{
+										eleCenter->Attribute("centerx", &dDoubleValue);
+										gradual.center.centerx = dDoubleValue;
+										eleCenter->Attribute("centery", &dDoubleValue);
+										gradual.center.centery = dDoubleValue;
+										eleCenter->Attribute("repeat", &nIntValue);
+										gradual.center.repeat = nIntValue;
+										eleCenter->Attribute("style", &nIntValue);
+										gradual.center.style = nIntValue;
+										eleCenter->Attribute("nvertex", &gradual.center.nvertex);
+										for (size_t i = 0; i < 8; i++)
+										{
+											memset(szName, 0, MAX_PATH);
+											sprintf_s(szName, 256, "xpt%d", i);
+											eleStruct->Attribute(szName, &dDoubleValue);
+											gradual.center.xpt[i] = dDoubleValue;
+										}
+										for (size_t i = 0; i < 8; i++)
+										{
+											memset(szName, 0, MAX_PATH);
+											sprintf_s(szName, 256, "ypt%d", i);
+											eleStruct->Attribute(szName, &dDoubleValue);
+											gradual.center.ypt[i] = dDoubleValue;
+										}
+									}
+									TiXmlElement * eleOutline = eleStruct->FirstChildElement("outline");
+									if (eleOutline)
+									{
+										eleOutline->Attribute("centerx", &dDoubleValue);
+										gradual.outline.centerx = dDoubleValue;
+										eleOutline->Attribute("centery", &dDoubleValue);
+										gradual.outline.centery = dDoubleValue;
+										eleOutline->Attribute("repeat", &nIntValue);
+										gradual.outline.repeat = nIntValue;
+										eleOutline->Attribute("style", &nIntValue);
+										gradual.outline.style = nIntValue;
+										for (size_t i = 0; i < 8; i++)
+										{
+											memset(szName, 0, MAX_PATH);
+											sprintf_s(szName, 256, "xpt%d", i);
+											eleOutline->Attribute(szName, &dDoubleValue);
+											gradual.outline.xpt[i] = dDoubleValue;
+										}
+										for (size_t i = 0; i < 8; i++)
+										{
+											memset(szName, 0, MAX_PATH);
+											sprintf_s(szName, 256, "ypt%d", i);
+											eleOutline->Attribute(szName, &dDoubleValue);
+											gradual.outline.ypt[i] = dDoubleValue;
+										}
+									}
+									TiXmlElement * eleMultipt = eleStruct->FirstChildElement("multipt");
+									if (eleMultipt)
+									{
+										for (size_t i = 0; i < 8; i++)
+										{
+											memset(szName, 0, MAX_PATH);
+											sprintf_s(szName, 256, "xpt%d", i);
+											eleMultipt->Attribute(szName, &dDoubleValue);
+											gradual.multipt.xpt[i] = dDoubleValue;
+										}
+										for (size_t i = 0; i < 8; i++)
+										{
+											memset(szName, 0, MAX_PATH);
+											sprintf_s(szName, 256, "ypt%d", i);
+											eleMultipt->Attribute(szName, &dDoubleValue);
+											gradual.multipt.ypt[i] = dDoubleValue;
+										}
+									}
+									TiXmlElement * eleTemplet = eleStruct->FirstChildElement("templet");
+									if (eleTemplet)
+									{
+										std::string cstrName = eleTemplet->Attribute("name");
+										CString strName = CommonFunction::ConvertStdStringToCString(cstrName);
+										memcpy(gradual.templet.name, strName.GetBuffer(), strName.GetLength() * sizeof(TCHAR));
+									}
+								}
+								eleGradual->Attribute("animation", &nIntValue);
+								gradual.animation = nIntValue;
+								for (size_t i = 0; i < GRAD_ANI_PARAM_COUNT; i++)
+								{
+									memset(szName, 0, MAX_PATH);
+									sprintf_s(szName, 256, "aniparam%d", i);
+									eleGradual->Attribute(szName, &dDoubleValue);
+									gradual.aniparam[i] = dDoubleValue;
+								}
+							}
+						}
+						eleCommon_color->Attribute("theme", &nIntValue);
+						theme = nIntValue;
+						eleCommon_color->Attribute("subtheme", &nIntValue);
+						subtheme = nIntValue;
+						bRet = true;
+					}
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
 	return bRet;
 }
