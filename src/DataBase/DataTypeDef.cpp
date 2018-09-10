@@ -379,6 +379,88 @@ bool BaseGraph_DataBase::borderinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	return true;
 }
 
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::borderinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleBorderinfo = new TiXmlElement("borderinfo");
+		if (eleBorderinfo)
+		{
+			xmlDoc->LinkEndChild(eleBorderinfo);
+			eleBorderinfo->SetAttribute("disable", disable);
+			eleBorderinfo->SetAttribute("soft", soft);
+			eleBorderinfo->SetAttribute("linestyle", linestyle);
+			eleBorderinfo->SetAttribute("width", width);
+			eleBorderinfo->SetAttribute("interval", interval);
+			eleBorderinfo->SetAttribute("effect_type", effect_type);
+			eleBorderinfo->SetAttribute("effect_width", effect_width);
+			eleBorderinfo->SetAttribute("avcolor", avcolor);
+			eleBorderinfo->SetAttribute("art", CommonFunction::ConverCStringToStdString(art.GetValueStr()).c_str());
+			eleBorderinfo->SetAttribute("color", CommonFunction::ConverCStringToStdString(color.GetValueStr()).c_str());
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::borderinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleBorderinfo = xmlDoc->FirstChildElement("borderinfo");
+					if (eleBorderinfo)
+					{
+						eleBorderinfo->Attribute("disable", &disable);
+						eleBorderinfo->Attribute("soft", &soft);
+						eleBorderinfo->Attribute("linestyle", &linestyle);
+						eleBorderinfo->Attribute("width", &dDoubleValue);
+						width = dDoubleValue;
+						eleBorderinfo->Attribute("interval", &dDoubleValue);
+						interval = dDoubleValue;
+						eleBorderinfo->Attribute("effect_type", &nIntValue);
+						effect_type = nIntValue;
+						eleBorderinfo->Attribute("effect_width", &effect_width);
+						eleBorderinfo->Attribute("avcolor", &nIntValue);
+						avcolor = nIntValue;
+						std::string cstrArt = eleBorderinfo->Attribute("art");
+						art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrArt));
+						std::string cstrColor = eleBorderinfo->Attribute("color");
+						color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrColor));
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
+}
+
 BaseGraph_DataBase::shadowinfo::shadowinfo()
 {
 	Reset();
@@ -468,6 +550,94 @@ bool BaseGraph_DataBase::shadowinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	return true;
 }
 
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::shadowinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleShadowinfo = new TiXmlElement("shadowinfo");
+		if (eleShadowinfo)
+		{
+			xmlDoc->LinkEndChild(eleShadowinfo);
+			eleShadowinfo->SetAttribute("disable", disable);
+			eleShadowinfo->SetAttribute("soft", soft);
+			eleShadowinfo->SetAttribute("offsetx", offsetx);
+			eleShadowinfo->SetAttribute("offsety", offsety);
+			eleShadowinfo->SetAttribute("effect_type", effect_type);
+			eleShadowinfo->SetAttribute("effect_fxtitle", effect_fxtitle);
+			eleShadowinfo->SetAttribute("effect_fyscale", effect_fyscale);
+			eleShadowinfo->SetAttribute("effect_fadeout", effect_fadeout);
+			eleShadowinfo->SetAttribute("effect_style", effect_style);
+			eleShadowinfo->SetAttribute("avcolor", avcolor);
+			eleShadowinfo->SetAttribute("art", CommonFunction::ConverCStringToStdString(art.GetValueStr()).c_str());
+			eleShadowinfo->SetAttribute("color", CommonFunction::ConverCStringToStdString(color.GetValueStr()).c_str());
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::shadowinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleShadowinfo = xmlDoc->FirstChildElement("shadowinfo");
+					if (eleShadowinfo)
+					{
+						eleShadowinfo->Attribute("disable", &disable);
+						eleShadowinfo->Attribute("soft", &soft);
+						eleShadowinfo->Attribute("offsetx", &offsetx);
+						eleShadowinfo->Attribute("offsety", &offsety);
+						eleShadowinfo->Attribute("effect_type", &nIntValue);
+						effect_type = nIntValue;
+						eleShadowinfo->Attribute("effect_fxtitle", &dDoubleValue);
+						effect_fxtitle = dDoubleValue;
+						eleShadowinfo->Attribute("effect_fyscale", &dDoubleValue);
+						effect_fyscale = dDoubleValue;
+						eleShadowinfo->Attribute("effect_fadeout", &dDoubleValue);
+						effect_fadeout = dDoubleValue;
+						eleShadowinfo->Attribute("effect_style", &nIntValue);
+						effect_style = nIntValue;
+						eleShadowinfo->Attribute("avcolor", &nIntValue);
+						avcolor = nIntValue;
+						std::string cstrArt = eleShadowinfo->Attribute("art");
+						art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrArt));
+						std::string cstrColor = eleShadowinfo->Attribute("color");
+						color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrColor));
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
+}
+
 BaseGraph_DataBase::cubeinfo::cubeinfo()
 {
 	Reset();
@@ -541,6 +711,83 @@ bool BaseGraph_DataBase::cubeinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	return true;
 }
 
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::cubeinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleCubeinfo = new TiXmlElement("cubeinfo");
+		if (eleCubeinfo)
+		{
+			xmlDoc->LinkEndChild(eleCubeinfo);
+			eleCubeinfo->SetAttribute("disable", disable);
+			eleCubeinfo->SetAttribute("width", width);
+			eleCubeinfo->SetAttribute("angle", angle);
+			eleCubeinfo->SetAttribute("effect_type", effect_type);
+			eleCubeinfo->SetAttribute("effect_width", effect_width);
+			eleCubeinfo->SetAttribute("avcolor", avcolor);
+			eleCubeinfo->SetAttribute("art", CommonFunction::ConverCStringToStdString(art.GetValueStr()).c_str());
+			eleCubeinfo->SetAttribute("color", CommonFunction::ConverCStringToStdString(color.GetValueStr()).c_str());
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::cubeinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleCubeinfo = xmlDoc->FirstChildElement("cubeinfo");
+					if (eleCubeinfo)
+					{
+						eleCubeinfo->Attribute("disable", &disable);
+						eleCubeinfo->Attribute("width", &dDoubleValue);
+						width = dDoubleValue;
+						eleCubeinfo->Attribute("angle", &dDoubleValue);
+						angle = dDoubleValue;
+						eleCubeinfo->Attribute("effect_type", &effect_type);
+						eleCubeinfo->Attribute("effect_width", &effect_width);
+						eleCubeinfo->Attribute("avcolor", &nIntValue);
+						avcolor = nIntValue;
+						std::string cstrArt = eleCubeinfo->Attribute("art");
+						art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrArt));
+						std::string cstrColor = eleCubeinfo->Attribute("color");
+						color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrColor));
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
+}
+
 BaseGraph_DataBase::lightinfo::lightinfo()
 {
 	Reset();
@@ -606,6 +853,85 @@ bool BaseGraph_DataBase::lightinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	return true;
 }
 
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::lightinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleLightinfo = new TiXmlElement("lightinfo");
+		if (eleLightinfo)
+		{
+			xmlDoc->LinkEndChild(eleLightinfo);
+			eleLightinfo->SetAttribute("ambience", ambience);
+			eleLightinfo->SetAttribute("ambience_degree", ambience_degree);
+			eleLightinfo->SetAttribute("reflectcolor", reflectcolor);
+			eleLightinfo->SetAttribute("dwReverse1", dwReverse1);
+			eleLightinfo->SetAttribute("dwReverse2", dwReverse2);
+			eleLightinfo->SetAttribute("szPath", CommonFunction::ConverCStringToStdString(szPath).c_str());
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::lightinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleLightinfo = xmlDoc->FirstChildElement("lightinfo");
+					if (eleLightinfo)
+					{
+						eleLightinfo->Attribute("ambience", &nIntValue);
+						ambience = nIntValue;
+						eleLightinfo->Attribute("ambience_degree", &nIntValue);
+						ambience_degree = nIntValue;
+						eleLightinfo->Attribute("reflectcolor", &nIntValue);
+						reflectcolor = nIntValue;
+						eleLightinfo->Attribute("dwReverse1", &nIntValue);
+						dwReverse1 = nIntValue;
+						eleLightinfo->Attribute("dwReverse2", &nIntValue);
+						dwReverse2 = nIntValue;
+						cstrValue = eleLightinfo->Attribute("szPath");
+						if (nullptr != cstrValue)
+						{
+							CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
+							memcpy(szName, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
+						}
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
+}
+
 BaseGraph_DataBase::channelinfo::channelinfo()
 {
 	Reset();
@@ -667,6 +993,80 @@ bool BaseGraph_DataBase::channelinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	return true;
 }
 
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::channelinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleChannelinfo = new TiXmlElement("channelinfo");
+		if (eleChannelinfo)
+		{
+			xmlDoc->LinkEndChild(eleChannelinfo);
+			eleChannelinfo->SetAttribute("szPath", CommonFunction::ConverCStringToStdString(szPath).c_str());
+			eleChannelinfo->SetAttribute("weight", weight);
+			eleChannelinfo->SetAttribute("channelid", channelid);
+			eleChannelinfo->SetAttribute("dwReverse1", dwReverse1);
+			eleChannelinfo->SetAttribute("dwReverse2", dwReverse2);
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::channelinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleChannelinfo = xmlDoc->FirstChildElement("channelinfo");
+					if (eleChannelinfo)
+					{
+						cstrValue = eleChannelinfo->Attribute("szPath");
+						if (nullptr != cstrValue)
+						{
+							CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
+							memcpy(szName, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
+						}
+						eleChannelinfo->Attribute("weight", &weight);
+						eleChannelinfo->Attribute("channelid", &channelid);
+						eleChannelinfo->Attribute("dwReverse1", &nIntValue);
+						dwReverse1 = nIntValue;
+						eleChannelinfo->Attribute("dwReverse2", &nIntValue);
+						dwReverse2 = nIntValue;
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
+}
+
 BaseGraph_DataBase::materialinfo::materialinfo()
 {
 	Reset();
@@ -718,6 +1118,76 @@ bool BaseGraph_DataBase::materialinfo::RecoverFromBuf(byte * pBuf, int nBufSize)
 	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, dwReverse1);
 	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, dwReverse2);
 	return true;
+}
+
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::materialinfo::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleChannelinfo = new TiXmlElement("channelinfo");
+		if (eleChannelinfo)
+		{
+			xmlDoc->LinkEndChild(eleChannelinfo);
+			eleChannelinfo->SetAttribute("szPath", CommonFunction::ConverCStringToStdString(szPath).c_str());
+			eleChannelinfo->SetAttribute("dwReverse1", dwReverse1);
+			eleChannelinfo->SetAttribute("dwReverse2", dwReverse2);
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::materialinfo::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleChannelinfo = xmlDoc->FirstChildElement("channelinfo");
+					if (eleChannelinfo)
+					{
+						cstrValue = eleChannelinfo->Attribute("szPath");
+						if (nullptr != cstrValue)
+						{
+							CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
+							memcpy(szName, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
+						}
+						eleChannelinfo->Attribute("dwReverse1", &nIntValue);
+						dwReverse1 = nIntValue;
+						eleChannelinfo->Attribute("dwReverse2", &nIntValue);
+						dwReverse2 = nIntValue;
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
 }
 
 BaseGraph_DataBase::dynamictexture::dynamictexture()
@@ -819,6 +1289,112 @@ bool BaseGraph_DataBase::dynamictexture::RecoverFromBuf(byte * pBuf, int nBufSiz
 	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, bRepeat);
 	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, bUseAlpha);
 	return true;
+}
+
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::dynamictexture::GetValueStr()
+{
+	CString strRet;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	TiXmlHandle xmlDocHandle(xmlDoc);
+	if (xmlDoc)
+	{
+		char szName[MAX_PATH];
+		TiXmlElement * eleDynamictexture = new TiXmlElement("dynamictexture");
+		if (eleDynamictexture)
+		{
+			xmlDoc->LinkEndChild(eleDynamictexture);
+			eleDynamictexture->SetAttribute("szPath", CommonFunction::ConverCStringToStdString(szPath).c_str());
+			eleDynamictexture->SetAttribute("disable", disable);
+			eleDynamictexture->SetAttribute("speed", speed);
+			eleDynamictexture->SetAttribute("offsetx", offsetx);
+			eleDynamictexture->SetAttribute("offsety", offsety);
+			eleDynamictexture->SetAttribute("vRunDirx", vRunDirx);
+			eleDynamictexture->SetAttribute("vRunDiry", vRunDiry);
+			eleDynamictexture->SetAttribute("scalex", scalex);
+			eleDynamictexture->SetAttribute("scaley", scaley);
+			eleDynamictexture->SetAttribute("centerx", centerx);
+			eleDynamictexture->SetAttribute("centery", centery);
+			eleDynamictexture->SetAttribute("rotate", rotate);
+			eleDynamictexture->SetAttribute("alpha", alpha);
+			eleDynamictexture->SetAttribute("bRepeat", bRepeat);
+			eleDynamictexture->SetAttribute("bUseAlpha", bUseAlpha);
+		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strRet = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return strRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::dynamictexture::RecoverFromCString(CString strType, CString strValue)
+{
+	bool bRet = false;
+	if (BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT) == strType)
+	{
+		if (!strValue.IsEmpty())
+		{
+			int nIntValue = 0;
+			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
+			TiXmlDocument* xmlDoc = new TiXmlDocument;
+			if (xmlDoc)
+			{
+				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				{
+					TiXmlHandle docHandle(xmlDoc);
+					char szName[MAX_PATH];
+					TiXmlElement * eleDynamictexture = xmlDoc->FirstChildElement("dynamictexture");
+					if (eleDynamictexture)
+					{
+						cstrValue = eleDynamictexture->Attribute("szPath");
+						if (nullptr != cstrValue)
+						{
+							CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
+							memcpy(szName, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
+						}
+						eleDynamictexture->Attribute("disable", &nIntValue);
+						disable = nIntValue;
+						eleDynamictexture->Attribute("speed", &dDoubleValue);
+						speed = dDoubleValue;
+						eleDynamictexture->Attribute("offsetx", &dDoubleValue);
+						offsetx = dDoubleValue;
+						eleDynamictexture->Attribute("offsety", &dDoubleValue);
+						offsety = dDoubleValue;
+						eleDynamictexture->Attribute("vRunDirx", &dDoubleValue);
+						vRunDirx = dDoubleValue;
+						eleDynamictexture->Attribute("vRunDiry", &dDoubleValue);
+						vRunDiry = dDoubleValue;
+						eleDynamictexture->Attribute("scalex", &dDoubleValue);
+						scalex = dDoubleValue;
+						eleDynamictexture->Attribute("scaley", &dDoubleValue);
+						scaley = dDoubleValue;
+						eleDynamictexture->Attribute("centerx", &dDoubleValue);
+						centerx = dDoubleValue;
+						eleDynamictexture->Attribute("centery", &dDoubleValue);
+						centery = dDoubleValue;
+						eleDynamictexture->Attribute("rotate", &dDoubleValue);
+						rotate = dDoubleValue;
+						eleDynamictexture->Attribute("alpha", &dDoubleValue);
+						alpha = dDoubleValue;
+						eleDynamictexture->Attribute("bRepeat", &nIntValue);
+						bRepeat = nIntValue;
+						eleDynamictexture->Attribute("bUseAlpha", &nIntValue);
+						bUseAlpha = nIntValue;
+					}
+					bRet = true;
+				}
+				delete xmlDoc;
+				xmlDoc = nullptr;
+			}
+		}
+	}
+	return bRet;
 }
 
 BaseGraph_DataBase::metallight::metallight()

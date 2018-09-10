@@ -106,6 +106,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
 	};
 
 	struct shadowinfo : public BaseGraph_Common::ValueAbleInterface
@@ -129,6 +131,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
 	};
 
 	struct cubeinfo : public BaseGraph_Common::ValueAbleInterface
@@ -146,6 +150,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
 	};
 
 	struct lightinfo : public BaseGraph_Common::ValueAbleInterface
@@ -161,6 +167,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
 	};
 
 	struct channelinfo : public BaseGraph_Common::ValueAbleInterface
@@ -175,6 +183,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
 	};
 
 	struct materialinfo : public BaseGraph_Common::ValueAbleInterface
@@ -187,6 +197,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
 	};
 
 	struct dynamictexture : public BaseGraph_Common::ValueAbleInterface
@@ -211,5 +223,7 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual int GetSerializeSize() const;
 		BASEGRAPH_DATABASE_API virtual bool GetSerializeBuf(byte * pBuf, int nBufSize) const;
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
+		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
 	};
 }
