@@ -1,11 +1,3 @@
-#include "..\..\include\DataBase\DataTypeDefDetail.h"
-#include "..\..\include\DataBase\DataTypeDefDetail.h"
-#include "..\..\include\DataBase\DataTypeDefDetail.h"
-#include "..\..\include\DataBase\DataTypeDefDetail.h"
-#include "..\..\include\DataBase\DataTypeDefDetail.h"
-#include "..\..\include\DataBase\DataTypeDefDetail.h"
-#include "..\..\include\DataBase\DataTypeDefDetail.h"
-#include "..\..\include\DataBase\DataTypeDefDetail.h"
 #include "stdafx.h"
 #include "DataBase\DataTypeDefDetail.h"
 #include "DataBase\DataTypeDef.h"
@@ -124,6 +116,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::artinfo::RecoverFromCString(CStr
 		{
 			int nIntValue = 0;
 			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
@@ -143,8 +136,11 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::artinfo::RecoverFromCString(CStr
 						eleArtinfo->Attribute("soft", &soft);
 						eleArtinfo->Attribute("color", &nIntValue);
 						color = nIntValue;
-						std::string cstrValue = eleArtinfo->Attribute("metal");
-						metal.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						cstrValue = eleArtinfo->Attribute("metal");
+						if (cstrValue)
+						{
+							metal.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
 					}
 					bRet = true;
 				}
@@ -267,6 +263,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::faceinfo::RecoverFromCString(CSt
 		{
 			int nIntValue = 0;
 			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
@@ -283,10 +280,16 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::faceinfo::RecoverFromCString(CSt
 						eleFaceinfo->Attribute("effect_width", &effect_width);
 						eleFaceinfo->Attribute("avcolor", &nIntValue);
 						avcolor = nIntValue;
-						std::string cstrArt = eleFaceinfo->Attribute("art");
-						art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrArt));
-						std::string cstrColor = eleFaceinfo->Attribute("color");
-						color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrColor));
+						cstrValue = eleFaceinfo->Attribute("art");
+						if (cstrValue)
+						{
+							art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
+						cstrValue = eleFaceinfo->Attribute("color");
+						if (cstrValue)
+						{
+							color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
 					}
 					bRet = true;
 				}
@@ -424,6 +427,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::borderinfo::RecoverFromCString(C
 		{
 			int nIntValue = 0;
 			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
@@ -446,10 +450,16 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::borderinfo::RecoverFromCString(C
 						eleBorderinfo->Attribute("effect_width", &effect_width);
 						eleBorderinfo->Attribute("avcolor", &nIntValue);
 						avcolor = nIntValue;
-						std::string cstrArt = eleBorderinfo->Attribute("art");
-						art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrArt));
-						std::string cstrColor = eleBorderinfo->Attribute("color");
-						color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrColor));
+						cstrValue = eleBorderinfo->Attribute("art");
+						if (cstrValue)
+						{
+							art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
+						cstrValue = eleBorderinfo->Attribute("color");
+						if (cstrValue)
+						{
+							color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
 					}
 					bRet = true;
 				}
@@ -597,6 +607,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::shadowinfo::RecoverFromCString(C
 		{
 			int nIntValue = 0;
 			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
@@ -623,10 +634,16 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::shadowinfo::RecoverFromCString(C
 						effect_style = nIntValue;
 						eleShadowinfo->Attribute("avcolor", &nIntValue);
 						avcolor = nIntValue;
-						std::string cstrArt = eleShadowinfo->Attribute("art");
-						art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrArt));
-						std::string cstrColor = eleShadowinfo->Attribute("color");
-						color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrColor));
+						cstrValue = eleShadowinfo->Attribute("art");
+						if (cstrValue)
+						{
+							art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
+						cstrValue = eleShadowinfo->Attribute("color");
+						if (cstrValue)
+						{
+							color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
 					}
 					bRet = true;
 				}
@@ -754,6 +771,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::cubeinfo::RecoverFromCString(CSt
 		{
 			int nIntValue = 0;
 			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
@@ -773,10 +791,16 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::cubeinfo::RecoverFromCString(CSt
 						eleCubeinfo->Attribute("effect_width", &effect_width);
 						eleCubeinfo->Attribute("avcolor", &nIntValue);
 						avcolor = nIntValue;
-						std::string cstrArt = eleCubeinfo->Attribute("art");
-						art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrArt));
-						std::string cstrColor = eleCubeinfo->Attribute("color");
-						color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrColor));
+						cstrValue = eleCubeinfo->Attribute("art");
+						if (cstrValue)
+						{
+							art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
+						cstrValue = eleCubeinfo->Attribute("color");
+						if (cstrValue)
+						{
+							color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
+						}
 					}
 					bRet = true;
 				}

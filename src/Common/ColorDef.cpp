@@ -218,6 +218,7 @@ bool tag_common_color::RecoverFromCString(CString strType, CString strValue)
 		{
 			int nIntValue = 0;
 			double dDoubleValue = 0.0;
+			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
@@ -237,10 +238,13 @@ bool tag_common_color::RecoverFromCString(CString strType, CString strValue)
 							TiXmlElement * eleImgtex = eleStruct->FirstChildElement("imgtex");
 							if (eleImgtex)
 							{
-								std::string cstrName = eleImgtex->Attribute("name");
-								CString strName = CommonFunction::ConvertStdStringToCString(cstrName);
-								memcpy(imgtex.name, strName.GetBuffer(), strName.GetLength() * sizeof(TCHAR));
-								imgtex.name[strName.GetLength()] = _T('\0');
+								cstrValue = eleImgtex->Attribute("name");
+								if (cstrValue)
+								{
+									CString strName = CommonFunction::ConvertStdStringToCString(cstrValue);
+									memcpy(imgtex.name, strName.GetBuffer(), strName.GetLength() * sizeof(TCHAR));
+									imgtex.name[strName.GetLength()] = _T('\0');
+								}
 								eleImgtex->Attribute("fill", &nIntValue);
 								imgtex.fill = nIntValue;
 								eleImgtex->Attribute("align", &nIntValue);
