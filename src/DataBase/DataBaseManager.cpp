@@ -526,3 +526,22 @@ bool DataBaseManager::SerializeObjects(CArchive & archive, vector<BaseObject*>& 
 	return false;
 }
 
+bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, OUT CString & strXML)
+{
+	bool bRet = false;
+	for (auto it : vecObjID)
+	{
+		BaseObject * pObject = nullptr;
+		if (GetItem(it, pObject))
+		{
+		}
+	}
+	return bRet;
+}
+
+bool DataBaseManager::LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString>& vecObjID)
+{
+	bool bRet = false;
+	return bRet;
+}
+

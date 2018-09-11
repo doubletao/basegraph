@@ -65,6 +65,9 @@ int BASEGRAPH_DATABASE_API DataBase_GetSceneHeight();
 //序列化
 bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile);
 bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile);
+//XML
+bool BASEGRAPH_DATABASE_API DataBase_SaveObjToXMLStr(IN const std::vector<CString> & vecObjID, OUT CString & strXML);
+bool BASEGRAPH_DATABASE_API DataBase_LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString> & vecObjID);
 //关键帧
 //...
 //工具/其他

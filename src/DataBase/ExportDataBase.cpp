@@ -186,6 +186,16 @@ bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile)
 	return DataBaseManager::Instance().LoadFromFile(strFile);
 }
 
+bool BASEGRAPH_DATABASE_API DataBase_SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, OUT CString & strXML)
+{
+	return DataBaseManager::Instance().SaveObjToXMLStr(vecObjID, strXML);
+}
+
+bool BASEGRAPH_DATABASE_API DataBase_LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString>& vecObjID)
+{
+	return DataBaseManager::Instance().LoadObjFromXMLStr(strXML, vecObjID);
+}
+
 std::map<BaseGraph_DataBase::ParamValueDef, Value> BASEGRAPH_DATABASE_API DataBase_GetDefaultParam(IN BaseGraph_DataBase::ObjectType emType)
 {
 	return ObjectFactory::GetDefaultParam(emType);

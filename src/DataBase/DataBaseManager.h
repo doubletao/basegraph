@@ -75,5 +75,8 @@ public:
 	bool SaveToFile(CString strFile);
 	bool LoadFromFile(CString strFile);
 	bool SerializeObjects(CArchive & archive, vector<BaseObject *> & vecObject);//特殊的序列化接口，仅处理物件，不管其他(注意，load出来的物件需要自己释放)
+	//XML
+	bool SaveObjToXMLStr(IN const std::vector<CString> & vecObjID, OUT CString & strXML);
+	bool LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString> & vecObjID);
 };
 
