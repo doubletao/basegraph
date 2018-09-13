@@ -379,17 +379,17 @@ int BaseGraphMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//测试代码
 	if (true)
 	{
-		common_color colorTest;
-		CString strColorXml = colorTest.GetValueStr();
-		CString strType = BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT);
-		colorTest.RecoverFromCString(strType, strColorXml);
+		//common_color colorTest;
+		//CString strColorXml = colorTest.GetValueStr();
+		//CString strType = BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT);
+		//colorTest.RecoverFromCString(strType, strColorXml);
 
-		BaseGraph_DataBase::faceinfo face;
-		face.disable = 0;
-		face.color.type = 0;
-		face.color.color = ARGBColor(255, 0, 255, 0);
-		CString strFaceXML = face.GetValueStr();
-		face.RecoverFromCString(strType, strFaceXML);
+		//BaseGraph_DataBase::faceinfo face;
+		//face.disable = 0;
+		//face.color.type = 0;
+		//face.color.color = ARGBColor(255, 0, 255, 0);
+		//CString strFaceXML = face.GetValueStr();
+		//face.RecoverFromCString(strType, strFaceXML);
 	}
 
 	auto CreateTestImgObj = [](CString strName, CString strImgPath, CString strDebugPath, int nBegin, int nEnd)
@@ -860,21 +860,23 @@ void BaseGraphMainFrame::OnBtnNewFile()
 {
 	OutputDebugString(_T("新建\n"));
 	OnUpdateBarStatus();
-	m_uiTimeLine.AdjustScrollZoom();
 }
 
 void BaseGraphMainFrame::OnBtnSaveFile()
 {
 	OutputDebugString(_T("保存\n"));
 	OnUpdateBarStatus();
-	m_uiTimeLine.AdjustScrollZoom(10);
+
+	std::vector<CString> vecObjID;
+	DataBase_GetAllItemID(vecObjID);
+	CString strXML;
+	DataBase_SaveObjToXMLStr(vecObjID, strXML);
 }
 
 void BaseGraphMainFrame::OnBtnSaveAs()
 {
 	OutputDebugString(_T("另存\n"));
 	OnUpdateBarStatus();
-	m_uiTimeLine.AdjustScrollZoom(-10);
 }
 
 void BaseGraphMainFrame::OnBtnDefaultAction()

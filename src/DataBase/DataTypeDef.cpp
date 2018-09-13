@@ -79,7 +79,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::artinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -225,7 +224,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::faceinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -386,7 +384,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::borderinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -564,7 +561,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::shadowinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -732,7 +728,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::cubeinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -881,7 +876,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::lightinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -1021,7 +1015,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::channelinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -1148,7 +1141,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::materialinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -1319,7 +1311,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::dynamictexture::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -1480,7 +1471,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::metallight::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -1632,7 +1622,6 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::metalinfo::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		char szName[MAX_PATH];
@@ -1719,4 +1708,9 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::RecoverFromCString(CS
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::GetDateTypeValueStr(BaseGraph_DataBase::ParamValueDef emParamDef, const BaseGraph_Common::Value & value)
+{
+	return BASEGRAPH_DATABASE_API CString();
 }

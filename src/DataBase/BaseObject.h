@@ -11,7 +11,7 @@ namespace BaseGraph_DataBase
 	{
 	protected:
 		std::map<ParamValueDef, Value> m_mapParam;
-		CString m_nParentID;
+		CString m_strParentID;
 		std::vector<CString> m_vecChildID;
 	public:
 		BaseObject();
@@ -44,5 +44,11 @@ namespace BaseGraph_DataBase
 		void SetItemCenter(point3f ptValue);
 
 		BaseGraph_DataBase::ITEM_FORMTYPE Get3DType();
+
+		CString GetParentID();
+		std::vector<CString> GetChildID();
+		void SetParentID(CString strParentID);
+		void AddChildObject(CString strChildID);
+		bool IsChild(CString strChildID);
 	};
 };

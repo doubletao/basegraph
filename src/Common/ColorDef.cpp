@@ -60,7 +60,6 @@ CString tag_common_color::GetValueStr()
 {
 	CString strRet;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
-	TiXmlHandle xmlDocHandle(xmlDoc);
 	if (xmlDoc)
 	{
 		TiXmlElement * eleCommon_color = new TiXmlElement("common_color");

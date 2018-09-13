@@ -529,12 +529,60 @@ bool DataBaseManager::SerializeObjects(CArchive & archive, vector<BaseObject*>& 
 bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, OUT CString & strXML)
 {
 	bool bRet = false;
-	for (auto it : vecObjID)
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	if (xmlDoc)
 	{
-		BaseObject * pObject = nullptr;
-		if (GetItem(it, pObject))
+		TiXmlElement * eleBaseObject = new TiXmlElement("BaseObject");
+		if (eleBaseObject)
 		{
+			xmlDoc->LinkEndChild(eleBaseObject);
+			for (auto it : vecObjID)
+			{
+				BaseObject * pObject = nullptr;
+				if (GetItem(it, pObject))
+				{
+					if (pObject)
+					{
+						TiXmlElement * eleObject = new TiXmlElement(CommonFunction::ConverCStringToStdString(it));
+						if (eleObject)
+						{
+							eleBaseObject->LinkEndChild(eleObject);
+							std::map<ParamValueDef, Value> mapProperty = pObject->GetProperty();
+							TiXmlElement * eleProperty = new TiXmlElement("property");
+							if (eleProperty)
+							{
+								eleObject->LinkEndChild(eleProperty);
+								for (auto it : mapProperty)
+								{
+									TinyXMLHelper::SetAttribute(eleProperty, CommonFunction::ConverCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName), it.second.GetValueStr());
+								}
+							}
+							TinyXMLHelper::SetAttribute(eleObject, "m_strParentID", pObject->GetParentID());
+							std::vector<CString> vecChildID = pObject->GetChildID();
+							TiXmlElement * eleChildID = new TiXmlElement("ChildID");
+							if (eleChildID)
+							{
+								eleObject->LinkEndChild(eleChildID);
+								for (auto it : vecChildID)
+								{
+									TiXmlElement * eleID = new TiXmlElement(CommonFunction::ConverCStringToStdString(it));
+									eleChildID->LinkEndChild(eleID);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
+		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
+		char * szXMLValue = new char[nXMLSize + 1];
+		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
+		nXMLSize = xmlDoc->SaveToString(szXMLValue, 0);
+		strXML = CommonFunction::ConvertStdStringToCString(szXMLValue);
+		delete szXMLValue;
+		szXMLValue = nullptr;
+		delete xmlDoc;
+		xmlDoc = nullptr;
 	}
 	return bRet;
 }

@@ -111,6 +111,9 @@
     <ClCompile Include="ExportCommon.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TinyXMLHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Eigen\Geometry\AlignedBox.h">
@@ -1026,6 +1029,9 @@
       <Filter>ThreadPool</Filter>
     </ClInclude>
     <ClInclude Include="CommonFastMemAsm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Common\TinyXMLHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

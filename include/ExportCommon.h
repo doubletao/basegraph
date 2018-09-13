@@ -52,6 +52,7 @@
 #include "Common\ThreadPool.h"
 #include "Common\ColorDef.h"
 #include "Common\ColorAPI.h"
+#include "Common\TinyXMLHelper.h"
 
 BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN const std::vector<pointf> & vecPolygon);
 BASEGRAPH_COMMON_API bool Common_IsPointInPolygon(IN pointf ptHit, IN rectf rtRect);

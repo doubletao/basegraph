@@ -143,6 +143,7 @@
     <ClCompile Include="tinystr.cpp" />
     <ClCompile Include="tinyxml.cpp" />
     <ClCompile Include="tinyxmlerror.cpp" />
+    <ClCompile Include="TinyXMLHelper.cpp" />
     <ClCompile Include="tinyxmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@
     <ClInclude Include="..\..\include\Common\ThreadPool.h" />
     <ClInclude Include="..\..\include\Common\tinystr.h" />
     <ClInclude Include="..\..\include\Common\tinyxml.h" />
+    <ClInclude Include="..\..\include\Common\TinyXMLHelper.h" />
     <ClInclude Include="..\..\include\Common\VectorDef.h" />
     <ClInclude Include="..\..\include\Common\VectorGraph.h" />
     <ClInclude Include="..\..\include\ExportCommon.h" />

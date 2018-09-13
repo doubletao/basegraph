@@ -10,7 +10,7 @@ static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 BaseGraph_DataBase::BaseObject::BaseObject()
-	: m_nParentID(_T(""))
+	: m_strParentID(_T(""))
 {
 	m_mapParam[Obj_ID_Str].SetValue(CommonFunction::CreateGUID());
 }
@@ -62,7 +62,7 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 			archive << nTmp;
 			it->second.Serialize(archive);
 		}
-		archive << m_nParentID;
+		archive << m_strParentID;
 		nTmp = (int)m_vecChildID.size();
 		archive << nTmp;
 		CString strTmp;
@@ -85,7 +85,7 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 			valueTmp.Serialize(archive);
 			m_mapParam.insert(std::make_pair(emParamValueDef, valueTmp));
 		}
-		archive >> m_nParentID;
+		archive >> m_strParentID;
 		archive >> nSize;
 		for (int i = 0; i < nSize; i++)
 		{
@@ -228,4 +228,36 @@ void BaseGraph_DataBase::BaseObject::SetItemCenter(point3f ptValue)
 BaseGraph_DataBase::ITEM_FORMTYPE BaseGraph_DataBase::BaseObject::Get3DType()
 {
 	return (BaseGraph_DataBase::ITEM_FORMTYPE)GetValue(Obj_3DType).ToInt();
+}
+
+CString BaseGraph_DataBase::BaseObject::GetParentID()
+{
+	return m_strParentID;
+}
+
+std::vector<CString> BaseGraph_DataBase::BaseObject::GetChildID()
+{
+	return m_vecChildID;
+}
+
+void BaseGraph_DataBase::BaseObject::SetParentID(CString strParentID)
+{
+	m_strParentID = strParentID;
+}
+
+void BaseGraph_DataBase::BaseObject::AddChildObject(CString strChildID)
+{
+	if (IsChild(strChildID))
+	{
+		m_vecChildID.push_back(strChildID);
+	}
+}
+
+bool BaseGraph_DataBase::BaseObject::IsChild(CString strChildID)
+{
+	if (std::find(m_vecChildID.begin(), m_vecChildID.end(), strChildID) != m_vecChildID.end())
+	{
+		return true;
+	}
+	return false;
 }

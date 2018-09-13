@@ -121,6 +121,8 @@ namespace BaseGraph_DataBase
 	};
 	extern ValueDescriptor GetValueDescriptor(ParamValueDef emParamValueDef);
 	extern bool GetItemPropertyIDRange(IN ObjectType emType, OUT ParamValueDef & emParamBegin, OUT ParamValueDef & emParamEmd);
+
+	BASEGRAPH_DATABASE_API CString GetDateTypeValueStr(BaseGraph_DataBase::ParamValueDef emParamDef, const BaseGraph_Common::Value & value);
 };
 
 inline BaseGraph_DataBase::ValueDescriptor BaseGraph_DataBase::GetValueDescriptor(ParamValueDef emParamValueDef)
