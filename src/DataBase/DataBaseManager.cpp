@@ -570,6 +570,7 @@ bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, O
 									eleChildID->LinkEndChild(eleID);
 								}
 							}
+							bRet = true;
 						}
 					}
 				}
@@ -591,6 +592,36 @@ bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, O
 bool DataBaseManager::LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString>& vecObjID)
 {
 	bool bRet = false;
+	TiXmlDocument* xmlDoc = new TiXmlDocument;
+	if (xmlDoc)
+	{
+		if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strXML).c_str()))
+		{
+			TiXmlHandle docHandle(xmlDoc);
+			TiXmlElement * eleBaseObject = xmlDoc->FirstChildElement("BaseObject");
+			if (eleBaseObject)
+			{
+				//先拿到物件节点，然后遍历物件节点
+				TiXmlElement * pEleObj = eleBaseObject->FirstChildElement();
+				while (pEleObj)
+				{
+					//先尝试拿物件类型
+					std::string cstrObjType = CommonFunction::ConverCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(BaseGraph_DataBase::Obj_Type_Enum).strDispName);
+					int nType = -1;
+					pEleObj->Attribute(cstrObjType, &nType);
+					ObjectType emType = static_cast<ObjectType>(nType);
+					if (emType != BaseGraph_DataBase::ObjectType_Err)
+					{
+						//按照类型创建默认物件，然后填充属性
+					}
+					pEleObj = pEleObj->NextSiblingElement();
+				}
+				bRet = true;
+			}
+		}
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
 	return bRet;
 }
 

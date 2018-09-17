@@ -1753,3 +1753,98 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::GetDateTypeValueStr(BaseGraph
 	}
 	return strRet;
 }
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::RestoreDataTypeValueFromXML(BaseGraph_DataBase::ParamValueDef emParamDef, CString strValueType, CString strXML, BaseGraph_Common::Value & value)
+{
+	switch (emParamDef)
+	{
+	case ColorParam_Face_Stu:
+	{
+		BaseGraph_DataBase::faceinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Border_Stu:
+	{
+		BaseGraph_DataBase::borderinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Shadow_Stu:
+	{
+		BaseGraph_DataBase::shadowinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Cube_Stu:
+	{
+		BaseGraph_DataBase::cubeinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Bordercube_Stu:
+	{
+		BaseGraph_DataBase::cubeinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Bordershadow_Stu:
+	{
+		BaseGraph_DataBase::shadowinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Facelight_Stu:
+	{
+		BaseGraph_DataBase::lightinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Cubelight_Stu:
+	{
+		BaseGraph_DataBase::lightinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Channel_Stu:
+	{
+		BaseGraph_DataBase::channelinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Material_Stu:
+	{
+		BaseGraph_DataBase::materialinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Appendmaterial_Stu:
+	{
+		BaseGraph_DataBase::materialinfo stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Dyntex_Stu:
+	{
+		BaseGraph_DataBase::dynamictexture stu;
+		stu.RecoverFromCString(strValueType, strXML);
+		value.SetValue(stu);
+	}
+	break;
+	default:
+		value.RecoverFromCString(strValueType, strXML);
+		break;
+	}
+	return true;
+}
