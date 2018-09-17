@@ -66,17 +66,17 @@ namespace BaseGraph_Common
 		inline bool SetValue(CString strValue);
 		inline bool SetValue(const ValueAbleInterface & stuValue);
 
-		inline int ToInt();
-		inline DWORD ToDWORD();
-		inline BOOL ToBOOL();
-		inline float ToFloat();
-		inline CString ToCString();
-		inline bool ToStruct(ValueAbleInterface & stuValue);
+		inline int ToInt() const;
+		inline DWORD ToDWORD() const;
+		inline BOOL ToBOOL() const;
+		inline float ToFloat() const;
+		inline CString ToCString() const;
+		inline bool ToStruct(ValueAbleInterface & stuValue) const;
 
 		inline bool Serialize(CArchive & archive);
 		
 		//对于普通类型，ValueAbleInterface给空就行，对于stu类型，ValueAbleInterface应当给出原类型结构体指针，以调用到正确的恢复还原接口
-		inline CString GetValueStr(ValueAbleInterface * pStu = nullptr);//给一个可以当作值填入xml的字符串
+		inline CString GetValueStr(ValueAbleInterface * pStu = nullptr) const;//给一个可以当作值填入xml的字符串
 		inline bool RecoverFromCString(CString strType, CString strValue, ValueAbleInterface * pStu = nullptr);//从值类型和值内容将value还原出来
 	};
 };
@@ -255,7 +255,7 @@ bool BaseGraph_Common::Value::SetValue(const ValueAbleInterface & stuValue)
 	return true;
 }
 
-int BaseGraph_Common::Value::ToInt()
+int BaseGraph_Common::Value::ToInt() const
 {
 	int nTmp = -1;
 	if (m_emType == ValueType_INT
@@ -274,7 +274,7 @@ int BaseGraph_Common::Value::ToInt()
 	return nTmp;
 }
 
-DWORD BaseGraph_Common::Value::ToDWORD()
+DWORD BaseGraph_Common::Value::ToDWORD() const
 {
 	DWORD dwTmp = -1;
 	if (m_emType == ValueType_DWORD)
@@ -290,7 +290,7 @@ DWORD BaseGraph_Common::Value::ToDWORD()
 	return dwTmp;
 }
 
-BOOL BaseGraph_Common::Value::ToBOOL()
+BOOL BaseGraph_Common::Value::ToBOOL() const
 {
 	BOOL bTmp = 0;
 	if (m_emType == ValueType_BOOL)
@@ -306,7 +306,7 @@ BOOL BaseGraph_Common::Value::ToBOOL()
 	return bTmp;
 }
 
-float BaseGraph_Common::Value::ToFloat()
+float BaseGraph_Common::Value::ToFloat() const
 {
 	float fTmp = 0.0f;
 	if (m_emType == ValueType_FLOAT)
@@ -322,7 +322,7 @@ float BaseGraph_Common::Value::ToFloat()
 	return fTmp;
 }
 
-CString BaseGraph_Common::Value::ToCString()
+CString BaseGraph_Common::Value::ToCString() const
 {
 	CString strTmp = _T("");
 	if (m_emType == ValueType_TEXT)
@@ -342,7 +342,7 @@ CString BaseGraph_Common::Value::ToCString()
 	return strTmp;
 }
 
-bool BaseGraph_Common::Value::ToStruct(ValueAbleInterface & stuValue)
+bool BaseGraph_Common::Value::ToStruct(ValueAbleInterface & stuValue) const
 {
 	if (m_emType == ValueType_STRUCT)
 	{
@@ -380,7 +380,7 @@ bool BaseGraph_Common::Value::Serialize(CArchive & archive)
 	return true;
 }
 
-inline CString BaseGraph_Common::Value::GetValueStr(ValueAbleInterface * pStu/* = nullptr*/)
+inline CString BaseGraph_Common::Value::GetValueStr(ValueAbleInterface * pStu/* = nullptr*/) const
 {
 	CString strRet = _T("error");
 	switch (m_emType)
@@ -453,7 +453,7 @@ inline bool BaseGraph_Common::Value::RecoverFromCString(CString strType, CString
 	}
 	else if (GetValueTypeStr(ValueType_FLOAT) == strType)
 	{
-		int fValue = _ttof(strValue);
+		float fValue = (float)_ttof(strValue);
 		SetValue(fValue);
 	}
 	else if (GetValueTypeStr(ValueType_ANGLE) == strType)

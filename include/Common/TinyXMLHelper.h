@@ -10,5 +10,9 @@ private:
 public:
 	static bool SetAttribute(TiXmlElement *& pElement, std::string cstrName, CString strValue);
 	static bool Attribute(TiXmlElement *& pElement, std::string cstrName, CString & strValue);
+	static bool SetAttribute(TiXmlElement *& pElement, std::string cstrName, float fValue);
+	static bool Attribute(TiXmlElement *& pElement, std::string cstrName, float & fValue);
+	static bool SetAttribute(TiXmlElement *& pElement, std::string cstrName, DWORD dwValue);
+	static bool Attribute(TiXmlElement *& pElement, std::string cstrName, DWORD & dwValue);
 };
 
