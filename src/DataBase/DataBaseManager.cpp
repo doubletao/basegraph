@@ -554,7 +554,8 @@ bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, O
 								eleObject->LinkEndChild(eleProperty);
 								for (auto it : mapProperty)
 								{
-									TinyXMLHelper::SetAttribute(eleProperty, CommonFunction::ConverCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName), it.second.GetValueStr());
+									CString strValueStr = BaseGraph_DataBase::GetDateTypeValueStr(it.first, it.second);
+									TinyXMLHelper::SetAttribute(eleProperty, CommonFunction::ConverCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName), strValueStr);
 								}
 							}
 							TinyXMLHelper::SetAttribute(eleObject, "m_strParentID", pObject->GetParentID());
