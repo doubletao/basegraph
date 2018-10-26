@@ -32,6 +32,7 @@ public:
 	bool GetAllItem(OUT vector<BaseObject *> & vecObject);
 	bool GetItem(IN CString strID, OUT BaseObject * & pObject);
 	//增删
+	bool CreateItem(IN ObjectType emType, IN const map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam);//直接创建（guid已经被指定在mapParam中）
 	bool CreateItem(IN ObjectType emType, IN const map<BaseGraph_DataBase::ParamValueDef, Value> & mapParam, OUT CString & strID);
 	bool AddItem(BaseObject * pObj);
 	bool AddSubItemTo(IN CString strParentID, IN CString strSubID);

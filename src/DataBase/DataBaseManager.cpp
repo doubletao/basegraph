@@ -140,6 +140,24 @@ bool DataBaseManager::GetItem(IN CString strID, OUT BaseObject * & pObject)
 	return false;
 }
 
+bool DataBaseManager::CreateItem(IN ObjectType emType, IN const map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
+{
+	//物件厂造一个指定物件并赋值
+	BaseObject * pObj = ObjectFactory::CreateObject(emType);
+	if (pObj)
+	{
+		pObj->SetProperty(mapParam);
+		if (AddItem(pObj))
+		{
+			return true;
+		}
+		delete pObj;
+		pObj = nullptr;
+		return false;
+	}
+	return false;
+}
+
 bool DataBaseManager::CreateItem(IN ObjectType emType, IN const map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, OUT CString & strID)
 {
 	//物件厂造一个指定物件并赋值
@@ -612,7 +630,24 @@ bool DataBaseManager::LoadObjFromXMLStr(IN const CString & strXML, OUT std::vect
 					ObjectType emType = static_cast<ObjectType>(nType);
 					if (emType != BaseGraph_DataBase::ObjectType_Err)
 					{
-						//按照类型创建默认物件，然后填充属性
+						//拿到属性节点
+						TiXmlElement * eleProperty = pEleObj->FirstChildElement("property");
+						if (eleProperty)
+						{
+							//按照类型创建默认物件，然后填充属性
+							std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = ObjectFactory::GetDefaultParam(emType);
+							//按照当前物件属性集合去xml里查找相应属性，如果找到了就赋值，找不到算了，用默认值
+							for (auto it : mapParam)
+							{
+								//根据属性类型取到属性节点名
+								std::string cstrEleName = CommonFunction::ConverCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName);
+								//查找xml中的对应属性
+								std::string cstrProperValue = eleProperty->Attribute(cstrEleName.c_str());
+								BaseGraph_DataBase::RestoreDataTypeValueFromXML(it.first, BaseGraph_Common::GetValueTypeStr(it.second.GetValueType()), CommonFunction::ConvertStdStringToCString(cstrProperValue), it.second);
+							}
+							CreateItem(emType, mapParam);
+							//取子物件id集合
+						}
 					}
 					pEleObj = pEleObj->NextSiblingElement();
 				}

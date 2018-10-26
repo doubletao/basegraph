@@ -75,6 +75,7 @@ namespace BaseGraph_Common
 
 		inline bool Serialize(CArchive & archive);
 		
+		inline ValueType GetValueType();
 		//对于普通类型，ValueAbleInterface给空就行，对于stu类型，ValueAbleInterface应当给出原类型结构体指针，以调用到正确的恢复还原接口
 		inline CString GetValueStr(ValueAbleInterface * pStu = nullptr) const;//给一个可以当作值填入xml的字符串
 		inline bool RecoverFromCString(CString strType, CString strValue, ValueAbleInterface * pStu = nullptr);//从值类型和值内容将value还原出来
@@ -378,6 +379,11 @@ bool BaseGraph_Common::Value::Serialize(CArchive & archive)
 		archive.Read(m_pBuf, (UINT)m_nSize);
 	}
 	return true;
+}
+
+inline BaseGraph_Common::ValueType BaseGraph_Common::Value::GetValueType()
+{
+	return m_emType;
 }
 
 inline CString BaseGraph_Common::Value::GetValueStr(ValueAbleInterface * pStu/* = nullptr*/) const
