@@ -219,7 +219,7 @@ double CommonFunction::ConvertCStringToDouble(CString strValue)
 	return dRet;
 }
 
-std::string CommonFunction::ConverCStringToStdString(CString cstrValue)
+std::string CommonFunction::ConvertCStringToStdString(CString cstrValue)
 {
 	std::string strRet;
 	strRet.clear();
@@ -234,7 +234,7 @@ std::string CommonFunction::ConverCStringToStdString(CString cstrValue)
 
 }
 
-std::string CommonFunction::ConverCStringToStdString(CString cstrValue, DWORD dwFormatW)
+std::string CommonFunction::ConvertCStringToStdString(CString cstrValue, DWORD dwFormatW)
 {
 	std::string strRet;
 	strRet.clear();

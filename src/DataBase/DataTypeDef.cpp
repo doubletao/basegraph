@@ -90,7 +90,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::artinfo::GetValueStr()
 			TinyXMLHelper::SetAttribute(eleArtinfo, "cu_angle", cu_angle);
 			eleArtinfo->SetAttribute("soft", soft);
 			eleArtinfo->SetAttribute("color", color);
-			eleArtinfo->SetAttribute("metal", CommonFunction::ConverCStringToStdString(metal.GetValueStr()).c_str());
+			eleArtinfo->SetAttribute("metal", CommonFunction::ConvertCStringToStdString(metal.GetValueStr()).c_str());
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -116,7 +116,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::artinfo::RecoverFromCString(CStr
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleArtinfo = xmlDoc->FirstChildElement("artinfo");
@@ -229,8 +229,8 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::faceinfo::GetValueStr()
 			eleFaceinfo->SetAttribute("effect_type", effect_type);
 			eleFaceinfo->SetAttribute("effect_width", effect_width);
 			eleFaceinfo->SetAttribute("avcolor", avcolor);
-			eleFaceinfo->SetAttribute("art", CommonFunction::ConverCStringToStdString(art.GetValueStr()).c_str());
-			eleFaceinfo->SetAttribute("color", CommonFunction::ConverCStringToStdString(color.GetValueStr()).c_str());
+			eleFaceinfo->SetAttribute("art", CommonFunction::ConvertCStringToStdString(art.GetValueStr()).c_str());
+			eleFaceinfo->SetAttribute("color", CommonFunction::ConvertCStringToStdString(color.GetValueStr()).c_str());
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -258,7 +258,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::faceinfo::RecoverFromCString(CSt
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleFaceinfo = xmlDoc->FirstChildElement("faceinfo");
@@ -390,8 +390,8 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::borderinfo::GetValueStr()
 			eleBorderinfo->SetAttribute("effect_type", effect_type);
 			eleBorderinfo->SetAttribute("effect_width", effect_width);
 			eleBorderinfo->SetAttribute("avcolor", avcolor);
-			eleBorderinfo->SetAttribute("art", CommonFunction::ConverCStringToStdString(art.GetValueStr()).c_str());
-			eleBorderinfo->SetAttribute("color", CommonFunction::ConverCStringToStdString(color.GetValueStr()).c_str());
+			eleBorderinfo->SetAttribute("art", CommonFunction::ConvertCStringToStdString(art.GetValueStr()).c_str());
+			eleBorderinfo->SetAttribute("color", CommonFunction::ConvertCStringToStdString(color.GetValueStr()).c_str());
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -416,7 +416,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::borderinfo::RecoverFromCString(C
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleBorderinfo = xmlDoc->FirstChildElement("borderinfo");
@@ -590,7 +590,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::shadowinfo::RecoverFromCString(C
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleShadowinfo = xmlDoc->FirstChildElement("shadowinfo");
@@ -746,7 +746,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::cubeinfo::RecoverFromCString(CSt
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleCubeinfo = xmlDoc->FirstChildElement("cubeinfo");
@@ -860,7 +860,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::lightinfo::GetValueStr()
 			eleLightinfo->SetAttribute("reflectcolor", reflectcolor);
 			eleLightinfo->SetAttribute("dwReverse1", dwReverse1);
 			eleLightinfo->SetAttribute("dwReverse2", dwReverse2);
-			eleLightinfo->SetAttribute("szPath", CommonFunction::ConverCStringToStdString(szPath).c_str());
+			eleLightinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -888,7 +888,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::lightinfo::RecoverFromCString(CS
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					char szName[MAX_PATH];
@@ -993,7 +993,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::channelinfo::GetValueStr()
 		if (eleChannelinfo)
 		{
 			xmlDoc->LinkEndChild(eleChannelinfo);
-			eleChannelinfo->SetAttribute("szPath", CommonFunction::ConverCStringToStdString(szPath).c_str());
+			eleChannelinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
 			eleChannelinfo->SetAttribute("weight", weight);
 			eleChannelinfo->SetAttribute("channelid", channelid);
 			eleChannelinfo->SetAttribute("dwReverse1", dwReverse1);
@@ -1025,7 +1025,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::channelinfo::RecoverFromCString(
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					char szName[MAX_PATH];
@@ -1118,7 +1118,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::materialinfo::GetValueStr()
 		if (eleChannelinfo)
 		{
 			xmlDoc->LinkEndChild(eleChannelinfo);
-			eleChannelinfo->SetAttribute("szPath", CommonFunction::ConverCStringToStdString(szPath).c_str());
+			eleChannelinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
 			eleChannelinfo->SetAttribute("dwReverse1", dwReverse1);
 			eleChannelinfo->SetAttribute("dwReverse2", dwReverse2);
 		}
@@ -1148,7 +1148,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::materialinfo::RecoverFromCString
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					char szName[MAX_PATH];
@@ -1287,7 +1287,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::dynamictexture::GetValueStr()
 		if (eleDynamictexture)
 		{
 			xmlDoc->LinkEndChild(eleDynamictexture);
-			eleDynamictexture->SetAttribute("szPath", CommonFunction::ConverCStringToStdString(szPath).c_str());
+			eleDynamictexture->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
 			eleDynamictexture->SetAttribute("disable", disable);
 			TinyXMLHelper::SetAttribute(eleDynamictexture, "speed", speed);
 			TinyXMLHelper::SetAttribute(eleDynamictexture, "offsetx", offsetx);
@@ -1329,7 +1329,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::dynamictexture::RecoverFromCStri
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					char szName[MAX_PATH];
@@ -1469,7 +1469,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metallight::RecoverFromCString(C
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					char szName[MAX_PATH];
@@ -1620,7 +1620,7 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::RecoverFromCString(CS
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					char szName[MAX_PATH];

@@ -13,7 +13,7 @@ TinyXMLHelper::~TinyXMLHelper()
 
 bool TinyXMLHelper::SetAttribute(TiXmlElement *& pElement, std::string cstrName, CString strValue)
 {
-	pElement->SetAttribute(cstrName, CommonFunction::ConverCStringToStdString(strValue));
+	pElement->SetAttribute(cstrName, CommonFunction::ConvertCStringToStdString(strValue));
 	return true;
 }
 

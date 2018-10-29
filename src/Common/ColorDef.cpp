@@ -76,7 +76,7 @@ CString tag_common_color::GetValueStr()
 				if (eleImgtex)
 				{
 					eleStruct->LinkEndChild(eleImgtex);
-					eleImgtex->SetAttribute("name", CommonFunction::ConverCStringToStdString(imgtex.name).c_str());
+					eleImgtex->SetAttribute("name", CommonFunction::ConvertCStringToStdString(imgtex.name).c_str());
 					eleImgtex->SetAttribute("fill", imgtex.fill);
 					eleImgtex->SetAttribute("align", imgtex.align);
 				}
@@ -180,7 +180,7 @@ CString tag_common_color::GetValueStr()
 						if (eleTemplet)
 						{
 							eleStruct->LinkEndChild(eleTemplet);
-							eleTemplet->SetAttribute("name", CommonFunction::ConverCStringToStdString(gradual.templet.name).c_str());
+							eleTemplet->SetAttribute("name", CommonFunction::ConvertCStringToStdString(gradual.templet.name).c_str());
 						}
 					}
 					eleGradual->SetAttribute("animation", gradual.animation);
@@ -221,7 +221,7 @@ bool tag_common_color::RecoverFromCString(CString strType, CString strValue)
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
-				if (xmlDoc->Parse(CommonFunction::ConverCStringToStdString(strValue).c_str()))
+				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
 					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleCommon_color = docHandle.FirstChild("common_color").ToElement();
