@@ -106,6 +106,9 @@ protected:
 	void OnUpdateBarStatus();
 	void OnPlayThreadTimeup(WPARAM wpFrame);
 	void EnterLeavePlayMode(BOOL bEnter);
+protected:
+	void OnSaveFile();
+	void OnOpenFile();
 public:
 	virtual void OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom);
 	void OnBtnCreateTitle();

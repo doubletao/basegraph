@@ -474,8 +474,7 @@ inline bool BaseGraph_Common::Value::RecoverFromCString(CString strType, CString
 	}
 	else if (GetValueTypeStr(ValueType_TEXT) == strType)
 	{
-		int nValue = _ttoi(strValue);
-		SetValue(nValue, BaseGraph_Common::ValueType_TIME);
+		SetValue(strValue);
 	}
 	else if (GetValueTypeStr(ValueType_STRUCT) == strType)
 	{

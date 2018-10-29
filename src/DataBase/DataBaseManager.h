@@ -18,6 +18,9 @@ private:
 	CRITICAL_SECTION m_lockData;
 	int m_nSceneWidth;
 	int m_nSceneHeight;
+protected:
+	bool SaveObjToXMLDoc(IN const std::vector<CString> & vecObjID, IN TiXmlDocument * xmlDoc);
+	bool LoadObjFromXMLDoc(IN TiXmlDocument * xmlDoc, OUT std::vector<CString> & vecObjID);
 public:
 	static DataBaseManager & Instance();
 	//Ëø
@@ -79,5 +82,7 @@ public:
 	//XML
 	bool SaveObjToXMLStr(IN const std::vector<CString> & vecObjID, OUT CString & strXML);
 	bool LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString> & vecObjID);
+	bool SaveObjToXMLFile(IN const std::vector<CString> & vecObjID, IN CString strPathFile);
+	bool LoadObjFromXMLFile(IN CString strPathFile, OUT std::vector<CString> & vecObjID);
 };
 

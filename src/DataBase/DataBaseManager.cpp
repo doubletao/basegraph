@@ -32,6 +32,138 @@ DataBaseManager::~DataBaseManager()
 	DeleteCriticalSection(&m_lockData);
 }
 
+bool DataBaseManager::SaveObjToXMLDoc(IN const std::vector<CString>& vecObjID, IN TiXmlDocument * xmlDoc)
+{
+	bool bRet = false;
+	if (xmlDoc)
+	{
+		TiXmlElement * eleBaseObject = new TiXmlElement("BaseObject");
+		if (eleBaseObject)
+		{
+			xmlDoc->LinkEndChild(eleBaseObject);
+			for (auto it : vecObjID)
+			{
+				BaseObject * pObject = nullptr;
+				if (GetItem(it, pObject))
+				{
+					if (pObject)
+					{
+						TiXmlElement * eleObject = new TiXmlElement(CommonFunction::ConvertCStringToStdString(it));
+						if (eleObject)
+						{
+							eleBaseObject->LinkEndChild(eleObject);
+							std::map<ParamValueDef, Value> mapProperty = pObject->GetProperty();
+							TiXmlElement * eleProperty = new TiXmlElement("property");
+							if (eleProperty)
+							{
+								eleObject->LinkEndChild(eleProperty);
+								for (auto it : mapProperty)
+								{
+									CString strValueStr = BaseGraph_DataBase::GetDateTypeValueStr(it.first, it.second);
+									TinyXMLHelper::SetAttribute(eleProperty, CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName), strValueStr);
+								}
+							}
+							TinyXMLHelper::SetAttribute(eleObject, "m_strParentID", pObject->GetParentID());
+							std::vector<CString> vecChildID = pObject->GetChildID();
+							TiXmlElement * eleChildID = new TiXmlElement("ChildID");
+							if (eleChildID)
+							{
+								eleObject->LinkEndChild(eleChildID);
+								for (auto it : vecChildID)
+								{
+									TiXmlElement * eleID = new TiXmlElement(CommonFunction::ConvertCStringToStdString(it));
+									eleChildID->LinkEndChild(eleID);
+								}
+							}
+							bRet = true;
+						}
+					}
+				}
+			}
+		}
+	}
+	return bRet;
+}
+
+bool DataBaseManager::LoadObjFromXMLDoc(IN TiXmlDocument * xmlDoc, OUT std::vector<CString>& vecObjID)
+{
+	bool bRet = false;
+	if (xmlDoc)
+	{
+		TiXmlElement * eleBaseObject = xmlDoc->FirstChildElement("BaseObject");
+		if (eleBaseObject)
+		{
+			//先拿到物件节点，然后遍历物件节点
+			TiXmlElement * pEleObj = eleBaseObject->FirstChildElement();
+			while (pEleObj)
+			{
+				//拿到属性节点
+				TiXmlElement * eleProperty = pEleObj->FirstChildElement("property");
+				if (eleProperty)
+				{
+					//先尝试拿物件类型
+					std::string cstrObjType = CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(BaseGraph_DataBase::Obj_Type_Enum).strDispName);
+					int nType = -1;
+					eleProperty->Attribute(cstrObjType, &nType);
+					ObjectType emType = static_cast<ObjectType>(nType);
+					if (emType != BaseGraph_DataBase::ObjectType_Err)
+					{
+						//按照类型创建默认物件，然后填充属性
+						std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = ObjectFactory::GetDefaultParam(emType);
+						//按照当前物件属性集合去xml里查找相应属性，如果找到了就赋值，找不到算了，用默认值
+						for (std::map<BaseGraph_DataBase::ParamValueDef, Value>::iterator it = mapParam.begin(); it != mapParam.end(); it++)
+						{
+							//根据属性类型取到属性节点名
+							std::string cstrEleName = CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it->first).strDispName);
+							//查找xml中的对应属性
+							const char * pcszValue = eleProperty->Attribute(cstrEleName.c_str());
+							if (pcszValue)
+							{
+								std::string cstrProperValue = pcszValue;
+								BaseGraph_DataBase::RestoreDataTypeValueFromXML(it->first, BaseGraph_Common::GetValueTypeStr(it->second.GetValueType()), CommonFunction::ConvertStdStringToCString(cstrProperValue), it->second);
+							}
+						}
+						BaseObject * pObj = CreateItem(emType, mapParam);
+						if (pObj)
+						{
+							//取父物件id
+							const char * pcszValue = pEleObj->Attribute("m_strParentID");
+							if (pcszValue)
+							{
+								std::string cstrValue = pcszValue;
+								if (cstrValue.length() > 0)
+								{
+									pObj->SetParentID(CommonFunction::ConvertStdStringToCString(cstrValue));
+								}
+							}
+							//取子物件id集合
+							TiXmlElement * eleChildID = pEleObj->FirstChildElement("ChildID");
+							if (eleChildID)
+							{
+								TiXmlElement * eleID = eleChildID->FirstChildElement();
+								while (eleID)
+								{
+									std::string cstrValue = eleID->ValueStr();
+									if (cstrValue.length() > 0)
+									{
+										pObj->AddChildObject(CommonFunction::ConvertStdStringToCString(cstrValue));
+									}
+									eleID = eleID->NextSiblingElement();
+								}
+							}
+							//加载完成填到返回值集合里边
+							vecObjID.push_back(pObj->GetItemID());
+						}
+					}
+				}
+				pEleObj = pEleObj->NextSiblingElement();
+			}
+			bRet = true;
+		}
+	}
+	return bRet;
+}
+
 DataBaseManager & DataBaseManager::Instance()
 {
 	static DataBaseManager inst;
@@ -550,50 +682,7 @@ bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, O
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
 	{
-		TiXmlElement * eleBaseObject = new TiXmlElement("BaseObject");
-		if (eleBaseObject)
-		{
-			xmlDoc->LinkEndChild(eleBaseObject);
-			for (auto it : vecObjID)
-			{
-				BaseObject * pObject = nullptr;
-				if (GetItem(it, pObject))
-				{
-					if (pObject)
-					{
-						TiXmlElement * eleObject = new TiXmlElement(CommonFunction::ConvertCStringToStdString(it));
-						if (eleObject)
-						{
-							eleBaseObject->LinkEndChild(eleObject);
-							std::map<ParamValueDef, Value> mapProperty = pObject->GetProperty();
-							TiXmlElement * eleProperty = new TiXmlElement("property");
-							if (eleProperty)
-							{
-								eleObject->LinkEndChild(eleProperty);
-								for (auto it : mapProperty)
-								{
-									CString strValueStr = BaseGraph_DataBase::GetDateTypeValueStr(it.first, it.second);
-									TinyXMLHelper::SetAttribute(eleProperty, CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName), strValueStr);
-								}
-							}
-							TinyXMLHelper::SetAttribute(eleObject, "m_strParentID", pObject->GetParentID());
-							std::vector<CString> vecChildID = pObject->GetChildID();
-							TiXmlElement * eleChildID = new TiXmlElement("ChildID");
-							if (eleChildID)
-							{
-								eleObject->LinkEndChild(eleChildID);
-								for (auto it : vecChildID)
-								{
-									TiXmlElement * eleID = new TiXmlElement(CommonFunction::ConvertCStringToStdString(it));
-									eleChildID->LinkEndChild(eleID);
-								}
-							}
-							bRet = true;
-						}
-					}
-				}
-			}
-		}
+		bRet = SaveObjToXMLDoc(vecObjID, xmlDoc);
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
 		memset(szXMLValue, 0, sizeof(char) * (nXMLSize + 1));
@@ -615,67 +704,40 @@ bool DataBaseManager::LoadObjFromXMLStr(IN const CString & strXML, OUT std::vect
 	{
 		if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strXML).c_str()))
 		{
-			TiXmlHandle docHandle(xmlDoc);
-			TiXmlElement * eleBaseObject = xmlDoc->FirstChildElement("BaseObject");
-			if (eleBaseObject)
-			{
-				//先拿到物件节点，然后遍历物件节点
-				TiXmlElement * pEleObj = eleBaseObject->FirstChildElement();
-				while (pEleObj)
-				{
-					//先尝试拿物件类型
-					std::string cstrObjType = CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(BaseGraph_DataBase::Obj_Type_Enum).strDispName);
-					int nType = -1;
-					pEleObj->Attribute(cstrObjType, &nType);
-					ObjectType emType = static_cast<ObjectType>(nType);
-					if (emType != BaseGraph_DataBase::ObjectType_Err)
-					{
-						//拿到属性节点
-						TiXmlElement * eleProperty = pEleObj->FirstChildElement("property");
-						if (eleProperty)
-						{
-							//按照类型创建默认物件，然后填充属性
-							std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = ObjectFactory::GetDefaultParam(emType);
-							//按照当前物件属性集合去xml里查找相应属性，如果找到了就赋值，找不到算了，用默认值
-							for (auto it : mapParam)
-							{
-								//根据属性类型取到属性节点名
-								std::string cstrEleName = CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName);
-								//查找xml中的对应属性
-								std::string cstrProperValue = eleProperty->Attribute(cstrEleName.c_str());
-								BaseGraph_DataBase::RestoreDataTypeValueFromXML(it.first, BaseGraph_Common::GetValueTypeStr(it.second.GetValueType()), CommonFunction::ConvertStdStringToCString(cstrProperValue), it.second);
-							}
-							BaseObject * pObj = CreateItem(emType, mapParam);
-							if (pObj)
-							{
-								//取父物件id
-								std::string cstrValue = pEleObj->Attribute("m_strParentID");
-								if (cstrValue.length() > 0)
-								{
-									pObj->SetParentID(CommonFunction::ConvertStdStringToCString(cstrValue));
-								}
-								//取子物件id集合
-								TiXmlElement * eleChildID = pEleObj->FirstChildElement("ChildID");
-								if (eleChildID)
-								{
-									TiXmlElement * eleID = eleChildID->FirstChildElement();
-									while (eleID)
-									{
-										std::string cstrValue = eleID->ValueStr();
-										if (cstrValue.length() > 0)
-										{
-											pObj->AddChildObject(CommonFunction::ConvertStdStringToCString(cstrValue));
-										}
-										eleID = eleID->NextSiblingElement();
-									}
-								}
-							}
-						}
-					}
-					pEleObj = pEleObj->NextSiblingElement();
-				}
-				bRet = true;
-			}
+			bRet = LoadObjFromXMLDoc(xmlDoc, vecObjID);
+		}
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return bRet;
+}
+
+bool DataBaseManager::SaveObjToXMLFile(IN const std::vector<CString>& vecObjID, IN CString strPathFile)
+{
+	bool bRet = false;
+	TiXmlDocument * xmlDoc = new TiXmlDocument;
+	if (xmlDoc)
+	{
+		bRet = SaveObjToXMLDoc(vecObjID, xmlDoc);
+		if (bRet)
+		{
+			bRet = xmlDoc->SaveFile(CommonFunction::ConvertCStringToStdString(strPathFile));
+		}
+		delete xmlDoc;
+		xmlDoc = nullptr;
+	}
+	return bRet;
+}
+
+bool DataBaseManager::LoadObjFromXMLFile(IN CString strPathFile, OUT std::vector<CString>& vecObjID)
+{
+	bool bRet = false;
+	TiXmlDocument* xmlDoc = new TiXmlDocument;
+	if (xmlDoc)
+	{
+		if (xmlDoc->LoadFile(CommonFunction::ConvertCStringToStdString(strPathFile)))
+		{
+			bRet = LoadObjFromXMLDoc(xmlDoc, vecObjID);
 		}
 		delete xmlDoc;
 		xmlDoc = nullptr;

@@ -68,6 +68,8 @@ bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile);
 //XML
 bool BASEGRAPH_DATABASE_API DataBase_SaveObjToXMLStr(IN const std::vector<CString> & vecObjID, OUT CString & strXML);
 bool BASEGRAPH_DATABASE_API DataBase_LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString> & vecObjID);
+bool BASEGRAPH_DATABASE_API DataBase_SaveObjToXMLFile(IN const std::vector<CString> & vecObjID, IN CString strFilePathName);
+bool BASEGRAPH_DATABASE_API DataBase_LoadObjFromXMLFile(IN CString strFilePathName, OUT std::vector<CString> & vecObjID);
 //关键帧
 //...
 //工具/其他

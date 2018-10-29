@@ -793,6 +793,31 @@ void BaseGraphMainFrame::EnterLeavePlayMode(BOOL bEnter)
 	m_uiPlayControlBar.EnterLeavePlayMode(bEnter);
 }
 
+void BaseGraphMainFrame::OnSaveFile()
+{
+	CFileDialog dialog(FALSE);
+	if (dialog.DoModal() == IDOK)
+	{
+		CString strFileNamePath = dialog.GetPathName();
+		std::vector<CString> vecObjID;
+		DataBase_GetAllItemID(vecObjID);
+		DataBase_SaveObjToXMLFile(vecObjID, strFileNamePath);
+	}
+}
+
+void BaseGraphMainFrame::OnOpenFile()
+{
+	CFileDialog dialog(TRUE);
+	if (dialog.DoModal() == IDOK)
+	{
+		CString strFileNamePath = dialog.GetPathName();
+		std::vector<CString> vecObjID;
+		DataBase_LoadObjFromXMLFile(strFileNamePath, vecObjID);
+		//广播通知新物件被创建
+		UIControl_BroadcastMsg(WM_MSG_ObjectCreateDelete, 0, 0, nullptr);
+	}
+}
+
 void BaseGraphMainFrame::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nIDFrom)
 {
 	switch (nMsgID)
@@ -860,6 +885,7 @@ void BaseGraphMainFrame::OnBtnNewFile()
 {
 	OutputDebugString(_T("新建\n"));
 	OnUpdateBarStatus();
+	OnOpenFile();
 }
 
 void BaseGraphMainFrame::OnBtnSaveFile()
@@ -867,10 +893,7 @@ void BaseGraphMainFrame::OnBtnSaveFile()
 	OutputDebugString(_T("保存\n"));
 	OnUpdateBarStatus();
 
-	std::vector<CString> vecObjID;
-	DataBase_GetAllItemID(vecObjID);
-	CString strXML;
-	DataBase_SaveObjToXMLStr(vecObjID, strXML);
+	OnSaveFile();
 }
 
 void BaseGraphMainFrame::OnBtnSaveAs()

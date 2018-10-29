@@ -63,9 +63,12 @@ DXHalDef32 * CalculatorManager::GetDesHalDef(IN CString strID)
 
 void CalculatorManager::Update2DRenderMatrix(IN float fScale)
 {
-	for (std::map<CString, ObjectCalculator * >::iterator it = m_mapObjCalculator.begin(); it != m_mapObjCalculator.end(); it++)
+	//这里需要从物件id开始一个一个获取calculator并更新matrix，因为有可能刷新时物件的calculator还未被创建出来
+	std::vector<CString> vecObjID;
+	DataBase_GetAllItemID(vecObjID);
+	for (auto it : vecObjID)
 	{
-		ObjectCalculator * pCalc = it->second;
+		ObjectCalculator * pCalc = GetObjCalculator(it);
 		if (pCalc)
 		{
 			pCalc->Update2DRenderMatrix(fScale);

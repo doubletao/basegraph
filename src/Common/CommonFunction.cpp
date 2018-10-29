@@ -1,6 +1,7 @@
 #include "..\..\include\Common\CommonFunction.h"
 #include "stdafx.h"
 #include "Common\CommonFunction.h"
+#include <comdef.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -221,6 +222,7 @@ double CommonFunction::ConvertCStringToDouble(CString strValue)
 
 std::string CommonFunction::ConvertCStringToStdString(CString cstrValue)
 {
+#if 0
 	std::string strRet;
 	strRet.clear();
 	int nSize = ::WideCharToMultiByte(CP_UTF8, 0, cstrValue.GetBuffer(), -1, NULL, 0, NULL, NULL);
@@ -231,7 +233,10 @@ std::string CommonFunction::ConvertCStringToStdString(CString cstrValue)
 	delete[] szcSrc;
 	szcSrc = NULL;
 	return strRet;
-
+#else
+	std::string strRet = (const char*)_bstr_t(cstrValue);
+	return strRet;
+#endif
 }
 
 std::string CommonFunction::ConvertCStringToStdString(CString cstrValue, DWORD dwFormatW)
@@ -250,6 +255,7 @@ std::string CommonFunction::ConvertCStringToStdString(CString cstrValue, DWORD d
 
 CString CommonFunction::ConvertStdStringToCString(const std::string & strValue)
 {
+#if 0
 	CString cstrRet;
 	cstrRet.Empty();
 	int nLength = ::MultiByteToWideChar(CP_UTF8, 0, strValue.c_str(), -1, NULL, 0);
@@ -259,4 +265,8 @@ CString CommonFunction::ConvertStdStringToCString(const std::string & strValue)
 	delete[] szText1;
 	szText1 = NULL;
 	return cstrRet;
+#else
+	CString strRet(strValue.c_str());
+	return strRet;
+#endif
 }
