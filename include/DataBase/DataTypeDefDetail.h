@@ -1,4 +1,6 @@
 #pragma once
+#include "ExportCommon.h"
+
 namespace BaseGraph_DataBase
 {
 	enum ITEM_FORMTYPE

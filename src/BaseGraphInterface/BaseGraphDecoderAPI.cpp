@@ -1,22 +1,26 @@
 #include "stdafx.h"
+#include "BaseGraphDecoder.h"
 #include "BaseGraphDecoderAPI.h"
 
 BASEGRAPH_INTERFACE_API bool Interface_InitialEnv()
 {
-	return BASEGRAPH_INTERFACE_API bool();
+	return true;
 }
 
 BASEGRAPH_INTERFACE_API bool Interface_ReleaseEnv()
 {
-	return BASEGRAPH_INTERFACE_API bool();
+	return true;
 }
 
 BASEGRAPH_INTERFACE_API bool Interface_CreateDecoder(IBaseGraphDecoder *& pDecoder)
 {
-	return BASEGRAPH_INTERFACE_API bool();
+	pDecoder = new BaseGraphDecoder;
+	return true;
 }
 
 BASEGRAPH_INTERFACE_API bool Interface_ReleaseDecoder(IBaseGraphDecoder *& pDecoder)
 {
-	return BASEGRAPH_INTERFACE_API bool();
+	delete pDecoder;
+	pDecoder = nullptr;
+	return true;
 }

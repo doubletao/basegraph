@@ -1,4 +1,5 @@
 #pragma once
+#include "ExportDataBase.h"
 
 //字体质量定义
 enum PI_Quality

@@ -2,6 +2,7 @@
 #define __BaseGraphMATERIAL_MODULE_API_H
 #include "DataRender\DrawTextDef.h"
 #include "DataRender\DataRenderDataDef.h"
+#include "ExportSceneRender.h"
 //////////////////////////////////////////////////////////////////////////
 #define	BaseGraphMATERIAL_DIFFUSE_COLOR		1
 #define	BaseGraphMATERIAL_SPECTURE_COLOR		2

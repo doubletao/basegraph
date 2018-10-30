@@ -1,6 +1,7 @@
 #ifndef __Common_3DRENDERAPI_INC__
 #define __Common_3DRENDERAPI_INC__
 #include "DataRender\DataRenderDataDef.h"
+#include "ExportSceneRender.h"
 
 //////////////////////////////////////////////////////////////////////////
 #define FLOAT_PI 3.14159265358979323846

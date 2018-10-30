@@ -12,10 +12,6 @@
 #endif // BASEGRAPH_AUTO_LOAD
 #endif // BASEGRAPH_DATARENDER_EXPORTS
 
-#include "ExportCommon.h"
-#include "ExportSceneRender.h"
-#include "ExportDataBase.h"
-
 #include "DataRender\3DGeometry.h"
 #include "DataRender\3DPieModeling.h"
 #include "DataRender\AlgorithmRip.h"
