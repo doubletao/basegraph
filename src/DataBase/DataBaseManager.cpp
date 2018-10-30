@@ -48,7 +48,7 @@ bool DataBaseManager::SaveObjToXMLDoc(IN const std::vector<CString>& vecObjID, I
 				{
 					if (pObject)
 					{
-						TiXmlElement * eleObject = new TiXmlElement(CommonFunction::ConvertCStringToStdString(it));
+						TiXmlElement * eleObject = new TiXmlElement("object");
 						if (eleObject)
 						{
 							eleBaseObject->LinkEndChild(eleObject);
@@ -63,10 +63,9 @@ bool DataBaseManager::SaveObjToXMLDoc(IN const std::vector<CString>& vecObjID, I
 									CString strValueStr = BaseGraph_DataBase::GetDateTypeValueStr(it.first, it.second);
 									TinyXMLHelper::SetAttribute(eleProperty, CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName), strValueStr);
 #else
-									CString strValueStr = BaseGraph_DataBase::GetDateTypeValueStr(it.first, it.second);
 									TiXmlElement * eleSingleProperty = new TiXmlElement(CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName));
 									eleProperty->LinkEndChild(eleSingleProperty);
-									eleSingleProperty->SetAttribute("value", CommonFunction::ConvertCStringToStdString(strValueStr));
+									BaseGraph_DataBase::SaveDateTypeValueToDocElement(eleSingleProperty, it.first, it.second);
 #endif
 								}
 							}
@@ -111,7 +110,11 @@ bool DataBaseManager::LoadObjFromXMLDoc(IN TiXmlDocument * xmlDoc, OUT std::vect
 					//先尝试拿物件类型
 					std::string cstrObjType = CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(BaseGraph_DataBase::Obj_Type_Enum).strDispName);
 					int nType = -1;
-					eleProperty->Attribute(cstrObjType, &nType);
+					TiXmlElement * eleTypeNode = eleProperty->FirstChildElement(cstrObjType);
+					if (eleTypeNode)
+					{
+						eleTypeNode->Attribute("value", &nType);
+					}
 					ObjectType emType = static_cast<ObjectType>(nType);
 					if (emType != BaseGraph_DataBase::ObjectType_Err)
 					{
@@ -136,12 +139,7 @@ bool DataBaseManager::LoadObjFromXMLDoc(IN TiXmlDocument * xmlDoc, OUT std::vect
 							TiXmlElement * eleSingleProperty = eleProperty->FirstChildElement(cstrEleName);
 							if (eleSingleProperty)
 							{
-								const char * pcszValue = eleSingleProperty->Attribute("value");
-								if (pcszValue)
-								{
-									std::string cstrProperValue = pcszValue;
-									BaseGraph_DataBase::RestoreDataTypeValueFromXML(it->first, BaseGraph_Common::GetValueTypeStr(it->second.GetValueType()), CommonFunction::ConvertStdStringToCString(cstrProperValue), it->second);
-								}
+								BaseGraph_DataBase::RestoreDataTypeValueFromDocElement(it->first, BaseGraph_Common::GetValueTypeStr(it->second.GetValueType()), eleSingleProperty, it->second);
 							}
 #endif
 						}

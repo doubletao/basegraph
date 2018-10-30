@@ -124,6 +124,8 @@ namespace BaseGraph_DataBase
 
 	BASEGRAPH_DATABASE_API CString GetDateTypeValueStr(BaseGraph_DataBase::ParamValueDef emParamDef, const BaseGraph_Common::Value & value);
 	BASEGRAPH_DATABASE_API bool RestoreDataTypeValueFromXML(BaseGraph_DataBase::ParamValueDef emParamDef, CString strValueType, CString strXML, BaseGraph_Common::Value & value);
+	BASEGRAPH_DATABASE_API bool SaveDateTypeValueToDocElement(void * pDocElementHandle/*TiXmlElement*/, BaseGraph_DataBase::ParamValueDef emParamDef, const BaseGraph_Common::Value & value);
+	BASEGRAPH_DATABASE_API bool RestoreDataTypeValueFromDocElement(BaseGraph_DataBase::ParamValueDef emParamDef, CString strValueType, void * pDocElementHandle/*TiXmlElement*/, BaseGraph_Common::Value & value);
 };
 
 inline BaseGraph_DataBase::ValueDescriptor BaseGraph_DataBase::GetValueDescriptor(ParamValueDef emParamValueDef)

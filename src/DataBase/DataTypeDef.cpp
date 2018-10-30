@@ -1877,7 +1877,12 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::SaveToDocElementHandl
 		{
 			memset(szName, 0, MAX_PATH);
 			sprintf_s(szName, 256, "light%d", i);
-			TinyXMLHelper::SetAttribute(eleMetalinfo, szName, light[i].GetValueStr());
+			TiXmlElement * eleLight = new TiXmlElement(szName);
+			if (eleLight)
+			{
+				eleMetalinfo->LinkEndChild(eleLight);
+				light[i].SaveToDocElementHandle(eleLight);
+			}
 		}
 		TinyXMLHelper::SetAttribute(eleMetalinfo, "eyepos_x", eyepos.x);
 		TinyXMLHelper::SetAttribute(eleMetalinfo, "eyepos_y", eyepos.y);
@@ -1902,11 +1907,10 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::RecoverFromDocElement
 		{
 			memset(szName, 0, MAX_PATH);
 			sprintf_s(szName, 256, "light%d", i);
-			CString strValue;
-			TinyXMLHelper::Attribute(eleMetalinfo, szName, strValue);
-			if (!strValue.IsEmpty())
+			TiXmlElement * eleLight = eleMetalinfo->FirstChildElement(szName);
+			if (eleLight)
 			{
-				light[i].RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
+				light[i].RecoverFromDocElementHandle(strType, eleLight);
 			}
 		}
 		TinyXMLHelper::Attribute(eleMetalinfo, "eyepos_x", eyepos.x);
@@ -2104,6 +2108,203 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::RestoreDataTypeValueFromXML(Base
 	break;
 	default:
 		value.RecoverFromCString(strValueType, strXML);
+		break;
+	}
+	return true;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::SaveDateTypeValueToDocElement(void * pDocElementHandle, BaseGraph_DataBase::ParamValueDef emParamDef, const BaseGraph_Common::Value & value)
+{
+	//主要是为了处理stu，根据stu类型，转换为对应的stu对象然后调用其save函数
+	switch (emParamDef)
+	{
+	case ColorParam_Face_Stu:
+	{
+		BaseGraph_DataBase::faceinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Border_Stu:
+	{
+		BaseGraph_DataBase::borderinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Shadow_Stu:
+	{
+		BaseGraph_DataBase::shadowinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Cube_Stu:
+	{
+		BaseGraph_DataBase::cubeinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Bordercube_Stu:
+	{
+		BaseGraph_DataBase::cubeinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Bordershadow_Stu:
+	{
+		BaseGraph_DataBase::shadowinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Facelight_Stu:
+	{
+		BaseGraph_DataBase::lightinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Cubelight_Stu:
+	{
+		BaseGraph_DataBase::lightinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Channel_Stu:
+	{
+		BaseGraph_DataBase::channelinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Material_Stu:
+	{
+		BaseGraph_DataBase::materialinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Appendmaterial_Stu:
+	{
+		BaseGraph_DataBase::materialinfo stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	case ColorParam_Dyntex_Stu:
+	{
+		BaseGraph_DataBase::dynamictexture stu;
+		value.ToStruct(stu);
+		stu.SaveToDocElementHandle(pDocElementHandle);
+	}
+	break;
+	default:
+		TiXmlElement * pElement = (TiXmlElement *)pDocElementHandle;
+		TinyXMLHelper::SetAttribute(pElement, "value", value.GetValueStr());
+		break;
+	}
+	return true;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::RestoreDataTypeValueFromDocElement(BaseGraph_DataBase::ParamValueDef emParamDef, CString strValueType, void * pDocElementHandle, BaseGraph_Common::Value & value)
+{
+	switch (emParamDef)
+	{
+	case ColorParam_Face_Stu:
+	{
+		BaseGraph_DataBase::faceinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Border_Stu:
+	{
+		BaseGraph_DataBase::borderinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Shadow_Stu:
+	{
+		BaseGraph_DataBase::shadowinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Cube_Stu:
+	{
+		BaseGraph_DataBase::cubeinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Bordercube_Stu:
+	{
+		BaseGraph_DataBase::cubeinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Bordershadow_Stu:
+	{
+		BaseGraph_DataBase::shadowinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Facelight_Stu:
+	{
+		BaseGraph_DataBase::lightinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Cubelight_Stu:
+	{
+		BaseGraph_DataBase::lightinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Channel_Stu:
+	{
+		BaseGraph_DataBase::channelinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Material_Stu:
+	{
+		BaseGraph_DataBase::materialinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Appendmaterial_Stu:
+	{
+		BaseGraph_DataBase::materialinfo stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	case ColorParam_Dyntex_Stu:
+	{
+		BaseGraph_DataBase::dynamictexture stu;
+		stu.RecoverFromDocElementHandle(strValueType, pDocElementHandle);
+		value.SetValue(stu);
+	}
+	break;
+	default:
+	{
+		CString strXml;
+		TiXmlElement * pElement = (TiXmlElement *)pDocElementHandle;
+		TinyXMLHelper::Attribute(pElement, "value", strXml);
+		value.RecoverFromCString(strValueType, strXml);
+	}
 		break;
 	}
 	return true;
