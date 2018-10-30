@@ -1,3 +1,5 @@
+#include "..\..\include\Common\ColorDef.h"
+#include "..\..\include\Common\ColorDef.h"
 #include "stdafx.h"
 #include "Common\ColorDef.h"
 #include <assert.h>
@@ -391,4 +393,14 @@ bool tag_common_color::RecoverFromCString(CString strType, CString strValue)
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_COMMON_API bool tag_common_color::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	return BASEGRAPH_COMMON_API bool();
+}
+
+BASEGRAPH_COMMON_API bool tag_common_color::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	return BASEGRAPH_COMMON_API bool();
 }

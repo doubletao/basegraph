@@ -85,12 +85,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::artinfo::GetValueStr()
 		if (eleArtinfo)
 		{
 			xmlDoc->LinkEndChild(eleArtinfo);
-			eleArtinfo->SetAttribute("type", type);
-			TinyXMLHelper::SetAttribute(eleArtinfo, "cv_height", cv_height);
-			TinyXMLHelper::SetAttribute(eleArtinfo, "cu_angle", cu_angle);
-			eleArtinfo->SetAttribute("soft", soft);
-			eleArtinfo->SetAttribute("color", color);
-			eleArtinfo->SetAttribute("metal", CommonFunction::ConvertCStringToStdString(metal.GetValueStr()).c_str());
+			SaveToDocElementHandle(eleArtinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -112,28 +107,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::artinfo::RecoverFromCString(CStr
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleArtinfo = xmlDoc->FirstChildElement("artinfo");
 					if (eleArtinfo)
 					{
-						eleArtinfo->Attribute("type", &nIntValue);
-						type = (GRAPH_ART_PROC_TYPE)nIntValue;
-						TinyXMLHelper::Attribute(eleArtinfo, "cv_height", cv_height);
-						TinyXMLHelper::Attribute(eleArtinfo, "cu_angle", cu_angle);
-						eleArtinfo->Attribute("soft", &soft);
-						TinyXMLHelper::Attribute(eleArtinfo, "color", color);
-						CString strValue;
-						TinyXMLHelper::Attribute(eleArtinfo, "metal", strValue);
-						if (!strValue.IsEmpty())
-						{
-							metal.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
-						}
+						RecoverFromDocElementHandle(strType, eleArtinfo);
 					}
 					bRet = true;
 				}
@@ -143,6 +125,49 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::artinfo::RecoverFromCString(CStr
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::artinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleArtinfo = (TiXmlElement *)(pDocElementHandle);
+	if (eleArtinfo)
+	{
+		eleArtinfo->SetAttribute("type", type);
+		TinyXMLHelper::SetAttribute(eleArtinfo, "cv_height", cv_height);
+		TinyXMLHelper::SetAttribute(eleArtinfo, "cu_angle", cu_angle);
+		eleArtinfo->SetAttribute("soft", soft);
+		eleArtinfo->SetAttribute("color", color);
+		TiXmlElement * eleMetalinfo = new TiXmlElement("metal");
+		if (eleMetalinfo)
+		{
+			eleArtinfo->LinkEndChild(eleMetalinfo);
+			metal.SaveToDocElementHandle(eleMetalinfo);
+		}
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::artinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleArtinfo = (TiXmlElement *)(pDocElementHandle);
+	if (eleArtinfo)
+	{
+		int nIntValue = 0;
+		eleArtinfo->Attribute("type", &nIntValue);
+		type = (GRAPH_ART_PROC_TYPE)nIntValue;
+		TinyXMLHelper::Attribute(eleArtinfo, "cv_height", cv_height);
+		TinyXMLHelper::Attribute(eleArtinfo, "cu_angle", cu_angle);
+		eleArtinfo->Attribute("soft", &soft);
+		TinyXMLHelper::Attribute(eleArtinfo, "color", color);
+		TiXmlElement * eleMetalinfo = eleArtinfo->FirstChildElement("metal");
+		if (eleMetalinfo)
+		{
+			metal.RecoverFromDocElementHandle(strType, eleMetalinfo);
+		}
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::faceinfo::faceinfo()
@@ -224,13 +249,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::faceinfo::GetValueStr()
 		if (eleFaceinfo)
 		{
 			xmlDoc->LinkEndChild(eleFaceinfo);
-			eleFaceinfo->SetAttribute("disable", disable);
-			eleFaceinfo->SetAttribute("soft", soft);
-			eleFaceinfo->SetAttribute("effect_type", effect_type);
-			eleFaceinfo->SetAttribute("effect_width", effect_width);
-			eleFaceinfo->SetAttribute("avcolor", avcolor);
-			eleFaceinfo->SetAttribute("art", CommonFunction::ConvertCStringToStdString(art.GetValueStr()).c_str());
-			eleFaceinfo->SetAttribute("color", CommonFunction::ConvertCStringToStdString(color.GetValueStr()).c_str());
+			SaveToDocElementHandle(eleFaceinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -252,34 +271,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::faceinfo::RecoverFromCString(CSt
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
-			double dDoubleValue = 0.0;
-			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleFaceinfo = xmlDoc->FirstChildElement("faceinfo");
 					if (eleFaceinfo)
 					{
-						eleFaceinfo->Attribute("disable", &disable);
-						eleFaceinfo->Attribute("soft", &soft);
-						eleFaceinfo->Attribute("effect_type", &effect_type);
-						eleFaceinfo->Attribute("effect_width", &effect_width);
-						eleFaceinfo->Attribute("avcolor", &nIntValue);
-						avcolor = nIntValue;
-						cstrValue = eleFaceinfo->Attribute("art");
-						if (cstrValue)
-						{
-							art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
-						}
-						cstrValue = eleFaceinfo->Attribute("color");
-						if (cstrValue)
-						{
-							color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), CommonFunction::ConvertStdStringToCString(cstrValue));
-						}
+						RecoverFromDocElementHandle(strType, eleFaceinfo);
 					}
 					bRet = true;
 				}
@@ -289,6 +289,62 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::faceinfo::RecoverFromCString(CSt
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::faceinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleFaceinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleFaceinfo)
+	{
+		eleFaceinfo->SetAttribute("disable", disable);
+		eleFaceinfo->SetAttribute("soft", soft);
+		eleFaceinfo->SetAttribute("effect_type", effect_type);
+		eleFaceinfo->SetAttribute("effect_width", effect_width);
+		eleFaceinfo->SetAttribute("avcolor", avcolor);
+		TiXmlElement * eleArtinfo = new TiXmlElement("art");
+		if (eleArtinfo)
+		{
+			eleFaceinfo->LinkEndChild(eleArtinfo);
+			art.SaveToDocElementHandle(eleArtinfo);
+		}
+		TiXmlElement * eleColorinfo = new TiXmlElement("color");
+		if (eleColorinfo)
+		{
+			eleFaceinfo->LinkEndChild(eleColorinfo);
+			color.SaveToDocElementHandle(eleColorinfo);
+		}
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::faceinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleFaceinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleFaceinfo)
+	{
+		int nIntValue = 0;
+		double dDoubleValue = 0.0;
+		const char * cstrValue = nullptr;
+		eleFaceinfo->Attribute("disable", &disable);
+		eleFaceinfo->Attribute("soft", &soft);
+		eleFaceinfo->Attribute("effect_type", &effect_type);
+		eleFaceinfo->Attribute("effect_width", &effect_width);
+		eleFaceinfo->Attribute("avcolor", &nIntValue);
+		avcolor = nIntValue;
+		TiXmlElement * eleArtinfo = eleFaceinfo->FirstChildElement("art");
+		if (eleArtinfo)
+		{
+			art.RecoverFromDocElementHandle(strType, eleArtinfo);
+		}
+		TiXmlElement * eleColorinfo = eleFaceinfo->FirstChildElement("color");
+		if (eleColorinfo)
+		{
+			color.RecoverFromDocElementHandle(strType, eleColorinfo);
+		}
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::borderinfo::borderinfo()
@@ -382,16 +438,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::borderinfo::GetValueStr()
 		if (eleBorderinfo)
 		{
 			xmlDoc->LinkEndChild(eleBorderinfo);
-			eleBorderinfo->SetAttribute("disable", disable);
-			eleBorderinfo->SetAttribute("soft", soft);
-			eleBorderinfo->SetAttribute("linestyle", linestyle);
-			TinyXMLHelper::SetAttribute(eleBorderinfo, "width", width);
-			TinyXMLHelper::SetAttribute(eleBorderinfo, "interval", interval);
-			eleBorderinfo->SetAttribute("effect_type", effect_type);
-			eleBorderinfo->SetAttribute("effect_width", effect_width);
-			eleBorderinfo->SetAttribute("avcolor", avcolor);
-			eleBorderinfo->SetAttribute("art", CommonFunction::ConvertCStringToStdString(art.GetValueStr()).c_str());
-			eleBorderinfo->SetAttribute("color", CommonFunction::ConvertCStringToStdString(color.GetValueStr()).c_str());
+			SaveToDocElementHandle(eleBorderinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -418,29 +465,10 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::borderinfo::RecoverFromCString(C
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleBorderinfo = xmlDoc->FirstChildElement("borderinfo");
 					if (eleBorderinfo)
 					{
-						eleBorderinfo->Attribute("disable", &disable);
-						eleBorderinfo->Attribute("soft", &soft);
-						eleBorderinfo->Attribute("linestyle", &linestyle);
-						TinyXMLHelper::Attribute(eleBorderinfo, "width", width);
-						TinyXMLHelper::Attribute(eleBorderinfo, "interval", interval);
-						TinyXMLHelper::Attribute(eleBorderinfo, "effect_type", effect_type);
-						eleBorderinfo->Attribute("effect_width", &effect_width);
-						TinyXMLHelper::Attribute(eleBorderinfo, "avcolor", avcolor);
-						CString strValue;
-						TinyXMLHelper::Attribute(eleBorderinfo, "art", strValue);
-						if (!strValue.IsEmpty())
-						{
-							art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
-						}
-						TinyXMLHelper::Attribute(eleBorderinfo, "color", strValue);
-						if (!strValue.IsEmpty())
-						{
-							color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
-						}
+						RecoverFromDocElementHandle(strType, eleBorderinfo);
 					}
 					bRet = true;
 				}
@@ -450,6 +478,64 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::borderinfo::RecoverFromCString(C
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::borderinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleBorderinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleBorderinfo)
+	{
+		eleBorderinfo->SetAttribute("disable", disable);
+		eleBorderinfo->SetAttribute("soft", soft);
+		eleBorderinfo->SetAttribute("linestyle", linestyle);
+		TinyXMLHelper::SetAttribute(eleBorderinfo, "width", width);
+		TinyXMLHelper::SetAttribute(eleBorderinfo, "interval", interval);
+		eleBorderinfo->SetAttribute("effect_type", effect_type);
+		eleBorderinfo->SetAttribute("effect_width", effect_width);
+		eleBorderinfo->SetAttribute("avcolor", avcolor);
+		TiXmlElement * eleArtinfo = new TiXmlElement("art");
+		if (eleArtinfo)
+		{
+			eleBorderinfo->LinkEndChild(eleArtinfo);
+			art.SaveToDocElementHandle(eleArtinfo);
+		}
+		TiXmlElement * eleColorinfo = new TiXmlElement("color");
+		if (eleColorinfo)
+		{
+			eleBorderinfo->LinkEndChild(eleColorinfo);
+			color.SaveToDocElementHandle(eleColorinfo);
+		}
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::borderinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleBorderinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleBorderinfo)
+	{
+		eleBorderinfo->Attribute("disable", &disable);
+		eleBorderinfo->Attribute("soft", &soft);
+		eleBorderinfo->Attribute("linestyle", &linestyle);
+		TinyXMLHelper::Attribute(eleBorderinfo, "width", width);
+		TinyXMLHelper::Attribute(eleBorderinfo, "interval", interval);
+		TinyXMLHelper::Attribute(eleBorderinfo, "effect_type", effect_type);
+		eleBorderinfo->Attribute("effect_width", &effect_width);
+		TinyXMLHelper::Attribute(eleBorderinfo, "avcolor", avcolor);
+		TiXmlElement * eleArtinfo = eleBorderinfo->FirstChildElement("art");
+		if (eleArtinfo)
+		{
+			art.RecoverFromDocElementHandle(strType, eleArtinfo);
+		}
+		TiXmlElement * eleColorinfo = eleBorderinfo->FirstChildElement("color");
+		if (eleColorinfo)
+		{
+			color.RecoverFromDocElementHandle(strType, eleColorinfo);
+		}
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::shadowinfo::shadowinfo()
@@ -551,18 +637,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::shadowinfo::GetValueStr()
 		if (eleShadowinfo)
 		{
 			xmlDoc->LinkEndChild(eleShadowinfo);
-			eleShadowinfo->SetAttribute("disable", disable);
-			eleShadowinfo->SetAttribute("soft", soft);
-			eleShadowinfo->SetAttribute("offsetx", offsetx);
-			eleShadowinfo->SetAttribute("offsety", offsety);
-			eleShadowinfo->SetAttribute("effect_type", effect_type);
-			TinyXMLHelper::SetAttribute(eleShadowinfo,"effect_fxtitle", effect_fxtitle);
-			TinyXMLHelper::SetAttribute(eleShadowinfo,"effect_fyscale", effect_fyscale);
-			TinyXMLHelper::SetAttribute(eleShadowinfo,"effect_fadeout", effect_fadeout);
-			TinyXMLHelper::SetAttribute(eleShadowinfo,"effect_style", effect_style);
-			TinyXMLHelper::SetAttribute(eleShadowinfo,"avcolor", avcolor);
-			TinyXMLHelper::SetAttribute(eleShadowinfo, "art", art.GetValueStr());
-			TinyXMLHelper::SetAttribute(eleShadowinfo, "color", color.GetValueStr());
+			SaveToDocElementHandle(eleShadowinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -584,39 +659,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::shadowinfo::RecoverFromCString(C
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
-			double dDoubleValue = 0.0;
-			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleShadowinfo = xmlDoc->FirstChildElement("shadowinfo");
 					if (eleShadowinfo)
 					{
-						eleShadowinfo->Attribute("disable", &disable);
-						eleShadowinfo->Attribute("soft", &soft);
-						eleShadowinfo->Attribute("offsetx", &offsetx);
-						eleShadowinfo->Attribute("offsety", &offsety);
-						eleShadowinfo->Attribute("effect_type", &effect_type);
-						TinyXMLHelper::Attribute(eleShadowinfo, "effect_fxtitle", effect_fxtitle);
-						TinyXMLHelper::Attribute(eleShadowinfo, "effect_fyscale", effect_fyscale);
-						TinyXMLHelper::Attribute(eleShadowinfo, "effect_fadeout", effect_fadeout);
-						TinyXMLHelper::Attribute(eleShadowinfo, "effect_style", effect_style);
-						TinyXMLHelper::Attribute(eleShadowinfo, "avcolor", avcolor);
-						CString strValue;
-						TinyXMLHelper::Attribute(eleShadowinfo, "art", strValue);
-						if (!strValue.IsEmpty())
-						{
-							art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
-						}
-						TinyXMLHelper::Attribute(eleShadowinfo, "color", strValue);
-						if (!strValue.IsEmpty())
-						{
-							color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
-						}
+						RecoverFromDocElementHandle(strType, eleShadowinfo);
 					}
 					bRet = true;
 				}
@@ -626,6 +677,68 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::shadowinfo::RecoverFromCString(C
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::shadowinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleShadowinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleShadowinfo)
+	{
+		eleShadowinfo->SetAttribute("disable", disable);
+		eleShadowinfo->SetAttribute("soft", soft);
+		eleShadowinfo->SetAttribute("offsetx", offsetx);
+		eleShadowinfo->SetAttribute("offsety", offsety);
+		eleShadowinfo->SetAttribute("effect_type", effect_type);
+		TinyXMLHelper::SetAttribute(eleShadowinfo, "effect_fxtitle", effect_fxtitle);
+		TinyXMLHelper::SetAttribute(eleShadowinfo, "effect_fyscale", effect_fyscale);
+		TinyXMLHelper::SetAttribute(eleShadowinfo, "effect_fadeout", effect_fadeout);
+		TinyXMLHelper::SetAttribute(eleShadowinfo, "effect_style", effect_style);
+		TinyXMLHelper::SetAttribute(eleShadowinfo, "avcolor", avcolor);
+		TiXmlElement * eleArtinfo = new TiXmlElement("art");
+		if (eleArtinfo)
+		{
+			eleShadowinfo->LinkEndChild(eleArtinfo);
+			art.SaveToDocElementHandle(eleArtinfo);
+		}
+		TiXmlElement * eleColorinfo = new TiXmlElement("color");
+		if (eleColorinfo)
+		{
+			eleShadowinfo->LinkEndChild(eleColorinfo);
+			color.SaveToDocElementHandle(eleColorinfo);
+		}
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::shadowinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleShadowinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleShadowinfo)
+	{
+		eleShadowinfo->Attribute("disable", &disable);
+		eleShadowinfo->Attribute("soft", &soft);
+		eleShadowinfo->Attribute("offsetx", &offsetx);
+		eleShadowinfo->Attribute("offsety", &offsety);
+		eleShadowinfo->Attribute("effect_type", &effect_type);
+		TinyXMLHelper::Attribute(eleShadowinfo, "effect_fxtitle", effect_fxtitle);
+		TinyXMLHelper::Attribute(eleShadowinfo, "effect_fyscale", effect_fyscale);
+		TinyXMLHelper::Attribute(eleShadowinfo, "effect_fadeout", effect_fadeout);
+		TinyXMLHelper::Attribute(eleShadowinfo, "effect_style", effect_style);
+		TinyXMLHelper::Attribute(eleShadowinfo, "avcolor", avcolor);
+		TiXmlElement * eleArtinfo = eleShadowinfo->FirstChildElement("art");
+		if (eleArtinfo)
+		{
+			art.RecoverFromDocElementHandle(strType, eleArtinfo);
+		}
+		TiXmlElement * eleColorinfo = eleShadowinfo->FirstChildElement("color");
+		if (eleColorinfo)
+		{
+			color.RecoverFromDocElementHandle(strType, eleColorinfo);
+		}
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::cubeinfo::cubeinfo()
@@ -711,14 +824,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::cubeinfo::GetValueStr()
 		if (eleCubeinfo)
 		{
 			xmlDoc->LinkEndChild(eleCubeinfo);
-			eleCubeinfo->SetAttribute("disable", disable);
-			TinyXMLHelper::SetAttribute(eleCubeinfo, "width", width);
-			TinyXMLHelper::SetAttribute(eleCubeinfo, "angle", angle);
-			eleCubeinfo->SetAttribute("effect_type", effect_type);
-			eleCubeinfo->SetAttribute("effect_width", effect_width);
-			TinyXMLHelper::SetAttribute(eleCubeinfo, "avcolor", avcolor);
-			TinyXMLHelper::SetAttribute(eleCubeinfo, "art", art.GetValueStr());
-			TinyXMLHelper::SetAttribute(eleCubeinfo, "color", color.GetValueStr());
+			SaveToDocElementHandle(eleCubeinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -740,35 +846,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::cubeinfo::RecoverFromCString(CSt
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
-			double dDoubleValue = 0.0;
-			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
 					TiXmlElement * eleCubeinfo = xmlDoc->FirstChildElement("cubeinfo");
 					if (eleCubeinfo)
 					{
-						eleCubeinfo->Attribute("disable", &disable);
-						TinyXMLHelper::Attribute(eleCubeinfo, "width", width);
-						TinyXMLHelper::Attribute(eleCubeinfo, "angle", angle);
-						eleCubeinfo->Attribute("effect_type", &effect_type);
-						eleCubeinfo->Attribute("effect_width", &effect_width);
-						TinyXMLHelper::Attribute(eleCubeinfo, "avcolor", avcolor);
-						CString strValue;
-						TinyXMLHelper::Attribute(eleCubeinfo, "art", strValue);
-						if (!strValue.IsEmpty())
-						{
-							art.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
-						}
-						TinyXMLHelper::Attribute(eleCubeinfo, "color", strValue);
-						if (!strValue.IsEmpty())
-						{
-							color.RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
-						}
+						RecoverFromDocElementHandle(strType, eleCubeinfo);
 					}
 					bRet = true;
 				}
@@ -778,6 +864,60 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::cubeinfo::RecoverFromCString(CSt
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::cubeinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleCubeinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleCubeinfo)
+	{
+		eleCubeinfo->SetAttribute("disable", disable);
+		TinyXMLHelper::SetAttribute(eleCubeinfo, "width", width);
+		TinyXMLHelper::SetAttribute(eleCubeinfo, "angle", angle);
+		eleCubeinfo->SetAttribute("effect_type", effect_type);
+		eleCubeinfo->SetAttribute("effect_width", effect_width);
+		TinyXMLHelper::SetAttribute(eleCubeinfo, "avcolor", avcolor);
+		TiXmlElement * eleArtinfo = new TiXmlElement("art");
+		if (eleArtinfo)
+		{
+			eleCubeinfo->LinkEndChild(eleArtinfo);
+			art.SaveToDocElementHandle(eleArtinfo);
+		}
+		TiXmlElement * eleColorinfo = new TiXmlElement("color");
+		if (eleColorinfo)
+		{
+			eleCubeinfo->LinkEndChild(eleColorinfo);
+			color.SaveToDocElementHandle(eleColorinfo);
+		}
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::cubeinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleCubeinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleCubeinfo)
+	{
+		eleCubeinfo->Attribute("disable", &disable);
+		TinyXMLHelper::Attribute(eleCubeinfo, "width", width);
+		TinyXMLHelper::Attribute(eleCubeinfo, "angle", angle);
+		eleCubeinfo->Attribute("effect_type", &effect_type);
+		eleCubeinfo->Attribute("effect_width", &effect_width);
+		TinyXMLHelper::Attribute(eleCubeinfo, "avcolor", avcolor);
+		TiXmlElement * eleArtinfo = eleCubeinfo->FirstChildElement("art");
+		if (eleArtinfo)
+		{
+			art.RecoverFromDocElementHandle(strType, eleArtinfo);
+		}
+		TiXmlElement * eleColorinfo = eleCubeinfo->FirstChildElement("color");
+		if (eleColorinfo)
+		{
+			color.RecoverFromDocElementHandle(strType, eleColorinfo);
+		}
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::lightinfo::lightinfo()
@@ -855,12 +995,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::lightinfo::GetValueStr()
 		if (eleLightinfo)
 		{
 			xmlDoc->LinkEndChild(eleLightinfo);
-			eleLightinfo->SetAttribute("ambience", ambience);
-			eleLightinfo->SetAttribute("ambience_degree", ambience_degree);
-			eleLightinfo->SetAttribute("reflectcolor", reflectcolor);
-			eleLightinfo->SetAttribute("dwReverse1", dwReverse1);
-			eleLightinfo->SetAttribute("dwReverse2", dwReverse2);
-			eleLightinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
+			SaveToDocElementHandle(eleLightinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -882,35 +1017,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::lightinfo::RecoverFromCString(CS
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
-			double dDoubleValue = 0.0;
-			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
-					char szName[MAX_PATH];
 					TiXmlElement * eleLightinfo = xmlDoc->FirstChildElement("lightinfo");
 					if (eleLightinfo)
 					{
-						eleLightinfo->Attribute("ambience", &nIntValue);
-						ambience = nIntValue;
-						eleLightinfo->Attribute("ambience_degree", &nIntValue);
-						ambience_degree = nIntValue;
-						eleLightinfo->Attribute("reflectcolor", &nIntValue);
-						reflectcolor = nIntValue;
-						eleLightinfo->Attribute("dwReverse1", &nIntValue);
-						dwReverse1 = nIntValue;
-						eleLightinfo->Attribute("dwReverse2", &nIntValue);
-						dwReverse2 = nIntValue;
-						CString strValue;
-						TinyXMLHelper::Attribute(eleLightinfo, "szPath", strValue);
-						if (!strValue.IsEmpty())
-						{
-							memcpy(szName, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
-						}
+						RecoverFromDocElementHandle(strType, eleLightinfo);
 					}
 					bRet = true;
 				}
@@ -920,6 +1035,49 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::lightinfo::RecoverFromCString(CS
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::lightinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleLightinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleLightinfo)
+	{
+		eleLightinfo->SetAttribute("ambience", ambience);
+		eleLightinfo->SetAttribute("ambience_degree", ambience_degree);
+		eleLightinfo->SetAttribute("reflectcolor", reflectcolor);
+		eleLightinfo->SetAttribute("dwReverse1", dwReverse1);
+		eleLightinfo->SetAttribute("dwReverse2", dwReverse2);
+		eleLightinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::lightinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleLightinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleLightinfo)
+	{
+		int nIntValue;
+		eleLightinfo->Attribute("ambience", &nIntValue);
+		ambience = nIntValue;
+		eleLightinfo->Attribute("ambience_degree", &nIntValue);
+		ambience_degree = nIntValue;
+		eleLightinfo->Attribute("reflectcolor", &nIntValue);
+		reflectcolor = nIntValue;
+		eleLightinfo->Attribute("dwReverse1", &nIntValue);
+		dwReverse1 = nIntValue;
+		eleLightinfo->Attribute("dwReverse2", &nIntValue);
+		dwReverse2 = nIntValue;
+		CString strValue;
+		TinyXMLHelper::Attribute(eleLightinfo, "szPath", strValue);
+		if (!strValue.IsEmpty())
+		{
+			memcpy(szPath, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
+		}
+		return true;
+	}	
+	return false;
 }
 
 BaseGraph_DataBase::channelinfo::channelinfo()
@@ -993,11 +1151,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::channelinfo::GetValueStr()
 		if (eleChannelinfo)
 		{
 			xmlDoc->LinkEndChild(eleChannelinfo);
-			eleChannelinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
-			eleChannelinfo->SetAttribute("weight", weight);
-			eleChannelinfo->SetAttribute("channelid", channelid);
-			eleChannelinfo->SetAttribute("dwReverse1", dwReverse1);
-			eleChannelinfo->SetAttribute("dwReverse2", dwReverse2);
+			SaveToDocElementHandle(eleChannelinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -1019,31 +1173,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::channelinfo::RecoverFromCString(
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
-			double dDoubleValue = 0.0;
-			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
-					char szName[MAX_PATH];
 					TiXmlElement * eleChannelinfo = xmlDoc->FirstChildElement("channelinfo");
 					if (eleChannelinfo)
 					{
-						cstrValue = eleChannelinfo->Attribute("szPath");
-						if (nullptr != cstrValue)
-						{
-							CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
-							memcpy(szName, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
-						}
-						eleChannelinfo->Attribute("weight", &weight);
-						eleChannelinfo->Attribute("channelid", &channelid);
-						eleChannelinfo->Attribute("dwReverse1", &nIntValue);
-						dwReverse1 = nIntValue;
-						eleChannelinfo->Attribute("dwReverse2", &nIntValue);
-						dwReverse2 = nIntValue;
+						RecoverFromDocElementHandle(strType, eleChannelinfo);
 					}
 					bRet = true;
 				}
@@ -1053,6 +1191,46 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::channelinfo::RecoverFromCString(
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::channelinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleChannelinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleChannelinfo)
+	{
+		eleChannelinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
+		eleChannelinfo->SetAttribute("weight", weight);
+		eleChannelinfo->SetAttribute("channelid", channelid);
+		eleChannelinfo->SetAttribute("dwReverse1", dwReverse1);
+		eleChannelinfo->SetAttribute("dwReverse2", dwReverse2);
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::channelinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleChannelinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleChannelinfo)
+	{
+		int nIntValue = 0;
+		double dDoubleValue = 0.0;
+		const char * cstrValue = nullptr;
+		cstrValue = eleChannelinfo->Attribute("szPath");
+		if (nullptr != cstrValue)
+		{
+			CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
+			memcpy(szPath, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
+		}
+		eleChannelinfo->Attribute("weight", &weight);
+		eleChannelinfo->Attribute("channelid", &channelid);
+		eleChannelinfo->Attribute("dwReverse1", &nIntValue);
+		dwReverse1 = nIntValue;
+		eleChannelinfo->Attribute("dwReverse2", &nIntValue);
+		dwReverse2 = nIntValue;
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::materialinfo::materialinfo()
@@ -1118,9 +1296,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::materialinfo::GetValueStr()
 		if (eleChannelinfo)
 		{
 			xmlDoc->LinkEndChild(eleChannelinfo);
-			eleChannelinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
-			eleChannelinfo->SetAttribute("dwReverse1", dwReverse1);
-			eleChannelinfo->SetAttribute("dwReverse2", dwReverse2);
+			SaveToDocElementHandle(eleChannelinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -1142,29 +1318,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::materialinfo::RecoverFromCString
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
-			double dDoubleValue = 0.0;
-			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
-					char szName[MAX_PATH];
 					TiXmlElement * eleChannelinfo = xmlDoc->FirstChildElement("channelinfo");
 					if (eleChannelinfo)
 					{
-						cstrValue = eleChannelinfo->Attribute("szPath");
-						if (nullptr != cstrValue)
-						{
-							CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
-							memcpy(szName, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
-						}
-						eleChannelinfo->Attribute("dwReverse1", &nIntValue);
-						dwReverse1 = nIntValue;
-						eleChannelinfo->Attribute("dwReverse2", &nIntValue);
-						dwReverse2 = nIntValue;
+						RecoverFromDocElementHandle(strType, eleChannelinfo);
 					}
 					bRet = true;
 				}
@@ -1174,6 +1336,42 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::materialinfo::RecoverFromCString
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::materialinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleChannelinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleChannelinfo)
+	{
+		eleChannelinfo->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
+		eleChannelinfo->SetAttribute("dwReverse1", dwReverse1);
+		eleChannelinfo->SetAttribute("dwReverse2", dwReverse2);
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::materialinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleChannelinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleChannelinfo)
+	{
+		int nIntValue = 0;
+		double dDoubleValue = 0.0;
+		const char * cstrValue = nullptr;
+		cstrValue = eleChannelinfo->Attribute("szPath");
+		if (nullptr != cstrValue)
+		{
+			CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
+			memcpy(szPath, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
+		}
+		eleChannelinfo->Attribute("dwReverse1", &nIntValue);
+		dwReverse1 = nIntValue;
+		eleChannelinfo->Attribute("dwReverse2", &nIntValue);
+		dwReverse2 = nIntValue;
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::dynamictexture::dynamictexture()
@@ -1287,21 +1485,7 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::dynamictexture::GetValueStr()
 		if (eleDynamictexture)
 		{
 			xmlDoc->LinkEndChild(eleDynamictexture);
-			eleDynamictexture->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
-			eleDynamictexture->SetAttribute("disable", disable);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "speed", speed);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "offsetx", offsetx);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "offsety", offsety);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "vRunDirx", vRunDirx);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "vRunDiry", vRunDiry);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "scalex", scalex);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "scaley", scaley);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "centerx", centerx);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "centery", centery);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "rotate", rotate);
-			TinyXMLHelper::SetAttribute(eleDynamictexture, "alpha", alpha);
-			eleDynamictexture->SetAttribute("bRepeat", bRepeat);
-			eleDynamictexture->SetAttribute("bUseAlpha", bUseAlpha);
+			SaveToDocElementHandle(eleDynamictexture);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -1323,39 +1507,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::dynamictexture::RecoverFromCStri
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
-			double dDoubleValue = 0.0;
-			const char * cstrValue = nullptr;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
-					char szName[MAX_PATH];
 					TiXmlElement * eleDynamictexture = xmlDoc->FirstChildElement("dynamictexture");
 					if (eleDynamictexture)
 					{
-						cstrValue = eleDynamictexture->Attribute("szPath");
-						if (nullptr != cstrValue)
-						{
-							CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
-							memcpy(szName, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
-						}
-						eleDynamictexture->Attribute("disable", &disable);
-						TinyXMLHelper::Attribute(eleDynamictexture, "speed", speed);
-						TinyXMLHelper::Attribute(eleDynamictexture, "offsetx", offsetx);
-						TinyXMLHelper::Attribute(eleDynamictexture, "offsety", offsety);
-						TinyXMLHelper::Attribute(eleDynamictexture, "vRunDirx", vRunDirx);
-						TinyXMLHelper::Attribute(eleDynamictexture, "vRunDiry", vRunDiry);
-						TinyXMLHelper::Attribute(eleDynamictexture, "scalex", scalex);
-						TinyXMLHelper::Attribute(eleDynamictexture, "scaley", scaley);
-						TinyXMLHelper::Attribute(eleDynamictexture, "centerx", centerx);
-						TinyXMLHelper::Attribute(eleDynamictexture, "centery", centery);
-						TinyXMLHelper::Attribute(eleDynamictexture, "rotate", rotate);
-						TinyXMLHelper::Attribute(eleDynamictexture, "alpha", alpha);
-						eleDynamictexture->Attribute("bRepeat", &bRepeat);
-						eleDynamictexture->Attribute("bUseAlpha", &bUseAlpha);
+						RecoverFromDocElementHandle(strType, eleDynamictexture);
 					}
 					bRet = true;
 				}
@@ -1365,6 +1525,64 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::dynamictexture::RecoverFromCStri
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::dynamictexture::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleDynamictexture = (TiXmlElement *)pDocElementHandle;
+	if (eleDynamictexture)
+	{
+		eleDynamictexture->SetAttribute("szPath", CommonFunction::ConvertCStringToStdString(szPath).c_str());
+		eleDynamictexture->SetAttribute("disable", disable);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "speed", speed);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "offsetx", offsetx);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "offsety", offsety);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "vRunDirx", vRunDirx);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "vRunDiry", vRunDiry);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "scalex", scalex);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "scaley", scaley);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "centerx", centerx);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "centery", centery);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "rotate", rotate);
+		TinyXMLHelper::SetAttribute(eleDynamictexture, "alpha", alpha);
+		eleDynamictexture->SetAttribute("bRepeat", bRepeat);
+		eleDynamictexture->SetAttribute("bUseAlpha", bUseAlpha);
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::dynamictexture::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleDynamictexture = (TiXmlElement *)pDocElementHandle;
+	if (eleDynamictexture)
+	{
+		int nIntValue = 0;
+		double dDoubleValue = 0.0;
+		const char * cstrValue = nullptr;
+		cstrValue = eleDynamictexture->Attribute("szPath");
+		if (nullptr != cstrValue)
+		{
+			CString strValue = CommonFunction::ConvertStdStringToCString(cstrValue);
+			memcpy(szPath, strValue.GetBuffer(), strValue.GetLength() * sizeof(TCHAR));
+		}
+		eleDynamictexture->Attribute("disable", &disable);
+		TinyXMLHelper::Attribute(eleDynamictexture, "speed", speed);
+		TinyXMLHelper::Attribute(eleDynamictexture, "offsetx", offsetx);
+		TinyXMLHelper::Attribute(eleDynamictexture, "offsety", offsety);
+		TinyXMLHelper::Attribute(eleDynamictexture, "vRunDirx", vRunDirx);
+		TinyXMLHelper::Attribute(eleDynamictexture, "vRunDiry", vRunDiry);
+		TinyXMLHelper::Attribute(eleDynamictexture, "scalex", scalex);
+		TinyXMLHelper::Attribute(eleDynamictexture, "scaley", scaley);
+		TinyXMLHelper::Attribute(eleDynamictexture, "centerx", centerx);
+		TinyXMLHelper::Attribute(eleDynamictexture, "centery", centery);
+		TinyXMLHelper::Attribute(eleDynamictexture, "rotate", rotate);
+		TinyXMLHelper::Attribute(eleDynamictexture, "alpha", alpha);
+		eleDynamictexture->Attribute("bRepeat", &bRepeat);
+		eleDynamictexture->Attribute("bUseAlpha", &bUseAlpha);
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::metallight::metallight()
@@ -1428,21 +1646,11 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::metallight::GetValueStr()
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
 	{
-		char szName[MAX_PATH];
 		TiXmlElement * eleMetallight = new TiXmlElement("metallight");
 		if (eleMetallight)
 		{
 			xmlDoc->LinkEndChild(eleMetallight);
-			eleMetallight->SetAttribute("enable", enable);
-			TinyXMLHelper::SetAttribute(eleMetallight, "pos_x", pos.x);
-			TinyXMLHelper::SetAttribute(eleMetallight, "pos_y", pos.y);
-			TinyXMLHelper::SetAttribute(eleMetallight, "pos_z", pos.z);
-			for (int i = 0; i < 3; i++)
-			{
-				memset(szName, 0, MAX_PATH);
-				sprintf_s(szName, 256, "strength%d", i);
-				TinyXMLHelper::SetAttribute(eleMetallight, szName, strength[i]);
-			}
+			SaveToDocElementHandle(eleMetallight);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -1464,29 +1672,15 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metallight::RecoverFromCString(C
 	{
 		if (!strValue.IsEmpty())
 		{
-			int nIntValue = 0;
-			double dDoubleValue = 0.0;
 			TiXmlDocument* xmlDoc = new TiXmlDocument;
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
 				{
-					TiXmlHandle docHandle(xmlDoc);
-					char szName[MAX_PATH];
 					TiXmlElement * eleMetallight = xmlDoc->FirstChildElement("metallight");
 					if (eleMetallight)
 					{
-						eleMetallight->Attribute("highlight", &nIntValue);
-						enable = nIntValue;
-						TinyXMLHelper::Attribute(eleMetallight, "pos_x", pos.x);
-						TinyXMLHelper::Attribute(eleMetallight, "pos_y", pos.y);
-						TinyXMLHelper::Attribute(eleMetallight, "pos_z", pos.z);
-						for (int i = 0; i < 3; i++)
-						{
-							memset(szName, 0, MAX_PATH);
-							sprintf_s(szName, 256, "strength%d", i);
-							TinyXMLHelper::Attribute(eleMetallight, szName, strength[i]);
-						}
+						RecoverFromDocElementHandle(strType, eleMetallight);
 					}
 					bRet = true;
 				}
@@ -1496,6 +1690,51 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metallight::RecoverFromCString(C
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metallight::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleMetallight = (TiXmlElement *)pDocElementHandle;
+	if (eleMetallight)
+	{
+		char szName[MAX_PATH];
+		eleMetallight->SetAttribute("enable", enable);
+		TinyXMLHelper::SetAttribute(eleMetallight, "pos_x", pos.x);
+		TinyXMLHelper::SetAttribute(eleMetallight, "pos_y", pos.y);
+		TinyXMLHelper::SetAttribute(eleMetallight, "pos_z", pos.z);
+		for (int i = 0; i < 3; i++)
+		{
+			memset(szName, 0, MAX_PATH);
+			sprintf_s(szName, 256, "strength%d", i);
+			TinyXMLHelper::SetAttribute(eleMetallight, szName, strength[i]);
+		}
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metallight::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleMetallight = (TiXmlElement *)pDocElementHandle;
+	if (eleMetallight)
+	{
+		int nIntValue = 0;
+		double dDoubleValue = 0.0;
+		char szName[MAX_PATH];
+		eleMetallight->Attribute("highlight", &nIntValue);
+		enable = nIntValue;
+		TinyXMLHelper::Attribute(eleMetallight, "pos_x", pos.x);
+		TinyXMLHelper::Attribute(eleMetallight, "pos_y", pos.y);
+		TinyXMLHelper::Attribute(eleMetallight, "pos_z", pos.z);
+		for (int i = 0; i < 3; i++)
+		{
+			memset(szName, 0, MAX_PATH);
+			sprintf_s(szName, 256, "strength%d", i);
+			TinyXMLHelper::Attribute(eleMetallight, szName, strength[i]);
+		}
+		return true;
+	}
+	return false;
 }
 
 BaseGraph_DataBase::metalinfo::metalinfo()
@@ -1575,25 +1814,11 @@ BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::metalinfo::GetValueStr()
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
 	{
-		char szName[MAX_PATH];
 		TiXmlElement * eleMetalinfo = new TiXmlElement("metalinfo");
 		if (eleMetalinfo)
 		{
 			xmlDoc->LinkEndChild(eleMetalinfo);
-			TinyXMLHelper::SetAttribute(eleMetalinfo, "highlight", highlight);
-			eleMetalinfo->SetAttribute("barc", barc);
-			TinyXMLHelper::SetAttribute(eleMetalinfo, "specular", specular);
-			TinyXMLHelper::SetAttribute(eleMetalinfo, "width", width);
-			TinyXMLHelper::SetAttribute(eleMetalinfo, "height", height);
-			for (int i = 0; i < 3; i++)
-			{
-				memset(szName, 0, MAX_PATH);
-				sprintf_s(szName, 256, "light%d", i);
-				TinyXMLHelper::SetAttribute(eleMetalinfo, szName, light[i].GetValueStr());
-			}
-			TinyXMLHelper::SetAttribute(eleMetalinfo, "eyepos_x", eyepos.x);
-			TinyXMLHelper::SetAttribute(eleMetalinfo, "eyepos_y", eyepos.y);
-			TinyXMLHelper::SetAttribute(eleMetalinfo, "eyepos_z", eyepos.z);
+			SaveToDocElementHandle(eleMetalinfo);
 		}
 		int nXMLSize = xmlDoc->SaveToString(NULL, 0);
 		char * szXMLValue = new char[nXMLSize + 1];
@@ -1621,31 +1846,11 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::RecoverFromCString(CS
 			if (xmlDoc)
 			{
 				if (xmlDoc->Parse(CommonFunction::ConvertCStringToStdString(strValue).c_str()))
-				{
-					TiXmlHandle docHandle(xmlDoc);
-					char szName[MAX_PATH];
+				{					
 					TiXmlElement * eleMetalinfo = xmlDoc->FirstChildElement("metalinfo");
 					if (eleMetalinfo)
 					{
-						TinyXMLHelper::Attribute(eleMetalinfo, "highlight", highlight);
-						eleMetalinfo->Attribute("barc", &barc);
-						TinyXMLHelper::Attribute(eleMetalinfo, "specular", specular);
-						TinyXMLHelper::Attribute(eleMetalinfo, "width", width);
-						TinyXMLHelper::Attribute(eleMetalinfo, "height", height);
-						for (int i = 0; i < 3; i++)
-						{
-							memset(szName, 0, MAX_PATH);
-							sprintf_s(szName, 256, "light%d", i);
-							CString strValue;
-							TinyXMLHelper::Attribute(eleMetalinfo, szName, strValue);
-							if (!strValue.IsEmpty())
-							{
-								light[i].RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
-							}
-						}
-						TinyXMLHelper::Attribute(eleMetalinfo, "eyepos_x", eyepos.x);
-						TinyXMLHelper::Attribute(eleMetalinfo, "eyepos_y", eyepos.y);
-						TinyXMLHelper::Attribute(eleMetalinfo, "eyepos_z", eyepos.z);
+						RecoverFromDocElementHandle(strType, eleMetalinfo);
 					}
 					bRet = true;
 				}
@@ -1655,6 +1860,61 @@ BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::RecoverFromCString(CS
 		}
 	}
 	return bRet;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::SaveToDocElementHandle(void * pDocElementHandle)
+{
+	TiXmlElement * eleMetalinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleMetalinfo)
+	{
+		char szName[MAX_PATH];
+		TinyXMLHelper::SetAttribute(eleMetalinfo, "highlight", highlight);
+		eleMetalinfo->SetAttribute("barc", barc);
+		TinyXMLHelper::SetAttribute(eleMetalinfo, "specular", specular);
+		TinyXMLHelper::SetAttribute(eleMetalinfo, "width", width);
+		TinyXMLHelper::SetAttribute(eleMetalinfo, "height", height);
+		for (int i = 0; i < 3; i++)
+		{
+			memset(szName, 0, MAX_PATH);
+			sprintf_s(szName, 256, "light%d", i);
+			TinyXMLHelper::SetAttribute(eleMetalinfo, szName, light[i].GetValueStr());
+		}
+		TinyXMLHelper::SetAttribute(eleMetalinfo, "eyepos_x", eyepos.x);
+		TinyXMLHelper::SetAttribute(eleMetalinfo, "eyepos_y", eyepos.y);
+		TinyXMLHelper::SetAttribute(eleMetalinfo, "eyepos_z", eyepos.z);
+		return true;
+	}
+	return false;
+}
+
+BASEGRAPH_DATABASE_API bool BaseGraph_DataBase::metalinfo::RecoverFromDocElementHandle(CString strType, void * pDocElementHandle)
+{
+	TiXmlElement * eleMetalinfo = (TiXmlElement *)pDocElementHandle;
+	if (eleMetalinfo)
+	{
+		char szName[MAX_PATH];
+		TinyXMLHelper::Attribute(eleMetalinfo, "highlight", highlight);
+		eleMetalinfo->Attribute("barc", &barc);
+		TinyXMLHelper::Attribute(eleMetalinfo, "specular", specular);
+		TinyXMLHelper::Attribute(eleMetalinfo, "width", width);
+		TinyXMLHelper::Attribute(eleMetalinfo, "height", height);
+		for (int i = 0; i < 3; i++)
+		{
+			memset(szName, 0, MAX_PATH);
+			sprintf_s(szName, 256, "light%d", i);
+			CString strValue;
+			TinyXMLHelper::Attribute(eleMetalinfo, szName, strValue);
+			if (!strValue.IsEmpty())
+			{
+				light[i].RecoverFromCString(BaseGraph_Common::GetValueTypeStr(BaseGraph_Common::ValueType_STRUCT), strValue);
+			}
+		}
+		TinyXMLHelper::Attribute(eleMetalinfo, "eyepos_x", eyepos.x);
+		TinyXMLHelper::Attribute(eleMetalinfo, "eyepos_y", eyepos.y);
+		TinyXMLHelper::Attribute(eleMetalinfo, "eyepos_z", eyepos.z);
+		return true;
+	}
+	return false;
 }
 
 BASEGRAPH_DATABASE_API CString BaseGraph_DataBase::GetDateTypeValueStr(BaseGraph_DataBase::ParamValueDef emParamDef, const BaseGraph_Common::Value & value)

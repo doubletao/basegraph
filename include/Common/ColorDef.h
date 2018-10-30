@@ -317,6 +317,8 @@ typedef   struct tag_common_color : public BaseGraph_Common::ValueAbleInterface
 	BASEGRAPH_COMMON_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 	BASEGRAPH_COMMON_API virtual CString GetValueStr();
 	BASEGRAPH_COMMON_API virtual bool RecoverFromCString(CString strType, CString strValue);
+	BASEGRAPH_COMMON_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+	BASEGRAPH_COMMON_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 }common_color;
 
 typedef common_color BaseGraphColor, *LPCommonCOLOR;

@@ -10,6 +10,9 @@ namespace BaseGraph_Common
 		virtual bool RecoverFromBuf(byte * pBuf, int nBufSize) = 0;
 		virtual CString GetValueStr() = 0;
 		virtual bool RecoverFromCString(CString strType, CString strValue) = 0;
+		//这两个elementhandle为tinyxml的element
+		virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/) = 0;
+		virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/) = 0;
 	};
 
 	enum ValueType

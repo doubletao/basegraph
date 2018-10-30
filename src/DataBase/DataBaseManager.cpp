@@ -59,8 +59,15 @@ bool DataBaseManager::SaveObjToXMLDoc(IN const std::vector<CString>& vecObjID, I
 								eleObject->LinkEndChild(eleProperty);
 								for (auto it : mapProperty)
 								{
+#if 0
 									CString strValueStr = BaseGraph_DataBase::GetDateTypeValueStr(it.first, it.second);
 									TinyXMLHelper::SetAttribute(eleProperty, CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName), strValueStr);
+#else
+									CString strValueStr = BaseGraph_DataBase::GetDateTypeValueStr(it.first, it.second);
+									TiXmlElement * eleSingleProperty = new TiXmlElement(CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it.first).strDispName));
+									eleProperty->LinkEndChild(eleSingleProperty);
+									eleSingleProperty->SetAttribute("value", CommonFunction::ConvertCStringToStdString(strValueStr));
+#endif
 								}
 							}
 							TinyXMLHelper::SetAttribute(eleObject, "m_strParentID", pObject->GetParentID());
@@ -113,6 +120,7 @@ bool DataBaseManager::LoadObjFromXMLDoc(IN TiXmlDocument * xmlDoc, OUT std::vect
 						//按照当前物件属性集合去xml里查找相应属性，如果找到了就赋值，找不到算了，用默认值
 						for (std::map<BaseGraph_DataBase::ParamValueDef, Value>::iterator it = mapParam.begin(); it != mapParam.end(); it++)
 						{
+#if 0
 							//根据属性类型取到属性节点名
 							std::string cstrEleName = CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it->first).strDispName);
 							//查找xml中的对应属性
@@ -122,6 +130,20 @@ bool DataBaseManager::LoadObjFromXMLDoc(IN TiXmlDocument * xmlDoc, OUT std::vect
 								std::string cstrProperValue = pcszValue;
 								BaseGraph_DataBase::RestoreDataTypeValueFromXML(it->first, BaseGraph_Common::GetValueTypeStr(it->second.GetValueType()), CommonFunction::ConvertStdStringToCString(cstrProperValue), it->second);
 							}
+#else
+							//根据属性类型取到属性节点名
+							std::string cstrEleName = CommonFunction::ConvertCStringToStdString(BaseGraph_DataBase::GetValueDescriptor(it->first).strDispName);
+							TiXmlElement * eleSingleProperty = eleProperty->FirstChildElement(cstrEleName);
+							if (eleSingleProperty)
+							{
+								const char * pcszValue = eleSingleProperty->Attribute("value");
+								if (pcszValue)
+								{
+									std::string cstrProperValue = pcszValue;
+									BaseGraph_DataBase::RestoreDataTypeValueFromXML(it->first, BaseGraph_Common::GetValueTypeStr(it->second.GetValueType()), CommonFunction::ConvertStdStringToCString(cstrProperValue), it->second);
+								}
+							}
+#endif
 						}
 						BaseObject * pObj = CreateItem(emType, mapParam);
 						if (pObj)

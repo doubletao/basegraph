@@ -34,6 +34,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct metalinfo : public BaseGraph_Common::ValueAbleInterface
@@ -52,6 +54,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct artinfo : public BaseGraph_Common::ValueAbleInterface
@@ -69,6 +73,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct faceinfo : public BaseGraph_Common::ValueAbleInterface
@@ -87,6 +93,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct borderinfo : public BaseGraph_Common::ValueAbleInterface
@@ -108,6 +116,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct shadowinfo : public BaseGraph_Common::ValueAbleInterface
@@ -133,6 +143,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct cubeinfo : public BaseGraph_Common::ValueAbleInterface
@@ -152,6 +164,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct lightinfo : public BaseGraph_Common::ValueAbleInterface
@@ -169,6 +183,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct channelinfo : public BaseGraph_Common::ValueAbleInterface
@@ -185,6 +201,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct materialinfo : public BaseGraph_Common::ValueAbleInterface
@@ -199,6 +217,8 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 
 	struct dynamictexture : public BaseGraph_Common::ValueAbleInterface
@@ -225,5 +245,7 @@ namespace BaseGraph_DataBase
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromBuf(byte * pBuf, int nBufSize);
 		BASEGRAPH_DATABASE_API virtual CString GetValueStr();
 		BASEGRAPH_DATABASE_API virtual bool RecoverFromCString(CString strType, CString strValue);
+		BASEGRAPH_DATABASE_API virtual bool SaveToDocElementHandle(void * pDocElementHandle/*TiXmlElement*/);
+		BASEGRAPH_DATABASE_API virtual bool RecoverFromDocElementHandle(CString strType, void * pDocElementHandle/*TiXmlElement*/);
 	};
 }

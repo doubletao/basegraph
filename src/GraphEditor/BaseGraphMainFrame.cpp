@@ -892,7 +892,6 @@ void BaseGraphMainFrame::OnBtnSaveFile()
 {
 	OutputDebugString(_T("±£´æ\n"));
 	OnUpdateBarStatus();
-
 	OnSaveFile();
 }
 
