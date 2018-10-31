@@ -158,6 +158,11 @@ bool BaseGraphDecoder::ChangeProjectCfg(CString strProInfo)
 
 int BaseGraphDecoder::GetFrameLength()
 {
+	int nFrameLength = 0;
+	if (DataBase_GetItemLength(nFrameLength))
+	{
+		return nFrameLength;
+	}
 	return 0;
 }
 
