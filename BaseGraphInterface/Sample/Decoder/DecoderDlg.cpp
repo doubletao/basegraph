@@ -6,11 +6,22 @@
 #include "Decoder.h"
 #include "DecoderDlg.h"
 #include "afxdialogex.h"
+#include <locale.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+BEGIN_MESSAGE_MAP(CDecoderDlg, CDialogEx)
+	ON_WM_SYSCOMMAND()
+	ON_WM_PAINT()
+	ON_WM_QUERYDRAGICON()
+	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_BTN_OPEN, &CDecoderDlg::OnBnClickedBtnOpen)
+	ON_BN_CLICKED(IDC_BTN_LOAD, &CDecoderDlg::OnBnClickedBtnLoad)
+	ON_BN_CLICKED(IDC_BTN_UPDATE, &CDecoderDlg::OnBnClickedBtnUpdate)
+	ON_BN_CLICKED(IDC_BTN_PREVIEW, &CDecoderDlg::OnBnClickedBtnPreview)
+END_MESSAGE_MAP()
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -51,8 +62,19 @@ END_MESSAGE_MAP()
 
 CDecoderDlg::CDecoderDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DECODER_DIALOG, pParent)
+	, m_pDecoder(nullptr)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	Interface_InitialEnv();
+	Interface_CreateDecoder(m_pDecoder);
+	_tsetlocale(LC_CTYPE, _T("chs"));
+}
+
+CDecoderDlg::~CDecoderDlg()
+{
+	Interface_ReleaseDecoder(m_pDecoder);
+	m_pDecoder = nullptr;
+	Interface_ReleaseEnv();
 }
 
 void CDecoderDlg::DoDataExchange(CDataExchange* pDX)
@@ -60,12 +82,35 @@ void CDecoderDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(CDecoderDlg, CDialogEx)
-	ON_WM_SYSCOMMAND()
-	ON_WM_PAINT()
-	ON_WM_QUERYDRAGICON()
-END_MESSAGE_MAP()
+void CDecoderDlg::LayoutCtrl()
+{
+	CWnd * pEditXML = GetDlgItem(IDC_EDIT_XML);
+	CWnd * pEditPath = GetDlgItem(IDC_EDIT_PATH);
+	CWnd * pBtnOpen = GetDlgItem(IDC_BTN_OPEN);
+	CWnd * pBtnLoad = GetDlgItem(IDC_BTN_LOAD);
+	CWnd * pBtnUpdate = GetDlgItem(IDC_BTN_UPDATE);
+	CWnd * pBtnPreview = GetDlgItem(IDC_BTN_PREVIEW);
+	if (pEditXML && ::IsWindow(pEditXML->GetSafeHwnd())
+		&& pEditPath && ::IsWindow(pEditPath->GetSafeHwnd())
+		&& pBtnOpen && ::IsWindow(pBtnOpen->GetSafeHwnd())
+		&& pBtnLoad && ::IsWindow(pBtnLoad->GetSafeHwnd())
+		&& pBtnUpdate && ::IsWindow(pBtnUpdate->GetSafeHwnd())
+		&& pBtnPreview && ::IsWindow(pBtnPreview->GetSafeHwnd()))
+	{
+		CRect rtClient;
+		GetClientRect(rtClient);
+		CRect rtBtn;
+		pBtnOpen->GetWindowRect(rtBtn);
+		int nGap = 3;
 
+		pEditXML->MoveWindow(0, 0, rtClient.Width(), rtClient.Height() - rtBtn.Height() - nGap);
+		pEditPath->MoveWindow(0, rtClient.Height() - rtBtn.Height(), rtBtn.Width() * 2, rtBtn.Height());
+		pBtnOpen->MoveWindow(rtBtn.Width() * 2 + nGap * 1 + rtBtn.Width() * 0, rtClient.Height() - rtBtn.Height(), rtBtn.Width(), rtBtn.Height());
+		pBtnLoad->MoveWindow(rtBtn.Width() * 2 + nGap * 2 + rtBtn.Width() * 1, rtClient.Height() - rtBtn.Height(), rtBtn.Width(), rtBtn.Height());
+		pBtnUpdate->MoveWindow(rtBtn.Width() * 2 + nGap * 3 + rtBtn.Width() * 2, rtClient.Height() - rtBtn.Height(), rtBtn.Width(), rtBtn.Height());
+		pBtnPreview->MoveWindow(rtBtn.Width() * 2 + nGap * 4 + rtBtn.Width() * 3, rtClient.Height() - rtBtn.Height(), rtBtn.Width(), rtBtn.Height());
+	}
+}
 
 // CDecoderDlg 消息处理程序
 
@@ -99,6 +144,7 @@ BOOL CDecoderDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	LayoutCtrl();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -145,6 +191,12 @@ void CDecoderDlg::OnPaint()
 	}
 }
 
+void CDecoderDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+	LayoutCtrl();
+}
+
 //当用户拖动最小化窗口时系统调用此函数取得光标
 //显示。
 HCURSOR CDecoderDlg::OnQueryDragIcon()
@@ -152,3 +204,48 @@ HCURSOR CDecoderDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CDecoderDlg::OnBnClickedBtnOpen()
+{
+	CFileDialog dialog(TRUE);
+	if (dialog.DoModal() == IDOK)
+	{
+		CString strFileNamePath = dialog.GetPathName();
+		GetDlgItem(IDC_EDIT_PATH)->SetWindowText(strFileNamePath);
+		CStdioFile file;
+		if (file.Open(strFileNamePath, CFile::modeRead))
+		{
+			CEdit * pEdit = (CEdit *)GetDlgItem(IDC_EDIT_XML);
+			CString strContent;
+			while (file.ReadString(strContent))
+			{
+				pEdit->SetSel(-1, 0);
+				pEdit->ReplaceSel(strContent + _T("\r\n"));
+			}
+			file.Close();
+
+			if (m_pDecoder->OpenProject(strFileNamePath))
+			{
+				AfxMessageBox(_T("open success"));
+			}
+		}
+	}
+}
+
+void CDecoderDlg::OnBnClickedBtnLoad()
+{
+	int nFrame = m_pDecoder->GetFrameLength();
+	if (m_pDecoder->LoadProject())
+	{
+		CString strMsg;
+		strMsg.Format(_T("load success : %d frame"), nFrame);
+		AfxMessageBox(strMsg);
+	}
+}
+
+void CDecoderDlg::OnBnClickedBtnUpdate()
+{
+}
+
+void CDecoderDlg::OnBnClickedBtnPreview()
+{
+}
