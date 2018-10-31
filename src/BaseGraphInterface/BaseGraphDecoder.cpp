@@ -174,6 +174,9 @@ bool BaseGraphDecoder::ChangeContent(CString strContent)
 bool BaseGraphDecoder::GetDynamicFrame(int nFrame, DWORD * pBufferAddr)
 {
 	std::vector<CString> vecObjID;
+	//设定Frame
+	DataRender_SetField(nFrame * 2);
+	//渲染
 	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
 	{
 		//拿到视图缩放

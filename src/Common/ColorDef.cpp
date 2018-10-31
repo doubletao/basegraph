@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "Common\tinyxml.h"
 #include "Common\CommonFunction.h"
+#include "Common\TinyXMLHelper.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -121,7 +122,7 @@ BASEGRAPH_COMMON_API bool tag_common_color::SaveToDocElementHandle(void * pDocEl
 		if (eleStruct)
 		{
 			eleCommon_color->LinkEndChild(eleStruct);
-			eleStruct->SetAttribute("color", color);
+			TinyXMLHelper::SetAttribute(eleStruct, "color", color);
 			TiXmlElement * eleImgtex = new TiXmlElement("imgtex");
 			if (eleImgtex)
 			{
@@ -139,7 +140,7 @@ BASEGRAPH_COMMON_API bool tag_common_color::SaveToDocElementHandle(void * pDocEl
 				{
 					memset(szName, 0, MAX_PATH);
 					sprintf_s(szName, 256, "color%d", i);
-					eleGradual->SetAttribute(szName, gradual.color[i]);
+					TinyXMLHelper::SetAttribute(eleGradual, szName, gradual.color[i]);
 				}
 				eleGradual->SetAttribute("ncount", gradual.ncount);
 				for (size_t i = 0; i < 8; i++)
@@ -262,8 +263,7 @@ BASEGRAPH_COMMON_API bool tag_common_color::RecoverFromDocElementHandle(CString 
 		TiXmlElement * eleStruct = eleCommon_color->FirstChildElement("struct");
 		if (eleStruct)
 		{
-			eleStruct->Attribute("color", &nIntValue);
-			color = nIntValue;
+			TinyXMLHelper::Attribute(eleStruct, "color", color);
 			TiXmlElement * eleImgtex = eleStruct->FirstChildElement("imgtex");
 			if (eleImgtex)
 			{
@@ -287,8 +287,7 @@ BASEGRAPH_COMMON_API bool tag_common_color::RecoverFromDocElementHandle(CString 
 				{
 					memset(szName, 0, MAX_PATH);
 					sprintf_s(szName, 256, "color%d", i);
-					eleGradual->Attribute(szName, &nIntValue);
-					gradual.color[i] = nIntValue;
+					TinyXMLHelper::Attribute(eleGradual, szName, gradual.color[i]);
 				}
 				eleGradual->Attribute("ncount", &gradual.ncount);
 				for (size_t i = 0; i < 8; i++)

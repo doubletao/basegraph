@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Common\TinyXMLHelper.h"
 #include "Common\CommonFunction.h"
+#include "Common\ColorDef.h"
 
 TinyXMLHelper::TinyXMLHelper()
 {
@@ -48,14 +49,32 @@ bool TinyXMLHelper::Attribute(TiXmlElement *& pElement, std::string cstrName, fl
 
 bool TinyXMLHelper::SetAttribute(TiXmlElement *& pElement, std::string cstrName, DWORD dwValue)
 {
-	int nValue = static_cast<int>(dwValue);
-	pElement->SetAttribute(cstrName, nValue);
+	int nA = COLORARGB_A(dwValue);
+	int nR = COLORARGB_R(dwValue);
+	int nG = COLORARGB_G(dwValue);
+	int nB = COLORARGB_B(dwValue);
+	char pszHexNum[16] = {0};
+	sprintf_s(pszHexNum, 16, "0x%02X%02X%02X%02X", nA, nR, nG, nB);
+	pElement->SetAttribute(cstrName, pszHexNum);
 	return true;
 }
 
 bool TinyXMLHelper::Attribute(TiXmlElement *& pElement, std::string cstrName, DWORD & dwValue)
 {
-	int nValue = 0;
-	pElement->Attribute(cstrName, &nValue);
-	return true;
+	CString strValue;
+	const char * pcstr = pElement->Attribute(cstrName.c_str());
+	if (pcstr)
+	{
+		int nA = 0;
+		int nR = 0;
+		int nG = 0;
+		int nB = 0;
+		sscanf_s(pcstr, "0x%02X%02X%02X%02X", &nA, &nR, &nG, &nB);
+		dwValue = ARGBColor(nA, nR, nG, nB);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
