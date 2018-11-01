@@ -129,7 +129,10 @@ DWORD BaseGraphDecoder::UpdateItemToHalFunc(LPVOID pParam, HANDLE hEnd)
 bool BaseGraphDecoder::OpenProject(CString strProjFile)
 {
 	std::vector<CString> vecObjID;
-	DataBase_LoadObjFromXMLFile(strProjFile, vecObjID);
+	if (DataBase_LoadObjFromXMLFile(strProjFile, vecObjID))
+	{
+		return true;
+	}
 	return false;
 }
 
@@ -142,6 +145,7 @@ bool BaseGraphDecoder::LoadProject()
 		float fScale = 1.0f;
 		//load时形成第一次贴片
 		UpdateAllItemToHal(vecObjID, fScale);
+		return true;
 	}
 	return false;
 }
@@ -161,7 +165,8 @@ int BaseGraphDecoder::GetFrameLength()
 	int nFrameLength = 0;
 	if (DataBase_GetItemLength(nFrameLength))
 	{
-		return nFrameLength;
+		//返回帧出去
+		return nFrameLength / 2;
 	}
 	return 0;
 }
@@ -178,6 +183,7 @@ bool BaseGraphDecoder::ChangeContent(CString strContent)
 
 bool BaseGraphDecoder::GetDynamicFrame(int nFrame, DWORD * pBufferAddr)
 {
+	DataRender_SetStaticMode(false);
 	std::vector<CString> vecObjID;
 	//设定Frame
 	DataRender_SetField(nFrame * 2);
@@ -220,6 +226,10 @@ bool BaseGraphDecoder::GetDynamicFrame(int nFrame, DWORD * pBufferAddr)
 
 		if (false)
 			DX3DEngine_DumpTexture(hDevice, hTex);
+
+		int hTrans = DXTextureManager_QueryTexture(DXTexture_MemTexture, m_nWidth, m_nHeight);
+		DX3DEngine_Download(pBufferAddr, hDevice, hTrans, 0, 0, m_nWidth, m_nHeight, m_nWidth, m_nHeight, hTex, 0, 0, m_nWidth, m_nHeight);
+		DXTextureManager_UnQueryTexture(hTrans);
 
 		//善后
 		DXTextureManager_UnQueryTexture(hTex);

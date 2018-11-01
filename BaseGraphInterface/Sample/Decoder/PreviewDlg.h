@@ -18,6 +18,10 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual BOOL OnInitDialog();
+	afx_msg void OnPaint();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 
 	DECLARE_MESSAGE_MAP()
 
@@ -25,6 +29,9 @@ protected:
 	IBaseGraphDecoder * m_pDecoder;
 	DWORD * m_pBuf;
 	CRect m_rtPaintArea;
+	int m_nFrame;
+	int m_nWholeFrame;
 protected:
 	void PaintEvent();
+	void LayoutCtrl();
 };

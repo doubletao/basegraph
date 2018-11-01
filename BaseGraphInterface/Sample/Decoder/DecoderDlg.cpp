@@ -7,6 +7,7 @@
 #include "DecoderDlg.h"
 #include "afxdialogex.h"
 #include <locale.h>
+#include "PreviewDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -145,6 +146,11 @@ BOOL CDecoderDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	LayoutCtrl();
+	CEdit * pEdit = (CEdit *)GetDlgItem(IDC_EDIT_XML);
+	if (pEdit && ::IsWindow(pEdit->GetSafeHwnd()))
+	{
+		pEdit->SetLimitText(UINT_MAX);
+	}
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -223,9 +229,9 @@ void CDecoderDlg::OnBnClickedBtnOpen()
 			}
 			file.Close();
 
-			if (m_pDecoder->OpenProject(strFileNamePath))
+			if (!m_pDecoder->OpenProject(strFileNamePath))
 			{
-				AfxMessageBox(_T("open success"));
+				AfxMessageBox(_T("open failed"));
 			}
 		}
 	}
@@ -248,4 +254,6 @@ void CDecoderDlg::OnBnClickedBtnUpdate()
 
 void CDecoderDlg::OnBnClickedBtnPreview()
 {
+	PreviewDlg dlg(m_pDecoder);
+	dlg.DoModal();
 }

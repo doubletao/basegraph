@@ -15,8 +15,11 @@ PreviewDlg::PreviewDlg(IBaseGraphDecoder * pDecoder, CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DLG_PREVIEW, pParent)
 	, m_pDecoder(pDecoder)
 	, m_pBuf(nullptr)
+	, m_nFrame(0)
+	, m_nWholeFrame(0)
 {
 	m_pBuf = new DWORD[1920 * 1080];
+	m_nWholeFrame = m_pDecoder->GetFrameLength();
 }
 
 PreviewDlg::~PreviewDlg()
@@ -30,13 +33,39 @@ void PreviewDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
+BOOL PreviewDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+	LayoutCtrl();
+	return 0;
+}
+
+void PreviewDlg::OnPaint()
+{
+	PaintEvent();
+}
+
+void PreviewDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+	LayoutCtrl();
+}
+
+void PreviewDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
+{
+	CSliderCtrl * pSld = (CSliderCtrl *)GetDlgItem(IDC_SLIDER_FRAME);
+	if (pSld && ::IsWindow(pSld->GetSafeHwnd()))
+	{
+		m_nFrame = pSld->GetPos();
+		PaintEvent();
+	}
+}
+
 void PreviewDlg::PaintEvent()
 {
 	if (m_pDecoder)
 	{
-		m_pDecoder->GetDynamicFrame(0, m_pBuf);
-
-		GetClientRect(m_rtPaintArea);
+		m_pDecoder->GetDynamicFrame(m_nFrame, m_pBuf);
 
 		int nWidth = 1920;
 		int nHeight = 1080;
@@ -84,7 +113,7 @@ void PreviewDlg::PaintEvent()
 		StretchDIBits(dcMem.GetSafeHdc(), nXOffset, nYOffset, rtWindow.Width(), rtWindow.Height(), 0, 0, rtScene.Width(), rtScene.Height(), m_pBuf, &bitmapinfo, DIB_RGB_COLORS, SRCCOPY);
 
 		CString strFrame;
-		strFrame.Format(_T("Length:%d Frame:%d"), (int)(0), 0);
+		strFrame.Format(_T("Length:%d Frame:%d"), (int)(m_nWholeFrame), m_nFrame);
 		dcMem.DrawText(strFrame, m_rtPaintArea, DT_SINGLELINE);
 		::SetStretchBltMode(dcMem.GetSafeHdc(), nOldMode);
 
@@ -97,8 +126,32 @@ void PreviewDlg::PaintEvent()
 	}
 }
 
+void PreviewDlg::LayoutCtrl()
+{
+	CRect rtClient;
+	GetClientRect(rtClient);
+	CSliderCtrl * pSld = (CSliderCtrl *)GetDlgItem(IDC_SLIDER_FRAME);
+	if (pSld && ::IsWindow(pSld->GetSafeHwnd()))
+	{
+		CRect rtSld;
+		pSld->GetWindowRect(rtSld);
+		int nGap = 3;
+
+		m_rtPaintArea.SetRect(0, 0, rtClient.Width(), rtClient.Height() - rtSld.Height() - nGap);
+
+		m_nWholeFrame = m_pDecoder->GetFrameLength();
+		CSliderCtrl * pSld = (CSliderCtrl *)GetDlgItem(IDC_SLIDER_FRAME);
+		pSld->MoveWindow(0, rtClient.Height() - rtSld.Height(), rtClient.Width(), rtSld.Height());
+		pSld->SetRange(0, m_nWholeFrame);
+		pSld->SetTicFreq(10);
+	}
+}
+
 
 BEGIN_MESSAGE_MAP(PreviewDlg, CDialogEx)
+	ON_WM_PAINT()
+	ON_WM_SIZE()
+	ON_WM_HSCROLL()
 END_MESSAGE_MAP()
 
 
