@@ -56,7 +56,7 @@ bool tag_common_color::RecoverFromBuf(byte * pBuf, int nBufSize)
 		return false;
 	}
 	memcpy(this, pBuf, nSize);
-	return false;
+	return true;
 }
 
 CString tag_common_color::GetValueStr()

@@ -26,8 +26,8 @@ public:
 	//锁
 	void Lock();
 	void Unlock();
-	//重复检测
-	bool CheckItemID(CString strID);
+	//重复检测，如果发现重复，则返回重复物件的指针
+	BaseObject * CheckItemID(CString strID);
 	//取得列表
 	bool GetAllItemID(OUT std::vector<CString>& vecID);
 	bool GetAllItemIDExceptSubItem(OUT std::vector<CString>& vecID);
