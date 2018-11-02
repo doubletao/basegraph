@@ -53,10 +53,11 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 {
 	if (archive.IsStoring())
 	{
+		std::map<ParamValueDef, Value> mapProperty = GetProperty();
 		int nTmp = 0;
-		nTmp = (int)m_mapParam.size();
+		nTmp = (int)mapProperty.size();
 		archive << nTmp;
-		for (std::map<ParamValueDef, Value>::iterator it = m_mapParam.begin(); it != m_mapParam.end(); it++)
+		for (std::map<ParamValueDef, Value>::iterator it = mapProperty.begin(); it != mapProperty.end(); it++)
 		{
 			nTmp = it->first;
 			archive << nTmp;
@@ -83,7 +84,7 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 			ParamValueDef emParamValueDef = (ParamValueDef)nTmp;
 			Value valueTmp;
 			valueTmp.Serialize(archive);
-			m_mapParam.insert(std::make_pair(emParamValueDef, valueTmp));
+			SetValue(emParamValueDef, valueTmp);
 		}
 		archive >> m_strParentID;
 		archive >> nSize;

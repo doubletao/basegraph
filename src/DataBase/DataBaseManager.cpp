@@ -10,6 +10,19 @@
 static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
+
+struct DataBaseLocker
+{
+	DataBaseLocker()
+	{
+		DataBaseManager::Instance().Lock();
+	}
+	~DataBaseLocker()
+	{
+		DataBaseManager::Instance().Unlock();
+	}
+};
+
 DataBaseManager::DataBaseManager()
 	: m_nSceneWidth(1920)
 	, m_nSceneHeight(1080)
@@ -34,6 +47,7 @@ DataBaseManager::~DataBaseManager()
 
 bool DataBaseManager::SaveObjToXMLDoc(IN const std::vector<CString>& vecObjID, IN TiXmlDocument * xmlDoc)
 {
+	DataBaseLocker lock;
 	bool bRet = false;
 	if (xmlDoc)
 	{
@@ -93,6 +107,7 @@ bool DataBaseManager::SaveObjToXMLDoc(IN const std::vector<CString>& vecObjID, I
 
 bool DataBaseManager::LoadObjFromXMLDoc(IN TiXmlDocument * xmlDoc, OUT std::vector<CString>& vecObjID)
 {
+	DataBaseLocker lock;
 	bool bRet = false;
 	if (xmlDoc)
 	{
@@ -646,6 +661,7 @@ int DataBaseManager::GetSceneHeight()
 
 bool DataBaseManager::SaveToFile(CString strFile)
 {
+	DataBaseLocker lock;
 	CFile cf;
 	CFileException e;
 	BOOL bOpenSuc = FALSE;
@@ -666,6 +682,7 @@ bool DataBaseManager::SaveToFile(CString strFile)
 
 bool DataBaseManager::LoadFromFile(CString strFile)
 {
+	DataBaseLocker lock;
 	CFile cf;
 	CFileException e;
 	BOOL bOpenSuc = FALSE;
@@ -687,17 +704,60 @@ bool DataBaseManager::LoadFromFile(CString strFile)
 
 bool DataBaseManager::SerializeObjects(CArchive & archive, vector<BaseObject*>& vecObject)
 {
+	DataBaseLocker lock;
 	if (archive.IsStoring())
 	{
+		int nCount = 0;
+		for (auto it : vecObject)
+		{
+			if (it)
+			{
+				nCount++;
+			}
+		}
+		archive << nCount;
+		for (auto it : vecObject)
+		{
+			if (it)
+			{
+				//序列化的时候先序列化一个物件类型进去
+				ObjectType type = it->GetItemType();
+				archive << (int)type;
+				//然后才序列化物件自己
+				it->Serialize(archive);
+			}
+		}
 	}
 	else
 	{
+		int nCount = 0;
+		archive >> nCount;
+		for (int i = 0; i < nCount; i++)
+		{
+			int nType = BaseGraph_DataBase::ObjectType_Err;
+			archive >> nType;
+			BaseGraph_DataBase::ObjectType emType = static_cast<BaseGraph_DataBase::ObjectType>(nType);
+			if (emType != BaseGraph_DataBase::ObjectType_Err)
+			{
+				BaseObject * pObject = ObjectFactory::CreateObject(emType);
+				if (pObject)
+				{
+					pObject->Serialize(archive);
+					if (!AddItem(pObject))
+					{
+						delete pObject;
+						pObject = nullptr;
+					}
+				}
+			}
+		}
 	}
-	return false;
+	return true;
 }
 
 bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, OUT CString & strXML)
 {
+	DataBaseLocker lock;
 	bool bRet = false;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
@@ -718,6 +778,7 @@ bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, O
 
 bool DataBaseManager::LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString>& vecObjID)
 {
+	DataBaseLocker lock;
 	bool bRet = false;
 	TiXmlDocument* xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
@@ -734,6 +795,7 @@ bool DataBaseManager::LoadObjFromXMLStr(IN const CString & strXML, OUT std::vect
 
 bool DataBaseManager::SaveObjToXMLFile(IN const std::vector<CString>& vecObjID, IN CString strPathFile)
 {
+	DataBaseLocker lock;
 	bool bRet = false;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
@@ -751,6 +813,7 @@ bool DataBaseManager::SaveObjToXMLFile(IN const std::vector<CString>& vecObjID, 
 
 bool DataBaseManager::LoadObjFromXMLFile(IN CString strPathFile, OUT std::vector<CString>& vecObjID)
 {
+	DataBaseLocker lock;
 	bool bRet = false;
 	TiXmlDocument* xmlDoc = new TiXmlDocument;
 	if (xmlDoc)

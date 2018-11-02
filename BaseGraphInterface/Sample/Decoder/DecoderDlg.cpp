@@ -217,22 +217,11 @@ void CDecoderDlg::OnBnClickedBtnOpen()
 	{
 		CString strFileNamePath = dialog.GetPathName();
 		GetDlgItem(IDC_EDIT_PATH)->SetWindowText(strFileNamePath);
-		CStdioFile file;
-		if (file.Open(strFileNamePath, CFile::modeRead))
+		if (m_pDecoder->OpenProject(strFileNamePath))
 		{
-			CEdit * pEdit = (CEdit *)GetDlgItem(IDC_EDIT_XML);
-			CString strContent;
-			while (file.ReadString(strContent))
-			{
-				pEdit->SetSel(-1, 0);
-				pEdit->ReplaceSel(strContent + _T("\r\n"));
-			}
-			file.Close();
-
-			if (!m_pDecoder->OpenProject(strFileNamePath))
-			{
-				AfxMessageBox(_T("open failed"));
-			}
+			CString strContent = m_pDecoder->GetContent();
+			strContent.Replace(_T("\n"), _T("\r\n"));
+			GetDlgItem(IDC_EDIT_XML)->SetWindowText(strContent);
 		}
 	}
 }

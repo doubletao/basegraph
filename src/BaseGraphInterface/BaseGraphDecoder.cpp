@@ -128,8 +128,7 @@ DWORD BaseGraphDecoder::UpdateItemToHalFunc(LPVOID pParam, HANDLE hEnd)
 
 bool BaseGraphDecoder::OpenProject(CString strProjFile)
 {
-	std::vector<CString> vecObjID;
-	if (DataBase_LoadObjFromXMLFile(strProjFile, vecObjID))
+	if (DataBase_LoadFromFile(strProjFile))
 	{
 		return true;
 	}
@@ -173,7 +172,16 @@ int BaseGraphDecoder::GetFrameLength()
 
 CString BaseGraphDecoder::GetContent()
 {
-	return CString();
+	CString strXml = _T("");
+	std::vector<CString> vecObjID;
+	if (DataBase_GetAllItemID(vecObjID))
+	{
+		if (DataBase_SaveObjToXMLStr(vecObjID, strXml))
+		{
+			return strXml;
+		}
+	}
+	return _T("get failed");
 }
 
 bool BaseGraphDecoder::ChangeContent(CString strContent)
@@ -235,10 +243,62 @@ bool BaseGraphDecoder::GetDynamicFrame(int nFrame, DWORD * pBufferAddr)
 		DXTextureManager_UnQueryTexture(hTex);
 		DXTextureManager_UnQueryTexture(hDepth);
 	}
-	return false;
+	return true;
 }
 
 bool BaseGraphDecoder::GetStaticFrame(DWORD * pBufferAddr)
 {
-	return false;
+	DataRender_SetStaticMode(true);
+	std::vector<CString> vecObjID;
+	//设定Frame
+	DataRender_SetField(0);
+	//渲染
+	if (DataBase_GetAllItemIDExceptSubItem(vecObjID))
+	{
+		//拿到视图缩放
+		float fScale = 1.0f;
+		//load时形成第一次贴片
+		UpdateAllItemToHal(vecObjID, fScale);
+
+		//拿到默认设备
+		int hDevice = DX3DEngine_GetMainDevice();
+		if (!hDevice)
+			return false;
+
+		//创建纹理及深度buf
+		int hDepth = DXTextureManager_QueryTexture(DXTexture_Depth, 1);
+		int hTex = DXTextureManager_QueryTexture(DXTexture_Normal2DTex, 1);
+		DX3DEngine_ClearTexture(hDevice, hTex, RGBA(0, 0, 0, 0));
+		DX3DEngine_ClearDepth(hDevice, hDepth, 1);
+
+		//设定渲染目标
+		DX3DEngine_SetRenderTarget(hDevice, hTex, hDepth);
+
+		//设置好视窗
+		RECT viewPort = { 0, 0, m_nWidth, m_nHeight };
+		DX3DEngine_SetViewPort(hDevice, &viewPort);
+		DX3DEngine_SetScissor(hDevice, &viewPort);
+
+		//定位渲染中心点
+		OffsetRect(&viewPort, -(m_nWidth / 2), -(m_nHeight / 2));
+
+		//上锁，要绘制了
+		DataBaseLocker DataLocker;
+		DXEngineLocker EngineLocker(hDevice);
+
+		//绘制物件
+		RenderAllItemToTarget(vecObjID, hDevice, hTex, hDepth, fScale, viewPort);
+
+		if (false)
+			DX3DEngine_DumpTexture(hDevice, hTex);
+
+		int hTrans = DXTextureManager_QueryTexture(DXTexture_MemTexture, m_nWidth, m_nHeight);
+		DX3DEngine_Download(pBufferAddr, hDevice, hTrans, 0, 0, m_nWidth, m_nHeight, m_nWidth, m_nHeight, hTex, 0, 0, m_nWidth, m_nHeight);
+		DXTextureManager_UnQueryTexture(hTrans);
+
+		//善后
+		DXTextureManager_UnQueryTexture(hTex);
+		DXTextureManager_UnQueryTexture(hDepth);
+	}
+	return true;
 }

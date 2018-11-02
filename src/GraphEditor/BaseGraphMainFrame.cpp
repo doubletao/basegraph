@@ -799,9 +799,13 @@ void BaseGraphMainFrame::OnSaveFile()
 	if (dialog.DoModal() == IDOK)
 	{
 		CString strFileNamePath = dialog.GetPathName();
+#if 0
 		std::vector<CString> vecObjID;
 		DataBase_GetAllItemID(vecObjID);
 		DataBase_SaveObjToXMLFile(vecObjID, strFileNamePath);
+#else
+		DataBase_SaveToFile(strFileNamePath);
+#endif
 	}
 }
 
@@ -811,8 +815,12 @@ void BaseGraphMainFrame::OnOpenFile()
 	if (dialog.DoModal() == IDOK)
 	{
 		CString strFileNamePath = dialog.GetPathName();
+#if 0
 		std::vector<CString> vecObjID;
 		DataBase_LoadObjFromXMLFile(strFileNamePath, vecObjID);
+#else
+		DataBase_LoadFromFile(strFileNamePath);
+#endif
 		//广播通知新物件被创建
 		UIControl_BroadcastMsg(WM_MSG_ObjectCreateDelete, 0, 0, nullptr);
 	}
