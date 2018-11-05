@@ -23,14 +23,46 @@ void tag_common_color::Reset()
 	type = BaseGraphCOLOR_HOMO;
 	memset(&gradual, 0, sizeof(gradual));
 	memset(&imgtex, 0, sizeof(imgtex));
-	memset(&subtheme, 0, sizeof(subtheme));
-	memset(&theme, 0, sizeof(theme));
-	memset(&type, 0, sizeof(type));
+	subtheme = 0;
+	theme = 0;
 }
 
 int tag_common_color::GetSerializeSize() const
 {
-	return sizeof(tag_common_color);
+	int nSize = 0;
+	SERIALIZE_PARAM_GET_SIZE(nSize, type);
+	SERIALIZE_PARAM_GET_SIZE(nSize, color);
+	SERIALIZE_PARAM_GET_SIZE(nSize, imgtex.name);
+	SERIALIZE_PARAM_GET_SIZE(nSize, imgtex.fill);
+	SERIALIZE_PARAM_GET_SIZE(nSize, imgtex.align);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.color);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.ncount);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.pos);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.mid);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.linear.frad);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.linear.repeat);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.linear.style);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.center.centerx);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.center.centery);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.center.repeat);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.center.style);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.center.nvertex);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.center.xpt);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.center.ypt);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.outline.centerx);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.outline.centery);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.outline.repeat);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.outline.style);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.outline.xpt);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.outline.ypt);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.multipt.xpt);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.multipt.ypt);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.templet.name);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.animation);
+	SERIALIZE_PARAM_GET_SIZE(nSize, gradual.aniparam);
+	SERIALIZE_PARAM_GET_SIZE(nSize, theme);
+	SERIALIZE_PARAM_GET_SIZE(nSize, subtheme);
+	return nSize;
 }
 
 bool tag_common_color::GetSerializeBuf(byte * pBuf, int nBufSize) const
@@ -42,7 +74,39 @@ bool tag_common_color::GetSerializeBuf(byte * pBuf, int nBufSize) const
 		assert(false);
 		return false;
 	}
-	memcpy(pBuf, this, nSize);
+	nSize = 0;
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, type);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, color);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, imgtex.name);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, imgtex.fill);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, imgtex.align);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.color);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.ncount);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.pos);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.mid);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.linear.frad);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.linear.repeat);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.linear.style);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.center.centerx);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.center.centery);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.center.repeat);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.center.style);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.center.nvertex);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.center.xpt);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.center.ypt);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.outline.centerx);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.outline.centery);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.outline.repeat);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.outline.style);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.outline.xpt);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.outline.ypt);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.multipt.xpt);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.multipt.ypt);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.templet.name);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.animation);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, gradual.aniparam);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, theme);
+	SERIALIZE_PARAM_TO_BUF(pBuf, nSize, subtheme);
 	return true;
 }
 
@@ -55,7 +119,39 @@ bool tag_common_color::RecoverFromBuf(byte * pBuf, int nBufSize)
 		assert(false);
 		return false;
 	}
-	memcpy(this, pBuf, nSize);
+	nSize = 0;
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, type);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, color);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, imgtex.name);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, imgtex.fill);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, imgtex.align);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.color);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.ncount);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.pos);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.mid);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.linear.frad);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.linear.repeat);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.linear.style);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.center.centerx);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.center.centery);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.center.repeat);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.center.style);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.center.nvertex);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.center.xpt);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.center.ypt);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.outline.centerx);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.outline.centery);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.outline.repeat);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.outline.style);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.outline.xpt);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.outline.ypt);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.multipt.xpt);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.multipt.ypt);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.templet.name);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.animation);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, gradual.aniparam);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, theme);
+	SERIALIZE_BUF_TO_PARAM(pBuf, nSize, subtheme);
 	return true;
 }
 
