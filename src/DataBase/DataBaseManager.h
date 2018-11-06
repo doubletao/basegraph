@@ -76,8 +76,8 @@ public:
 	int GetSceneWidth();
 	int GetSceneHeight();
 	//序列化
-	bool SaveToFile(CString strFile);
-	bool LoadFromFile(CString strFile);
+	bool SaveToFile(CString strFile, IN bool bResIncluded);
+	bool LoadFromFile(CString strFile, IN bool bResIncluded);
 	bool SerializeObjects(CArchive & archive, vector<BaseObject *> & vecObject);//特殊的序列化接口，仅处理物件，不管其他(注意，load出来的物件需要自己释放)
 	//XML
 	bool SaveObjToXMLStr(IN const std::vector<CString> & vecObjID, OUT CString & strXML);

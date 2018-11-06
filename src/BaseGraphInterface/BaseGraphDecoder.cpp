@@ -128,7 +128,7 @@ DWORD BaseGraphDecoder::UpdateItemToHalFunc(LPVOID pParam, HANDLE hEnd)
 
 bool BaseGraphDecoder::OpenProject(CString strProjFile)
 {
-	if (DataBase_LoadFromFile(strProjFile))
+	if (DataBase_LoadFromFile(strProjFile, true))
 	{
 		return true;
 	}

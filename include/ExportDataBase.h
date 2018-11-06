@@ -63,8 +63,8 @@ bool BASEGRAPH_DATABASE_API DataBase_GetParentItem(IN CString strSubID, OUT CStr
 int BASEGRAPH_DATABASE_API DataBase_GetSceneWidth();
 int BASEGRAPH_DATABASE_API DataBase_GetSceneHeight();
 //序列化
-bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile);
-bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile);
+bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile, IN bool bResIncluded);//bResIncluded指示是否需要将资源序列化进去
+bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile, IN bool bResIncluded);
 //XML
 bool BASEGRAPH_DATABASE_API DataBase_SaveObjToXMLStr(IN const std::vector<CString> & vecObjID, OUT CString & strXML);
 bool BASEGRAPH_DATABASE_API DataBase_LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString> & vecObjID);

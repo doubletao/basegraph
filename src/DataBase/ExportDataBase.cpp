@@ -176,14 +176,14 @@ int BASEGRAPH_DATABASE_API DataBase_GetSceneHeight()
 	return DataBaseManager::Instance().GetSceneHeight();
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile)
+bool BASEGRAPH_DATABASE_API DataBase_SaveToFile(IN CString strFile, IN bool bResIncluded)
 {
-	return DataBaseManager::Instance().SaveToFile(strFile);
+	return DataBaseManager::Instance().SaveToFile(strFile, bResIncluded);
 }
 
-bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile)
+bool BASEGRAPH_DATABASE_API DataBase_LoadFromFile(IN CString strFile, IN bool bResIncluded)
 {
-	return DataBaseManager::Instance().LoadFromFile(strFile);
+	return DataBaseManager::Instance().LoadFromFile(strFile, bResIncluded);
 }
 
 bool BASEGRAPH_DATABASE_API DataBase_SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, OUT CString & strXML)

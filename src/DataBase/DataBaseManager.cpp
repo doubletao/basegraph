@@ -3,6 +3,7 @@
 #include "ObjectFactory.h"
 #include "IntIDGenerator.h"
 #include <assert.h>
+#include "DataResourceManager.h"
 
 
 #ifdef _DEBUG
@@ -706,7 +707,7 @@ int DataBaseManager::GetSceneHeight()
 	return m_nSceneHeight;
 }
 
-bool DataBaseManager::SaveToFile(CString strFile)
+bool DataBaseManager::SaveToFile(CString strFile, IN bool bResIncluded)
 {
 	DataBaseLocker lock;
 	CFile cf;
@@ -717,9 +718,13 @@ bool DataBaseManager::SaveToFile(CString strFile)
 	if (bOpenSuc)
 	{
 		CArchive ar(&cf, CArchive::store);
-		//先序列化物件
-		bool bRet = SerializeObjects(ar, m_vecObject);
-		//序列化其他
+		//序列化资源
+		bool bRet = DataResourceManager::Instance().Serialize(ar, bResIncluded);
+		if (bRet)
+		{
+			//序列化物件
+			bRet = SerializeObjects(ar, m_vecObject);
+		}
 		ar.Close();
 		cf.Close();
 		return bRet;
@@ -727,7 +732,7 @@ bool DataBaseManager::SaveToFile(CString strFile)
 	return false;
 }
 
-bool DataBaseManager::LoadFromFile(CString strFile)
+bool DataBaseManager::LoadFromFile(CString strFile, IN bool bResIncluded)
 {
 	DataBaseLocker lock;
 	CFile cf;
@@ -741,7 +746,13 @@ bool DataBaseManager::LoadFromFile(CString strFile)
 	if (bOpenSuc)
 	{
 		CArchive ar(&cf, CArchive::load);
-		bool bRet = SerializeObjects(ar, m_vecObject);
+		//序列化资源
+		bool bRet = DataResourceManager::Instance().Serialize(ar, bResIncluded);
+		if (bRet)
+		{
+			//序列化物件
+			bRet = SerializeObjects(ar, m_vecObject);
+		}
 		ar.Close();
 		cf.Close();
 		return bRet;

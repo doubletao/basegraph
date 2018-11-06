@@ -804,7 +804,7 @@ void BaseGraphMainFrame::OnSaveFile()
 		DataBase_GetAllItemID(vecObjID);
 		DataBase_SaveObjToXMLFile(vecObjID, strFileNamePath);
 #else
-		DataBase_SaveToFile(strFileNamePath);
+		DataBase_SaveToFile(strFileNamePath, true);
 #endif
 	}
 }
@@ -819,7 +819,7 @@ void BaseGraphMainFrame::OnOpenFile()
 		std::vector<CString> vecObjID;
 		DataBase_LoadObjFromXMLFile(strFileNamePath, vecObjID);
 #else
-		DataBase_LoadFromFile(strFileNamePath);
+		DataBase_LoadFromFile(strFileNamePath, true);
 #endif
 		//广播通知新物件被创建
 		UIControl_BroadcastMsg(WM_MSG_ObjectCreateDelete, 0, 0, nullptr);

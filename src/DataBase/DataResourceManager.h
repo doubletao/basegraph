@@ -15,9 +15,13 @@ private:
 	~DataResourceManager();
 private:
 	std::map<CString, CString> m_mapResource;
+protected:
+	bool SerializeOneResource(CArchive & archive, CString strResID, bool bResIncluded);
+	CString GetTempFilePath();
 public:
 	static DataResourceManager & Instance();
 	CString AddResource(CString strSrc);//添加一个资源，返回资源标识
 	bool DelResource(CString strID);//删除指定ID的资源
 	CString GetResource(CString strID);//给ID返回源路径
+	bool Serialize(CArchive & archive, bool bResIncluded);//将所有资源文件序列化（串入过程会对所有文件名重新进行guid编码，串出时按照guid将文件串出到临时文件夹中）,bResIncluded为false时如果时存储则不会写入，如果是读取会跳过buf
 };
