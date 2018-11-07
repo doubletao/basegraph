@@ -15,6 +15,7 @@ private:
 	~DataResourceManager();
 private:
 	std::map<CString, CString> m_mapResource;
+	CString m_strTempPath;//用来保存临时文件的文件夹名
 protected:
 	bool SerializeOneResource(CArchive & archive, CString strResID, bool bResIncluded);
 	CString GetTempFilePath();

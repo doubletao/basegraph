@@ -10,6 +10,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 DataResourceManager::DataResourceManager()
 {
+	//构造的时候就把临时文件夹创建出来，本次启动的所有临时文件都往里扔，退出的时候干掉
+	TCHAR szPath[MAX_PATH] = { 0 };
+	GetTempPath(MAX_PATH, szPath);
+	m_strTempPath = szPath;
+	m_strTempPath.AppendFormat(_T("BaseGraph\\%s\\"), CommonFunction::CreateGUID());
 }
 
 
@@ -19,6 +24,7 @@ DataResourceManager::~DataResourceManager()
 
 bool DataResourceManager::SerializeOneResource(CArchive & archive, CString strResID, bool bResIncluded)
 {
+	bool bRet = false;
 	int nBufSize = 1024 * 1024;//读写文件的切割块的大小
 	if (archive.IsStoring())
 	{
@@ -48,6 +54,7 @@ bool DataResourceManager::SerializeOneResource(CArchive & archive, CString strRe
 				file.Close();
 				delete pBuf;
 				pBuf = nullptr;
+				bRet = true;
 			}
 		}
 		else
@@ -68,7 +75,7 @@ bool DataResourceManager::SerializeOneResource(CArchive & archive, CString strRe
 		{
 			byte * pBuf = new byte[nBufSize];
 			//需要读，则正常读，先创建临时文件夹
-			CString strTempPath;
+			CString strTempPath = GetTempFilePath();
 			CString strErr;
 			CommonFunction::MakeSureDirectoryExists(strTempPath, strErr);
 			CString strNewFileName = strTempPath;
@@ -91,9 +98,12 @@ bool DataResourceManager::SerializeOneResource(CArchive & archive, CString strRe
 				}
 				//往里写
 				file.Close();
+				bRet = true;
 			}
 			delete pBuf;
 			pBuf = nullptr;
+			//读完之后将资源添加进去
+			m_mapResource[strResID] = strNewFileName;
 		}
 		else
 		{
@@ -111,16 +121,15 @@ bool DataResourceManager::SerializeOneResource(CArchive & archive, CString strRe
 			}
 			delete pBuf;
 			pBuf = nullptr;
+			bRet = true;
 		}
 	}
-	return false;
+	return bRet;
 }
 
 CString DataResourceManager::GetTempFilePath()
 {
-	TCHAR szPath[MAX_PATH] = {0};
-	GetTempPath(sizeof(szPath), szPath);
-	return szPath;
+	return m_strTempPath;
 }
 
 DataResourceManager & DataResourceManager::Instance()
