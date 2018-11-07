@@ -16,6 +16,8 @@
 class IBaseGraphDecoder
 {
 public:
+	virtual ~IBaseGraphDecoder() {};
+public:
 	virtual bool OpenProject(CString strProjFile) = 0;//打开项目后就可以读取和修改项目基本信息及物件属性了
 	virtual bool LoadProject() = 0;//加载项目才执行加载渲染环境等工作
 public:
