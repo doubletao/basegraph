@@ -20,6 +20,9 @@ DataResourceManager::DataResourceManager()
 
 DataResourceManager::~DataResourceManager()
 {
+	char cmd[2048] = {0};
+	sprintf_s(cmd, "rd %s /s /q", CommonFunction::ConvertCStringToStdString(m_strTempPath).c_str());
+	system(cmd);
 }
 
 bool DataResourceManager::SerializeOneResource(CArchive & archive, CString strResID, bool bResIncluded)
@@ -182,6 +185,7 @@ bool DataResourceManager::Serialize(CArchive & archive, bool bResIncluded)
 					assert(false);//有资源保存失败，要看看怎么回事，否则结果不可用
 				}
 			}
+			bRet = true;
 		}
 	}
 	else
@@ -201,6 +205,7 @@ bool DataResourceManager::Serialize(CArchive & archive, bool bResIncluded)
 					assert(false);//有资源读取失败，要看看怎么回事，否则结果不可用
 				}
 			}
+			bRet = true;
 		}
 	}
 	return bRet;
