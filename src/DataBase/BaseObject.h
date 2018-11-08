@@ -13,6 +13,7 @@ namespace BaseGraph_DataBase
 		std::map<ParamValueDef, Value> m_mapParam;
 		CString m_strParentID;
 		std::vector<CString> m_vecChildID;
+		EmObjectChgLevel m_emChgLevel;//不进序列化
 	public:
 		BaseObject();
 		virtual ~BaseObject() = 0;
@@ -50,5 +51,9 @@ namespace BaseGraph_DataBase
 		void SetParentID(CString strParentID);
 		void AddChildObject(CString strChildID);
 		bool IsChild(CString strChildID);
+
+		void SetChgLevel(EmObjectChgLevel emChgLevel);//set是赋值
+		void AddChgLevel(EmObjectChgLevel emChgLevel);//add是叠加
+		EmObjectChgLevel GetChgLevel();
 	};
 };

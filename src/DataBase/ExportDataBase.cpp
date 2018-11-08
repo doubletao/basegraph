@@ -126,6 +126,31 @@ CString BASEGRAPH_DATABASE_API DataBase_GetNextItemName(IN BaseGraph_DataBase::O
 	return DataBaseManager::Instance().GetNextItemName(emItemType);
 }
 
+void BASEGRAPH_DATABASE_API DataBase_SetChgLevel(CString strObjID, EmObjectChgLevel emChgLevel)
+{
+	return DataBaseManager::Instance().SetChgLevel(strObjID, emChgLevel);
+}
+
+void BASEGRAPH_DATABASE_API DataBase_AddChgLevel(CString strObjID, EmObjectChgLevel emChgLevel)
+{
+	return DataBaseManager::Instance().AddChgLevel(strObjID, emChgLevel);
+}
+
+void BASEGRAPH_DATABASE_API DataBase_AddChgLevel(CString strObjID, BaseGraph_DataBase::ParamValueDef emParam)
+{
+	return DataBaseManager::Instance().AddChgLevel(strObjID, emParam);
+}
+
+EmObjectChgLevel BASEGRAPH_DATABASE_API DataBase_GetChgLevel(CString strObjID)
+{
+	return DataBaseManager::Instance().GetChgLevel(strObjID);
+}
+
+EmObjectChgLevel BASEGRAPH_DATABASE_API DataBase_GetPropertyChanegLevel(IN BaseGraph_DataBase::ParamValueDef emParam)
+{
+	return DataBaseManager::Instance().GetPropertyChanegLevel(emParam);
+}
+
 bool BASEGRAPH_DATABASE_API DataBase_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
 {
 	return DataBaseManager::Instance().SetItemProperty(strID, emParam, stuParam);

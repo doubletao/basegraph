@@ -2,7 +2,7 @@
 #include "BaseObject.h"
 #include "IntIDGenerator.h"
 #include "ObjectFactory.h"
-
+#include "DataBaseManager.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -11,6 +11,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 BaseGraph_DataBase::BaseObject::BaseObject()
 	: m_strParentID(_T(""))
+	, m_emChgLevel(ChgLevel_Create)
 {
 	m_mapParam[Obj_ID_Str].SetValue(CommonFunction::CreateGUID());
 }
@@ -30,12 +31,6 @@ void BaseGraph_DataBase::BaseObject::InitialObjectParam()
 
 	//空间值
 	for (int i = SpaceParam + 1; i < SpaceParam_End; i++)
-	{
-		AddDefaultParam((ParamValueDef)i);
-	}
-
-	//颜色值
-	for (int i = ColorParam + 1; i < ColorParam_End; i++)
 	{
 		AddDefaultParam((ParamValueDef)i);
 	}
@@ -83,7 +78,7 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 			ParamValueDef emParamValueDef = (ParamValueDef)nTmp;
 			Value valueTmp;
 			valueTmp.Serialize(archive);
-			m_mapParam[emParamValueDef] = valueTmp;
+			SetValue(emParamValueDef, valueTmp);
 		}
 		archive >> m_strParentID;
 		archive >> nSize;
@@ -131,6 +126,8 @@ Value BaseGraph_DataBase::BaseObject::GetValue(ParamValueDef emValueDef)
 
 void BaseGraph_DataBase::BaseObject::SetValue(ParamValueDef emValueDef, Value stuValue)
 {
+	//SetValue时自动设置changelevel
+	AddChgLevel(DataBaseManager::Instance().GetPropertyChanegLevel(emValueDef));
 	m_mapParam[emValueDef] = stuValue;
 }
 
@@ -260,4 +257,22 @@ bool BaseGraph_DataBase::BaseObject::IsChild(CString strChildID)
 		return true;
 	}
 	return false;
+}
+
+void BaseGraph_DataBase::BaseObject::SetChgLevel(EmObjectChgLevel emChgLevel)
+{
+	m_emChgLevel = emChgLevel;
+}
+
+void BaseGraph_DataBase::BaseObject::AddChgLevel(EmObjectChgLevel emChgLevel)
+{
+	if (m_emChgLevel < emChgLevel)
+	{
+		m_emChgLevel = emChgLevel;
+	}
+}
+
+EmObjectChgLevel BaseGraph_DataBase::BaseObject::GetChgLevel()
+{
+	return m_emChgLevel;
 }

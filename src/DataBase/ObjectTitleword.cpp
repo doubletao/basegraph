@@ -23,6 +23,12 @@ void ObjectTitleword::InitialObjectParam()
 	//先初始化基础的
 	BaseObject::InitialObjectParam();
 
+	//颜色值
+	for (int i = ColorParam + 1; i < ColorParam_End; i++)
+	{
+		AddDefaultParam((ParamValueDef)i);
+	}
+
 	for (int i = TitlewordParam + 1; i < TitlewordParam_End; i++)
 	{
 		AddDefaultParam((ParamValueDef)i);

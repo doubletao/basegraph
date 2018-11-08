@@ -31,7 +31,7 @@ void ObjectImage::InitialObjectParam()
 
 std::map<BaseGraph_DataBase::ParamValueDef, Value> ObjectImage::GetProperty()
 {
-	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = m_mapParam;
+	std::map<BaseGraph_DataBase::ParamValueDef, Value> mapParam = BaseObject::GetProperty();
 	mapParam[BaseGraph_DataBase::Image_Path_Str] = GetImagePath();
 	return mapParam;
 }
@@ -58,7 +58,7 @@ CString ObjectImage::GetImagePath()
 {
 	if (m_mapParam.count(Image_Path_Str) > 0)
 	{
-		CString strResGUID = m_mapParam[Image_Path_Str].ToCString();
+		CString strResGUID = BaseObject::GetValue(Image_Path_Str).ToCString();
 		return DataResourceManager::Instance().GetResource(strResGUID);
 	}
 	return _T("");
@@ -67,7 +67,7 @@ CString ObjectImage::GetImagePath()
 void ObjectImage::SetImagePath(CString strPath)
 {
 	DataResourceManager::Instance().DelResource(GetImagePath());
-	m_mapParam[Image_Path_Str] = DataResourceManager::Instance().AddResource(strPath);
+	BaseObject::SetValue(Image_Path_Str, DataResourceManager::Instance().AddResource(strPath));
 }
 
 int ObjectImage::GetSrcWidth()

@@ -5,7 +5,6 @@
 #include <assert.h>
 #include "DataResourceManager.h"
 
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
@@ -583,6 +582,185 @@ bool DataBaseManager::SetItemProperty(IN CString strID, IN const map<ParamValueD
 		return true;
 	}
 	return false;
+}
+
+void DataBaseManager::SetChgLevel(CString strObjID, EmObjectChgLevel emChgLevel)
+{
+	DataBaseLocker lock;
+	BaseObject * pObj = nullptr;
+	if (GetItem(strObjID, pObj)
+		&& pObj)
+	{
+		pObj->SetChgLevel(emChgLevel);
+	}
+}
+
+void DataBaseManager::AddChgLevel(CString strObjID, EmObjectChgLevel emChgLevel)
+{
+	DataBaseLocker lock;
+	BaseObject * pObj = nullptr;
+	if (GetItem(strObjID, pObj)
+		&& pObj)
+	{
+		pObj->AddChgLevel(emChgLevel);
+	}
+}
+
+void DataBaseManager::AddChgLevel(CString strObjID, BaseGraph_DataBase::ParamValueDef emParam)
+{
+	DataBaseLocker lock;
+	BaseObject * pObj = nullptr;
+	if (GetItem(strObjID, pObj)
+		&& pObj)
+	{
+		pObj->AddChgLevel(GetPropertyChanegLevel(emParam));
+	}
+}
+
+EmObjectChgLevel DataBaseManager::GetChgLevel(CString strObjID)
+{
+	DataBaseLocker lock;
+	BaseObject * pObj = nullptr;
+	if (GetItem(strObjID, pObj)
+		&& pObj)
+	{
+		return pObj->GetChgLevel();
+	}
+	return ChgLevel_NULL;
+}
+
+EmObjectChgLevel DataBaseManager::GetPropertyChanegLevel(IN BaseGraph_DataBase::ParamValueDef emParam)
+{
+	switch (emParam)
+	{
+	case BaseGraph_DataBase::ObjParam:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::Obj_ID_Str:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::Obj_Type_Enum:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::Obj_Name_Str:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::Obj_Width_Int:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Obj_Height_Int:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Obj_ActionBegin_Int:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::Obj_ActionEnd_Int:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::Obj_3DType:
+		return ChgLevel_Create;
+	case BaseGraph_DataBase::ObjParam_End:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::SpaceParam:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::SpacePosition_X_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpacePosition_Y_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpacePosition_Z_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceRotate_X_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceRotate_Y_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceRotate_Z_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceScale_X_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceScale_Y_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceScale_Z_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceCenter_X_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceCenter_Y_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceCenter_Z_Float:
+		return ChgLevel_Matrix;
+	case BaseGraph_DataBase::SpaceParam_End:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::ColorParam:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::ColorParam_Face_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Border_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Shadow_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Cube_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Bordercube_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Bordershadow_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Facelight_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Cubelight_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Channel_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Material_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Appendmaterial_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Dyntex_Stu:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Renderline_Int:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Width_Float:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_Index_Int:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ColorParam_End:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::TitlewordParam:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::Titleword_Text_Str:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontName_Str:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_LineWrap_Bool:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontDistance_Int:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_Horizontal_Bool:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontWidth_Int:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontHeight_Int:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontBold_Bool:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::Titleword_FontItalic_Bool:
+		return ChgLevel_Figure;
+	case BaseGraph_DataBase::TitlewordParam_End:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::ScrollParam:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::ScrollParam_End:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::ImageParam:
+		return ChgLevel_NULL;
+	case BaseGraph_DataBase::Image_Path_Str:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::Image_SrcWidth_Int:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::Image_SrcHeight_Int:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::Image_UpDownChange_Bool:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::Image_LeftRightChange_Bool:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::Image_FlagChange_Bool:
+		return ChgLevel_Buffer;
+	case BaseGraph_DataBase::ImageParam_End:
+		return ChgLevel_NULL;
+	default:
+		break;
+	}
+	return ChgLevel_NULL;
 }
 
 CString DataBaseManager::GetItemTypePrefix(BaseGraph_DataBase::ObjectType emObjType)

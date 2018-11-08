@@ -1,6 +1,15 @@
 #pragma once
 #include "ExportCommon.h"
 
+enum EmObjectChgLevel
+{
+	ChgLevel_NULL,
+	ChgLevel_Matrix,//矩阵变动（旋转，位移，缩放等），无需更新bufer
+	ChgLevel_Buffer,//Buffer变动（动画等），需要重画bufer
+	ChgLevel_Figure,//形状变化，需要重新建模
+	ChgLevel_Create,//最高级别，刚创建，什么都要从头
+};
+
 namespace BaseGraph_DataBase
 {
 	enum ITEM_FORMTYPE

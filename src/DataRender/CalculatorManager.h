@@ -23,12 +23,6 @@ public:
 	void Update2DRenderMatrix(IN float fScale);
 	matrix4f Get2DRenderMatrix(IN CString strID);
 
-	//ChangLevel
-	void SetChgLevel(CString strObjID, EmObjectChgLevel emChgLevel);//set是赋值
-	void AddChgLevel(CString strObjID, EmObjectChgLevel emChgLevel);//add是叠加
-	void AddChgLevel(CString strObjID, BaseGraph_DataBase::ParamValueDef emParam);//通过变更的属性设置changlevel
-	EmObjectChgLevel GetChgLevel(CString strObjID);
-
 	ObjectCalculator * GetObjCalculator(CString strObjID);
 	bool ReleaseCalculator(CString strObjID);
 	bool ReleaseCalculator(ObjectCalculator * pCalc);
@@ -56,9 +50,6 @@ public:
 	EmHittestRetType HitTest(IN pointf ptHit, OPTIONAL CString & strID, OPTIONAL EmCtrlPointIndex & emCtrlPoint);//根据一次单击查找选中块(),strID为空则选中最上层，否则会查找指定点的重叠物件中指定块的下一个物件
 	bool BoxHitTest(IN rectf rtBox, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是碰着就算
 	bool BoxInterTest(IN rectf rtBox, OUT std::vector<CString> & vecStrObjID);//框选，入选的条件是框住了才算
-
-	//根据属性来获取属性对应的changlevel
-	static EmObjectChgLevel GetPropertyChanegLevel(IN BaseGraph_DataBase::ParamValueDef emParam);
 
 	bool IsStaticMode();
 	void SetStaticMode(bool bStatic);

@@ -64,6 +64,13 @@ public:
 	//属性设置
 	bool SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam);
 	bool SetItemProperty(IN CString strID, IN const map<ParamValueDef, Value> & mapParam);
+	//ChangLevel
+	void SetChgLevel(CString strObjID, EmObjectChgLevel emChgLevel);//set是赋值
+	void AddChgLevel(CString strObjID, EmObjectChgLevel emChgLevel);//add是叠加
+	void AddChgLevel(CString strObjID, BaseGraph_DataBase::ParamValueDef emParam);//通过变更的属性设置changlevel
+	EmObjectChgLevel GetChgLevel(CString strObjID);
+	//根据属性来获取属性对应的changlevel
+	static EmObjectChgLevel GetPropertyChanegLevel(IN BaseGraph_DataBase::ParamValueDef emParam);
 	//名字
 	CString GetItemTypePrefix(BaseGraph_DataBase::ObjectType emObjType);
 	std::set<CString> GetAllItemName();

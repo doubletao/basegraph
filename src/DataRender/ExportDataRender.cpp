@@ -199,16 +199,11 @@ BASEGRAPH_DATARENDER_API bool DataRender_GetItemProperty(IN CString strID, OUT s
 
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN BaseGraph_DataBase::ParamValueDef emParam, IN const Value & stuParam)
 {
-	CalculatorManager::Instance().AddChgLevel(strID, emParam);
 	return DataBase_SetItemProperty(strID, emParam, stuParam);
 }
 
 BASEGRAPH_DATARENDER_API bool DataRender_SetItemProperty(IN CString strID, IN const std::map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
 {
-	for (auto it : mapParam)
-	{
-		CalculatorManager::Instance().AddChgLevel(strID, it.first);
-	}
 	return DataBase_SetItemProperty(strID, mapParam);
 }
 

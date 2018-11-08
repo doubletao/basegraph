@@ -22,7 +22,6 @@ const matrix4f* ObjectCalculator::GetRenderMatV() const
 ObjectCalculator::ObjectCalculator(CString strObjID)
 	: m_strObjID(strObjID)
 	, m_nObjBufferID(0)
-	, m_emChgLevel(ChgLevel_Create)
 	, m_bSelected(false)
 	, m_nLastFrame(-1)
 	, m_nRotateOrder(ROTATE_ORDER_YXZ)
@@ -339,7 +338,7 @@ bool ObjectCalculator::NeedUpdateBuffer()
 		return true;
 	}
 	//如果level大于等于buf，需要render
-	if (m_emChgLevel >= ChgLevel_Buffer)
+	if (DataBase_GetChgLevel(m_strObjID) >= ChgLevel_Buffer)
 	{
 		return true;
 	}
@@ -501,20 +500,17 @@ matrix4f ObjectCalculator::GetSelfMatrix()
 
 void ObjectCalculator::SetChgLevel(EmObjectChgLevel emChgLevel)
 {
-	m_emChgLevel = emChgLevel;
+	DataBase_SetChgLevel(m_strObjID, emChgLevel);
 }
 
 void ObjectCalculator::AddChgLevel(EmObjectChgLevel emChgLevel)
 {
-	if (m_emChgLevel < emChgLevel)
-	{
-		m_emChgLevel = emChgLevel;
-	}
+	DataBase_AddChgLevel(m_strObjID, emChgLevel);
 }
 
 EmObjectChgLevel ObjectCalculator::GetChgLevel()
 {
-	return m_emChgLevel;
+	return DataBase_GetChgLevel(m_strObjID);
 }
 
 ////////////////////////BaseGraphRenderUnitView//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

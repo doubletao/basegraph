@@ -51,6 +51,14 @@ BaseGraph_DataBase::ITEM_FORMTYPE BASEGRAPH_DATABASE_API DataBase_Get3DType(IN C
 //名字
 CString BASEGRAPH_DATABASE_API DataBase_GetNextItemName(IN BaseGraph_DataBase::ObjectType emItemType);
 
+//ChangLevel
+void BASEGRAPH_DATABASE_API DataBase_SetChgLevel(CString strObjID, EmObjectChgLevel emChgLevel);//set是赋值
+void BASEGRAPH_DATABASE_API DataBase_AddChgLevel(CString strObjID, EmObjectChgLevel emChgLevel);//add是叠加
+void BASEGRAPH_DATABASE_API DataBase_AddChgLevel(CString strObjID, BaseGraph_DataBase::ParamValueDef emParam);//通过变更的属性设置changlevel
+EmObjectChgLevel BASEGRAPH_DATABASE_API DataBase_GetChgLevel(CString strObjID);
+//根据属性来获取属性对应的changlevel
+EmObjectChgLevel BASEGRAPH_DATABASE_API DataBase_GetPropertyChanegLevel(IN BaseGraph_DataBase::ParamValueDef emParam);
+
 //物件长度（注意，这里的单位是场(按照一帧两场计数)）
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(OUT int & nLength);
 bool BASEGRAPH_DATABASE_API DataBase_GetItemLength(IN const std::vector<CString> & vecID, OUT int & nLength);

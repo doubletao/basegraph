@@ -186,6 +186,11 @@ CString BaseGraphDecoder::GetContent()
 
 bool BaseGraphDecoder::ChangeContent(CString strContent)
 {
+	std::vector<CString> vecObjID;
+	if (DataBase_LoadObjFromXMLStr(strContent, vecObjID))
+	{
+		return true;
+	}
 	return false;
 }
 
