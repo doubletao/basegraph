@@ -171,7 +171,14 @@ void UITimeLine::OnDispatchMsg(int nMsgID, WPARAM wParam, LPARAM lParam, int nID
 	case WM_MSG_WholeFrameLengthChanged:
 		if (nIDFrom != GetMsgDispatchID())
 		{
-			AdjustScrollZoomKeepPixPerFrame();
+			if (wParam)
+			{
+				AdjustScrollZoomKeepPixPerFrame();
+			}
+			else
+			{
+				OnScrollFlexed();
+			}
 		}
 		break;
 	case WM_MSG_ObjectCreateDelete:

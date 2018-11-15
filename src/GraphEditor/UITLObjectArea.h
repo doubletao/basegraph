@@ -35,6 +35,7 @@ protected:
 	ObjectBarMoveState m_emBarMoveState;//当前操作状态
 	CPoint m_ptBegin;//鼠标点下的点
 	CString m_strHitObjectID;//当前点中的物件
+	bool m_bNeedRefresh;
 protected:
 	virtual void RearrangeChildPos();
 	UITLObjectItem * CreateObjectItem(CString strID);

@@ -16,6 +16,7 @@ UITLObjectArea::UITLObjectArea()
 	, m_nVScrollHeight(0)
 	, m_emBarMoveState(MoveState_Null)
 	, m_ptBegin(0)
+	, m_bNeedRefresh(false)
 {
 	m_nItemBarEndAreaWidth = UIControl_GetIntValue(ThemeInt_TimeLineItemBarEndAreaWidth);
 }
@@ -115,11 +116,18 @@ void UITLObjectArea::OnLButtonUp(WPARAM wParam, LPARAM lParam)
 	m_emBarMoveState = MoveState_Null;
 	ReleaseElementCapture();
 	m_ptBegin = CPoint(0, 0);
+	if (m_bNeedRefresh)
+	{
+		//广播通知物件长度变动
+		UIControl_SendMsgTo(UIElementMsg_BaseGraphMainFrame, WM_MSG_WholeFrameLengthChanged, 1, 0, UIElementMsg_TimeLineObjectArea);
+		Refresh();
+		m_bNeedRefresh = false;
+	}
 }
 
 void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 {
-	bool bRefresh = false;
+	m_bNeedRefresh = false;
 	switch (m_emBarMoveState)
 	{
 	case MoveState_Null:
@@ -155,7 +163,7 @@ void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 					value = nEndFrame;
 					if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
 					{
-						bRefresh = true;
+						m_bNeedRefresh = true;
 					}
 				}
 			}
@@ -165,8 +173,27 @@ void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 	case MoveState_ActionLeftEndMove:
 	{
 		CPoint ptEnd = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		float fXOffset = ptEnd.x - m_ptBegin.x;
-		int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		//float fXOffset = ptEnd.x - m_ptBegin.x;
+		//int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		int nScrollAreaX = 0;
+		if (m_pRightArea)
+		{
+			nScrollAreaX = m_pRightArea->GetRealX();
+		}
+		float fNewPos = ptEnd.x - nScrollAreaX;
+		int nNewFrame = fNewPos / UITLRuler::Instance().GetPixelPerFrame() * 2;
+#if 0
+		if (false)//debug
+		{
+			CString strDebug;
+			strDebug.Format(_T("fXOffset:%f nOffsetFrame:%d UITLRuler::Instance().GetPixelPerFrame():%f m_pRightArea->GetRealX():%d\n"), 
+				fXOffset,
+				nOffsetFrame,
+				UITLRuler::Instance().GetPixelPerFrame(),
+				m_pRightArea->GetRealX());
+			OutputDebugString(strDebug);
+		}
+#endif
 		m_ptBegin = ptEnd;
 		BaseGraph_Common::Value value;
 		if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
@@ -176,21 +203,21 @@ void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 			{
 				int nEndFrame = value.ToInt();
 				//移动动作不能把begin变成负数
-				if (nBeginFrame + nOffsetFrame < 0)
+				if (nNewFrame < 0)
 				{
-					nOffsetFrame = -nBeginFrame;
+					nNewFrame = 0;
 				}
 				//也不能将物件action长度修改的小于最短长度
 				int nMinActionLength = DataBase_GetGlobalConfig().m_nMinActionLenth;
-				if (nBeginFrame + nOffsetFrame > nEndFrame - nMinActionLength)
+				if (nNewFrame > nEndFrame - nMinActionLength)
 				{
-					nOffsetFrame = nEndFrame - nMinActionLength - nBeginFrame;
+					nNewFrame = nEndFrame - nMinActionLength;
 				}
-				nBeginFrame += nOffsetFrame;
+				nBeginFrame = nNewFrame;
 				value = nBeginFrame;
 				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
 				{
-					bRefresh = true;
+					m_bNeedRefresh = true;
 				}
 			}
 		}
@@ -199,8 +226,13 @@ void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 	case MoveState_ActionRightMove:
 	{
 		CPoint ptEnd = CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		float fXOffset = ptEnd.x - m_ptBegin.x;
-		int nOffsetFrame = fXOffset / UITLRuler::Instance().GetPixelPerFrame() * 2;
+		int nScrollAreaX = 0;
+		if (m_pRightArea)
+		{
+			nScrollAreaX = m_pRightArea->GetRealX();
+		}
+		float fNewPos = ptEnd.x - nScrollAreaX;
+		int nNewFrame = fNewPos / UITLRuler::Instance().GetPixelPerFrame() * 2;
 		m_ptBegin = ptEnd;
 		BaseGraph_Common::Value value;
 		if (DataRender_GetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionBegin_Int, value))
@@ -211,15 +243,15 @@ void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 				int nEndFrame = value.ToInt();
 				//不能将物件action长度修改的小于最短长度
 				int nMinActionLength = DataBase_GetGlobalConfig().m_nMinActionLenth;
-				if (nEndFrame + nOffsetFrame < nBeginFrame + nMinActionLength)
+				if (nNewFrame < nBeginFrame + nMinActionLength)
 				{
-					nOffsetFrame = nMinActionLength + nBeginFrame - nEndFrame;
+					nNewFrame = nMinActionLength + nBeginFrame;
 				}
-				nEndFrame += nOffsetFrame;
+				nEndFrame = nNewFrame;
 				value = nEndFrame;
 				if (DataRender_SetItemProperty(m_strHitObjectID, BaseGraph_DataBase::Obj_ActionEnd_Int, value))
 				{
-					bRefresh = true;
+					m_bNeedRefresh = true;
 				}
 			}
 		}
@@ -228,7 +260,7 @@ void UITLObjectArea::OnMouseMove(WPARAM wParam, LPARAM lParam)
 	default:
 		break;
 	}
-	if (bRefresh)
+	if (m_bNeedRefresh)
 	{
 		//广播通知物件长度变动
 		UIControl_SendMsgTo(UIElementMsg_BaseGraphMainFrame, WM_MSG_WholeFrameLengthChanged, 0, 0, UIElementMsg_TimeLineObjectArea);
