@@ -35,7 +35,7 @@ DataBaseManager::DataBaseManager()
 
 DataBaseManager::~DataBaseManager()
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	for (size_t i = 0; i < m_vecObject.size(); i++)
 	{
 		BaseObject *& pObj = m_vecObject[i];
@@ -48,7 +48,7 @@ DataBaseManager::~DataBaseManager()
 
 bool DataBaseManager::SaveObjToXMLDoc(IN const std::vector<CString>& vecObjID, IN TiXmlDocument * xmlDoc)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	bool bRet = false;
 	if (xmlDoc)
 	{
@@ -108,7 +108,7 @@ bool DataBaseManager::SaveObjToXMLDoc(IN const std::vector<CString>& vecObjID, I
 
 bool DataBaseManager::LoadObjFromXMLDoc(IN TiXmlDocument * xmlDoc, OUT std::vector<CString>& vecObjID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	bool bRet = false;
 	if (xmlDoc)
 	{
@@ -241,7 +241,7 @@ void DataBaseManager::Unlock()
 
 BaseObject * DataBaseManager::CheckItemID(CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	for (size_t i = 0; i < m_vecObject.size(); i++)
 	{
 		if (m_vecObject[i] && m_vecObject[i]->GetItemID() == strID)
@@ -254,7 +254,7 @@ BaseObject * DataBaseManager::CheckItemID(CString strID)
 
 bool DataBaseManager::GetAllItemID(OUT std::vector<CString>& vecID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	vecID.clear();
 	for (size_t i = 0; i < m_vecObject.size(); i++)
 	{
@@ -268,7 +268,7 @@ bool DataBaseManager::GetAllItemID(OUT std::vector<CString>& vecID)
 
 bool DataBaseManager::GetAllItemIDExceptSubItem(OUT std::vector<CString>& vecID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	vecID.clear();
 	for (size_t i = 0; i < m_vecObject.size(); i++)
 	{
@@ -283,7 +283,7 @@ bool DataBaseManager::GetAllItemIDExceptSubItem(OUT std::vector<CString>& vecID)
 
 bool DataBaseManager::GetItemType(IN CString strID, OUT BaseGraph_DataBase::ObjectType & emType)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
 		&& pObj)
@@ -296,13 +296,13 @@ bool DataBaseManager::GetItemType(IN CString strID, OUT BaseGraph_DataBase::Obje
 
 bool DataBaseManager::GetAllItem(OUT vector<BaseObject *>& vecObject)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::GetItem(IN CString strID, OUT BaseObject * & pObject)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	for (size_t i = 0; i < m_vecObject.size(); i++)
 	{
 		if (m_vecObject[i] && m_vecObject[i]->GetItemID() == strID)
@@ -316,7 +316,7 @@ bool DataBaseManager::GetItem(IN CString strID, OUT BaseObject * & pObject)
 
 BaseObject * DataBaseManager::CreateItem(IN ObjectType emType, IN const map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	//物件厂造一个指定物件并赋值
 	BaseObject * pObj = ObjectFactory::CreateObject(emType);
 	if (pObj)
@@ -335,7 +335,7 @@ BaseObject * DataBaseManager::CreateItem(IN ObjectType emType, IN const map<Base
 
 bool DataBaseManager::CreateItem(IN ObjectType emType, IN const map<BaseGraph_DataBase::ParamValueDef, Value>& mapParam, OUT CString & strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	//物件厂造一个指定物件并赋值
 	BaseObject * pObj = ObjectFactory::CreateObject(emType);
 	if (pObj)
@@ -355,7 +355,7 @@ bool DataBaseManager::CreateItem(IN ObjectType emType, IN const map<BaseGraph_Da
 
 bool DataBaseManager::AddItem(BaseObject * pObj)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	if (pObj)
 	{
 		CString strID = pObj->GetItemID();
@@ -379,13 +379,13 @@ bool DataBaseManager::AddItem(BaseObject * pObj)
 
 bool DataBaseManager::AddSubItemTo(IN CString strParentID, IN CString strSubID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::DeleteItem(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	for (vector<BaseObject *>::iterator it = m_vecObject.begin(); it != m_vecObject.end(); it++)
 	{
 		BaseObject * pObj = *it;
@@ -405,55 +405,55 @@ bool DataBaseManager::DeleteItem(IN CString strID)
 
 bool DataBaseManager::MoveItemToTop(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::MoveItemToBottom(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::MoveItemBefore(IN CString strSrcID, IN CString strDesID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::MoveItemAfter(IN CString strSrcID, IN CString strDesID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::HasSubItem(IN CString strParentID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::GetSubItem(IN CString strParentID, OUT std::vector<CString>& vecSubID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::HasParentItem(IN CString strSubID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::GetParentItem(IN CString strSubID, OUT CString & strParentID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return false;
 }
 
 bool DataBaseManager::GetItemProperty(IN CString strID, IN ParamValueDef emParam, OUT Value & stuParam)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
 		&& pObj)
@@ -466,7 +466,7 @@ bool DataBaseManager::GetItemProperty(IN CString strID, IN ParamValueDef emParam
 
 bool DataBaseManager::GetItemProperty(IN CString strID, OUT map<ParamValueDef, Value>& mapParam)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
 		&& pObj)
@@ -479,7 +479,7 @@ bool DataBaseManager::GetItemProperty(IN CString strID, OUT map<ParamValueDef, V
 
 float3 DataBaseManager::GetItemPos(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	float3 f3Pos = {0};
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
@@ -492,7 +492,7 @@ float3 DataBaseManager::GetItemPos(IN CString strID)
 
 float3 DataBaseManager::GetItemCenter(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	float3 f3Center = { 0 };
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
@@ -505,7 +505,7 @@ float3 DataBaseManager::GetItemCenter(IN CString strID)
 
 float3 DataBaseManager::GetItemAngle(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	float3 f3Angle = { 0 };
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
@@ -518,7 +518,7 @@ float3 DataBaseManager::GetItemAngle(IN CString strID)
 
 float3 DataBaseManager::GetItemAngleRadian(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	float3 f3Angle = { 0 };
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
@@ -531,7 +531,7 @@ float3 DataBaseManager::GetItemAngleRadian(IN CString strID)
 
 float3 DataBaseManager::GetItemScale(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	float3 f3Scale = { 0 };
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
@@ -544,7 +544,7 @@ float3 DataBaseManager::GetItemScale(IN CString strID)
 
 BaseGraph_DataBase::ITEM_FORMTYPE DataBaseManager::Get3DType(IN CString strID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseGraph_DataBase::ITEM_FORMTYPE emType = BaseGraph_DataBase::ITEM_FORMTYPE_2D;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
@@ -557,7 +557,7 @@ BaseGraph_DataBase::ITEM_FORMTYPE DataBaseManager::Get3DType(IN CString strID)
 
 bool DataBaseManager::SetItemProperty(IN CString strID, IN ParamValueDef emParam, IN const Value & stuParam)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
 		&& pObj)
@@ -570,7 +570,7 @@ bool DataBaseManager::SetItemProperty(IN CString strID, IN ParamValueDef emParam
 
 bool DataBaseManager::SetItemProperty(IN CString strID, IN const map<ParamValueDef, Value>& mapParam)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strID, pObj)
 		&& pObj)
@@ -586,7 +586,7 @@ bool DataBaseManager::SetItemProperty(IN CString strID, IN const map<ParamValueD
 
 void DataBaseManager::SetChgLevel(CString strObjID, EmObjectChgLevel emChgLevel)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strObjID, pObj)
 		&& pObj)
@@ -597,7 +597,7 @@ void DataBaseManager::SetChgLevel(CString strObjID, EmObjectChgLevel emChgLevel)
 
 void DataBaseManager::AddChgLevel(CString strObjID, EmObjectChgLevel emChgLevel)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strObjID, pObj)
 		&& pObj)
@@ -608,7 +608,7 @@ void DataBaseManager::AddChgLevel(CString strObjID, EmObjectChgLevel emChgLevel)
 
 void DataBaseManager::AddChgLevel(CString strObjID, BaseGraph_DataBase::ParamValueDef emParam)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strObjID, pObj)
 		&& pObj)
@@ -619,7 +619,7 @@ void DataBaseManager::AddChgLevel(CString strObjID, BaseGraph_DataBase::ParamVal
 
 EmObjectChgLevel DataBaseManager::GetChgLevel(CString strObjID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	BaseObject * pObj = nullptr;
 	if (GetItem(strObjID, pObj)
 		&& pObj)
@@ -765,7 +765,7 @@ EmObjectChgLevel DataBaseManager::GetPropertyChanegLevel(IN BaseGraph_DataBase::
 
 CString DataBaseManager::GetItemTypePrefix(BaseGraph_DataBase::ObjectType emObjType)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	switch (emObjType)
 	{
 	case BaseGraph_DataBase::ObjectType_Err:
@@ -786,7 +786,7 @@ CString DataBaseManager::GetItemTypePrefix(BaseGraph_DataBase::ObjectType emObjT
 
 std::set<CString> DataBaseManager::GetAllItemName()
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	std::set<CString> setItemNames;
 	std::vector<CString> vecItemID;
 	GetAllItemID(vecItemID);
@@ -805,7 +805,7 @@ std::set<CString> DataBaseManager::GetAllItemName()
 
 bool DataBaseManager::IsItemNameExist(CString strItemName)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	std::vector<CString> vecItemID;
 	GetAllItemID(vecItemID);
 	for (int i = 0; i < vecItemID.size(); i++)
@@ -826,7 +826,7 @@ bool DataBaseManager::IsItemNameExist(CString strItemName)
 
 CString DataBaseManager::GetNextItemName(BaseGraph_DataBase::ObjectType emObjType)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	//取名的方式是在类型后边加数字，判断是否重复，重复则数字++并继续，不重复则使用
 	CString strPrefix = GetItemTypePrefix(emObjType);
 	int nSuffix = 0;
@@ -845,7 +845,7 @@ CString DataBaseManager::GetNextItemName(BaseGraph_DataBase::ObjectType emObjTyp
 
 bool DataBaseManager::GetItemLength(OUT int & nLength)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	std::vector<CString> vecItemID;
 	GetAllItemID(vecItemID);
 	return GetItemLength(vecItemID, nLength);
@@ -853,7 +853,7 @@ bool DataBaseManager::GetItemLength(OUT int & nLength)
 
 bool DataBaseManager::GetItemLength(IN const std::vector<CString>& vecID, OUT int & nLength)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	bool bRet = false;
 	nLength = 0;
 	for (size_t i = 0; i < vecID.size(); i++)
@@ -875,19 +875,19 @@ bool DataBaseManager::GetItemLength(IN const std::vector<CString>& vecID, OUT in
 
 int DataBaseManager::GetSceneWidth()
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return m_nSceneWidth;
 }
 
 int DataBaseManager::GetSceneHeight()
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	return m_nSceneHeight;
 }
 
 bool DataBaseManager::SaveToFile(CString strFile, IN bool bResIncluded)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	CFile cf;
 	CFileException e;
 	BOOL bOpenSuc = FALSE;
@@ -912,7 +912,7 @@ bool DataBaseManager::SaveToFile(CString strFile, IN bool bResIncluded)
 
 bool DataBaseManager::LoadFromFile(CString strFile, IN bool bResIncluded)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	CFile cf;
 	CFileException e;
 	BOOL bOpenSuc = FALSE;
@@ -940,7 +940,7 @@ bool DataBaseManager::LoadFromFile(CString strFile, IN bool bResIncluded)
 
 bool DataBaseManager::SerializeObjects(CArchive & archive, vector<BaseObject*>& vecObject)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	if (archive.IsStoring())
 	{
 		int nCount = 0;
@@ -993,7 +993,7 @@ bool DataBaseManager::SerializeObjects(CArchive & archive, vector<BaseObject*>& 
 
 bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, OUT CString & strXML)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	bool bRet = false;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
@@ -1014,7 +1014,7 @@ bool DataBaseManager::SaveObjToXMLStr(IN const std::vector<CString>& vecObjID, O
 
 bool DataBaseManager::LoadObjFromXMLStr(IN const CString & strXML, OUT std::vector<CString>& vecObjID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	bool bRet = false;
 	TiXmlDocument* xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
@@ -1031,7 +1031,7 @@ bool DataBaseManager::LoadObjFromXMLStr(IN const CString & strXML, OUT std::vect
 
 bool DataBaseManager::SaveObjToXMLFile(IN const std::vector<CString>& vecObjID, IN CString strPathFile)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	bool bRet = false;
 	TiXmlDocument * xmlDoc = new TiXmlDocument;
 	if (xmlDoc)
@@ -1049,7 +1049,7 @@ bool DataBaseManager::SaveObjToXMLFile(IN const std::vector<CString>& vecObjID, 
 
 bool DataBaseManager::LoadObjFromXMLFile(IN CString strPathFile, OUT std::vector<CString>& vecObjID)
 {
-	DataBaseLocker lock;
+	//DataBaseLocker lock;
 	bool bRet = false;
 	TiXmlDocument* xmlDoc = new TiXmlDocument;
 	if (xmlDoc)

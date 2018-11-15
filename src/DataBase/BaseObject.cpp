@@ -78,7 +78,7 @@ bool BaseGraph_DataBase::BaseObject::Serialize(CArchive & archive)
 			ParamValueDef emParamValueDef = (ParamValueDef)nTmp;
 			Value valueTmp;
 			valueTmp.Serialize(archive);
-			SetValue(emParamValueDef, valueTmp);
+			m_mapParam[emParamValueDef] = valueTmp;
 		}
 		archive >> m_strParentID;
 		archive >> nSize;
